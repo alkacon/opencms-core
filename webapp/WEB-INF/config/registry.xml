@@ -43,12 +43,6 @@
 				<mimetype>text/html</mimetype>
             </documenttype>
             <documenttype>
-                <name>page</name>
-                <class>com.opencms.legacy.CmsPageDocument</class>
-                <resourcetype>org.opencms.file.CmsResourceTypePage</resourcetype>
-                <mimetype>text/html</mimetype>
-            </documenttype>
-            <documenttype>
 			    <name>text</name>
 			    <class>org.opencms.search.documents.CmsTextDocument</class>
 			    <resourcetype>org.opencms.file.CmsResourceTypePlain</resourcetype>
