@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/21 13:27:34 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/01/31 17:54:28 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,30 +62,56 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.80 $ $Date: 2003/01/21 13:27:34 $ *
+ * @version $Revision: 1.81 $ $Date: 2003/01/31 17:54:28 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
+    private static Boolean m_escapeStrings = null;
+
     /**
-     * Escaped a String with UTF-8 encoding, same style as
-     * http uses for form data since MySQL doesn't support Unicode strings.
+     * Escapes a String to prevent issues with UTF-8 encoding, same style as
+     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
      * 
      * @param value String to be escaped
      * @return the escaped String
      */
     private String escape(String value) {
-        return Encoder.encode(value, "UTF-8", true);
+        // check if we have already checked the need for encoding or not
+        if (m_escapeStrings == null) {        
+            String encoding = A_OpenCms.getDefaultEncoding();
+            m_escapeStrings = new Boolean (
+                "ISO-8859-1".equalsIgnoreCase(encoding) || 
+                "ISO-8859-15".equalsIgnoreCase(encoding) || 
+                "US-ASCII".equalsIgnoreCase(encoding) || 
+                "Cp1252".equalsIgnoreCase(encoding) 
+                ); 
+        }            
+        // no need to encode if OpenCms is not running in Unicode mode
+        if (m_escapeStrings.booleanValue()) return value;
+        return Encoder.encode(value);
     }
 
     /**
-     * Unescape a String with UTF-8 encoding, same style as
-     * http uses for form data since MySQL doesn't support Unicode strings.
+     * Unescapes a String to prevent issues with UTF-8 encoding, same style as
+     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
      * 
      * @param value String to be unescaped
      * @return the unescaped String
      */
     private String unescape(String value) {
-        return Encoder.decode(value, "UTF-8", true);
+        // check if we have already checked the need for encoding or not
+        if (m_escapeStrings == null) {        
+            String encoding = A_OpenCms.getDefaultEncoding();
+            m_escapeStrings = new Boolean (
+                "ISO-8859-1".equalsIgnoreCase(encoding) || 
+                "ISO-8859-15".equalsIgnoreCase(encoding) || 
+                "US-ASCII".equalsIgnoreCase(encoding) || 
+                "Cp1252".equalsIgnoreCase(encoding) 
+                ); 
+        }            
+        // no need to encode if OpenCms is not running in Unicode mode
+        if (m_escapeStrings.booleanValue()) return value;
+        return Encoder.decode(value);
     }
     
     /**
