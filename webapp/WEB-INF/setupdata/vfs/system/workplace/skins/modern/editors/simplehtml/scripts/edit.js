@@ -124,7 +124,6 @@ function doTemplSubmit(para) {
 		// preview selected	
 		doSubmit();		
 		document.EDITOR.action.value = "preview";
-		document.EDITOR.edittimestamp.value = "";
 		document.EDITOR.target = "PREVIEW";
 		document.EDITOR.submit();
 		break;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/01/20 17:15:26 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/21 08:41:13 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,22 +38,17 @@ import org.opencms.main.OpenCms;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.BoundedFifoBuffer;
-import org.apache.commons.collections.Buffer;
-
 
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
-    
-    private static int BUFFER_SIZE = 50;
     
     private String m_language;
     private CmsWorkplaceMessages m_messages;
@@ -74,8 +69,6 @@ public class CmsWorkplaceSettings {
     private Map m_treeType;
     private Map m_treeSite;
     private Map m_resourceTypes;
-    
-    private Buffer m_timeStamp;
         
     /**
      * Constructor, only package visible.<p>
@@ -86,7 +79,6 @@ public class CmsWorkplaceSettings {
         m_treeSite = new HashMap();
         m_resourceTypes = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
-        m_timeStamp = new BoundedFifoBuffer(BUFFER_SIZE);
     }
     
     /**
@@ -469,30 +461,6 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setResourceTypes(Map value) {
         m_resourceTypes = value;
-    } 
-    
-    /**
-     * Checks if the timestamp is present in the buffer.<p>
-     * 
-     * @param timestamp the time stamp to check
-     * @return true if the time stamp is present in the buffer
-     */
-    public boolean containsTimeStamp(String timestamp) {
-        return m_timeStamp.contains(timestamp);
-    }
-    
-    /**
-     * Adds the time stamp String to the buffer.<p>
-     * 
-     * Automatically removes an element from the buffer if its capacity is reached.<p>
-     * 
-     * @param timestamp the time stamp to add
-     */
-    public void addTimeStamp(String timestamp) {
-        if (m_timeStamp.size() == BUFFER_SIZE) {
-            m_timeStamp.remove();      
-        }
-        m_timeStamp.add(timestamp);
     }
 
 }

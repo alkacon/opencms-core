@@ -24,7 +24,6 @@
 			// preview selected	
 			doSubmit();		
 			document.EDITOR.action.value = "preview";
-			document.EDITOR.edittimestamp.value = "";
 			document.EDITOR.target = "PREVIEW";
 			document.EDITOR.submit();
 			break;
@@ -275,7 +274,6 @@ End Sub
 <input type="hidden" name="oldbodyname" value="<%= wp.getParamBodyname() %>">
 <input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
-<input type="hidden" name="edittimestamp" value="<%= System.currentTimeMillis() %>">
 
 	<tr>
 		<td>

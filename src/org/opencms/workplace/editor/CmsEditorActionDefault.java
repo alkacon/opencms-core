@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/20 15:58:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/21 08:41:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,14 @@
  */
 package org.opencms.workplace.editor;
 
-import org.opencms.loader.CmsXmlPageLoader;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
@@ -38,15 +45,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
-
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeXmlPage;
-import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -57,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.0
  */
@@ -145,7 +143,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(com.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(com.opencms.file.CmsObject, java.lang.String, org.opencms.page.CmsXmlPage, java.lang.String)
      */
     public String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element) {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/01/20 17:15:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/21 08:41:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -73,23 +73,6 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
-        // now check if user pressed the "history back" button and close editor if necessary
-        if ("true".equals(getParamDirectedit())) {
-            if (getParamEdittimestamp() != null && !"".equals(getParamEdittimestamp())) {
-                if (getSettings().containsTimeStamp(getParamEdittimestamp())) {
-                    // timestamp was already used, close
-                    try {
-                        actionClose();
-                    } catch (Exception e) {
-                        // ignore this exception                     
-                    }    
-                } else {
-                    // add the current time stamp to the buffer
-                    getSettings().addTimeStamp(getParamEdittimestamp());
-                }
-            }
-        }
         
         // set the dialog type
         setParamDialogtype(EDITOR_TYPE);
