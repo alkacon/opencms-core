@@ -81,8 +81,6 @@
 			<deleteversions>false</deleteversions>
 			<versions>10</versions>
 		</history>
-
-
 		<crontab>
 			<!--
 		    <cronjob>
@@ -98,6 +96,7 @@
 		    </cronjob>
 			//-->
 		</crontab>
+		@REGISTRY_CONFIGURATION@
 	</system>
 	<modules/>
 </registry>
