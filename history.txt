@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/18 13:07:08 $
- * Version: $Revision: 1.552 $
+ * Date   : $Date: 2004/06/18 14:15:00 $
+ * Version: $Revision: 1.553 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ OpenCms 5.3.5 Ix - June 16, 2004
   property are now also displayed in the editor element selection 
 ! If a template property points to a template that is not located in a 'regular'
   template folder, this template is now added to the template selection as well  
-! Added 'update workplace' event to re-initilaize the Workplace after changes are made  
+! Added 'update workplace' event to re-initialize the Workplace after changes are made  
 ! Resource locales are now cached
 * Fixed issue with galleries not working when in root site  
 * Fixed issue with NPE in CmsXmlPage.initBookmarks() method
@@ -44,7 +44,7 @@ OpenCms 5.3.5 Ix - June 16, 2004
 * The "internal use only" flag has been placed on the permission dialog again
 - Refactored package org.opencms.page to org.opencms.xml.page
 ! Added "Relase Date" and "Expiration Date" to the structure table of the resource
-- Using long values instead of Timestamps for date infromation in VFS resource tables
+- Using long values instead of Timestamps for date information in VFS resource tables
 ! Added Junit test setup for OpenCms VFS tests
 ! Added a couple of initial Junit test cases for the CmsObject
 ! Added target "unittests" to build.xml to execute all OpenCms Junit tests
@@ -68,7 +68,7 @@ OpenCms 5.3.5 Ix - June 16, 2004
 ! Added setting in user preferences "Start with site" and "Start in folder"
 ! Added setting in user preferences to restrict user to a subtree of a site
 ! When switching sites, the last used folder in the site is now displayed instead of the root folder
-* Individual and shsred properties are now exported and imported correctly
+* Individual and shared properties are now exported and imported correctly
 - Improvements to the (new) XML handling classes
 
 OpenCms 5.3.4 Ix - April 14, 2004
