@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/03/05 17:19:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/04/05 15:13:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * @version $Revision: 1.9 $ $Date: 2004/03/05 17:19:43 $
+ * @version $Revision: 1.10 $ $Date: 2004/04/05 15:13:51 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -64,14 +64,15 @@ public final class CmsXmlPageConverter {
      * @param content the content used with xml templates
      * @param body the name of the default body element
      * @param locale the locale of the body element(s)
+     * @param encoding the encoding to the xml page
      * @return the xml page content or null if conversion failed
      * @throws CmsException if something goes wrong
      */
-    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, Locale locale) throws CmsException {
+    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, Locale locale, String encoding) throws CmsException {
         CmsXmlPage xmlPage = null;
         
         try {
-            xmlPage = new CmsXmlPage();
+            xmlPage = new CmsXmlPage(encoding);
             Document page = CmsImport.getXmlDocument(content);
             
             Element xmltemplate = page.getRootElement();

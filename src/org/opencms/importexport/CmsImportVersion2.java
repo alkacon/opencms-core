@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/03/06 18:51:23 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/04/05 15:13:51 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -513,7 +513,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                         destination += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
                     CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
-                    channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
+                    
+                    
+                    channelId = m_cms.readPropertyObject(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID, false).getValue();
+                                        
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
@@ -790,13 +793,23 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             // lock the resource, so that it can be manipulated
             m_cms.lockResource(resname);             
-            // get all properties                   
+            // get all properties      
+             
+            
             Map properties = m_cms.readProperties(resname);
             // now get the content of the bodyfile and insert it into the control file                   
             bodyfile = m_cms.readFile(bodyname);
             
+            //get the encoding
+            String encoding;
+            encoding = (String)properties.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
+            if (encoding == null) {
+                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            }
+                     
             if (m_convertToXmlPage) {
-                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", getLocale(resname, properties)); 
+                // TODO: Check encoding
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents(), encoding), "body", getLocale(resname, properties), encoding); 
                 
                 if (xmlPage != null) {
                     xmlPage.write(pagefile);
@@ -809,7 +822,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             // write all changes                     
             m_cms.writeFile(pagefile);
-            // add the template property to the controlfile
+            // add the template property to the controlfile                      
             m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, true);
             // if set, add the bodyclass as property
             if (bodyclass != null && !"".equals(bodyclass)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/04/02 16:59:28 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2004/04/05 15:13:51 $
+ * Version: $Revision: 1.160 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.159 $ $Date: 2004/04/02 16:59:28 $
+ * @version $Revision: 1.160 $ $Date: 2004/04/05 15:13:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -113,7 +113,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public void cmsEvent(CmsEvent event) {
         I_CmsReport report = null;
-
+        
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_UPDATE_EXPORTS :
                 report = (I_CmsReport) event.getData().get("report");
