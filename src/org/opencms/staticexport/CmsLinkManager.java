@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/12/15 15:03:42 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsLinkManager {
     
@@ -366,7 +366,7 @@ public class CmsLinkManager {
             // check if we need relative links in the exported pages
             if (OpenCms.getStaticExportManager().relativLinksInExport()) {
                 // try to get base uri from cache  
-                uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(cms.getRequestContext().getUri());                
+                uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri());                
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
                     if (exportRequired(cms, cms.getRequestContext().getUri())) {
@@ -377,14 +377,14 @@ public class CmsLinkManager {
                         uriBaseName = OpenCms.getStaticExportManager().getVfsPrefix() + cms.getRequestContext().getUri();
                     }
                     // cache export base uri
-                    OpenCms.getStaticExportManager().cacheOnlineLink(cms.getRequestContext().getUri(), uriBaseName);
+                    OpenCms.getStaticExportManager().cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri(), uriBaseName);
                 }
                 // use relative links only on pages that get exported 
                 useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix());
             }
 
             // check if we have the absolute vfs name for the link target cached
-            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(absoluteLink);
+            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
             if (resultLink == null) {              
                 // didn't find the link in the cache
                 if (exportRequired(cms, vfsName)) {
@@ -405,8 +405,8 @@ public class CmsLinkManager {
                         resultLink = resultLink.concat(parameters);
                     }                     
                 }
-                // cache the result 
-                OpenCms.getStaticExportManager().cacheOnlineLink(absoluteLink, resultLink);                            
+                // cache the result
+                OpenCms.getStaticExportManager().cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);                            
             } 
             
             if (useRelativeLinks) {
