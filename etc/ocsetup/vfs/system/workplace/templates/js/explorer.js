@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/22 16:08:41 $
-  * Version: $Revision: 1.14 $
+  * Date   : $Date: 2001/01/26 10:48:36 $
+  * Version: $Revision: 1.15 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -91,6 +91,7 @@
      this.lockIcons = new Array();
      this.lockStatus = new Array();
      this.iconPath = new Array();
+     this.newButtonActive;
      this.check_name;
      this.check_title;
      this.check_date;
@@ -713,7 +714,7 @@ function showTree(doc,windowed) {
      bt_folder.src = vi.iconPath+'ic_file_folder.gif';
      
      bt_new = new Image(32,32);
-     if(vr.actProject==vr.onlineProject) bt_new.src = vi.iconPath+'bt_new_in.gif';
+     if(vi.newButtonActive==false || vr.actProject==vr.onlineProject) bt_new.src = vi.iconPath+'bt_new_in.gif';
      else bt_new.src = vi.iconPath+'bt_new_off.gif';
      
      bt_up = new Image(32,32);
@@ -732,108 +733,115 @@ function showTree(doc,windowed) {
  function displayHead(doc){
   
  if(vr.actDirectory=="/")dirup="";
- else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">";
+else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">";
+
+
+
+    var headHead="<html><head><title>opencms</title>"+
+            "<style type='text/css'>"+
+            "<!"+"--"+
+            "body { margin-left:3px; margin-right:0px; margin-top:3px; margin-bottom:0px; marginspace=0;}"+
+            "p.einzug { FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8px; TEXT-INDENT: 5px;}"+
+            "INPUT.textfeld2 { BACKGROUND-COLOR: white;  COLOR: black; FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8px; FONT-WEIGHT: normal; WIDTH: 425px }"+
+            "/"+"/"+"--></style>"+
+            "</head><body bgcolor=#c0c0c0 background="+vi.iconPath+"bg_grau.gif topmargin=0 leftmargin=0>"+
+            "<form name=urlform onSubmit='javascript:top.openurl();return false;'>"+
+            "<table cellspacing=0 cellpadding=0 border=0 valign=top>"+
+            "<tr valign=center>"+
+            "<td class=menu nowrap width=32px>"+
+            "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
+            "<img alt='"+vr.langback+"' src='"+vi.iconPath+"bt_back_off.gif' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
+            "<td class=menu nowrap width=32px>"+
+			dirup+
+            "<img alt='"+vr.langup+"' name='bt_up' src='"+vi.iconPath+"bt_up_off.gif' width=32 height=32 border=0 name=bt_up ></a></td>";
+
+    var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
+            "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' src='"+vi.iconPath+"ic_file_folder.gif' width=16 height=16></td>"+ 
+            "<td class=menubold nowrap align=right valign=middle><p class=einzug> <b>&nbsp;"+vr.langadress+"&nbsp;</b> </td>"+
+            "<td class=menu nowrap align=left valign=middle>"+
+            "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url class=textfeld2>"+
+            "</td></tr></table></form></body></html>";
+
+    doc.open();
+    doc.writeln(headHead);
+
+    if(vr.actProject!=vr.onlineProject && vi.newButtonActive==true){
+        doc.writeln("<td class=menu nowrap width=32px>"+
+            //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\" target='explorer_files'"+
+            "<a href='explorer_files_new.html' target='explorer_files' "+
+            "onmouseout=\"top.choff(document, 'bt_new');\" "+
+            "onmouseover=\"top.chon(document, 'bt_new');\">");
+        doc.writeln("<img alt='"+vr.langnew+"' src='"+vi.iconPath+"bt_new_off.gif' width=32  height=32 border=0 name='bt_new'></a></td>"); 
+    } else {
+        doc.writeln("<td class=menu nowrap width=32px>");
+        doc.writeln("<img alt='"+vr.langnew+"' width=32 height=32 border=0 name='bt_new_in'></a></td>"); 
+    }
+
+    doc.writeln(headFoot);
+    doc.close();
+    displayHeadPics(doc);
+}
+
+
+/**
+ *  started, after window is resized (only in netscape)
+ */
+function resized(doc){
+    if(g_isShowing==false){
+
+        g_isShowing = true;
+        
+        rT();
+        showTree(explorer_tree,0);
+
+        doc.releaseEvents(Event.CLICK);
+        doc.captureEvents(Event.CLICK);
+        doc.onClick=top.mouseClickedNs;
+
+        displayHeadPics(explorer_head);
+
+        g_isShowing = false;
+    }
+}
+
+/* explorer_content / file list functions ---------------------------------- */
+
+/**
+ *  set checksum for directory-tree
+ *  checksum is sent from server when changing the directory, to verify
+ *  if the tree must be updated.
+ */
+function setChecksum(check){
+    vi.checksum=check;
+}
+
+/**
+ *  set onlineproject of current project
+ */
+function setOnlineProject(setto){
+    vr.onlineProject=setto;
+}
+
+/**
+ *  sets the project the user is in ...
+ */
+function setProject(setto){
+//    initHist();
+    vr.actProject=setto;
+}
+
+/**
+ *  sets the directory the user is in...
+ */
+function setDirectory(id, setto){
+	vr.actDirId=id;
+    vr.actDirectory=setto; 
+}
  
-     var headHead="<html><head><title>opencms</title>"+
-             "<style type='text/css'>"+
-             "<!"+"--"+
-             "body { margin-left:3px; margin-right:0px; margin-top:3px; margin-bottom:0px; marginspace=0;}"+
-             "p.einzug { FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8px; TEXT-INDENT: 5px;}"+
-             "INPUT.textfeld2 { BACKGROUND-COLOR: white;  COLOR: black; FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8px; FONT-WEIGHT: normal; WIDTH: 425px }"+
-             "/"+"/"+"--></style>"+
-             "</head><body bgcolor=#c0c0c0 background="+vi.iconPath+"bg_grau.gif topmargin=0 leftmargin=0>"+
-             "<form name=urlform onSubmit='javascript:top.openurl();return false;'>"+
-             "<table cellspacing=0 cellpadding=0 border=0 valign=top>"+
-             "<tr valign=center>"+
-             "<td class=menu nowrap width=32px>"+
-             "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
-             "<img alt='"+vr.langback+"' src='"+vi.iconPath+"bt_back_off.gif' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
-             "<td class=menu nowrap width=32px>"+
- 			dirup+
-             "<img alt='"+vr.langup+"' name='bt_up' src='"+vi.iconPath+"bt_up_off.gif' width=32 height=32 border=0 name=bt_up ></a></td>";
- 
-     var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
-             "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' src='"+vi.iconPath+"ic_file_folder.gif' width=16 height=16></td>"+ 
-             "<td class=menubold nowrap align=right valign=middle><p class=einzug> <b>&nbsp;"+vr.langadress+"&nbsp;</b> </td>"+
-             "<td class=menu nowrap align=left valign=middle>"+
-             "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url class=textfeld2>"+
-             "</td></tr></table></form></body></html>";
- 
-     doc.open();
-     doc.writeln(headHead);
- 
-     if(vr.actProject!=vr.onlineProject){
-         doc.writeln("<td class=menu nowrap width=32px>"+
-             //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\" target='explorer_files'"+
-             "<a href='explorer_files_new.html' target='explorer_files' "+
-             "onmouseout=\"top.choff(document, 'bt_new');\" "+
-             "onmouseover=\"top.chon(document, 'bt_new');\">");
-         doc.writeln("<img alt='"+vr.langnew+"' src='"+vi.iconPath+"bt_new_off.gif' width=32  height=32 border=0 name='bt_new'></a></td>"); 
-     } else {
-         doc.writeln("<td class=menu nowrap width=32px>");
-         doc.writeln("<img alt='"+vr.langnew+"' width=32 height=32 border=0 name='bt_new_in'></a></td>"); 
-     }
- 
-     doc.writeln(headFoot);
-     doc.close();
-     displayHeadPics(doc);
- }
- 
- 
-  /**
-  *  started, after window is resized (only in netscape)
-  */
- function resized(doc){
-     if(g_isShowing==false){
- 
-         g_isShowing = true;
-         
-         rT();
-         showTree(explorer_tree,0);
- 
-         doc.releaseEvents(Event.CLICK);
-         doc.captureEvents(Event.CLICK);
-         doc.onClick=top.mouseClickedNs;
- 
-         displayHeadPics(explorer_head);
- 
-         g_isShowing = false;
-     }
- }
- 
- /* explorer_content / file list functions ---------------------------------- */
- 
- /**
-  *  set checksum for directory-tree
-  *  checksum is sent from server when changing the directory, to verify
-  *  if the tree must be updated.
-  */
- function setChecksum(check){
-     vi.checksum=check;
- }
- 
- /**
-  *  set onlineproject of current project
-  */
- function setOnlineProject(setto){
-     vr.onlineProject=setto;
- }
- 
- /**
-  *  sets the project the user is in ...
-  */
- function setProject(setto){
- //    initHist();
-     vr.actProject=setto;
- }
- 
- /**
-  *  sets the directory the user is in...
-  */
- function setDirectory(id, setto){
- 	vr.actDirId=id;
-     vr.actDirectory=setto; 
- }
+function enableNewButton(showit){
+    vi.newButtonActive=showit;
+//    alert(showit);
+}
  
  /**
   *  generate a permission string
