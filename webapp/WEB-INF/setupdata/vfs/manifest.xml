@@ -14635,20 +14635,20 @@
             <properties/>
             <accesscontrol/>
         </file>
-		<file>
-			<source>system/workplace/skins/modern/filetypes/link.gif</source>
-			<destination>system/workplace/skins/modern/filetypes/link.gif</destination>
-			<type>image</type>
-			<uuidresource>496d18b3-b82b-11d7-9da3-90edea408374</uuidresource>
-			<uuidcontent>be8b14ca-bc45-11d7-8ef3-9d279ec8e7e0</uuidcontent>
-			<datelastmodified>1065024470000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1058879513000</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
+	<file>
+		<source>system/workplace/skins/modern/filetypes/link.gif</source>
+		<destination>system/workplace/skins/modern/filetypes/link.gif</destination>
+		<type>image</type>
+		<uuidresource>496d18b3-b82b-11d7-9da3-90edea408374</uuidresource>
+		<uuidcontent>be8b14ca-bc45-11d7-8ef3-9d279ec8e7e0</uuidcontent>
+		<datelastmodified>1065024470000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1058879513000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
         <file>
             <source>system/workplace/skins/modern/filetypes/othertype.gif</source>
             <destination>system/workplace/skins/modern/filetypes/othertype.gif</destination>
@@ -14691,20 +14691,20 @@
             <properties/>
             <accesscontrol/>
         </file>
-		<file>
-			<source>system/workplace/skins/modern/filetypes/pointer.gif</source>
-			<destination>system/workplace/skins/modern/filetypes/pointer.gif</destination>
-			<type>image</type>
-			<uuidresource>5c9c6a55-f429-11d7-8dd0-a18fa5b77200</uuidresource>
-			<uuidcontent>5c9c6a56-f429-11d7-8dd0-a18fa5b77200</uuidcontent>
-			<datelastmodified>1057925822000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1065024451000</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>        
+	<file>
+		<source>system/workplace/skins/modern/filetypes/pointer.gif</source>
+		<destination>system/workplace/skins/modern/filetypes/pointer.gif</destination>
+		<type>image</type>
+		<uuidresource>5c9c6a55-f429-11d7-8dd0-a18fa5b77200</uuidresource>
+		<uuidcontent>5c9c6a56-f429-11d7-8dd0-a18fa5b77200</uuidcontent>
+		<datelastmodified>1057925822000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1065024451000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>        
         <file>
             <source>system/workplace/skins/modern/filetypes/velocity.gif</source>
             <destination>system/workplace/skins/modern/filetypes/velocity.gif</destination>
@@ -14719,6 +14719,19 @@
             <properties/>
             <accesscontrol/>
         </file>
+        <file>
+		<destination>system/workplace/skins/modern/filetypes/xmlpage.gif</destination>
+		<type>image</type>
+		<uuidresource>4976b5af-b82b-11d7-9da3-90edea408374</uuidresource>
+		<uuidcontent>be9993c6-bc45-11d7-8ef3-9d279ec8e7e0</uuidcontent>
+		<datelastmodified>1057925822000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1058879514000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file> 
         <file>
             <source>system/workplace/skins/modern/filetypes/xmltemplate.gif</source>
             <destination>system/workplace/skins/modern/filetypes/xmltemplate.gif</destination>
