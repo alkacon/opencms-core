@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronizeException.java,v $
- * Date   : $Date: 2003/07/09 14:49:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/09 16:01:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,33 +32,30 @@ package org.opencms.file;
 
 import com.opencms.core.CmsException;
 
-
 /**
- * This exeption is thrown by a class which implements com.opencms.file.I_CmsSyncModifications.
+ * Thrown by a class which implements com.opencms.file.I_CmsSyncModifications.<p>
+ * 
  * When this exeption is thrown, 
  * all other implementations of I_CmsSyncModifications will not be executed.<p>
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsSynchronizeException extends CmsException {
 
-
-	/**
-	 * Constructs a simple CmsSyncModificationException.<p>
-	 */
-	public CmsSynchronizeException () {
-		super();   
-	}
-    
     /**
-	* Constructs a CmsSyncModificationException with an additional error message.<p>
-	*
-	* @param message the exception message
-	*/
-	public CmsSynchronizeException (String message) {
-		super(message, 0, null, false);
-	}
-    
+     * Constructs a simple CmsSyncModificationException.<p>
+     */
+    public CmsSynchronizeException() {
+        super();
+    }
 
+    /**
+     * Constructs a CmsSyncModificationException with an additional error message.<p>
+     *
+     * @param message the exception message
+     */
+    public CmsSynchronizeException(String message) {
+        super(message, 0, null, false);
+    }
 }

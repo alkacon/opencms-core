@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsSyncModification.java,v $
- * Date   : $Date: 2003/07/09 14:49:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/09 16:01:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
 import com.opencms.file.CmsObject;
@@ -36,11 +36,8 @@ import com.opencms.file.CmsResource;
 
 import java.io.File;
 
-
-
 /**
- * This interface defines methods which can be pluged into the VFS<->FS 
- * syncronisation process.<p>
+ * Defines methods which can be pluged into the syncronisation process between VFS and "real" FS.<p>
  * 
  * You can implemnt the interface with your own methods and register your class 
  * in the OpenCms
@@ -53,55 +50,45 @@ import java.io.File;
  * Where the "x" in "classx" is a number (1,2,3,...)
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsSyncModification {
 
+    /**
+     * Possibility to modify a resource after it has been imported or updated 
+     * into the VFS.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param vfsRes the resource in the VFS
+     * @param fsFile the resource in the FS
+     * @throws CmsSynchronizeException if something goes wrong
+     */
+    void modifyVfs(CmsObject cms, CmsResource vfsRes, File fsFile) throws CmsSynchronizeException;
 
+    /**
+     * Possibility to modify a resource after it has benn exported or updated 
+     * to the FS.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param vfsRes the resource in the VFS
+     * @param fsFile the resource in the FS
+     * @throws CmsSynchronizeException if something goes wrong		  
+     */
+    void modifyFs(CmsObject cms, CmsResource vfsRes, File fsFile) throws CmsSynchronizeException;
 
-	/**
-	 * Possibility to modify a resource after it has been imported or updated 
-	 * into the VFS.<p>
-	 * 
-	 * @param cms the current CmsObject
-	 * @param vfsRes the resource in the VFS
-	 * @param fsFile the resource in the FS
- 	 * @throws CmsSynchronizeException if something goes wrong
-	 */
-	 void modifyVfs(CmsObject cms, CmsResource vfsRes, File fsFile) 
-	  throws CmsSynchronizeException ;
-	 
-	 /**
-	 * Possibility to modify a resource after it has benn exported or updated 
-	 * to the FS.<p>
-	 * 
-	 * @param cms the current CmsObject
-	 * @param vfsRes the resource in the VFS
-	 * @param fsFile the resource in the FS
- 	 * @throws CmsSynchronizeException if something goes wrong		  
-	 */
-	 void modifyFs(CmsObject cms, CmsResource vfsRes, File fsFile) 
-	  throws CmsSynchronizeException ;
-
-	 
-	 /**
-	 * Translates the resource name.<p>
-	 * 
-	 * This is nescessary since the server FS does allow different naming 
-	 * conventions than the VFS.
-	 * If no special translation is required and the default OpenCms FS-VFS 
-	 * translation should be used,
-	 * null must be returned. 
-	 * 
-	 * @param cms the current CmsObject
-	 * @param resName the resource name to be translated
-	 * @return the translated resource name or null
- 	 * @throws CmsSynchronizeException if something goes wrong			  
-	 */
-	String translate(CmsObject cms,String resName)
-	 throws CmsSynchronizeException;
-	
-		
-
+    /**
+     * Translates the resource name.<p>
+     * 
+     * This is nescessary since the server FS does allow different naming 
+     * conventions than the VFS.
+     * If no special translation is required and the default OpenCms FS-VFS 
+     * translation should be used,
+     * null must be returned. 
+     * 
+     * @param cms the current CmsObject
+     * @param resName the resource name to be translated
+     * @return the translated resource name or null
+     * @throws CmsSynchronizeException if something goes wrong			  
+     */
+    String translate(CmsObject cms, String resName) throws CmsSynchronizeException;
 }
-
