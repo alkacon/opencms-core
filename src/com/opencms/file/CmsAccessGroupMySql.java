@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/24 12:01:40 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/24 12:43:41 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -216,11 +216,16 @@ import com.opencms.core.*;
         Vector groups=new Vector();
         ResultSet res = null;
          try {
-             synchronized (m_statementGetGroupsOfUser) {
+          /*   synchronized (m_statementGetGroupsOfUser) {
                 //  get all all groups of the user
                 m_statementGetGroupsOfUser.setInt(1,userid);
                 res = m_statementGetGroupsOfUser.executeQuery();
-             }
+             }*/
+            Statement s = m_Con.createStatement();			
+			s.setEscapeProcessing(false);	
+			res = s.executeQuery("SELECT GROUPS.* FROM GROUPS,GROUPUSERS WHERE USER_ID = "
+                                 +userid+" AND GROUPS.GROUP_ID = GROUPUSERS.GROUP_ID");
+          
             // create new Vector.
 		    while ( res.next() ) {
                  group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -262,7 +267,6 @@ import com.opencms.core.*;
              } */
             Statement s = m_Con.createStatement();			
 			s.setEscapeProcessing(false);	
-			
 			res = s.executeQuery("SELECT * FROM GROUPS WHERE GROUP_NAME = '"+groupname+"'");
              // create new Cms group object
 			 if(res.next()) {
