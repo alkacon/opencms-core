@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/22 15:57:45 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,6 +63,7 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -713,6 +714,8 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         String mastertemplate = "";
         String bodyname = "";
+        String bodyclass = "";
+        HashMap bodyparams = null;
         
         // get the header file
         CmsFile pagefile = m_cms.readFile(resname);
@@ -733,14 +736,44 @@ public class CmsImportVersion2 extends A_CmsImport {
             mastertemplate = masterTemplateNode.item(0).getFirstChild().getNodeValue();
         }
         
-        // get the <TEMPLATE> node to check the content  .
-        // this node contains the name of the body file.
-        NodeList bodyNode = contentXml.getElementsByTagName("TEMPLATE");
+        // get the <ELEMENTDEF> nodes to check the content.
+        // this node contains the information for the body element.
+        NodeList bodyNode = contentXml.getElementsByTagName("ELEMENTDEF");
         
-        // there is only one <TEMPLATE> allowed
+        // there is only one <ELEMENTDEF> allowed
         if (bodyNode.getLength() == 1) {
-            // get the name of the mastertemplate
-            bodyname = bodyNode.item(0).getFirstChild().getNodeValue();
+            
+            // get the elementdef
+            Node bodyElement = bodyNode.item(0);
+            NodeList nodes = bodyElement.getChildNodes();
+            int i;
+            
+            // get the class of the body template
+            for (i = 0; i < nodes.getLength() && !"CLASS".equals(nodes.item(i).getNodeName()); i++);
+            if (i < nodes.getLength()) {
+                bodyclass = nodes.item(i).getFirstChild().getNodeValue();
+            }
+            
+            // get the name of the body template
+            for (i = 0; i < nodes.getLength() && !"TEMPLATE".equals(nodes.item(i).getNodeName()); i++);
+            if (i < nodes.getLength()) {
+                bodyname = nodes.item(i).getFirstChild().getNodeValue();
+                if (!bodyname.startsWith("/")) {
+                    bodyname = CmsResource.getFolderPath(resname) + bodyname;
+                }
+            }
+            
+            // get body template parameters if defined
+            for (i = 0; i < nodes.getLength(); i++) {
+                if ("PARAMETER".equals(nodes.item(i).getNodeName())) {
+                    Node paramElement = nodes.item(i);
+                    if (bodyparams == null) {
+                        bodyparams = new HashMap();
+                    }
+                    bodyparams.put(paramElement.getAttributes().getNamedItem("name").getNodeValue(), paramElement.getFirstChild().getNodeValue());
+                }
+            }
+            
             // lock the resource, so that it can be manipulated
             m_cms.lockResource(resname);             
             // get all properties                   
@@ -772,6 +805,17 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.writeFile(pagefile);
             // add the template property to the controlfile
             m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, true);
+            // if set, add the bodyclass as property
+            if (bodyclass != null && !"".equals(bodyclass)) {
+                m_cms.writeProperty(resname, "templateclass", bodyclass, true);
+            }
+            // if set, add bodyparams as properties
+            if (bodyparams != null) {
+                for (Iterator p = bodyparams.keySet().iterator(); p.hasNext();) {
+                    String key = (String)p.next();
+                    m_cms.writeProperty(resname, key, (String)bodyparams.get(key), true);
+                }
+            }
             m_cms.writeProperties(resname, properties, true);
             m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
             // done, ulock the resource                   

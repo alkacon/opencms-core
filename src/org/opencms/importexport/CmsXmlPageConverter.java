@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/01/13 14:57:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/22 15:57:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/01/13 14:57:59 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/22 15:57:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -97,16 +97,19 @@ public final class CmsXmlPageConverter {
                         Node n = (Node)i.next();
                         if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
                             contentBuffer.append(n.getText());
+                            continue;
                         } else if (n.getNodeType() == Node.ELEMENT_NODE) {
                             if ("LINK".equals(n.getName())) {
                                 contentBuffer.append(OpenCms.getOpenCmsContext());
                                 contentBuffer.append(n.getText());
-                            } else {
-                               throw new Exception ("Cannot handle element <" + n.getName() + ">"); 
-                            }
-                        } else {
-                            throw new Exception ("Cannot handle nodes of type " + n.getNodeTypeName());
-                        }
+                                continue;
+                            } 
+                        } 
+                        
+                        // ignore other node types
+                        // contentBuffer.append("<!-- ignored: \n");
+                        // contentBuffer.append(n.toString());
+                        // contentBuffer.append("\n//-->");
                     }
                     bodyContent = contentBuffer.toString();
                 }
