@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/02/09 17:01:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/02/14 10:00:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0 beta 2
  */
@@ -386,16 +386,16 @@ public class CmsJspActionElement {
     
     /**
      * Checks if a template part should be used or not, same as using 
-     * the <code>&lt;cms:template part="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:template element="..." /&gt;</code> tag.<p>
      * 
-     * @param part the template part to check 
-     * @return <code>true</code> if the part is active, <code>false</code> otherwise
+     * @param part the template element to check 
+     * @return <code>true</code> if the element is active, <code>false</code> otherwise
      * 
      * @see  com.opencms.flex.jsp.CmsJspTagUser
      */
-    public boolean template(String part) {
+    public boolean template(String element) {
         if (m_notInitialized) return true;        
-        return CmsJspTagTemplate.templateTagAction(part, m_request);
+        return CmsJspTagTemplate.templateTagAction(element, m_request);
     }
     
     /** 
