@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2003/02/09 16:53:17 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/02/13 10:14:50 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -703,7 +703,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * @return The JSP name for the file
      */    
     public static String getJspName(String name) {
-        return name.replace('\\', 'T').replace('/', 'T') + '.' + name.hashCode() + C_JSP_EXTENSION;
+        return name + C_JSP_EXTENSION;
     }
     
     /**
@@ -738,7 +738,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      */
     public static String getJspRepository() {        
         return m_jspRepository;
-    }    
+    } 
     
     /**
      * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
@@ -765,24 +765,31 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     throws IOException, ServletException {
         
         String jspTargetName = getJspName(file.getAbsolutePath());
+
+        // check for inclusion loops
+        if (updates.contains(jspTargetName)) return null;
+        updates.add(jspTargetName);
+
         String jspPath = getJspPath(jspTargetName, req.isOnline());
         
-        File d = new File(jspPath).getParentFile();
-        if (! (d != null) && (d.exists() && d.isDirectory() && d.canRead())) {
+        File d = new File(jspPath).getParentFile();   
+        if ((d == null) || (d.exists() && ! (d.isDirectory() && d.canRead()))) {
             if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) 
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not access directory for " + jspPath);
             throw new ServletException("JspLoader: Could not access directory for " + jspPath);
-        }    
-        
-        if (updates.contains(jspTargetName)) return null;
-        updates.add(jspTargetName);
-        
+        }   
+         
+        if (! d.exists()) {
+            // create directory structure
+            d.mkdirs();    
+        }
+                
         boolean mustUpdate = false;
         
         File f = new File(jspPath);        
         if (!f.exists()) {
             // File does not exist in FS
-            mustUpdate = true;
+            mustUpdate = true;            
         } else if (f.lastModified() <= file.getDateLastModified()) {
             // File in FS is older then file in VFS
             mustUpdate = true;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/01/31 10:01:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/02/13 10:14:50 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.flex.util.CmsFlexLruCache;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.I_CmsFlexLruCacheObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +83,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -325,49 +326,50 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      */
     private synchronized void purgeJspRepository(CmsObject cms) {
         if (!isAdmin(cms) && !cms.getRequestContext().isEventControlled()) return;
-        java.io.File d;
         if (DEBUG > 0) System.err.println("FlexCache.purgeJspRepository() purging JSP repositories!");
+
+        File d;
         d = new java.io.File(com.opencms.flex.CmsJspLoader.getJspRepository() + "online" + java.io.File.separator);
-        if (DEBUG > 0) System.err.println("FlexCache.purgeJspRepository() trying to purge ONLINE repository: " + d);
-        if (d.canRead() && d.isDirectory()) {
-            java.io.File files[] = d.listFiles();
-            if (DEBUG > 0) System.err.println("FlexCache.purgeJspRepository() Files in ONLINE repository = " + files.length);
-            for (int i = 0; i<files.length; i++) {
-                java.io.File f = files[i];
-                if (f.canWrite()) {
-                    f.delete();
-                } else if (DEBUG > 0) {
-                    System.err.println("FlexCache.purgeJspRepository() could not delete file = " + f);
-                }
-            }
-        } else if (DEBUG > 0) {
-            System.err.println("FlexCache.purgeJspRepository() could not access ONLINE repository: " + d);
-            System.err.println("FlexCache.purgeJspRepository() d.isDirectory() = " + d.canWrite());
-            System.err.println("FlexCache.purgeJspRepository() d.canRead() = " + d.canRead());
-            
-        }
+        purgeDirectory(d);
+
         d = new java.io.File(com.opencms.flex.CmsJspLoader.getJspRepository() + "offline" + java.io.File.separator);
-        if (DEBUG > 1) System.err.println("FlexCache.purgeJspRepository() trying to purge OFFLINE repository: " + d);
-        if (d.canRead() && d.isDirectory()) {
-            java.io.File files[] = d.listFiles();
-            if (DEBUG > 0) System.err.println("FlexCache.purgeJspRepository() Files in OFFLINE repository = " + files.length);
-            for (int i = 0; i<files.length; i++) {
-                java.io.File f = files[i];
-                if (f.canWrite()) {
-                    f.delete();
-                } else if (DEBUG > 0) {
-                    System.err.println("FlexCache.purgeJspRepository() could not delete file = " + f);
-                }
-            }
-        } else if (DEBUG > 0) {
-            System.err.println("FlexCache.purgeJspRepository() could not access OFFLINE repository: " + d);
-            System.err.println("FlexCache.purgeJspRepository() d.isDirectory() = " + d.canWrite());
-            System.err.println("FlexCache.purgeJspRepository() d.canRead() = " + d.canRead());
-            
-        }
+        purgeDirectory(d);
+         
         clear();
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "JSP repository purged - purgeJspRepository() called");
+    }
+    
+    /**
+     * Deletes a directory in the file system and all subfolders of the directory.<p>
+     * 
+     * @param d the directory to delete
+     */
+    private void purgeDirectory(File d) {
+        if (d.canRead() && d.isDirectory()) {
+            java.io.File files[] = d.listFiles();
+            if (DEBUG > 0) {
+                System.err.println("FlexCache.purgeDirectory() Deleting directory = " + d.getAbsolutePath());
+                System.err.println("FlexCache.purgeDirectory() Files in directory = " + files.length);
+            }                 
+            for (int i = 0; i<files.length; i++) {
+                File f = files[i];
+                if (f.isDirectory()) {
+                    purgeDirectory(f);
+                }
+                if (f.canWrite()) {
+                    f.delete();
+                } else if (DEBUG > 0) {
+                    System.err.println("FlexCache.purgeDirectory() could not delete file = " + f);
+                }
+            }
+        } else if (DEBUG > 0) {
+            System.err.println("FlexCache.purgeDirectory() could not access directory: " + d);
+            System.err.println("FlexCache.purgeDirectory() d.canWrite() = " + d.canWrite());
+            System.err.println("FlexCache.purgeDirectory() d.canWrite() = " + d.canWrite());
+            System.err.println("FlexCache.purgeDirectory() d.isDirectory() = " + d.isDirectory());
+            
+        }        
     }
     
     /**
@@ -802,7 +804,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.11 $ 
+     * @version $Revision: 1.12 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

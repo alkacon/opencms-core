@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/12 17:20:55 $
- * Version: $Revision: 1.452 $
+ * Date   : $Date: 2003/02/13 10:14:50 $
+ * Version: $Revision: 1.453 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 5.0 (next version)
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- JSP are now stored with real path names in the jsp/ subdirectory  
 - When exporting a module the modules "uploadeddate" and "uploadedby" registry information is discarded
 - Added global method getOpenCmsContext() in com.opencms.core.A_OpenCms for universal access to the 
   servlet context and servlet name
