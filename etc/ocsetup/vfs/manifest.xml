@@ -4153,6 +4153,48 @@
             <properties/>
         </file>
         <file>
+            <destination>system/workplace/administration/database/exportmodules</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.exportmoduledata]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_export]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[1]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/database/exportmodules/administration_content_moduledata_export</source>
+            <destination>system/workplace/administration/database/exportmodules/administration_content_moduledata_export</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/database/exportmodules/index.html</source>
+            <destination>system/workplace/administration/database/exportmodules/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <destination>system/workplace/administration/database/import</destination>
             <type>folder</type>
             <user>Admin</user>
