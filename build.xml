@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property environment="env"/>
+    <!-- property environment="env"/ -->
 
     <!-- The version-number ${version.number} is automatically set to the
     current date and time. For official builds this should be set to a proper
     value at the commandline.
-    Set it like this: ant all -Dversion.number=4.3.28 -->
+    Set it like this: ant all -Dversion.number=4.3.28     
+    You can also uncomment the line below. -->
+    <property name="version.number"             value="5.0_beta_1"/>    
 
-    <property name="version.name"               value="Ecaz"/>
+    <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
     <property name="zip.home"                   value="../zip"/>
     <property name="pdf.home"                   value="../pdf"/>
-    <property name="build.home"                 value="./build"/>
+    <property name="build.home"                 value="../build"/>
     
     <property name="build.classes"              value="${build.home}/classes"/>
     <property name="build.inputlib"             value="../ExternalComponents"/>
@@ -20,17 +22,18 @@
     <property name="build.webinf"               value="${build.web}/WEB-INF"/>
     <property name="build.metainf"              value="${build.web}/META-INF"/>
     <property name="build.lib"                  value="${build.webinf}/lib"/>
+    <property name="build.local"                value="$../local"/>
     <property name="build.excludes"             value=""/>
 
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
     <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
     <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
     <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces-1_4_4.jar"/>
-    <property name="build.inputlib.mysql"       value="${build.inputlib}/mm.mysql-2.0.4-bin.jar"/>
+    <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql-connector-java-2_0_14-bin.jar"/>
     <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>            
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>     
-    <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2.0.6.jar"/>
+    <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
     
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
@@ -160,26 +163,35 @@ ${build.inputlib.tidy}
 
     <target name="copy" depends="jar" description="Creates WAR file structure and copies needed files to it">
        <copy todir="${build.home}">
-            <fileset dir="." includes="*.*" excludes="build.xml"/>
+            <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,**/.nbattrs*"/>
        </copy>
 
-       <copy file="${build.inputlib.xerces}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.mysql}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.activation}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.mail}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.fesi}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.oro}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.tidy}" todir="${build.lib}"/>
+        <copy todir="${build.lib}">
+            <fileset dir="${build.inputlib}">
+                <include name="**/*.jar"/>
+                <include name="**/*.zip"/>
+                <exclude name="servlet.jar"/>
+                <exclude name="classes12.zip"/>
+            </fileset>
+        </copy>
 
        <copy todir="${build.webinf}">
-            <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF"/>
+            <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF,**/.nbattrs"/>
        </copy>
 
        <copy file="etc/MANIFEST.MF" todir="${build.metainf}"/>
 
        <copy todir="${build.web}">
-            <fileset dir="web" excludes="*/CVS/*"/>
+            <fileset dir="web" excludes="*/CVS/*,**/.nbattrs"/>
        </copy>
+       
+       <touch>
+            <fileset dir="${build.local}"/>
+       </touch>
+       
+       <copy todir="${build.web}">
+            <fileset dir="${build.local}" excludes="*/CVS/*,**/.nbattrs"/>
+       </copy>       
 
        <!-- create version-info for the workplace-->
        <echo file="${build.version.jsfile}">var version = '${version.number} ${version.name}';</echo>
