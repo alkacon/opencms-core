@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.152 $
+* Date   : $Date: 2001/09/06 13:15:58 $
+* Version: $Revision: 1.153 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.152 $ $Date: 2001/07/31 15:50:14 $
+ * @version $Revision: 1.153 $ $Date: 2001/09/06 13:15:58 $
  *
  */
 
@@ -618,6 +618,19 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
          throws CmsException;
     // Methods working with properties and propertydefinitions
 
+    /**
+     * Creates a project for the temporary files.
+     *
+     * <B>Security</B>
+     * Only the users which are in the admin or projectleader-group are granted.
+     *
+     * Changed: added the project type
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @exception CmsException Throws CmsException if something goes wrong.
+     * @author Edna Falkenhan
+     */
+    public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject) throws CmsException;
 
     /**
      * Creates the propertydefinition for the resource type.<BR/>
