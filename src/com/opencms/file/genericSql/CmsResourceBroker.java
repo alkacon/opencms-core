@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/09 21:38:10 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2000/10/10 08:18:37 $
+ * Version: $Revision: 1.158 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.157 $ $Date: 2000/10/09 21:38:10 $
+ * @version $Revision: 1.158 $ $Date: 2000/10/10 08:18:37 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1707,44 +1707,78 @@ public CmsLanguage createLanguage(CmsUser currentUser, CmsProject currentProject
 		throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_ACCESS);
 	}
 }
-	/**
-	 * Creates a project.
-	 * 
-	 * <B>Security</B>
-	 * Only the users which are in the admin or projectleader-group are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to read.
-	 * @param description The description for the new project.
-	 * @param group the group to be set.
-	 * @param managergroup the managergroup to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
-									 String name, String description, 
-									 String groupname, String managergroupname)
-		 throws CmsException {
+/**
+ * Creates a project.
+ * 
+ * <B>Security</B>
+ * Only the users which are in the admin or projectleader-group are granted.
+ *
+ * Changed by MLA: creates a project with the online project for the site as parent
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The name of the project to read.
+ * @param description The description for the new project.
+ * @param group the group to be set.
+ * @param managergroup the managergroup to be set.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname) throws CmsException
+{
+	return createProject(currentUser, currentProject, name, description, groupname, managergroupname, onlineProject(currentUser, currentProject).getId());
+	/*
+	if (isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject))
+	{
 
-		 if( isAdmin(currentUser, currentProject) || 
-			 isProjectManager(currentUser, currentProject)) {
-			 
-			 // read the needed groups from the cms
-			 CmsGroup group = readGroup(currentUser, currentProject, groupname);
-			 CmsGroup managergroup = readGroup(currentUser, currentProject, 
-											   managergroupname);
-			 
-			 // create a new task for the project
-			 CmsTask task=createProject(currentUser,name,1,group.getName(),
-										System.currentTimeMillis(),C_TASK_PRIORITY_NORMAL);
-			 
-			 return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, C_PROJECT_TYPE_NORMAL, onlineProject(currentUser, currentProject).getId());
-		} else {
-			 throw new CmsException("[" + this.getClass().getName() + "] " + name,
-				 CmsException.C_NO_ACCESS);
-		}
-	 }
+		// read the needed groups from the cms
+		CmsGroup group = readGroup(currentUser, currentProject, groupname);
+		CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
+
+		// create a new task for the project
+		CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
+		return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, C_PROJECT_TYPE_NORMAL, onlineProject(currentUser, currentProject).getId());
+	}
+	else
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+	}*/
+}
+/**
+ * Creates a project.
+ * 
+ * <B>Security</B>
+ * Only the users which are in the admin or projectleader-group are granted.
+ *
+ * Changed: added the parent id
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The name of the project to read.
+ * @param description The description for the new project.
+ * @param group the group to be set.
+ * @param managergroup the managergroup to be set.
+ * @param parentId the parent project
+ * @exception CmsException Throws CmsException if something goes wrong.
+ * @author Martin Langelund
+ */
+public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int parentId) throws CmsException
+{
+	if (isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject))
+	{
+
+		// read the needed groups from the cms
+		CmsGroup group = readGroup(currentUser, currentProject, groupname);
+		CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
+
+		// create a new task for the project
+		CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
+		return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, C_PROJECT_TYPE_NORMAL, parentId);
+	}
+	else
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+	}
+}
 	// Methods working with Tasks
 
 	/**

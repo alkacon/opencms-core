@@ -279,6 +279,27 @@ public Integer getManagerGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector n
 	return new Integer(retValue);
 }
 /**
+ * Insert the method's description here.
+ * Creation date: (10-10-2000 09:48:04)
+ * @return java.lang.Integer
+ * @param cms com.opencms.file.CmsObject
+ * @param lang com.opencms.workplace.CmsXmlLanguageFile
+ * @param names java.util.Vector
+ * @param values java.util.Vector
+ * @param parameters java.util.Hashtable
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Integer getSites(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws com.opencms.core.CmsException
+{
+	Vector sites = cms.getAllSites();
+	for (int z = 0; z < sites.size(); z++)
+	{
+		names.addElement(((CmsSite) sites.elementAt(z)).getName());
+		values.addElement(new String("" + ((CmsSite) sites.elementAt(z)).getId()));
+	}
+	return new Integer(0);
+}
+/**
  * Indicates if the results of this class are cacheable.
  * 
  * @param cms CmsObject Object for accessing system resources

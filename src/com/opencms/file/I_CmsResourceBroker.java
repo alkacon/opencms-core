@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/09 14:20:18 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2000/10/10 08:18:37 $
+ * Version: $Revision: 1.126 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.125 $ $Date: 2000/10/09 14:20:18 $
+ * @version $Revision: 1.126 $ $Date: 2000/10/10 08:18:37 $
  * 
  */
 
@@ -636,6 +636,24 @@ public CmsLanguage createLanguage(CmsUser currentUser, CmsProject currentProject
 									   String name, String description, String group,
 									   String managergroupname)
 		 throws CmsException;
+/**
+ * Creates a project.
+ * 
+ * <B>Security</B>
+ * Only the users which are in the admin or projectleader-group are granted.
+ *
+ * Changed: added the parent id
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The name of the project to read.
+ * @param description The description for the new project.
+ * @param group the group to be set.
+ * @param managergroup the managergroup to be set.
+ * @param parentId the parent project
+ * @exception CmsException Throws CmsException if something goes wrong.
+ * @author Martin Langelund
+ */
+public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int parentId) throws com.opencms.core.CmsException;
 	// Methods working with Tasks
 
 	/**
