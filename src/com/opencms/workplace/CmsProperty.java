@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/09/25 15:43:41 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2001/01/15 10:03:20 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/09/25 15:43:41 $
+ * @version $Revision: 1.20 $ $Date: 2001/01/15 10:03:20 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -101,11 +101,9 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 							 Hashtable parameters, String templateSelector)
 		throws CmsException {
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-		
 		// the template to be displayed
 		String template=null;
- 		
-		// clear session values on first load
+   		// clear session values on first load
 		String initial=(String)parameters.get(C_PARA_INITIAL);
 		if (initial!= null) {
 			// remove all session values
@@ -229,11 +227,9 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 			if (newpropertydef.equals("true")) {
 				 String newValue=(String)parameters.get("NEWPROPERTYDEF");
 				 if (newValue != null) {
-					// test if this property is already existing
-					String testValue=cms.readProperty(filename,propertydef);
-					if (testValue == null) {
-						// add the property   
-						CmsResourceType type=cms.getResourceType(file.getType());
+					// try to add the property   
+					CmsResourceType type=cms.getResourceType(file.getType());
+					try{
 						CmsPropertydefinition def=cms.createPropertydefinition(newValue,
 																		  type.getResourceName(),
 																		  C_PROPERTYDEF_TYPE_NORMAL);
@@ -241,7 +237,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 						template="ownlocked";    
 						//session.removeValue(C_PARA_FILE);
 						//session.removeValue(C_PARA_PROPERTYDEF);
-					} else {
+					} catch(CmsException e) {
 						// todo: add an error message that this key is already exisitng
 					}
 					 
@@ -267,7 +263,6 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 		xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		xmlTemplateDocument.setData("FILENAME",file.getName());
 		xmlTemplateDocument.setData("lasturl", lasturl);
-
 		// process the selected template 
 		return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
 	}
