@@ -5,6 +5,7 @@
 		<sitemanagement>
 			<label>
 				<createnewsite>Create new site</createnewsite>
+				<editsite>Edit site</editsite>
 				<sitename>Site name</sitename>
 				<domainname>Domain name</domainname>
 				<domain>Domain</domain>
@@ -13,8 +14,7 @@
 				
 			</label>
 			<error>
-				<title>
-			
+				<title>		
 					<newsite>New site</newsite>
 					<editsite>Edit site</editsite>
 	
@@ -22,16 +22,19 @@
 				
 				<message>
 					<newsite>Sorry, the new site could not be created.</newsite>
+					<editsite>Sorry, the site could not be changed.</editsite>
 					<datamissing>Sorry, the new site could not be created.</datamissing>
 				</message>
 				
 				<reason>
 					<newsite>The entered data is invalid.</newsite>				
+					<editsite>The entered data is invalid.</editsite>				
 					<datamissing>The fields need to be filled out</datamissing>				
 				</reason>
 				
 				<suggestion>
 					<newsite>Please check the entered data or contact your system administrator.</newsite>								
+					<editsite>Please check the entered data or contact your system administrator.</editsite>
 				</suggestion>
 			</error>
 		</sitemanagement>
