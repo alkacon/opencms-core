@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/08 14:08:27 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/11 13:06:14 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/08/08 14:08:27 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/11 13:06:14 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1581,7 +1581,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				CmsException.C_NO_ACCESS);
 		}
 
-	 } 
+	 }
 	/**
 	 * Creates a new folder.
 	 * If some mandatory propertydefinitions for the resourcetype are missing, a 
@@ -1698,7 +1698,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + name,
 				 CmsException.C_NO_ACCESS);
 		}
-	 } 
+	 }
 	// Methods working with Tasks
 
 	/**
@@ -2298,15 +2298,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser user who requestd themethod
 	 * @param currentProject current project of the user
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
-	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param exportPaths the name (absolute Path) of folders from which should be exported
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
-			new CmsExport(exportFile, exportPath, cms);
+			new CmsExport(exportFile, exportPaths, cms);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
 				 CmsException.C_NO_ACCESS);
@@ -2321,16 +2321,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser user who requestd themethod
 	 * @param currentProject current project of the user
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
-	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param exportPaths the names (absolute Path) of folders from which should be exported
 	 * @param includeSystem, desides if to include the system resources to the export.
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
-			new CmsExport(exportFile, exportPath, cms, includeSystem);
+			new CmsExport(exportFile, exportPaths, cms, includeSystem);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
 				 CmsException.C_NO_ACCESS);
@@ -2425,7 +2425,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		// return the vector of projects
 		return(projects);
-	 } 
+	 }
 	/**
 	 * Returns all projects, which are owned by the user or which are manageable
 	 * for the group of the user.
@@ -2473,7 +2473,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		projects.removeElement(onlineProject(currentUser, currentProject));
 		// return the vector of projects
 		return(projects);
-	 } 
+	 }
 	/**
 	 * Gets all CmsMountPoints. 
 	 * All mountpoints will be returned.
@@ -2937,8 +2937,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		   
 	   // try to get the folders in the current project
 	   try {
-			folders = helperGetSubFolders(currentUser, currentProject, foldername);
-			System.err.println("1 " + folders.size());
+			folders = helperGetSubFolders(currentUser, currentProject, foldername); 
 		} catch (CmsException exc) {
 			// no folders, ignoring them
 		}
@@ -2950,11 +2949,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				Vector onlineFolders = 
 					helperGetSubFolders(currentUser, 
 										onlineProject(currentUser, currentProject), 
-										foldername);
-				System.err.println("2 " + onlineFolders.size());
+										foldername); 
 			   	// merge the resources
-				folders = mergeResources(folders, onlineFolders);
-				System.err.println("3 " + folders.size());
+				folders = mergeResources(folders, onlineFolders); 
 			} catch(CmsException exc) {
 				// no onlinefolders, ignoring them
 			}			
@@ -3762,7 +3759,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_ACCESS_DENIED);
 		}
-	 } 
+	 }
 	/**
 	 * Returns a list of all propertyinformations of a file or folder.
 	 * 
@@ -3947,7 +3944,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw exc;
 		 }
 		 
-	 } 
+	 }
 	//  Methods working with resources
 	
 	/**
@@ -3997,7 +3994,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_ACCESS_DENIED);
 		}
-	 } 
+	 }
 	/**
 	 * Gets the known file extensions (=suffixes) 
 	 * 
@@ -4061,7 +4058,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + id, 
 				 CmsException.C_ACCESS_DENIED);
 		}
-	 } 
+	 }
 	 /**
 	 * Reads a file header a previous project of the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
@@ -4109,7 +4106,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 throw exc;
 		 }
 
-	 } 
+	 }
 	 /**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
@@ -4172,7 +4169,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_ACCESS_DENIED);
 		}
-	 } 
+	 }
 	/**
 	 * Reads all file headers for a project from the Cms.<BR/>
 	 * 
@@ -4628,7 +4625,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 m_projectCache.put(id,project);
 		 } 
 		 return project;
-	 } 
+	 }
 	 /**
 	 * Reads a project from the Cms.
 	 * 
@@ -4645,7 +4642,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								   CmsResource res)
 		 throws CmsException {
  		 return readProject(currentUser, currentProject, res.getProjectId());
-	 } 
+	 }
 	/**
 	 * Reads a project from the Cms.
 	 * 
@@ -4666,7 +4663,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 task = readTask(currentUser, currentProject, task.getParent());
 		 }
 		 return m_dbAccess.readProject(task);
-	 } 
+	 }
 	/**
 	 * Reads log entries for a project.
 	 * 
