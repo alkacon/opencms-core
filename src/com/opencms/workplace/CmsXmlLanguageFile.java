@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/09/10 07:20:04 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.47 $ $Date: 2003/09/10 07:20:04 $
  */
 import org.opencms.main.OpenCms;
 
@@ -145,12 +145,7 @@ public class CmsXmlLanguageFile {
      */
     private synchronized Set collectModuleMessages(CmsObject cms, String locale) {
         HashSet bundles = new HashSet();
-        Enumeration en = null;
-        try {
-            en = cms.getRegistry().getModuleNames();
-        } catch (CmsException e) {
-            // no bundles will be read in this case, this is o.k.
-        }
+        Enumeration en = cms.getRegistry().getModuleNames();
         if (en != null) {
             while (en.hasMoreElements()) {
                 String bundleName = ((String)en.nextElement()) + ".workplace";

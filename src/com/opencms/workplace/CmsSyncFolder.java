@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/09/10 07:20:04 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.24 $ $Date: 2003/09/05 12:22:25 $
+ * @version $Revision: 1.25 $ $Date: 2003/09/10 07:20:04 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -206,7 +206,6 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                     }
                     // start the thread for: synchronize the resources
                     A_CmsReportThread doSyncFolder = new CmsSynchronizeThread(cms, synchronizeResources, m_newProject);
-                    doSyncFolder.start();
                     session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
                     xmlTemplateDocument.setData("time", "5");
                     templateSelector = "wait";

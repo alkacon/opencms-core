@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -301,15 +301,11 @@ public class CmsFrameset extends CmsWorkplace {
         // get the Vector of available views from the Registry, but only once
         if (m_viewLinks == null) {
             synchronized (this) {
-                try {
-                    Vector viewNames = new Vector();
-                    Vector viewLinks = new Vector();
-                    getCms().getRegistry().getViews(viewNames, viewLinks);
-                    m_viewNames = viewNames;
-                    m_viewLinks = viewLinks;
-                } catch (CmsException e) {
-                    // should not happen
-                }
+                Vector viewNames = new Vector();
+                Vector viewLinks = new Vector();
+                getCms().getRegistry().getViews(viewNames, viewLinks);
+                m_viewNames = viewNames;
+                m_viewLinks = viewLinks;
             }
         }
 
@@ -390,11 +386,7 @@ public class CmsFrameset extends CmsWorkplace {
      * @return true if the user has enabled synchronization
      */
     public boolean isSyncEnabled() {
-        try {
-            return null != getCms().getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PROJECT);
-        } catch (CmsException e) {
-            return false;
-        }     
+        return null != getCms().getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PROJECT);
     }
 
     /**

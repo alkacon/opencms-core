@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsProject implements Cloneable {
 
@@ -153,15 +153,36 @@ public class CmsProject implements Cloneable {
      * 
      * @param projectResources a List of project resources as Strings
      * @param resource the resource to check
-     * @return true, if the resour is "inside" the project resources
+     * @return true, if the resource is "inside" the project resources
      */
     public static boolean isInsideProject(List projectResources, CmsResource resource) {
+        String resourcename = resource.getFullResourceName();        
+        return isInsideProject(projectResources, resourcename);
+    }
+    
+    /**
+     * Checks if the full resource name (including the site root) of a resource matches
+     * any of the project resources of a project.<p>
+     * 
+     * @param projectResources a List of project resources as Strings
+     * @param resourcename the resource to check
+     * @return true, if the resource is "inside" the project resources
+     */    
+    public static boolean isInsideProject(List projectResources, String resourcename) {
         Iterator i = projectResources.iterator();  
-        String resourcename = resource.getFullResourceName();
         while (i.hasNext()) {
-            if (resourcename.startsWith((String)i.next())) {
-                return true;
-            }
+            String projectResource = (String)i.next();
+            if (CmsResource.isFolder(projectResource)) {
+                if (resourcename.startsWith(projectResource)) {
+                    // folder - check only the prefix
+                    return true;
+                }
+            } else {
+                if (resourcename.equals(projectResource)) {
+                    // file - check the full path
+                    return true;
+                }
+            }            
         }    
         return false;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/09 14:47:05 $
-* Version: $Revision: 1.399 $
+* Date   : $Date: 2003/09/10 07:20:04 $
+* Version: $Revision: 1.400 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.399 $
+ * @version $Revision: 1.400 $
  */
 public class CmsObject {
 
@@ -2062,14 +2062,12 @@ public class CmsObject {
     }
 
     /**
-     * Gets the Registry.
+     * Returns the current OpenCms registry.<p>
      *
-     *
-     * @throws CmsException if access is not allowed.
+     * @return the current OpenCms registry
      */
-
-    public CmsRegistry getRegistry() throws CmsException {
-        return (m_driverManager.getRegistry(this));
+    public CmsRegistry getRegistry() {
+        return m_driverManager.getRegistry(this);
     }
 
     /**
@@ -4025,14 +4023,13 @@ public class CmsObject {
     /**
      * Synchronize cms-resources on virtual filesystem with the server filesystem.
      *
-     * @param syncFile the name (absolute Path) of the resource that should be synchronized.
-     * @param syncPath the name of path on server filesystem where the resource should be synchronized.
+     * @param resourceName the name (absolute Path) of the resource that should be synchronized
+     * @param report the report to write the output to
      *
      * @throws CmsException if operation was not successful.
      */
-    public void syncFolder(String resourceName) throws CmsException {
-        // synchronize the resources  
-        new CmsSynchronize(this, resourceName);
+    public void syncFolder(String resourceName, I_CmsReport report) throws CmsException {
+        new CmsSynchronize(this, resourceName, report);
     }
 
 

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/01 13:20:42 $
- * Version: $Revision: 1.10 $
- * Date   : $Date: 2003/09/01 13:20:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@
 package org.opencms.synchronize;
 
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -62,68 +63,47 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/09/01 13:20:42 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/10 07:20:04 $
  */
 public class CmsSynchronize {
 
-    /**
-     * flag to export a resource form the VFS to the FS
-     */
+    /** Flag to export a resource form the VFS to the FS */
     static final int C_EXPORT_VFS = 1;
 
-    /**
-     * flag to import a resource form the FS to the VFS
-     */
+    /** Flag to import a resource form the FS to the VFS */
     static final int C_UPDATE_VFS = 2;
 
-    /**
-     * flag to import a delete a resource in the VFS
-     */
+    /** Flag to import a delete a resource in the VFS */
     static final int C_DELETE_VFS = 3;
 
-    /**
-     * filname of the synclist file on the server FS
-     */
+    /** Filname of the synclist file on the server FS */
     static final String C_SYNCLIST_FILENAME = "#synclist.txt";
 
-    /**
-     * the path in the server FS where the resources have to be synchronized
-     */
+    /** The path in the server FS where the resources have to be synchronized */
     private String m_synchronizePath = null;
 
-    /**
-     * the path in the VFS where the resources have to be synchronized
-     */
+    /** The path in the VFS where the resources have to be synchronized */
     private String m_resourcePath = null;
 
-    /**
-     * the CmsObject
-     */
+    /** The CmsObject */
     private CmsObject m_cms;
+    
+    /** The rport to write the output to */
+    private I_CmsReport m_report;
 
-    /** 
-     * hashmap for the synchroisation list of the last sync process
-     */
+    /** Hashmap for the synchroisation list of the last sync process */
     private HashMap m_syncList;
 
-    /** 
-     * hashmap for the new synchroisation list of the current sync process
-     */
+    /** Hashmap for the new synchroisation list of the current sync process */
     private HashMap m_newSyncList;
 
-    /** 
-     * hashmap for the error listcurrent sync process
-     */
+    /** Hashmap for the error listcurrent sync process */
     private HashMap m_errorList;
 
-    /**
-     * list to store all file modifiaction interface implementations
-     */
+    /** List to store all file modifiaction interface implementations */
     private static List m_synchronizeModifications;
     
-    /**
-     * counter for logging
-     */
+    /** Counter for logging */
     private int m_count;
 
     /**
@@ -132,11 +112,13 @@ public class CmsSynchronize {
      *
      * @param cms the current CmsObject
      * @param resourcePath the folder of the VFS to synchronize
+     * @param report the report to write the output to
      * @throws CmsException if something goes wrong
      */
-    public CmsSynchronize(CmsObject cms, String resourcePath) throws CmsException {
+    public CmsSynchronize(CmsObject cms, String resourcePath, I_CmsReport report) throws CmsException {
         m_cms = cms;
-        m_count=0;
+        m_report = report;
+        m_count = 0;
         // test if the list of all file modifiaction interface implementations
         // has to be generatetd. 
         // This has only made once.
@@ -938,17 +920,18 @@ public class CmsSynchronize {
             } catch (IOException e) { }
         }
     }
-    
-    
+        
     /**
      * Writes some data to the logging channel.
      * 
      * @param logdata data to write on the on logonh channel
      */
     private void log(String logdata) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STREAMING))
-        
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STREAMING, "["+ m_count++ +"]"+logdata);
+        /*
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STREAMING))        
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STREAMING, "["+ m_count++ +"] " + logdata);
+        */
+        m_report.println("( "+ m_count++ +" ) " + logdata);
     }
     
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/09 14:47:05 $
- * Version: $Revision: 1.202 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.203 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.202 $ $Date: 2003/09/09 14:47:05 $
+ * @version $Revision: 1.203 $ $Date: 2003/09/10 07:20:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3490,14 +3490,12 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Gets the Registry.<BR/>
+     * Returns the current OpenCms registry.<p>
      *
-     *
-     * @param context the current request context
-     * @param cms The actual CmsObject
-     * @throws Throws CmsException if access is not allowed.
+     * @param cms the current OpenCms context object
+     * @return the current OpenCms registry
      */
-    public CmsRegistry getRegistry(CmsObject cms) throws CmsException {
+    public CmsRegistry getRegistry(CmsObject cms) {
         return m_registry.clone(cms);
     }
 
@@ -4333,15 +4331,7 @@ public class CmsDriverManager extends Object {
      * @return boolean If true the history is enabled
      */
     public boolean isHistoryEnabled(CmsObject cms) {
-        
-        try {
-            return cms.getRegistry().getBackupEnabled();
-        } catch (CmsException e) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not get registry value for " + I_CmsConstants.C_REGISTRY_HISTORY + "." + I_CmsConstants.C_REGISTRY_HISTORY_ENABLE);
-            }
-            return false;
-        }
+        return cms.getRegistry().getBackupEnabled();
     }
 
     /**

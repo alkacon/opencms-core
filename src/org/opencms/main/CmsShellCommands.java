@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/09 14:47:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2003/09/09 14:47:05 $ 
+ * @version $Revision: 1.12 $ $Date: 2003/09/10 07:20:04 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -3208,7 +3208,7 @@ class CmsShellCommands {
     public void syncFolder(String resourceName) {
         // synchronize the resources
         try {
-            m_cms.syncFolder(resourceName);
+            m_cms.syncFolder(resourceName, new CmsShellReport());
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

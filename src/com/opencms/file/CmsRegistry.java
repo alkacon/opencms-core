@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/09 09:13:07 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.94 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.94 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -769,9 +769,8 @@ public class CmsRegistry extends A_CmsXmlContent {
       * This method gets the backup enalbe state.<p>
       *
       * @return true or false
-      * @throws CmsException if something goes wrong
       */
-    public boolean getBackupEnabled() throws CmsException {    
+    public boolean getBackupEnabled() {    
         boolean enable;
         Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
         String value = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_ENABLE));
@@ -1680,7 +1679,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                 if (c == null)
                     value = null;
                 else {
-                    value = (String)c.getNodeValue();
+                    value = c.getNodeValue();
                     if (value == null)
                         value = getSubNodeValues((Element)n, "");
                 }

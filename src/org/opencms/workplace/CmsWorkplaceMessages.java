@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace;
 import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsMessages;
@@ -53,7 +52,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -135,12 +134,7 @@ public class CmsWorkplaceMessages {
      */
     private synchronized Set collectModuleMessages(CmsObject cms, String locale) {
         HashSet bundles = new HashSet();
-        Enumeration en = null;
-        try {
-            en = cms.getRegistry().getModuleNames();
-        } catch (CmsException e) {
-            // no bundles will be read in this case, this is o.k.
-        }
+        Enumeration en = cms.getRegistry().getModuleNames();
         if (en != null) {
             while (en.hasMoreElements()) {
                 String bundleName = ((String)en.nextElement()) + ".workplace";

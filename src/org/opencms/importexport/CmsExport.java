@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2003/09/05 12:22:25 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/10 07:20:04 $
  */
 public class CmsExport implements Serializable {
 
@@ -509,7 +509,7 @@ public class CmsExport implements Serializable {
      * @param folderNames contains the full pathnames of all folders
      * @param fileNames contains the full pathnames of all files
      */
-    private void checkRedundancies(Vector folderNames, Vector fileNames) {
+    public static void checkRedundancies(Vector folderNames, Vector fileNames) {
         int i, j;
         if (folderNames == null) {
             return;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2003/09/07 20:18:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/10 07:20:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,27 +45,29 @@ import java.util.Vector;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.10
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
 
     private Throwable m_error;
-    private Vector m_folders;
+    private Vector m_resources;
     private boolean m_newProject;
 
     /**
      * Creates the synchronize Thread.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param folders the VFS folders to include in the synchronization
+     * @param resources the VFS resources to include in the synchronization
      * @param newProject if true, a new project will be created for the synchronization
      * @param session
      */
-    public CmsSynchronizeThread(CmsObject cms, Vector folders, boolean newProject) {
+    public CmsSynchronizeThread(CmsObject cms, Vector resources, boolean newProject) {
         super(cms, "OpenCms: Synchronizing foldes in project " + cms.getRequestContext().currentProject().getName());
-        m_folders = folders;
+        m_resources = resources;
         m_newProject = newProject;
+        initHtmlReport();
+        start();
     }
     
     /**
@@ -79,7 +81,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
-        return "";
+        return getReport().getReportUpdate();
     }
 
     /**
@@ -88,15 +90,14 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     public void run() {
         try {
             // synchronize the resource
-            for (int i = 0; i < m_folders.size(); i++) {
+            for (int i = 0; i < m_resources.size(); i++) {
                 // if a new project was created for synchronisation, copy the resource to the project
                 if (m_newProject) {
-                    getCms().copyResourceToProject((String)m_folders.elementAt(i));
+                    getCms().copyResourceToProject((String)m_resources.elementAt(i));
                 }
-                getCms().syncFolder((String)m_folders.elementAt(i));
+                getCms().syncFolder((String)m_resources.elementAt(i), getReport());
             }
         } catch (CmsException e) {
-            // m_session.putValue(I_CmsConstants.C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             m_error = e;
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
