@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/10/06 10:35:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/10/06 14:20:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,22 +33,13 @@ package org.opencms.importexport;
 
 import org.opencms.loader.CmsPageLoader;
 import org.opencms.main.OpenCms;
-
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeCompatiblePlain;
-import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.CmsResourceTypeNewPage;
-import com.opencms.file.CmsResourceTypePage;
-import com.opencms.file.CmsResourceTypePlain;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.*;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlXercesParser;
 import com.opencms.util.LinkSubstitution;
@@ -151,7 +142,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_folderStorage = new LinkedList();
         m_pageStorage = new ArrayList();
         m_importedPages = new Vector();   
-        
+        m_linkStorage = new HashMap();
+        m_linkPropertyStorage = new HashMap();
         
         try {
             // first import the user information
@@ -161,6 +153,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             // now import the VFS resources
             importAllResources(excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
+            convertPointerToLinks();
         } catch (CmsException e) {
             throw e;
         }
@@ -413,8 +406,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                     } else {
                         // resource import failed, since no CmsResource was created
-                        m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                        m_report.println(translatedName);
+                        m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_OK);
                     }
                 } else {
                     // skip the file import, just print out the information to the report
@@ -586,16 +578,27 @@ public class CmsImportVersion2 extends A_CmsImport {
                                                   curUser,
                                                   lastmodified, curUser, size,
                                                   1);
-             // import this resource in the VFS     
+            
+             if (resType==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
+                 // store links for later conversion
+                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
+                 m_linkStorage.put(m_importPath + destination, new String(content));
+                 m_linkPropertyStorage.put(m_importPath + destination, properties);
+                 res = resource;
+             } else {                                                     
+                                                  
+                 //  import this resource in the VFS     
                      
-             res = m_cms.importResource(resource, content, properties, m_importPath+destination);   
+                 res = m_cms.importResource(resource, content, properties, m_importPath+destination);
+             }   
          
              if (res != null) {
                  if (CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)) {
                      m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                  }
+                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
              }
-             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            
          } catch (Exception exc) {
              // an error while importing the file
              success = false;

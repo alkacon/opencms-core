@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/06 13:50:19 $
- * Version: $Revision: 1.260 $
+ * Date   : $Date: 2003/10/06 14:20:56 $
+ * Version: $Revision: 1.261 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.260 $ $Date: 2003/10/06 13:50:19 $
+ * @version $Revision: 1.261 $ $Date: 2003/10/06 14:20:56 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2044,7 +2044,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             linkProperties = Collections.EMPTY_MAP;
         }
         // write its properties
-        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), false);
+        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), true);
 
         // if the source
         clearResourceCache();

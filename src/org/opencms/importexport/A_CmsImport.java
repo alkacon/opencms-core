@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/06 10:35:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/10/06 14:20:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,9 +28,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.importexport;
 
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 
@@ -41,8 +42,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.linkmanagement.CmsPageLinks;
 
-import org.opencms.report.I_CmsReport;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,6 +50,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -76,47 +76,40 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The algorithm for the message digest */
     public static final String C_IMPORT_DIGEST = "MD5";
-    
-    /** The cms contect to do the operations on the VFS/COS with */
-    protected CmsObject m_cms;
-    
-    /** The import-path to write resources into the cms */
-    protected String m_importPath;
-    
-    /** The object to report the log messages */
-    protected I_CmsReport m_report = null;
-    
-    /** Indicates if module data is being imported */
-    protected boolean m_importingChannelData;
-    
-    /** Digest for taking a fingerprint of the files */
-    protected MessageDigest m_digest = null;
-    
-    /** The import-resource (folder) to load resources from */
-    protected File m_importResource = null;
-    
-    /**  The import-resource (zip) to load resources from */
-    protected ZipFile m_importZip = null;
-    
-    /** The xml manifest-file */
-    protected Document m_docXml;
-    
-    /** Groups to create during import are stored here */
-    protected Stack m_groupsToCreate = new Stack();
 
     /** Debug flag to show debug output */
     protected static final int DEBUG = 0;
-    
+
+    /** Access control entries for a single resource */
+    private Vector m_acEntriesToCreate = new Vector();
+
+    /** The cms contect to do the operations on the VFS/COS with */
+    protected CmsObject m_cms;
+
+    /** Digest for taking a fingerprint of the files */
+    protected MessageDigest m_digest = null;
+
+    /** The xml manifest-file */
+    protected Document m_docXml;
+
+    /** Groups to create during import are stored here */
+    protected Stack m_groupsToCreate = new Stack();
+
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),
      * after the import we check them all to update the link tables for the linkmanagement.
      */
     protected Vector m_importedPages = new Vector();
-    
-    /** Access control entries for a single resource */
-    private Vector m_acEntriesToCreate = new Vector();
 
-    
+    /** Indicates if module data is being imported */
+    protected boolean m_importingChannelData;
+
+    /** The import-path to write resources into the cms */
+    protected String m_importPath;
+
+    /** The import-resource (folder) to load resources from */
+    protected File m_importResource = null;
+
     /**
      * The version of this import, noted in the info tag of the manifest.xml.<p>
      * 
@@ -127,74 +120,144 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 4 indicates an export file of OpenCms with a version after 5.1.6
      */
     protected int m_importVersion = 0;
-    
+
+    /**  The import-resource (zip) to load resources from */
+    protected ZipFile m_importZip = null;
+
+    /** Storage for all pointer properties which must be converted into links */
+    protected HashMap m_linkPropertyStorage;
+
+    /** Storage for all pointers which must be converted into links */
+    protected HashMap m_linkStorage;
+
+    /** The object to report the log messages */
+    protected I_CmsReport m_report = null;
+
     /**
       * Constructs a new uninitialized import, required for the module data import.<p>
       * 
       * @see CmsImportModuledata
       */
-     public A_CmsImport() {
-         // empty constructor
-     }
+    public A_CmsImport() {
+        // empty constructor
+    }
 
-     /**
-      * Constructs a new import object which imports the resources from an OpenCms 
-      * export zip file or a folder in the "real" file system.<p>
-      *
-      * @param cms the current cms object
-      * @param importPath the path in the cms VFS to import into
-      * @param report a report object to output the progress information to
-      * @throws CmsException if something goes wrong
-      */
-     public A_CmsImport(CmsObject cms, String importPath, I_CmsReport report) throws CmsException {
-         // set member variables
-         m_cms = cms;
-         m_importPath = importPath;
-         m_report = report;
-         m_importingChannelData = false;
-     }
-    
-    
     /**
-     * Imports the resources for a module.<p>
-     * 
-     * This is only a dummy implementation, since the abstract class does not implement a real 
-     * OpenCms import. 
-     * 
+     * Constructs a new import object which imports the resources from an OpenCms 
+     * export zip file or a folder in the "real" file system.<p>
+     *
      * @param cms the current cms object
      * @param importPath the path in the cms VFS to import into
      * @param report a report object to output the progress information to
-     * @param digest digest for taking a fingerprint of the files
-     * @param importResource  the import-resource (folder) to load resources from
-     * @param importZip the import-resource (zip) to load resources from
-     * @param docXml the xml manifest-file 
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-     public void importResources(CmsObject cms, String importPath, I_CmsReport report,
-                                  MessageDigest digest, File importResource, ZipFile importZip,  Document docXml, 
-                                  Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-            // only a dummy 
-       }
-   
+    public A_CmsImport(CmsObject cms, String importPath, I_CmsReport report) throws CmsException {
+        // set member variables
+        m_cms = cms;
+        m_importPath = importPath;
+        m_report = report;
+        m_importingChannelData = false;
+    }
 
     /**
-     * Returns the import version of the import implementation.<p>
+     * Creates a new access control entry and stores it for later write out.
      * 
-     * @return import version
+     * @param res the resource
+     * @param id the id of the principal
+     * @param allowed the allowed permissions
+     * @param denied the denied permissions
+     * @param flags the flags
      */
-    public int getVersion() {
-       return 0;
+    protected void addImportAccessControlEntry(CmsResource res, String id, String allowed, String denied, String flags) {
+
+        CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
+        m_acEntriesToCreate.add(ace);
     }
-    
-       
+
+    /**
+     * Checks if the resources is in the list of immutalbe resources. <p>
+     * 
+     * @param translatedName the name of the resource
+     * @param immutableResources the list of the immutable resources
+     * @return true or false
+     */
+    protected boolean checkImmutable(String translatedName, List immutableResources) {
+
+        boolean resourceNotImmutable = true;
+        if (immutableResources.contains(translatedName)) {
+            if (DEBUG > 1)
+                System.err.println("Import: Translated resource name is immutable");
+
+            // this resource must not be modified by an import if it already exists
+            try {
+                m_cms.readFileHeader("//" + translatedName);
+                resourceNotImmutable = false;
+                if (DEBUG > 0)
+                    System.err.println("Import: Immutable flag set for resource");
+            } catch (CmsException e) {
+                // resourceNotImmutable will be true
+                if (DEBUG > 0)
+                    System.err.println("Import: Immutable test caused exception " + e);
+            }
+        }
+        return resourceNotImmutable;
+    }
+
+    /**
+     * Converts old style links to new internal links if possible.<p>
+     * @throws CmsException if something goes wrong
+     */
+    protected void convertPointerToLinks() throws CmsException {
+        Iterator keys = m_linkStorage.keySet().iterator();
+        int linksSize = m_linkStorage.size();
+        int i = 0;
+        // loop through all links to convert
+        while (keys.hasNext()) {
+            String key = (String)keys.next();
+            String link = (String)m_linkStorage.get(key);
+            HashMap properties = (HashMap)m_linkPropertyStorage.get(key);
+            m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(key + " ");
+            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+
+            // now check if this is an internal link
+            if (link.startsWith("/")) {
+                // now check if the link target is existing
+                try {
+                    m_cms.readFileHeader(link);
+                    m_cms.createVfsLink(key, link, properties);
+                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                } catch (CmsException ex) {
+                    m_report.println();
+                    m_report.print(m_report.key("report.convert_link_notfound") + " " + link, I_CmsReport.C_FORMAT_WARNING);
+                }
+
+            }
+
+        }
+        m_linkStorage = null;
+        m_linkPropertyStorage = null;
+    }
+
+    /**
+     * Creates missing property definitions if needed.<p>
+     *
+     * @param name the name of the property
+     * @param resourceType the type of the resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void createPropertydefinition(String name, int resourceType) throws CmsException {
+        // does the propertydefinition exists already?
+        try {
+            m_cms.readPropertydefinition(name, resourceType);
+        } catch (CmsException exc) {
+            // no: create it
+            m_cms.createPropertydefinition(name, resourceType);
+        }
+    }
+
     /**
      * Returns a byte array containing the content of the file.<p>
      *
@@ -239,153 +302,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         // this will only be returned in case there was an exception
         return "".getBytes();
     }
-    
-    /**
-     * Returns the text for a node.
-     *
-     * @param elem the parent element
-     * @param tag the tagname to get the value from
-     * @return the value of the tag
-     */
-    protected String getTextNodeValue(Element elem, String tag) {
-        try {
-            return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
-        } catch (Exception exc) {
-            // ignore the exception and return null
-            return null;
-        }
-    }
-    
 
-    /**
-     * Creates an imported group in the cms.<p>
-     * 
-     * @param id the uuid of this group
-     * @param name the name of the group
-     * @param description group description
-     * @param flags group flags
-     * @param parentgroupName name of the parent group
-     * @throws CmsException if something goes wrong
-     */
-    protected void importGroup(String id, String name, String description, String flags, String parentgroupName) throws CmsException {
-        if (id == null) {
-            id = new CmsUUID().toString();
-        }
-        if (description == null) {
-            description = "";
-        }
-       
-        CmsGroup parentGroup = null;
-        try {
-            if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
-                try {
-                    parentGroup = m_cms.readGroup(parentgroupName);                   
-                } catch (CmsException exc) { }
-            }
-            
-            if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
-                // cannot create group, put on stack and try to create later
-                Hashtable groupData = new Hashtable();
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_NAME, name);
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION, description);
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_FLAGS, flags);
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP, parentgroupName);
-                m_groupsToCreate.push(groupData);
-            } else {
-                try {
-                    m_report.print(m_report.key("report.importing_group"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(name);
-                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-                    m_cms.createGroup(id, name, description, Integer.parseInt(flags), parentgroupName);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                } catch (CmsException exc) {
-                    m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
-                }
-            }
-          
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-    
-    /**
-     * Creates an imported user in the cms.<p>
-     * 
-     * @param id user id or null
-     * @param name user name
-     * @param description user description
-     * @param flags user flags
-     * @param password user password 
-     * @param recoveryPassword user recovery password
-     * @param firstname firstname of the user
-     * @param lastname lastname of the user
-     * @param email user email
-     * @param address user address 
-     * @param section user section
-     * @param defaultGroup user default group
-     * @param type user type
-     * @param userInfo user info
-     * @param userGroups user groups
-     * @throws CmsException in case something goes wrong
-     */
-    protected void importUser(String id, String name, String description, String flags, String password, String recoveryPassword, String firstname, String lastname, String email, String address, String section, String defaultGroup, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
-
-        // create a new user id if not available
-        if (id == null) {
-            id = new CmsUUID().toString();
-        }
-
-        try {
-            try {
-                m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
-                m_report.print(name);
-                m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-                m_cms.addImportUser(id, name, password, recoveryPassword, description, firstname, lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address, section, Integer.parseInt(type));
-                // add user to all groups vector
-                for (int i = 0; i < userGroups.size(); i++) {
-                    try {
-                        m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
-                    } catch (CmsException exc) { }
-                }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-            } catch (CmsException exc) {
-                m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
-            }
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-    
-    /**
-     * Checks if the resources is in the list of immutalbe resources. <p>
-     * 
-     * @param translatedName the name of the resource
-     * @param immutableResources the list of the immutable resources
-     * @return true or false
-     */
-    protected boolean checkImmutable(String translatedName, List immutableResources) {
-
-        boolean resourceNotImmutable = true;
-        if (immutableResources.contains(translatedName)) {
-            if (DEBUG > 1)
-                System.err.println("Import: Translated resource name is immutable");
-
-            // this resource must not be modified by an import if it already exists
-            try {
-                m_cms.readFileHeader("//" + translatedName);
-                resourceNotImmutable = false;
-                if (DEBUG > 0)
-                    System.err.println("Import: Immutable flag set for resource");
-            } catch (CmsException e) {
-                // resourceNotImmutable will be true
-                if (DEBUG > 0)
-                    System.err.println("Import: Immutable test caused exception " + e);
-            }
-        }
-        return resourceNotImmutable;
-    }
-    
     /**
      * Gets all properties from one file node in the manifest.xml.<p>
      * 
@@ -429,36 +346,28 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Creates missing property definitions if needed.<p>
+     * Returns the text for a node.
      *
-     * @param name the name of the property
-     * @param resourceType the type of the resource
-     *
-     * @throws CmsException if something goes wrong
+     * @param elem the parent element
+     * @param tag the tagname to get the value from
+     * @return the value of the tag
      */
-    private void createPropertydefinition(String name, int resourceType) throws CmsException {
-        // does the propertydefinition exists already?
+    protected String getTextNodeValue(Element elem, String tag) {
         try {
-            m_cms.readPropertydefinition(name, resourceType);
-        } catch (CmsException exc) {
-            // no: create it
-            m_cms.createPropertydefinition(name, resourceType);
+            return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
+        } catch (Exception exc) {
+            // ignore the exception and return null
+            return null;
         }
     }
-    
-    /**
-     * Creates a new access control entry and stores it for later write out.
-     * 
-     * @param res the resource
-     * @param id the id of the principal
-     * @param allowed the allowed permissions
-     * @param denied the denied permissions
-     * @param flags the flags
-     */
-    protected void addImportAccessControlEntry(CmsResource res, String id, String allowed, String denied, String flags) {
 
-        CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
-        m_acEntriesToCreate.add(ace);
+    /**
+     * Returns the import version of the import implementation.<p>
+     * 
+     * @return import version
+     */
+    public int getVersion() {
+        return 0;
     }
 
     /**
@@ -478,6 +387,133 @@ public abstract class A_CmsImport implements I_CmsImport {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_acEntriesToCreate = new Vector();
+        }
+    }
+
+    /**
+     * Creates an imported group in the cms.<p>
+     * 
+     * @param id the uuid of this group
+     * @param name the name of the group
+     * @param description group description
+     * @param flags group flags
+     * @param parentgroupName name of the parent group
+     * @throws CmsException if something goes wrong
+     */
+    protected void importGroup(String id, String name, String description, String flags, String parentgroupName) throws CmsException {
+        if (id == null) {
+            id = new CmsUUID().toString();
+        }
+        if (description == null) {
+            description = "";
+        }
+
+        CmsGroup parentGroup = null;
+        try {
+            if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
+                try {
+                    parentGroup = m_cms.readGroup(parentgroupName);
+                } catch (CmsException exc) {}
+            }
+
+            if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
+                // cannot create group, put on stack and try to create later
+                Hashtable groupData = new Hashtable();
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_NAME, name);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION, description);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_FLAGS, flags);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP, parentgroupName);
+                m_groupsToCreate.push(groupData);
+            } else {
+                try {
+                    m_report.print(m_report.key("report.importing_group"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(name);
+                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    m_cms.createGroup(id, name, description, Integer.parseInt(flags), parentgroupName);
+                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                } catch (CmsException exc) {
+                    m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
+                }
+            }
+
+        } catch (Exception exc) {
+            m_report.println(exc);
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+    }
+
+    /**
+     * Imports the resources for a module.<p>
+     * 
+     * This is only a dummy implementation, since the abstract class does not implement a real 
+     * OpenCms import. 
+     * 
+     * @param cms the current cms object
+     * @param importPath the path in the cms VFS to import into
+     * @param report a report object to output the progress information to
+     * @param digest digest for taking a fingerprint of the files
+     * @param importResource  the import-resource (folder) to load resources from
+     * @param importZip the import-resource (zip) to load resources from
+     * @param docXml the xml manifest-file 
+     * @param excludeList filenames of files and folders which should not 
+     *      be (over)written in the virtual file system (not used when null)
+     * @param writtenFilenames filenames of the files and folder which have actually been 
+     *      successfully written (not used when null)
+     * @param fileCodes code of the written files (for the registry)
+     *      (not used when null)
+     * @param propertyName name of a property to be added to all resources
+     * @param propertyValue value of that property
+     * @throws CmsException if something goes wrong
+     */
+    public void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
+        // only a dummy 
+    }
+
+    /**
+     * Creates an imported user in the cms.<p>
+     * 
+     * @param id user id or null
+     * @param name user name
+     * @param description user description
+     * @param flags user flags
+     * @param password user password 
+     * @param recoveryPassword user recovery password
+     * @param firstname firstname of the user
+     * @param lastname lastname of the user
+     * @param email user email
+     * @param address user address 
+     * @param section user section
+     * @param defaultGroup user default group
+     * @param type user type
+     * @param userInfo user info
+     * @param userGroups user groups
+     * @throws CmsException in case something goes wrong
+     */
+    protected void importUser(String id, String name, String description, String flags, String password, String recoveryPassword, String firstname, String lastname, String email, String address, String section, String defaultGroup, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
+
+        // create a new user id if not available
+        if (id == null) {
+            id = new CmsUUID().toString();
+        }
+
+        try {
+            try {
+                m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(name);
+                m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                m_cms.addImportUser(id, name, password, recoveryPassword, description, firstname, lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address, section, Integer.parseInt(type));
+                // add user to all groups vector
+                for (int i = 0; i < userGroups.size(); i++) {
+                    try {
+                        m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
+                    } catch (CmsException exc) {}
+                }
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            } catch (CmsException exc) {
+                m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
+            }
+        } catch (Exception exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
 

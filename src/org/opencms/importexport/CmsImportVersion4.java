@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/10/06 10:35:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/10/06 14:20:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.file.CmsResourceTypeLink;
 import com.opencms.file.CmsResourceTypePage;
 
 import java.io.ByteArrayInputStream;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +87,7 @@ public class CmsImportVersion4 extends A_CmsImport {
     public int getVersion() {
         return 4;
     }
-    
+
     /**
      * Imports the resources for a module.<p>
      * @param cms the current cms object
@@ -115,6 +117,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         m_importZip = importZip;
         m_docXml = docXml;
         m_importingChannelData = false;
+        m_linkStorage = new HashMap();
+        m_linkPropertyStorage = new HashMap();
         try {
             // first import the user information
             if (m_cms.isAdmin()) {
@@ -123,6 +127,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
             // now import the VFS resources
             importAllResources(excludeList, propertyName, propertyValue);
+            convertPointerToLinks();
         } catch (CmsException e) {
             throw e;
         }
@@ -376,7 +381,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                    } else {
                        // resource import failed, since no CmsResource was created
                        m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                       m_report.println(translatedName);
+                       m_report.println(translatedName);                     
                    }
                    
                } else {
@@ -432,8 +437,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         try {
             // get the file content
             if (source != null) {
-                content = getFileBytes(source);             
-            }
+                content = getFileBytes(source);
+                    } 
             int size = 0;
             if (content != null) {
                 size = content.length;
@@ -445,14 +450,14 @@ public class CmsImportVersion4 extends A_CmsImport {
             // check if user created and user lastmodified are valid users in this system.
             // if not, use the current user
             try {
-                newUserlastmodified = m_cms.readUser(userlastmodified).getId();
+                newUserlastmodified =m_cms.readUser(userlastmodified).getId();
             } catch (CmsException e) {
                 newUserlastmodified = m_cms.getRequestContext().currentUser().getId();
                 // datelastmodified = System.currentTimeMillis();
             }
             
             try {
-                newUsercreated = m_cms.readUser(usercreated).getId();
+                newUsercreated =m_cms.readUser(usercreated).getId();
             } catch (CmsException e) {
                 newUsercreated = m_cms.getRequestContext().currentUser().getId();
                 // datecreated = System.currentTimeMillis();
@@ -500,15 +505,24 @@ public class CmsImportVersion4 extends A_CmsImport {
                 1
             );
             
-            // import this resource in the VFS   
-            res = m_cms.importResource(resource, content, properties, m_importPath + destination);
+            
+            if (resType==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
+                // store links for later conversion
+                m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
+                m_linkStorage.put(m_importPath + destination, new String(content));
+                m_linkPropertyStorage.put(m_importPath + destination, properties);
+                res = resource;
+            } else {             
+                // import this resource in the VFS   
+                res = m_cms.importResource(resource, content, properties, m_importPath + destination);
+            }
 
             if (res != null) {
                 if (CmsResourceTypePage.C_RESOURCE_TYPE_ID == resType) {
                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
-            }
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            }          
         } catch (Exception exc) {
             // an error while importing the file
             m_report.println(exc);
@@ -521,7 +535,6 @@ public class CmsImportVersion4 extends A_CmsImport {
         }
         return res;
     }
-
 
 
 }
