@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2005/03/04 15:11:32 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2005/03/04 15:56:41 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,10 @@ import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsReport;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +51,7 @@ import java.util.Map;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.11 $ $Date: 2005/03/04 15:11:32 $
+ * @version $Revision: 1.12 $ $Date: 2005/03/04 15:56:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -79,6 +82,8 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
         }
 
         List sessionInfos = OpenCms.getSessionInfoManager().getSessionInfos();
+        // sort the session infos
+        Collections.sort(sessionInfos);
         StringBuffer ret = new StringBuffer();
         Iterator i = sessionInfos.iterator();
         while (i.hasNext()) {
@@ -91,7 +96,9 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
                 xmlTemplateDocument.setData("lastname", cmsUser.getLastname());
                 xmlTemplateDocument.setData("email", cmsUser.getEmail());
                 // misuse of deprecated current group for session time, until we get a new interface
-                xmlTemplateDocument.setData("currentgroup", CmsDateUtil.getDateTimeShort(info.getTimeCreated()));
+                xmlTemplateDocument.setData("currentgroup", CmsDateUtil.getDateTimeShort(info.getTimeCreated())
+                    + " - "
+                    + CmsStringUtil.formatRuntime(System.currentTimeMillis() - info.getTimeUpdated()));
                 xmlTemplateDocument.setData("messagepending", String.valueOf(info.getBroadcastMessageQueue()
                     .hasBroadcastMessagesPending()));
                 xmlTemplateDocument.setData("currentproject", cmsProject.getName());

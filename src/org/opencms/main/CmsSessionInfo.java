@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/04 15:56:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,11 +49,11 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
-public class CmsSessionInfo {
+public class CmsSessionInfo implements Comparable {
 
     /** The current site of the user. */
     private String m_currentSite;
@@ -223,5 +223,22 @@ public class CmsSessionInfo {
         setProject(new Integer(context.currentProject().getId()));
         setCurrentSite(context.getSiteRoot());
         m_timeUpdated = System.currentTimeMillis();
+    }
+
+    /**
+     * Allows sorting session info according to the user names.<p>
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+
+        if (! (o instanceof CmsSessionInfo)) {
+            // not our type...
+            return 0;
+        }
+        
+        CmsSessionInfo other = (CmsSessionInfo)o;
+        // compare the user names
+        return m_user.getName().compareTo(other.getUser().getName());
     }
 }
