@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/13 11:21:42 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/02/13 13:12:43 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 5.1
  */
@@ -228,7 +228,13 @@ public abstract class CmsWorkplace {
      */    
     static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings) {                
         // save current workplace user & user settings object
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user;
+        try {
+            // read the user from db to avoid side effects in preferences dialog after publishing
+            user = cms.readUser(cms.getRequestContext().currentUser().getId());
+        } catch (CmsException e) {
+            user = cms.getRequestContext().currentUser();
+        }
         settings.setUser(user);
         settings.setUserSettings(new CmsUserSettings(user));
         
@@ -237,7 +243,7 @@ public abstract class CmsWorkplace {
         
         // initialize messages and also store them in settings
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, settings.getUserSettings().getLocale());
-        settings.setMessages(messages);        
+        settings.setMessages(messages);    
                         
         // save current site
         String siteRoot = cms.getRequestContext().getSiteRoot();
