@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/03/10 10:40:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/17 09:24:43 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.9 $ $Date: 2000/03/10 10:40:09 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/17 09:24:43 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -214,18 +214,20 @@ class CmsDbImportFiles implements I_CmsConstants {
 			}
 			m_fName=m_fName.substring((m_fName.lastIndexOf("/")+1),m_fName.length());
 			try {
+				System.out.print("Importing: " + m_fName);
+				System.out.flush();
 				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fMeta);
 				m_RB.lockResource(m_user,m_project,newFile.getAbsolutePath(), true);
 				m_RB.chown(m_user, m_project, newFile.getAbsolutePath(), m_fUser);
 				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);
 				m_RB.chmod(m_user, m_project, newFile.getAbsolutePath(), Integer.parseInt(m_fAccess) );
 				m_RB.unlockResource(m_user,m_project,newFile.getAbsolutePath());
+				System.out.println(" ok");
 			} catch (CmsException e) {
+				System.out.println(" error: " + e.getMessage());
 				m_errMsg.addElement(e.getMessage());	
 			}
-		}
-		
-		
+		}		
 	}
 	//end readResource
 	
