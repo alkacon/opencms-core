@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2004/07/08 15:21:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/22 15:12:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package com.opencms.legacy;
 
-import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.A_CmsResourceType;
@@ -44,7 +44,7 @@ import java.util.List;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -78,9 +78,15 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
     }      
     
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, byte[], List)
+     * @see org.opencms.file.types.A_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
-    public CmsResource createResource(CmsObject cms, CmsDriverManager driverManager, String resourcename, byte[] content, List properties) {
+    public CmsResource createResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
+        byte[] content,
+        List properties) {
+
         throw new RuntimeException("createResource(): The resource type 'compatiblePlain' is deprecated and not longer supported");
-    }      
+    }    
 }

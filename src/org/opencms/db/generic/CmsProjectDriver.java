@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.190 $
+ * Date   : $Date: 2004/10/22 15:11:00 $
+ * Version: $Revision: 1.191 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.190 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.191 $ $Date: 2004/10/22 15:11:00 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -440,21 +440,21 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             I_CmsConstants.C_PROJECT_TYPE_TEMPORARY, 
             null);
 
-        // create the root-folder for the offline project
-        
-        CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource( 
-            null, 
-            setupProject, 
-            onlineRootFolder, 
+        // create the root-folder for the offline project       
+        CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource(
+            null,
+            setupProject,
+            onlineRootFolder,
             null);
         offlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeResource(
-            null, 
-            setupProject, 
-            offlineRootFolder, CmsDriverManager.C_UPDATE_ALL);        
+            null,
+            setupProject,
+            offlineRootFolder,
+            CmsDriverManager.C_UPDATE_ALL);
         m_driverManager.getProjectDriver().createProjectResource(
-            setupProject.getId(), 
-            offlineRootFolder.getRootPath(), 
+            setupProject.getId(),
+            offlineRootFolder.getRootPath(),
             null);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsRuntimeInfo.java,v $
- * Date   : $Date: 2004/10/22 14:36:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 15:03:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,39 +38,39 @@ import org.opencms.report.I_CmsReport;
  * This interface defines a runtime info object.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  * @see org.opencms.db.I_CmsRuntimeInfoFactory
  */
 public interface I_CmsRuntimeInfo {
 
     /** Flag to collect vfs driver runtime infos. */
-    public static final int C_RUNTIMEINFO_VFS = 1;
+    int C_RUNTIMEINFO_VFS = 1;
 
     /** Flag to collect user driver runtime infos. */
-    public static final int C_RUNTIMEINFO_USER = 2;
+    int C_RUNTIMEINFO_USER = 2;
 
     /** Flag to collect backup driver runtime infos. */
-    public static final int C_RUNTIMEINFO_BACKUP = 4;
+    int C_RUNTIMEINFO_BACKUP = 4;
 
     /** Flag to collect project driver runtime infos. */
-    public static final int C_RUNTIMEINFO_PROJECT = 8;
+    int C_RUNTIMEINFO_PROJECT = 8;
 
     /** Flag to collect workflow driver runtime infos. */
-    public static final int C_RUNTIMEINFO_WORKFLOW = 16;
+    int C_RUNTIMEINFO_WORKFLOW = 16;
 
     /** Flag to collect runtime infos of all drivers. */
-    public static final int C_RUNTIMEINFO_COMPLETE = C_RUNTIMEINFO_VFS
+    int C_RUNTIMEINFO_COMPLETE = C_RUNTIMEINFO_VFS
         + C_RUNTIMEINFO_USER
         + C_RUNTIMEINFO_BACKUP
         + C_RUNTIMEINFO_PROJECT
         + C_RUNTIMEINFO_WORKFLOW;
 
     /** Flag to collect runtime infos of the VFS and user drivers. */
-    public static final int C_RUNTIMEINFO_VFS_AND_USER = C_RUNTIMEINFO_VFS + C_RUNTIMEINFO_USER;
+    int C_RUNTIMEINFO_VFS_AND_USER = C_RUNTIMEINFO_VFS + C_RUNTIMEINFO_USER;
 
     /** Flag to collect runtime infos drivers being used to publish resources. */
-    public static final int C_RUNTIMEINFO_PUBLISH = C_RUNTIMEINFO_VFS
+    int C_RUNTIMEINFO_PUBLISH = C_RUNTIMEINFO_VFS
         + C_RUNTIMEINFO_USER
         + C_RUNTIMEINFO_BACKUP
         + C_RUNTIMEINFO_PROJECT;

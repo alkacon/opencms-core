@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPasswordHandler.java,v $
- * Date   : $Date: 2004/10/22 13:18:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/22 15:04:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.11 
  */
 public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
@@ -48,22 +48,22 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
     /**
      * String to identify the key value for unhashed passwords.<p>
      */
-    public static final String C_DIGEST_TYPE_PLAIN = "plain";
+    String C_DIGEST_TYPE_PLAIN = "plain";
     
     /**
-     * String to identify the key value for sha password hashes
+     * String to identify the key value for sha password hashes.<p>
      */
-    public static final String C_DIGEST_TYPE_SHA = "sha";
+    String C_DIGEST_TYPE_SHA = "sha";
     
     /**
-     * String to identify the key value for sha password hashes with 4 byte salt
+     * String to identify the key value for sha password hashes with 4 byte salt.<p>
      */
-    public static final String C_DIGEST_TYPE_SSHA = "ssha";
+    String C_DIGEST_TYPE_SSHA = "ssha";
     
     /**
-     * String to identify the key value for md5 password hashes
+     * String to identify the key value for md5 password hashes.<p>
      */
-    public static final String C_DIGEST_TYPE_MD5 = "md5";
+    String C_DIGEST_TYPE_MD5 = "md5";
 
     /**
      * Creates an OpenCms password digest according to the default setting for method/encodings.<p>
