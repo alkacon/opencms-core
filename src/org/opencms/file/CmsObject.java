@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/16 16:08:20 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2004/11/17 15:07:38 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -3278,22 +3278,22 @@ public class CmsObject {
     }
 
     /**
-    * Returns a List with all sub resources of a given folder that have benn modified
-    * in a given time range.<p>
+    * Returns a List with all sub resources of the given parent folder (and all of it's subfolders) 
+    * that have been modified in the given time range.<p>
     * 
-    * The rertuned list is sorted descending (newest resource first).
-    *
-    * <B>Security:</B>
-    * All users are granted.
+    * 
+    * The result list is sorted descending (newest resource first).<p>
     *
     * @param folder the folder to get the subresources from
     * @param starttime the begin of the time range
     * @param endtime the end of the time range
-    * @return List with all resources
+    * 
+    * @return List with all resources that have been modified in the given time range
     *
     * @throws CmsException if operation was not succesful 
     */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
+        
         return m_securityManager.getResourcesInTimeRange(
             m_context, 
             addSiteRoot(folder), 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/16 16:08:20 $
- * Version: $Revision: 1.218 $
+ * Date   : $Date: 2004/11/17 15:07:38 $
+ * Version: $Revision: 1.219 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.218 $ $Date: 2004/11/16 16:08:20 $
+ * @version $Revision: 1.219 $ $Date: 2004/11/17 15:07:38 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -671,13 +671,18 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readChildResources(I_CmsRuntimeInfo, org.opencms.file.CmsProject, CmsResource, boolean, boolean)
      */
-    public List readChildResources(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource, boolean getFolders, boolean getFiles) throws CmsException {
+    public List readChildResources(
+        I_CmsRuntimeInfo runtimeInfo,
+        CmsProject currentProject,
+        CmsResource resource,
+        boolean getFolders,
+        boolean getFiles) throws CmsException {
+        
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
         String query = null;
         
-
         String resourceTypeClause;
         List subFolders;
         List subFiles;
@@ -1180,27 +1185,37 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * Appends the appropriate selection criteria related with the parentPath.<p>
      * 
      * @param projectId the id of the project of the resources
-     * @param parentPath the parent path
+     * @param parent the parent path or UUID (if mode is C_READMODE_EXCLUDE_TREE)
      * @param mode the selection mode
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection params
      */
-    private void preparePathCondition(int projectId, String parentPath, int mode, StringBuffer conditions, List params) {
-        if ((parentPath != I_CmsConstants.C_READ_IGNORE_PARENT) && !"/".equals(parentPath)) {
-            // C_READ_IGNORE_PARENT: if NOT set, add condition to match the parent path as prefix of RESOURCE_PATH
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-            conditions.append(C_END_CONDITION);
-            params.add(addTrailingSeparator(parentPath) + "%");
+    private void preparePathCondition(int projectId, String parent, int mode, StringBuffer conditions, List params) {
+        
+        if (parent == I_CmsConstants.C_READ_IGNORE_PARENT) {            
+            // parent can be ignored
+            return;
         }
         
         if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_TREE) > 0) {
-            // C_READ_CHILDS: add condition to read immediate childs only
-            conditions.append(C_BEGIN_EXCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
+            // only return immediate children - use UUID optimization            
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PARENT_UUID"));
             conditions.append(C_END_CONDITION);
-            params.add(addTrailingSeparator(parentPath) + "%/_%");
+            params.add(parent);          
+            return;
         }
+        
+        if ("/".equals(parent)) {
+            // if root folder is parent, no additional condition is needed since all resource match anyway
+            return;
+        }
+
+        // add condition to read path subtree        
+        conditions.append(C_BEGIN_INCLUDE_CONDITION);
+        conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
+        conditions.append(C_END_CONDITION);
+        params.add(addTrailingSeparator(parent) + "%");
     }
 
     /**

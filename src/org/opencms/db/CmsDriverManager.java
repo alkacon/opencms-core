@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/16 16:08:20 $
- * Version: $Revision: 1.447 $
+ * Date   : $Date: 2004/11/17 15:07:38 $
+ * Version: $Revision: 1.448 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.447 $ $Date: 2004/11/16 16:08:20 $
+ * @version $Revision: 1.448 $ $Date: 2004/11/17 15:07:38 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5816,7 +5816,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         subResources = m_vfsDriver
             .readResourceTree(
                 context.currentProject().getId(),
-                parent.getRootPath(),
+                (readTree ? parent.getRootPath() : parent.getStructureId().toString()),
                 filter.getType(),
                 filter.getState(),
                 filter.getModifiedAfter(),
@@ -6929,7 +6929,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
 
                 try {
-                    boolean readTree = true;
                     CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
                     List resources = m_vfsDriver.readResourceTree(
                         I_CmsConstants.C_PROJECT_ONLINE_ID,
@@ -6938,7 +6937,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         filter.getState(),
                         filter.getModifiedAfter(),
                         filter.getModifiedBefore(),
-                        (readTree ? I_CmsConstants.C_READMODE_INCLUDE_TREE : I_CmsConstants.C_READMODE_EXCLUDE_TREE)
+                        I_CmsConstants.C_READMODE_INCLUDE_TREE
                             | (filter.excludeType() ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0)
                             | (filter.excludeState() ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0));
 

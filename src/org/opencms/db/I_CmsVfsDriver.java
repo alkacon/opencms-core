@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2004/11/17 15:07:38 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.96 $ $Date: 2004/11/15 09:46:23 $
+ * @version $Revision: 1.97 $ $Date: 2004/11/17 15:07:38 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -352,9 +352,11 @@ public interface I_CmsVfsDriver {
     /**
      * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
      * 
+     * Important: If C_READMODE_EXCLUDE_TREE is true (or C_READMODE_INCLUDE_TREE is false), 
+     * the provided parent String must be the UUID of the parent folder, NOT the parent folder path.<p>
      * 
      * @param projectId the project id for matching resources or C_READ_OFFLINE_PROJECTS
-     * @param parentPath the path to the resource used as root of the searched subtree or C_READ_IGNORE_PARENT (C_READMODE_EXCLUDE_TREE means to read immidiate children only) 
+     * @param parent the path to the resource used as root of the searched subtree or C_READ_IGNORE_PARENT (C_READMODE_EXCLUDE_TREE means to read immidiate children only) 
      * @param type the resource type of matching resources or C_READ_IGNORE_TYPES (meaning inverted by C_READMODE_EXCLUDE_TYPE)
      * @param state the state of matching resources or C_READ_IGNORE_STATE (meaning inverted by C_READMODE_EXCLUDE_STATE)
      * @param startTime the start of the time range for the last modification date of matching resources or C_READ_IGNORE_TIME 
@@ -369,7 +371,7 @@ public interface I_CmsVfsDriver {
      * @return a list of CmsResource objects matching the given criteria
      * @throws CmsException if something geos wrong
      */
-    List readResourceTree(int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException;
+    List readResourceTree(int projectId, String parent, int type, int state, long startTime, long endTime, int mode) throws CmsException;
         
     /**
      * Reads all resources inside a given project and with a given state.<p>
