@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/26 15:11:51 $
- * Version: $Revision: 1.252 $
+ * Date   : $Date: 2003/09/29 07:59:40 $
+ * Version: $Revision: 1.253 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.252 $ $Date: 2003/09/26 15:11:51 $
+ * @version $Revision: 1.253 $ $Date: 2003/09/29 07:59:40 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2350,6 +2350,7 @@ public class CmsDriverManager extends Object {
             m_vfsDriver.removeFolder(context.currentProject(), cmsFolder);
             // remove the access control entries
             m_userDriver.removeAccessControlEntries(context.currentProject(), cmsFolder.getResourceId());
+
         } else {
             // m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
             // add the project id as a property, this is later used for publishing
@@ -5065,7 +5066,7 @@ public class CmsDriverManager extends Object {
      * @param context the current request context
      * @param report a report object to provide the loggin messages
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @param directPublishResource a resource to be published directly
+     * @param  directPublishResource a resource to be published directly
      * @return vectors of changed resources
      * @throws Exception if something goes wrong
      */
@@ -5171,7 +5172,7 @@ public class CmsDriverManager extends Object {
                     } catch (Exception ex) {
                         throw new CmsException(0, ex);
                     }
-                }               
+                }
             }
         } else if (publishProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -8333,7 +8334,7 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writeWebUser() " + user.getName(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
-    
+
     /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
@@ -8344,9 +8345,8 @@ public class CmsDriverManager extends Object {
      */    
     public List readPublishedResources(CmsRequestContext context, int publishHistoryId) throws CmsException {
         return getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
-    }
-
-    /**
+}
+  /**
      * Writes all export points into the file system for a publish task 
      * specified by its publish history ID.<p>
      * 

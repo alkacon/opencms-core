@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/09/29 07:59:40 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.12 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/29 07:59:40 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -95,7 +95,12 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         m_importPath = importPath;
         m_report = report;
         m_importingChannelData = true;
-    }
+        // try to get all import implementations
+         // This has only made once.
+         if (m_ImportImplementations == null) {
+             m_ImportImplementations=OpenCms.getRegistry().getImportClasses();
+         }     
+     }
 
     /**
      * Imports the moduledata and writes them to the cms even if there already exist 
@@ -109,7 +114,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             // first import the channels
             m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             //importAllResources(null, null, null, null, null);
-            // now find the correct import implementation         
+            // now find the correct import implementation    
+            m_cms.getRequestContext().saveSiteRoot();
+            m_cms.setContextToCos();     
             Iterator i=m_ImportImplementations.iterator();
                 while (i.hasNext()) {
                     I_CmsImport imp=((I_CmsImport)i.next());
@@ -120,9 +127,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                         break;                    
                      }
                  }   
-         
+            m_cms.getRequestContext().restoreSiteRoot();
             m_report.println(m_report.key("report.import_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
-
+ 
             // now import the moduledata
             m_report.println(m_report.key("report.import_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             importModuleMasters();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/29 07:59:40 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.26 $ $Date: 2003/09/29 07:59:40 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -200,9 +200,19 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @see setBackupPoolUrl(String)
      */
     protected CmsSqlManager(String poolUrl, boolean loadQueries) {
-        m_poolUrls = (List) new ArrayList();
-        m_reservedPoolUrls = (List) new ArrayList();
-                
+        m_poolUrls = (List) new ArrayList(3);
+        m_reservedPoolUrls = (List) new ArrayList(64);
+    
+        m_poolUrls = (List) new ArrayList(3);
+        for (int i = 0; i < 3; i++) {
+            m_poolUrls.add(i, null);
+        }
+        
+        m_reservedPoolUrls = (List) new ArrayList(64);
+        for (int i = 0; i < 64; i++) {
+            m_reservedPoolUrls.add(i, null);
+        }
+                    
         setPoolUrlOffline(poolUrl);
         setPoolUrlOnline(poolUrl);
         setPoolUrlBackup(poolUrl);
@@ -424,7 +434,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     public Connection getConnection(int id) throws SQLException {
         Connection conn = null;
         
-        if (id >= 0) {            
+        if (id >= 0) {
             // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
             conn = DriverManager.getConnection(getPoolUrl(id));
         } else {
@@ -472,7 +482,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @return backup JDBC pool URL including DBCP's pool URL prefix
      * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
-    public String getPoolUrlBackup() {        
+    public String getPoolUrlBackup() {
         return getPoolUrl(C_TABLE_ID_BACKUP);
     }
 
@@ -482,7 +492,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @return offline JDBC pool URL including DBCP's pool URL prefix
      * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
-    public String getPoolUrlOffline() {        
+    public String getPoolUrlOffline() {
         return getPoolUrl(C_TABLE_ID_OFFLINE);
     }
 
@@ -679,7 +689,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             // query was requested- further regex operations are not required then!
             return query;
         }
-        
+
         // calculate the key for the map of all cached pre-calculated queries
         queryKey += (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE" : "_OFFLINE";
 
@@ -822,6 +832,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         }
 
         return " ";
-    }   
+    }
 
 }

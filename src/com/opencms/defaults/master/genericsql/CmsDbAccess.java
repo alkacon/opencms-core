@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/09/29 07:59:40 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -453,9 +453,9 @@ public class CmsDbAccess {
             throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         Vector retValue = new Vector();
-        String statement_key = "read_channel_offline";
+        String statement_key = "read_channel_names_offline";
         if (isOnlineProject(cms)) {
-            statement_key = "read_channel_online";
+            statement_key = "read_channel_names_online";
         }
 
         PreparedStatement stmt = null;
@@ -466,27 +466,13 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
+
             while (res.next()) {
                 // get the channel id
-                int channeldId = res.getInt(1);
-                // read the resource by property "channelid"
-                cms.getRequestContext().saveSiteRoot();
-                cms.setContextToCos();
-                Vector resources = new Vector();
-                try {
-                    resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId + "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-                } catch (CmsException exc) {
-                    // ignore the exception - switch to next channel
-                }
-                cms.getRequestContext().restoreSiteRoot();
-                if (resources.size() >= 1) {
-                    // add the name of the channel to the ret-value
-                    CmsResource resource = (CmsResource)resources.get(0);
-                    if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
-                        retValue.add(cms.readAbsolutePath(resource));
-                    }
-                }
+                String channeldName = res.getString(1);
+                retValue.add(channeldName );
             }
+            
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
@@ -503,7 +489,7 @@ public class CmsDbAccess {
      * @param suId the sub ID of the contentdefinition.
      * @return Vector the datasets of the contentdefinitions in the channel.
      */
-    public Vector readAllByChannel(CmsObject cms, int channelId, int subId) throws CmsException {
+    public Vector readAllByChannel(CmsObject cms, String channelId, int subId) throws CmsException {
         Vector theDataSets = new Vector();
         String statement_key = "readallbychannel_offline";
         if (isOnlineProject(cms)) {
@@ -517,7 +503,7 @@ public class CmsDbAccess {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setInt(1, subId);
-            stmt.setInt(2, channelId);
+            stmt.setString(2, channelId);
             res = stmt.executeQuery();
             while (res.next()) {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
@@ -1211,17 +1197,22 @@ public class CmsDbAccess {
         // add new channel
         PreparedStatement stmt = null;
         Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
+        cms.getRequestContext().saveSiteRoot();
+        cms.setContextToCos();
+           conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_channel_offline");
             for (int i = 0; i < channelToAdd.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
-                    cms.getRequestContext().saveSiteRoot();
-                    cms.setContextToCos();
-                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i) + "", I_CmsConstants.C_PROPERTY_CHANNELID)));
-                    cms.getRequestContext().restoreSiteRoot();
-                    // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToAdd.get(i),
+
+
+                    //int id=Integer.parseInt(cms.readProperty(channelToAdd.get(i) + "", I_CmsConstants.C_PROPERTY_CHANNELID));
+                    //stmt.setInt(2, id);
+                    CmsResource channel=cms.readFolder((String)channelToAdd.get(i));
+                    String id=channel.getResourceId().toString();
+                   
+                    stmt.setString(2, id);  
+                    stmt.setString(3,(String)channelToAdd.get(i));
                     //    I_CmsConstants.C_PROPERTY_CHANNELID)));
                     stmt.executeUpdate();
                 } catch (CmsException exc) {
@@ -1231,10 +1222,8 @@ public class CmsDbAccess {
                     }
                 }
             }
-        } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }
-
+            
         // delete unneeded channel
         stmt = null;
         conn = null;
@@ -1242,24 +1231,22 @@ public class CmsDbAccess {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "delete_channel_offline");
             for (int i = 0; i < channelToDelete.size(); i++) {
-                try {
+                //try {
                     stmt.setString(1, masterId.toString());
-                    cms.getRequestContext().saveSiteRoot();
-                    cms.setContextToCos();
-                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i) + "", I_CmsConstants.C_PROPERTY_CHANNELID)));
-                    cms.getRequestContext().restoreSiteRoot();
+                    stmt.setString(2, (String)channelToDelete.get(i) );
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToDelete.get(i),
                     //     I_CmsConstants.C_PROPERTY_CHANNELID)));
                     stmt.executeUpdate();
-                } catch (CmsException exc) {
+                /*} catch (CmsException exc) {
                     // no channel found - write to logfile
                     if (OpenCms.getLog(this).isWarnEnabled()) {
                         OpenCms.getLog(this).warn("Couldn't find channel " + channelToAdd.get(i), exc);
                     }
-                }
+                }*/
             }
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
+            cms.getRequestContext().restoreSiteRoot();
         }
     }
 
@@ -1765,7 +1752,8 @@ public class CmsDbAccess {
                     conn2 = m_sqlManager.getConnection();
                     stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_channel_online");
                     stmt2.setString(1, masterId.toString());
-                    stmt2.setInt(2, res.getInt(1));
+                    stmt2.setString(2, res.getString(1));
+                    stmt2.setString(3, res.getString(2));
                     stmt2.executeUpdate();
                 } catch (SQLException ex) {
                     throw ex;

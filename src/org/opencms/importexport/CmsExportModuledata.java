@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/09/29 07:59:40 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/29 07:59:40 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -205,18 +205,19 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         // the number for identifying each master
         int masterNr = 1;
         while (keys.hasNext()) {
-            int channelId;
+            String channelId;
             String key = (String)keys.next();
-            try {
+            channelId=key;
+            /*try {
                 channelId = Integer.parseInt(key);
             } catch (NumberFormatException nfe) {
                 m_report.println(nfe);
                 continue;
-            }
+            }*/
             try {
                 Vector allDatasets = new Vector();
                 // execute the static method readAllByChannel of the content definition class
-                allDatasets = (Vector)Class.forName(classname).getMethod("readAllByChannel", new Class[] {CmsObject.class, Integer.class, Integer.class }).invoke(null, new Object[] {m_cms, new Integer(channelId), new Integer(subId)});
+                allDatasets = (Vector)Class.forName(classname).getMethod("readAllByChannel", new Class[] {CmsObject.class, String.class, Integer.class }).invoke(null, new Object[] {m_cms, channelId, new Integer(subId)});
 
                 for (int i = 0; i < allDatasets.size(); i++) {
                     CmsMasterDataSet curDataset = (CmsMasterDataSet)allDatasets.elementAt(i);

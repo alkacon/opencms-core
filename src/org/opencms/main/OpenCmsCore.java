@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/26 16:00:00 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/09/29 07:59:41 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,7 +21,7 @@
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
- * For further information  about OpenCms, please see the
+ * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -283,7 +283,7 @@ public class OpenCmsCore {
                 new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this all we need
-            }
+        }
         }
         return m_instance;
     }
@@ -943,7 +943,7 @@ public class OpenCmsCore {
             // session exists, try to reuse the user from the session
             user = m_sessionStorage.getUserName(session.getId());
         }
-
+                   
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
                    
@@ -961,7 +961,7 @@ public class OpenCmsCore {
             }
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
-            }             
+            }        
             cms = initCmsObject(cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionStorage);
         } else {
             // no user name found in session or no session, login the user as guest user
@@ -1063,7 +1063,7 @@ public class OpenCmsCore {
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
      * @throws RuntimeException in case an invalid user name is provided
-     */  
+     */
     protected CmsObject initCmsObject(String user) {
         if (user == null) {
             user = getDefaultUsers().getUserGuest();
@@ -1411,7 +1411,7 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Property dialog class: non-critical error " + e.toString());
             }   
         }
-                
+        
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
@@ -2104,6 +2104,7 @@ public class OpenCmsCore {
                 showResource(req, res, cms, file);
                 updateUser(cms, cmsReq);
             }
+                            
         } catch (Throwable t) {
             errorHandling(cms, req, res, t);
         }

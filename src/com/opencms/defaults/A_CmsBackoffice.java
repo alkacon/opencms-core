@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/09/29 07:59:41 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -614,7 +614,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
     protected Object getContentDefinition(CmsObject cms, Class cdClass) {
         Object o = null;
         try {
-            Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
+            //Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
+            Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class});
             o = c.newInstance(new Object[] {cms});
         } catch (InvocationTargetException ite) {
             if (OpenCms.getLog(this).isWarnEnabled()) {
@@ -2098,6 +2099,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         I_CmsXmlTemplate extension = (I_CmsXmlTemplate)Class.forName(extensionClass).newInstance();
                         byte[] bytes = extension.getContent(cms, template.getAbsoluteFilename(), elementName, parameters, templateSelector);
                         // If byte == null, use default behaviour (i.e. rest of this method)                
+System.err.println("*"+new String(bytes));        
                         if (bytes != null) {
                             // startProcessing must be called in this method since access is protected
                             template = (CmsXmlWpTemplateFile)parameters.get("__template");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/09/15 13:30:42 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/09/29 07:59:40 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.45 $
- * $Date: 2003/09/15 13:30:42 $
+ * $Revision: 1.46 $
+ * $Date: 2003/09/29 07:59:40 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -636,7 +636,9 @@ public abstract class CmsMasterContent
         getDbAccessObject(getSubId()).publishResource(cms, m_dataSet, getSubId(), this.getClass().getName(),
         enableHistory, versionId, publishDate, changedResources, changedModuleData);
         // update the cache
-        CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
+        if (CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+            CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
+        }
         OpenCms.fireCmsEvent(cms, org.opencms.main.I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, new HashMap(0));
     }
 
@@ -698,7 +700,7 @@ public abstract class CmsMasterContent
      * @param channelId the id of the channel.
      * @return Vector the vector that includes the datasets
      */
-    protected static Vector readAllByChannel(CmsObject cms, int channelId, int subId) throws CmsException{
+    protected static Vector readAllByChannel(CmsObject cms, String channelId, int subId) throws CmsException{
         return getDbAccessObject(subId).readAllByChannel(cms, channelId, subId);
     }
 
@@ -929,22 +931,29 @@ public abstract class CmsMasterContent
     public Vector getAllSubChannelsOfRootChannel (CmsObject cms)
             throws CmsException {
         Vector allChannels = new Vector();
-        String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
-        Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
-        int offset = rootChannel.length()-1;
-        for (int i=0; i < subChannels.size(); i++) {
-            CmsResource resource = (CmsResource)subChannels.get(i);
-            if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
-                String folder = cms.readAbsolutePath(resource);
-                Vector v = getAllSubChannelsOf(cms, folder);
-                if (v.size() == 0 && hasWriteAccess(cms, resource)) {
-                    allChannels.add(folder.substring(offset));
-                } else {
-                    for (int j=0; j < v.size(); j++) {
-                        allChannels.add(((String)v.get(j)).substring(offset));
+        cms.getRequestContext().saveSiteRoot();
+        try {           
+            String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();           
+            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
+            //Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
+            Vector subChannels = cms.getResourcesInFolder(rootChannel);
+            int offset = rootChannel.length()-1;
+            for (int i=0; i < subChannels.size(); i++) {
+                CmsResource resource = (CmsResource)subChannels.get(i);
+                if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
+                    String folder = cms.readAbsolutePath(resource);
+                    Vector v = getAllSubChannelsOf(cms, folder);
+                    if (v.size() == 0 && hasWriteAccess(cms, resource)) {
+                        allChannels.add(folder.substring(offset));
+                    } else {
+                        for (int j=0; j < v.size(); j++) {
+                            allChannels.add(((String)v.get(j)).substring(offset));
+                        }
                     }
                 }
             }
+        } finally {         
+            cms.getRequestContext().restoreSiteRoot();
         }
         return allChannels;
     }

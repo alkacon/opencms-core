@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/29 07:59:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.14 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/29 07:59:40 $
  */
 public class CmsExport implements Serializable {
 
@@ -605,7 +605,8 @@ public class CmsExport implements Serializable {
 
         if (m_exportingModuleData) {
             // collect channel id information if required
-            String channelId = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_CHANNELID);
+            //String channelId = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_CHANNELID);
+            String channelId = m_cms.readFolder(path).getResourceId().toString();
             if (channelId != null) {
                 if (!m_exportedChannelIds.contains(channelId)) {
                     m_exportedChannelIds.add(channelId);
