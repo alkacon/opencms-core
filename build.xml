@@ -1,8 +1,10 @@
 <project name="OpenCms" default="compile" basedir=".">
 
+    <property name="env"                        environment="env"/>
     <property name="app.name"                   value="opencms"/>
     <property name="build.home"                 value="../build"/>
     <property name="zip.home"                   value="../zip"/>
+    <property name="tomcat.home"                value="${env.TOMCAT_HOME}" />
     <property name="build.classes"              value="${build.home}/classes"/>
     <property name="build.inputlib"             value="../ExternalComponents"/>
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
@@ -12,8 +14,8 @@
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
     <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql_2_uncomp.jar"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>
-    <property name="build.web"                  value="${build.home}/${app.name}"/>    
-    <property name="build.webinf"               value="${build.web}/web-inf"/>    
+    <property name="build.web"                  value="${build.home}/${app.name}"/>
+    <property name="build.webinf"               value="${build.web}/web-inf"/>
     <property name="build.lib"                  value="${build.webinf}/lib"/>
     <property name="build.oclib"                value="${build.webinf}/oclib"/>
 
@@ -36,11 +38,11 @@
     <target name="clean">
         <delete dir="${build.home}"/>
     </target>
-    
+
 
     <target name="compileclasses" depends="prepare">
-       <javac 
-            srcdir="src" 
+       <javac
+            srcdir="src"
             destdir="${build.classes}"
             classpath=" ${build.inputlib.servlet}:
                         ${build.inputlib.activation}:
@@ -49,64 +51,64 @@
                         ${build.inputlib.oracle}:
                         ${build.inputlib.mysql}:
                         ${build.inputlib.fop}"
-            debug="on" 
-            optimize="off" 
+            debug="on"
+            optimize="off"
             deprecation="off"/>
 
        <copy todir="${build.classes}">
             <fileset dir="src" includes="**/*.properties,**/*.txt"/>
        </copy>
     </target>
-    
+
     <target name="jar" depends="compileclasses">
-        <jar 
+        <jar
             jarfile="${build.lib}/opencmsboot.jar"
             basedir="${build.classes}"
             includes="com/opencms/boot/**,source/**"
             manifest="${build.classes}/mainClass.txt"
             />
 
-        <jar 
+        <jar
             jarfile="${build.oclib}/opencms.jar"
             basedir="${build.classes}"
             includes="com/opencms/**"
             excludes="com/opencms/build/**"
             />
-        
+
     </target>
-    
+
     <target name="copy" depends="jar">
        <copy todir="${build.home}">
             <fileset dir="." includes="*.*" excludes="build.xml"/>
        </copy>
-        
+
        <copy file="${build.inputlib.xerces}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mysql}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mysql}" todir="${build.lib}"/>
        <copy file="${build.inputlib.activation}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>
-       
+
        <copy todir="${build.webinf}">
             <fileset dir="etc" excludes="*/CVS/*,web.xml"/>
        </copy>
-       
+
        <copy todir="${build.web}">
             <fileset dir="web" excludes="*/CVS/*"/>
        </copy>
 
     </target>
-    
+
     <target name="war" depends="copy">
-        <war 
+        <war
             warfile="${build.home}/${app.name}.war"
             webxml="etc/web.xml"
             basedir="${build.web}"
             />
     </target>
-    
+
     <target name="setup" depends="copy">
-        <sql 
+        <sql
             classpath="${build.inputlib.mysql}"
             driver="${db.driver}"
             url="${db.setupurl}"
@@ -115,7 +117,7 @@
             autocommit="true"
             onerror="continue"
             >drop database opencms</sql>
-        <sql 
+        <sql
             classpath="${build.inputlib.mysql}"
             driver="${db.driver}"
             url="${db.setupurl}"
@@ -124,7 +126,7 @@
             autocommit="true"
             onerror="continue"
             >create database opencms</sql>
-        <sql 
+        <sql
             classpath="${build.inputlib.mysql}"
             driver="${db.driver}"
             url="${db.url}"
@@ -134,7 +136,7 @@
             onerror="continue"
             src="${build.webinf}/ocsetup/mysql.sql"
             />
-        <java 
+        <java
             classname="com.opencms.boot.CmsMain"
             classpath="${build.lib}/opencmsboot.jar"
             dir="${build.webinf}"
@@ -142,17 +144,32 @@
             <arg value="-script=ocsetup/cmssetup.txt" />
         </java>
     </target>
-    
+
     <target name="zip" depends="war">
         <zip
             zipfile="${zip.home}/opencms_build.zip"
             basedir="${build.home}"
             excludes="**/classes/,**/opencms/" />
     </target>
-    
+
 
     <target name="all" depends="clean,zip"/>
 
     <target name="compile" depends="copy"/>
+
+    <target name="tomcat.clean">
+        <delete file="${tomcat.home}/webapps/${app.name}.war"/>
+        <delete dir= "${tomcat.home}/webapps/${app.name}"/>
+    </target>
+
+    <target name="tomcat.dist" depends="copy">
+        <copy todir="${tomcat.home}/webapps/${app.name}">
+            <fileset dir="${build.web}"/>
+        </copy>
+        <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/web-inf"/>
+        <copy file="${build.inputlib.oracle}" todir="${tomcat.home}/webapps/${app.name}/web-inf/oclib"/>
+    </target>
+
+    <target name="tomcat.cleandist" depends="clean,tomcat.clean,tomcat.dist"/>
 
 </project>
