@@ -190,4 +190,9 @@
 ]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="templateeditor.html"  ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
+
+<TEMPLATE name="errorsave">
+<ERRORPAGE title="error.title.editorsave" message="error.message.editorsave" reason="error.reason.editorsave" suggestion="error.suggestion.editorsave" ref="edit_page_main.html" ><process>errordetail</process></ERRORPAGE>
+</TEMPLATE>
+
 </workplace>

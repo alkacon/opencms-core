@@ -91,4 +91,9 @@
 </html>
 ]]>
 </TEMPLATE>
+
+<TEMPLATE name="errorsave">
+<ERRORPAGE title="error.title.editorsave" message="error.message.editorsave" reason="error.reason.editorsave" suggestion="error.suggestion.editorsave" ref="" ><process>errordetail</process><process>errorlasturl</process></ERRORPAGE>
+</TEMPLATE>
+
 </WORKPLACE>
