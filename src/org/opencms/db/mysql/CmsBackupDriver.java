@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/16 09:56:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/06 16:51:37 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,20 +48,20 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.10 $ $Date: 2003/09/16 09:56:47 $
+ * @version $Revision: 1.11 $ $Date: 2004/01/06 16:51:37 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsBackupDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.mysql.CmsSqlManager();
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#getAllBackupProjects()
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects()
      */
     public Vector readBackupProjects() throws CmsException {
         Vector projects = new Vector();

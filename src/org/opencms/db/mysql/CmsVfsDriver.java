@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/01/06 16:51:37 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,9 @@
 
 package org.opencms.db.mysql;
 
-import org.opencms.util.CmsUUID;
-
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsResource;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,138 +42,16 @@ import java.util.Map;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.26 $ $Date: 2004/01/06 16:51:37 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFile(com.opencms.file.CmsUser, com.opencms.file.CmsProject, java.lang.String, int, com.opencms.flex.util.CmsUUID, byte[], com.opencms.file.I_CmsResourceType)
-     *//*
-    public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
-        
-        // TODO VFS links: refactor all upper methods to support the VFS link type param
-        
-        if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
-            throw new CmsException("The resource name '" + filename + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
-        }
-
-        int state = I_CmsConstants.C_STATE_NEW;
-        // Test if the file is already there and marked as deleted.
-        // If so, delete it
-        try {
-            readFileHeader(project.getId(), parentId, filename, false);
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            // if the file is maked as deleted remove it!
-            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-                removeFile(project, parentId, filename);
-                state = I_CmsConstants.C_STATE_CHANGED;
-            }
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-
-        CmsUUID resourceId = new CmsUUID();
-        CmsUUID fileId = new CmsUUID();
-        CmsUUID structureId = new CmsUUID();
-        long dateCreated = System.currentTimeMillis(); 
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(project);
-
-            // write the content
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_FILES_WRITE");
-            stmt.setString(1, fileId.toString());
-            stmt.setBytes(2, contents);
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(null, stmt, null);
-
-            // write the resource
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
-            stmt.setString(1, resourceId.toString());
-            stmt.setInt(2, resourceType.getResourceType());
-            stmt.setInt(3, flags);
-            stmt.setString(4, fileId.toString());
-            stmt.setInt(5, resourceType.getLoaderId());
-            stmt.setTimestamp(6, new Timestamp(dateCreated));
-            stmt.setString(7, user.getId().toString());
-            stmt.setTimestamp(8, new Timestamp(dateCreated));
-            stmt.setString(9, user.getId().toString());
-            stmt.setInt(10, state);
-            stmt.setInt(11, contents.length);
-            //stmt.setString(12, user.getId().toString());
-            stmt.setString(12, CmsUUID.getNullUUID().toString());
-            stmt.setInt(13, project.getId());
-            stmt.setInt(14, 1);
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(null, stmt, null);                      
-
-            // write the structure
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
-            stmt.setString(1, structureId.toString());
-            stmt.setString(2, parentId.toString());
-            stmt.setString(3, resourceId.toString());
-            stmt.setString(4, filename);
-            stmt.setInt(5, state);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return readFile(project.getId(), structureId, false);
-    }*/
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.mysql.CmsSqlManager();
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFile(int, boolean, CmsUUID)
-     */
-    public CmsFile readFile(int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
-        CmsFile file = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_READ");
-            stmt.setString(1, structureId.toString());
-            //stmt.setInt(2, projectId);
-            res = stmt.executeQuery();
-            
-            if (res.next()) {
-                file = createFile(res, projectId);
-
-                // check if this resource is marked as deleted
-                if (file.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getName(), CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + ".readFile] " + structureId, CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        
-        return file;
     }
 
     /**

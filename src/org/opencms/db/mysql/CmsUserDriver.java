@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/06 16:51:37 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2003/11/14 10:09:16 $
+ * @version $Revision: 1.15 $ $Date: 2004/01/06 16:51:37 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -56,48 +56,7 @@ import java.util.Hashtable;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createGroup(CmsUUID, String, String, int, String)
-     */
-    public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
-        CmsUUID parentId = CmsUUID.getNullUUID();
-        CmsGroup newGroup = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        CmsUUID newGroupId = new CmsUUID();
-
-        try {
-            // get the id of the parent group if nescessary            
-            if ((parent != null) && (!"".equals(parent))) {
-                parentId = readGroup(parent).getId();
-            }
-
-            // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_CREATEGROUP");
-
-            // write new group to the database
-            stmt.setString(1, newGroupId.toString());
-            stmt.setString(2, parentId.toString());
-            stmt.setString(3, name);
-            stmt.setString(4, description);
-            stmt.setInt(5, flags);
-            stmt.executeUpdate();
-
-            // create the user group by reading it from the database.
-            // this is nescessary to get the group id which is generated in the
-            // database.
-            newGroup = readGroup(name);
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return newGroup;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#addUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
     public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
@@ -144,7 +103,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.mysql.CmsSqlManager();
