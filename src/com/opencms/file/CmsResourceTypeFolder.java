@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/10/05 15:14:36 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/10/12 15:51:56 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -534,7 +534,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_DELETED){
-                cms.deleteResource(curFile.getAbsolutePath());
+                try{
+                    cms.deleteResource(curFile.getAbsolutePath());
+                }catch(CmsException e){
+                    if(e.getType() != CmsException.C_RESOURCE_DELETED){
+                        throw e;
+                    }
+                }
             }
         }
         // now all the empty subfolders

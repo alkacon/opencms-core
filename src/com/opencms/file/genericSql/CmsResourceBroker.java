@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/02 13:05:48 $
-* Version: $Revision: 1.279 $
+* Date   : $Date: 2001/10/12 15:51:56 $
+* Version: $Revision: 1.280 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.279 $ $Date: 2001/10/02 13:05:48 $
+ * @version $Revision: 1.280 $ $Date: 2001/10/12 15:51:56 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2113,6 +2113,10 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             fileSystemChanged(false);
 
         } else {
+            if(file.getState() == C_STATE_DELETED){
+                throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                    CmsException.C_RESOURCE_DELETED);
+            }
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
