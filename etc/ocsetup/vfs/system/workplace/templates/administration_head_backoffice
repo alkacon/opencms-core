@@ -26,19 +26,19 @@
         switch(para) {
         case 1: {
                 window.top.body.admin_content.Editor.action.value = "exit";
-                window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
                 window.top.body.admin_content.Editor.submit();
                 break;
                 }
         case 2: {   
                 window.top.body.admin_content.Editor.action.value = "saveexit";
-                window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
                 window.top.body.admin_content.Editor.submit();
                 break;
                 }
         case 3: {
                 window.top.body.admin_content.Editor.action.value = "save";
-                window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
                 window.top.body.admin_content.Editor.submit();
                 break;
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/05 08:42:25 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/11/05 11:11:33 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2663,14 +2663,16 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   }
 
   // now build the names and values for the selectbox
-  for (int i = 0; i < templateSelectors.size(); i++) {
-    String selector = (String) templateSelectors.elementAt(i);
-    names.addElement(selector);
-    values.addElement(selector);
-    // check for the selected item
-    if (selectedPage.equals(selector)) {
-      returnValue=i;
-    }
+  if(templateSelectors != null){
+      for (int i = 0; i < templateSelectors.size(); i++) {
+        String selector = (String) templateSelectors.elementAt(i);
+        names.addElement(selector);
+        values.addElement(selector);
+        // check for the selected item
+        if (selectedPage.equals(selector)) {
+          returnValue=i;
+        }
+      }
   }
   session.putValue("backofficeselectortransfer",values);
   session.putValue("backofficeselectedtransfer",new Integer(returnValue));

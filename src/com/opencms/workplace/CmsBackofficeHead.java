@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackofficeHead.java,v $
-* Date   : $Date: 2001/10/31 17:09:34 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/05 11:12:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ public class CmsBackofficeHead extends CmsWorkplaceDefault implements I_CmsConst
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
         Vector selector = (Vector)session.getValue("backofficeselectortransfer");
-        if(selector != null && selector.size() <2){
+        if(selector == null || selector.size() < 2){
             //set the proccessTag = ""
             xmlTemplateDocument.setData("BOSELECTOR","");
             //remove the unused values from the session
@@ -101,14 +101,19 @@ public class CmsBackofficeHead extends CmsWorkplaceDefault implements I_CmsConst
     // get the actual template selector
     Integer retValue =(Integer)session.getValue("backofficeselectedtransfer");
     // copy the data into the value and name vectors
-    for (int i = 0; i < selector.size(); i++) {
-      String sel = (String) selector.elementAt(i);
-      names.addElement(sel);
-      values.addElement(sel);
+    if(selector != null){
+        for (int i = 0; i < selector.size(); i++) {
+          String sel = (String) selector.elementAt(i);
+          names.addElement(sel);
+          values.addElement(sel);
+        }
     }
 
     session.removeValue("backofficeselectortransfer");
     session.removeValue("backofficeselectedtransfer");
+    if(retValue == null){
+        retValue = new Integer(0);
+    }
     return retValue;
   }
 
