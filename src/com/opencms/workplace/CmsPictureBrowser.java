@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2001/08/21 17:58:04 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/08/22 14:22:23 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2001/08/21 17:58:04 $
+ * @version $Revision: 1.30 $ $Date: 2001/08/22 14:22:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -85,7 +85,13 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         if(!"error".equals(templateSelector)) {
             if(parameters.get(C_PARA_INITIAL) != null) {
                 session.removeValue(C_PARA_FOLDER);
+                session.removeValue("picBrowser_for_ext_nav");
             }
+            String setOnClick = (String)parameters.get("setonclick");
+            if(setOnClick != null){
+                session.putValue("picBrowser_for_ext_nav", setOnClick);
+            }
+            setOnClick = (String)session.getValue("picBrowser_for_ext_nav");
             String folder = (String)parameters.get(C_PARA_FOLDER);
             if(folder != null) {
                 session.putValue(C_PARA_FOLDER, folder);
@@ -131,7 +137,6 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
                 xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
-                String setOnClick = (String)parameters.get("setonclick");
                 if(setOnClick == null || !"true".equals(setOnClick)){
                     xmlTemplateDocument.setData("setonclick", "");
                 }else{
@@ -350,7 +355,8 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");
             xmlTemplateDocument.setData("type", type);
             // look if the onclick event must be set
-            String paraSetOnClick = (String)parameters.get("setonclick");
+            //String paraSetOnClick = (String)parameters.get("setonclick");
+            String paraSetOnClick = (String)session.getValue("picBrowser_for_ext_nav");
             String setOnClick = "";
             if ("true".equals(paraSetOnClick)){
                 setOnClick = xmlTemplateDocument.getProcessedDataValue("clickentry");
