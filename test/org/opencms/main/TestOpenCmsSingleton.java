@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2004/07/07 18:02:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
   
@@ -65,9 +65,11 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestOpenCmsSingleton.class.getName());
+                
         suite.addTest(new TestOpenCmsSingleton("testInitCmsObject"));
-               
+        suite.addTest(new TestOpenCmsSingleton("testLog"));
+        
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
@@ -166,5 +168,41 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         if (! cms.getRequestContext().getLocale().equals(Locale.CHINESE)) {
             fail("Locale in created context not as expected.");
         }        
+    }
+    
+    /**
+     * Test case for the logger.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLog() throws Exception {
+        
+        // first 4 log levels are uncritical
+        OpenCms.getLog(this).trace("This is a 'trace' log message");
+        OpenCms.getLog(this).debug("This is a 'debug' log message");
+        OpenCms.getLog(this).info("This is a 'info' log message");        
+        OpenCms.getLog(this).warn("This is a 'warn' log message");
+
+        // is something is written to log level 'error' or 'fatal' 
+        // a runtime exception must be thrown while unit tests are running
+        boolean noException;
+        noException = true; 
+        try {
+            OpenCms.getLog(this).error("This is a 'error' log message");
+        } catch (RuntimeException e) {
+            noException = false;
+        }
+        if (noException) {
+            fail("Writing to 'error' log level did not cause test to fail.");
+        }
+        noException = true; 
+        try {
+            OpenCms.getLog(this).fatal("This is a 'fatal' log message");
+        } catch (RuntimeException e) {
+            noException = false;
+        }
+        if (noException) {
+            fail("Writing to 'fatal' log level did not cause test to fail.");
+        }
     }
 }

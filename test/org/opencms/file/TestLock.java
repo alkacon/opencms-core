@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2004/07/01 14:44:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -75,7 +75,8 @@ public class TestLock extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-     
+        suite.setName(TestLock.class.getName());
+             
         suite.addTest(new TestLock("testLockForFile"));
         suite.addTest(new TestLock("testLockForFolder"));
         suite.addTest(new TestLock("testLockForFolderPrelockedShared"));

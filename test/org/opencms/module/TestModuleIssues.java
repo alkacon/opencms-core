@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2004/07/27 11:15:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
   
@@ -67,7 +67,8 @@ public class TestModuleIssues extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestModuleIssues.class.getName());
+                
         suite.addTest(new TestModuleIssues("testAdditionalSystemFolder"));
         
         TestSetup wrapper = new TestSetup(suite) {

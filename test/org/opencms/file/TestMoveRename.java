@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2004/07/03 10:21:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -67,7 +67,8 @@ public class TestMoveRename extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestMoveRename.class.getName());
+                
         suite.addTest(new TestMoveRename("testMoveSingleResource"));
         suite.addTest(new TestMoveRename("testMoveSingleNewResource"));
         suite.addTest(new TestMoveRename("testMultipleMoveResource"));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.test.OpenCmsTestCase;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
   
@@ -66,7 +66,8 @@ public class TestProperyDefinition extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestProperyDefinition.class.getName());
+                
         suite.addTest(new TestProperyDefinition("testCreatePropertyDefinition"));
         
         TestSetup wrapper = new TestSetup(suite) {

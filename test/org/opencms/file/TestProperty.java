@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -67,7 +67,8 @@ public class TestProperty extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestProperty.class.getName());
+                
         suite.addTest(new TestProperty("testWriteProperty"));
         suite.addTest(new TestProperty("testWriteProperties"));
         suite.addTest(new TestProperty("testRemoveProperty"));

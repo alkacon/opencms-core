@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadFileheader.java,v $
- * Date   : $Date: 2004/06/28 07:52:29 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResource.java,v $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,16 +42,16 @@ import org.opencms.test.OpenCmsTestCase;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  */
-public class TestReadFileheader extends OpenCmsTestCase {
+public class TestReadResource extends OpenCmsTestCase {
   
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public TestReadFileheader(String arg0) {
+    public TestReadResource(String arg0) {
         super(arg0);       
     }
     
@@ -63,13 +63,14 @@ public class TestReadFileheader extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
+        suite.setName(TestReadResource.class.getName());
         
-        suite.addTest(new TestReadFileheader("testReadBeforeReleaseDate"));
-        suite.addTest(new TestReadFileheader("testReadInValidTimeRange"));
-        suite.addTest(new TestReadFileheader("testReadAfterExpirationDate"));
-        suite.addTest(new TestReadFileheader("testReadBeforeReleaseDateIgnore"));
-        suite.addTest(new TestReadFileheader("testReadInValidTimeRangeIgnore"));
-        suite.addTest(new TestReadFileheader("testReadAfterExpirationDateIgnore"));
+        suite.addTest(new TestReadResource("testReadBeforeReleaseDate"));
+        suite.addTest(new TestReadResource("testReadInValidTimeRange"));
+        suite.addTest(new TestReadResource("testReadAfterExpirationDate"));
+        suite.addTest(new TestReadResource("testReadBeforeReleaseDateIgnore"));
+        suite.addTest(new TestReadResource("testReadInValidTimeRangeIgnore"));
+        suite.addTest(new TestReadResource("testReadAfterExpirationDateIgnore"));
         
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -86,7 +87,8 @@ public class TestReadFileheader extends OpenCmsTestCase {
     }       
     
     /**
-     * Test readFileHeader of a file before its release date.<p>
+     * Test readResource of a file before its release date.<p>
+     * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
@@ -121,7 +123,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
     }
 
     /**
-     * Test readFileHeader of a file after its expirationrelease date.<p>
+     * Test readResource of a file after its expirationrelease date.<p>
      * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
@@ -157,7 +159,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
     }
   
     /**
-     * Test readFileHeader of a file in its valid time range.<p>
+     * Test readResource of a file in its valid time range.<p>
      * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
@@ -189,7 +191,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
     }
     
     /**
-     * Test readFileHeader of a file before its release date.<p>
+     * Test readResource of a file before its release date.<p>
      * 
      * @throws Throwable if something goes wrong
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.6
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
@@ -76,7 +76,8 @@ public class TestSynchronize extends OpenCmsTestCase {
     public static Test suite() {
 
         TestSuite suite = new TestSuite();
-
+        suite.setName(TestSynchronize.class.getName());
+        
         suite.addTest(new TestSynchronize("testSynchronize"));
 
         TestSetup wrapper = new TestSetup(suite) {

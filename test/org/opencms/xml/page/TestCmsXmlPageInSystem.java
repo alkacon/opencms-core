@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.0
  */
@@ -68,6 +68,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
     public static Test suite() {
 
         TestSuite suite = new TestSuite();
+        suite.setName(TestCmsXmlPageInSystem.class.getName());
         
         suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
         

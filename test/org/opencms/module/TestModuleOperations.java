@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2004/07/23 13:32:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
   
@@ -76,7 +76,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestModuleOperations.class.getName());
+                
         suite.addTest(new TestModuleOperations("testModuleImport"));
         suite.addTest(new TestModuleOperations("testModuleExport"));
         suite.addTest(new TestModuleOperations("testOldModuleImport"));

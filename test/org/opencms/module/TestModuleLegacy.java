@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/Attic/TestModuleLegacy.java,v $
- * Date   : $Date: 2004/08/08 08:30:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestModuleLegacy extends OpenCmsTestCase {
     
@@ -73,7 +73,8 @@ public class TestModuleLegacy extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        
+        suite.setName(TestModuleLegacy.class.getName());
+                
         suite.addTest(new TestModuleLegacy("testLegacyImport"));
         suite.addTest(new TestModuleLegacy("testLegacyInitialization"));
         suite.addTest(new TestModuleLegacy("testLegacyMasterIO"));

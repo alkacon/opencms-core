@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/05 11:23:20 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsShell;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -81,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.3.5
  */
@@ -115,11 +116,13 @@ public class OpenCmsTestCase extends TestCase {
      */    
     public OpenCmsTestCase(String arg0) {
         super(arg0);
+        OpenCmsTestLogAppender.setBreakOnError(false);
         if (m_resourceStorages == null) {
             m_resourceStorages = new HashMap();
         }       
-        // set "OpenCms" system property to "test" for allowing the logger to be used
-        System.setProperty("OpenCmsLog", "opencms_test.log");        
+        // set "OpenCmsLog" system property to enable the logger
+        System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
+        OpenCmsTestLogAppender.setBreakOnError(true);
     }
     
     
@@ -129,6 +132,9 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static void removeOpenCms() {
         
+        // ensure logging does not throw exceptions
+        OpenCmsTestLogAppender.setBreakOnError(false);
+
         // output a message
         m_shell.printPrompt(); 
         System.out.println("----- Test cases finished -----");        
@@ -146,7 +152,7 @@ public class OpenCmsTestCase extends TestCase {
         // remove potentially created "classes, "lib" and "backup" folder
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/classes/"));        
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/lib/"));
-        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));        
+        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));           
     }
 
     /**
@@ -172,7 +178,9 @@ public class OpenCmsTestCase extends TestCase {
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder) {
-        
+
+        // turn off exceptions after error logging during setup (won't work otherwise)
+        OpenCmsTestLogAppender.setBreakOnError(false);
         // output a message 
         System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
         
@@ -236,6 +244,8 @@ public class OpenCmsTestCase extends TestCase {
         } catch (Throwable t) {
             fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));
         }
+        // turn on exceptions after error logging
+        OpenCmsTestLogAppender.setBreakOnError(true);
         // return the initialized cms context Object
         return cms;
     }
@@ -1802,8 +1812,12 @@ public class OpenCmsTestCase extends TestCase {
      * @param message the message to write
      */
     protected void echo(String message) {
-        m_shell.printPrompt();
-        System.out.println(message);
+        try {
+            m_shell.printPrompt();
+            System.out.println(message);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
     }   
     
     /**
@@ -1835,6 +1849,8 @@ public class OpenCmsTestCase extends TestCase {
      */
     protected void restart() {
 
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        
         // output a message 
         System.out.println("\n\n\n----- Restarting shell -----");
         
@@ -1844,6 +1860,8 @@ public class OpenCmsTestCase extends TestCase {
             getTestDataPath() + "WEB-INF" + File.separator,
             "${user}@${project}>", 
             null);
+
+        OpenCmsTestLogAppender.setBreakOnError(true);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2004/07/02 09:37:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/08/10 15:42:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,11 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 /**
- * Unit tests OpenCms publishing.<p>
+ * Unit tests for OpenCms publishing.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -67,6 +67,7 @@ public class TestPublishing extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
+        suite.setName(TestPublishing.class.getName());
         
         suite.addTest(new TestPublishing("testPublishNewFiles"));
         suite.addTest(new TestPublishing("testPublishChangedFiles"));
