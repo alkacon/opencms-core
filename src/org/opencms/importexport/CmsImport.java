@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2003/08/18 09:19:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/08/28 12:56:26 $
+* Version: $Revision: 1.6 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,15 @@
 
 package org.opencms.importexport;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.flex.CmsEvent;
+import com.opencms.flex.I_CmsEventListener;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 
@@ -48,6 +52,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -66,7 +71,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2003/08/18 09:19:19 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/28 12:56:26 $
  */
 public class CmsImport implements Serializable {
 
@@ -197,7 +202,8 @@ public class CmsImport implements Serializable {
             throw e;
         } finally {
             // close the import file
-        closeImportFile();
+            closeImportFile();
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.EMPTY_MAP, false));
         }
     }
 

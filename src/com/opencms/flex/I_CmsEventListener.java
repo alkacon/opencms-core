@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/08/26 16:00:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/28 12:56:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -157,6 +157,9 @@ public interface I_CmsEventListener {
     
     /** Event "all properties of a resource have been modified". */
     int EVENT_PROPERTY_MAP_MODIFIED = 15;
+    
+    /** Event "clear all offline caches". */
+    int EVENT_CLEAR_OFFLINE_CACHES = 16;
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 

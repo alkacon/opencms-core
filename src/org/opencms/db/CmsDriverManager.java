@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/28 11:19:14 $
- * Version: $Revision: 1.180 $
+ * Date   : $Date: 2003/08/28 12:56:26 $
+ * Version: $Revision: 1.181 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.180 $ $Date: 2003/08/28 11:19:14 $
+ * @version $Revision: 1.181 $ $Date: 2003/08/28 12:56:26 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1864,6 +1864,8 @@ public class CmsDriverManager extends Object {
         //delete all Properties
         m_vfsDriver.deleteAllProperties(context.currentProject().getId(), res);
         m_propertyCache.clear();
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", res)));
     }
 
     /**
@@ -2237,6 +2239,8 @@ public class CmsDriverManager extends Object {
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.EMPTY_MAP, false));
     }
 
     /**
