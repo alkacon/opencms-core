@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/06/08 12:59:08 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/06/11 09:39:57 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -151,6 +151,13 @@ public class CmsUri implements I_CmsConstants {
             }
         }while(group1 != null);
 
+        // maybe an other group of this user has access
+        Vector allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName());
+        for(int i=0; i<allGroups.size(); i++){
+            if(m_readAccessGroup.equals(((CmsGroup)allGroups.elementAt(i)).getName())){
+                return;
+            }
+        }
         // no way to read this sorry
         throw new CmsException(currentGroup.getName()+" has no read access. ",
                                 CmsException.C_ACCESS_DENIED);
