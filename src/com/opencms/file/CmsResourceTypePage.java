@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/23 15:12:46 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/10/23 17:28:13 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2002/10/23 15:12:46 $
+ * @version $Revision: 1.36 $ $Date: 2002/10/23 17:28:13 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -291,7 +291,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // touch its counterpart under content/bodies
             String bodyPath = this.checkBodyPath( cms, (CmsFile)file );
             if (bodyPath!=null) {
-                cms.doTouch( resourceName, timestamp );
+                cms.doTouch( bodyPath, timestamp );
             }            
         }
     }    
