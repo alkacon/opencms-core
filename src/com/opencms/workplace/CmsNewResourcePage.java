@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/07/06 13:00:01 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/07/27 13:52:22 $
+* Version: $Revision: 1.40 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2001/07/06 13:00:01 $
+ * @version $Revision: 1.40 $ $Date: 2001/07/27 13:52:22 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -55,46 +55,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
     private final static String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
 
     private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
-
-    /**
-     * This method checks if all nescessary folders are exisitng in the content body
-     * folder and creates the missing ones. <br>
-     * All page contents files are stored in the content body folder in a mirrored directory
-     * structure of the OpenCms filesystem. Therefor it is nescessary to create the
-     * missing folders when a new page document is createg.
-     * @param cms The CmsObject
-     * @param path The path in the CmsFilesystem where the new page should be created.
-     * @exception CmsException if something goes wrong.
-     */
-
-    private void checkFolders(CmsObject cms, String path) throws CmsException {
-        String completePath = C_CONTENTBODYPATH;
-        StringTokenizer t = new StringTokenizer(path, "/");
-
-        // check if all folders are there
-        while(t.hasMoreTokens()) {
-            String foldername = t.nextToken();
-            try {
-
-                // try to read the folder. if this fails, an exception is thrown
-                cms.readFolder(completePath + foldername + "/");
-            }
-            catch(CmsException e) {
-
-                // the folder could not be read, so create it.
-                String orgFolder = completePath + foldername + "/";
-                orgFolder = orgFolder.substring(C_CONTENTBODYPATH.length() - 1);
-                CmsFolder newfolder = cms.createFolder(completePath, foldername);
-                CmsFolder folder = cms.readFolder(orgFolder);
-                cms.lockResource(newfolder.getAbsolutePath());
-                cms.chown(newfolder.getAbsolutePath(), cms.readOwner(folder).getName());
-                cms.chgrp(newfolder.getAbsolutePath(), cms.readGroup(folder).getName());
-                cms.chmod(newfolder.getAbsolutePath(), folder.getAccessFlags());
-                cms.unlockResource(newfolder.getAbsolutePath());
-            }
-            completePath += foldername + "/";
-        }
-    }
 
     /**
      * Create the pagefile for this new page.
