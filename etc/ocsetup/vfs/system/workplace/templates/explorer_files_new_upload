@@ -297,4 +297,8 @@ function check_text_local()
 <ERRORPAGE title="error.title.upload" message="error.message.upload" reason="error.reason.upload" suggestion="error.suggestion.upload" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
 
+<TEMPLATE name="error2">
+<ERRORPAGE title="error.title.upload" message="error.message.upload" reason="error.reason.newextension" suggestion="error.suggestion.upload" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+</TEMPLATE>
+
 </WORKPLACE>
