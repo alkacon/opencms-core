@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2003/11/18 14:15:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.opencms.threads.CmsPublishThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -271,7 +271,7 @@ public class CmsPublishProject extends CmsReport {
                     thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()));
                 } else {
                     try {
-                        // switch to prject which will be published
+                        // switch to project which will be published
                         int projectId = Integer.parseInt(getParamProjectid());
                         getCms().getRequestContext().setCurrentProject(projectId);
                     } catch (Exception e) {
@@ -325,11 +325,19 @@ public class CmsPublishProject extends CmsReport {
                 computePublishResource();
                 // add the title for the direct publish dialog 
                 setParamTitle(key("messagebox.title.publishresource") + ": " + getParamResourcename());
+                // determine target to close the report
+                if (getParamOkLink() == null) {
+                    setParamOkLink("onclick=\"location.href('" + getJsp().link(C_FILE_EXPLORER_FILELIST) + "');\"");
+                }
             } else {
                 // add the title for the publish project dialog 
                 setParamTitle(key("project.publish.title"));
                 // determine the project id and name for publishing
                 computePublishProject(); 
+                // determine target to close the report
+                if (getParamOkLink() == null) {
+                    setParamOkLink("onclick=\"window.top.location.reload(true);\"");
+                }
             }
         }                 
     }

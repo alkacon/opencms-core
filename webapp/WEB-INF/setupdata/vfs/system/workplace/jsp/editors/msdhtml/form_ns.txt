@@ -3,7 +3,8 @@
 				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="28"></td>
 				<td align="left" width="10"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"></td>
 				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-					<tr height="20"> 
+					<tr height="20">
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu55.className='over';" onMouseOut="bu55.className='norm';" onMouseDown="bu55.className='push';" onMouseUp="bu55.className='over';doNsEdit(55);"><%= wp.buttonActionDirectEdit("bu55") %></a></td>
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';doNsEdit(2);"><img name="bu2" src="<%= wp.getPicsUri() %>bu_save_exit.gif" width="20" height="20" alt="<%= wp.key("button.saveclose") %>"></a></td>
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';doNsEdit(3);"><img name="bu3" src="<%= wp.getPicsUri() %>bu_save.gif" width="20" height="20" alt="<%= wp.key("button.save") %>"></td>
 						<%

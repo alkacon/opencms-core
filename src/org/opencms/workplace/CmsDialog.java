@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/12/08 16:35:16 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -70,6 +70,7 @@ public class CmsDialog extends CmsWorkplace {
     public static final int BUTTON_CLOSE = 2;
     public static final int BUTTON_ADVANCED = 3;
     public static final int BUTTON_SET = 4;
+    public static final int BUTTON_OK_NO_SUBMIT = 5;
     
     public static final String DIALOG_CONFIRMED = "confirmed";
     public static final String DIALOG_WAIT = "wait";
@@ -614,6 +615,13 @@ public class CmsDialog extends CmsWorkplace {
             switch (buttons[i]) {
                 case BUTTON_OK:
                     result.append("<input name=\"ok\" type=\"submit\" value=\"");
+                    result.append(key("button.ok"));
+                    result.append("\" class=\"dialogbutton\"");
+                    result.append(curAttributes);
+                    result.append(">\n");
+                    break;
+                case BUTTON_OK_NO_SUBMIT:
+                    result.append("<input name=\"ok\" type=\"button\" value=\"");
                     result.append(key("button.ok"));
                     result.append("\" class=\"dialogbutton\"");
                     result.append(curAttributes);

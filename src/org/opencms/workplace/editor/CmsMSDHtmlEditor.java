@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,16 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -55,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1.12
  */
@@ -100,7 +104,14 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         if (EDITOR_SAVE.equals(getParamAction())) {
             setAction(ACTION_SAVE);
         } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
-            setAction(ACTION_SAVEEXIT);         
+            setAction(ACTION_SAVEEXIT);
+        } else if (EDITOR_SAVEACTION.equals(getParamAction())) {
+            setAction(ACTION_SAVEACTION);
+            try {
+                actionDirectEdit();
+            } catch (Exception e) {
+                // ignore this exception
+            }
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
         } else if (EDITOR_CHANGE_BODY.equals(getParamAction())) {
@@ -151,6 +162,33 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         
         // prepare the content String for the editor
         prepareContent(false);
+    }
+    
+    /**
+     * 
+     * @throws IOException if something goes wrong
+     */
+    public void actionPublish() throws IOException {
+        // delete the temporary file        
+        deleteTempFile();
+        // unlock the resource
+        try {
+            getCms().unlockResource(getParamResource(), false);
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+        // create the publish link to redirect to
+        String publishLink = getJsp().link(CmsWorkplace.C_PATH_DIALOGS + "publishresource.html");
+        String params = "?resource=" + getParamResource() + "&action=" + DIALOG_CONFIRMED + "&oklink=";
+        if ("true".equals(getParamDirectedit())) {
+            // append the parameters and the report "ok" button action to the link
+            publishLink += params + Encoder.escapeWBlanks("onclick=\"location.href('" + getJsp().link(getParamResource()) + "');\"", Encoder.C_UTF8_ENCODING);
+        } else {
+            // append the parameters and the report "ok" button action to the link
+            publishLink += params + Encoder.escapeWBlanks("onclick=\"location.href('" + getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI) + "');\"", Encoder.C_UTF8_ENCODING);
+            
+        }
+        getJsp().getResponse().sendRedirect(publishLink);          
     }
     
     

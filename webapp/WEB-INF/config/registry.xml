@@ -37,6 +37,9 @@
        <editorhandler>
             <class>org.opencms.workplace.editor.CmsEditorFrameset</class>
         </editorhandler>
+        <editoraction>
+            <class>org.opencms.workplace.editor.CmsEditorActionDefault</class>
+        </editoraction>
         <resourceinit />
         <synchronizemodifications />
         <view>

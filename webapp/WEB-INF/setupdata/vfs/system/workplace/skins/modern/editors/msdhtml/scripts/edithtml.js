@@ -36,6 +36,7 @@ var binlist=null;
 var CLOSE=1;
 var SAVECLOSE=2;
 var SAVE=3;
+var SAVEACTION=55;
 
 var UNDO=4;
 var REDO=5;
@@ -275,14 +276,18 @@ function doEditHTML(para)
         document.EDITOR.target = "_top";        
         doSubmit();
         document.EDITOR.submit();
-        //if (binlist!=null) binlist.close();
         break;
     case SAVECLOSE:
         document.EDITOR.action.value = "saveexit";
         document.EDITOR.target = "_top";        
         doSubmit();
         document.EDITOR.submit();
-        //if (binlist!=null) binlist.close();
+        break;
+    case SAVEACTION:
+        document.EDITOR.action.value = "saveaction";
+        document.EDITOR.target = "_top";        
+        doSubmit();
+        document.EDITOR.submit();
         break;
     case SAVE:
         document.EDITOR.action.value = "save";

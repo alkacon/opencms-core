@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/12/19 15:34:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,12 +59,16 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
-     
+    
+    public static final String EDITOR_SAVEACTION = "saveaction";
+    
+    public static final int ACTION_SAVEACTION = 200;
+    
     private String m_paramBodylanguage;
     private String m_paramBodyname;
     private String m_paramNewbodylanguage;
@@ -431,6 +435,35 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         return m_selectTemplates;
     }
+    
+    /**
+     * Builds the html to display the special action button for the direct edit mode of the editor.<p>
+     * 
+     * @param nameValue the attribute value of the "name" attribute of the &lt;img&gt; tag
+     * @return the html to display the special action button
+     */
+    public String buttonActionDirectEdit(String nameValue) {
+        StringBuffer retValue = new StringBuffer(256);
+        // get the action class from the OpenCms runtime property
+        I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
+        String url;
+        String name;
+        if (actionClass != null) { 
+            url = actionClass.getButtonUrl("/system/workplace/skins/modern/buttons/", getJsp());
+            name = key(actionClass.getButtonName());
+        } else {
+            url = getSkinUri() + "buttons/publish.gif";
+            name = key("explorer.context.publish");
+        }
+        retValue.append("<img src=\"" + url + "\" ");
+        retValue.append("width=\"20\" height=\"20\" ");
+        if (nameValue != null) {
+            retValue.append("name=\"" + nameValue + "\" ");
+        }
+        retValue.append("alt=\"" + name + "\" ");
+        retValue.append("title=\"" + name + "\">");
+        return retValue.toString();
+    }
    
     /**
      * Performs a change template action.<p>
@@ -477,20 +510,50 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
-     * Performs the exit editor action and deletes the temporary file.<p>
-     * 
-     * @see org.opencms.workplace.editor.CmsEditor#actionExit()
+     * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
      */
-    public void actionExit() throws IOException {
+    public void actionClear() {
         // delete the temporary file        
         deleteTempFile();
         if ("true".equals(getParamDirectedit())) {
-            // unlock the resource
+            // unlock the resource when in direct edit mode
             try {
                 getCms().unlockResource(getParamResource(), false);
             } catch (CmsException e) {
                 // ignore this exception
             }
+        }
+    }
+    
+    /**
+     * Performs a configurable action performed by the editor.<p>
+     * 
+     * The default action is: save resource, clear temporary files and publish the resource directly.<p>
+     * 
+     * @throws IOException if a redirection fails
+     * @throws JspException if including a JSP fails
+     */
+    public void actionDirectEdit() throws IOException, JspException {
+        // get the action class from the OpenCms runtime property
+        I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
+        if (actionClass == null) {
+            // error getting the action class, save content and exit the editor
+            actionSave();
+            actionExit();
+        } else {
+            actionClass.editorAction(this, getJsp());
+        }
+    }
+    
+    /**
+     * Performs the exit editor action and deletes the temporary file.<p>
+     * 
+     * @see org.opencms.workplace.editor.CmsEditor#actionExit()
+     */
+    public void actionExit() throws IOException {
+        // clear temporary file and unlock resource, if in directedit mode
+        actionClear();
+        if ("true".equals(getParamDirectedit())) {
             // redirect to the edited resource
             getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
         } else {

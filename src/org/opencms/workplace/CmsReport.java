@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.10
  */
@@ -58,6 +58,8 @@ public class CmsReport extends CmsDialog {
     
     /** The Thread to display in this report */
     private CmsUUID m_paramThread;
+    
+    private String m_paramOkLink;
     
     /**
      * Public constructor.<p>
@@ -103,7 +105,31 @@ public class CmsReport extends CmsDialog {
             wp = new CmsReport(new CmsJspActionElement(context, req, res));
         }           
         return wp;
-    }   
+    } 
+    
+    /**
+     * Returns the oklink parameter.<p>
+     * 
+     * Use this parameter to define the target of the "ok" button, e.g. "onclick=...".<p>
+     * 
+     * @return the oklink parameter
+     */
+    public String getParamOkLink() {
+        if (m_paramOkLink != null && !"null".equals(m_paramOkLink)) {
+            return m_paramOkLink;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Sets the oklink parameter.<p>
+     * 
+     * @param value the oklink parameter value
+     */
+    public void setParamOkLink(String value) {
+        m_paramOkLink = value;
+    }
    
     /**
      * Returns the Thread id to display in this report.<p>
@@ -225,5 +251,18 @@ public class CmsReport extends CmsDialog {
         } catch (Exception e) {
             m_paramThread = CmsUUID.getNullUUID();
         }
-    }    
+    }  
+    
+    /**
+     * Builds a button row with a single "ok" button to close the report.<p>
+     *  
+     * @return the button row 
+     */
+    public String dialogButtonRowReportOk() {
+        if (getParamOkLink() == null) {
+            return dialogButtonRow(new int[] {BUTTON_OK}, new String[1]);
+        } else {
+            return dialogButtonRow(new int[] {BUTTON_OK_NO_SUBMIT}, new String[] {getParamOkLink()});
+        }
+    }
 }

@@ -34,6 +34,7 @@
 var CLOSE=1;
 var SAVECLOSE=2;
 var SAVE=3;
+var SAVEACTION=55;
 
 var UNDO=4;
 var REDO=5;
@@ -128,6 +129,14 @@ function doNsEdit(para)
         document.EDITOR.submit();
         break;
     }
+    case SAVEACTION:
+    {
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
+        document.EDITOR.action.value = "saveaction";
+        document.EDITOR.target = "_top";
+        document.EDITOR.submit();
+        break;
+    }
     }
 }
 
@@ -148,6 +157,14 @@ function doEdit(para)
     {
         doSubmit();
         document.EDITOR.action.value = "saveexit";
+        document.EDITOR.target = "_top";
+        document.EDITOR.submit();
+        break;
+    }
+    case SAVEACTION:
+    {
+        doSubmit();
+        document.EDITOR.action.value = "saveaction";
         document.EDITOR.target = "_top";
         document.EDITOR.submit();
         break;

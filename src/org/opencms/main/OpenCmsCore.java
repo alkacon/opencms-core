@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/06 09:45:59 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,6 +72,7 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.editor.CmsEditorSelector;
+import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import org.opencms.workplace.editor.I_CmsEditorHandler;
 
 import java.io.IOException;
@@ -102,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -321,13 +322,13 @@ public final class OpenCmsCore {
         for (int i=0; i<names.length; i++) {
             String name = names[i];
             if (m_requestHandlers.get(name) != null) {
-                if (getLog(this).isErrorEnabled()) {
+            if (getLog(this).isErrorEnabled()) {
                     getLog(this).error("Duplicate OpenCms request handler, ignoring '" + name + "'");
-                }
-                continue;
             }
-            m_requestHandlers.put(name, handler);
+                continue;
         }
+            m_requestHandlers.put(name, handler);
+    }
     }
     
     /**
@@ -1319,6 +1320,24 @@ public final class OpenCmsCore {
             if (getLog(this).isInfoEnabled()) {
                 //getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "8", e);
                 getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : non-critical error initializing editor handler");
+            }
+            // any exception here is fatal and will cause a stop in processing
+            // TODO: activate throwing exception: throw e;
+        }
+        
+        // initialize "editoraction" registry class
+        try {
+            List editorActionClasses = OpenCms.getRegistry().getEditorAction();
+            String currentClass = (String)editorActionClasses.get(0);                
+                I_CmsEditorActionHandler handler = (I_CmsEditorActionHandler)Class.forName(currentClass).newInstance();            
+                setRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION, handler);
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : " + currentClass + " instanciated");
+                }
+            } catch (Exception e) {
+            if (getLog(this).isInfoEnabled()) {
+                //getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "8", e);
+                getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : non-critical error initializing editor action class");
             }
             // any exception here is fatal and will cause a stop in processing
             // TODO: activate throwing exception: throw e;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/12/04 11:21:44 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2004/01/06 12:26:42 $
+ * Version: $Revision: 1.111 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.111 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1497,6 +1497,15 @@ public class CmsRegistry extends A_CmsXmlContent {
      */
     public List getEditorHandler() {
         return getSystemSubNodes("editorhandler");
+    }
+    
+    /**
+     * Returns a list of all configured editor action classes.<p>
+     *
+     * @return a list of all configured editor action classes
+     */
+    public List getEditorAction() {
+        return getSystemSubNodes("editoraction");
     }
 
     /**
