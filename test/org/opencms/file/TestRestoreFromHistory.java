@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2004/08/17 16:09:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/18 08:46:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
     
@@ -100,26 +100,31 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         
         String contentStr1 = "Hello this is content version 1";
         String contentStr2 = "Hello this is content version 2";
-        //CmsProperty sProp1 = new CmsProperty("StructureProp", "Structure property value version 1", null, true);
-        //CmsProperty rProp1 = new CmsProperty("ResourceProp", null, "Resource property value version 1", true);
-        //CmsProperty sProp2 = new CmsProperty("StructureProp", "Structure property value version 2", null, true);
-        //CmsProperty rProp2 = new CmsProperty("ResourceProp", null, "Resource property value version 2", true);        
+        
+        
+        CmsProperty sProp1 = new CmsProperty("StructureProp", "Structure property value version 1", null, true);
+        CmsProperty rProp1 = new CmsProperty("ResourceProp", null, "Resource property value version 1", true);
+        List props1 = new ArrayList();
+        props1.add(sProp1);
+        props1.add(rProp1);
+        
+        CmsProperty sProp2 = new CmsProperty("StructureProp", "Structure property value version 2", null, true);
+        CmsProperty rProp2 = new CmsProperty("ResourceProp", null, "Resource property value version 2", true);
+        List props2 = new ArrayList();
+        props2.add(sProp2);
+        props2.add(rProp2);
         
         // create the resource with content version 1
-        CmsResource res = cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, contentStr1.getBytes(), null);
+        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, contentStr1.getBytes(), null);
         this.storeResources(cms, resourcename);
         
         // set the properties
-        //List properties = new ArrayList();
-        //cms.writePropertyObject(resourcename, sProp1);
-        //properties.add(sProp1);
-        //cms.writePropertyObject(resourcename, rProp1);
-        //properties.add(rProp1);
+        cms.writePropertyObject(resourcename, sProp1);
+        cms.writePropertyObject(resourcename, rProp1);
         
         // check the content
         assertContent(cms, resourcename, contentStr1.getBytes());
-        //assertPropertyNew(cms, resourcename, sProp1);
-        //assertPropertyNew(cms, resourcename, rProp1);
+        assertPropertyNew(cms, resourcename, props1);
         
         // check that there are no backups available
         List allFiles = cms.readAllBackupFileHeaders(resourcename);
@@ -137,6 +142,9 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
             fail("Unexpected number of backup files for published resource found (one expected)");
         }
         
+        // store current resource contents
+        this.storeResources(cms, resourcename);
+        
         // change to content of the file to version 2 and publish it again
         cms.lockResource(resourcename);
         CmsFile update = cms.readFile(resourcename);
@@ -144,16 +152,15 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         cms.writeFile(update);
         
         // change the properties
-        //cms.writePropertyObject(resourcename, sProp2);
-        //cms.writePropertyObject(resourcename, rProp2);
+        cms.writePropertyObject(resourcename, sProp2);
+        cms.writePropertyObject(resourcename, rProp2);
         
         // check the content - must be version 2
         assertContent(cms, resourcename, contentStr2.getBytes());
         
         // check the properties - must be version 2
-        //this.assertPropertyChanged(cms, resourcename, sProp2);
-        //this.assertPropertyChanged(cms, resourcename, rProp2);
-        
+        assertPropertyChanged(cms, resourcename, props2);
+
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject(); 
@@ -167,6 +174,9 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         // read the tag id
         CmsBackupResource backup = (CmsBackupResource)allFiles.get(1);
         
+        // store current resource contents
+        this.storeResources(cms, resourcename);
+        
         // now restore the first version
         cms.lockResource(resourcename);
         cms.restoreResourceBackup(resourcename, backup.getTagId());
@@ -175,8 +185,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         assertContent(cms, resourcename, contentStr1.getBytes());
         
         // check the properties - must be version 1
-        //this.assertPropertyChanged(cms, resourcename, sProp1);
-        //this.assertPropertyChanged(cms, resourcename, rProp1);
+        assertPropertyChanged(cms, resourcename, props1);
     }
     
     /**
