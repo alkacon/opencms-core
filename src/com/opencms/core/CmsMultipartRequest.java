@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartRequest.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/20 09:49:11 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import com.opencms.file.*;
 * 
 * @author Alexander Kandzior
 * @author Michael Emmerich
-* @version $Revision: 1.2 $ $Date: 2000/02/15 17:53:48 $  
+* @version $Revision: 1.3 $ $Date: 2000/02/20 09:49:11 $  
 * 
 */
 public class CmsMultipartRequest implements HttpServletRequest {
@@ -529,15 +529,18 @@ public class CmsMultipartRequest implements HttpServletRequest {
    */
   public String getParameter(String name) {
     try {
-      String param = (String)m_parameters.get(name);
-      if (param.equals("")) return null;
+	  String param = m_req.getParameter(name);
+	  if (param==null) {
+          param = (String)m_parameters.get(name);
+          if (param.equals("")) return null;
+      }
       return param;
     }
     catch (Exception e) {
       return null;
     }
-  }
-
+  }  
+  
   /**
    * This method actually parses the request.  A subclass 
    * can override this method for a better optimized or differently
