@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/10/18 12:44:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/18 13:55:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,60 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
 
     /** Prefix for message locales. */
     static final String C_MESSAGE_PREFIX = "editor.label.";
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorHtmlEnd(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public String getEditorHtmlEnd(
+        CmsObject cms,
+        A_CmsXmlDocument document,
+        CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefinition,
+        I_CmsXmlContentValue value) {
+        
+        return "";
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorIncludes(org.opencms.file.CmsObject, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition)
+     */
+    public String getEditorIncludes(
+        CmsObject cms,
+        CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefinition) {
+        
+        return "";
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorInitCall(org.opencms.file.CmsObject, org.opencms.workplace.editors.CmsXmlContentEditor)
+     */
+    public String getEditorInitCall(
+        CmsObject cms,
+        CmsXmlContentEditor editor) {
+    
+        return "";
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorInitMethod(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public String getEditorInitMethod(
+        CmsObject cms,
+        A_CmsXmlDocument document,
+        CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefinition,
+        I_CmsXmlContentValue value) {
+        
+        return "";
+    }
         
     /**
      * Creates a message for message locale with the correct prefix.<p>
@@ -62,6 +109,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
      * @return message key for message locales with the correct prefix
      */
     public String getMessage(CmsXmlContentEditor editor, CmsXmlContentDefinition contentDefintion, String value) {
+        
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
         if (contentDefintion != null) {

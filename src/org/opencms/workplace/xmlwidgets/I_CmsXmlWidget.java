@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/10/18 12:44:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/18 13:55:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,18 +45,88 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
-
+    
+    /**
+     * Generates the html to include at the end of the editor form, if needed.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param document the XML document this value belongs to
+     * @param editor the XML content editor
+     * @param contentDefinition the content defintion object
+     * @param value the XML content value to generate the widget for
+     * 
+     * @return the html to include at the end of the editor form
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getEditorHtmlEnd(
+        CmsObject cms,
+        A_CmsXmlDocument document,
+        CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefinition,
+        I_CmsXmlContentValue value) throws CmsXmlException;
+    
+    /**
+     * Generates the necessary javascript inclusion code for an individual widget.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param editor the XML content editor
+     * @param contentDefinition the content defintion object
+     * 
+     * @return the javascript inclusion code
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getEditorIncludes(
+        CmsObject cms,
+        CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
+    
+    /**
+     * Generates the initialisation call method for an individual widget.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param editor the XML content editor
+     * 
+     * @return the initialisation call method
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getEditorInitCall(
+        CmsObject cms,
+        CmsXmlContentEditor editor) throws CmsXmlException;
+    
+    /**
+     * Generates the initialization code for the provided XML content value.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param document the XML document this value belongs to
+     * @param editor the XML content editor
+     * @param contentDefinition the content defintion object
+     * @param value the XML content value to generate the initialization for
+     * 
+     * @return the initialization code
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getEditorInitMethod(
+        CmsObject cms,
+        A_CmsXmlDocument document,
+        CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefinition,
+        I_CmsXmlContentValue value) throws CmsXmlException;
+    
     /**
      * Generates the editor widget for the provided XML content value.<p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
      * @param editor the XML content editor
-     * @param contentDefintion the content defintion object
+     * @param contentDefinition the content defintion object
      * @param value the XML content value to generate the widget for
      * 
      * @return the HTML form for this content node
@@ -67,7 +137,7 @@ public interface I_CmsXmlWidget {
         CmsObject cms,
         A_CmsXmlDocument document,
         CmsXmlContentEditor editor,
-        CmsXmlContentDefinition contentDefintion,
+        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
