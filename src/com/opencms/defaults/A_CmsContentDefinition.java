@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/14 15:21:07 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,14 +44,14 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
 
 /**
  * The owner  of this resource.
  */
- private CmsUUID m_UserId;
+ private CmsUUID m_userId;
 
 /**
  * The group  of this resource.
@@ -65,16 +65,25 @@ public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConst
 
 
 /**
- * applies the filter method
+ * Applies the filter method.<p>
+ * 
+ * @param cms the cms object
+ * @param filterMethod the filter method
  * @return an Vector containing the method
+ * @throws Exception if something goes wrong
  */
 public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod) throws Exception {
     return applyFilter(cms, filterMethod, null);
 }
 
 /**
- * applies the filter through the method object and the user parameters
+ * applies the filter through the method object and the user parameters.<p>
+ * 
+ * @param cms the cms object
+ * @param filterMethod the filter method
+ * @param userParameter additional filter parameter
  * @return a vector with the filtered content
+ * @throws Exception if something goes wrong
  */
 public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, String userParameter) throws Exception {
     Method method = filterMethod.getFilterMethod();
@@ -83,11 +92,11 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, St
     Object[] allParametersArray;
     Class[] paramTypes = method.getParameterTypes();
 
-    if( (paramTypes.length > 0) && (paramTypes[0] == CmsObject.class) ) {
+    if ((paramTypes.length > 0) && (paramTypes[0] == CmsObject.class)) {
         allParameters.addElement(cms);
     }
 
-    for(int i = 0; i < defaultParams.length; i++) {
+    for (int i = 0; i < defaultParams.length; i++) {
         allParameters.addElement(defaultParams[i]);
     }
 
@@ -101,7 +110,13 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, St
 }
 
 
-  public void check(boolean finalcheck) throws CmsPlausibilizationException {
+/**
+ * Checks the current values of a content definition.<p>
+ * 
+ * @param finalcheck flag to indicate the check when leaving the dialogue
+ * @throws CmsPlausibilizationException if a value check fails
+ */
+public void check(boolean finalcheck) throws CmsPlausibilizationException {
     // do nothing here, just an empty method for compatibility reasons.
   }
 
@@ -110,12 +125,17 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, St
  * abstract delete method
  * for delete instance of content definition
  * must be overwritten in your content definition
+ * 
+ * @param cms the cms object
+ * @throws Exception if something goes wrong
  */
 public abstract void delete(CmsObject cms) throws Exception;
 
 /**
  * Gets the getXXX methods
- * You have to override this method in your content definition.
+ * You have to override this method in your content definition.<p>
+ * 
+ * @param cms the cms object
  * @return a Vector with the filed methods.
  */
 public  static Vector getFieldMethods(CmsObject cms) {
@@ -123,7 +143,9 @@ public  static Vector getFieldMethods(CmsObject cms) {
 }
 /**
  * Gets the headlines of the table
- * You have to override this method in your content definition.
+ * You have to override this method in your content definition.<p>
+ * 
+ * @param cms the cms object
  * @return a Vector with the colum names.
  */
 public static Vector getFieldNames(CmsObject cms) {
@@ -131,7 +153,9 @@ public static Vector getFieldNames(CmsObject cms) {
 }
 /**
  * Gets the filter methods.
- * You have to override this method in your content definition.
+ * You have to override this method in your content definition.<p>
+ * 
+ * @param cms the cms object
  * @return a Vector of FilterMethod objects containing the methods, names and default parameters
  */
 public static Vector getFilterMethods(CmsObject cms) {
@@ -140,14 +164,17 @@ public static Vector getFilterMethods(CmsObject cms) {
 /**
  * Gets the lockstates
  * You have to override this method in your content definition, if you have overwritten
- * the isLockable method with true.
+ * the isLockable method with true.<p>
+ * 
  * @return a int with the lockstate
  */
 public CmsUUID getLockstate() {
     return CmsUUID.getNullUUID();
 }
 /**
- * gets the unique Id of a content definition instance
+ * gets the unique Id of a content definition instance.<p>
+ * 
+ * @param cms the cms object
  * @return a string with the Id
  */
 public abstract String getUniqueId(CmsObject cms) ;
@@ -169,16 +196,20 @@ public static boolean isLockable() {
     return false;
 }
 /**
- *Sets the lockstates
+ * Sets the lockstates
  * You have to override this method in your content definition,
- * if you have overwritten the isLockable method with true.
- * @param lockstate the lockstate for the actual entry
+ * if you have overwritten the isLockable method with true.<p>
+ * 
+ * @param lockedByUserId the id of the user who is locking the content
  */
 public void setLockstate(CmsUUID lockedByUserId) {
 }
 /**
  * abstract write method
- * must be overwritten in content definition
+ * must be overwritten in content definition.<p>
+ * 
+ * @param cms ths cms object
+ * @throws Exception if something goes wrong
  */
 public abstract void write(CmsObject cms) throws Exception;
 
@@ -199,11 +230,12 @@ public boolean isWriteable() {
 }
 
 /**
- * set the owner of the CD
- * @param id of the owner
+ * Set the owner of the CD.<p>
+ * 
+ * @param userId the id of the owner
  */
 public void setOwner(CmsUUID userId) {
-    m_UserId = userId;
+    m_userId = userId;
 }
 
 /**
@@ -211,12 +243,12 @@ public void setOwner(CmsUUID userId) {
  * @return id of the owner (int)
  */
 public CmsUUID getOwner() {
-    return m_UserId;
+    return m_userId;
 }
 
 /**
  * set the group of the CD
- * @param the group ID
+ * @param group the group ID
  */
 public void setGroup(String group) {
     m_group = group;
@@ -232,7 +264,7 @@ public String getGroup() {
 
 /**
  * set the accessFlag for the CD
- * @param the accessFlag
+ * @param accessFlags the accessFlag
  */
 public void setAccessFlags(int accessFlags) {
     m_accessFlags = accessFlags;
@@ -247,13 +279,16 @@ public int getAccessFlags() {
 }
 
 /**
- * has the current user the right to read the CD
+ * has the current user the right to read the CD.<p>
+ * 
+ * @param cms the cms object
  * @return a boolean
+ * @throws CmsException if something goes wrong
  */
 protected boolean hasReadAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
 
-    if ( !accessOther(C_ACCESS_PUBLIC_READ)
+    if (!accessOther(C_ACCESS_PUBLIC_READ)
         && !accessOwner(cms, currentUser, C_PERMISSION_READ)
         && !accessGroup(cms, currentUser, C_ACCESS_GROUP_READ)) {
         return false;
@@ -262,22 +297,25 @@ protected boolean hasReadAccess(CmsObject cms) throws CmsException {
 }
 
 /**
- * has the current user the right to write the CD
+ * has the current user the right to write the CD.<p>
+ * 
+ * @param cms the cms object
  * @return a boolean
+ * @throws CmsException if something goes wrong
  */
 public boolean hasWriteAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
     // check, if the resource is locked by the current user
 
-    if( isLockable() && (!getLockstate().equals(currentUser.getId())) ) {
+    if (isLockable() && (!getLockstate().equals(currentUser.getId()))) {
         // resource is not locked by the current user, no writing allowed
-        return(false);
+        return false;
     }
 
     // check the rights for the current resource
-    if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE) ||
-            accessOwner(cms, currentUser, C_PERMISSION_WRITE) ||
-            accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE) ) ) {
+    if (!(accessOther(C_ACCESS_PUBLIC_WRITE)
+            || accessOwner(cms, currentUser, C_PERMISSION_WRITE)
+            || accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE))) {
         // no write access to this resource!
         return false;
     }
@@ -285,46 +323,24 @@ public boolean hasWriteAccess(CmsObject cms) throws CmsException {
 }
 
 /**
- * Checks, if the owner may access this resource.
+ * Checks, if the owner may access this resource.<p>
  *
  * @param cms the cmsObject
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param flags The flags to check.
+ * @param currentUser The user who requested this method
+ * @param flags The flags to check
  *
  * @return wether the user has access, or not.
+ * @throws CmsException if something goes wrong
  */
 protected boolean accessOwner(CmsObject cms, CmsUser currentUser,
                                 int flags) throws CmsException {
     // The Admin has always access
-    if( cms.isAdmin() ) {
-        return(true);
+    if (cms.isAdmin()) {
+        return true;
     }
     // is the resource owned by this user?
-    if(getOwner().equals(currentUser.getId())) {
-        if( (getAccessFlags() & flags) == flags ) {
-            return true ;
-        }
-    }
-    // the resource isn't accesible by the user.
-    return false;
-}
-
-/**
- * Checks, if the group may access this resource.
- *
- * @param cms the cmsObject
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param flags The flags to check.
- *
- * @return wether the user has access, or not.
- */
-protected boolean accessGroup(CmsObject cms, CmsUser currentUser,
-                              int flags) throws CmsException {
-    // is the user in the group for the resource?
-    if(cms.userInGroup(currentUser.getName(), getGroup() )) {
-        if( (getAccessFlags() & flags) == flags ) {
+    if (getOwner().equals(currentUser.getId())) {
+        if ((getAccessFlags() & flags) == flags) {
             return true;
         }
     }
@@ -333,20 +349,36 @@ protected boolean accessGroup(CmsObject cms, CmsUser currentUser,
 }
 
 /**
- * Checks, if others may access this resource.
+ * Checks, if the group may access this resource.<p>
  *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param flags The flags to check.
+ * @param cms the cmsObject
+ * @param currentUser The user who requested this method
+ * @param flags The flags to check
  *
- * @return wether the user has access, or not.
+ * @return wether the user has access, or not
+ * @throws CmsException if something goes wrong
  */
-protected boolean accessOther( int flags ) throws CmsException {
-    if ((getAccessFlags() & flags) == flags) {
-        return true;
-    } else {
-        return false;
+protected boolean accessGroup(CmsObject cms, CmsUser currentUser,
+                              int flags) throws CmsException {
+    // is the user in the group for the resource?
+    if (cms.userInGroup(currentUser.getName(), getGroup())) {
+        if ((getAccessFlags() & flags) == flags) {
+            return true;
+        }
     }
+    // the resource isn't accesible by the user.
+    return false;
+}
+
+/**
+ * Checks, if others may access this resource.<p>
+ *
+ * @param flags The flags to check
+ * @return wether the user has access, or not.
+ * @throws CmsException if something goes wrong
+ */
+protected boolean accessOther(int flags) throws CmsException {
+    return ((getAccessFlags() & flags) == flags);
 }
 
 /**
