@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/05 12:31:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/04/07 08:17:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -108,6 +108,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /** Value for the dialog mode: new resource wizard with index page created in new folder */
     public static final String MODE_WIZARD_INDEXCREATED = "wizardindexcreated";
     
+    /** Key name for the structure panel */
+    public static final String PANEL_STRUCTURE = "panel.properties.structure";
+    /** Key name for the resource panel */
+    public static final String PANEL_RESOURCE = "panel.properties.resource";
+    
     /** Prefix for the input values */
     public static final String PREFIX_VALUE = "value-";
     /** Prefix for the hidden fields */
@@ -139,6 +144,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     
     /** Helper to determine if the user switched the tab views of the dialog */
     private boolean m_tabSwitched;
+    
+    /** Helper to determine if the edited resource is a folder */
+    private boolean m_isFolder;
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -201,8 +209,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     public List getTabs() {
         ArrayList tabList = new ArrayList(2);
-        tabList.add(key("panel.properties.structure"));
-        tabList.add(key("panel.properties.resource"));
+        tabList.add(key(PANEL_STRUCTURE));
+        if (!m_isFolder) {
+            tabList.add(key(PANEL_RESOURCE));
+        }
         return tabList;
     }
     
@@ -210,7 +220,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
     public List getTabParameterOrder() {
-        ArrayList orderList = new ArrayList(5);
+        ArrayList orderList = new ArrayList(2);
         orderList.add("tabstr");
         orderList.add("tabres");
         return orderList;
@@ -303,6 +313,24 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         
         // get the active tab from request parameter or display first tab
         getActiveTab();
+        
+        // check the resource type of the edited resource
+        m_isFolder = false;
+        try {
+            CmsResource resource = getCms().readFileHeader(getParamResource());
+            if (resource.isFolder()) {
+                m_isFolder = true;
+                if (!getParamResource().endsWith("/")) {
+                    // append folder separator to resource name
+                    setParamResource(getParamResource() + "/");
+                }
+            }
+        } catch (CmsException e) {
+            // error reading resource, log the error
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading file " + getParamResource());
+            }
+        }
         
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
@@ -421,9 +449,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         StringBuffer retValue = new StringBuffer(1024);
         
         // get currently active tab
-        int activeTab = getActiveTab();
+        String activeTab = getActiveTabName();
+        String structurePanelName = key(PANEL_STRUCTURE);
         
-        // initialize "disabled" attribute for input fields
+        // initialize "disabled" attribute for the input fields
         String disabled = "";
         boolean isEditable = true;
         if (!isEditable()) {
@@ -475,7 +504,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 String valueResource = "";
                 if (m_tabSwitched) {
                     // switched the tab, get values from hidden fields
-                    if (activeTab == 1) {
+                    if (structurePanelName.equals(activeTab)) {
                         // structure form
                         propValue = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
                         valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
@@ -506,7 +535,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     if (currentProperty == null) {
                         currentProperty = new CmsProperty();
                     }                    
-                    if (activeTab == 1) {
+                    if (structurePanelName.equals(activeTab)) {
                         // show the structure properties
                         propValue = currentProperty.getStructureValue();
                     } else {
@@ -535,7 +564,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             retValue.append("</table>"); 
         } else {
             // there are no properties defined for this resource, show nothing
-            retValue.append("no properties defined!");
+            retValue.append("No properties defined!");
         }
         
         return retValue.toString();
@@ -552,14 +581,15 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @param valueStructure the structure value of the property
      * @param valueResource the resource value of the property
      * @param disabled contains attribute String to disable the fields
-     * @param activeTab the number of the currently active dialog tab
+     * @param activeTab the name of the currently active dialog tab
      * @return the html for a single property entry row
      */
-    private StringBuffer buildPropertyRow(String propName, String propValue, String valueStructure, String valueResource, String disabled, int activeTab) {
+    private StringBuffer buildPropertyRow(String propName, String propValue, String valueStructure, String valueResource, String disabled, String activeTab) {
         StringBuffer result = new StringBuffer(256);
+        String structurePanelName = key(PANEL_STRUCTURE);
         String shownValue = propValue;
         String inputAttrs = "class=\"maxwidth\"";
-        if (activeTab == 1) {
+        if (structurePanelName.equals(activeTab)) {
             // in "shared properties" form, show resource value if no structure value is set
             if ("".equals(valueStructure) && !"".equals(valueResource)) {
                 shownValue = valueResource;
@@ -580,7 +610,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         if (!"".equals(propValue)) {
             // show checkbox only for non empty value
             String prefix = PREFIX_RESOURCE;
-            if (activeTab == 1) {
+            if (structurePanelName.equals(activeTab)) {
                 prefix = PREFIX_STRUCTURE;
             }
             result.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+propName+"\" id=\""+PREFIX_USEPROPERTY+propName+"\" value=\"true\"" + disabled);
@@ -821,7 +851,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 switchToTempProject();
             }
             Map activeProperties = getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
-            int activeTab = getActiveTab();
+            String activeTab = getActiveTabName();
             List propertiesToWrite = new ArrayList();
             
             // check all property definitions of the resource for new values
@@ -831,7 +861,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 String valueStructure = null;
                 String valueResource = null;                
                 
-                if (activeTab == 1) {
+                if (key(PANEL_STRUCTURE).equals(activeTab)) {
                     // get parameters from the structure tab
                     valueStructure = request.getParameter(PREFIX_VALUE + propName);
                     valueResource = request.getParameter(PREFIX_RESOURCE + propName);
@@ -871,7 +901,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 boolean writeStructureValue = false;
                 boolean writeResourceValue = false;
                 String oldValue = oldProperty.getStructureValue();
-                String newValue = newProperty.getStructureValue().trim();
+                String newValue = newProperty.getStructureValue();
 
                 // write the structure value if the existing structure value is not null and we want to delete the structure value
                 writeStructureValue = (oldValue != null && newProperty.deleteStructureValue());
@@ -883,7 +913,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 }                
                 
                 oldValue = oldProperty.getResourceValue();
-                newValue = newProperty.getResourceValue().trim();
+                newValue = newProperty.getResourceValue();
 
                 // write the resource value if the existing resource value is not null and we want to delete the resource value
                 writeResourceValue = (oldValue != null && newProperty.deleteStructureValue());

@@ -126,13 +126,13 @@ function toggleDelete(propName, prefix, activeTab) {
 	if (checked == true) {
 		// box has been checked, get value from hidden field
 		field.value = hiddenValue;
-		if (activeTab == "1" && field.className == "dialogmarkedfield") {
+		if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && field.className == "dialogmarkedfield") {
 			field.className = "maxwidth";
 		}
 	} else {
 		// box has been unchecked 
 		var resValue = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;
-		if (activeTab == "1" && resValue.length > 0) {
+		if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && resValue.length > 0) {
 			// in "sahred properties" form, show resource value if present
 			field.value = resValue;
 			field.className = "dialogmarkedfield";
@@ -161,7 +161,7 @@ function checkValue(propName, activeTab) {
 // called on the onFocus event of an input field
 function deleteResEntry(propName, activeTab) {
 	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
-	if (activeTab == "1" && field.className == "dialogmarkedfield") {
+	if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && field.className == "dialogmarkedfield") {
 		// clear field to allow individual input
 		field.value = "";
 		field.className = "maxwidth";
@@ -170,7 +170,7 @@ function deleteResEntry(propName, activeTab) {
 
 // called on the onBlur event of an input field
 function checkResEntry(propName, activeTab) {
-	if (activeTab == "1") {
+	if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>") {
 		// check only in "shared properties" form
 		var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
 		var resVal = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;

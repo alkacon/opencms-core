@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/04/07 08:17:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -76,6 +75,9 @@ public abstract class CmsTabDialog extends CmsDialog {
     private String m_paramTab;
     /** Determines if the "set" button was pressed */
     private String m_paramSetPressed;
+    
+    /** Stores the currently active tab */
+    private int m_activeTab = -1;
     
     /**
      * Public constructor.<p>
@@ -163,17 +165,39 @@ public abstract class CmsTabDialog extends CmsDialog {
      * @return the number of the currently active tab
      */
     public int getActiveTab() {
-        String paramTab = getParamTab();
-        int tab = 1;
-        if (paramTab != null && !"".equals(paramTab)) {
-            try {
-                tab = Integer.parseInt(paramTab);
-            } catch (NumberFormatException e) {
-                // do nothing, the first tab is returned
+        if (m_activeTab < 0) {
+            String paramTab = getParamTab();
+            int tab = 1;
+            if (paramTab != null && !"".equals(paramTab)) {
+                try {
+                    tab = Integer.parseInt(paramTab);
+                } catch (NumberFormatException e) {
+                    // do nothing, the first tab is returned
+                }
             }
+            setParamTab("" + tab);
+            m_activeTab = tab;
+            return tab;
+        } else {
+            return m_activeTab;
         }
-        setParamTab("" + tab);
-        return tab;
+    }
+    
+    /**
+     * Returns the localized name of the currently active tab.<p>
+     * 
+     * @return the localized name of the currently active tab or null if no tab name was found
+     */
+    public String getActiveTabName() {
+        if (m_activeTab < 0) {
+            getActiveTab();    
+        }
+        List tabNames = getTabs();
+        try {
+            return (String)tabNames.get(m_activeTab -1);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
     
     /**
@@ -242,18 +266,31 @@ public abstract class CmsTabDialog extends CmsDialog {
     public String dialogTabRow() {
         StringBuffer result = new StringBuffer(512);
         StringBuffer lineRow = new StringBuffer(256);
-        Iterator i = getTabs().iterator();
+        List tabNames = getTabs();
+        if (tabNames.size() < 2) {
+            // less than 2 tabs present, do not show them and create a border line
+            result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\" style=\"empty-cells: show;\">\n");
+            result.append("<tr>\n");
+            result.append("\t<td class=\"dialogtabrow\"></td>\n");
+            result.append("</tr>\n");
+            result.append("</table>\n");
+            return result.toString();    
+        }
+        Iterator i = tabNames.iterator();
         int counter = 1;
         int activeTab = getActiveTab();
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\" style=\"empty-cells: show;\">\n");
         result.append("<tr>\n");
         while (i.hasNext()) {
+            // build a tab entry
             String curTab = (String)i.next();
             String curTabLink = "javascript:openTab('" + counter + "');";
             if (counter == activeTab) {
+                // create the currently active tab
                 int addDelta = 0;
                 result.append("\t<td class=\"dialogtabactive\"");
                 if (counter == 1) {
+                    // for first tab, add special html for correct layout
                     result.append(" style=\"border-left-width: 1px;\"");
                     addDelta = 1;
                 }
@@ -265,6 +302,7 @@ public abstract class CmsTabDialog extends CmsDialog {
                 result.append("</span></td>\n");
                 lineRow.append("\t<td></td>\n");
             } else {
+                // create an inactive tab
                 result.append("\t<td class=\"dialogtab\" unselectable=\"on\">");
                 result.append("<a class=\"tab\" href=\"" + curTabLink + "\"");
                 result.append(" style=\"width: " + (curTab.length() * 8) + "px;\"");

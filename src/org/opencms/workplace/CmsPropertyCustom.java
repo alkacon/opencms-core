@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/04/02 12:31:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/07 08:17:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
@@ -175,7 +175,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // create "add to navigation" checkbox
         result.append(buildTableRowStart(key("input.addtonav")));
         result.append("<input type=\"checkbox\" name=\"enablenav\" id=\"enablenav\" value=\"true\" onClick=\"toggleNav();\"");
-        if (activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT) && activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVPOS)) {
+        if (activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT) || activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVPOS)) {
             result.append(" checked=\"checked\"");
         }
         result.append(disabled + ">");
@@ -190,7 +190,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // create NavPos select box row
         result.append(buildTableRowStart(key("input.insert")));
         synchronized (this) {
-            result.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + " class=\"maxwidth noborder\"", getSettings().getMessages()));
+            result.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + " id=\"navpos\" class=\"maxwidth noborder\"", getSettings().getMessages()));
         }
         // get the old NavPos value and store it in hidden field
         String navPos = null;
@@ -255,7 +255,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } else {
             // property is not used, create an empty text input field
             result.append("<input type=\"text\" class=\"maxwidth\" ");
-            result.append("name=\""+PREFIX_VALUE+propertyName+"\""+disabled+"></td>\n");
+            result.append("name=\""+PREFIX_VALUE+propertyName+"\" id=\"" + PREFIX_VALUE + propertyName + "\""+disabled+"></td>\n");
             result.append("\t<td class=\"textcenter\">&nbsp;");
         }
         result.append(buildTableRowEnd());
@@ -471,11 +471,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     
         // check if there is a parameter value for the current property
         boolean emptyParam = true;
-        if (propValue != null) {
-            if (!"".equals(propValue.trim())) {
+        if (propValue != null && !"".equals(propValue.trim())) {
                 emptyParam = false;
-            }
         }
+        
         if (emptyParam) {
             // parameter is empty, check if the property has to be deleted
             if (activeProperties.containsKey(propName)) {
@@ -483,9 +482,11 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 checkLock(getParamResource());
                 // determine the value to delete
                 if (currentProperty.getStructureValue() != null) {
-                    currentProperty.setStructureValue("");    
+                    currentProperty.setStructureValue(CmsProperty.C_DELETE_VALUE); 
+                    currentProperty.setResourceValue(null);
                 } else {
-                    currentProperty.setResourceValue("");    
+                    currentProperty.setResourceValue(CmsProperty.C_DELETE_VALUE);
+                    currentProperty.setStructureValue(null);
                 }
                 // write the updated property object
                 getCms().writePropertyObject(getParamResource(), currentProperty);
@@ -499,16 +500,21 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                     // new property, determine setting from OpenCms workplace configuration
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         currentProperty.setStructureValue(propValue);
+                        currentProperty.setResourceValue(null);
                     } else {
                         currentProperty.setResourceValue(propValue);
+                        currentProperty.setStructureValue(null);
                     }                   
                 } else if (currentProperty.getStructureValue() != null) {
                     // structure value has to be updated
-                    currentProperty.setStructureValue(propValue);    
+                    currentProperty.setStructureValue(propValue);
+                    currentProperty.setResourceValue(null);
                 } else {
                     // resource value has to be updated
-                    currentProperty.setResourceValue(propValue);    
+                    currentProperty.setResourceValue(propValue);  
+                    currentProperty.setStructureValue(null);
                 }
+                // set auto-creation of the property to true
                 currentProperty.setAutoCreatePropertyDefinition(true);
                 // write the updated property object
                 getCms().writePropertyObject(getParamResource(), currentProperty);               
