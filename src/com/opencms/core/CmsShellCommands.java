@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/10/10 08:18:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/10/10 12:47:13 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.5 $ $Date: 2000/10/10 08:18:36 $
+ * @version $Revision: 1.6 $ $Date: 2000/10/10 12:47:13 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1153,6 +1153,22 @@ public void getLanguage(String languageId)
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (10-10-2000 14:29:40)
+ * @param projectId java.lang.String
+ */
+public void getSite(String projectId)
+{
+	try
+	{
+		System.out.println(m_cms.getSite(Integer.parseInt(projectId)).toString());
+	}
+	catch (CmsException e)
+	{
+		CmsShell.printException(e);
+	}
+}
 /**
  * Reads all site urls for a specifik site
  * @param siteId java.lang.String

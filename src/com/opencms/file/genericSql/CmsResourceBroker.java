@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/10 08:50:59 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2000/10/10 12:47:13 $
+ * Version: $Revision: 1.160 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.159 $ $Date: 2000/10/10 08:50:59 $
+ * @version $Revision: 1.160 $ $Date: 2000/10/10 12:47:13 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2497,6 +2497,7 @@ public void deleteSite(CmsUser currentUser, CmsProject currentProject, int siteI
  * @param currentProject The current project of the user.
  * 
  * @return a Vector of projects.
+ * @author Martin Langelund changed the site check
  */
 public Vector getAllAccessibleProjects(CmsUser currentUser, CmsProject currentProject) throws CmsException
 {
@@ -2516,7 +2517,8 @@ public Vector getAllAccessibleProjects(CmsUser currentUser, CmsProject currentPr
 		}
 	}
 	
-	int onlineProjectId = onlineProject(currentUser,  currentProject).getId();
+//	int onlineProjectId = onlineProject(currentUser,  currentProject).getId();
+	int currentSiteId = getSite(currentUser, currentProject, currentProject.getId()).getId();
 
 	//should write method that returns all project of the current project.
 	Vector projects = new Vector();
@@ -2524,7 +2526,8 @@ public Vector getAllAccessibleProjects(CmsUser currentUser, CmsProject currentPr
 	for (Enumeration e=m_dbAccess.getAllProjects(CmsConstants.C_PROJECT_STATE_UNLOCKED).elements();e.hasMoreElements();)
 	{
 		CmsProject p = (CmsProject) e.nextElement();
-		if ((p.getParentId() == onlineProjectId) || (p.getId() == onlineProjectId))
+//		if ((p.getParentId() == onlineProjectId) || (p.getId() == onlineProjectId))
+		if (currentSiteId==getSite(currentUser, currentProject, p.getId()).getId())
 		projects.addElement(p);
 	}
 	Vector res=null;

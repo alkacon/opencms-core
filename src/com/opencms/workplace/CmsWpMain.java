@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/10/04 13:47:18 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/10/10 12:47:15 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/10/04 13:47:18 $
+ * @version $Revision: 1.27 $ $Date: 2000/10/10 12:47:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -79,7 +79,6 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		String newView = (String)parameters.get(C_PARA_VIEW);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
-
 		// Check if the user requested a group change
 		if(newGroup != null && !("".equals(newGroup))) {
 			if(!(newGroup.equals(reqCont.currentGroup().getName()))) {
@@ -89,14 +88,16 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// Check if the user requested a project change
 		if(newProject != null && !("".equals(newProject))) {
-			if(!(newProject.equals(reqCont.currentProject().getName()))) {
+			if(!(newProject.equals(reqCont.currentProject().getName()))) 
+			{
 				reqCont.setCurrentProject(Integer.parseInt(newProject));
 			}
 		}
 		
 		// Check if the user requested a site change
 		int currentSite = cms.getSite(cms.onlineProject().getId()).getId();
-		if(newSite != null && !("".equals(newSite)) && !newSite.equals(""+currentSite)) {
+		if(newSite != null && !(newSite.trim().equals("")) && !newSite.trim().equals(""+currentSite)) 
+		{
 			reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
 		}
 		
@@ -282,7 +283,9 @@ public class CmsWpMain extends CmsWorkplaceDefault {
  * Both <code>names</code> and <code>values</code> will contain
  * the site names after returning from this method.
  * <P>
- * 
+ *
+ * @author Finn Nielsen
+ * @author Martin Langelund 
  * @param cms CmsObject Object for accessing system resources.
  * @param lang reference to the currently valid language file
  * @param names Vector to be filled with the appropriate values in this method.
@@ -295,8 +298,9 @@ public Integer getSites(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Ve
 {
 	// Get all project information
 	CmsRequestContext reqCont = cms.getRequestContext();
+
 	Vector allSites = cms.getAllSites();
-	int currentSite = cms.getSite(cms.onlineProject().getId()).getId();
+	int currentSite = cms.getSite(reqCont.currentProject().getId()).getId(); //cms.getCurrentSite().getId(); //getSite(cms.onlineProject().getId()).getId();
 
 	// Now loop through all sites and fill the result vectors
 	int currentSiteNum = 0;
@@ -305,7 +309,7 @@ public Integer getSites(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Ve
 	for (int i = 0; i < allSites.size(); i++)
 	{
 		CmsSite site = (CmsSite) allSites.elementAt(i);
-		values.addElement(""+site.getId());
+		values.addElement("" + site.getId());
 		names.addElement(site.getName());
 		if (currentSite == site.getId())
 			currentSiteNum = i;
