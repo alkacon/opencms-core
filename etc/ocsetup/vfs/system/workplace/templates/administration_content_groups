@@ -177,7 +177,8 @@ onLoad="window.top.body.admin_head.admincontenturl='administration_content_userm
 							</tr>
 							<tr>
 								<td class=dialogtxt><INPUT type="checkbox" id="PROJECTMANAGER" name="PROJECTMANAGER" ]]><PROCESS>PMCHECKED</PROCESS><![CDATA[ value="yes"> ]]><LABEL value="input.groupsprojectmanager" /><![CDATA[</td>
-								<td class=dialogtxt colspan=2><INPUT type="checkbox" id="PROJECTCOWORKER" name="PROJECTCOWORKER" ]]><PROCESS>PCWCHECKED</PROCESS><![CDATA[ value="yes">]]><LABEL value="input.groupsprojectworker" /><![CDATA[</td>
+								<td class=dialogtxt><INPUT type="checkbox" id="PROJECTCOWORKER" name="PROJECTCOWORKER" ]]><PROCESS>PCWCHECKED</PROCESS><![CDATA[ value="yes">]]><LABEL value="input.groupsprojectworker" /><![CDATA[</td>
+								<td class=dialogtxt><INPUT type="checkbox" id="ROLE" name="ROLE" ]]><PROCESS>PRCHECKED</PROCESS><![CDATA[ value="yes">]]><LABEL value="input.rolefortasks" /><![CDATA[</td>
 							</tr>
 
 							<tr><td class="leerzeile" colspan=3>&nbsp;</td></tr>	

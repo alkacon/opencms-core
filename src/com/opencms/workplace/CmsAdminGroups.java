@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/04/06 12:39:03 $
- * Version: $Revision: 1.1 $Selector
+ * Date   : $Date: 2000/04/06 15:16:08 $
+ * Version: $Revision: 1.2 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2000/04/06 12:39:03 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/06 15:16:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -196,6 +196,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 						A_CmsGroup newGroup  = cms.addGroup(groupname, description, 0, supergroup);
 						newGroup.setProjectManager(projectManager);
 						newGroup.setProjectCoWorker(projectCoWorker);
+						newGroup.setRole(role);
 						cms.writeGroup(newGroup);
 						for (int z=0; z < selectedUsers.size(); z++) {
 							cms.addUserToGroup((String) selectedUsers.elementAt(z), groupname);
