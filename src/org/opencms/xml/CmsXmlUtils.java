@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/07 13:43:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -104,7 +104,7 @@ public final class CmsXmlUtils {
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // append [i] to path element if required 
-                result.append(createXpathElementCheck((String)elements.get(i), 1));
+                result.append(createXpathElementCheck((String)elements.get(i), (i == end)?index:1));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');
