@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/11 15:51:33 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {
@@ -68,7 +68,7 @@ public final class CmsSiteMatcher implements Cloneable {
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
      * 
-     * If no port is provided, the default port 80 or 443 will be used for http or hhtps respectively.
+     * If no port is provided, the default port 80 or 443 will be used for http or https respectively.
      * If no protocol is provided, the default protocol "http" will be used.
      * 
      * @param serverString the String, e.g. http://localhost:8080
