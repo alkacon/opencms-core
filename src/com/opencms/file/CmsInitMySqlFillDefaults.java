@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/26 18:48:28 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/31 11:43:22 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -27,11 +27,17 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 	public I_CmsResourceBroker init( String propertyDriver, 
 									 String propertyConnectString )
 		throws Exception {
+		
+			// TODO: write the SQLDriver and the connectString to the propertys
+
 			I_CmsRbUserGroup userRb = new CmsRbUserGroup( 
 				new CmsAccessUserGroup(
 					new CmsAccessUserMySql(propertyDriver, propertyConnectString),
 					new CmsAccessUserInfoMySql(propertyDriver, propertyConnectString),
 					new CmsAccessGroupMySql(propertyDriver, propertyConnectString)));
+			
+			I_CmsRbTask taskRb = new CmsRbTask( 
+				new CmsAccessTask(propertyDriver, propertyConnectString ) );
 
 			userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
 			userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
@@ -110,10 +116,10 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
             
             
 			return new CmsResourceBroker(userRb, fileRb, metadefinitionRb, 
-										 propertyRb, projectRb);
+										 propertyRb, projectRb, taskRb);
 	}
     
-      /**
+    /**
 	 * Inits all mimetypes.
 	 * The mimetype-data should be stored in the database. But now this data
 	 * is putted directly here.

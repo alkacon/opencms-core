@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * It helps the core to set up all layers correctly.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/05 17:49:14 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/31 11:43:22 $
  */
 public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 	
@@ -28,6 +28,8 @@ public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 	public I_CmsResourceBroker init( String propertyDriver, 
 									 String propertyConnectString )
 		throws Exception {
+		
+		// TODO: read the SQLDriver and the connectString from the propertys
 		
 		I_CmsRbUserGroup userGroupRb = 
 			new CmsRbUserGroup( 
@@ -47,6 +49,10 @@ public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 		I_CmsRbProject projectRb = 
 			new CmsRbProject(
 				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
+		
+		I_CmsRbTask taskRb = 
+			new CmsRbTask(
+				new CmsAccessTask(propertyDriver, propertyConnectString));
 		
 		// read all mountpoints from the properties.
 		Hashtable mountPoints = (Hashtable) propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
@@ -71,6 +77,6 @@ public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 		I_CmsRbFile fileRb = new CmsRbFile(new CmsAccessFile(mountedAccessModules));
 		
 		return( new CmsResourceBroker( userGroupRb, fileRb, metadefinitionRb, 
-									   propertyRb, projectRb) );
+									   propertyRb, projectRb, taskRb) );
 	}
 }

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.38 $ $Date: 2000/01/31 11:43:22 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -62,13 +62,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsResourceBroker(I_CmsRbUserGroup userRb, I_CmsRbFile fileRb , 
 							 I_CmsRbMetadefinition metadefRb, I_CmsRbProperty propertyRb,
-							 I_CmsRbProject projectRb /*,  I_CmsRbTask taskRb */) {
+							 I_CmsRbProject projectRb, I_CmsRbTask taskRb) {
 		m_userRb = userRb;
 		m_fileRb = fileRb;
 		m_metadefRb = metadefRb;
 		m_propertyRb = propertyRb;
 		m_projectRb = projectRb;
-		// m_taskRb = taskRb; // TODO: add the taskRb here - if available
+		m_taskRb = taskRb;
     
 	}
 
@@ -172,12 +172,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 if( isAdmin(currentUser, currentProject) || 
 			 isProjectLeader(currentUser, currentProject)) {
 			 
-			 // create a new task for the project
-			 // TODO: create the task with the taskRb!
-			 A_CmsTask task = new CmsTask();
-			 
 			 // read the needed group from the cms
 			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			 
+			 // create a new task for the project
+			 A_CmsTask task = m_taskRb.createProject(currentUser, name, group,
+													 // TODO: Use a real timestamp here, not now!
+													 new java.sql.Timestamp(System.currentTimeMillis()),
+													 C_TASK_PRIORITY_NORMAL);
 			 
 			 return( m_projectRb.createProject(name, description, task, currentUser, 
 											   group, C_PROJECT_STATE_UNLOCKED ) );
@@ -280,9 +282,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 // inform about the file-system-change
 			 fileSystemChanged(publishProject.getName(), resources);
 			 
-			 // the project-state will be set to "published"
+			 // the project-state will be set to "published", the date will be set.
 			 // the project must be written to the cms.
 			 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
+			 publishProject.setPublishingDate(new Date().getTime());
 			 m_projectRb.writeProject(publishProject);
 			 
 			 // return the changed resources.
@@ -727,7 +730,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// Yes - log him in!
 			// first write the lastlogin-time.
 			newUser.setLastlogin(new Date().getTime());
-			// TODO: write the user back to the cms.
+			// write the user back to the cms.
 			m_userRb.writeUser(newUser);
 			return(newUser);
 		} else {

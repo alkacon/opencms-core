@@ -8,7 +8,7 @@ import java.sql.*;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/31 11:43:22 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	
@@ -161,6 +161,15 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	 */
 	public long getPublishingDate() {
 		return(m_publishingdate);
+	}
+	
+	/**
+	 * Sets the publishing date of this project.
+	 * 
+	 * @param the publishing date of this project.
+	 */
+	void setPublishingDate(long publishingDate) {
+		m_publishingdate = publishingDate;
 	}
 	
 	/**
