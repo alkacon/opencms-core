@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/10/31 14:46:46 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2000/10/31 13:11:24 $
+ * @version $Revision: 1.30 $ $Date: 2000/10/31 14:46:46 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -410,10 +410,10 @@ private void importFile(String source, String destination, String type, String u
 			m_cms.chown(fullname, user);
 			// for debugging: check whether the kernel and this method determine the same status
 			int kernelstate = m_cms.readFileHeader(fullname).getState();
-			if ((state != kernelstate) && A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "CmsImport: different statuses, kernel sais " + kernelstate + " import sais " + state);
+			if ((state != kernelstate)) {
+				System.out.println( "CmsImport: different statuses, kernel sais " + kernelstate + " import sais " + state);
 			}
-			m_cms.chstate(fullname,state);
+			// m_cms.chstate(fullname,state);
 		}
 		System.out.println("OK");
 	} catch (Exception exc) {
