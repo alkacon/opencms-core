@@ -7,7 +7,7 @@
 <!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
 
 <taglib>
-    <tlib-version>0.3</tlib-version>
+    <tlib-version>0.9</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
@@ -65,27 +65,13 @@
         <description>
             This tag is used to read values from the OpenCms workplace language files.
         </description>
-    </tag>   
-    
-    <tag>
-        <name>includevar</name>
-        <tag-class>com.opencms.flex.jsp.CmsJspTagIncludeVar</tag-class>
-        <body-content>empty</body-content>
-        <description>
-            This tag is used for including OpenCms Subelements in a page.
-            It is similar to the "include" JSP directive.
-            It loads the input at runtime, not at compile - time.
-        </description>
-        <attribute>
-            <name>attribute</name>
-            <required>true</required>
-        </attribute>        
-    </tag>          
+    </tag>            
     
     <tag>
         <name>include</name>
         <tag-class>com.opencms.flex.jsp.CmsJspTagInclude</tag-class>
-        <body-content>empty</body-content>
+        <tei-class>com.opencms.flex.jsp.CmsJspTagIncludeTEI</tei-class>
+        <body-content>JSP</body-content>
         <description>
             This tag is used for including OpenCms Subelements in a page.
             It is similar to the "include" JSP directive.
@@ -93,7 +79,18 @@
         </description>
         <attribute>
             <name>page</name>
-            <required>true</required>
+        </attribute>        
+        <attribute>
+            <name>file</name>
+        </attribute>        
+        <attribute>
+            <name>property</name>
+        </attribute>        
+        <attribute>
+            <name>suffix</name>
+        </attribute>
+        <attribute>
+            <name>body</name>
         </attribute>        
     </tag>          
         
