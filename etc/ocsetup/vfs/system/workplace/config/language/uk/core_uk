@@ -110,7 +110,9 @@
                 <nounchanged>exclude files unchanged in the current project</nounchanged>
                 <userdata>include group- and userdata</userdata>
                 <filename>Name of Exportfile</filename>
-                <files>existing Files</files><titleexport>Export Database</titleexport>
+                <files>existing Files</files>
+                <titleexport>Export Database</titleexport>
+                <titleexportmoduledata>Export Moduledata</titleexportmoduledata>
                 <titleimport>Import Database</titleimport>
             </label>
         </database>
@@ -188,6 +190,7 @@
             <reason>
                 <accessdenied>You either don't have the access rights fot the selected operation or the folder is locked.</accessdenied>
                 <addgroup>The group name must be entered.</addgroup>
+                <channelsmissing>Please select at least one channel.</channelsmissing>
                 <chgrp>You don't have the needed permissions.</chgrp>
                 <chmod>You don't have the needed permissions.</chmod>
                 <chown>You don't have the needed permissions.</chown>
@@ -467,6 +470,8 @@
             <editor>Editor</editor>
             <email>Email</email>
             <exportadd>add</exportadd>
+            <exportchannels>Channels to export</exportchannels>
+			<exportmodules>Modules to export</exportmodules>
             <exportresources>resources to export</exportresources> 
             <filter>Filter</filter>
             <firstelement>at the first position</firstelement>

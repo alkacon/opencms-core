@@ -110,6 +110,7 @@
                 <nounchanged><![CDATA[Unver&auml;nderte Dateien im Projekt ausschließen]]></nounchanged>
                 <userdata>inklusive Gruppen- und Benutzerdaten</userdata>
                 <titleexport>Datenbank exportieren</titleexport>
+                <titleexportmoduledata>Moduldaten exportieren</titleexportmoduledata>
                 <titleimport>Datenbank importieren</titleimport>
                 <filename>Exportdatei</filename>
                 <files>bestehende Dateien</files>
@@ -187,6 +188,7 @@
             <reason>
                 <accessdenied>Sie haben keine Zugriffsrechte für die gewählte Aktion oder das Verzeichnis ist von einem anderen Nutzer gesperrt.</accessdenied>
                 <addgroup>Das Feld Gruppenname muß ausgefüllt werden.</addgroup>
+                <channelsmissing>Sie müssen mindestens einen Channel angeben.</channelsmissing>
                 <chgrp>Sie haben dazu keine Berechtigung.</chgrp>
                 <chmod>Sie haben dazu keine Berechtigung.</chmod>
                 <chown>Sie haben dazu keine Berechtigung.</chown>
@@ -466,6 +468,8 @@
             <editor>Editor</editor>
             <email>EMail</email>
             <exportadd>hinzufügen</exportadd>
+            <exportchannels>zu exportierende Channels</exportchannels>
+            <exportmodules>zu exportierende Module</exportmodules>
             <exportresources>zu exportierende Ressourcen</exportresources>
             <exportfilename>Name der Exportdatei</exportfilename>
             <filter>Filter</filter>
