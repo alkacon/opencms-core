@@ -1,0 +1,817 @@
+\chapter{Einführung}
+
+\section{Was ist OpenCms}
+
+OpenCms 4.0 ist ein \Index{Content-Management-System} auf der Basis von
+\Index{Open-Source-Software}. Mit OpenCms können komplexe Websites für das
+Intra-, Extra- und Internet transparent, schnell und
+kostengünstig erstellt, gepflegt und verwaltet werden.
+
+OpenCms bietet die Möglichkeit komplette Websites offline zu produzieren
+und später online zu stellen. An der Offline-Version einer Website arbeiten
+verschiedene Benutzer, die unterschiedliche Benutzerrechte haben, in einem
+Offline-Projekt. Mit OpenCms können der Workflow des Offline-Projekts und
+die einzelnen Benutzer aus den Bereichen Content, Design und Administration
+einfach und mit geringem Zeitaufwand koordiniert werden.
+Nach Fertigstellung und Abnahme wird die Offline-Version vom Projektmanager
+online gestellt. Spätere Änderungen und die
+Pflege der Website erfolgen ebenfalls offline. Die Dateien der bestehenden
+Online-Version werden dann durch die aktualisierten Dateien der
+Offline-Version ersetzt.
+
+\section{Die Vorteile von OpenCms}
+
+OpenCms ist \Index{plattformunabhängig}, d.h. die für die Bearbeitung der
+Websites benötigte Software muß auf einem Webserver installiert werden und
+kann deshalb von jedem Ort (z.B. von Zuhause) über das Internet aufgerufen
+werden. Die Benutzer können mit Hilfe eines Internet-Browsers auf OpenCms
+zugreifen. Die Arbeitsumgebung ist durch Benutzername und Kennwort
+geschützt. Alle \Index{Softwarekomponenten} auf dem \Index{Webserver}
+basieren auf der Java-Technologie.
+
+\section{Konfiguration des Clients}
+
+Auf dem Client-Rechner muss als \Index{Internet-Browser}
+\Index{Netscape Navigator} oder \Index{Microsoft Internet Explorer}
+installiert sein. In beiden Fällen muss die
+Browserversion 4.0 oder größer sein. Für die genaue Konfiguration des
+jeweiligen Browsers siehe Anhang 1, Seite \pageref{anhang1}. Zur Zeit ist
+die optimale Konfiguration für den Client ein Windows-\Index{Betriebssystem}
+(95/98/NT) mit Microsoft Interner Explorer.
+\clearpage
+
+Das folgende Benutzermanual erläutert Ihnen die Bedienung der wichtigsten
+Funktionen des Systems. Wir haben dieses Manual in zwei Bereiche unterteilt:
+
+\begin{itemize}
+\item[Teil 1] wird Ihnen anhand eines Demo-Website eine praktische
+Einführung in OpenCms geben;
+\item[Teil 2] erläutert Ihnen noch einmal in ausführlicher Form die
+einzelnen Funktionen von OpenCms.
+\end{itemize}
+
+\begin{tabular}{|lp{145mm}|}
+\hline
+\textbf{Hinweis:} & In unseren Beschreibungen gehen wir davon aus, dass
+OpenCms bereits erfolgreich auf Ihrem Webserver bzw.
+lokalen Rechner installiert wurde. \\
+\hline
+\end{tabular}
+
+
+\chapter{OpenCms - Eine erste Tour}
+
+Wir beginnen mit einem Beispiel, um Ihnen möglichst schnell einen
+praxisorientierten Einstieg in das System zu geben.
+
+Rufen Sie dazu in Ihrem Internet-Browser die \Index{Beispielanwendung} von
+OpenCms mit der Adresse
+
+\url{http://localhost/servlets/opencms/examples/index.html} auf.
+
+Die Startseite der OpenCms-Demosite wird nun angezeigt. Beachten Sie die
+Navigation. Dort werden alle Seiten mit einem
+Link dargestellt. Klicken Sie bitte auf den Link Examples.
+
+Die Demoseite wird angezeigt (Abb. \ref{welcomee}).
+
+Sie werden nun anhand der folgenden Beschreibungen diese Seite mit OpenCms
+bearbeiten.
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{welcome1.eps}
+
+\sffamily{\caption{Leere Demoseite von außen\label{welcomee}}}
+\end{figure}
+
+\section{Eine Website bearbeiten}
+
+Rufen Sie die sogenannte \Index{Workplace} auf, um eine Seite mit OpenCms zu
+bearbeiten. Die Workplace ist die Benutzeroberfläche von OpenCms, mit der
+Sie u.a. Seiten verändern, löschen und neu anlegen. Die Workplace basiert
+vollständig auf HTML und läuft daher in Ihrem Internet-Browser, ohne dass
+Sie weitere Software auf Ihrem Rechner installieren müssen.
+
+Geben Sie die folgende Adresse in Ihren Browser ein, um die Workplace
+aufzurufen:
+
+\url{http://localhost/servlets/opencms/system/workplace/action/login.html}
+
+\subsection{Im System anmelden}
+
+Tragen Sie im Login-Menü (Abb. \ref{anmeld}) bei Benutzername
+\glqq Admin\grqq\ und bei
+Kennwort \glqq admin\grqq\ ein.
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{anmeld.eps}
+
+\sffamily{\caption{Dialogbox Anmeldung\label{anmeld}}}
+\end{figure}
+
+Nach der Anmeldung öffnet sich automatisch ein neues Browserfenster;
+gleichzeitig wird das alte Browserfenster geschlossen (ggf. werden Sie
+aufgefordert, das Schließen des alten Fensters zu bestätigen). Sie
+befinden sich jetzt in der Workplace, und zwar in der sogenannten
+\glqq Explorer-Ansicht\grqq\ (Abb. \ref{explorer}). Nun folgt die
+eigentliche Bearbeitung der Demo-Website
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{explorer.eps}
+
+\sffamily{\caption{Explorer-Ansicht\label{explorer}}}
+\end{figure}
+
+\begin{tabular}{|lp{145mm}|}
+\hline
+\textbf{Hinweis!} & OpenCms ist \Index{projektbasiert}, was bedeutet, dass
+Sie die Seiten nicht direkt online ändern können. Dazu müssen
+Sie zunächst ein \Index{Bearbeitungsprojekt} anlegen.\\
+\hline
+\end{tabular}
+
+
+\subsection{Neues Projekt anlegen}
+
+Wechseln Sie nun in die \Index{Administrationsansicht}. Klicken Sie dazu auf
+die Auswahl \glqq Ansicht\grqq\ in der oberen Menüleiste.
+
+Anschließend wählen Sie \glqq Administration\grqq\ aus (Abb. \ref{ansicht}).
+
+\begin{figure}[h!!!]\centering
+
+\includegraphics[scale=\scaler]{ansicht.eps}
+
+\sffamily{\caption{Auswahlbox Ansicht\label{ansicht}}}
+\end{figure}
+
+Die Administrationsansicht wird geladen. Es erscheinen die folgenden
+Buttons (Abb. \ref{admin}):
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{admin.eps}
+
+\sffamily{\caption{Ansicht Administration\label{admin}}}
+\end{figure}
+
+Klicken Sie auf \glqq \Index{Projektverwaltung}\grqq. Es erscheint eine
+neue Seite mit den folgenden Buttons (Abb. \ref{buttons}):
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{buttons.eps}
+
+\sffamily{\caption{Buttons unter Projektverwaltung\label{buttons}}}
+\end{figure}
+
+Klicken Sie auf \glqq \Index{Neues Projekt}\grqq, um ein neues Projekt
+anzulegen.
+
+Es erscheint das Dialogfenster \glqq Neues Projekt anlegen\grqq\ (Abb.
+\ref{proj_neu}).
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{proj_neu.eps}
+
+\sffamily{\caption{Dialogfenster Neues Projekt anlegen\label{proj_neu}}}
+\end{figure}
+
+Tragen Sie hier die erforderlichen Daten Ihres neuen
+Projektes ein:
+
+\begin{tabular}{l|l}
+\Index{Projektname}:        & Netter Versuch \\
+\Index{Beschreibung}:       & Erstellung eines Testprojektes \\
+\Index{Verzeichnisse}:      & /examples/ \\
+\Index{Projektmitarbeiter}: & Users \\
+\Index{Projektleiter}:      & Projektmanager \\
+\end{tabular}
+
+Klicken Sie dann auf den Button \glqq OK\grqq.
+
+\begin{tabular}{|lp{145mm}|}
+\hline
+\textbf{Hinweis!} & Klicken Sie beim Eingabefeld \glqq Verzeichnisse\grqq\
+einfach auf das \Index{Ordnersymbol}. Es öffnet sich ein zweites Fenster
+mit den vorhandenen Verzeichnissen. Wählen Sie für Ihr neu angelegtes
+Projekt das Verzeichnis \glqq Examples\grqq\ aus. Danach
+das kleine Fenster wieder schließen. \\
+\hline
+\end{tabular}
+
+
+Wechseln Sie nun wieder über die Auswahl \glqq Ansicht\grqq\ in die
+\Index{Explorer-Ansicht}. Wählen Sie in der Verzeichnisübersicht
+das Verzeichnis \glqq Examples\grqq\ aus, in welches Sie zuvor Ihr
+Projekt angelegt haben. Die Explorer-Ansicht wird daraufhin
+neu geladen. Nun wählen Sie in der Auswahl \glqq Projekt\grqq\ in der
+oberen Menüleiste Ihr zuvor angelegtes Projekt mit dem
+Namen \glqq Netter Versuch\grqq aus (Abb. \ref{projekte}).
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{projekte.eps}
+
+\sffamily{\caption{Ansicht Projekte\label{projekte}}}
+\end{figure}
+
+Sie befinden sich nun in der Ansicht Ihres Projektes und haben jetzt die
+Möglichkeit die einzelnen Seiten bearbeiten.
+
+\begin{tabular}{|lp{145mm}|}
+\hline
+\textbf{Hinweis!} & Ihnen fällt sicher auf, dass bis auf die Ordner
+\glqq examples\grqq\ und \glqq content\grqq\ alle anderen Ordner im
+Verzeichnissbaum \Index{inaktiv} sind. OpenCms erlaubt nach der Auswahl des
+Projekts grundsätzlich nur die Bearbeitung desjenigen Verzeichnisses,
+in dem das Projekt angelegt worden ist. \\
+\hline
+\end{tabular}
+
+\subsection{Seiten bearbeiten}
+
+Bevor Sie eine Seite zur weiteren Bearbeitung aufrufen, müssen Sie diese
+Seite zunächst für weitere Nutzer \Index{sperren}.
+
+Klicken Sie dazu mit der linken Maustaste auf das Icon neben dem
+Aufgabentext \glqq index.html\grqq. Es erscheint das
+entsprechende Kontextmenü (Abb. \ref{kontext}). Klicken Sie auf den Menüpunkt
+\glqq Sperren\grqq.
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{kontext.eps}
+
+\sffamily{\caption{Kontextmenü\label{kontext}}}
+\end{figure}
+
+
+An Ihrer gesperrten Datei erscheint jetzt ein geöffnetes Schloss
+\includegraphics[scale=\scaler]{schloss.eps}
+(falls das Symbol nicht erscheinen sollte, überprüfen Sie bitte die
+\Index{Browsereinstellungen} (s.o.) oder aktualisieren Sie die Ansicht
+mit dem Button
+\includegraphics[scale=\scaler]{refresh.eps}).
+
+Klicken Sie nun erneut mit der linken Maustaste auf das Icon neben dem
+Aufgabetext \glqq index.html\grqq. Es erscheint wieder das entsprechende
+Kontextmenü. Klicken Sie nun auf \glqq Seite bearbeiten\grqq\, um den
+\Index{HTML-Editor} zu laden.
+
+\subsection{Mit dem HTML-Editor arbeiten}
+
+Sie sind nun im HTML-Editor von OpenCms (Abb. \ref{welcomez}). Hier finden
+Sie eine Reihe von Bearbeitungssymbolen, die Sie bereits aus bekannten
+Programmen (z.B. Word) kennen.
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{welcome2.eps}
+
+\sffamily{\caption{OpenCms-HTML-Editor\label{welcomez}}}
+\end{figure}
+
+In der \Index{Texteingabefläche} unterhalb dieser Symbole finden Sie den
+Text wieder, den Sie bereits zu Beginn gesehen haben (Abb. \ref{welcomee}
+auf Seite \pageref{welcomee}). \Index{Formulieren}
+und \Index{formatieren} (fett, kursiv, unterstreichen) Sie diesen
+Text nun um.
+
+Übrigens! Die HTML-Editor-Ansicht, in der Sie sich momentan befinden, ist
+eine \Index{WYSIWYG}-Ansicht (\glq What you see is what you get\grq); d.h.,
+die Seite wird genauso dargestellt, wie sie später auch im Internet zu sehen
+ist.
+
+In der oberen \Index{Menüleiste} finden Sie auf der rechten Seite die
+Auswahl \glqq \Index{Template}\grqq\ (Abb. \ref{template}). Hier haben Sie
+die Möglichkeit aus vorgegebenen Seitenstrukturen und -layouts zu wählen,
+die auch sofort im HTML-Editor von OpenCms angezeigt werden.
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{template.eps}
+
+\sffamily{\caption{Auswahlbox Template\label{template}}}
+\end{figure}
+
+Klicken Sie zur Demonstration in der \Index{Template-Auswahl} auf
+\glqq OpenCms Demo-Template 1\grqq. Die Editor-Ansicht wird neu
+geladen und es erscheint das neue Seitenlayout des Demo-Templates 1.
+
+Noch weiter rechts in der oberen Menüleiste finden Sie die Auswahl
+\glqq Editor\grqq. Hier haben Sie die Möglichkeit zwischen
+verschiedenen Editor-Ansichten auswählen. Zur Zeit befinden Sie sich in
+der HTML-Ansicht. Wählen Sie jetzt den \glqq \Index{Texteditor}\grqq\ aus.
+Die Editor-Ansicht wird neu geladen und es erscheint derselbe Inhalt im
+\Index{Quellcode}.
+
+Beenden Sie nun den Editor. Klicken Sie dazu bitte auf den Button
+\glqq Speichern \& Schließen\grqq\
+\includegraphics[scale=\scaler]{close.eps}
+ganz links im oberen Menübereich.
+
+Es erscheint wieder die bekannte Explorer-Ansicht.
+
+\subsection{Bearbeitung beenden}
+
+Klicken Sie mit der linken Maustaste auf das Icon neben dem Aufgabentext
+\glqq index.html\grqq\ der gerade bearbeiteten Seite, um diese Seite
+wieder für andere Nutzer freizugeben. Sie ist jetzt rot markiert, was
+darauf hinweist, dass Sie die Seite bearbeitet haben. Klicken Sie im
+Kontextmenü auf den Menüpunkt \glqq \Index{Frei geben}\grqq. Das Schloss
+verschwindet wieder (Abb. \ref{unlock}).
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{unlock.eps}
+
+\sffamily{\caption{Bearbeitete Seite freigeben\label{unlock}}}
+\end{figure}
+
+\subsection{Projekt veröffentlichen\label{p_publish}}
+
+Rufen Sie wieder die Ansicht \glqq \Index{Administration}\grqq\ auf. Klicken
+Sie auf den Button \glqq \Index{Projektverwaltung}\grqq\ und dann auf den
+Button \glqq aktuelle Projekte\grqq. Hier wird Ihnen Ihr gerade
+bearbeitetes Projekt in der Übersicht angezeigt. Klicken Sie auf
+das Projekt-Symbol, um das \Index{Kontextmenü} aufzurufen. Wählen Sie hier
+den Menüpunkt \glqq \Index{Veröffentlichen}\grqq\ aus (Abb. \ref{publish}).
+Klicken Sie anschließend auf den Button \glqq OK\grqq.
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{publish.eps}
+
+\sffamily{\caption{Projekt veröffentlichen\label{publish}}}
+\end{figure}
+
+Rufen Sie jetzt wieder die Beispiel-Anwendung auf:
+
+\url{http://localhost/servlets/opencms/examples/index.html}
+
+Die Test-Seite zeigt jetzt die von Ihnen vorgenommenen Änderungen
+(Abb. \ref{welcomed}).
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{welcome3.eps}
+
+\sffamily{\caption{Geänderte Demo-Seite von außen\label{welcomed}}}
+\end{figure}
+
+\section{Eine \Index{neue Seite} anlegen}
+
+Über die Explorer-Ansicht haben Sie die Möglichkeit auch neue Seiten und
+Ordner für Ihre Website anzulegen. Legen Sie dazu, wie oben beschrieben,
+wieder ein Projekt an. Wechseln Sie anschließend in das Verzeichnis
+\glqq examples\grqq, in dem Sie mit der linken Maustaste auf den
+entsprechenden Ordner im Verzeichnisbaum klicken. Klicken Sie nun auf das
+Symbol
+\includegraphics[scale=\scaler]{sym_neu.eps}.
+
+Es erscheint das Dialogfenster \glqq Neu\grqq\ (Abb. \ref{dia_neu}). Klicken
+Sie hier den Punkt \glqq Seite\grqq\ an.
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{dia_neu.eps}
+
+\sffamily{\caption{Dialogfenster Neu\label{dia_neu}}}
+\end{figure}
+
+
+Klicken Sie auf den Button \glqq Weiter\grqq. Geben Sie im Dialogfenster
+\glqq Neue Seite anlegen\grqq\ (Abb. \ref{newpage}) jetzt die folgenden
+Daten ein:
+
+\begin{center}
+\begin{tabular}{l|l}
+\Index{Name}:            & hilfe \\
+\Index{Titel}:           & Testseite \\
+\Index{Template}:        & OpenCms Demo Template 1 \\
+\Index{Navigationstext}: & Hilfe \\
+\Index{Einfügen}:        & an letzter Position \\
+\end{tabular}
+\end{center}
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{newpage.eps}
+
+\sffamily{\caption{Dialogfenster Neue Seite anlegen\label{newpage}}}
+\end{figure}
+
+\begin{tabular}{|lp{145mm}|}
+\hline
+\textbf{Hinweis!} & Der Punkt \glqq Navigationstext\grqq\ bestimmt den
+Begriff, der später auch als Link in der Online-Navigation erscheint. \\
+\hline
+\end{tabular}
+
+Klicken Sie nun auf \glqq Fertig stellen\grqq. Sie sind nun wieder in der
+Explorer-Ansicht und sehen Ihre neue Seite als blau eingefärbte Datei, die
+zusätzlich noch mit einem Schloss versehen ist (Abb. \ref{expl_neu}).
+Entweder bearbeiten Sie nun diese Seite direkt (s.o.) oder Sie geben diese
+Seite über das Kontextmenü für andere Bearbeiter wieder frei.
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{expl_neu.eps}
+
+\sffamily{\caption{Explorer-Ansicht mit neuer Seite\label{expl_neu}}}
+\end{figure}
+
+\Index{Veröffentlichen} Sie nun wieder das Projekt wie unter
+Punkt \ref{p_publish} beschrieben und rufen Sie erneut die
+Beispiel-Anwendung auf:
+
+\url{http://localhost/servlets/opencms/examples/index.html}
+
+Sie sehen jetzt die Demo-Seite mit dem neuen Link. Klicken Sie auf diesen
+Link, damit Sie Ihre neu angelegte Seite sehen (Abb. \ref{demopage}).
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{demopage.eps}
+
+\sffamily{\caption{Demo-Seite mit neuem Link\label{demopage}}}
+\end{figure}
+
+Die Anleitung für unsere Demo-Anwendung ist hiermit beendet. Vielen Dank
+für Ihre Aufmerksamkeit.
+
+Weitere und ausführlichere Informationen zum OpenCms erfahren Sie in Teil 2
+des Manuals.
+
+\chapter{OpenCms - Es geht weiter}
+
+\section{\Index{Programmoberfläche}}
+
+Der Benutzer hat die Möglichkeit die Programmoberfläche individuell
+anpassen, indem er die Registerkarte \glqq \Index{Einstellungen}\grqq\
+über den Button
+\includegraphics[scale=\scaler]{optionen.eps}
+in der Menüleiste aufruft:
+
+\begin{tabular}{l|p{132mm}}
+\textbf{Tab} & Einstellungen \\
+\hline
+\Index{Explorer} &  Hier wird festgelegt, mit welchen zusätzlichen
+Informationen die Dateien in der Exploreransicht angezeigt werden
+sollen. \\
+\Index{Aufgaben} & Hier werden die Standardansicht und die
+Benachrichtigungsoptionen für die Aufgabenverwaltung voreingestellt. \\
+\Index{Starteinstellungen} & Hier werden die Oberflächenansicht beim Programmstart und die Standardvorgabe
+für die
+Zugriffsrechte einer neuen Datei voreingestellt. \\
+\Index{Benutzerdaten} & Hier werden die aktuelle Gruppe und das Kennwort des
+Benutzers verändert. \\
+\end{tabular}
+
+
+\section{Ansichts-Modi}
+
+Die \Index{Benutzeransicht} ermöglicht in der Ansicht \glqq Explorer\grqq\
+das Verwalten von Dateien und Verzeichnissen sowie das Editieren von
+HTML-Seiten. In der Ansicht \glqq \Index{Aufgaben}\grqq\ wird der gesamte
+\Index{Workflow} eines Projekts
+koordiniert. In der Ansicht \glqq Administration\grqq\ erfolgt die
+\Index{Verwaltung} von \Index{Benutzer}n, \Index{Gruppe}n, \Index{Projekte}n,
+\Index{Datenbankanbindung}en, \Index{Bilder}n, \Index{Dokumente}n, etc. Die
+Benutzeransicht ist über einen \Index{Anmeldedialog} aufrufbar und wird in
+Form eines Datei-Explorers dargestellt. \Index{Verzeichnisbaumübersicht},
+\Index{Dateiansicht} und \Index{Menüleiste} gewährleisten einen schnellen
+Zugriff auf die gewünschten Dateien und Funktionen (Abb. \ref{userview}) :
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{userview.eps}
+
+\sffamily{\caption{Benutzeransicht\label{userview}}}
+\end{figure}
+
+Über das Drop-Down-Menü \glqq Projekt\grqq\ hat der Benutzer die Möglichkeit
+zwischen der Online-Version der Website und den einzelnen Projekten zu
+wechseln.
+
+Über das Drop-Down-Menü \glqq Ansicht\grqq\ hat der Benutzer die Möglichkeit
+zwischen den Ansichten \glqq Explorer\grqq, \glqq Aufgaben\grqq\ und
+\glqq Administration\grqq\ zu wechseln.
+
+Über das \Index{Kontextmenü} werden die einzelnen Verzeichnisse und Dateien
+verwaltet. Dieses Kontextmenü wird durch Klicken auf das Datei- bzw.
+Verzeichnis-Symbol in der Dateiübersicht aufgerufen.
+
+In der \Index{Browseransicht} werden die Inhalte der Website so dargestellt,
+wie sie später in der \Index{Online-Version} erscheinen
+(Abb. \ref{browview}). In der Online-Version können keine Veränderungen an
+Dateien und Verzeichnissen der Website vorgenommen werden. Die
+\Index{Browseransicht} entspricht der \Index{Besucheransicht} und ist durch
+Klicken auf den Dateinamen in der Dateiansicht aufrufbar:
+
+\begin{itemize}
+\item Das \Index{Template} einer OpenCms-generierten Browserseite enthält die
+statische und dynamische Navigation sowie andere dynamische Komponenten,
+z.B. Logos oder Textfelder, die variabel gestaltet werden können. Das
+Template legt das Layout der gesamten Browserseite fest.
+\item Im \Index{Body} werden die Inhalte dargestellt. Sie sind im Rahmen von
+zuvor festgelegten \Index{Formatvorlagen} individuell gestaltbar. Die
+Formatvorlagen, die in einer \Index{CSS}-Datei definiert werden,
+gewährleisten das einheitliche Erscheinungsbild der Inhalte.
+\end{itemize}
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{browview.eps}
+
+\sffamily{\caption{Browseransicht\label{browview}}}
+\end{figure}
+
+\section{In Projekten arbeiten}
+
+Von Benutzern der Gruppe Projektmanager wird ein \Index{Offline-Projekt}
+angelegt. Dieses Projekt kann sich entweder auf eine bereits bestehende
+Website, die überarbeitet werden soll, oder auf eine neu zu erstellende
+Website beziehen.
+
+Beim Anlegen eines Offline-Projekts, das sich auf eine bereits bestehende
+Website bezieht, werden automatisch Kopien von den benötigten Dateien und
+Verzeichnissen der Online-Version angefertigt. Diese Kopien bleiben nach
+Abschluß und Veröffentlichung des Offline-Projekts erhalten, um eine
+spätere \Index{Rekonstruktion} zu gewährleisten.
+
+Die in einem Offline-Projekt angelegten Verzeichnisse und Dateien können
+standardmäßig nur von den am Projekt beteiligten Benutzern aufgerufen werden.
+Durch diese systemseitige Zuordnung einzelner Benutzer und Gruppen zu
+einzelnen Dateien und Verzeichnissen werden die jeweiligen Zuständigkeiten
+klar verteilt und abgegrenzt. Es ist auch möglich, Teile der Website parallel
+in verschiedenen Projekten zu bearbeiten. \Index{Sperrung}s- und
+\Index{Freigabe}-Funktionen sorgen für Zugriffssicherheit auch bei größeren
+Benutzergruppen. Darüber hinaus werden alle \Index{Veränderungen}, die an den
+einzelnen Dateien vorgenommen werden, protokolliert und sind zu
+Rekonstruktionszwecken über die \glqq \Index{Historie}\grqq\ im Kontextmenü
+abrufbar (Abb. \ref{historie}).
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{historie.eps}
+
+\sffamily{\caption{Projekt-Historie\label{historie}}}
+\end{figure}
+
+Zur Erstellung neuer Inhalte legt der Benutzer eine neue Datei oder ein
+neues Verzeichnis an, indem er über den Button \glqq Neu\grqq\ in der
+Menüleiste ein Dialogfenster aufruft und das gewünschte Element auswählt:
+\glqq Ordner\grqq, \glqq Seite\grqq, \glqq anderer Typ\grqq\ oder
+\glqq Neue Datei hochladen\grqq. Über weitere Dialogfenster werden Name,
+Titel, Navigationstext und Position der Datei oder des Verzeichnisses
+innerhalb der Navigation festgelegt. Mit der Option
+\glqq Neue Datei hochladen\grqq\ lädt der Benutzer eine Datei von seinem
+Arbeitsplatzrechner in ein OpenCms-Verzeichnis hoch.
+
+Der Benutzer greift über den Datei-Explorer auf die einzelnen ihm
+zugeordneten Verzeichnisse und Dateien zu. Ein Klick auf den
+Verzeichnisnamen (z.B. \glqq OpenCms\grqq) in der
+\Index{Verzeichnisbaumübersicht} oder in der \Index{Dateiansicht} öffnet den
+Inhalt des jeweiligen Verzeichnisses. \Index{HTML-Dateien}
+(z.B. \glqq index.html\grqq) werden durch einen Klick auf den
+Dateinamen im Internet-Browser geöffnet.
+
+Durch einen Klick auf ein Verzeichnissymbol oder ein Dateisymbol (Textdatei,
+Bilddatei, usw.) in der Dateiübersicht ruft der Benutzer das Kontextmenü
+auf. Es stellt folgende Funktionen zur Verfügung, die abhängig vom Status
+der Datei bzw. des Verzeichnisses und den Zugriffsrechten des Benutzers
+\Index{aktiv} oder \Index{inaktiv} sind:
+
+\begin{itemize}
+\item \Index{Sperren} oder \Index{Freigeben}: Verzeichnisse oder Dateien,
+die sich in Bearbeitung befinden, können für diesen Zeitraum gesperrt
+werden, um gleichzeitiges Arbeiten an den einzelnen Dateien und
+Verzeichnissen zu vermeiden. Nach erfolgter Bearbeitung werden diese wieder
+freigegeben.
+\item \Index{Seite bearbeiten}: Durch Klick öffnet sich ein WYSIWYG-Editor,
+in dem die entsprechende Datei bearbeitet werden kann. In diesem
+Bearbeitungsmodus sind keine HTML-Kenntnisse notwendig.
+\item \Index{Steuertext bearbeiten}: Durch Klick öffnet sich ein
+\Index{Text-Editor}, der das Editieren des Steuertextes ermöglicht. Für
+diesen Bearbeitungsmodus sind umfangreiche HTML-Kenntnisse notwendig.
+\item \Index{Historie}: Sie zeigt alle zurückliegenden Versionen der Datei
+an. Es ist somit nachvollziehbar, wer wann welche Änderungen vorgenommen hat.
+Alle zurückliegenden Versionen der Datei können auch im Internet-Browser
+angeschaut werden.
+\item Mit den Funktionen \glqq \Index{Besitzer ändern}\grqq,
+\glqq \Index{Gruppe ändern}\grqq\ und \glqq \Index{Zugriff ändern}\grqq\
+können systemseitig die jeweiligen \Index{Zugriffsattribute} für die
+einzelnen Dateien und Verzeichnisse gesetzt werden.
+\item Ferner sind Standardfunktionen wie \glqq \Index{Kopieren}\grqq,
+\glqq \Index{Umbenennen}\grqq, \glqq \Index{Verschieben}\grqq\ und
+\glqq \Index{Löschen}\grqq\ in das Kontextmenü integriert.
+\end{itemize}
+
+\section{\Index{Zugriffsrechte}}
+
+Benutzerseitig wird durch die Vergabe verschiedener Zugriffsrechte der
+Aktionsradius des einzelnen Benutzers und die für ihn sichtbare
+Programmoberfläche bestimmt, d.h. er kann nur die für ihn relevanten
+Verzeichnisse und Dateien sehen. Das fördert den Überblick. Jeder Benutzer
+gehört darüber hinaus mindestens einer \Index{Benutzergruppe} an. Die
+Zuordnung eines Benutzers zu mehreren Gruppen ist möglich (Abb 19).
+
+In OpenCms gibt es die vordefinierten Gruppen Administrator, Projektmanager,
+Benutzer und Gast:
+
+\begin{itemize}
+\item \Index{Administratoren} haben alle Rechte auf alle Dateien und
+Verzeichnisse. Sie legen neue Benutzergruppen und Benutzer an und verwalten
+diese.
+\item Der \Index{Projektmanager} kann neue Projekte anlegen und koordiniert
+den \Index{Projekt-Workflow}. Seine Rechte sind auf die von ihm angelegten
+Projekte beschränkt. Innerhalb dieser hat er alle Recht auf alle Dateien und
+Verzeichnisse. Er darf auch Projekte veröffentlichen, d.h. online stellen.
+\item Der \Index{Benutzer} kann neue Dateien und Verzeichnisse innerhalb
+eines ihm zugewiesenen Projekts anlegen. Auf diese Dateien und Verzeichnisse
+hat er als Besitzer derselben alle Rechte.
+\item Die Gruppe \Index{Gast} sind alle anderen Benutzer, z.B. Besucher.
+\end{itemize}
+
+Darüber hinaus können je nach Erfordernis weitere Gruppen angelegt werden,
+z.B. Redakteure, Grafiker, Qualitätssicherer, etc.
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{groupnew.eps}
+
+\sffamily{\caption{Gruppe neu anlegen}}
+\end{figure}
+
+Systemseitig ist jede Datei und jedes Verzeichnis genau einem Benutzer
+zugeordnet, das ist standardmäßig derjenige, der die Datei oder das
+Verzeichnis angelegt hat. Er ist sozusagen der Besitzer der Datei oder des
+Verzeichnisses. Um mehreren Benutzern den Zugriff auf bestimmte, für sie
+relevante Dateien und Verzeichnisse zu gewähren, ist jede Datei und jedes
+Verzeichnis genau einer Benutzergruppe mit bestimmten Zugriffsrechten
+zugeordnet.
+
+Änderungen an den Datei- und Verzeichniszuordnungen kann nur der Besitzer
+oder ein Administrator vornehmen, z.B. den Besitzer einer Datei, eines
+Verzeichnisses oder die zugeordnete Gruppe ändern.
+
+Alle Zugriffsrechte werden über die Optionen
+\glqq \Index{Besitzer ändern}\grqq,
+\glqq \Index{Gruppe ändern}\grqq\ und \glqq \Index{Zugriff ändern}\grqq\ im
+Kontextmenü verwaltet. Die Zugriffsrechte auf die Dateien und Verzeichnisse
+sind in die Klassen \glqq \Index{Rechte des Besitzers}\grqq,
+\glqq \Index{Rechte der Gruppe}\grqq\ und
+\glqq \Index{Rechte aller Anderen}\grqq\ unterteilt. Ein Benutzer kann
+Zugriffsrechte nur für diejenigen Dateien und Verzeichnisse vergeben, deren
+Besitzer er ist. Folgende Abkürzungen werden dafür verwendet:
+
+\begin{itemize}
+\item r = read, dt. lesen,
+\item w = write dt. schreiben,
+\item v = visible dt. sichtbar,
+\item i = intern.
+\end{itemize}
+
+\section{\Index{Editor}}
+
+Der Editor dient zur Erstellung von \Index{Inhalt}en im \Index{Body}. Er
+wird von einem \Index{Template} eingerahmt, das ein einheitliches Layout
+für die \Index{Navigation} und die Inhalte sowohl der einzelnen HTML-Seiten
+als auch der gesamten Website gewährleistet (Abb. \ref{htmledit}):
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{htmledit.eps}
+
+\sffamily{\caption{Der HTML-Editor\label{htmledit}}}
+\end{figure}
+
+Die Funktionen des OpenCms-Editors entsprechen weitgehend denen eines
+Standard-WYSIWYG-HTML-Editors mit Formatvorlagen-, Tabellen-, und
+Vorschaufunktion wie z.B. Netscape Composer. Ferner besteht die Möglichkeit
+zwischen Quelltext- und WYSIWYG-Modus zu wechseln. Über die Template-Optionen
+wird das Layout der gesamten Browser-Seite gesteuert. Die Verschachtelung
+mehrerer Templates ermöglicht die Erstellung komplexer Layouts. Mit dem
+OpenCms-Editor wird immer nur der Body editiert.
+
+\section{\Index{Workflow}}
+
+Der Projektmanager erstellt über den Button
+\includegraphics[scale=\scaler]{task_neu.eps}
+\glqq Neu\grqq\ in der Ansicht \glqq \Index{Aufgaben}\grqq\ eine neue
+Aufgabe und ordnet diese einer bestimmten \Index{Rolle} zu. Eine Rolle umfaßt
+mehrere Benutzer, die für die Bearbeitung des geforderten Aufgabentyps, z.B.
+Redaktion, Grafik, HTML, etc., geeignet sind. Unter diesen Benutzern wird
+dann ein bevorzugter Benutzer für diese Aufgabe ausgewählt. Bei der
+\Index{Aufgabenerstellung} können
+ferner der Name, die Beschreibung, die Fälligkeit, die Priorität
+und verschiedene Benachrichtigungsmodi festgelegt werden.
+
+Sobald eine neue Aufgabe in das Projekt aufgenommen wurde, erhält, je nach
+\Index{Benachrichtigungsmodus}, der bevorzugte oder alle Benutzer der Rolle
+automatisch eine \Index{Email} als Benachrichtigung. Um die Aufgabe
+bearbeiten zu können, muß diese vom betreffenden Benutzer aktiv angenommen
+werden. Darüber hinaus erhält der Projektmanager, falls gewünscht, eine
+Benachrichtigungs-Email, wenn die Aufgabe angenommen,\index{Aufgabe!- annehmen}
+abgelehnt,\index{Aufgabe!- ablehnen} an einen
+anderen Benutzer übergeben\index{Aufgabe!- uebergeben=- übergeben} oder
+fertiggestellt\index{Aufgabe!- fertigstellen} wurde. Über das Drop-Down-Menü
+\glqq \Index{Filter}\grqq\ kann der Benutzer sich sowohl die ihm gestellten
+als auch die von ihm gestellten Aufgaben nach verschiedenen Kriterien
+gefiltert anzeigen lassen (Abb. \ref{tasks}). Zusätzlich kennzeichnen
+unterschiedliche Symbole und Farben den \Index{Status einer Aufgabe}. So
+erscheint der Eintrag einer Aufgabe innerhalb des
+Fälligkeitszeitraums\index{Fälligkeit!- inerhalb} in schwarzer Farbe. Ist die
+Fälligkeit überschritten,\index{Fälligkeit!- ueberschritten=- überschritten}
+erscheint er in roter Farbe. Der Eintrag einer erledigten
+Aufgabe\index{Aufgabe!- erldigt} wird in grauer Farbe dargestellt. Die
+Priorität einer Aufgabe\index{Aufgabe!- Prioriät} ist
+mit rinrm Prioritätssymbol (Niedrig, Normal und Hoch) gekennzeichnet. Die
+beschriebenen Angaben tragen entscheidend zur Übersichtlichkeit des
+Aufgabenkontos eines bestimmte Benutzers bei.
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{tasks.eps}
+
+\sffamily{\caption{Ansicht Aufgaben\label{tasks}}}
+\end{figure}
+
+Durch Klick auf den Namen einer Aufgabe werden die Details der
+Aufgabe\index{Aufgabe!- Details} und die komplette
+Aufgabendokumentation\index{Aufgabe!- Dokumentation} aufgerufen. So können
+die einzelnen \Index{Bearbeitungsschritte} nachvollzogen werden, was einen
+transparenten \Index{Workflow} gewährleistet.
+
+\begin{appendix}
+\label{anhang1}
+
+\chapter{\Index{Browsereinstellungen}}
+
+\section{Anmerkungen}
+
+Bei der Entwicklung von OpenCms liegt das Augenmerk der Entwickler zur
+Zeit auf der Implementierung der Server-Komponenten. Um Zeit bei der
+Entwicklung zu sparen wurde daher für bestimmte Client-Funktionen auf
+existierende Komponenten zurückgegriffen. Dies bedeutet im Klartext, dass
+für die benutzerseitigen Editoren zur Zeit
+ActiceX-Komponenten verwendet werden. Die verwendeten Controls (es
+handelt sich um 2, eine für den WYSIWYG-Editor und eine für den
+Quelltexteditor) sind frei verfügbar bzw. Shareware. Dies schränkt leider
+die Verfügbarkeit des WYSIWYG-Editors zur Zeit auf den Microsoft Internet
+Explorer ein. Unter Netscape Navigator ist nur der Quelltext-Editor
+verfügbar, und dies auch nur in einer reduzierten Version. Es wäre möglich,
+die ActiveX-Controls durch z.B. Java-Applets zu ersetzen. Allerdings ist
+dem OpenCms-Team kein frei verfügbares bzw. Open-Source-Applet bekannt,
+welches direkt verwendet werden könnte. Sollte jemand ein Open-Source-Applet
+kennen oder sogar selber geschrieben haben, welches als WYSIWYG-Editor oder
+als Quelltexteditor verwendet werden könnte, so wären wir für entsprechende
+Hinweise natürlich dankbar.
+
+\section{Microsoft \Index{Internet Explorer} konfigurieren}
+
+Klicken Sie in der Menüleiste auf den Menüpunkt \glqq Ansicht -
+Internetoptionen\grqq. Auf dem Tab \glqq Sicherheit/Vertrauenswürdige Sites\grqq\
+der 8Registerkarte \glqq Internetoptionen\grqq\ muß unter der Option
+\glqq Sites hinzufügen\dots\grqq\ die entsprechende URL des OpenCms-Servers
+(z.B. \url{http://opencms.meinefirma.de} zur Zone hinzugefügt werden. Die
+genaue URL erhalten Sie von Ihrem Systempartner. Weiter muss die Check-Box
+\glqq Für die Sites in dieser Zone ist eine Serverüberprüfung (https)
+erforderlich\grqq\ deaktiviert werden.
+
+Auf dem Tab \glqq Sicherheit/Vertrauenswürdige Sites\grqq\ unter der Option
+\glqq Einstellungen\dots\grqq\ muß bei allen \Index{ActiveX}-Steuerelementen
+der Eintrag \glqq Aktivieren\grqq\ ausgewählt werden.
+
+\textbf{Ein Hinweis zur Sicherheit:} Die Verwendung der
+\Index{ActiveX-Controls} ist
+mit diesen Einstellungen unbedenklich, da die Ausführung der ActiveX-Controls
+nur für den OpenCms-Server zugelassen wird, während für alle anderen
+Websites weiterhin ActiveX-Controls deaktiviert sind.
+
+Auf dem Tab \glqq Allgemein\grqq\ unter der Option
+\glqq Temporäre Internetdateien/Einstellungen\dots\grqq\ muß der Eintrag
+\glqq Bei jedem Zugriff auf die Seite (neuere Versionen der gespeicherten
+Seiten suchen)\grqq\ ausgewählt werden.
+
+Ferner müssen \Index{Cookies} zugelassen werden.
+
+\subsection{ActiveX-Controls installieren}
+
+Folgende ActiveX-Controls werden benötigt:
+
+\begin{itemize}
+\item Microsoft Dynamic HTML Editing Component und
+\item  AY Software LeEdit OCX Control.
+\end{itemize}
+
+Beachten Sie bei der Installation der ActiveX-Controls die beiliegenden
+Hilfedateien.
+
+\section{\Index{Netscape Navigator} konfigurieren}
+
+Klicken Sie in der Menüleiste auf den Menüpunkt
+\glqq Bearbeiten - Einstellungen\grqq. Auf der Registerkarte
+\glqq Einstellungen\grqq\ unter der Option \glqq Erweitert\grqq\ müssen die
+Einträge \glqq Java aktivieren\grqq\ und \glqq JavaScript aktivieren\grqq\
+aktiviert werden.
+
+Auf der Registerkarte \glqq Einstellungen\grqq\ unter der Option
+\glqq Erweitert/Cache\grqq\ muß der Eintrag
+\glqq (Vergleich zwischen Cache- und Netzwerkdokument erfolgt: Jedesmal\grqq\
+ausgewählt werden.
+
+Ferner müssen Cookies zugelassen werden.
+\end{appendix}

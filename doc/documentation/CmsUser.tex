@@ -1,0 +1,1093 @@
+\begin{PRE}
+All Packages  Class Hierarchy  This Package  Previous  Next  Index
+\end{PRE}
+
+\htmlHR
+
+\section{  Class com.opencms.file.CmsUser }
+
+\begin{PRE}
+com.opencms.file.CmsUser
+\end{PRE}
+
+\htmlHR
+
+\begin{description}
+\item public class {\bf CmsUser}  
+\item implements I\_CmsConstants 
+\end{description}
+
+This class describes the Cms user object and the methods to access it. 
+
+\begin{description}
+\item {\bf Version:}  
+
+\$Revision: 1.1 $ \$Date: 2001/07/31 12:25:45 $  
+\item {\bf Author:}  
+
+Michael Emmerich 
+\end{description}
+
+\htmlHR
+
+\subsection*{  Variable Index }
+
+\begin{description}
+\item o {\bf m\_additionalInfo}  
+
+A storage for additional user information.  
+\item o {\bf m\_address}  
+
+The address of the user.  
+\item o {\bf m\_defaultGroup}  
+
+The default group of this user.  
+\item o {\bf m\_defaultGroupId}  
+
+The default group ID of this user.  
+\item o {\bf m\_description}  
+
+The description of the user.  
+\item o {\bf m\_email}  
+
+The email of the user.  
+\item o {\bf m\_firstname}  
+
+The firstname of the user.  
+\item o {\bf m\_flags}  
+
+The flags of the user.  
+\item o {\bf m\_id}  
+
+The Id of this user.  
+\item o {\bf m\_lastlogin}  
+
+The last login of the user.  
+\item o {\bf m\_lastname}  
+
+The lastname of the user.  
+\item o {\bf m\_lastused}  
+
+The lastused date.  
+\item o {\bf m\_name}  
+
+The login-name of the user.  
+\item o {\bf m\_password}  
+
+The password of the user.  
+\item o {\bf m\_recoveryPassword}  
+
+The password of the user.  
+\item o {\bf m\_section}  
+
+The section of the user.  
+\item o {\bf m\_type}  
+
+The typ of the user. 
+\end{description}
+
+\subsection*{  Constructor Index }
+
+\begin{description}
+\item o {\bf CmsUser}(int, String, String)  
+
+Constructor, creates a new Cms user object.  
+\item o {\bf CmsUser}(int, String, String, String, String, String, String,
+String, long, long, int, Hashtable, CmsGroup, String, String, int)  
+
+Constructor, creates a new Cms user object. 
+\end{description}
+
+\subsection*{  Method Index }
+
+\begin{description}
+\item o {\bf clone}()  
+
+Clones the CmsResource by creating a new CmsUser Object.  
+\item o {\bf equals}(Object)  
+
+Compares the overgiven object with this object.  
+\item o {\bf getAdditionalInfo}()  
+
+Returns the complete Hashtable with additional information about the user.  
+\item o {\bf getAdditionalInfo}(String)  
+
+Returns additional information about the user.  
+\item o {\bf getAddress}()  
+
+Gets the address.  
+\item o {\bf getDefaultGroup}()  
+
+Returns the default group object of this user.  
+\item o {\bf getDefaultGroupId}()  
+
+Gets the defaultgroup id.  
+\item o {\bf getDescription}()  
+
+Gets the description of this user.  
+\item o {\bf getDisabled}()  
+
+Decides, if this user is disabled.  
+\item o {\bf getEmail}()  
+
+Gets the email.  
+\item o {\bf getFirstname}()  
+
+Gets the firstname.  
+\item o {\bf getFlags}()  
+
+Gets the flags.  
+\item o {\bf getId}()  
+
+Gets the id of this user.  
+\item o {\bf getLastlogin}()  
+
+Gets the lastlogin.  
+\item o {\bf getLastname}()  
+
+Gets the lastname.  
+\item o {\bf getLastUsed}()  
+
+Gets the lastlogin.  
+\item o {\bf getName}()  
+
+Gets the login-name of the user.  
+\item o {\bf getPassword}()  
+
+Gets the password.  
+\item o {\bf getSection}()  
+
+Gets the section of the user.  
+\item o {\bf getType}()  
+
+Gets the type.  
+\item o {\bf setAdditionalInfo}(Hashtable)  
+
+Sets the complete Hashtable with additional information about the user.  
+\item o {\bf setAdditionalInfo}(String, Object)  
+
+Sets additional information about the user.  
+\item o {\bf setAddress}(String)  
+
+Sets the address.  
+\item o {\bf setDefaultGroup}(CmsGroup)  
+
+Sets the default group object of this user.  
+\item o {\bf setDescription}(String)  
+
+Sets the description of this user.  
+\item o {\bf setDisabled}()  
+
+Disables the user flags by setting them to C\_FLAG\_DISABLED.  
+\item o {\bf setEmail}(String)  
+
+Sets the email.  
+\item o {\bf setEnabled}()  
+
+Enables the user flags by setting them to C\_FLAG\_ENABLED.  
+\item o {\bf setFirstname}(String)  
+
+Sets the firstname.  
+\item o {\bf setFlags}(int)  
+
+Sets the flags.  
+\item o {\bf setLastlogin}(long)  
+
+Sets the lastlogin.  
+\item o {\bf setLastname}(String)  
+
+Gets the lastname.  
+\item o {\bf setLastUsed}(long)  
+
+Sets the lastlogin.  
+\item o {\bf setPassword}(String)  
+
+Sets the password.  
+\item o {\bf setSection}(String)  
+
+Sets the section of the user.  
+\item o {\bf setType}(int)  
+
+Sets the typ.  
+\item o {\bf toString}()  
+
+Returns a string-representation for this object. 
+\end{description}
+
+\subsection*{  Variables }
+
+o {\bf m\_name} 
+
+\begin{PRE}
+ private String m\_name
+\end{PRE}
+
+\begin{description}
+\htmlDD The login-name of the user.
+
+\end{description}
+
+o {\bf m\_id} 
+
+\begin{PRE}
+ private int m\_id
+\end{PRE}
+
+\begin{description}
+\htmlDD The Id of this user.
+
+\end{description}
+
+o {\bf m\_password} 
+
+\begin{PRE}
+ private String m\_password
+\end{PRE}
+
+\begin{description}
+\htmlDD The password of the user.
+
+\end{description}
+
+o {\bf m\_recoveryPassword} 
+
+\begin{PRE}
+ private String m\_recoveryPassword
+\end{PRE}
+
+\begin{description}
+\htmlDD The password of the user.
+
+\end{description}
+
+o {\bf m\_description} 
+
+\begin{PRE}
+ private String m\_description
+\end{PRE}
+
+\begin{description}
+\htmlDD The description of the user.
+
+\end{description}
+
+o {\bf m\_additionalInfo} 
+
+\begin{PRE}
+ private Hashtable m\_additionalInfo
+\end{PRE}
+
+\begin{description}
+\htmlDD A storage for additional user information.
+
+\end{description}
+
+o {\bf m\_defaultGroup} 
+
+\begin{PRE}
+ private CmsGroup m\_defaultGroup
+\end{PRE}
+
+\begin{description}
+\htmlDD The default group of this user.
+
+\end{description}
+
+o {\bf m\_defaultGroupId} 
+
+\begin{PRE}
+ private int m\_defaultGroupId
+\end{PRE}
+
+\begin{description}
+\htmlDD The default group ID of this user.
+
+\end{description}
+
+o {\bf m\_section} 
+
+\begin{PRE}
+ private String m\_section
+\end{PRE}
+
+\begin{description}
+\htmlDD The section of the user.
+
+\end{description}
+
+o {\bf m\_flags} 
+
+\begin{PRE}
+ private int m\_flags
+\end{PRE}
+
+\begin{description}
+\htmlDD The flags of the user.
+
+\end{description}
+
+o {\bf m\_email} 
+
+\begin{PRE}
+ private String m\_email
+\end{PRE}
+
+\begin{description}
+\htmlDD The email of the user.
+
+\end{description}
+
+o {\bf m\_lastused} 
+
+\begin{PRE}
+ private long m\_lastused
+\end{PRE}
+
+\begin{description}
+\htmlDD The lastused date.
+
+\end{description}
+
+o {\bf m\_firstname} 
+
+\begin{PRE}
+ private String m\_firstname
+\end{PRE}
+
+\begin{description}
+\htmlDD The firstname of the user.
+
+\end{description}
+
+o {\bf m\_lastname} 
+
+\begin{PRE}
+ private String m\_lastname
+\end{PRE}
+
+\begin{description}
+\htmlDD The lastname of the user.
+
+\end{description}
+
+o {\bf m\_address} 
+
+\begin{PRE}
+ private String m\_address
+\end{PRE}
+
+\begin{description}
+\htmlDD The address of the user.
+
+\end{description}
+
+o {\bf m\_lastlogin} 
+
+\begin{PRE}
+ private long m\_lastlogin
+\end{PRE}
+
+\begin{description}
+\htmlDD The last login of the user.
+
+\end{description}
+
+o {\bf m\_type} 
+
+\begin{PRE}
+ private int m\_type
+\end{PRE}
+
+\begin{description}
+\htmlDD The typ of the user.
+
+\end{description}
+
+\subsection*{  Constructors }
+
+o {\bf CmsUser} 
+
+\begin{PRE}
+ public CmsUser(int id,
+                String name,
+                String description)
+\end{PRE}
+
+\begin{description}
+\htmlDD Constructor, creates a new Cms user object. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+id - The id of the new user.  
+
+name - The name of the new user.  
+
+description - The description of the new user.  
+\end{description}
+
+\end{description}
+
+o {\bf CmsUser} 
+
+\begin{PRE}
+ public CmsUser(int id,
+                String name,
+                String password,
+                String recoveryPassword,
+                String description,
+                String firstname,
+                String lastname,
+                String email,
+                long lastlogin,
+                long lastused,
+                int flags,
+                Hashtable additionalInfo,
+                CmsGroup defaultGroup,
+                String address,
+                String section,
+                int typ)
+\end{PRE}
+
+\begin{description}
+\htmlDD Constructor, creates a new Cms user object. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+id - The id of the new user.  
+
+name - The name of the new user.  
+
+description - The description of the new user.  
+\end{description}
+
+\end{description}
+
+\subsection*{  Methods }
+
+o {\bf clone} 
+
+\begin{PRE}
+ public Object clone()
+\end{PRE}
+
+\begin{description}
+\htmlDD Clones the CmsResource by creating a new CmsUser Object. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+Cloned CmsUser.  
+\end{description}
+
+\end{description}
+
+o {\bf equals} 
+
+\begin{PRE}
+ public boolean equals(Object obj)
+\end{PRE}
+
+\begin{description}
+\htmlDD Compares the overgiven object with this object. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+true, if the object is identically else it returns false.  
+\end{description}
+
+\end{description}
+
+o {\bf getAdditionalInfo} 
+
+\begin{PRE}
+ public Hashtable getAdditionalInfo()
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns the complete Hashtable with additional information about the
+user. Additional infos are for example emailadress, adress or surname... The
+additional infos must be requested via the CmsObject. Returns additional
+information about the user. 
+
+\end{description}
+
+o {\bf getAdditionalInfo} 
+
+\begin{PRE}
+ public Object getAdditionalInfo(String key)
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns additional information about the user. Additional infos are
+for example emailadress, adress or surname... The additional infos must be
+requested via the CmsObject. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+key - the key to the additional information. Returns additional information
+about the user. If the additional info does not exists, it returns null.  
+\end{description}
+
+\end{description}
+
+o {\bf getAddress} 
+
+\begin{PRE}
+ public String getAddress()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the address. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_ADDRESS, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getDefaultGroup} 
+
+\begin{PRE}
+ public CmsGroup getDefaultGroup()
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns the default group object of this user. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+Default Group of the user  
+\end{description}
+
+\end{description}
+
+o {\bf getDefaultGroupId} 
+
+\begin{PRE}
+ public int getDefaultGroupId()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the defaultgroup id. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_DEFAULTGROUP\_ID, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getDescription} 
+
+\begin{PRE}
+ public String getDescription()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the description of this user. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the description of this user.  
+\end{description}
+
+\end{description}
+
+o {\bf getDisabled} 
+
+\begin{PRE}
+ public boolean getDisabled()
+\end{PRE}
+
+\begin{description}
+\htmlDD Decides, if this user is disabled. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+USER\_FLAGS == C\_FLAG\_DISABLED  
+\end{description}
+
+\end{description}
+
+o {\bf getEmail} 
+
+\begin{PRE}
+ public String getEmail()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the email. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_EMAIL, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getFirstname} 
+
+\begin{PRE}
+ public String getFirstname()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the firstname. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_FIRSTNAME, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getFlags} 
+
+\begin{PRE}
+ public int getFlags()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the flags. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_FLAGS, or C\_UNKNOWN\_INT.  
+\end{description}
+
+\end{description}
+
+o {\bf getId} 
+
+\begin{PRE}
+ public int getId()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the id of this user. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the id of this user.  
+\end{description}
+
+\end{description}
+
+o {\bf getLastlogin} 
+
+\begin{PRE}
+ public long getLastlogin()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the lastlogin. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_LASTLOGIN, or C\_UNKNOWN\_LONG.  
+\end{description}
+
+\end{description}
+
+o {\bf getLastname} 
+
+\begin{PRE}
+ public String getLastname()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the lastname. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_SURNAME, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getLastUsed} 
+
+\begin{PRE}
+ public long getLastUsed()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the lastlogin. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_LASTLOGIN, or C\_UNKNOWN\_LONG.  
+\end{description}
+
+\end{description}
+
+o {\bf getName} 
+
+\begin{PRE}
+ public String getName()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the login-name of the user. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the login-name of the user.  
+\end{description}
+
+\end{description}
+
+o {\bf getPassword} 
+
+\begin{PRE}
+ public String getPassword()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the password. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_PASSWORD, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getSection} 
+
+\begin{PRE}
+ public String getSection()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the section of the user. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_SECTION, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf getType} 
+
+\begin{PRE}
+ public int getType()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the type. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the type, or C\_UNKNOWN\_INT.  
+\end{description}
+
+\end{description}
+
+o {\bf setAdditionalInfo} 
+
+\begin{PRE}
+ public void setAdditionalInfo(String key,
+                               Object obj)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets additional information about the user. Additional infos are for
+example emailadress, adress or surname... 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+key - The key to the additional information.  
+
+obj - The additinoal information value.  
+\end{description}
+
+\end{description}
+
+o {\bf setAdditionalInfo} 
+
+\begin{PRE}
+ void setAdditionalInfo(Hashtable additionalInfo)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the complete Hashtable with additional information about the
+user. Additional infos are for example emailadress, adress or surname... This
+method has package-visibility for security-reasons. It is required to because
+of the use of two seprate databases for user data and additional user data. 
+
+\end{description}
+
+o {\bf setAddress} 
+
+\begin{PRE}
+ public void setAddress(String value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the address. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The user adress.  
+\end{description}
+
+\end{description}
+
+o {\bf setDefaultGroup} 
+
+\begin{PRE}
+ public void setDefaultGroup(CmsGroup defaultGroup)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the default group object of this user. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+defaultGroup - The default group of this user.  
+\end{description}
+
+\end{description}
+
+o {\bf setDescription} 
+
+\begin{PRE}
+ public void setDescription(String value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the description of this user. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+the - description of this user.  
+\end{description}
+
+\end{description}
+
+o {\bf setDisabled} 
+
+\begin{PRE}
+ public void setDisabled()
+\end{PRE}
+
+\begin{description}
+\htmlDD Disables the user flags by setting them to C\_FLAG\_DISABLED. 
+
+\end{description}
+
+o {\bf setEmail} 
+
+\begin{PRE}
+ public void setEmail(String value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the email. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+The - new email adress.  
+\end{description}
+
+\end{description}
+
+o {\bf setEnabled} 
+
+\begin{PRE}
+ public void setEnabled()
+\end{PRE}
+
+\begin{description}
+\htmlDD Enables the user flags by setting them to C\_FLAG\_ENABLED. 
+
+\end{description}
+
+o {\bf setFirstname} 
+
+\begin{PRE}
+ public void setFirstname(String firstname)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the firstname. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+the - USER\_FIRSTNAME.  
+\end{description}
+
+\end{description}
+
+o {\bf setFlags} 
+
+\begin{PRE}
+ void setFlags(int value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the flags. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user flags.  
+\end{description}
+
+\end{description}
+
+o {\bf setLastlogin} 
+
+\begin{PRE}
+ public void setLastlogin(long value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the lastlogin. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user section.  
+\end{description}
+
+\end{description}
+
+o {\bf setLastname} 
+
+\begin{PRE}
+ public void setLastname(String lastname)
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the lastname. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the USER\_SURNAME, or null.  
+\end{description}
+
+\end{description}
+
+o {\bf setLastUsed} 
+
+\begin{PRE}
+ void setLastUsed(long value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the lastlogin. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user section.  
+\end{description}
+
+\end{description}
+
+o {\bf setPassword} 
+
+\begin{PRE}
+ public void setPassword(String value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the password. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+The - new password.  
+\end{description}
+
+\end{description}
+
+o {\bf setSection} 
+
+\begin{PRE}
+ public void setSection(String value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the section of the user. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user section.  
+\end{description}
+
+\end{description}
+
+o {\bf setType} 
+
+\begin{PRE}
+ void setType(int value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the typ. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user typ.  
+\end{description}
+
+\end{description}
+
+o {\bf toString} 
+
+\begin{PRE}
+ public String toString()
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns a string-representation for this object. This can be used for
+debugging. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+string-representation for this object.  
+\end{description}
+
+\end{description}
+
+\htmlHR
+
+\begin{PRE}
+All Packages  Class Hierarchy  This Package  Previous  Next  Index
+\end{PRE}
+

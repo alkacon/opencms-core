@@ -1,0 +1,212 @@
+\chapter{Installation of OpenCms work release 4.3.x}
+%-ltoh-   title := "OpenCms 4.3 - Installation"
+During development the installation procedure coninuously
+changes. If you downloaded the most recent work release
+instead of the major release some steps for setting up a running
+system differ from the description in chapter \ref{42install}.
+
+\section{Installing the Apache Web Server}
+
+Installation steps didn't change since the OpenCms major release 4.2. Please
+see section \ref{42apache} for more details.
+
+\section{Installing Java JDK and JSDK}
+
+Installation steps didn't change since the OpenCms major release 4.2. Please
+see section \ref{42jdk} for more details.
+
+\section{Installing MySQL}
+
+Installation steps didn't change since the OpenCms major release 4.2. Please
+see section \ref{42mysql} for more details.
+
+\section{Installing the OpenCms files}
+We currently do not have an RPM or setup.exe, 
+but there are plans to make them available in the near future.
+We recommend that you unpack your OpenCms distribution archive file\\ 
+(opencms\_4.3.yy from 
+\rqhttp{http://www.opencms.com/servlets/opencms/service/download.html}{http://www.opencms.com/servlets/opencms/service/download.html})
+in your \texttt{C:$\backslash$\backbug{Program Files}$\backslash$} folder on Windows systems and 
+in the \texttt{/opt} folder on UNIX systems. 
+
+While extracting the ZIP archive
+a new folder \texttt{opencms\_4.3.yy} (with \texttt{yy}
+replaced by the current build number) will be created. This new folder will be your OpenCms home
+directory. Make it to your current directory and check the content of
+the subfolder \texttt{oclib}. This folder is the right place for all external
+components and drivers used by OpenCms. In order to run OpenCms properly
+you should put the following JAR files in this folder:
+
+\begin{itemize}
+\item \texttt{xerces.jar} from the Apache Xerces XML parser. 
+\item The MySQL JDBC database driver \texttt{mm.mysql-2.0.1-bin.jar}.
+\item \texttt{mail.jar} and \texttt{activation.jar} from the JavaMail distribution.
+\item \texttt{fop\_bin.jar} (optional) from the FOP packet of the Apache XML project.
+\end{itemize}
+
+See the Components page on the OpenCms web site\\
+(\rqhttp{http://www.opencms.com/servlets/opencms/background/components.html}
+{http://www.opencms.com/servlets/opencms/background/components.html}) 
+or chapter \ref{components} of the OpenCms documentation for a more detailed description
+of these external parts of OpenCms.
+
+
+\section{Setting up the OpenCms database}
+Installation stepsx didn't change since the OpenCms major release 4.2. Please
+see section \ref{42dbsetup} for more details.
+
+\section{Initializing the OpenCms database}
+Edit the \texttt{opencms.properties} file in the config folder of your OpenCms home 
+directory and set the path for the log file:
+
+\begin{quote}
+\texttt{log.file=(your OpenCms home directory)/logs/opencms.log}
+\end{quote}
+
+On UNIX systems, Apache may have problems writing to the logs folder. 
+For this reason you should set its owner to nobody. 
+
+OpenCms is able to export folders to the real file system on the server during 
+publishing operations. This feature commonly is used for storing pictures or large downloadable
+binary files in the Apache Web Server's
+document root. This will increase performance while displaying web pages with OpenCms.
+We recommend to set the following export paths in the \texttt{opencms.properties} file:
+
+\begin{quote}
+\begin{verbatim}
+exportpoint.0 = /pics/
+exportpoint.path.0 = (real path to apache document root)/pics/
+exportpoint.1 = /download/
+exportpoint.path.1 = (real path to apache document root)/download/
+exportpoint.2 = /system/workplace/pics/
+exportpoint.path.2 = (real path to apache document root)/pics/system/
+\end{verbatim}
+\end{quote}
+
+Note the trailing slash
+characters. They are very important and must not be omitted.
+
+Ensure that all paths you are using as export points in your real file system
+do really exist. OpenCms won't try to create these folders.
+
+Similar to the log file on UNIX systems access rights conflicts may occur while
+OpenCms is trying to write to these folders. Set their owner to nobody, too.
+
+Now take a look at the file \texttt{cmssetup.txt}:
+Set the path for OpenCms export files appropriate to your system by editing
+the line beginning with "\texttt{writeExportPath}" to 
+
+\begin{quote}
+\texttt{writeExportPath "(your OpenCms home directory)/export/"}
+\end{quote}
+
+(you will find these lines near to the end of the file).
+Again the trailing slash is very important. 
+
+Make the OpenCms home dierectory to your current directory again and
+initialize the database with all workplace default files by calling the following command:
+
+\begin{quote}
+\texttt{java -mx64M -jar opencmsboot.jar < config/cmssetup.txt}
+\end{quote}
+
+Note: The Java binary \texttt{java} should 
+reside in the \texttt{bin} folder of your JDK installation. If you have added this folder to your 
+system \texttt{PATH} environment as recommended during the installation of the Java VM,
+this command should work without giving a path.
+
+If you have a Java runtime environment 
+on your system rather than a complete JDK, you
+can replace the \texttt{java} command by \texttt{jre}.
+
+If there are errors, check the database connection configuration in your
+opencms.properties. Also ensure you are using Java 1.2 or higher since
+previous versions are not able to start a JAR file.
+the classpath option of your command.
+
+After fixing a problem, you should drop (\texttt{mysqladmin drop opencms42}) and recreate 
+the existing database \texttt{opencms42} (see previous section) before 
+running the command above for a second time.
+
+After this the OpenCms database setup is completed. You are now able to check the basic OpenCms system. 
+Call the OpenCms console by entering:
+
+\begin{quote}
+\texttt{java -mx64M -jar opencmsboot.jar}
+\end{quote}
+
+This command is similar to the one above.
+Note that the part "\texttt{< config/cmssetup.txt}" is missing now.
+
+Log in as Admin and check the accessibility of a workplace file in your database. 
+You execute these commands on the shell: 
+
+\begin{quote}
+\texttt{login Admin admin\\
+readFile "/system/workplace/action/start.html"}
+\end{quote}
+
+The OpenCms console answers e.g. with
+
+\begin{quote}
+\begin{verbatim}
+[Resource]:/system/workplace/action/start.html,
+Project=1 , User=2 , Group=3 : Access=rwvr------ : Resource-type=2 : 
+ Locked=-1 : lenght=168 : state=0
+\end{verbatim}
+\end{quote}
+
+\section{Configuring your servlet zone}
+Finalize the configuration of your servlet zone. Make sure that your \texttt{jserv.conf} in 
+the \texttt{conf} folder of your Apache JServ installation directory contains the line
+
+\begin{quote}
+\begin{verbatim}
+ApJServMount /servlets /root
+\end{verbatim}
+\end{quote}
+
+Note: \texttt{ApJServMount}, \texttt{/servlets} and \texttt{/root} are separated by blanks.
+
+The file \texttt{jserv.properties} in the JServ \texttt{servlets} folder must contain
+
+\begin{quote}
+\texttt{zones=root\\
+wrapper.bin.parameters=-mx64M\\
+root.properties=(your servlet configuration path)/zone.properties}
+\end{quote}
+
+Note: On Windows systems you should use a backslash instead of a slash. 
+
+Update your \texttt{zone.properties} and set the following repository: 
+
+\begin{quote}
+\begin{verbatim}
+repositories=(your OpenCms home directory)/opencmsboot.jar
+\end{verbatim}
+\end{quote}
+
+and add to the \texttt{Servlet Aliases} section the line: 
+
+\begin{quote}
+\texttt{servlet.opencms.code=com.opencms.boot.OpenCmsServlet} 
+\end{quote}
+
+and to the \texttt{Aliased Servlet Init Parameters} section 
+
+\begin{quote}
+\texttt{servlet.opencms.initArgs=opencms.home=(your OpenCms home) }
+\end{quote}
+
+After configuring your servlet zone you should restart the Apache to
+ensure the new settings are read by the servlet engine.
+
+\section{Now your system is ready}
+
+Start your web server. The OpenCms system is available at\\
+http://your.server/servlets/opencms/system/workplace/action/login.html.\\
+Login as Admin using the default password admin. 
+
+For any additional information like security or troubleshooting hints
+please see the chapter \ref{42install} about the installation of the current OpenCms
+major release 4.2 in the OpenCms documentation.

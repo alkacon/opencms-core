@@ -1,0 +1,47 @@
+{\sffamily
+\thispagestyle{empty}
+\vspace*{20mm}
+
+
+\begin{center}
+{\Huge Benutzerhandbuch}
+\end{center}
+
+\hrulefill
+
+\vspace*{20mm}
+
+\begin{center}
+{\huge OpenCms}
+\end{center}
+
+\begin{center}
+{\huge Version 4.0}
+\end{center}
+
+
+
+
+\vspace*{20mm}
+
+
+\begin{flushright}
+{\huge Alexander Kandzior \\
+Dietmar Galle \\
+Ralf Ruf \\
+Dierk Himstedt\\}
+\end{flushright}
+
+
+\begin{figure}[h!!!]\centering
+\includegraphics[scale=\scaler]{logo.eps}
+\end{figure}
+
+Stand: 2000.05.12
+\clearpage
+
+\thispagestyle{empty}
+
+\vspace*{220mm}
+
+Typesetting by Marckus Kraft / \LaTeX}

@@ -1,0 +1,234 @@
+\begin{PRE}
+All Packages  Class Hierarchy  This Package  Previous  Next  Index
+\end{PRE}
+
+\htmlHR
+
+\section{  Class com.opencms.file.CmsFile }
+
+\begin{PRE}
+com.opencms.file.CmsResource
+   {\htmlBar}
+   +----com.opencms.file.CmsFile
+\end{PRE}
+
+\htmlHR
+
+\begin{description}
+\item public class {\bf CmsFile}  
+\item extends CmsResource 
+\end{description}
+
+This class describes a file in the Cms. 
+
+\begin{description}
+\item {\bf Version:}  
+
+\$Revision: 1.1 $ \$Date: 2001/07/31 12:25:45 $  
+\item {\bf Author:}  
+
+Michael Emmerich 
+\end{description}
+
+\htmlHR
+
+\subsection*{  Variable Index }
+
+\begin{description}
+\item o {\bf m\_fileContent}  
+
+The content of the file. 
+\end{description}
+
+\subsection*{  Constructor Index }
+
+\begin{description}
+\item o {\bf CmsFile}(int, int, int, String, int, int, int, int, int, int,
+int, int, int, String, long, long, int, byte[], int)  
+
+Constructor, creates a new CmsFile object. 
+\end{description}
+
+\subsection*{  Method Index }
+
+\begin{description}
+\item o {\bf clone}()  
+
+Clones the CmsFile by creating a new CmsFolder.  
+\item o {\bf getContents}()  
+
+Gets the content of this file.  
+\item o {\bf getExtension}()  
+
+Gets the file-extension.  
+\item o {\bf setContents}(byte[])  
+
+Sets the content of this file. 
+\end{description}
+
+\subsection*{  Variables }
+
+o {\bf m\_fileContent} 
+
+\begin{PRE}
+ private byte m\_fileContent[]
+\end{PRE}
+
+\begin{description}
+\htmlDD The content of the file.
+
+\end{description}
+
+\subsection*{  Constructors }
+
+o {\bf CmsFile} 
+
+\begin{PRE}
+ public CmsFile(int resourceId,
+                int parentId,
+                int fileId,
+                String resourceName,
+                int resourceType,
+                int resourceFlags,
+                int user,
+                int group,
+                int projectId,
+                int accessFlags,
+                int state,
+                int lockedBy,
+                int launcherType,
+                String launcherClassname,
+                long dateCreated,
+                long dateLastModified,
+                int resourceLastModifiedBy,
+                byte fileContent[],
+                int size)
+\end{PRE}
+
+\begin{description}
+\htmlDD Constructor, creates a new CmsFile object. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+resourceId - The database Id.  
+
+parentId - The database Id of the parent folder.  
+
+fileId - The id of the content.  
+
+resourceName - The name (including complete path) of the resouce.  
+
+resourceType - The type of this resource.  
+
+rescourceFlags - The flags of thei resource.  
+
+userId - The id of the user of this resource.  
+
+groupId - The id of the group of this resource.  
+
+projectId - The project id this resource belongs to.  
+
+accessFlags - The access flags of this resource.  
+
+state - The state of this resource.  
+
+lockedBy - The user id of the user who has locked this resource.  
+
+launcherType - The launcher that is require to process this recource.  
+
+launcherClassname - The name of the Java class invoked by the launcher.  
+
+dateCreated - The creation date of this resource.  
+
+dateLastModified - The date of the last modification of the resource.  
+
+fileContent - Then content of the file.  
+
+resourceLastModifiedBy - The user who changed the file.  
+
+size - The size of the file content.  
+\end{description}
+
+\end{description}
+
+\subsection*{  Methods }
+
+o {\bf clone} 
+
+\begin{PRE}
+ public Object clone()
+\end{PRE}
+
+\begin{description}
+\htmlDD Clones the CmsFile by creating a new CmsFolder. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+Cloned CmsFile.  
+\item {\bf Overrides:}  
+
+clone in class CmsResource  
+\end{description}
+
+\end{description}
+
+o {\bf getContents} 
+
+\begin{PRE}
+ public byte[] getContents()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the content of this file. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the content of this file.  
+\end{description}
+
+\end{description}
+
+o {\bf getExtension} 
+
+\begin{PRE}
+ public String getExtension()
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets the file-extension. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+the file extension. If this file has no extension, it returns a empty string
+(``'').  
+\end{description}
+
+\end{description}
+
+o {\bf setContents} 
+
+\begin{PRE}
+ public void setContents(byte value[])
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the content of this file. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - the content of this file.  
+\end{description}
+
+\end{description}
+
+\htmlHR
+
+\begin{PRE}
+All Packages  Class Hierarchy  This Package  Previous  Next  Index
+\end{PRE}
+

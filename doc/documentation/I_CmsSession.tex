@@ -1,0 +1,114 @@
+\begin{PRE}
+All Packages  Class Hierarchy  This Package  Previous  Next  Index
+\end{PRE}
+
+\htmlHR
+
+\section{  Interface com.opencms.core.I\_CmsSession }
+
+\begin{description}
+\item public interface {\bf I\_CmsSession} 
+\end{description}
+
+This class implements a cms-session. This session should be used instead of
+the HttpSession. In this session there will be implemented some mechanism for
+session-failover in distributed-server environments. 
+
+\begin{description}
+\item {\bf Version:}  
+
+\$Revision: 1.1 $ \$Date: 2001/07/31 12:25:45 $  
+\item {\bf Author:}  
+
+Michael Emmerich, Andreas Schouten 
+\end{description}
+
+\htmlHR
+
+\subsection*{  Method Index }
+
+\begin{description}
+\item o {\bf getValue}(String)  
+
+Gets a value from the session.  
+\item o {\bf getValueNames}()  
+
+\item o {\bf putValue}(String, Object)  
+
+Puts a value into the session  
+\item o {\bf removeValue}(String)  
+
+Removes a value from the session. 
+\end{description}
+
+\subsection*{  Methods }
+
+o {\bf getValue} 
+
+\begin{PRE}
+ public abstract Object getValue(String name)
+\end{PRE}
+
+\begin{description}
+\htmlDD Gets a value from the session. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+name - the key.  
+\item {\bf Returns:}  
+
+the object for this key.  
+\end{description}
+
+\end{description}
+
+o {\bf getValueNames} 
+
+\begin{PRE}
+ public abstract String[] getValueNames()
+\end{PRE}
+
+o {\bf putValue} 
+
+\begin{PRE}
+ public abstract void putValue(String name,
+                               Object value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Puts a value into the session 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+name - the key.  
+
+value - a object to store the value.  
+\end{description}
+
+\end{description}
+
+o {\bf removeValue} 
+
+\begin{PRE}
+ public abstract void removeValue(String name)
+\end{PRE}
+
+\begin{description}
+\htmlDD Removes a value from the session. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+name - the key for the value to remove.  
+\end{description}
+
+\end{description}
+
+\htmlHR
+
+\begin{PRE}
+All Packages  Class Hierarchy  This Package  Previous  Next  Index
+\end{PRE}
+
