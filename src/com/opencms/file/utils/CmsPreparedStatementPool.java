@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/07/07 07:09:05 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/07/07 07:24:13 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,7 +30,7 @@
 package com.opencms.file.utils;
 
 import java.sql.*;
-import java.util.*;
+import java.util.*; 
 
 import com.opencms.core.*;
 
@@ -183,7 +183,7 @@ public class CmsPreparedStatementPool {
 			PreparedStatement pstmt = m_idConnection.prepareStatement(sql);
 			m_prepStatements.put(key, pstmt);
 			
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new CmsException(CmsException.C_SQL_ERROR, e);
 		}
 		
@@ -240,6 +240,29 @@ public class CmsPreparedStatementPool {
 	}
 	
 	/**
+	 * Gets a Statement object created on a random connection
+	 *  
+	 * @return a statement, that can be used for 'individual' queryies
+	 */
+	public Statement getStatement() throws CmsException {
+		// pick a number at random from 0,1, ... m_maxConn -1
+		int k = (int) (Math.random() * m_maxConn);  
+		
+		// should happen only with probability 0, but 'sure' is better than 'almost sure' ...
+		if (k==m_maxConn) {
+			k--;	
+		} 
+		Statement statement;
+		try {
+			Connection conn = (Connection) m_connections.elementAt(k);
+			statement = conn.createStatement();
+		} catch (SQLException e) {
+			throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
+		return statement;
+	}
+	
+	/**
 	 * Add the given statement to the list of available statements.
 	 * 
 	 * @param key - the hashtable key
@@ -252,7 +275,7 @@ public class CmsPreparedStatementPool {
 		 * kontrolliert werden, ob das Statement ein neu geschaffenes Statement ist.
 		 * Wenn ja, dann Statement verwerfen, ansonsten eintragen ...
 		 */
-        //System.err.println("**** <-- key: "+key+" *** "+pstmt);
+        // System.err.println("**** <-- key: "+key+" *** "+pstmt);
 		Vector temp = (Vector) m_prepStatements.get(key);
 		
 		synchronized (temp) {
@@ -260,6 +283,8 @@ public class CmsPreparedStatementPool {
 			temp.notify();
 		}
 	}
+	
+	
 	
 	/**
 	 * Returns a vector with all connections.
