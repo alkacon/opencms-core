@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/05/09 09:57:35 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/05/11 09:40:37 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2000/05/09 09:57:35 $
+ * @version $Revision: 1.35 $ $Date: 2000/05/11 09:40:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -309,8 +309,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                 
                     // as a last step, check which colums must be displayed and add the file
                     // to the output.
-                    template=checkDisplayedColumns(filelist,template,C_FILELIST_SUFFIX_VALUE);
-                    output.append(template.getProcessedDataValue(C_LIST_ENTRY,callingObject));                
+                    template=checkDisplayedColumns(filelist,template,C_FILELIST_SUFFIX_VALUE);               
                 } else {        
                     file=(CmsFile)res; 
                     // Set output style class according to the project and state of the file.                                                          
@@ -381,9 +380,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                         
                     // as a last step, check which colums must be displayed and add the file
                     // to the output.
-                    template=checkDisplayedColumns(filelist,template,C_FILELIST_SUFFIX_VALUE);
-                    output.append(template.getProcessedDataValue(C_LIST_ENTRY,callingObject));                
-                }
+                    template=checkDisplayedColumns(filelist,template,C_FILELIST_SUFFIX_VALUE);                
+                } 
+				output.append(template.getProcessedDataValue(C_LIST_ENTRY,callingObject)); 
                }
             }
          return output.toString();
@@ -401,34 +400,34 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                                         CmsXmlWpTemplateFile template,
                                                         String suffix) {
             if ((filelist & C_FILELIST_NAME) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_NAME+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_NAME+suffix,"");
             }
             if ((filelist & C_FILELIST_TITLE) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_TITLE+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_TITLE+suffix,"");
             }
             if ((filelist & C_FILELIST_TYPE) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_TYPE+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_TYPE+suffix,"");
             }
             if ((filelist & C_FILELIST_STATE) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_STATE+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_STATE+suffix,"");
             }
             if ((filelist & C_FILELIST_CHANGED) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_CHANGED+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_CHANGED+suffix,"");
             }
             if ((filelist & C_FILELIST_SIZE) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_SIZE+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_SIZE+suffix,"");
             }
             if ((filelist & C_FILELIST_OWNER) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_OWNER+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_OWNER+suffix,"");
             }
             if ((filelist & C_FILELIST_GROUP) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_GROUP+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_GROUP+suffix,"");
             }                                                 
             if ((filelist & C_FILELIST_ACCESS) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_ACCESS+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_ACCESS+suffix,"");
             }   
             if ((filelist & C_FILELIST_LOCKED) == 0) {
-                template.fastSetXmlData(C_FILELIST_COLUMN_LOCKED+suffix,"");
+                template.setXmlData(C_FILELIST_COLUMN_LOCKED+suffix,"");
             }  
             return template;
      }
