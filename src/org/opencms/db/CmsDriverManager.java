@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 10:56:59 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2003/08/04 11:04:50 $
+ * Version: $Revision: 1.133 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.132 $ $Date: 2003/08/04 10:56:59 $
+ * @version $Revision: 1.133 $ $Date: 2003/08/04 11:04:50 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6131,13 +6131,28 @@ public class CmsDriverManager extends Object {
     public Vector readProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
         Vector retValue = new Vector();
         List resources = m_projectDriver.readProjectView(projectId, filter);
+        boolean onlyLocked = false;
+        
+        // check if only locked resources should be displayed
+        if ("locked".equalsIgnoreCase(filter)) {
+            onlyLocked = true;
+        }
 
         // check the security
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource currentResource = (CmsResource) i.next();
             if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
-                retValue.addElement(currentResource);
+                if (onlyLocked) {
+                    // check if resource is locked
+                    CmsLock lock = getLock(context, currentResource);
+                    if (!lock.isNullLock()) {
+                        retValue.addElement(currentResource);            
+                    }
+                } else {
+                    // add all resources with correct permissions
+                    retValue.addElement(currentResource);
+                }
             }
         }
 

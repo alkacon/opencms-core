@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/04 09:46:30 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/08/04 11:04:50 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.48 $ $Date: 2003/08/04 09:46:30 $
+ * @version $Revision: 1.49 $ $Date: 2003/08/04 11:04:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1974,7 +1974,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         } else if ("deleted".equalsIgnoreCase(filter)) {
             whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED + " OR CMS_T_RESOURCES.RESOURCE_STATE=" + I_CmsConstants.C_STATE_DELETED + ")";
         } else if ("locked".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_T_STRUCTURE.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
+            whereClause = "";
         } else {
             whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + " OR CMS_T_RESOURCES.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + ")";
         }        
