@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2004/10/29 08:09:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/04 16:56:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.1
  */
@@ -153,13 +153,13 @@ public class CmsHistory extends CmsDialog {
             result.append("<tr><td colspan=\"8\"><span style=\"height: 6px;\">&nbsp;</span></td></tr>\n");
             
             // get all backup resources and build the table rows
-            List backupFileHeaders = getCms().readAllBackupFileHeaders(resource);
-            int size = backupFileHeaders.size();
+            List backupFileHeaders = getCms().readAllBackupFileHeaders(resource);           
             Iterator i = backupFileHeaders.iterator();
             while (i.hasNext()) {
                 CmsBackupResource file = (CmsBackupResource)i.next();                
                 // the tagId for get the Backup project 
                 int tagId = file.getTagId();
+                int version = file.getVersionId();
                 CmsBackupProject project = getCms().readBackupProject(tagId);
                 int versionId = project.getVersionId();
                 String filetype = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
@@ -174,7 +174,7 @@ public class CmsHistory extends CmsDialog {
                 }
                 result.append("<tr>\n");
                 result.append("\t<td>");
-                result.append(size);
+                result.append(version);
                 result.append("</td>\n");   
                 result.append("\t<td>");
                 result.append("<img src=\"");
@@ -203,8 +203,7 @@ public class CmsHistory extends CmsDialog {
                 result.append("</tr>\n");
                 result.append("</table>\n");
                 result.append("</td>\n");
-                result.append("</tr>\n");
-                size--;                
+                result.append("</tr>\n");                           
             }             
             result.append("</table>\n");
         }
