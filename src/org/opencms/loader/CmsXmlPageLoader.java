@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/06/08 14:13:59 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/09 15:40:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -57,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -207,7 +208,14 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         String elementName = req.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
         
         // check the current locales
-        Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales(elementName));
+        List locales = page.getLocales(elementName);
+        Locale locale;
+        if ((locales == null) || (locales.size() == 0)) {
+            // no content for the selected element is available
+            return;                    
+        } else { 
+            locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), locales);
+        }        
         
         // get the appropriate content and convert it to bytes
         byte[] result = page.getContent(cms, elementName, locale).getBytes(page.getEncoding()); 

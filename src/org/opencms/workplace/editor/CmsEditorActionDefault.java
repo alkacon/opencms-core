@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/06/09 15:41:59 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.3.0
  */
@@ -188,8 +189,14 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                     // make sure a page is only read once (not every time for each element)
                     page = CmsXmlPage.read(cmsObject, cmsObject.readFile(filename));
                     req.setAttribute(filename, page);
-                }    
-                Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), page.getLocales());
+                }
+                List locales = page.getLocales();
+                Locale locale;
+                if ((locales == null) || (locales.size() == 0)) {
+                    locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename).get(0);                    
+                } else { 
+                    locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), locales);
+                }
                 if (!page.hasElement(element, locale) || !page.isEnabled(element, locale)) {
                     return C_DIRECT_EDIT_MODE_INACTIVE;
                 }                

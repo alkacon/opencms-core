@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/06/07 15:50:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/09 15:41:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.main.I_CmsConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
@@ -63,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
@@ -170,7 +169,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             }
             
             // create the xml page   
-            ((CmsResourceTypeXmlPage)getCms().getResourceType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)).createResourceForTemplate(getCms(), fullResourceName, Collections.EMPTY_LIST, bodyFileBytes, getParamTemplate());
+            ((CmsResourceTypeXmlPage)getCms().getResourceType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)).createResourceForTemplate(getCms(), fullResourceName, new ArrayList(), bodyFileBytes, getParamTemplate());
             
             // set the resource parameter to full path for property dialog 
             setParamResource(fullResourceName);            
