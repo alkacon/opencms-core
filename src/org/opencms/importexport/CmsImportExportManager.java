@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/03/19 13:51:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/06 09:13:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.importexport;
 
-import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -40,6 +39,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPrincipal;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2004/03/19 13:51:59 $
+ * @version $Revision: 1.11 $ $Date: 2004/06/06 09:13:44 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -215,12 +215,12 @@ public class CmsImportExportManager extends Object {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Added princial translation type:" + type + " from: " + from + " to:" + to);
         }           
-        if (type.equalsIgnoreCase(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
+        if (type.equalsIgnoreCase(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
             m_importGroupTranslations.put(from, to);  
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Name translation     : group " + from + " to " + to);
             }                
-        } else if (type.equalsIgnoreCase(CmsImportExportConfiguration.C_PRINCIPAL_USER)) {
+        } else if (type.equalsIgnoreCase(I_CmsPrincipal.C_PRINCIPAL_USER)) {
             m_importUserTranslations.put(from, to);      
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Name translation     : user " + from + " to " + to);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/04 15:11:05 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/06 09:13:44 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.importexport;
 
-import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -48,6 +47,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.34 $ $Date: 2004/06/04 15:11:05 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/06 09:13:44 $
  */
 public class CmsExport implements Serializable {
 
@@ -745,11 +745,11 @@ public class CmsExport implements Serializable {
             CmsUUID acePrincipal = ace.getPrincipal();
             if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
                 // the principal is a group
-                acePrincipalName = CmsImportExportConfiguration.C_PRINCIPAL_GROUP + "."
+                acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_GROUP + "."
                     + getCms().readGroup(acePrincipal).getName();
             } else {
                 // the principal is a user
-                acePrincipalName = CmsImportExportConfiguration.C_PRINCIPAL_USER + "."
+                acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_USER + "."
                     + getCms().readUser(acePrincipal).getName();
             }
 
