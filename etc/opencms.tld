@@ -48,6 +48,19 @@
             <required>true</required>
         </attribute>
     </tag> 
+    
+    <tag>
+        <name>info</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagInfo</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag enables access to some system information like OpenCms version etc.
+        </description>
+        <attribute>
+            <name>property</name>
+            <required>true</required>
+        </attribute>
+    </tag>     
             
     <tag>
         <name>link</name>
