@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/02/25 16:42:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/01 12:21:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2004/02/25 16:42:06 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/01 12:21:47 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -137,8 +137,8 @@ public class CmsImportExportManager extends Object {
         }
 
         // read the conversion setting
-        String convertToXmlPageValue = configuration.getString("import.convert.xmlpage");
-        boolean convertToXmlPage = (convertToXmlPageValue != null) ? "true".equalsIgnoreCase(convertToXmlPageValue.trim()) : false;
+        String convertToXmlPageValue = configuration.getString("import.convert.xmlpage");        
+        boolean convertToXmlPage = (convertToXmlPageValue != null) ? "true".equalsIgnoreCase(convertToXmlPageValue.trim()) : true;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Convert to XML page  : " + (convertToXmlPage ? "enabled" : "disabled"));
         }
