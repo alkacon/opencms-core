@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestPriorityResourceCollectors.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/19 13:59:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,9 +105,9 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         
         List properties = new ArrayList(2);
         CmsProperty propPrio = new CmsProperty();
-        propPrio.setKey(CmsPriorityResourceCollector.C_PROPERTY_PRIORITY);
+        propPrio.setName(CmsPriorityResourceCollector.C_PROPERTY_PRIORITY);
         CmsProperty propDate = new CmsProperty();
-        propDate.setKey(CmsPriorityDateResourceComparator.C_PROPERTY_DATE);
+        propDate.setName(CmsPriorityDateResourceComparator.C_PROPERTY_DATE);
         
         long time = System.currentTimeMillis();
         

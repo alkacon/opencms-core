@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.230 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.231 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.230 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.231 $ $Date: 2005/03/19 13:58:18 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1232,7 +1232,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 if (property == null) {
                     property = new CmsProperty();
-                    property.setKey(key);
+                    property.setName(key);
                 }
 
                 propertyValue = res.getString(1);
@@ -1294,7 +1294,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 if ((property = (CmsProperty) propertyMap.get(propertyKey)) == null) {
                     // there doesn't exist a property object for this key yet
                     property = new CmsProperty();
-                    property.setKey(propertyKey);
+                    property.setName(propertyKey);
                     propertyMap.put(propertyKey, property);
                 }
 
@@ -1885,28 +1885,28 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         
         try {
             // read the property definition
-            propertyDefinition = readPropertyDefinition(dbc, property.getKey(), project.getId());
+            propertyDefinition = readPropertyDefinition(dbc, property.getName(), project.getId());
         } catch (CmsDataAccessException e) {
             propertyDefinition = null;
         }
 
         if (propertyDefinition == null) {
             if (property.autoCreatePropertyDefinition()) {
-                propertyDefinition = createPropertyDefinition(dbc, project.getId(), property.getKey());   
+                propertyDefinition = createPropertyDefinition(dbc, project.getId(), property.getName());   
                 
                 try {
-                    readPropertyDefinition(dbc, property.getKey(), I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    readPropertyDefinition(dbc, property.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID);
                 } catch (CmsDataAccessException e) {
-                    createPropertyDefinition(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID, property.getKey());
+                    createPropertyDefinition(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID, property.getName());
                 } 
                 
                 try {
-                    m_driverManager.getBackupDriver().readBackupPropertyDefinition(dbc, property.getKey());
+                    m_driverManager.getBackupDriver().readBackupPropertyDefinition(dbc, property.getName());
                 } catch (CmsException e) {
-                    m_driverManager.getBackupDriver().createBackupPropertyDefinition(dbc, property.getKey());
+                    m_driverManager.getBackupDriver().createBackupPropertyDefinition(dbc, property.getName());
                 }                
             } else {
-                throw new CmsObjectNotFoundException("Property Definition with name='" + property.getKey() + "' not found.");
+                throw new CmsObjectNotFoundException("Property Definition with name='" + property.getName() + "' not found.");
             }
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2005/03/17 10:46:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,8 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.db.CmsSecurityManager;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsJspLoader;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Resource type descriptor for the type "jsp".<p>
@@ -58,12 +46,9 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
-
-    /** The configuration parameter for "default JSP encoding". */
-    public static final String C_CONFIGURATION_JSP_ENCODING = "default.encoding";
 
     /** The type id of this resource type. */
     private static final int C_RESOURCE_TYPE_ID = 4;
@@ -76,9 +61,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
-
-    /** The default encoding to use when creating new JSP pages. */
-    private String m_defaultEncoding;
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -108,65 +90,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public static String getStaticTypeName() {
 
         return C_RESOURCE_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
-     */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-
-        super.addConfigurationParameter(paramName, paramValue);
-        if (C_CONFIGURATION_JSP_ENCODING.equalsIgnoreCase(paramName)) {
-            m_defaultEncoding = CmsEncoder.lookupEncoding(paramValue.trim(), OpenCms.getSystemInfo()
-                .getDefaultEncoding());
-        }
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
-     */
-    public CmsResource createResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        String resourcename,
-        byte[] content,
-        List properties) throws CmsException {
-
-        List newProperties;
-        if (properties == null) {
-            newProperties = new ArrayList();
-        } else {
-            newProperties = new ArrayList(properties);
-        }
-        newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORT, null, "false"));
-        newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, null, m_defaultEncoding));
-        newProperties.addAll(createPropertyObjects(cms));
-
-        return super.createResource(cms, securityManager, resourcename, content, newProperties);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
-     */
-    public Map getConfiguration() {
-
-        Map result = new HashMap();
-        result.put(C_CONFIGURATION_JSP_ENCODING, m_defaultEncoding);
-        Map additional = super.getConfiguration();
-        if (additional != null) {
-            result.putAll(additional);
-        }
-        return result;
-    }
-
-    /**
-     * Returns the default encoding for JSP pages.<p>
-     * 
-     * @return the default encoding for JSP pages
-     */
-    public String getDefaultEncoding() {
-
-        return m_defaultEncoding;
     }
 
     /**
@@ -210,18 +133,5 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#initialize(org.opencms.file.CmsObject)
-     */
-    public void initialize(CmsObject cms) {
-
-        super.initialize(cms);
-        // ensure default content encoding is set
-        if (m_defaultEncoding == null) {
-            m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
-        }
-        m_defaultEncoding = m_defaultEncoding.intern();
     }
 }

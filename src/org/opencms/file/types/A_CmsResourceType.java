@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -43,18 +44,16 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringMapper;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 /**
  * Base implementation for resource type classes.<p>
@@ -62,86 +61,100 @@ import java.util.TreeMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.1
  */
-public abstract class A_CmsResourceType implements I_CmsResourceType {    
-    
+public abstract class A_CmsResourceType implements I_CmsResourceType {
+
+    /** Macro for the folder path of the current resouce. */
+    public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
+
+    /** Macro for the name of the current resouce. */
+    public static final String MACRO_RESOURCE_NAME = "resource.name";
+
+    /** Macro for the parent folder path of the current resouce. */
+    public static final String MACRO_RESOURCE_PARENT_PATH = "resource.parent.path";
+
+    /** Macro for the root path of the current resouce. */
+    public static final String MACRO_RESOURCE_ROOT_PATH = "resource.root.path";
+
+    /** Macro for the site path of the current resouce. */
+    public static final String MACRO_RESOURCE_SITE_PATH = "resource.site.path";
+
     /** Flag for showing that this is an additional resource type which defined in a module. */
-    private boolean m_addititionalModuleResourceType = false;
+    protected boolean m_addititionalModuleResourceType;
+
+    /** The list of resources to copy. */
+    protected List m_copyResources;
+
+    /** The list of configured default properties. */
+    protected List m_defaultProperties;
+
+    /** Indicates that the configuration of the resource type has been frozen. */
+    protected boolean m_frozen;
 
     /** 
      * The list of all resourcetype mappings.<p>
      * Contains those file extensions mapped to the resourcetype.
      */
-    private List m_mappings = new ArrayList();
-    
-    /** Property parameters that are given in the xml configuration. */
-    private SortedMap m_propertyValues;
-        
+    protected List m_mappings;
+
     /** The configured id of this resource type. */
     protected int m_typeId;
-    
+
     /** The configured name of this resource type. */
     protected String m_typeName;
-    
-    /** Indicates that the configuration of the resource type has been frozen. */
-    protected boolean m_frozen;
-    
+
     /**
      * Default constructor, used to initialize some member variables.<p>
      */
     public A_CmsResourceType() {
-        
+
         m_typeId = -1;
         m_mappings = new ArrayList();
-    }
-    
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
-     */
-    public int getTypeId() {
-
-        return m_typeId;
+        m_defaultProperties = new ArrayList();
+        m_copyResources = new ArrayList();
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeName()
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
-    public String getTypeName() {
+    public void addConfigurationParameter(String paramName, String paramValue) {
 
-        return m_typeName;
+        // noop
     }
-    
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
-     */
-    public final void initConfiguration() {
 
-        // final since subclassed should NOT implement this, but rather the version with parameters (see below)
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
-        }
-    }   
-    
     /**
-     * Special version of the configuration initialization used to also set resource type and id.<p>
+     * Adds a new "copy resource" to this resource type,
+     * allowed only during the configuration phase.<p>
      * 
-     * <i>Please note;</i> Many resource types defined in the core have in fact
-     * a fixed resource type and a fixed id. Configurable name and id is used only
-     * for certain types.<p>
+     * The "copy resources" are copied to the specified location after
+     * a new resource of this type is created. Usually this feature is used to
+     * populate a newly created folder with some default resources.<p> 
      * 
-     * @param name the resource type name
-     * @param id the resource type id
-     * @throws CmsConfigurationException if something goes wrong
+     * If target is <code>null</code>, the macro {@link #MACRO_RESOURCE_FOLDER_PATH} is used as default.
+     * If type is <code>null</code>, the copy type {@link I_CmsConstants#C_COPY_AS_NEW} is used as default.<p>
+     * 
+     * @param source the source resource
+     * @param target the target resource (may contain macros)
+     * @param type the type of the copy, for example "as new", "as sibling" etc
+     * 
+     * @throws CmsConfigurationException if the configuration is already frozen
      */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+    public void addCopyResource(String source, String target, String type) throws CmsConfigurationException {
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration(String, String) called on " + this + " with name='" + name + "' id='" + id + "'");
-
+            OpenCms.getLog(this).debug(
+                "addCopyResource(String, String, String) called on "
+                    + this
+                    + " with source="
+                    + source
+                    + " target="
+                    + target
+                    + " type="
+                    + type);
         }
-        
+
         if (m_frozen) {
             // configuration already frozen
             throw new CmsConfigurationException("Resource type "
@@ -152,33 +165,41 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 + getTypeId()
                 + "' can't be reconfigured");
         }
-        // freeze the configuration
-        m_frozen = true;
-        
-        // set type name and id (please note that some resource types have a fixed type / id)
-        if (name != null) {
-            m_typeName = name;
-        }
-        if (id != null) {
-            m_typeId = Integer.valueOf(id).intValue();
-        }
-        
-        // check type id and type name
-        if ((getTypeId() < 0) || (getTypeName() == null)) {
-            throw new CmsConfigurationException("Invalid resource type configuration type='" + this.getClass().getName() + "' name='" + m_typeName + "' id='" + m_typeId + "'");            
-        }
+
+        // create the copy resource object an add it to the list
+        CmsConfigurationCopyResource copyResource = new CmsConfigurationCopyResource(source, target, type);
+        m_copyResources.add(copyResource);
     }
-    
+
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     * Adds a default property to this resource type, 
+     * allowed only during the configuration phase.<p>
+     * 
+     * @param property the default property to add
+     * 
+     * @throws CmsConfigurationException if the configuration is already frozen
      */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-        
-        if (paramName.startsWith(C_CONFIGURATION_PROPERTY_CREATE)) {
-            createPropertyConfiguration(paramName, paramValue);
+    public void addDefaultProperty(CmsProperty property) throws CmsConfigurationException {
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                "addDefaultProperty(CmsProperty) called on " + this + " with property=" + property);
         }
-    }    
-    
+
+        if (m_frozen) {
+            // configuration already frozen
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " with name='"
+                + getTypeName()
+                + "' id='"
+                + getTypeId()
+                + "' can't be reconfigured");
+        }
+
+        m_defaultProperties.add(property);
+    }
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#addMappingType(java.lang.String)
      */
@@ -186,14 +207,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // this configuration does not support parameters 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "addMapping(" + mapping + ") added to " + this);
+            OpenCms.getLog(this).debug("addMapping(" + mapping + ") added to " + this);
         }
         if (m_mappings == null) {
             m_mappings = new ArrayList();
-        }   
+        }
         m_mappings.add(mapping);
-    }    
+    }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
@@ -208,7 +228,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             cms.getRequestContext(), 
             resource);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#changeLock(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
      */
@@ -254,7 +274,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resource, 
             type);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, int)
      */
@@ -267,9 +287,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     ) throws CmsException {
 
         securityManager.copyResource(
-            cms.getRequestContext(), 
-            source, 
-            cms.getRequestContext().addSiteRoot(destination), 
+            cms.getRequestContext(),
+            source,
+            cms.getRequestContext().addSiteRoot(destination),
             siblingMode);
     }
 
@@ -291,34 +311,37 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, byte[], List)
      */
     public CmsResource createResource(
-        CmsObject cms, 
-        CmsSecurityManager securityManager, 
+        CmsObject cms,
+        CmsSecurityManager securityManager,
         String resourcename,
-        byte[] content, 
+        byte[] content,
         List properties
     ) throws CmsException {
+
+        // initialize the String mapper with the current user OpenCms context
+        CmsStringMapper mapper = getStringMapper(cms, resourcename);
         
         // add the predefined property values from the XML configuration to the resource
-        List newProperties;       
-        if (properties == null) {
-            newProperties = new ArrayList();
-        } else {
-            newProperties = new ArrayList(properties);
-        }
-        newProperties.addAll(createPropertyObjects(cms));
+        List newProperties = processDefaultProperties(properties, mapper);
         
-        return securityManager.createResource(
+        CmsResource result = securityManager.createResource(
             cms.getRequestContext(), 
             cms.getRequestContext().addSiteRoot(resourcename), 
             getTypeId(),
             content, 
             newProperties);
+        
+        // process the (optional) copy resources from the configuration
+        processCopyResources(cms, resourcename, mapper);
+        
+        // return the created resource
+        return result;        
     }
- 
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createSibling(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, CmsResource, java.lang.String, java.util.List)
      */
-     public void createSibling(
+    public void createSibling(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
@@ -327,9 +350,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      ) throws CmsException {
 
         securityManager.createSibling(
-            cms.getRequestContext(), 
-            source, 
-            cms.getRequestContext().addSiteRoot(destination), 
+            cms.getRequestContext(),
+            source,
+            cms.getRequestContext().addSiteRoot(destination),
             properties);
     }
 
@@ -362,33 +385,59 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public Map getConfiguration() {
 
-        Map result = null;
-        if (getPropertyValues() != null) {
-            result = new HashMap();
-            Iterator i = getPropertyValues().keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();               
-                result.put(C_CONFIGURATION_PROPERTY_CREATE + key, getPropertyValues().get(key));
-            }
-        }
-        
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("getConfiguration() called on " + this);
         }
-        return result;
+        return null;
+    }
+
+    /**
+     * Returns the (unmodifiable) list of copy resources.<p>
+     * 
+     * @return the (unmodifiable) list of copy resources
+     */
+    public List getConfiguredCopyResources() {
+
+        return m_copyResources;
+    }
+
+    /**
+     * Returns the default properties for this resource type in an unmodifiable List.<p>
+     *
+     * @return the default properties for this resource type in an unmodifiable List
+     */
+    public List getConfiguredDefaultProperties() {
+
+        return m_defaultProperties;
     }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public abstract int getLoaderId();
-  
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getMapping()
+     * @see org.opencms.file.types.I_CmsResourceType#getConfiguredMappings()
      */
-    public List getMapping() {
+    public List getConfiguredMappings() {
+
         return m_mappings;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     */
+    public int getTypeId() {
+
+        return m_typeId;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeName()
+     */
+    public String getTypeName() {
+
+        return m_typeName;
     }
 
     /**
@@ -416,25 +465,93 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             properties,
             true);
     }   
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public final void initConfiguration() {
+
+        // final since subclassed should NOT implement this, but rather the version with parameters (see below)
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        }
+    }
+
+    /**
+     * Special version of the configuration initialization used to also set resource type and id.<p>
+     * 
+     * <i>Please note;</i> Many resource types defined in the core have in fact
+     * a fixed resource type and a fixed id. Configurable name and id is used only
+     * for certain types.<p>
+     * 
+     * @param name the resource type name
+     * @param id the resource type id
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                "initConfiguration(String, String) called on " + this + " with name='" + name + "' id='" + id + "'");
+
+        }
+
+        if (m_frozen) {
+            // configuration already frozen
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " with name='"
+                + getTypeName()
+                + "' id='"
+                + getTypeId()
+                + "' can't be reconfigured");
+        }
+        // freeze the configuration
+        m_frozen = true;
+
+        // set type name and id (please note that some resource types have a fixed type / id)
+        if (name != null) {
+            m_typeName = name;
+        }
+        if (id != null) {
+            m_typeId = Integer.valueOf(id).intValue();
+        }
+
+        // check type id and type name
+        if ((getTypeId() < 0) || (getTypeName() == null)) {
+            throw new CmsConfigurationException("Invalid resource type configuration type='"
+                + this.getClass().getName()
+                + "' name='"
+                + m_typeName
+                + "' id='"
+                + m_typeId
+                + "'");
+        }
+
+        m_defaultProperties = Collections.unmodifiableList(m_defaultProperties);
+        m_copyResources = Collections.unmodifiableList(m_copyResources);
+        m_mappings = Collections.unmodifiableList(m_mappings);
+    }
     
     /**
      * @see org.opencms.file.types.I_CmsResourceType#initialize(org.opencms.file.CmsObject)
      */
     public void initialize(CmsObject cms) {
-        
+
         // most resource type do not require any runtime information
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("initialize() called on " + this);
-        }        
-    }    
-    
+        }
+    }
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#isAdditionalModuleResourceType()
      */
     public boolean isAdditionalModuleResourceType() {
+
         return m_addititionalModuleResourceType;
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
      */
@@ -442,7 +559,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         return false;
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#isFolder()
      */
@@ -479,8 +596,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         
         // check if the user has write access and if resource is locked
         // done here since copy is ok without lock, but delete is not
-        securityManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
-        
+        securityManager.checkPermissions(
+            cms.getRequestContext(),
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            true,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+
         // check if the resource to move is new or existing
         boolean isNew = resource.getState() == I_CmsConstants.C_STATE_NEW;
         
@@ -546,11 +668,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resource, 
             tag);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setAdditionalModuleResourceType(boolean)
      */
     public void setAdditionalModuleResourceType(boolean additionalType) {
+
         m_addititionalModuleResourceType = additionalType;
     }
 
@@ -602,9 +725,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         boolean recursive
     ) throws CmsException {
 
-        securityManager.undoChanges(
-            cms.getRequestContext(),
-            resource);
+        securityManager.undoChanges(cms.getRequestContext(), resource);
     }
 
     /**
@@ -634,9 +755,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             return securityManager.writeFile(cms.getRequestContext(), resource);
         }
         // folders can never be written like a file
-        throw new CmsException("Attempt to write a folder as if it where a file!");        
+        throw new CmsException("Attempt to write a folder as if it where a file!");
     }
-  
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writePropertyObject(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, CmsResource, org.opencms.file.CmsProperty)
      */
@@ -652,7 +773,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resource, 
             property);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writePropertyObjects(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, CmsResource, java.util.List)
      */
@@ -668,85 +789,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resource,
             properties);
     }  
-    
-    /**
-     * Fills a Map with neccessary values to create properties on file creation.<p>
-     * 
-     * The key is the property definition name, the value the parameter value String from the XML configuration.<p>
-     * 
-     * @param paramName parameter name from XML configuration, has to start with prefix "property.create.".<p>
-     * @param paramValue parameter value from XML configuration
-     */
-    protected void createPropertyConfiguration(String paramName, String paramValue) {
-        
-        // get property name from parameter name
-        String propDef = paramName.substring(C_CONFIGURATION_PROPERTY_CREATE.length());
-        if (m_propertyValues == null) {
-            m_propertyValues = new TreeMap();
-        }
-        m_propertyValues.put(propDef, paramValue);
-    }
-    
-    /**
-     * Returns a list of property objects that are attached to the resource on creation.<p>
-     * 
-     * @param cms the CmsObject to get information when substituting String macros 
-     * @return ready defined property objects
-     */
-    protected List createPropertyObjects(CmsObject cms) {
-
-        if (m_propertyValues == null) {
-            // no default properties are defined
-            return Collections.EMPTY_LIST;
-        }
-
-        List propertyObjects = new ArrayList(m_propertyValues.size());
-        Iterator i = m_propertyValues.keySet().iterator();
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            // create new property object
-            CmsProperty property = new CmsProperty();
-            property.setAutoCreatePropertyDefinition(true);
-            // set property key name             
-            property.setKey(key);
-            String value = (String)m_propertyValues.get(key);
-            StringTokenizer toker = new StringTokenizer(value.trim(), "|");
-            // determine property value
-            String propValue = toker.nextToken();
-            // substitute eventual String macros in property value
-            propValue = CmsStringUtil.substituteMacros(propValue, new CmsStringMapper(cms, null));
-            // get eventual property record information from parameter value
-            String propRecord = "";
-            if (toker.hasMoreTokens()) {
-                // the record to write the property to is given
-                propRecord = toker.nextToken();
-            }
-            if (C_PROPERTY_ON_RESOURCE.equals(propRecord)
-                || (CmsStringUtil.isEmpty(propRecord) && !OpenCms.getWorkplaceManager()
-                    .isDefaultPropertiesOnStructure())) {
-                // set the resource property value
-                property.setResourceValue(propValue);
-            } else {
-                // set the structure property value
-                property.setStructureValue(propValue);
-            }
-            // add property to list
-            propertyObjects.add(property);
-        }
-        return propertyObjects;
-    }
-    
-    /**
-     * Returns the Map with values to create properties on file creation.<p>
-     * 
-     * The key is the property definition name, the value the parameter value String from the XML configuration.<p>
-     * 
-     * @return the Map with values to create properties on file creation
-     */
-    protected Map getPropertyValues() {
-        
-        return m_propertyValues != null ? Collections.unmodifiableMap(m_propertyValues) : null;
-    }
 
     /**
      * Convenience method to return the initialized resource type 
@@ -759,7 +801,123 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
     protected I_CmsResourceType getResourceType(int resourceType) throws CmsException {
-        
+
         return OpenCms.getResourceManager().getResourceType(resourceType);
+    }
+
+    /**
+     * Creates a String mapper based on the current users OpenCms context and the provided resource name.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resourcename the resource name for macros like {@link A_CmsResourceType#MACRO_RESOURCE_FOLDER_PATH}
+     *  
+     * @return a String mapper based on the current users OpenCms context and the provided resource name
+     */
+    protected CmsStringMapper getStringMapper(CmsObject cms, String resourcename) {
+
+        CmsStringMapper result = new CmsStringMapper(cms);
+        if (isFolder() && (!CmsResource.isFolder(resourcename))) {
+            // ensure folder ends with "/" so
+            resourcename = resourcename.concat("/");
+        }
+        // add special mappings for macros in default properties
+        result.addMapping(MACRO_RESOURCE_ROOT_PATH, cms.getRequestContext().addSiteRoot(resourcename));
+        result.addMapping(MACRO_RESOURCE_SITE_PATH, resourcename);
+        result.addMapping(MACRO_RESOURCE_FOLDER_PATH, CmsResource.getFolderPath(resourcename));
+        result.addMapping(MACRO_RESOURCE_PARENT_PATH, CmsResource.getParentFolder(resourcename));
+        result.addMapping(MACRO_RESOURCE_NAME, CmsResource.getName(resourcename));
+
+        return result;
+    }
+
+    /**
+     * Processes the copy resources f this resource type.<p> 
+     * 
+     * @param cms the current OpenCms user context
+     * @param resourcename the name of the base resource 
+     * @param mapper the mapper used for resolving target macro names
+     */
+    protected void processCopyResources(CmsObject cms, String resourcename, CmsStringMapper mapper) {
+
+        Iterator i = m_copyResources.iterator();
+        while (i.hasNext()) {
+            CmsConfigurationCopyResource copyResource = (CmsConfigurationCopyResource)i.next();
+
+            String target = copyResource.getTarget();
+            if (copyResource.isTargetWasNull() || target.equals(CmsStringUtil.formatMacro(MACRO_RESOURCE_FOLDER_PATH))) {
+                // target is just the resource folder, must add source file name to target
+                target = target.concat(CmsResource.getName(copyResource.getSource()));
+            }
+            // now resolve the macros in the target name
+            target = CmsStringUtil.substituteMacros(target, mapper);
+            // now resolve possible releative paths in the target
+            target = CmsFileUtil.normalizePath(CmsLinkManager.getAbsoluteUri(target, resourcename), '/');
+
+            try {
+                cms.copyResource(copyResource.getSource(), target, copyResource.getType());
+            } catch (CmsException e) {
+                // log the error and continue with the other copy resources
+                String message = "On resource "
+                    + resourcename
+                    + " unable to process copy resource "
+                    + copyResource
+                    + " target is "
+                    + target;
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    // log stack trace in debug level only
+                    OpenCms.getLog(this).debug(message, e);
+                } else {
+                    OpenCms.getLog(this).error(message);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns a list of property objects that are attached to the resource on creation.<p>
+     * 
+     * It's possible to use OpenCms macros for the property values. 
+     * Please see {@link CmsStringMapper#CmsStringMapper(CmsObject)} for allowed macro values.<p>
+     * 
+     * @param properties the (optional) properties provided by the user
+     * @param mapper the initialized String mapper to resolve the macro values
+     * 
+     * @return a list of property objects that are attached to the resource on creation
+     */
+    protected List processDefaultProperties(List properties, CmsStringMapper mapper) {
+
+        if ((m_defaultProperties == null) || (m_defaultProperties.size() == 0)) {
+            // no default properties are defined
+            return properties;
+        }
+
+        // the properties must be copied since the macros could contain macros that are
+        // resolved differently for every user / context
+        ArrayList result = new ArrayList();
+        Iterator i = m_defaultProperties.iterator();
+
+        while (i.hasNext()) {
+            // create a clone of the next property
+            CmsProperty property = (CmsProperty)((CmsProperty)i.next()).clone();
+
+            // resolve possible macros in the property values
+            if (property.getResourceValue() != null) {
+                property.setResourceValue(CmsStringUtil.substituteMacros(property.getResourceValue(), mapper));
+            }
+            if (property.getStructureValue() != null) {
+                property.setStructureValue(CmsStringUtil.substituteMacros(property.getStructureValue(), mapper));
+            }
+
+            // save the new property in the result list
+            result.add(property);
+        }
+
+        // add the original properties
+        if (properties != null) {
+            result.addAll(properties);
+        }
+
+        // return the result
+        return result;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/03/10 16:23:07 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class CmsLinkManager {
 
@@ -78,14 +78,14 @@ public class CmsLinkManager {
     }
 
     /**
-     * Calculates an absolute uri from a relative "uri" and the given absolute "baseUri".<p> 
+     * Calculates the absolute uri for the "relativeUri" with the given absolute "baseUri" as start. <p> 
      * 
-     * If "uri" is already absolute, it is returned unchanged.
-     * This method also returns "uri" unchanged if it is not well-formed.<p>
+     * If "relativeUri" is already absolute, it is returned unchanged.
+     * This method also returns "relativeUri" unchanged if it is not well-formed.<p>
      *    
      * @param relativeUri the relative uri to calculate an absolute uri for
      * @param baseUri the base uri, this must be an absolute uri
-     * @return an absolute uri calculated from "uri" and "baseUri"
+     * @return an absolute uri calculated from "relativeUri" and "baseUri"
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
 

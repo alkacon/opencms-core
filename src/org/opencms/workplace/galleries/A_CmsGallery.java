@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -1315,7 +1315,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             if (currentProperty.isNullProperty()) {
                 // create new property object and set key and value
                 currentProperty = new CmsProperty();
-                currentProperty.setKey(I_CmsConstants.C_PROPERTY_TITLE);
+                currentProperty.setName(I_CmsConstants.C_PROPERTY_TITLE);
                 if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                     // set structure value
                     currentProperty.setStructureValue(currentPropertyValue);

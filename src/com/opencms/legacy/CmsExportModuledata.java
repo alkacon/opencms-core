@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2005/03/19 13:58:19 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.12 $ $Date: 2005/03/19 13:58:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -325,7 +325,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             return true;
         }
         // don't export "channel" property
-        return I_CmsConstants.C_PROPERTY_CHANNELID.equals(property.getKey());
+        return I_CmsConstants.C_PROPERTY_CHANNELID.equals(property.getName());
     }
 
     /**

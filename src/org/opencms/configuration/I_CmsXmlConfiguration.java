@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,6 +106,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /** Export points master node. */
     String N_EXPORTPOINTS = "exportpoints";
 
+    /** An individual name node. */
+    String N_NAME = "name";
+
     /** The "param" node name for generic parameters. */
     String N_PARAM = "param";
 
@@ -117,6 +120,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** An individual site node. */
     String N_SITE = "site";
+
+    /** An individual value node. */
+    String N_VALUE = "value";
 
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>

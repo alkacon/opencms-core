@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/19 13:59:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -78,6 +78,7 @@ public class TestProperty extends OpenCmsTestCase {
         suite.addTest(new TestProperty("testCreateProperty"));
         suite.addTest(new TestProperty("testCreateProperties"));
         suite.addTest(new TestProperty("testWritePropertyOnFolder"));
+        suite.addTest(new TestProperty("testDefaultPropertyCreation"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -386,5 +387,50 @@ public class TestProperty extends OpenCmsTestCase {
         echo("Testing writing one property on a folder");
         CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);  
         writeProperty(this, cms, "/folder2/", property10);
+    }  
+    
+    /**
+     * Test default property creation (from resource type configuration).<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testDefaultPropertyCreation() throws Throwable {
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing default property creation");
+        
+        String resourcename = "/folder1/article_test.html";
+        byte[] content = new byte[0];      
+        
+        // resource 12 is article (xml content) with default properties
+        cms.createResource(resourcename, 12, content, null);
+        
+        // ensure created resource type
+        assertResourceType(cms, resourcename, 12);  
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser()); 
+               
+        CmsProperty property1, property2;
+        property1 = new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "Test title", null);
+        property2 = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_TITLE, false);
+        assertTrue(property1.isIdentical(property2));        
+        
+        property1 = new CmsProperty("template-elements", "/system/modules/org.opencms.frontend.templateone.form/pages/form.html", null);
+        property2 = cms.readPropertyObject(resourcename, "template-elements", false);
+        assertTrue(property1.isIdentical(property2));        
+
+        property1 = new CmsProperty(I_CmsConstants.C_PROPERTY_DESCRIPTION, null, "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
+        property2 = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_DESCRIPTION, false);
+        assertTrue(property1.isIdentical(property2));        
+        
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();    
+        
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);                
     }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -522,7 +522,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         if (currentProperty == null) {
             // new property, create new property object
             currentProperty = new CmsProperty();
-            currentProperty.setKey(propName);
+            currentProperty.setName(propName);
         }
     
         // check if there is a parameter value for the current property

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -179,9 +179,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The node name for the memorymonitor node. */
     protected static final String N_MEMORYMONITOR = "memorymonitor";
-    
-    /** The node name for a job name. */
-    protected static final String N_NAME = "name";
     
     /** The node name for the job parameters. */
     protected static final String N_PARAMETERS = "parameters";     

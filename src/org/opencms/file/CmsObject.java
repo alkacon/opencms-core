@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/03/16 10:48:35 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2005/03/19 13:58:20 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.113 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -782,7 +782,7 @@ public class CmsObject {
     public void deleteProperty(String resourcename, String key) throws CmsException {
 
         CmsProperty property = new CmsProperty();
-        property.setKey(key);
+        property.setName(key);
         property.setStructureValue(CmsProperty.C_DELETE_VALUE);
 
         writePropertyObject(resourcename, property);
@@ -3148,7 +3148,7 @@ public class CmsObject {
     public void writeProperty(String resourceName, String key, String value) throws CmsException {
 
         CmsProperty property = new CmsProperty();
-        property.setKey(key);
+        property.setName(key);
         property.setStructureValue(value);
 
         writePropertyObject(resourceName, property);
@@ -3169,7 +3169,7 @@ public class CmsObject {
     public void writeProperty(String resourcename, String key, String value, boolean addDefinition) throws CmsException {
 
         CmsProperty property = new CmsProperty();
-        property.setKey(key);
+        property.setName(key);
         property.setStructureValue(value);
         property.setAutoCreatePropertyDefinition(addDefinition);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.55 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.56 $ $Date: 2005/03/19 13:58:19 $
  */
 public class CmsExport implements Serializable {
 
@@ -794,7 +794,7 @@ public class CmsExport implements Serializable {
                 continue;
             }  
             
-            key = property.getKey();          
+            key = property.getName();          
             
             for (int j = 0; j < 2; j++) {
                 // iterations made here:

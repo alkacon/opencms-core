@@ -27,13 +27,6 @@
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
 
-<!ELEMENT mapping (#PCDATA)>
-<!ATTLIST mapping suffix CDATA #REQUIRED>
-
-<!ELEMENT resourcetypes (type+)>
-<!ELEMENT type (mapping*, param*)>
-<!ATTLIST type class CDATA #REQUIRED name CDATA #REQUIRED id CDATA #REQUIRED>
-
 <!--
 # Collectors for gathering Lists of resources from the VFS.	
 -->
@@ -114,3 +107,56 @@
 <!ELEMENT schematypes (schematype*)>
 <!ELEMENT schematype EMPTY>
 <!ATTLIST schematype class CDATA #REQUIRED defaultwidget CDATA #REQUIRED>
+
+<!--
+# Individual resource types. 
+-->
+
+<!--
+# Name for the property node (see below), this node already exists in opencms-modules.xml
+-->
+
+<!ELEMENT name (#PCDATA)>
+
+<!--
+# PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
+# 
+# The following nodes describe the resource type configuration.
+# Since it is possible to set resource types in the VFS configuration as 
+# well as in a module, all remaining nodes must be copied to the 
+# following two files:
+#
+#    opencms-vfs.xml
+#    opencms-modules.xml
+-->
+
+<!ELEMENT resourcetypes (type+)>
+<!ELEMENT type (mappings?, properties?, copy-resources?, param*)>
+<!ATTLIST type class CDATA #REQUIRED name CDATA #REQUIRED id CDATA #REQUIRED>
+
+<!--
+# Resource type extension mappings, used for automatically setting the resource
+# type of a newly uploaded resource (optional).	
+-->
+
+<!ELEMENT mappings (mapping*)>
+<!ELEMENT mapping (#PCDATA)>
+<!ATTLIST mapping suffix CDATA #REQUIRED>
+
+<!-- 
+# Property creation rules for resource types (optional).
+-->
+<!ELEMENT properties (property*)>
+<!ELEMENT property (name, value, value?)>
+
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST value type (shared|individual) #IMPLIED>
+
+<!--
+# The <copy-resources> node of a resource type subnode describes resources that are 
+# to be copied when a resource of this type is created.<p>
+-->	
+
+<!ELEMENT copy-resources (copy-resource*)>
+<!ELEMENT copy-resource EMPTY>
+<!ATTLIST copy-resource source CDATA #REQUIRED target CDATA #IMPLIED type (new|sibling|preserve) #IMPLIED>

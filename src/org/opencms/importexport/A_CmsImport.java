@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -285,7 +285,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                             
                             if (!checkedProperties.contains(property)) {
                                 // check the current property and create it, if necessary
-                                checkPropertyDefinition(property.getKey());
+                                checkPropertyDefinition(property.getName());
                                 checkedProperties.add(property);                        
                             }
                         }
@@ -484,7 +484,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             // all Cms properties are collected in a map keyed by their property keys
             if ((property = (CmsProperty)properties.get(key)) == null) {
                 property = new CmsProperty();
-                property.setKey(key);
+                property.setName(key);
                 property.setAutoCreatePropertyDefinition(true);
                 properties.put(key, property);
             }

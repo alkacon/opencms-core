@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/19 13:59:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,15 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsStringMapper;
+import org.opencms.util.CmsStringUtil;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import junit.extensions.TestSetup;
@@ -46,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
   
@@ -222,8 +227,22 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         String systemEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         String workplaceEncoding = OpenCms.getWorkplaceManager().getDefaultEncoding();
         
+        // get content encoding default property from the JSP resource type
         CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(CmsResourceTypeJsp.getStaticTypeId());
-        String jspEncoding = jsp.getDefaultEncoding();
+        List defaultProperties = jsp.getConfiguredDefaultProperties();
+        Iterator i = defaultProperties.iterator();
+        String jspEncoding = null;
+        while (i.hasNext()) {
+            CmsProperty property = (CmsProperty)i.next();
+            if (I_CmsConstants.C_PROPERTY_CONTENT_ENCODING.equals(property.getName())) {
+                jspEncoding = property.getValue();
+                // resolve the macro
+                CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+                CmsStringMapper mapper = new CmsStringMapper(cms);
+                jspEncoding = CmsStringUtil.substituteMacros(jspEncoding, mapper);
+                break;
+            }
+        }
         
         assertEquals("ISO-8859-1", systemEncoding);
         assertEquals(systemEncoding, workplaceEncoding);

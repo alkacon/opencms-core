@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -55,7 +54,7 @@ import java.util.TreeMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.5
  */
@@ -107,25 +106,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
             // get the bytes from the created content
             content = newContent.marshal();
         }
-
-        // add the predefined property values from XMl configuration to the resource
-        List newProperties;
-        if (properties == null) {
-            newProperties = new ArrayList();
-        } else {
-            newProperties = new ArrayList(properties);
-        }
-        newProperties.addAll(createPropertyObjects(cms));
-
-        // create the new XML content resource
-        CmsResource resource = securityManager.createResource(
-            cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
-            getTypeId(), 
-            content, 
-            newProperties);
         
-        return resource;
+        // now create the resource using the super class
+        return super.createResource(
+            cms, 
+            securityManager, 
+            resourcename, 
+            content, 
+            properties);
     }
 
     /**

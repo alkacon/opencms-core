@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -74,8 +74,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     private static final String N_TIMEOUT = "timeout";
     private static final String N_DOCUMENTTYPE = "documenttype";
     private static final String N_DOCUMENTTYPES = "documenttypes";
-    private static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";    
-    private static final String N_NAME = "name";
+    private static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";
     private static final String N_CLASS = "class";
     private static final String N_LOCALE = "locale";
     private static final String N_RESOURCETYPES = "resourcetypes";

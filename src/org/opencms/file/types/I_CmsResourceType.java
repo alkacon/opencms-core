@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,22 +70,22 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 
     /** The name of the addMapping() method. */
     String C_ADD_MAPPING_METHOD = "addMappingType";
-    
+
     /** Name of the addResourceType() method to add a resource type from the configuration. */
     String C_ADD_RESOURCE_TYPE_METHOD = "addResourceType";
-    
+
     /** Configuration key prefix for properties that are attached when creating a new resource. */
     String C_CONFIGURATION_PROPERTY_CREATE = "property.create.";
-   
+
     /** Configuration key for the resource type id. */
     String C_CONFIGURATION_RESOURCE_TYPE_ID = "resource.type.id";
-    
+
     /** Configuration key for the resource type name. */
     String C_CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
-    
+
     /** Store the property on resource record. */
     String C_PROPERTY_ON_RESOURCE = "resource";
-    
+
     /** Store the property on structure record. */
     String C_PROPERTY_ON_STRUCTURE = "structure";
 
@@ -349,18 +349,32 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     String getCachePropertyDefault();
 
     /**
+     * Returns the configured copy resources for this resource type in an unmodifiable List.<p>
+     *
+     * @return the configured copy resources for this resource type in an unmodifiable List
+     */
+    List getConfiguredCopyResources();
+    
+    /**
+     * Returns the configured default properties for this resource type in an unmodifiable List.<p>
+     *
+     * @return the configured default properties for this resource type in an unmodifiable List
+     */
+    List getConfiguredDefaultProperties();
+
+    /**
+     * Returns the file extensions mappings for this resource type in an unmodifiable List.<p>
+     *
+     * @return a list of file extensions mappings for this resource type in an unmodifiable List
+     */
+    List getConfiguredMappings();
+
+    /**
      * Returns the loader type id of this resource type.<p>
      *
      * @return the loader type id of this resource type
      */
     int getLoaderId();
-
-    /**
-     * Returns the file extensions mappings for this resource type.<p>
-     *
-     * @return a list of file extensions mappings for this resource type
-     */
-    List getMapping();
 
     /**
      * Returns the type id of this resource type.<p>
@@ -419,7 +433,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms a OpenCms context initialized with "Admin" permissions
      */
     void initialize(CmsObject cms);
-    
+
     /**
      * Indicates that this is an additional resource type which is defined in a module.<p>
      * @return true or false

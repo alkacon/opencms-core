@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -212,14 +212,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
                 property = (CmsProperty)list.get(i);
-                key = property.getKey();
+                key = property.getName();
                 result.put(key, property);
             }
         } else {
             Iterator i = list.iterator();
             while (i.hasNext()) {
                 property = (CmsProperty)i.next();
-                key = property.getKey();
+                key = property.getName();
                 result.put(key, property);
             }
         }
@@ -1049,7 +1049,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 
                 // create new CmsProperty object to store
                 CmsProperty newProperty = new CmsProperty();
-                newProperty.setKey(curPropDef.getName());
+                newProperty.setName(curPropDef.getName());
                 newProperty.setStructureValue(valueStructure);
                 newProperty.setResourceValue(valueResource);
                 
@@ -1058,7 +1058,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 if (oldProperty == null) {
                     // property was not set, create new empty property object
                     oldProperty = new CmsProperty();
-                    oldProperty.setKey(curPropDef.getName());
+                    oldProperty.setName(curPropDef.getName());
                 }
                 
                 boolean writeStructureValue = false;

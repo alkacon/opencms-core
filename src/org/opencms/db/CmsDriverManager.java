@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.479 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.480 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.479 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.480 $ $Date: 2005/03/19 13:58:19 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5615,7 +5615,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 // list of properties already read, look up value there 
                 for (int i = 0; i < allProperties.size(); i++) {
                     CmsProperty property = (CmsProperty)allProperties.get(i);
-                    if (property.getKey().equals(key)) {
+                    if (property.getName().equals(key)) {
                         value = property;
                         break;
                     }
@@ -7501,11 +7501,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             for (int i = 0, n = properties.size(); i < n; i++) {
                 Set keyValidationSet = new HashSet();
                 CmsProperty property = (CmsProperty)properties.get(i);
-                if (!keyValidationSet.contains(property.getKey())) {
-                    keyValidationSet.add(property.getKey());
+                if (!keyValidationSet.contains(property.getName())) {
+                    keyValidationSet.add(property.getName());
                 } else {
                     throw new CmsVfsException("Invalid multiple occurence of property named '"
-                        + property.getKey()
+                        + property.getName()
                         + "' detected.", CmsVfsException.C_VFS_INVALID_PROPERTY_LIST);
                 }
             }

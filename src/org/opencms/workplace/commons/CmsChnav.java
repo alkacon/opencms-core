@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -212,7 +212,7 @@ public class CmsChnav extends CmsDialog {
             // save the new NavText if not null
             if (newText != null) {
                 CmsProperty newNavText = new CmsProperty();
-                newNavText.setKey(I_CmsConstants.C_PROPERTY_NAVTEXT);
+                newNavText.setName(I_CmsConstants.C_PROPERTY_NAVTEXT);
                 CmsProperty oldNavText = getCms().readPropertyObject(filename, I_CmsConstants.C_PROPERTY_NAVTEXT, false);
                 if (oldNavText.isNullProperty()) {
                     // property value was not already set
@@ -246,7 +246,7 @@ public class CmsChnav extends CmsDialog {
             // only update the position if a change is requested
             if (selectedPos != -1) {
                 CmsProperty newNavPos = new CmsProperty();
-                newNavPos.setKey(I_CmsConstants.C_PROPERTY_NAVPOS);
+                newNavPos.setName(I_CmsConstants.C_PROPERTY_NAVPOS);
                 CmsProperty oldNavPos = getCms().readPropertyObject(filename, I_CmsConstants.C_PROPERTY_NAVPOS, false);
                 if (oldNavPos.isNullProperty()) {
                     // property value was not already set

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/17 12:59:24 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/03/19 13:58:19 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.44 $ $Date: 2005/03/17 12:59:24 $
+ * @version $Revision: 1.45 $ $Date: 2005/03/19 13:58:19 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -212,7 +212,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             int size = 8;
             
             CmsProperty property = (CmsProperty)obj;
-            size += getMemorySize(property.getKey());
+            size += getMemorySize(property.getName());
             
             if (property.getResourceValue() != null) {
                 size += getMemorySize(property.getResourceValue());

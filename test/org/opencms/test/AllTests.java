@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/AllTests.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/03/19 13:59:19 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.0
  */
@@ -90,6 +90,7 @@ public final class AllTests {
 
         suite.addTest(org.opencms.configuration.AllTests.suite());
         suite.addTest(org.opencms.file.AllTests.suite());
+        suite.addTest(org.opencms.file.types.AllTests.suite());
         suite.addTest(org.opencms.flex.AllTests.suite());
         suite.addTest(org.opencms.i18n.AllTests.suite());
         suite.addTest(org.opencms.importexport.AllTests.suite());

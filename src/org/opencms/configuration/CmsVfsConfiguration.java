@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
@@ -59,9 +60,15 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-    
-    /** The node name of an resource type mapping. */
+
+    /** The mapping node name. */
     public static final String N_MAPPING = "mapping";
+
+    /** The mappings node name. */
+    public static final String N_MAPPINGS = "mappings";
+    
+    /** The properties node name. */
+    public static final String N_PROPERTIES = "properties";    
 
     /** The resource types node name. */
     public static final String N_RESOURCETYPES = "resourcetypes";
@@ -128,12 +135,24 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     
     /** The xmlcontents node name. */
     protected static final String N_XMLCONTENTS = "xmlcontents";
+    
+    /** The source attribute name. */
+    private static final String A_SOURCE = "source";
+    
+    /** The target attribute name. */
+    private static final String A_TARGET = "target";
 
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
 
     /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
+    
+    /** The copy-resource node name.*/
+    private static final String N_COPY_RESOURCE = "copy-resource";
+    
+    /** The copy-resources node name.*/
+    private static final String N_COPY_RESOURCES = "copy-resources";
 
     /** The configured XML content type manager. */
     CmsXmlContentTypeManager m_xmlContentTypeManager;
@@ -186,12 +205,29 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
         
         digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.C_ADD_RESOURCE_TYPE_METHOD);   
-        
-        // extension mapping rules
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
-        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
-    }
 
+        // add rules for default properties
+        digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY, CmsProperty.class);
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_NAME, "setName", 1);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_NAME, 0);
+        
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE, "setValue", 2);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE, 0);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE, 1,  A_TYPE);
+        
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY, "addDefaultProperty");   
+
+        // extension mapping rules
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
+        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, 0, A_SUFFIX);       
+        
+        // copy resource rules
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, "addCopyResource", 3);
+        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, 0, A_SOURCE);  
+        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, 1, A_TARGET);  
+        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, 2, A_TYPE);  
+    }   
+    
     /**
      * Creates the xml output for resourcetype nodes.<p>
      * 
@@ -206,15 +242,53 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             // only add this resource type to the xml output, if it is no additional type defined
             // in a module
             if (resType.isAdditionalModuleResourceType() == module) {
-                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClass().getName());                
+                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClass().getName());
                 // add type id and type name
                 resourceType.addAttribute(A_NAME, resType.getTypeName());
                 resourceType.addAttribute(A_ID, String.valueOf(resType.getTypeId()));
                 // add resource mappings
-                List mappings = (resType).getMapping();
-                for (int j = 0; j < mappings.size(); j++) {
-                    Element mapping = resourceType.addElement(N_MAPPING);
-                    mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
+                List mappings = resType.getConfiguredMappings();
+                if ((mappings != null) && (mappings.size() > 0)) {
+                    Element mappingsNode = resourceType.addElement(N_MAPPINGS);
+                    for (int j = 0; j < mappings.size(); j++) {
+                        Element mapping = mappingsNode.addElement(N_MAPPING);
+                        mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
+                    }
+                }
+                // add default properties
+                List properties = resType.getConfiguredDefaultProperties();
+                if ((properties != null) && (properties.size() > 0)) {
+                    Element propertiesNode = resourceType.addElement(N_PROPERTIES);
+                    Iterator p = properties.iterator();
+                    while (p.hasNext()) {
+                        CmsProperty property = (CmsProperty)p.next();
+                        Element propertyNode = propertiesNode.addElement(N_PROPERTY);
+                        propertyNode.addElement(N_NAME).addText(property.getName());
+                        if (property.getStructureValue() != null) {
+                            propertyNode.addElement(N_VALUE).addCDATA(property.getStructureValue());
+                        }
+                        if (property.getResourceValue() != null) {
+                            propertyNode.addElement(N_VALUE).addAttribute(A_TYPE, CmsProperty.TYPE_SHARED).addCDATA(
+                                property.getResourceValue());
+                        }
+                    }
+                }
+                // add copy resources
+                List copyRes = resType.getConfiguredCopyResources();
+                if ((copyRes != null) && (copyRes.size() > 0)) {
+                    Element copyResNode = resourceType.addElement(N_COPY_RESOURCES);
+                    Iterator p = copyRes.iterator();
+                    while (p.hasNext()) {
+                        CmsConfigurationCopyResource cRes = (CmsConfigurationCopyResource)p.next();
+                        Element cNode = copyResNode.addElement(N_COPY_RESOURCE);
+                        cNode.addAttribute(A_SOURCE, cRes.getSource());
+                        if (!cRes.isTargetWasNull()) {
+                            cNode.addAttribute(A_TARGET, cRes.getTarget());
+                        }
+                        if (!cRes.isTypeWasNull()) {
+                            cNode.addAttribute(A_TYPE, cRes.getTypeString());
+                        }
+                    }
                 }
                 // add optional parameters
                 Map prop = resType.getConfiguration();
@@ -403,9 +477,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         Element translationsElement = vfs.addElement(N_TRANSLATIONS);
 
         // file translation rules
-        Element fileTransElement = 
-            translationsElement.addElement(N_FILETRANSLATIONS)
-                .addAttribute(A_ENABLED, new Boolean(m_fileTranslationEnabled).toString());        
+        Element fileTransElement = translationsElement.addElement(N_FILETRANSLATIONS).addAttribute(
+            A_ENABLED,
+            new Boolean(m_fileTranslationEnabled).toString());
         it = m_fileTranslations.iterator();
         while (it.hasNext()) {
             fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
@@ -424,7 +498,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         Element xmlContentsElement = vfs.addElement(N_XMLCONTENT);
 
         // XML widgets
-        Element xmlWidgetsElement = xmlContentsElement.addElement(N_WIDGETS);        
+        Element xmlWidgetsElement = xmlContentsElement.addElement(N_WIDGETS);
         it = m_xmlContentTypeManager.getRegisteredWidgetNames().iterator();
         while (it.hasNext()) {
             String widget = (String)it.next();
@@ -434,9 +508,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                 widgetElement.addAttribute(A_ALIAS, alias);
             }
         }
-        
+
         // XML content types 
-        Element xmlSchemaTypesElement = xmlContentsElement.addElement(N_SCHEMATYPES);    
+        Element xmlSchemaTypesElement = xmlContentsElement.addElement(N_SCHEMATYPES);
         it = m_xmlContentTypeManager.getRegisteredSchemaTypes().iterator();
         while (it.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)it.next();

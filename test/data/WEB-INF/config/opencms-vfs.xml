@@ -15,28 +15,46 @@
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
 				<type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
-					<mapping suffix=".txt" />
-					<mapping suffix=".html" />
-					<mapping suffix=".htm" />
+					<mappings>
+						<mapping suffix=".txt" />
+						<mapping suffix=".html" />
+						<mapping suffix=".htm" />
+					</mappings>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeBinary" name="binary" id="2">
-					<mapping suffix=".pdf" />
-					<mapping suffix=".zip" />
-					<mapping suffix=".class" />
-					<mapping suffix=".ppt" />
-					<mapping suffix=".doc" />
-					<mapping suffix=".xls" />
+					<mappings>
+						<mapping suffix=".pdf" />
+						<mapping suffix=".zip" />
+						<mapping suffix=".class" />
+						<mapping suffix=".ppt" />
+						<mapping suffix=".doc" />
+						<mapping suffix=".xls" />
+					</mappings>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
-					<mapping suffix=".jpeg" />
-					<mapping suffix=".jpg" />
-					<mapping suffix=".gif" />
-					<mapping suffix=".png" />
-					<mapping suffix=".tif" />
-					<mapping suffix=".tiff" />
+					<mappings>
+						<mapping suffix=".jpeg" />
+						<mapping suffix=".jpg" />
+						<mapping suffix=".gif" />
+						<mapping suffix=".png" />
+						<mapping suffix=".tif" />
+						<mapping suffix=".tiff" />
+					</mappings>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
-					<mapping suffix=".jsp" />
+					<mappings>
+						<mapping suffix=".jsp" />
+					</mappings>
+					<properties>
+						<property>
+							<name>export</name>
+							<value type="shared"><![CDATA[false]]></value>
+						</property>
+						<property>
+							<name>content-encoding</name>
+							<value type="shared"><![CDATA[${opencms.default.encoding}]]></value>
+						</property>			
+					</properties>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5"/>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6"/>
@@ -51,6 +69,11 @@
 					<param name="folder.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
+					<copy-resources>
+						<copy-resource source="/folder1/index.html" target="${resource.folder.path}/newname.html" type="sibling" />
+						<copy-resource source="/types/" target="${resource.folder.path}/mytypes" />
+						<copy-resource source="/folder1/subfolder11/" type="preserve" />
+					</copy-resources>
 					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
 				</type>						
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>					

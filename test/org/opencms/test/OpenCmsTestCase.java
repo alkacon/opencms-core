@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/03/19 13:59:19 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.3.5
  */
@@ -1668,7 +1668,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             // test if the values of the changed propertiy is correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
             if (!resourceProperty.isIdentical(property)) {
                 fail("property is not identical :" + property + " != " + resourceProperty);
             }
@@ -1706,7 +1706,7 @@ public class OpenCmsTestCase extends TestCase {
             List storedProperties = storedResource.getProperties();
             while (i.hasNext()) {
                 CmsProperty property = (CmsProperty)i.next();
-                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
                 // test if the property has the same value
                 if (!resourceProperty.isIdentical(property)) {
                     propertyNoMatches += "[" + property + " != " + resourceProperty + "]";
@@ -1827,7 +1827,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             // test if the values of the changed propertiy is correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
             if (!resourceProperty.isIdentical(property)) {
                 fail("property is not identical :" + property + " != " + resourceProperty);
             }
@@ -1865,7 +1865,7 @@ public class OpenCmsTestCase extends TestCase {
             List storedProperties = storedResource.getProperties();
             while (i.hasNext()) {
                 CmsProperty property = (CmsProperty)i.next();
-                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
                 // test if the property has the same value
                 if (!resourceProperty.isIdentical(property)) {
                     propertyNoMatches += "[" + property + " != " + resourceProperty + "]";
@@ -1920,7 +1920,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             // test if the values of the changed propertiy is correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
             if (resourceProperty != CmsProperty.getNullProperty()) {
                 fail("property is not removed :" + property + " != " + resourceProperty);
             }
@@ -1962,7 +1962,7 @@ public class OpenCmsTestCase extends TestCase {
                 CmsProperty property = (CmsProperty)i.next();
                 // test if the property has the same value
                 if (resourceProperties.contains(property)) {
-                    CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                    CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
                     propertyNotDeleted += "[" + property + " != " + resourceProperty + "]";
                 }
                 // test if the property was already in the stored object

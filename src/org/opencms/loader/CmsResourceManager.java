@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/19 13:58:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -732,7 +732,7 @@ public class CmsResourceManager {
      */
     private void addMapping(I_CmsResourceType resourceType) {
 
-        List mappings = resourceType.getMapping();
+        List mappings = resourceType.getConfiguredMappings();
 
         Iterator i = mappings.iterator();
         while (i.hasNext()) {

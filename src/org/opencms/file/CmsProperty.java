@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/19 13:58:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,10 @@ import java.util.RandomAccess;
 /**
  * Represents a property mapped to a structure and/or resource record of a resource.<p>
  * 
- * A property is an object that contains three string values: a key, a property value which is mapped
+ * A property is an object that contains three string values: a name, a property value which is mapped
  * to the structure record of a resource, and a property value which is mapped to the resource
  * record of a resource. A property object is valid if it has both values or just one value set.
- * Each property needs at least a key and one value set.<p>
+ * Each property needs at least a name and one value set.<p>
  * 
  * A property value mapped to the structure record of a resource is significant for a single
  * resource (sibling). A property value mapped to the resource record of a resource is significant
@@ -81,39 +81,34 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.21 $ $Date: 2005/03/19 13:58:20 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
-    
+
+    /**
+     * Signals that the resource property values of a resource
+     * should be deleted using deleteAllProperties.<p>
+     */
+    public static final int C_DELETE_OPTION_DELETE_RESOURCE_VALUES = 3;
+
     /**
      * Signals that both the structure and resource property values of a resource
      * should be deleted using deleteAllProperties.<p>
      */
     public static final int C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES = 1;
-    
+
     /**
      * Signals that the structure property values of a resource
      * should be deleted using deleteAllProperties.<p>
-     */  
+     */
     public static final int C_DELETE_OPTION_DELETE_STRUCTURE_VALUES = 2;
-    
-    /**
-     * Signals that the resource property values of a resource
-     * should be deleted using deleteAllProperties.<p>
-     */    
-    public static final int C_DELETE_OPTION_DELETE_RESOURCE_VALUES = 3;
 
     /**
      * An empty string to decide that a property value should be deleted when this
      * property object is written to the database.<p>
      */
     public static final String C_DELETE_VALUE = new String("");
-
-    /**
-     * A null property object to be used in caches if a property is not found.<p>
-     */
-    private static final CmsProperty C_NULL_PROPERTY = new CmsProperty();
 
     /**
      * Value of the "mapping-type" database attribute to indicate that a property value is mapped
@@ -127,6 +122,17 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      */
     public static final int C_STRUCTURE_RECORD_MAPPING = 1;
 
+    /** Key used for a individual (structure) property value. */
+    public static final String TYPE_INDIVIDUAL = "individual";
+
+    /** Key used for a shared (resource) property value. */
+    public static final String TYPE_SHARED = "shared";
+
+    /**
+     * A null property object to be used in caches if a property is not found.<p>
+     */
+    private static final CmsProperty C_NULL_PROPERTY = new CmsProperty();
+
     /**
      * Boolean flag to decide if the property definition for this property should be created 
      * implicitly on any write operation if doesn't exist already.<p>
@@ -134,9 +140,9 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     private boolean m_autoCreatePropertyDefinition;
 
     /**
-     * The key name of this property.<p>
+     * The name of this property.<p>
      */
-    private String m_key;
+    private String m_name;
 
     /**
      * The value of this property attached to the structure record.<p>
@@ -155,12 +161,12 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * resource IDs are initialized to {@link org.opencms.util.CmsUUID#getNullUUID()}.<p>
      */
     public CmsProperty() {
-        
+
         // noting to do, all values will be initialized with "null" or "false" by default
-        m_key = null;
+        m_name = null;
         m_structureValue = null;
         m_resourceValue = null;
-        m_autoCreatePropertyDefinition = false;        
+        m_autoCreatePropertyDefinition = false;
     }
 
     /**
@@ -169,30 +175,65 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * If the property definition does not exist for the resource type it
      * is automatically created when this propery is written.
      * 
-     * @param key the name of the property definition
+     * @param name the name of the property definition
      * @param structureValue the value to write as structure property
      * @param resourceValue the value to write as resource property 
      */
-    public CmsProperty(String key, String structureValue, String resourceValue) {
-        
-        this(key, structureValue, resourceValue, true);
-    } 
-    
+    public CmsProperty(String name, String structureValue, String resourceValue) {
+
+        this(name, structureValue, resourceValue, true);
+    }
+
     /**
      * Creates a new CmsProperty object using the provided values.<p>
      * 
-     * @param key the name of the property definition
+     * @param name the name of the property definition
      * @param structureValue the value to write as structure property
      * @param resourceValue the value to write as resource property 
      * @param autoCreatePropertyDefinition true, if the property definition for this property should be created mplicitly on any write operation if doesn't exist already
-     */    
-    public CmsProperty(String key, String structureValue, String resourceValue, boolean autoCreatePropertyDefinition) {
-        
-        m_key = key;
+     */
+    public CmsProperty(String name, String structureValue, String resourceValue, boolean autoCreatePropertyDefinition) {
+
+        m_name = name;
         m_structureValue = structureValue;
         m_resourceValue = resourceValue;
         m_autoCreatePropertyDefinition = autoCreatePropertyDefinition;
-    }     
+    }
+
+    /**
+     * Searches in a list for the first occurence of a Cms property object with the given name.<p> 
+     *
+     * To check if the "null property" has been returned if a property was 
+     * not found, use {@link #isNullProperty()} on the result.<p> 
+     *
+     * @param name a property name
+     * @param list a list of Cms property objects
+     * @return the index of the first occurrence of the name in they specified list, or the "null-property" if the name is not found
+     */
+    public static final CmsProperty get(String name, List list) {
+
+        CmsProperty property = null;
+
+        // choose the fastest method to traverse the list
+        if (list instanceof RandomAccess) {
+            for (int i = 0, n = list.size(); i < n; i++) {
+                property = (CmsProperty)list.get(i);
+                if (property.m_name.equals(name)) {
+                    return property;
+                }
+            }
+        } else {
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                property = (CmsProperty)i.next();
+                if (property.m_name.equals(name)) {
+                    return property;
+                }
+            }
+        }
+
+        return C_NULL_PROPERTY;
+    }
 
     /**
      * Returns the null property object.<p>
@@ -202,155 +243,6 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     public static final CmsProperty getNullProperty() {
 
         return C_NULL_PROPERTY;
-    }
-    
-    /**
-     * Checks if this property object is the null property object.<p>
-     * 
-     * @return true if this property object is the null property object
-     */
-    public boolean isNullProperty() {
-        
-        return this == C_NULL_PROPERTY;
-    }
-
-    /**
-     * Transforms a map with compound (String) values keyed by property keys into a list of 
-     * CmsProperty objects with structure values.<p>
-     * 
-     * This method is to prevent issues with backward incompatibilities in older code.
-     * Use this method with caution, it might be removed without with being deprecated
-     * before.<p>
-     * 
-     * @param map a map with compound (String) values keyed by property keys
-     * @return a list of CmsProperty objects
-     */
-    public static List toList(Map map) {
-        
-        String key = null;
-        String value = null;
-        CmsProperty property = null;
-        List properties = null;
-        Object[] keys = null;
-        
-        if (map == null || map.size() == 0) {
-            return Collections.EMPTY_LIST;
-        }
-
-        properties = new ArrayList(map.size());
-        keys = map.keySet().toArray();
-        for (int i = 0; i < keys.length; i++) {
-            key = (String)keys[i];
-            value = (String)map.get(key);
-
-            property = new CmsProperty();
-            property.m_key = key;
-            property.m_structureValue = value;
-            properties.add(property);
-        }
-
-        return properties;
-    }
-
-    /**
-     * Transforms a list of CmsProperty objects with structure and resource values into a map with
-     * compound (String) values keyed by property keys.<p>
-     *
-     * This method is to prevent issues with backward incompatibilities in older code.
-     * Use this method with caution, it might be removed without with being deprecated
-     * before.<p>
-     * 
-     * @param list a list of CmsProperty objects
-     * @return a map with compound (String) values keyed by property keys
-     */
-    public static Map toMap(List list) {
-
-        Map result = null;
-        String key = null;
-        String value = null;
-        CmsProperty property = null;
-
-        if (list == null || list.size() == 0) {
-            return Collections.EMPTY_MAP;
-        }
-
-        result = new HashMap();
-
-        // choose the fastest method to traverse the list
-        if (list instanceof RandomAccess) {
-            for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
-                key = property.m_key;
-                value = property.getValue();
-                result.put(key, value);
-            }
-        } else {
-            Iterator i = list.iterator();
-            while (i.hasNext()) {
-                property = (CmsProperty)i.next();
-                key = property.m_key;
-                value = property.getValue();
-                result.put(key, value);
-            }
-        }
-
-        return result;
-    }
-    
-    /**
-     * Searches in a list for the first occurence of a Cms property object with the given key.<p> 
-     *
-     * To check if the "null property" has been returned if a property was 
-     * not found, use {@link #isNullProperty()} on the result.<p> 
-     *
-     * @param key a property key
-     * @param list a list of Cms property objects
-     * @return the index of the first occurrence of the key in they specified list, or the "null-property" if the key is not found
-     */    
-    public static final CmsProperty get(String key, List list) {
-        CmsProperty property = null;
-        
-        // choose the fastest method to traverse the list
-        if (list instanceof RandomAccess) {
-            for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
-                if (property.m_key.equals(key)) {
-                    return property;
-                }
-            }
-        } else {
-            Iterator i = list.iterator();
-            while (i.hasNext()) {
-                property = (CmsProperty)i.next();
-                if (property.m_key.equals(key)) {
-                    return property;
-                }
-            }
-        }
-        
-        return C_NULL_PROPERTY;
-    }
-
-    /**
-     * Checks if the property definition for this property should be 
-     * created implicitly on any write operation if doesn't exist already.<p>
-     * 
-     * @return true, if the property definition for this property should be created implicitly on any write operation
-     */
-    public boolean autoCreatePropertyDefinition() {
-
-        return m_autoCreatePropertyDefinition;
-    }
-
-    /**
-     * Sets the boolean flag to decide if the property definition for this property should be 
-     * created implicitly on any write operation if doesn't exist already.<p>
-     * 
-     * @param value true, if the property definition for this property should be created implicitly on any write operation
-     */
-    public void setAutoCreatePropertyDefinition(boolean value) {
-
-        m_autoCreatePropertyDefinition = value;
     }
 
     /**
@@ -385,6 +277,150 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     }
 
     /**
+     * Transforms a map with compound (String) values keyed by property names into a list of 
+     * CmsProperty objects with structure values.<p>
+     * 
+     * This method is to prevent issues with backward incompatibilities in older code.
+     * Use this method with caution, it might be removed without with being deprecated
+     * before.<p>
+     * 
+     * @param map a map with compound (String) values keyed by property names
+     * @return a list of CmsProperty objects
+     */
+    public static List toList(Map map) {
+
+        String name = null;
+        String value = null;
+        CmsProperty property = null;
+        List properties = null;
+        Object[] names = null;
+
+        if (map == null || map.size() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+
+        properties = new ArrayList(map.size());
+        names = map.keySet().toArray();
+        for (int i = 0; i < names.length; i++) {
+            name = (String)names[i];
+            value = (String)map.get(name);
+
+            property = new CmsProperty();
+            property.m_name = name;
+            property.m_structureValue = value;
+            properties.add(property);
+        }
+
+        return properties;
+    }
+
+    /**
+     * Transforms a list of CmsProperty objects with structure and resource values into a map with
+     * compound (String) values keyed by property names.<p>
+     *
+     * This method is to prevent issues with backward incompatibilities in older code.
+     * Use this method with caution, it might be removed without with being deprecated
+     * before.<p>
+     * 
+     * @param list a list of CmsProperty objects
+     * @return a map with compound (String) values keyed by property names
+     */
+    public static Map toMap(List list) {
+
+        Map result = null;
+        String name = null;
+        String value = null;
+        CmsProperty property = null;
+
+        if (list == null || list.size() == 0) {
+            return Collections.EMPTY_MAP;
+        }
+
+        result = new HashMap();
+
+        // choose the fastest method to traverse the list
+        if (list instanceof RandomAccess) {
+            for (int i = 0, n = list.size(); i < n; i++) {
+                property = (CmsProperty)list.get(i);
+                name = property.m_name;
+                value = property.getValue();
+                result.put(name, value);
+            }
+        } else {
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                property = (CmsProperty)i.next();
+                name = property.m_name;
+                value = property.getValue();
+                result.put(name, value);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Checks if the property definition for this property should be 
+     * created implicitly on any write operation if doesn't exist already.<p>
+     * 
+     * @return true, if the property definition for this property should be created implicitly on any write operation
+     */
+    public boolean autoCreatePropertyDefinition() {
+
+        return m_autoCreatePropertyDefinition;
+    }
+
+    /**
+     * Creates a clone of this property.<p>
+     *  
+     * @return a clone of this property
+     */
+    public Object clone() {
+
+        CmsProperty property = new CmsProperty();
+
+        property.m_name = m_name;
+        property.m_structureValue = m_structureValue;
+        property.m_resourceValue = m_resourceValue;
+        property.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
+
+        return property;
+    }
+
+    /**
+     * Compares this property to another property.<p>
+     * 
+     * This method behaves like {@link String#compareTo(java.lang.String)}.
+     * Both properties are compared by their names.<p>
+     *  
+     * @param property the other property object to be compared
+     * @return zero if the name of the argument is equal to the name of this property object, 
+     *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
+     *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument 
+     * @see String#compareTo(java.lang.String)
+     */
+    public int compareTo(CmsProperty property) {
+
+        return m_name.compareTo(property.getName());
+    }
+
+    /**
+     * Compares this property to another Object.<p>
+     * 
+     * If the Object is a property, this method behaves like {@link String#compareTo(java.lang.String)}.
+     * Otherwise, it throws a ClassCastException (as properties are comparable only to other properties).<p>
+     *  
+     * @param object the other object to be compared
+     * @return if the argument is a property object, returns zero if the name of the argument is equal to the name of this property object, 
+     *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
+     *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument 
+     */
+    public int compareTo(Object object) {
+
+        return compareTo((CmsProperty)object);
+    }
+
+    /**
      * Checks if the resource value of this property should be deleted when this
      * property object is written to the database.<p>
      * 
@@ -411,66 +447,40 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     /**
      * Tests if a specified object is equal to this CmsProperty object.<p>
      * 
-     * Two property objecs are equal if their key names are equal.<p>
+     * Two property objecs are equal if their names are equal.<p>
      * 
      * @param object another object
      * @return true, if the specified object is equal to this CmsProperty object
      */
     public boolean equals(Object object) {
-        
+
         if (object == null || !(object instanceof CmsProperty)) {
             return false;
         }
-        
-        return (m_key != null) && m_key.equals(((CmsProperty)object).getKey());
+
+        return (m_name != null) && m_name.equals(((CmsProperty)object).getName());
     }
 
     /**
-     * Tests if a given CmsProperty is identical to this CmsProperty object.<p>
+     * Returns the name of this property.<p>
      * 
-     * The property object are identical if their key, structure and 
-     * resource values are all equals.<p>
+     * @return name of this property
      * 
-     * @param property another property object
-     * @return true, if the specified object is equal to this CmsProperty object
-     */
-    public boolean isIdentical(CmsProperty property) {
-        
-        boolean isEqual;
-
-        // compare the key
-        if (m_key == null) {
-            isEqual = (property.getKey() == null);
-        } else {
-            isEqual = m_key.equals(property.getKey());
-        }
-
-        // compare the structure value
-        if (m_structureValue == null) {
-            isEqual &= (property.getStructureValue() == null);
-        } else {
-            isEqual &= m_structureValue.equals(property.getStructureValue());
-        }
-
-        // compare the resource value
-        if (m_resourceValue == null) {
-            isEqual &= (property.getResourceValue() == null);
-        } else {
-            isEqual &= m_resourceValue.equals(property.getResourceValue());
-        }
-
-        return isEqual;
-    }
-    
-    
-    /**
-     * Returns the key name of this property.<p>
-     * 
-     * @return key name of this property
+     * @deprecated use {@link #getName()} instead
      */
     public String getKey() {
 
-        return m_key;
+        return getName();
+    }
+
+    /**
+     * Returns the name of this property.<p>
+     * 
+     * @return the name of this property
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**
@@ -537,7 +547,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
 
         StringBuffer strBuf = new StringBuffer();
 
-        strBuf.append(m_key);
+        strBuf.append(m_name);
         strBuf.append("_");
         strBuf.append(m_structureValue);
         strBuf.append("_");
@@ -547,13 +557,83 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     }
 
     /**
-     * Sets the key name of this property.<p>
+     * Tests if a given CmsProperty is identical to this CmsProperty object.<p>
      * 
-     * @param key the key name of this property
+     * The property object are identical if their name, structure and 
+     * resource values are all equals.<p>
+     * 
+     * @param property another property object
+     * @return true, if the specified object is equal to this CmsProperty object
      */
-    public void setKey(String key) {
+    public boolean isIdentical(CmsProperty property) {
 
-        m_key = key;
+        boolean isEqual;
+
+        // compare the name
+        if (m_name == null) {
+            isEqual = (property.getName() == null);
+        } else {
+            isEqual = m_name.equals(property.getName());
+        }
+
+        // compare the structure value
+        if (m_structureValue == null) {
+            isEqual &= (property.getStructureValue() == null);
+        } else {
+            isEqual &= m_structureValue.equals(property.getStructureValue());
+        }
+
+        // compare the resource value
+        if (m_resourceValue == null) {
+            isEqual &= (property.getResourceValue() == null);
+        } else {
+            isEqual &= m_resourceValue.equals(property.getResourceValue());
+        }
+
+        return isEqual;
+    }
+
+    /**
+     * Checks if this property object is the null property object.<p>
+     * 
+     * @return true if this property object is the null property object
+     */
+    public boolean isNullProperty() {
+
+        return this == C_NULL_PROPERTY;
+    }
+
+    /**
+     * Sets the boolean flag to decide if the property definition for this property should be 
+     * created implicitly on any write operation if doesn't exist already.<p>
+     * 
+     * @param value true, if the property definition for this property should be created implicitly on any write operation
+     */
+    public void setAutoCreatePropertyDefinition(boolean value) {
+
+        m_autoCreatePropertyDefinition = value;
+    }
+
+    /**
+     * Sets the name of this property.<p>
+     * 
+     * @param name the name of this property
+     * 
+     * @deprecated use {@link #setName(String)} instead
+     */
+    public void setKey(String name) {
+
+        setName(name);
+    }
+
+    /**
+     * Sets the name of this property.<p>
+     * 
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
     }
 
     /**
@@ -562,7 +642,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param resourceValue the value of this property attached to the resource record
      */
     public void setResourceValue(String resourceValue) {
- 
+
         m_resourceValue = resourceValue;
     }
 
@@ -572,8 +652,31 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param structureValue the value of this property attached to the structure record
      */
     public void setStructureValue(String structureValue) {
-       
+
         m_structureValue = structureValue;
+    }
+
+    /**
+     * Sets the value of this property as either shared or 
+     * individual value.<p>
+     * 
+     * If the given type equals {@link CmsProperty#TYPE_SHARED} then
+     * the value is set as a shared (resource) value, otherwise it
+     * is set as individual (structure) value.<p>
+     * 
+     * @param value the value to set
+     * @param type the value type to set
+     */
+    public void setValue(String value, String type) {
+
+        setAutoCreatePropertyDefinition(true);
+        if (TYPE_SHARED.equalsIgnoreCase(type)) {
+            // set the provided value as shared (resource) value
+            setResourceValue(value);
+        } else {
+            // set the provided value as individual (structure) value
+            setStructureValue(value);
+        }
     }
 
     /**
@@ -586,59 +689,13 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         StringBuffer strBuf = new StringBuffer();
 
         strBuf.append("[").append(getClass().getName()).append(": ");
-        strBuf.append("key: '").append(m_key).append("'");
+        strBuf.append("name: '").append(m_name).append("'");
         strBuf.append(", value: '").append(getValue()).append("'");
         strBuf.append(", structure value: '").append(m_structureValue).append("'");
         strBuf.append(", resource value: '").append(m_resourceValue).append("'");
         strBuf.append("]");
 
         return strBuf.toString();
-    }
-
-    /**
-     * Compares this property to another Object.<p>
-     * 
-     * If the Object is a property, this method behaves like {@link String#compareTo(java.lang.String)}.
-     * Otherwise, it throws a ClassCastException (as properties are comparable only to other properties).<p>
-     *  
-     * @param object the other object to be compared
-     * @return if the argument is a property object, returns zero if the key of the argument is equal to the key of this property object, a value less than zero if the key of this property object is lexicographically less than the key of the argument, or a value greater than zero if the key of this property object is lexicographically greater than the key of the argument 
-     */
-    public int compareTo(Object object) {
-
-        return compareTo((CmsProperty)object);
-    }
-
-    /**
-     * Compares this property to another property.<p>
-     * 
-     * This method behaves like {@link String#compareTo(java.lang.String)}.
-     * Both properties are compared by their key names.<p>
-     *  
-     * @param property the other property object to be compared
-     * @return zero if the key of the argument is equal to the key of this property object, a value less than zero if the key of this property object is lexicographically less than the key of the argument, or a value greater than zero if the key of this property object is lexicographically greater than the key of the argument 
-     * @see String#compareTo(java.lang.String)
-     */
-    public int compareTo(CmsProperty property) {
-
-        return m_key.compareTo(property.getKey());
-    }
-
-    /**
-     * Creates a clone of this property.<p>
-     *  
-     * @return a clone of this property
-     */
-    public Object clone() {
-
-        CmsProperty property = new CmsProperty();
-
-        property.m_key = m_key;
-        property.m_structureValue = m_structureValue;
-        property.m_resourceValue = m_resourceValue;
-        property.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
-
-        return property;
     }
 
 }

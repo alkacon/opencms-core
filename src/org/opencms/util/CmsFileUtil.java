@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,12 +85,65 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
+     * Returns a list of all filtered files in the RFS.<p>
+     * 
+     * If the <code>name</code> is not a folder the folder that contains the
+     * given file will be used instead.<p>
+     * 
+     * Despite the filter may not accept folders, every subfolder is traversed
+     * if the <code>includeSubtree</code> parameter is set.<p>
+     * 
+     * @param name a folder or file name
+     * @param filter a filter
+     * @param includeSubtree if to include subfolders
+     * 
+     * @return a list of filtered <code>{@link File}</code> objects
+     */
+    public static List getFiles(String name, FileFilter filter, boolean includeSubtree) {
+
+        List ret = new ArrayList();
+
+        File file = new File(name);
+        if (!file.isDirectory()) {
+            file = new File(file.getParent());
+            if (!file.isDirectory()) {
+                return ret;
+            }
+        }
+        File[] dirContent = file.listFiles();
+        for (int i = 0; i < dirContent.length; i++) {
+            File f = dirContent[i];
+            if (filter.accept(f)) {
+                ret.add(f);
+            }
+            if (includeSubtree && f.isDirectory()) {
+                ret.addAll(getFiles(f.getAbsolutePath(), filter, true));
+            }
+        }
+
+        return ret;
+    }
+
+    /**
+     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path,
+     * the path separator char is {@link File#separatorChar}.<p>
      * 
      * @param path the path to normalize
      * @return the normalized path
      */
     public static String normalizePath(String path) {
+
+        return normalizePath(path, File.separatorChar);
+    }
+
+    /**
+     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
+     * 
+     * @param path the path to normalize
+     * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
+     * @return the normalized path
+     */
+    public static String normalizePath(String path, char separatorChar) {
 
         if (path != null) {
             // ensure all File separators are '/'
@@ -112,7 +165,7 @@ public final class CmsFileUtil {
             // still some '//' elements might persist
             path = CmsStringUtil.substitute(drive.concat(path), "//", "/");
             // switch '/' back to OS dependend File separator
-            path = path.replace('/', File.separatorChar);
+            path = path.replace('/', separatorChar);
         }
         return path;
     }
@@ -166,44 +219,5 @@ public final class CmsFileUtil {
         out.close();
 
         return new String(out.toByteArray(), encoding);
-    }
-    
-    /**
-     * Returns a list of all filtered files in the RFS.<p>
-     * 
-     * If the <code>name</code> is not a folder the folder that contains the
-     * given file will be used instead.<p>
-     * 
-     * Despite the filter may not accept folders, every subfolder is traversed
-     * if the <code>includeSubtree</code> parameter is set.<p>
-     * 
-     * @param name a folder or file name
-     * @param filter a filter
-     * @param includeSubtree if to include subfolders
-     * 
-     * @return a list of filtered <code>{@link File}</code> objects
-     */
-    public static List getFiles(String name, FileFilter filter, boolean includeSubtree) {
-        List ret = new ArrayList();
-        
-        File file = new File(name);
-        if (!file.isDirectory()) {
-            file = new File(file.getParent());
-            if (!file.isDirectory()) {
-                return ret;
-            }
-        }
-        File[] dirContent = file.listFiles();
-        for (int i = 0; i < dirContent.length; i++) {
-            File f = dirContent[i];
-            if (filter.accept(f)) {
-                ret.add(f);
-            }
-            if (includeSubtree && f.isDirectory()) {
-                ret.addAll(getFiles(f.getAbsolutePath(), filter, true));
-            }
-        }
-        
-        return ret;
     }
 }

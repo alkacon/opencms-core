@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.123 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.122 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.123 $ $Date: 2005/03/19 13:58:18 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -737,7 +737,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                 } else {
                     // there doesn't exist a property for this key yet
                     property = new CmsProperty();
-                    property.setKey(propertyKey);
+                    property.setName(propertyKey);
 
                     if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
                         // this property value is mapped to a structure record
@@ -950,7 +950,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
                 property = (CmsProperty) dummy.next();
-                key = property.getKey();
+                key = property.getName();
                 propdef = readBackupPropertyDefinition(dbc, key);
 
                 if (propdef == null) {

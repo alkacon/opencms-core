@@ -31,8 +31,25 @@
 			</parameters>		
             <resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="12">
-					<param name="property.create.Title">Test title</param>
-					<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.form/pages/form.html</param>
+					<properties>
+						<property>
+							<name>Title</name>
+							<value><![CDATA[Test title]]></value>
+						</property>
+						<property>
+							<name>Description</name>
+							<value type="shared"><![CDATA[${currentuser.name}_${resource.site.path}_${resource.root.path}]]></value>
+						</property>						
+						<property>
+							<name>template-elements</name>
+							<value><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
+						</property>				
+					</properties>
+					<copy-resources>
+						<copy-resource source="/system/index.html" />
+						<copy-resource source="/system/index2.html" target="${resource.folder.path}" type="preserve" />
+						<copy-resource source="/system/index3.html" target="${resource.folder.path}" type="new" />
+					</copy-resources>					
 					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
 				</type>	
 			</resourcetypes>		

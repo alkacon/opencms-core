@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/03/06 09:26:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/19 13:58:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -97,7 +97,7 @@ public final class CmsStringUtil {
 
     /** Second constant. */
     private static final long C_SECONDS = 1000;
-    
+
     /** Regex that matches an encoding String in an xml head. */
     private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile(
         "encoding\\s*=\\s*[\"'].+[\"']",
@@ -136,7 +136,7 @@ public final class CmsStringUtil {
      * @return html code
      */
     public static String code(int tabs, String htmlCode) {
-    
+
         if (tabs <= 0) {
             return htmlCode.endsWith(C_LINE_SEPARATOR) ? htmlCode : htmlCode + C_LINE_SEPARATOR;
         }
@@ -166,7 +166,7 @@ public final class CmsStringUtil {
      * @return html code
      */
     public static String code(String htmlCode) {
-    
+
         return code(0, htmlCode);
     }
 
@@ -280,7 +280,7 @@ public final class CmsStringUtil {
      * @return a map with the new text and the new value for the given attribute 
      */
     public static Map extendAttribute(String text, String attribute, String defValue) {
-    
+
         Map retValue = new HashMap();
         retValue.put("text", text);
         retValue.put("value", "'" + defValue + "'");
@@ -375,6 +375,24 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Adds macro delelimiters to the given key, 
+     * for example <code>key</code> becomes <code>${key}</code>.<p>
+     * 
+     * @param key the key to format as macro
+     * 
+     * @return the key formatted as a macro
+     */
+    public static String formatMacro(String key) {
+
+        StringBuffer result = new StringBuffer(32);
+        result.append(C_MACRO_DELIMITER);
+        result.append(C_MACRO_START);
+        result.append(key);
+        result.append(C_MACRO_END);
+        return result.toString();
+    }
+
+    /**
      * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
      * 
      * If the runtime is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
@@ -429,7 +447,7 @@ public final class CmsStringUtil {
 
         return (value == null) || (value.length() == 0);
     }
-    
+
     /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
      * or contains only white spaces.<p> 
@@ -527,9 +545,10 @@ public final class CmsStringUtil {
      * @return the List of splitted Substrings
      */
     public static List splitAsList(String source, char delimiter) {
+
         return splitAsList(source, delimiter, false);
     }
-    
+
     /**
      * Splits a String into substrings along the provided char delimiter and returns
      * the result as a List of Substrings.<p>
@@ -539,7 +558,7 @@ public final class CmsStringUtil {
      * @param trim flag to indicate if leading and trailing whitespaces should be omitted
      *
      * @return the List of splitted Substrings
-     */    
+     */
     public static List splitAsList(String source, char delimiter, boolean trim) {
 
         List result = new ArrayList();
@@ -558,8 +577,8 @@ public final class CmsStringUtil {
         if (trim) {
             result.add(source.substring(index).trim());
         } else {
-            result.add(source.substring(index));    
-        }    
+            result.add(source.substring(index));
+        }
         return result;
     }
 
@@ -573,9 +592,10 @@ public final class CmsStringUtil {
      * @return the Array of splitted Substrings
      */
     public static List splitAsList(String source, String delimiter) {
+
         return splitAsList(source, delimiter, false);
     }
-    
+
     /**
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as List of Substrings.<p>
@@ -604,15 +624,15 @@ public final class CmsStringUtil {
             } else {
                 result.add(item);
             }
-            
+
             index = next + len;
             next = source.indexOf(delimiter, index);
         }
         if (trim) {
             result.add(source.substring(index).trim());
         } else {
-            result.add(source.substring(index));    
-        } 
+            result.add(source.substring(index));
+        }
         return result;
     }
 
@@ -690,7 +710,7 @@ public final class CmsStringUtil {
         }
         return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
     }
-    
+
     /**
      * Substitutes macro keys the content.<p>
      * 
@@ -704,7 +724,7 @@ public final class CmsStringUtil {
      * @return the value assigned to the given key
      */
     public static String substituteMacros(String content, I_CmsStringMapper substitution) {
-        
+
         return substituteMacros(content, substitution, false);
     }
 
@@ -755,13 +775,13 @@ public final class CmsStringUtil {
 
         StringBuffer sb = new StringBuffer(totalLength);
         for (int i = 0; i < segments.length && segments[i] != null; i++) {
-            
+
             if (replacements[i] != null) {
                 sb.append(replacements[i]);
             } else if (keepUnreplacedMacros && macros[i] != null) {
                 sb.append(C_MACRO_DELIMITER).append(C_MACRO_START).append(macros[i]).append(C_MACRO_END);
             }
-            
+
             if (segments[i] != null) {
                 sb.append(segments[i]);
             }
