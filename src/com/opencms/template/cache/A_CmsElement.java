@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -173,7 +173,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             return;
         }
         // maybe it is an Admin
-        if(currentGroup.getName().equals(CmsObject.C_GROUP_ADMIN)){
+        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
             // ok Admins can read everything
             return;
         }
@@ -313,7 +313,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             // internal flag not set
                             proxyPrivate = true;
                             if(m_readAccessGroup == null || "".equals(m_readAccessGroup)
-                                    || (CmsObject.C_GROUP_GUEST).equals(m_readAccessGroup)){
+                                    || (I_CmsConstants.C_GROUP_GUEST).equals(m_readAccessGroup)){
                                 // lesbar für guest
                                 proxyPublic = true;
                                 if((!m_cacheDirectives.isParameterPartOfKey()) && (!m_cacheDirectives.isTimeCritical())){
@@ -342,7 +342,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             }
         }
         // In Exportmodus set this template as dependency for the request
-        if(cms.getMode() == CmsObject.C_MODUS_EXPORT && m_templateName != null){
+        if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT && m_templateName != null){
             cms.getRequestContext().addDependency(cms.getRequestContext().addSiteRoot(m_templateName));
         }
         proxySettings.merge(m_cacheDirectives);
@@ -406,7 +406,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         int len = variant.size();
 
         // if this is exportmodus register that to the variant
-        if(cms.getMode() == CmsObject.C_MODUS_EXPORT){
+        if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT){
             variant.setExported();
         }
 
@@ -465,8 +465,8 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             } catch(Exception e) {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
-                                if(CmsObject.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
-                                    && !CmsObject.C_GROUP_GUEST.equals(cms.getRequestContext().currentGroup().getName())){
+                                if(I_CmsConstants.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
+                                    && !I_CmsConstants.C_GROUP_GUEST.equals(cms.getRequestContext().currentGroup().getName())){
                                     // a systemuser gets the real message.(except guests)
                                     errorMessage = e.toString();
                                 }

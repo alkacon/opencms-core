@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/06/25 13:52:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/15 08:43:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -134,15 +134,15 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() failed");
             }
 
-            if((username != null) && (username.equals(CmsObject.C_USER_GUEST))) {
+            if((username != null) && (username.equals(I_CmsConstants.C_USER_GUEST))) {
                 // please no Guest user in the workplace
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: user was guest user");
             } else if ((username != null) 
-                && (! cms.userInGroup(username, CmsObject.C_GROUP_USERS)) 
-                && (! cms.userInGroup(username, CmsObject.C_GROUP_PROJECTLEADER)) 
-                && (! cms.userInGroup(username, CmsObject.C_GROUP_ADMIN))) {
+                && (! cms.userInGroup(username, I_CmsConstants.C_GROUP_USERS)) 
+                && (! cms.userInGroup(username, I_CmsConstants.C_GROUP_PROJECTLEADER)) 
+                && (! cms.userInGroup(username, I_CmsConstants.C_GROUP_ADMIN))) {
                 // user MUST be in at last one of the default groups "Administrators", "Users" or "Projectmanagers"
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;

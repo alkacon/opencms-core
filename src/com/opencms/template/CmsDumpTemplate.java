@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.template;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -47,7 +48,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.36 $ $Date: 2003/07/15 08:43:10 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -202,7 +203,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @return New element for the element cache
      */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters){
-        String readAccessGroup = CmsObject.C_GROUP_ADMIN;
+        String readAccessGroup = I_CmsConstants.C_GROUP_ADMIN;
         // TODO: fix this later - check how to do this without getReadingpermittedGroup
         try{
             readAccessGroup = cms.getReadingpermittedGroup(

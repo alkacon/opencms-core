@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -246,7 +246,7 @@ public class Utils {
     public static void getModulPublishMethods(CmsObject cms, Vector changedLinks) throws CmsException{
         // now publish the module masters
         Vector publishModules = new Vector();
-        cms.getRegistry().getModulePublishables(publishModules, CmsObject.C_PUBLISH_METHOD_LINK);
+        cms.getRegistry().getModulePublishables(publishModules, I_CmsConstants.C_PUBLISH_METHOD_LINK);
 
         for(int i = 0; i < publishModules.size(); i++){
             // call the publishProject method of the class with parameters:

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/07/06 13:45:39 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsStaticExportProperties;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsStaticExport;
@@ -221,7 +222,7 @@ public class LinkSubstitution {
         }
         // first ask if this is the export
         int modus = cms.getMode();
-        if(modus == CmsObject.C_MODUS_EXPORT){
+        if(modus == I_CmsConstants.C_MODUS_EXPORT){
             // we have to register this link to the request context
             cms.getRequestContext().addLink(link);
             // and we have to process the startrule
@@ -239,7 +240,7 @@ public class LinkSubstitution {
         // check if we are in a https page, then we have to set the http
         // protocol ahead the "not-https-links" in this page
         boolean httpsMode = false;
-        if(modus == CmsObject.C_MODUS_ONLINE){
+        if(modus == I_CmsConstants.C_MODUS_ONLINE){
             // https pages are always online
             try {
                 // HACK: Original request might be unavailable here. 
@@ -290,7 +291,7 @@ public class LinkSubstitution {
                             retValue = CmsObject.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
                         }
                     }else{
-                        if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == CmsObject.C_MODUS_EXPORT
+                        if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT
                                 && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
                             // we want the path relative
                             retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
@@ -309,7 +310,7 @@ public class LinkSubstitution {
                 retValue = CmsObject.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
             }
         }else{
-            if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == CmsObject.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
+            if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
                 // we want the path relative
                 retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.115 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.116 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.115 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.116 $ $Date: 2003/07/15 08:43:10 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -429,7 +429,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      */
     public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String query = "";
-        if(cms.getMode() == CmsObject.C_MODUS_EXPORT){
+        if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT){
             Enumeration parameters = cms.getRequestContext().getRequest().getParameterNames();
             if(parameters == null){
                 return query;
@@ -885,7 +885,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // get the parameternames of the original request and get the values from the userObject
         try{
             Enumeration parameters = null;
-            if(cms.getMode() == CmsObject.C_MODUS_EXPORT){
+            if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT){
                 parameters = cms.getRequestContext().getRequest().getParameterNames();
             }else{
                 parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
@@ -1154,7 +1154,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                                 parameters, templateSelector).getCacheKey(cms, parameters);
         if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
                 (cms.getRequestContext().currentProject().isOnlineProject()) ) {
-            boolean exportmode = cms.getMode() == CmsObject.C_MODUS_EXPORT;
+            boolean exportmode = cms.getMode() == I_CmsConstants.C_MODUS_EXPORT;
             Hashtable externVarDeps = cms.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;
             long now = System.currentTimeMillis();
@@ -1572,7 +1572,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
 
         CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
-        String readAccessGroup = CmsObject.C_GROUP_ADMIN;
+        String readAccessGroup = I_CmsConstants.C_GROUP_ADMIN;
         int variantCachesize = 100;
         // if the templateFile is null someone didnt set the Templatefile in the elementdefinition
         // in this case we have to use the aktual body template when resolving the variant.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 08:21:53 $
-* Version: $Revision: 1.316 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.317 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,9 +71,9 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.316 $
+ * @version $Revision: 1.317 $
  */
-public class CmsObject extends Object implements I_CmsConstants {
+public class CmsObject extends Object {
 
     /** Internal debug flag, set to 9 for maximum verbosity */
     private static final int DEBUG = 0;
@@ -88,33 +88,33 @@ public class CmsObject extends Object implements I_CmsConstants {
     /**
      * The request context.
      */
-    private CmsRequestContext m_context = null;
+    private CmsRequestContext m_context;
 
     /**
      * The driver manager to access the cms.
      */
-    private CmsDriverManager m_driverManager = null;
+    private CmsDriverManager m_driverManager;
 
     /**
      * The launcher manager used with this object,
      * Is needed to clear the template caches.
      */
-    private CmsLauncherManager m_launcherManager = null;
+    private CmsLauncherManager m_launcherManager;
 
     /**
      * The class for linkmanagement.
      */
-    private LinkChecker m_linkChecker = null;
+    private LinkChecker m_linkChecker;
 
     /**
      * the modus the cmsObject runs in (used i.e. for static export)
      */
-    private int m_mode = C_MODUS_AUTO;
+    private int m_mode = I_CmsConstants.C_MODUS_AUTO;
 
     /**
      * Method that can be invoked to find out all currently logged in users.
      */
-    private CmsCoreSession m_sessionStorage = null;
+    private CmsCoreSession m_sessionStorage;
 
     /**
      * The default constructor.
@@ -613,7 +613,7 @@ public class CmsObject extends Object implements I_CmsConstants {
             Hashtable properties = new Hashtable();
             int newChannelId = org.opencms.db.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
-            return (CmsFolder) createResource(parentChannel, newChannelName, C_TYPE_FOLDER_NAME, properties);
+            return (CmsFolder) createResource(parentChannel, newChannelName, I_CmsConstants.C_TYPE_FOLDER_NAME, properties);
         } finally {
             setContextToVfs();
         }
@@ -675,7 +675,7 @@ public class CmsObject extends Object implements I_CmsConstants {
      * @deprecated Use createResource instead.
      */
     public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
-        return (CmsFolder) createResource(folder, newFolderName, C_TYPE_FOLDER_NAME);
+        return (CmsFolder) createResource(folder, newFolderName, I_CmsConstants.C_TYPE_FOLDER_NAME);
     }
     /**
      * Adds a new group to the Cms.<p>
@@ -1225,7 +1225,7 @@ public class CmsObject extends Object implements I_CmsConstants {
      * a new folder.
      */
     protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
-        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(folder + newFolderName + C_FOLDER_SEPARATOR), new Hashtable());
+        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(folder + newFolderName + I_CmsConstants.C_FOLDER_SEPARATOR), new Hashtable());
         return cmsFolder;
     }
 
@@ -1808,7 +1808,7 @@ public class CmsObject extends Object implements I_CmsConstants {
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
 
         CmsObject cmsForStaticExport = new CmsObject();
-        cmsForStaticExport.init(m_driverManager, dReq, dRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         cmsForStaticExport.setLauncherManager(getLauncherManager());
         return cmsForStaticExport;
     }
@@ -2002,11 +2002,11 @@ public class CmsObject extends Object implements I_CmsConstants {
      * @return int The modus of this cmsObject.
      */
     public int getMode() {
-        if (m_mode == C_MODUS_AUTO) {
+        if (m_mode == I_CmsConstants.C_MODUS_AUTO) {
             if (getRequestContext().currentProject().isOnlineProject()) {
-                return C_MODUS_ONLINE;
+                return I_CmsConstants.C_MODUS_ONLINE;
             } else {
-                return C_MODUS_OFFLINE;
+                return I_CmsConstants.C_MODUS_OFFLINE;
             }
         }
         return m_mode;
@@ -2720,7 +2720,7 @@ public class CmsObject extends Object implements I_CmsConstants {
         // login the user
         CmsUser newUser = m_driverManager.loginUser(m_context, username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
         this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
@@ -2742,7 +2742,7 @@ public class CmsObject extends Object implements I_CmsConstants {
         // login the user
         CmsUser newUser = m_driverManager.loginWebUser(m_context, username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // return the user-name
         return (newUser.getName());
     }
@@ -2820,11 +2820,11 @@ public class CmsObject extends Object implements I_CmsConstants {
             deletedResources = readProjectView(m_context.currentProject().getId(), "deleted");
             changedResources = readProjectView(m_context.currentProject().getId(), "changed");
 
-            updateOnlineProjectLinks(deletedResources, changedResources, null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+            updateOnlineProjectLinks(deletedResources, changedResources, null, this.getResourceType(I_CmsConstants.C_TYPE_PAGE_NAME).getResourceType());
             publishedResources = m_driverManager.publishProject(this, m_context, report);
 
             // update the online links table for the new resources (now they are there)
-            updateOnlineProjectLinks(null, null, newResources, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+            updateOnlineProjectLinks(null, null, newResources, this.getResourceType(I_CmsConstants.C_TYPE_PAGE_NAME).getResourceType());
 
             changedResources.clear();
             changedResources = null;
@@ -2843,7 +2843,7 @@ public class CmsObject extends Object implements I_CmsConstants {
             if (getStaticExportProperties().isStaticExportEnabled()) {
                 try {
                     int oldId = m_context.currentProject().getId();
-                    m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
 
                     // the return value for the search
                     Vector linkChanges = new Vector();
@@ -2869,7 +2869,7 @@ public class CmsObject extends Object implements I_CmsConstants {
                 if ("false_ssl".equalsIgnoreCase(getStaticExportProperties().getStaticExportEnabledValue())) {
                     // just generate the link rules, in case there were properties changed
                     int oldId = m_context.currentProject().getId();
-                    m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                     new CmsStaticExport(this, null, false, null, null, null, null);
                     m_context.setCurrentProject(oldId);
                 }
@@ -2920,7 +2920,7 @@ public class CmsObject extends Object implements I_CmsConstants {
             // set current project to online project if the published project was temporary
             // and the published project is still the current project
             if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
-                m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+                m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
             }
         }
 
@@ -2968,14 +2968,14 @@ public class CmsObject extends Object implements I_CmsConstants {
         if (res.isLocked()) {
             throw new CmsException("[CmsObject] cannot publish locked resource", CmsException.C_NO_ACCESS);
         }
-        if (res.getState() == C_STATE_NEW) {
+        if (res.getState() == I_CmsConstants.C_STATE_NEW) {
             try {
                 m_driverManager.readFolder(m_context, res.getParentId(), false);
             } catch (CmsException ex) {
                 throw new CmsException("[CmsObject] cannot read parent folder in online project", CmsException.C_NOT_FOUND);
             }
         }
-        if (oldProjectId != C_PROJECT_ONLINE_ID) {
+        if (oldProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // check access to project
             if (isAdmin() || isManagerOfProject()) {
                 int newProjectId = m_driverManager.createDirectPublishProject(m_context, "Direct Publish", "", "Users", "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
@@ -4045,7 +4045,7 @@ public class CmsObject extends Object implements I_CmsConstants {
      * @throws CmsException if operation was not successful.
      */
     public CmsFolder rootFolder() throws CmsException {
-        return (readFolder(C_ROOT));
+        return (readFolder(I_CmsConstants.C_ROOT));
     }
 
     /**
@@ -4066,14 +4066,14 @@ public class CmsObject extends Object implements I_CmsConstants {
      * Sets the name of the current site root of the content objects system
      */
     public void setContextToCos() {
-        getRequestContext().setSiteRoot(C_COS_DEFAULT);
+        getRequestContext().setSiteRoot(I_CmsConstants.C_COS_DEFAULT);
     }
 
     /**
      * Sets the name of the current site root of the virtual file system.
      */
     public void setContextToVfs() {
-        getRequestContext().setSiteRoot(C_VFS_DEFAULT);
+        getRequestContext().setSiteRoot(I_CmsConstants.C_VFS_DEFAULT);
     }
     /**
      * Set the launcher manager used with this instance of CmsObject.

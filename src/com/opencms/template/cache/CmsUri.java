@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -200,7 +200,7 @@ public class CmsUri implements I_CmsConstants {
             return;
         }
         // maybe it is an Admin
-        if(currentGroup.getName().equals(CmsObject.C_GROUP_ADMIN)){
+        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
             // ok Admins can read everything
             return;
         }

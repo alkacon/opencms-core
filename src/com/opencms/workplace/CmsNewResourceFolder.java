@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/15 08:43:10 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/15 08:43:10 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -622,7 +622,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 properties.remove("Hauptlogo_img");
             }else{
                 CmsResource pic = cms.readFileHeader(logo);
-                if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(CmsObject.C_TYPE_IMAGE_NAME)){
+                if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(I_CmsConstants.C_TYPE_IMAGE_NAME)){
                    return 1;
                 }
             }
@@ -637,7 +637,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     properties.remove("Verzeichnislogo_img");
                 }else{
                     CmsResource pic = cms.readFileHeader(logo);
-                    if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(CmsObject.C_TYPE_IMAGE_NAME)){
+                    if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(I_CmsConstants.C_TYPE_IMAGE_NAME)){
                        return 1;
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/15 08:43:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -265,7 +265,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 // URI is not the same, so this is a sub - element
                 cms.getRequestContext().setUri(exportUri);
             }
-            cms.setMode(CmsObject.C_MODUS_EXPORT);
+            cms.setMode(I_CmsConstants.C_MODUS_EXPORT);
         }   
         // check body
         String body = req.getParameter(C_EXPORT_BODY);
@@ -525,7 +525,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         boolean bypass = false;
         
         // check if export mode is active, if so "streaming" must be deactivated
-        boolean exportmode = (cms.getMode() == CmsObject.C_MODUS_EXPORT);
+        boolean exportmode = (cms.getMode() == I_CmsConstants.C_MODUS_EXPORT);
         
         try {
             // Read caching property from requested VFS resource                                     
