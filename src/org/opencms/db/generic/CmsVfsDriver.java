@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 13:34:31 $
- * Version: $Revision: 1.169 $
+ * Date   : $Date: 2004/04/02 08:45:32 $
+ * Version: $Revision: 1.170 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,19 +75,15 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.169 $ $Date: 2004/04/01 13:34:31 $
+ * @version $Revision: 1.170 $ $Date: 2004/04/02 08:45:32 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
 
-    /**
-     * The driver manager
-     */    
+    /** The driver manager. */    
     protected CmsDriverManager m_driverManager;
     
-    /**
-     * The sql manager
-     */
+    /** The sql manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
@@ -472,7 +468,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public CmsFolder createFolder(CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException {
 
         CmsFolder newFolder = new CmsFolder(new CmsUUID(), new CmsUUID(), parentId, CmsUUID.getNullUUID(), folderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, flags, project.getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, dateCreated, userCreated, dateLastModified, userLastModified, 1);
-
         return createFolder(project, newFolder, parentId);
 
     }
@@ -755,12 +750,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         int state = 0;
         CmsUUID modifiedByUserId = newResource.getUserLastModified();
-        //long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = newResource.getState();
             modifiedByUserId = newResource.getUserLastModified();
-            //dateModified = newResource.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
         }
@@ -779,10 +772,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 if (isFolder) {
                     removeFolder(project, (CmsFolder)newResource);
                     state = I_CmsConstants.C_STATE_CHANGED;
-                } else {
-                    //removeFile(project, parentId, newResource.getResourceName());
                 }
-                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
             }
             if (e.getType() == CmsException.C_FILE_EXISTS) {
                 throw e;
@@ -837,7 +827,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(null, stmt, null);
 
-                //write the content
+                // write the content
                 if (!isFolder) {
                     try {
                         createFileContent(newFileId, filecontent, 0, project.getId(), false);
@@ -952,7 +942,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return returnValue;
@@ -1097,13 +1086,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_READ");
             stmt.setString(1, structureId.toString());
-            //stmt.setInt(2, projectId);
             res = stmt.executeQuery();
+            
             if (res.next()) {
                 file = createFile(res, projectId);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+                
                 // check if this resource is marked as deleted
                 if (file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getName(), CmsException.C_RESOURCE_DELETED);
@@ -1135,8 +1125,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READBYID");
-            // read file data from database
             stmt.setString(1, resourceId.toString());
+            
             res = stmt.executeQuery();
             // create new file
             if (res.next()) {
@@ -1144,6 +1134,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+                
                 // check if this resource is marked as deleted
                 if ((file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/2] " + file.getName(), CmsException.C_RESOURCE_DELETED);
@@ -1178,10 +1169,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             stmt.setString(1, filename);
             stmt.setString(2, parentId.toString());
-            //stmt.setInt(3, projectId);
 
             res = stmt.executeQuery();
-
             if (res.next()) {
                 file = createFile(res, projectId, false);
                 while (res.next()) {
@@ -1217,33 +1206,13 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        //String queryName = null;
-
-        /*
-        if (includeUnchanged && onlyProject) {
-            queryName = "C_RESOURCES_READ_FILES_BY_PROJECT";
-        } else if (includeUnchanged && !onlyProject) {
-            queryName = "C_RESOURCES_READ_FILES";
-        } else if (onlyProject) {
-            queryName = "C_RESOURCES_READ_CHANGED_FILES_BY_PROJECT";
-        } else {
-            //queryName = "C_RESOURCES_READ_CHANGED_FILES";
-            queryName = "C_RESOURCES_READ_CHANGED_FILEHEADERS";
-        }
-        */
 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_CHANGED_FILEHEADERS");
-            /*
-            if (onlyProject) {
-                stmt.setInt(1, projectId);
-            }
-            */
-            res = stmt.executeQuery();
 
+            res = stmt.executeQuery();
             while (res.next()) {
-                //currentResource = createCmsFileFromResultSet(res, projectId, true);
                 currentResource = createResource(res, projectId);
                 resources.add(currentResource);
             }
@@ -1270,10 +1239,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_FILESBYTYPE");
-            // read file data from database
             stmt.setInt(1, resourcetype);
+            
             res = stmt.executeQuery();
-            // create new file
             while (res.next()) {
                 file = createFile(res, projectId, true);
                 files.addElement(file);
@@ -1379,11 +1347,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(projectId);
-            //query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT") + CmsSqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
-            //stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_CHANGED_FOLDERS_BY_PROJECT");
-            // stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
-            // stmt.setInt(2, I_CmsConstants.C_STATE_UNCHANGED);
+
             res = stmt.executeQuery();
             while (res.next()) {
                 currentFolder = createFolder(res, projectId, true);
@@ -1489,10 +1454,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_READALL");
-            // create statement
             stmt.setInt(1, resourcetype.getResourceType());
+            
             res = stmt.executeQuery();
-
             while (res.next()) {
                 metadefs.addElement(new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_RESOURCE_TYPE"))));
             }
@@ -1552,8 +1516,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_TIMERANGE");
             stmt.setTimestamp(1, new Timestamp(starttime));
             stmt.setTimestamp(2, new Timestamp(endtime));
+            
             res = stmt.executeQuery();
-
             while (res.next()) {
                 CmsResource resource = createResource(res, projectId);
                 result.add(resource);
@@ -1569,8 +1533,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return result;
     }
 
-    
-  
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResources(int, int, int)
      */
@@ -1601,7 +1563,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             }
             
             res = stmt.executeQuery();
-
             while (res.next()) {
                 CmsResource resource = createResource(res, projectId);
                 result.add(resource);
@@ -1787,42 +1748,34 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         // check if the folder has any files in it
         List files = readChildResources(currentProject, folder, false);
         files = internalFilterUndeletedResources(files);
+        
         if (files.size() == 0) {
             // check if the folder has any folders in it
             List folders = readChildResources(currentProject, folder, true);
             folders = internalFilterUndeletedResources(folders);
+            
             if (folders.size() == 0) {
-                //this folder is empty, delete it
-                // Connection conn = null;
-                // PreparedStatement stmt = null;
-                // try {
-                //     conn = m_sqlManager.getConnection(currentProject);
-                //     stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_ID_DELETE");
-                //    // delete the folder
-                //    stmt.setString(1, folder.getId().toString());
-                //    stmt.executeUpdate();
-                // } catch (SQLException e) {
-                //    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-                //} finally {
-                //    m_sqlManager.closeAll(conn, stmt, null);
-                // }
                 internalRemoveFolder(currentProject, folder);
             } else {
                 String errorResNames = "";
+                
                 Iterator i = folders.iterator();
                 while (i.hasNext()) {
                     CmsResource errorRes = (CmsResource)i.next();
                     errorResNames += "[" + errorRes.getName() + "]";
                 }
+                
                 throw new CmsException("[" + this.getClass().getName() + "] " + folder.getName() + errorResNames, CmsException.C_NOT_EMPTY);
             }
         } else {
             String errorResNames = "";
+            
             Iterator i = files.iterator();
             while (i.hasNext()) {
                 CmsResource errorRes = (CmsResource)i.next();
                 errorResNames += "[" + errorRes.getName() + "]";
             }
+            
             throw new CmsException("[" + this.getClass().getName() + "] " + folder.getName() + errorResNames, CmsException.C_NOT_EMPTY);
         }
     }
@@ -1870,8 +1823,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_SELECT_CONTENT_ID");
             stmt.setString(1, contentId.toString());
+            
             res = stmt.executeQuery();
-
             if (res.next()) {
                 count = res.getInt(1);
                 result = (count == 1);
@@ -1900,10 +1853,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_RESOURCE_STATE");
             stmt.setString(1, resourceId.toString());
+            
             res = stmt.executeQuery();
-
             exists = res.next();
-
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -1927,8 +1879,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_SELECT_STRUCTURE_ID");
             stmt.setString(1, structureId.toString());
+            
             res = stmt.executeQuery();
-
             if (res.next()) {
                 count = res.getInt(1);
                 result = (count == 1);
@@ -1989,7 +1941,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         // for this reason, the resource state is left unchanged
         int structureState = file.getState();
         int resourceState = file.getState();
-        //if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
+
         if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
             resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
@@ -1998,11 +1950,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         }
-        //}
 
         try {
             conn = m_sqlManager.getConnection(project);
-            //savepoint = conn.setSavepoint("before_update");
 
             // update the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
@@ -2029,13 +1979,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(4, structureState);
             stmt.setString(5, file.getStructureId().toString());
             stmt.executeUpdate();
-
-            //m_sqlManager.commit(conn);
         } catch (SQLException e) {
-            //m_sqlManager.rollback(conn, savepoint);
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            //m_sqlManager.releaseSavepoint(conn, savepoint);
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
@@ -2046,10 +1992,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
-        //CmsUUID modifiedByUserId = userId;
         long resourceDateModified = folder.isTouched() ? folder.getDateLastModified() : System.currentTimeMillis();
 
-        //Savepoint savepoint = null;
         int structureState = folder.getState();
         int resourceState = folder.getState();
         if (structureState != org.opencms.main.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
@@ -2065,7 +2009,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(project);
-            //savepoint = conn.setSavepoint("before_update");
 
             // update the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
@@ -2078,7 +2021,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(7, 0);
             stmt.setString(8, CmsUUID.getNullUUID().toString());
             stmt.setString(9, CmsUUID.getNullUUID().toString());
-            //stmt.setInt(10, folder.getProjectId());
             stmt.setInt(10, project.getId());
             stmt.setInt(11, this.internalCountSiblings(project.getId(), folder.getResourceId()));
             stmt.setString(12, folder.getResourceId().toString());
@@ -2093,13 +2035,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(4, resourceState);
             stmt.setString(5, folder.getStructureId().toString());
             stmt.executeUpdate();
-
-            //m_sqlManager.commit(conn);
         } catch (SQLException e) {
-            //m_sqlManager.rollback(conn, savepoint);
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            //m_sqlManager.releaseSavepoint(conn, savepoint);
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
@@ -2129,7 +2067,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException {
         
-        // The file content is only written if filecontent != null, otherwise the values of the resource are written without changes
+        // the file content is only written if filecontent != null, 
+        // otherwise the values of the resource are written without changes
         
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2335,7 +2274,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
