@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/27 10:48:01 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2001/01/19 16:54:37 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/11/27 10:48:01 $
+ * @version $Revision: 1.20 $ $Date: 2001/01/19 16:54:37 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -462,6 +462,15 @@ public String[] getRepositories();
  * @return the value for that system-key.
  */
 public String getSystemValue(String key);
+
+/**
+ * Returns a vector of value for a system-key.
+ *
+ * @parameter String the key of the system-value.
+ * @return the values for that system-key.
+ */
+public Hashtable getSystemValues(String key);
+
 /**
  * Returns all views and korresponding urls for all modules.
  *

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2001/01/04 09:40:47 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2001/01/19 16:54:37 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.24 $ $Date: 2001/01/04 09:40:47 $
+ * @version $Revision: 1.25 $ $Date: 2001/01/19 16:54:37 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1242,6 +1242,7 @@ public void getParent(String groupname) {
 			CmsShell.printException(exc);
 		}
 	}
+
 	/**
 	 * Returns a value for a system-key.
 	 * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
@@ -1257,6 +1258,27 @@ public void getParent(String groupname) {
 			CmsShell.printException(exc);
 		}
 	}
+	
+	/**
+	 * Returns all values for a system-key.
+	 *
+	 * @parameter String the key of the system-value.
+	 */
+	public void getSystemValues(String sysKey) {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			Hashtable res = reg.getSystemValues(sysKey);
+			Enumeration keys = res.keys();
+			
+			while(keys.hasMoreElements()) {
+				Object key = keys.nextElement();
+				System.out.println(key + "->" + res.get(key));
+			}
+		} catch (Exception exc) {
+			CmsShell.printException(exc);
+		}
+	}
+	
 /**
   * Get a parameter value for a task.
   * 

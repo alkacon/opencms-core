@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/12/13 08:47:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2001/01/19 16:54:37 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2000/12/13 08:47:43 $
+ * @version $Revision: 1.25 $ $Date: 2001/01/19 16:54:37 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1183,10 +1183,11 @@ public java.lang.String[] getRepositories() {
 	retValue.copyInto(retValueArray);
 	return retValueArray;
 }
+
 /**
  * Returns a value for a system-key.
  * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
- * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com.
+ * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com".
  *
  * @parameter String the key of the system-value.
  * @return the value for that system-key.
@@ -1201,6 +1202,28 @@ public String getSystemValue(String key) {
 	}
 	return retValue;
 }
+
+/**
+ * Returns a vector of value for a system-key.
+ *
+ * @parameter String the key of the system-value.
+ * @return the values for that system-key.
+ */
+public Hashtable getSystemValues(String key) {
+	Hashtable retValue = new Hashtable();
+	try {
+		Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
+		NodeList list = systemElement.getElementsByTagName(key).item(0).getChildNodes();
+		for(int i=0; i < list.getLength(); i++) {
+			retValue.put(list.item(i).getNodeName(), 
+						 list.item(i).getFirstChild().getNodeValue());
+		}
+	} catch (Exception exc) {
+		// ignore the exception - registry is not wellformed
+	}
+	return retValue;
+}
+
 /**
  * Returns all views and korresponding urls for all modules.
  *
