@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/07 09:13:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/12/07 09:18:51 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/12/07 09:13:36 $
+ * @version $Revision: 1.6 $ $Date: 2000/12/07 09:18:51 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -196,8 +196,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			content.append("\"" + cms.lockedBy(res).getName() + "\");\n");
 		}
 	}
-	// TODO: now the tree, only if changed
-	if (true) {
+	//  now the tree, only if changed
+	if (newTreePlease) {
 		content.append("\n top.rT();\n");
 		Vector tree = cms.getFolderTree();
 		int startAt = 1;
