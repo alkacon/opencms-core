@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 10:21:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/01 12:51:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,8 +66,8 @@ import java.util.RandomAccess;
  * 
  * Property objects are written to the database using {@link CmsDriverManager#writePropertyObjects(org.opencms.file.CmsRequestContext, String, List)}
  * or {@link CmsDriverManager#writePropertyObject(org.opencms.file.CmsRequestContext, String, CmsProperty)}, no matter
- * wheter you want to save a new (non-existing) property, update an existing property, or delete an
- * existing property. To delete a property you woould write a property object with either the
+ * whether you want to save a new (non-existing) property, update an existing property, or delete an
+ * existing property. To delete a property you would write a property object with either the
  * structure and/or resource record values set to {@link #C_DELETE_VALUE} to indicate that a
  * property value should be deleted in the database.<p>
  * 
@@ -80,7 +80,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/04/01 10:21:29 $
+ * @version $Revision: 1.2 $ $Date: 2004/04/01 12:51:03 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
