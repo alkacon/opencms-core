@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2002/09/11 13:31:59 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/10/30 10:06:29 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.core;
 
+import com.opencms.boot.I_CmsLogChannels;
 import java.io.*;
 import java.util.*;
 import com.opencms.boot.*;
@@ -38,23 +39,21 @@ import source.org.apache.java.util.*;
 import com.opencms.flex.*;
 
 /**
- * Abstract class for the main class of the OpenCms system.
- * <p>
- * It is used to read a requested resource from the OpenCms System and forward it to
- * a launcher, which is performs the output of the requested resource. <br>
+ * Abstract class for the OpenCms "operating system" that provides 
+ * public static methods which can be used by other classes to access 
+ * basic features of OpenCms like logging etc.
  *
- * The OpenCms class is independent of access module to the OpenCms (e.g. Servlet,
- * Command Shell), therefore this class is <b>not</b> responsible for user authentification.
- * This is done by the access module to the OpenCms.
- *
+ * @see OpenCms
+ * 
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2002/09/11 13:31:59 $
- *
+ * 
+ * @version $Revision: 1.26 $ $Date: 2002/10/30 10:06:29 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
+    /** The filename of the log file */
     private static String m_logfile;
 
     /** List to save the event listeners in */
@@ -63,20 +62,21 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     /** A Map for the storage of various runtime properties */
     private Map m_runtimeProperties = null;
 
-    /** The runtime configuration */
+    /** The OpenCms configuration read from <code>opencms.properties</code> */
     private Configurations m_conf = null;
     
     /** Default encoding, can be overwritten in "opencms.properties" */
     private static String m_defaultEncoding = "UTF-8";    
     
     /**
-     * Destructor, called when the the servlet is shut down.
+     * Destructor, should be called when the the class instance is shut down.
      */
     abstract void destroy() throws CmsException;
 
     /**
-     * Initializes the logging mechanism of the Jserv
-     * @param configurations the configurations needed at initialization.
+     * Initializes the logging mechanism of OpenCms.
+     * 
+     * @param config The configurations read from <code>opencms.properties</code>
      */
     public static void initializeServletLogging(Configurations config) {
         m_logfile = config.getString("log.file");
@@ -84,37 +84,17 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     }
 
     /**
-     * Returns the name of the logfile.
+     * Returns the filename of the logfile.
+     * 
+     * @return The filename of the logfile.
      */
     public static String getLogFileName() {
         return m_logfile;
     }
 
     /**
-     * This method gets the requested document from the OpenCms and returns it to the
-     * calling module.
-     *
-     * @param cms The CmsObject containing all information about the requested document
-     * and the requesting user.
-     * @return CmsFile object.
-     */
-    abstract CmsFile initResource(CmsObject cms) throws CmsException,IOException;
-
-    /**
-     * Inits a new user and sets it into the overgiven cms-object.
-     *
-     * @param cms the cms-object to use.
-     * @param cmsReq the cms-request for this http-request.
-     * @param cmsRes the cms-response for this http-request.
-     * @param user The name of the user to init.
-     * @param group The name of the current group.
-     * @param project The id of the current project.
-     */
-    abstract public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes,
-        String user, String group, int project, CmsCoreSession sessionStorage) throws CmsException;
-
-    /**
      * Checks if the system logging is active.
+     * 
      * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
      */
     public static boolean isLogging() {
@@ -122,25 +102,27 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     }
     
     /**
-     * Logs a message into the OpenCms logfile.
+     * Checks if the system logging is active for the selected channel.
+     * 
+     * @return <code>true</code> if the logging is active for the channel, <code>false</code> otherwise.
+     */
+    public static boolean isLogging(String channel) {
+        return CmsBase.isLogging(channel);    
+    }    
+    
+    /**
+     * Logs a message into the OpenCms logfile.<p>
+     * 
      * If the logfile was not initialized (e.g. due tue a missing
      * ServletConfig while working with the console)
-     * any log output will be written to the apache error log.
+     * any log output will be written to <code>System.err</code>.
+     * 
      * @param channel The channel the message is logged into
-     * @message The message to be logged,
+     * @param message The message to be logged.
      */
     public static void log(String channel, String message) {
         CmsBase.log(channel, message);
     }
-
-    /**
-     * This method loads old sessiondata from the database. It is used
-     * for sessionfailover.
-     *
-     * @param oldSessionId the id of the old session.
-     * @return the old sessiondata.
-     */
-    abstract Hashtable restoreSession(String oldSessionId) throws CmsException;
 
     /**
      * Sets the mimetype of the response.<br>
@@ -150,7 +132,6 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      *
      * @param cms The actual OpenCms object.
      * @param file The requested document.
-     *
      */
     abstract void setResponse(CmsObject cms, CmsFile file);
 
@@ -161,7 +142,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      *
      * @param cms CmsObject containing all document and user information
      * @param file CmsFile object representing the selected file.
-     * @exception CmsException
+     * @throws CmsException In case of problems acessing the resource.
      */
     abstract public void showResource(CmsObject cms, CmsFile file) throws CmsException;
 
@@ -176,12 +157,24 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     abstract void storeSession(String sessionId, Hashtable sessionData) throws CmsException;
 
     /**
-     * Reads the actual entries from the database and updates the Crontable
+     * This method loads old sessiondata from the database. It is used
+     * for sessionfailover.
+     *
+     * @param oldSessionId the id of the old session.
+     * @return The restored sessiondata read from the database.
+     * @throws CmsException In case of problems acessing the database.
+     */
+    abstract Hashtable restoreSession(String oldSessionId) throws CmsException;
+    
+    /**
+     * Reads the current crontable entries from the database and updates the
+     * crontable with them.
      */
     abstract void updateCronTable();
 
     /**
      * Starts a schedule job with a correct instantiated CmsObject.
+     * 
      * @param entry the CmsCronEntry to start.
      */
     abstract void startScheduleJob(CmsCronEntry entry);
@@ -317,7 +310,4 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     protected void setDefaultEncoding(String encoding) {
         m_defaultEncoding = encoding;
     }
-
-
-    abstract public void initStartupClasses() throws CmsException;    
 }

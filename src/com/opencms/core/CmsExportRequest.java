@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2002/09/19 15:49:25 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/10/30 10:07:06 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,12 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-
+/**
+ * Implementation of the I_CmsRequest interface which is used to request pages
+ * during a static export.<p>
+ * 
+ * @version $Revision: 1.7 $ $Date: 2002/10/30 10:07:06 $
+ */
 public class CmsExportRequest implements I_CmsRequest {
 
     /**

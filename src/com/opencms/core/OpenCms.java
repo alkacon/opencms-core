@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/10/22 12:39:26 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2002/10/30 10:06:43 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,8 +30,12 @@ package com.opencms.core;
 
 import java.io.*;
 import java.util.*;
+
+import javax.servlet.ServletContext;
+
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.boot.*;
@@ -40,32 +44,45 @@ import com.opencms.launcher.*;
 import com.opencms.template.cache.*;
 
 /**
- * This class is the main class of the OpenCms system.
- * <p>
- * It is used to read a requested resource from the OpenCms System and forward it to
- * a launcher, which is performs the output of the requested resource. <br>
+ * This class is the main class of the OpenCms system,
+ * think of it as the "operating system" of OpenCms.<p>
+ *  
+ * Any request to an OpenCms resource will be processed by this class first.
+ * The class will try to map the request to a VFS (Virtual File System) resource,
+ * i.e. an URI. If the resource is found, it will be read anf forwarded to
+ * to a launcher, which is performs the output of the requested resource.<p>
  *
- * The OpenCms class is independent of access module to the OpenCms (e.g. Servlet,
- * Command Shell), therefore this class is <b>not</b> responsible for user authentification.
- * This is done by the access module to the OpenCms.
+ * The OpenCms class is independent of access module to the OpenCms 
+ * (e.g. Servlet, Command Shell), therefore this class is <b>not</b> responsible 
+ * for user authentification. This is done by the access module to the OpenCms.<p>
  *
+ * There will be only one instance of the OpenCms object created for
+ * any accessing class. This means that in the default configuration, where 
+ * OpenCms is accessed through a servlet, there will be only one instance of 
+ * this class running at a time.
+ * 
+ * @see com.opencms.core.A_OpenCms
+ * @see com.opencms.core.OpenCmsHttpServlet
+ * @see com.opencms.file.CmsObject
+ * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.97 $ $Date: 2002/10/22 12:39:26 $
- *
- * */
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.98 $ $Date: 2002/10/30 10:06:43 $
+ */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
     /**
      * Define the default file.encoding that should be used by OpenCms
      */
-    private static String C_PREFERED_FILE_ENCODING = "ISO8859_1";
+    private static final String C_PREFERED_FILE_ENCODING = "ISO8859_1";
 
     /**
      * The default mimetype
      */
-    private static String C_DEFAULT_MIMETYPE = "text/html";
-
+    private static final String C_DEFAULT_MIMETYPE = "text/html";
+    
     /**
      * The resource-broker to access the database.
      */
@@ -92,17 +109,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     private Hashtable m_mt = new Hashtable();
 
     /**
-     * Indicates, if the session-failover should be enabled or not.
+     * Indicates, if the session-failover should be enabled or not
      */
     private boolean m_sessionFailover = false;
 
     /**
-     * Indicates, if the streaming should be enabled by the configurations
+     * Indicates, if the streaming should be enabled by the configurations.
      */
     private boolean m_streaming = true;
 
     /**
-     * The name of the class used to validate a new password.
+     * The name of the class used to validate a new password
      */
     private static String c_passwordValidatingClass = "";
 
@@ -113,13 +130,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
     /**
      * Reference to the CmsElementCache object containing locators for all
-     * URIs and elements in cache.
+     * URIs and elements in cache
      */
     private static CmsElementCache c_elementCache = null;
 
     /**
      * The object to store the  properties from the opencms.property file for the
-     * static export.
+     * static export
      */
     private static CmsStaticExportProperties c_exportProperties = new CmsStaticExportProperties();
 
@@ -132,185 +149,163 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     private static Hashtable c_variantDeps = null;
     
     /**
-     * Directory translator, used to translate all access to resources.
+     * Directory translator, used to translate all access to resources
      */
     private static CmsResourceTranslator m_directoryTranslator = null;
 
     /**
-     * Filename translator, used only for the creation of new files.
+     * Filename translator, used only for the creation of new files
      */
     private static CmsResourceTranslator m_fileTranslator = null;
     
     /**
-     * List of fefault file names (for directories, e.g, "index.html";
+     * List of fefault file names (for directories, e.g, "index.html")
      */
     private static String[] m_defaultFilenames = null;
 
     /**
-     * Constructor, creates a new OpenCms object.
-     *
-     * It gets the configurations and inits a rb via the CmsRbManager.
-     *
-     * @param conf The configurations from the property-file.
+     * Flag to indicate if the startup classes have already been initialized
      */
-    // OpenCms(Configurations conf) throws Exception {
+    private boolean isInitialized = false;
+
+    /**
+     * Constructor to create a new OpenCms object.<p>
+     * 
+     * It reads the configurations from the <code>opencms.properties</code>
+     * file in the <code>config/</code> subdirectory. With the information 
+     * from this file is inits a ResourceBroker (Database access module),
+     * various caching systems and other options.<p>
+     * 
+     * This will only be done once per accessing class.
+     *
+     * @param conf The configurations from the <code>opencms.properties</code> file.
+     */
     public OpenCms(Configurations conf) throws Exception {
-        CmsObject cms = null;
+
+        CmsObject cms;
+        
         // Save the configuration
         setConfiguration(conf);
 
         // invoke the ResourceBroker via the initalizer
         try {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) {
+                log(C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] JDK Info: " + jdkinfo);
+                log(C_OPENCMS_INIT, "[OpenCmsServlet] JDK Info: " + jdkinfo);
 
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
+                log(C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] file.encoding: " + System.getProperty("file.encoding"));
-            }
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
+                log(C_OPENCMS_INIT, "[OpenCmsServlet] file.encoding: " + System.getProperty("file.encoding"));
+                log(C_OPENCMS_INIT, "[OpenCms] creating first cms-object...");
             }
             cms = new CmsObject();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
-            }
             m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
-
+            
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
             c_rb = CmsRbManager.init(conf);
             printCopyrightInformation(cms);
 
             // initalize the Hashtable with all available mimetypes
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] read mime types");
             m_mt = c_rb.readMimeTypes(null, null);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found "
-                        + m_mt.size() + " mime-type entrys");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");
 
             // Check, if the HTTP streaming should be enabled
             m_streaming = conf.getBoolean("httpstreaming.enabled", true);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
 
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
                 m_table = new CmsCronTable(c_rb.readCronTable(null, null));
                 m_scheduler = new CmsCronScheduler(this, m_table);
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsCronScheduler... DONE");
-                }
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsCronScheduler... DONE");
             } else {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] CmsCronScheduler is disabled!");
-                }
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCmsServlet] CmsCronScheduler is disabled!");
             }
         }
         catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] " + e.getMessage());
+            // any exception here is fatal and will cause a stop in processing
             throw e;
         }
         
+        // read flex jsp export url property and save in runtime configuration
+        String flexExportUri = (String)conf.getString("flex.jsp.exporturl");
+        if ((null != flexExportUri) && (flexExportUri.endsWith(C_FOLDER_SEPERATOR))) {
+            flexExportUri = flexExportUri.substring(0, flexExportUri.length()-1);
+        }
+        setRuntimeProperty("flex.jsp.exporturl", flexExportUri);                
+        
         // try to initialize directory translations
         try {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing directory translations...");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing directory translations...");
             boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("directory.translation.rules");
                 // Directory translation stops after fist match, hence the "false" parameter
                 m_directoryTranslator = new CmsResourceTranslator(translations, false);        
-            } else {
-                m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
             }
         } catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
-            }
-            m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
         }   
+        // make sure we always have at last an emtpy array      
+        if (m_directoryTranslator == null) m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
         
         // try to initialize filename translations
         try {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing filename translations...");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing filename translations...");
             boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("filename.translation.rules");
                 // Filename translations applies all rules, hence the true patameters
                 m_fileTranslator = new CmsResourceTranslator(translations, true);        
-            } else {
-                m_fileTranslator = new CmsResourceTranslator(new String[0], false);
             }
         } catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
-            }
-            m_fileTranslator = new CmsResourceTranslator(new String[0], false);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
         }           
-        
+        // make sure we always have at last an emtpy array      
+        if (m_fileTranslator == null) m_fileTranslator = new CmsResourceTranslator(new String[0], false);
+                    
         // try to initialize default file names
         try {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing directory default files...");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing directory default files...");
             m_defaultFilenames = conf.getStringArray("directory.default.files");
             for (int i=0; i<m_defaultFilenames.length; i++) {
                 // remove possible white space
                 m_defaultFilenames[i] = m_defaultFilenames[i].trim();
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] directory default file " + i + " is: " + m_defaultFilenames[i] );
-                }                
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] directory default file " + i + " is: " + m_defaultFilenames[i] );               
             }
         } catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
         }    
-        // make sure we always have at an array      
+        // make sure we always have at last an emtpy array      
         if (m_defaultFilenames == null) m_defaultFilenames = new String[0];                
                 
         // try to initialize the flex cache
         try {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing flex cache...");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing flex cache...");
             com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
         } catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
         }        
 
         // try to initialize the launchers.
         try {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
             m_launcherManager = new CmsLauncherManager(this);
         }
         catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
         }
 
         // get the password validating class
@@ -318,27 +313,22 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         // Check, if the element cache should be enabled
         m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
-        }
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
         if(m_enableElementCache) {
             try {
                 c_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000),
                                                     conf.getInteger("elementcache.elements", 50000),
                                                     conf.getInteger("elementcache.variants", 100));
             }catch(Exception e) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
-                }
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
             }
             c_variantDeps = new Hashtable();
             c_elementCache.getElementLocator().setExternDependencies(c_variantDeps);
         }
         // now for the link replacement rules there are up to three rulesets for export online and offline
         try{
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing link replace rules.");
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing link replace rules.");
+            
             String[] staticUrlPrefix = new String[4];
             staticUrlPrefix[0]=Utils.replace(conf.getString(C_URL_PREFIX_EXPORT, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
             staticUrlPrefix[1]=Utils.replace(conf.getString(C_URL_PREFIX_HTTP, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
@@ -444,9 +434,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 }
             }
         }catch(Exception e){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
         }
 
         // Encoding project:
@@ -462,23 +450,46 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             // so you must make sure your setting in "opencms.properties" is correct.             
         }        
         setDefaultEncoding(defaultEncoding);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Default encoding set to: " + defaultEncoding);
         
     }
 
-    private boolean isInitialized = false;
-
     /**
-     * Initialize this OpenCms Object
+     * Creates the dynamic linkrules.
+     * The CmsStaticExport class needs a CmsObject to create them.
      */
-    public void initStartupClasses() throws CmsException {
+    private void createDynamicLinkRules(){
+        //create a valid cms-object
+        CmsObject cms = new CmsObject();
+        try{
+            initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE_ID, null);
+            new CmsStaticExport(cms, null, false, null, null, null, null);
+        }catch(Exception e){
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) {
+                log(C_OPENCMS_INIT, "Error initialising dynamic link rules. Error: " + Utils.getStackTrace(e));
+            }
+        }
+    }
+    
+    /**
+     * Initialize the startup classes of this OpenCms object.<p>
+     * 
+     * A startup class has to be configured in the <code>registry.xml</code> 
+     * file of OpenCms. Startup classes are a way to create plug-in 
+     * functions that required to be initialized one at OpenCms load time 
+     * without the need to add initializing code to the constructor of this 
+     * class.<p>
+     * 
+     * This must be done only once per running OpenCms object instance.
+     * Usually this will be done by the OpenCms servlet. 
+     */
+    void initStartupClasses() throws CmsException {
         if (isInitialized) return;
 
         // Set the initialized flag to true
         isInitialized = true;
 
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] OpenCms init() starting.");
-        }
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] OpenCms init() starting.");
 
         // finally, initialize 1 instance per class listed in the startup node
         try{
@@ -489,30 +500,23 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     try {
                         Class.forName(currentClass).newInstance();
 
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] created instance of class " + currentClass );
-                        }
+                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] created instance of class " + currentClass );
                     } catch (Exception e1){
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception creating instance of startup class " +  currentClass + ": " + e1.toString());
-                        }
+                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Exception creating instance of startup class " +  currentClass + ": " + e1.toString());
                     }
                 }
             }
         } catch (Exception e2){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception creating startup classes: " + e2.toString());
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Exception creating startup classes: " + e2.toString());
         }
 
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] OpenCms init() finished.");
-        }
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] OpenCms init() finished.");
     }
 
     /**
      * Destructor, called when the the servlet is shut down.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * 
+     * @throws CmsException If something goes wrong during shutdown.
      */
     public void destroy() throws CmsException {
         CmsObject cms = new CmsObject();
@@ -521,24 +525,27 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     }
 
     /**
-     * Insert the method's description here.
-     * Creation date: (10/25/00 12:42:11)
-     * @return com.opencms.launcher.CmsLauncherManager
+     * Returns the launcher manager used.
+     * 
+     * @return The launcher manager used.
      */
     public CmsLauncherManager getLauncherManager() {
         return m_launcherManager;
     }
 
     /**
-     * Gets the ElementCache used for the online project.
-     * @return CmsElementCache
+     * Returns the ElementCache used for the online project.
+     * 
+     * @return The ElementCache used for the online project.
      */
     public static CmsElementCache getOnlineElementCache(){
         return c_elementCache;
     }
 
     /**
-     * Gets the Class that is used for the password validation.
+     * Returns the Class that is used for the password validation.
+     * 
+     * @return The Class that is used for the password validation.
      */
     public static String getPasswordValidatingClass(){
         return c_passwordValidatingClass;
@@ -546,20 +553,25 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
     /**
      * Returns the properties for the static export.
+     * 
+     * @return The properties for the static export.
      */
     public static CmsStaticExportProperties getStaticExportProperties(){
         return c_exportProperties;
     }
 
     /**
-     * Gets the hashtable with the variant dependencies used for the elementcache.
-     * @return Hashtable
+     * Returns the hashtable with the variant dependencies used for the elementcache.
+     * 
+     * @return The hashtable with the variant dependencies used for the elementcache.
      */
     public static Hashtable getVariantDependencies(){
         return c_variantDeps;
     }
     
     /**
+     * Returns the file name translator this OpenCms has read from the opencms.properties.
+     * 
      * @return The file name translator this OpenCms has read from the opencms.properties
      */
     public CmsResourceTranslator getFileTranslator() {
@@ -567,11 +579,16 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     } 
     
     /**
-     * This method read the requested document from the OpenCms request context
-     * and returns it to the calling module.
+     * This method reads the requested document from the OpenCms request context
+     * and returns it to the calling module, which will usually be 
+     * the running OpenCmsHttpServlet.<p>
+     * 
+     * In case a directory name is requested, the default files of the 
+     * directory will be looked up and the first match is returned.
      *
      * @param cms The current CmsObject
-     * @return CmsFile The requested file
+     * @return CmsFile The requested file read from the VFS
+     * 
      * @throws CmsException In case the file does not exist or the user has insufficient access permissions 
      */
 	CmsFile initResource(CmsObject cms) throws CmsException {
@@ -666,14 +683,15 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 	}
 
     /**
-     * Inits a new user and sets it into the overgiven cms-object.
-     *
-     * @param cms the cms-object to use.
-     * @param cmsReq the cms-request for this http-request.
-     * @param cmsRes the cms-response for this http-request.
-     * @param user The name of the user to init.
-     * @param group The name of the current group.
-     * @param project The id of the current project.
+     * Inits a user and updates the given CmsObject withs this users information.<p>
+     * 
+     * @param cms The CmsObject to update
+     * @param cmsReq The current I_CmsRequest (usually initialized form the HttpServletRequest)
+     * @param cmsRes The current I_CmsResponse (usually initialized form the HttpServletResponse)
+     * @param user The name of the user to init
+     * @param group The name of the current group
+     * @param project The id of the current project
+     * @param sessionStorage The session storage for this OpenCms instance
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
@@ -686,7 +704,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     }
 
     /**
-     * Prints a copyright information to all log-files.
+     * Prints the OpenCms copyright information to all log-files.<p>
      */
     private void printCopyrightInformation(CmsObject cms) {
         String copy[] = cms.copyright();
@@ -698,35 +716,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         }
 
         // log with opencms-logger
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && isLogging()) {
+        if(C_PREPROCESSOR_IS_LOGGING && isLogging(C_OPENCMS_INFO)) {
             this.log(C_OPENCMS_INFO, cms.version());
             for(int i = 0;i < copy.length;i++) {
                 this.log(C_OPENCMS_INFO, copy[i]);
             }
         }
     }   
-
-    /**
-     * This method loads old sessiondata from the database. It is used
-     * for sessionfailover.
-     *
-     * @param oldSessionId the id of the old session.
-     * @return the old sessiondata.
-     */
-    Hashtable restoreSession(String oldSessionId) throws CmsException {
-
-        // is session-failopver enabled?
-        if(m_sessionFailover) {
-
-            // yes
-            return c_rb.restoreSession(oldSessionId);
-        }
-        else {
-
-            // no - do nothing
-            return null;
-        }
-    }
 
     /**
      * Sets the mimetype of the response.<p>
@@ -767,7 +763,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      *
      * @param cms CmsObject containing all document and user information
      * @param file CmsFile object representing the selected file.
-     * @exception CmsException
+     * @throws CmsException In case of problems acessing the resource.
      */
     public void showResource(CmsObject cms, CmsFile file) throws CmsException {
         int launcherId = file.getLauncherType();
@@ -776,8 +772,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         if(launcher == null) {
             String errorMessage = "Could not launch file " + file.getName() + ". Launcher for requested launcher ID "
                     + launcherId + " could not be found.";
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
+            if(C_LOGGING && isLogging(C_OPENCMS_INFO)) {
+                log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
         }
@@ -786,53 +782,57 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     }
 
     /**
+     * This method loads old sessiondata from the database. It is used
+     * for session failover.
+     *
+     * @param oldSessionId the id of the old session.
+     * @return the old sessiondata.
+     */
+    Hashtable restoreSession(String oldSessionId) throws CmsException {
+        // is session-failopver enabled?
+        if(m_sessionFailover) {
+            // yes
+            return c_rb.restoreSession(oldSessionId);
+        }
+        else {
+            // no - do nothing
+            return null;
+        }
+    }
+    
+    /**
      * This method stores sessiondata into the database. It is used
-     * for sessionfailover.
+     * for session failover.
      *
      * @param sessionId the id of the session.
      * @param isNew determines, if the session is new or not.
      * @return data the sessionData.
      */
     void storeSession(String sessionId, Hashtable sessionData) throws CmsException {
-
         // is session failover enabled?
         if(m_sessionFailover) {
-
             // yes
             c_rb.storeSession(sessionId, sessionData);
         }
     }
 
     /**
-     * Returns the registry to read values from it. You don't have the right to write
-     * values. This is useful for modules, to read module-parameters.
+     * Returns the registry to read values from it. 
+     * You don't have the permissions to write values. 
+     * This is useful for modules to read module-parameters.
      *
-     * @return the registry to READ values from it.
-     * @exception Throws CmsException, if the registry can not be returned.
+     * @return The registry to READ values from it.
+     * 
+     * @exception CmsException, if the registry can not be returned.
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
         return c_rb.getRegistry(null, null, null);
     }
 
-    /**
-     * Creates the dynamic linkrules.
-     * The CmsStaticExport class needs a CmsObject to create them.
-     */
-    private void createDynamicLinkRules(){
-        //create a valid cms-object
-        CmsObject cms = new CmsObject();
-        try{
-            initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE_ID, null);
-            new CmsStaticExport(cms, null, false, null, null, null, null);
-        }catch(Exception e){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                CmsBase.log(C_OPENCMS_INIT, "Error initialising dynamic link rules. Error: " + Utils.getStackTrace(e));
-            }
-        }
-    }
 
     /**
      * Starts a schedule job with a correct instantiated CmsObject.
+     * 
      * @param entry the CmsCronEntry to start.
      */
     void startScheduleJob(CmsCronEntry entry) {
@@ -844,8 +844,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
         } catch(Exception exc) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                CmsBase.log(C_OPENCMS_CRONSCHEDULER, "Error initialising job for " + entry + " Error: " + Utils.getStackTrace(exc));
+            if(C_LOGGING && isLogging(C_OPENCMS_CRONSCHEDULER)) {
+                log(C_OPENCMS_CRONSCHEDULER, "Error initialising job for " + entry + " Error: " + Utils.getStackTrace(exc));
             }
         }
     }
@@ -857,8 +857,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         try {
             m_table.update(c_rb.readCronTable(null, null));
         } catch(Exception exc) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) {
+                log(C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
             }
         }
     }
