@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/03/07 07:10:50 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/03/13 09:49:30 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -101,6 +101,9 @@ public class CmsSystemInfo {
 
     /** The settings for the synchronization. */
     private CmsSynchronizeSettings m_synchronizeSettings;
+    
+    /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
+    private String m_version;
 
     /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
@@ -360,6 +363,18 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Returns the identifier "OpenCms/" plus the OpenCms version number.<p>
+     * 
+     * This information is used for example to identify OpenCms in http response headers.<p>
+     *
+     * @return the identifier "OpenCms/" plus the OpenCms version number
+     */
+    public String getVersion() {
+        
+        return m_version;
+    }
+
+    /**
      * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
      * 
      * If the version history is disabled, this setting has no effect.<p>
@@ -373,21 +388,19 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns a String containing the version information (version name and version number) 
-     * of this OpenCms system.<p>
+     * Returns the version name (including version number) of this OpenCms system.<p>
      *
-     * @return version a String containing the version information
+     * @return the version name (including version number) of this OpenCms system
      */
     public String getVersionName() {
 
         return m_versionName;
     }
-
+    
     /**
-     * Returns a String containing the version number 
-     * of this OpenCms system.<p>
+     * Returns the version number of this OpenCms system.<p>
      *
-     * @return version a String containing the version number
+     * @return the version number of this OpenCms system
      */
     public String getVersionNumber() {
 
@@ -614,7 +627,9 @@ public class CmsSystemInfo {
         // init version information with static defaults
         m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
         m_versionNumber = C_DEFAULT_VERSION_NUMBER;
-        // read the version-informations from properties, if not done
+        // set OpenCms version identifier with default values
+        m_version = "OpenCms/" + m_versionNumber;
+        // read the version-informations from properties
         Properties props = new Properties();
         try {
             props.load(this.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
@@ -624,6 +639,8 @@ public class CmsSystemInfo {
         }
         m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
         m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
+        // set OpenCms version identifier with propery values
+        m_version = "OpenCms/" + m_versionNumber;
     }
 
 }
