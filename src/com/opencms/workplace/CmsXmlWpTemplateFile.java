@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/05/05 09:16:13 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2000/04/13 18:06:06 $
+ * @version $Revision: 1.41 $ $Date: 2000/05/05 09:16:13 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -241,7 +241,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     * <li>The tag name is given in lowercase</li>
     * <li>The datablock already exists (it may be empty)</li>
     * <li>Neither tag nor data are <code>null</code></li>
-    * <li>You are sure, there will occure no errors</li>
+    * <li>You are sure, there will occurr no errors</li>
     * </ul>
     * 
     * @param tag Key for this datablock.
