@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/09/04 08:37:34 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/10/21 15:26:23 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2002/09/04 08:37:34 $
+ * @version $Revision: 1.32 $ $Date: 2002/10/21 15:26:23 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -220,31 +220,19 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @exception IOException Thrown if user autherization fails.
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {         
-        // start time of this request
-        if(req.getRequestURI().indexOf("system/workplace/action/login.html") > 0) {
-            HttpSession session = req.getSession(false);
-            if(session != null) {
-                session.invalidate();
-            }
-        }
         CmsObject cms = null;
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
             m_opencms.initStartupClasses();
             cms = initUser(cmsReq, cmsRes);
-            
-            if( !checkRelocation(cms) ) {
-                // no redirect was done - deliver the ressource normally
-                CmsFile file = m_opencms.initResource(cms);
-                if(file != null) {
-
-                    // If the CmsFile object is null, the resource could not be found.
-                    // Stop processing in this case to avoid NullPointerExceptions
-                    m_opencms.setResponse(cms, file);
-                    m_opencms.showResource(cms, file);
-                    updateUser(cms, cmsReq, cmsRes);
-                }
+            // no redirect was done - deliver the ressource normally
+            CmsFile file = m_opencms.initResource(cms);
+            if(file != null) {
+                // a file was read, go on process it
+                m_opencms.setResponse(cms, file);
+                m_opencms.showResource(cms, file);
+                updateUser(cms, cmsReq, cmsRes);
             }
         }
         catch(CmsException e) {
@@ -264,32 +252,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @exception IOException Thrown if user autherization fails.
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {            
-        //Check for content type "form/multipart" and decode it
-        String type = req.getHeader("content-type");
-        CmsObject cms = null;
-
-        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req);
-        CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
-        try {
-            m_opencms.initStartupClasses();
-            cms = initUser(cmsReq, cmsRes);
-            
-            if( !checkRelocation(cms) ) {
-                // no redirect was done - deliver the ressource normally
-                CmsFile file = m_opencms.initResource(cms);
-                if(file != null) {
-
-                    // If the CmsFile object is null, the resource could not be found.
-                    // Stop processing in this case to avoid NullPointerExceptions
-                    m_opencms.setResponse(cms, file);
-                    m_opencms.showResource(cms, file);
-                    updateUser(cms, cmsReq, cmsRes);
-                }
-            }
-        }
-        catch(CmsException e) {
-            errorHandling(cms, cmsReq, cmsRes, e);
-        }
+        doGet(req, res);
     }
 
     /**
@@ -713,7 +676,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 }
 
                 // check if the session notify is set, it is nescessary to remove the
-
                 // session from the internal storage on its destruction.
                 OpenCmsServletNotify notify = null;
                 Object sessionValue = session.getAttribute("NOTIFY");
