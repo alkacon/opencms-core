@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,11 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.CmsRequestHttpServlet;
+import com.opencms.core.CmsResponseHttpServlet;
+import com.opencms.core.CmsSession;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
+import com.opencms.core.I_CmsSession;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsRootTemplate;
 import com.opencms.template.CmsTemplateCache;
@@ -80,6 +83,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -89,7 +93,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -213,7 +217,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     throws IOException, CmsException {
         
         CmsFile file = CmsFile.upgrade(resource, cms);
-        
+        initLegacyRequest(cms, req, res);
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, cms.getRequestContext().getFileTranslator());
         byte[] result = generateOutput(cms, file, cmsReq);
         if ((result != null) && (exportStream != null)) {
@@ -604,9 +608,23 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
-    throws CmsException {   
-    
+    throws CmsException {
+        initLegacyRequest(cms, req, res);        
         processXmlTemplate(cms, CmsFile.upgrade(resource, cms));
+    }
+    
+    private void initLegacyRequest(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws CmsException {
+        if (cms.getRequestContext().getAttribute(I_CmsRequest.C_CMS_REQUEST) != null) {
+            return;
+        }
+        try {  
+            CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, cms.getRequestContext().getFileTranslator());
+            CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res);
+            cms.getRequestContext().setAttribute(I_CmsRequest.C_CMS_REQUEST, cmsReq);
+            cms.getRequestContext().setAttribute(I_CmsResponse.C_CMS_RESPONSE, cmsRes);
+        } catch (IOException e) {
+            throw new CmsLoaderException("Trouble setting up legacy request / response", e);
+        }    
     }
     
     /**
@@ -660,14 +678,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         }
 
         // Check the clearcache parameter
-        String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
+        String clearcache = getRequest(cms.getRequestContext()).getParameter("_clearcache");
         
         // Clear loader caches if this is required
         clearLoaderCache(((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))), 
             ((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))));
         
         // get the CmsRequest
-        I_CmsRequest req = cms.getRequestContext().getRequest();
+        I_CmsRequest req = getRequest(cms.getRequestContext());
         byte[] result = generateOutput(cms, file, req);
         if (result != null) {
             writeBytesToResponse(cms, result);
@@ -689,7 +707,9 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         // save the original context settings
         String rnc = cms.getRequestContext().getEncoding().trim();
         // String oldUri = cms.getRequestContext().getUri();
-        I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
+        
+        initLegacyRequest(cms, (HttpServletRequest)req, (HttpServletResponse)res);        
+        I_CmsRequest cms_req = CmsXmlTemplateLoader.getRequest(cms.getRequestContext());        
         HttpServletRequest originalreq = cms_req.getOriginalRequest();
         
         try {                        
@@ -747,7 +767,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      */
     private void writeBytesToResponse(CmsObject cms, byte[] result) throws CmsException {
         try {
-            I_CmsResponse resp = cms.getRequestContext().getResponse();
+            I_CmsResponse resp = getResponse(cms.getRequestContext());
             if ((result != null) && !resp.isRedirected()) {
                 // Only write any output to the response output stream if
                 // the current request is neither redirected nor streamed.
@@ -760,7 +780,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             }
         } catch (IOException ioe) {
             if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("IO error while writing to response stream for " + cms.getRequestContext().getFileUri(), ioe);
+                OpenCms.getLog(this).debug("IO error while writing to response stream for " + cms.getRequestContext().getUri(), ioe);
             }
         } catch (Exception e) {
             String errorMessage = "Cannot write output to HTTP response stream";
@@ -773,7 +793,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      */
     public byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
     throws CmsException {
-        
+        initLegacyRequest(cms, req, res);        
         String absolutePath = cms.readAbsolutePath(file);
         // this will work for the "default" template class com.opencms.template.CmsXmlTemplate only
         CmsXmlTemplate template = new CmsXmlTemplate();
@@ -861,5 +881,45 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         }
         
         return target;
+    }
+    
+    /**
+     * Provides access to the current request through a CmsRequestContext, 
+     * required for legacy backward compatibility.<p>
+     * 
+     * @param context the current request context
+     * @return the request, of null if no request is available
+     */
+    public static I_CmsRequest getRequest(CmsRequestContext context) {
+        return (I_CmsRequest)context.getAttribute(I_CmsRequest.C_CMS_REQUEST);
+    }
+
+    /**
+     * Provides access to the current response through a CmsRequestContext, 
+     * required for legacy backward compatibility.<p>
+     * 
+     * @param context the current request context
+     * @return the response, of null if no request is available
+     */
+    public static I_CmsResponse getResponse(CmsRequestContext context) {
+        return (I_CmsResponse)context.getAttribute(I_CmsResponse.C_CMS_RESPONSE);
+    }
+       
+    /**
+     * Provides access to the current session through a CmsRequestContext, 
+     * required for legacy backward compatibility.<p>
+     * 
+     * @param context the current request context
+     * @param value if true, try to create a session if none exist, if false, do not create a session
+     * @return the response, of null if no request is available
+     */
+    public static I_CmsSession getSession(CmsRequestContext context, boolean value) {
+        I_CmsRequest req = (I_CmsRequest)context.getAttribute(I_CmsRequest.C_CMS_REQUEST);
+        HttpSession session = req.getOriginalRequest().getSession(value);
+        if (session != null) {
+            return (I_CmsSession)new CmsSession(session);
+        } else {
+            return null;
+        }
     }
 }

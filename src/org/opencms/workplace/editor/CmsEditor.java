@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/16 14:42:48 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1.12
  */
@@ -216,18 +216,18 @@ public abstract class CmsEditor extends CmsDialog {
             throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
         }
         // set current project to tempfileproject
-        getCms().getRequestContext().setCurrentProject(tempProject);
+        getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProject));
         CmsFile tempFile = null;
         Map properties = null;
         try {
             tempFile = getCms().readFile(getParamTempfile());
             properties = getCms().readProperties(getParamTempfile());
         } catch (CmsException e) {
-            getCms().getRequestContext().setCurrentProject(curProject);
+            getCms().getRequestContext().setCurrentProject(getCms().readProject(curProject));
             throw e;
         }
         // set current project
-        getCms().getRequestContext().setCurrentProject(curProject);
+        getCms().getRequestContext().setCurrentProject(getCms().readProject(curProject));
         CmsFile orgFile = getCms().readFile(getParamResource());
         orgFile.setContents(tempFile.getContents());
         getCms().writeFile(orgFile);

@@ -24,11 +24,12 @@ package com.opencms.defaults.master;
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
 
@@ -133,19 +134,19 @@ public class CmsShowMedia extends CmsXmlTemplate {
             if(picture == null){
                 picture = emptyGIF;
                 // set the mimetype ...
-                req.getResponse().setContentType("images/gif");
+                CmsXmlTemplateLoader.getResponse(req).setContentType("images/gif");
             } else {
                 // set mime type and filename in header
                 if (mType == null || mType.equals("")) {
                     mType = "application/octet-stream";
                 }
-                req.getResponse().setContentType( mType );
-                req.getResponse().setHeader("Content-disposition","filename=" + media.getName());
+                CmsXmlTemplateLoader.getResponse(req).setContentType( mType );
+                CmsXmlTemplateLoader.getResponse(req).setHeader("Content-disposition","filename=" + media.getName());
             }
         } else{
             picture = emptyGIF;
             // set the mimetype ...
-            req.getResponse().setContentType("images/gif");
+            CmsXmlTemplateLoader.getResponse(req).setContentType("images/gif");
         }
 
         /*if(req.isStreaming()) {

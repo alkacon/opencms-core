@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.workplace;
 
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
@@ -43,11 +47,15 @@ import org.opencms.workplace.editor.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import org.opencms.workplace.editor.I_CmsEditorHandler;
 
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -61,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.1
  */
@@ -209,9 +217,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }    
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(javax.servlet.http.HttpServletRequest, org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String)
      */
-    public Locale getLocale(CmsRequestContext context, HttpServletRequest req) {
+    public Locale getLocale(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
         
         // try to read locale from session
         if (req != null) {
@@ -226,9 +234,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         
         // no session available, try to read the locale form the user additional info
         Locale locale = null;
-        if (! context.currentUser().isGuestUser()) {
+        if (! user.isGuestUser()) {
             // check user settings only for "real" users
-            Hashtable userInfo = (Hashtable)context.currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
+            Hashtable userInfo = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
             if (userInfo != null) {
                 locale = CmsLocaleManager.getLocale((String)userInfo.get(I_CmsConstants.C_START_LOCALE));
             }    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,23 +31,11 @@
  
 package org.opencms.file;
 
-import org.opencms.db.CmsDriverManager;
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import com.opencms.core.CmsSession;
-import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResponse;
-import com.opencms.core.I_CmsSession;
-
 import java.util.HashMap;
 import java.util.Locale;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * Stores the information about the current request context,
@@ -56,13 +44,10 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsRequestContext {
 
-    /** Request parameter to force locale selection */
-    public static final String C_PARAMETER_LOCALE = "_locale";    
-    
     /** A map for storing (optional) request context attributes */
     private HashMap m_attributeMap; 
 
@@ -72,9 +57,6 @@ public class CmsRequestContext {
     /** Directroy name translator */
     private CmsResourceTranslator m_directoryTranslator;
     
-    /** The rb to get access to the OpenCms */
-    private CmsDriverManager m_driverManager;
-
     /** Current encoding */
     private String m_encoding;
 
@@ -83,15 +65,12 @@ public class CmsRequestContext {
 
     /** File name translator */
     private CmsResourceTranslator m_fileTranslator;
+
+    /** The locale for this request */
+    private Locale m_locale;
     
     /** The remote ip address */
     String m_remoteAddr;
-
-    /** The current CmsRequest */
-    private I_CmsRequest m_req;
-
-    /** The current CmsResponse */
-    private I_CmsResponse m_resp;
     
     /** Used to save / restore a site root */
     private String m_savedSiteRoot;
@@ -107,28 +86,49 @@ public class CmsRequestContext {
 
     /** The current user */
     private CmsUser m_user;
-
-    /** The locale for this request */
-    private Locale m_locale;
     
     /**
-     * The default constructor.
+     * Constructs a new request context.<p>
+     * 
+     * @param user the current user
+     * @param project the current users project
+     * @param requestedUri the requested OpenCms VFS URI
+     * @param siteRoot the users current site root
+     * @param locale the users current locale 
+     * @param encoding the encoding to use for this request
+     * @param remoteAddr the remote IP address of the user
+     * @param directoryTranslator the directory translator
+     * @param fileTranslator the file translator
      */
-    public CmsRequestContext() {
-        m_eventControlled = false;
+    public CmsRequestContext(
+        CmsUser user, 
+        CmsProject project, 
+        String requestedUri, 
+        String siteRoot, 
+        Locale locale, 
+        String encoding, 
+        String remoteAddr, 
+        CmsResourceTranslator directoryTranslator, 
+        CmsResourceTranslator fileTranslator
+    ) {        
         m_updateSession = true;
-        m_savedSiteRoot = null;
-        if ((OpenCms.getSiteManager() != null) && (OpenCms.getSiteManager().getDefaultSite() != null)) { 
-            m_siteRoot = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
-        } else {
-            setSiteRoot("/");
-        }
+        m_user = user;
+        m_currentProject = project;
+        m_uri = requestedUri;
+        setSiteRoot(siteRoot);
+        m_locale = locale;
+        m_encoding = encoding;
+        m_remoteAddr = remoteAddr;
+        m_directoryTranslator = directoryTranslator;
+        m_fileTranslator = fileTranslator;
     }
     
     /**
      * Returns the name of a resource with the complete site root name,
      * (e.g. /default/vfs/index.html) by adding the currently set site root prefix.<p>
-     *
+     * 
+     * The resource name will also be translated using the directory translator.<p>
+     * 
      * @param resourcename the resource name
      * @return the resource name including site root
      */
@@ -149,16 +149,6 @@ public class CmsRequestContext {
     }    
 
     /**
-     * Returns the current folder object.
-     *
-     * @return the current folder object.
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsFolder currentFolder() throws CmsException {
-        return m_driverManager.readFolder(this, addSiteRoot(getFolderUri()));
-    }
-    
-    /**
      * Returns the current project of the current user.
      *
      * @return the current project of the current user.
@@ -168,12 +158,12 @@ public class CmsRequestContext {
     }
     
     /**
-     * Returns the current user object.
+     * Returns the current user object.<p>
      *
-     * @return the current user object.
+     * @return the current user object
      */
     public CmsUser currentUser() {
-        return (m_user);
+        return m_user;
     } 
 
     /**
@@ -208,7 +198,12 @@ public class CmsRequestContext {
     }
         
     /**
-     * @return The directory name translator this context was initialized with
+     * Returns the directory name translator this context was initialized with.<p>
+     * 
+     * The directory translator is used to translate old VFS path information 
+     * to a new location. Example: <code>/bodys/index.html --> /system/bodies/</code>.<p>
+     * 
+     * @return the directory name translator this context was initialized with
      */
     public CmsResourceTranslator getDirectoryTranslator() {
         return m_directoryTranslator;
@@ -224,23 +219,17 @@ public class CmsRequestContext {
     }
         
     /**
-     * @return The file name translator this context was initialized with
+     * Returns the file name translator this context was initialized with.<p>
+     * 
+     * The file name translator is used to translate filenames from uploaded files  
+     * to valid OpenCms filenames. Example: <code>Wüste Wörter.doc --> Wueste_Woerter.doc</code>.<p>
+     * 
+     * @return the file name translator this context was initialized with
      */
     public CmsResourceTranslator getFileTranslator() {
         return m_fileTranslator;
     }    
-    
-    /**
-     * Gets the name of the requested file without any path-information.
-     *
-     * @return the requested filename.
-     */
-    public String getFileUri() {
-        String uri = m_req.getRequestedResource();
-        uri = uri.substring(uri.lastIndexOf("/") + 1);
-        return uri;
-    }
-    
+        
    /**
     * Gets the name of the parent folder of the requested file
     *
@@ -265,61 +254,9 @@ public class CmsRequestContext {
      * @return the renote ip addresss as string
      */
     public String getRemoteAddress() {
-        if (m_remoteAddr == null) {
-            try {
-                if (m_req != null) {
-                    m_remoteAddr = m_req.getOriginalRequest().getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
-                    if (m_remoteAddr == null) {
-                        m_remoteAddr = m_req.getOriginalRequest().getRemoteAddr();
-                    }
-                }
-            } catch (Throwable t) {
-                // This will happen only in very rare circumstances
-                m_remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Error reading remote ip address in request context", t);
-                }
-            }
-        }
         return m_remoteAddr;
     }
-    
-    /**
-     * Gets the current request, if availaible.
-     *
-     * @return the current request, if availaible.
-     */
-    public I_CmsRequest getRequest() {
-        return (m_req);
-    }
-    
-    /**
-     * Gets the current response, if availaible.
-     *
-     * @return the current response, if availaible.
-     */
-    public I_CmsResponse getResponse() {
-        return (m_resp);
-    }
-    
-    /**
-     * Gets the Session for this request.<p>
-     *
-     * This method should be used instead of the originalRequest.getSession() method.
-     * 
-     * @param value indicates, if a session should be created when a session for the particular client does not already exist.
-     * @return the CmsSession, or <code>null</code> if no session already exists and value was set to <code>false</code>
-     *
-     */
-    public I_CmsSession getSession(boolean value) {
-        HttpSession session = m_req.getOriginalRequest().getSession(value);
-        if (session != null) {
-            return (I_CmsSession) new CmsSession(session);
-        } else {
-            return null;
-        }
-    }
-    
+
     /**
      * Returns the current root directory in the virtual file system.<p>
      * 
@@ -330,169 +267,12 @@ public class CmsRequestContext {
     }
     
     /**
-     * Gets the uri for the requested resource.<p>
-     * 
-     * For a http request, the name of the resource is extracted as follows:<br>
-     * <CODE>http://{servername}/{servletpath}/{path to the cms resource}</CODE><br>
-     * In the following example:<br>
-     * <CODE>http://my.work.server/servlet/opencms/system/def/explorer</CODE><br>
-     * the requested resource is <CODE>/system/def/explorer</CODE>.
+     * Returns the OpenCms VFS URI of the requested resource.<p>
      *
-     * @return the path to the requested resource.
+     * @return the OpenCms VFS URI of the requested resource
      */
     public String getUri() {
-        if (m_uri != null) {
-            return m_uri;
-        }
-        if (m_req != null) {
-            return m_req.getRequestedResource();
-        } else {
-            return I_CmsConstants.C_ROOT;
-        }
-    }
-    
-    /**
-     * Initializes this RequestContext.<p>
-     *
-     * @param driverManager the driver manager
-     * @param req the CmsRequest
-     * @param resp the CmsResponse
-     * @param user the current user for this request
-     * @param projectId the id of the current project for this request
-     * @param site the current site root
-     * @param directoryTranslator Translator for directories (file with full path)
-     * @param fileTranslator Translator for new file names (without path)
-     * @throws CmsException if operation was not successful.
-     */
-    public void init (
-        CmsDriverManager driverManager, 
-        I_CmsRequest req, 
-        I_CmsResponse resp, 
-        String user, 
-        int projectId, 
-        String site, 
-        CmsResourceTranslator directoryTranslator, 
-        CmsResourceTranslator fileTranslator
-    ) throws CmsException {
-
-        m_driverManager = driverManager;
-        m_req = req;
-        m_resp = resp;
-        setSiteRoot(site);
-        
-        //CmsProject project = null;
-        
-        try {
-            m_user = m_driverManager.readUser(user);
-        } catch (CmsException ex) {
-            // ignore
-        }
-        // if no user found try to read webUser
-        if (m_user == null) {
-            m_user = m_driverManager.readWebUser(user);
-        }
-
-        // check, if the user is disabled
-        if (m_user.getDisabled()) {
-            m_user = null;
-        }
-
-        // set current project, group and streaming proerties for this request
-        try {
-            setCurrentProject(projectId);
-        } catch (CmsException exc) {
-            // there was a problem to set the needed project - using the online one
-            setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-        }
-
-        m_directoryTranslator = directoryTranslator;
-        m_fileTranslator = fileTranslator;
-
-        if (req != null) {          
-
-            // Initialize locale
-            initLocale();
-            
-            // Initialize encoding 
-            initEncoding();
-        }
-    }
-        
-    /**
-     * Detects current content encoding to be used in HTTP response
-     * based on requested resource or session state.
-     */
-    public void initEncoding() {
-        try {
-            m_encoding = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
-        } catch (CmsException e) {
-            m_encoding = null;
-        }
-        if ((m_encoding != null) && ! "".equals(m_encoding)) {
-            // encoding was read from resource property
-            return;
-        } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
-            // try to get encoding from session for special system folder only                
-            if (OpenCms.getLog(this).isDebugEnabled()) {                                
-                OpenCms.getLog(this).debug("Can't get encoding property for resource "
-                    + m_req.getRequestedResource() + ", trying to get it from session.");
-            }                    
-            I_CmsSession session = getSession(false);
-            if (session != null) {
-                m_encoding = (String)session.getValue(I_CmsConstants.C_SESSION_CONTENT_ENCODING);
-            }
-        }
-        if (m_encoding == null || "".equals(m_encoding)) {
-            // no encoding found - use default one
-            if (OpenCms.getLog(this).isDebugEnabled()) {                                
-                OpenCms.getLog(this).debug("No encoding found - using default: " + OpenCms.getSystemInfo().getDefaultEncoding());
-            }                  
-            m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-        }
-    }
-    
-    /**
-     * Initializes the locale name for this request context.<p>
-     */
-    public void initLocale() {
-        CmsLocaleManager localeManager = OpenCms.getLocaleManager();
-        if (localeManager != null) {
-            // locale manager is initialized
-            String locale;
-            if ((m_req != null) && ((locale = m_req.getParameter(C_PARAMETER_LOCALE)) != null)) {  
-                // "_locale" parameter found in request
-                m_locale = CmsLocaleManager.getLocale(locale);
-            } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
-                    || getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
-                // the workplace/login requires a special locale handler
-                m_locale = OpenCms.getWorkplaceManager().getLocale(this, m_req.getOriginalRequest());
-            } else {
-                // request for resource outside of workplace, use default handler
-                m_locale = localeManager.getLocaleHandler().getLocale(this, m_req.getOriginalRequest());
-            }
-                        
-            if (m_locale == null) {
-                m_locale = OpenCms.getLocaleManager().getDefaultLocale();
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("No locale found - using default: " + m_locale);
-                }
-            }
-        } else {
-            // locale manager not initialized, this will be true _only_ during system startup
-            // the value set does not matter, no locale information form VFS is used on system startup
-            // this is just to protect against null pointer exceptions
-            m_locale = Locale.ENGLISH;
-        }
-    }
-
-    /**
-     * Determines if the users is in the admin-group.
-     *
-     * @return <code>true</code> if the users current group is the admin-group; <code>false</code> otherwise.
-     * @throws CmsException if operation was not successful.
-     */
-    public boolean isAdmin() throws CmsException {
-        return (m_driverManager.isAdmin(this));
+        return m_uri;
     }
 
     /**
@@ -505,19 +285,10 @@ public class CmsRequestContext {
     }
 
     /**
-     * Determines if the users current group is the projectmanager-group.<p>
-     * 
-     * All projectmanagers can create new projects, or close their own projects.
-     *
-     * @return <code>true</code> if the users current group is the projectleader-group; <code>false</code> otherwise.
-     * @throws CmsException if operation was not successful.
-     */
-    public boolean isProjectManager() throws CmsException {
-        return (m_driverManager.isProjectManager(this));
-    }
-
-    /**
      * Check if this request context will update the session.<p>
+     * 
+     * This is used mainly for CmsReports that continue to use the 
+     * users context, even after the http request is already finished.<p>
      *
      * @return true if this request context will update the session, false otherwise
      */
@@ -577,21 +348,19 @@ public class CmsRequestContext {
         }
         m_attributeMap.put(key, value);
     }
-
+    
     /**
      * Sets the current project for the user.<p>
      *
-     * @param projectId the id of the project to be set as current project
+     * @param project the project to be set as current project
      * @return the CmsProject instance
-     * @throws CmsException if operation was not successful
      */
-    public CmsProject setCurrentProject(int projectId) throws CmsException {
-        CmsProject newProject = m_driverManager.readProject(projectId);
-        if (newProject != null) {
-            m_currentProject = newProject;
+    public CmsProject setCurrentProject(CmsProject project) {
+        if (project != null) {
+            m_currentProject = project;
         }
-        return (m_currentProject);
-    }
+        return m_currentProject;
+    }    
 
     /**
      * Sets the current content encoding to be used in HTTP response
@@ -599,29 +368,9 @@ public class CmsRequestContext {
      * @param encoding the encoding
      */
     public void setEncoding(String encoding) {
-        setEncoding(encoding, false);
-    }
-
-    /**
-     * Sets the current content encoding to be used in HTTP response
-     * and store it in session if it is available
-     * 
-     * @param encoding the encoding
-     * @param storeInSession flag to store the encoding
-     */
-    public void setEncoding(String encoding, boolean storeInSession) {
         m_encoding = encoding;
-        if (!storeInSession) {
-            return;
-        }
-        I_CmsSession session = getSession(false);
-        if (session != null) {
-            session.putValue(
-                I_CmsConstants.C_SESSION_CONTENT_ENCODING,
-                m_encoding);
-        }
     }
-
+    
     /**
      * Mark this request context as event controlled.<p>
      * 
@@ -655,19 +404,30 @@ public class CmsRequestContext {
     }
 
     /**
-     * Set the value that is returned by getUri()
-     * to the provided String.<p>
+     * Set the requested resource OpenCms VFS URI, that is the value returned by {@link #getUri()}.<p>
      * 
-     * This is required in a context where
-     * a cascade of included XMLTemplates are combined with JSP or other
-     * Templates that use the ResourceLoader interface.
-     * You need to fake the URI because the ElementCache always
-     * uses cms.getRequestContext().getUri().
-     *
-     * @param value The value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
+     * Use this with caution! Many things (caches etc.) depend on this value.
+     * If you change this value, better make sure that you change it only temporarily 
+     * and reset it in a <code>try { // do something // } finaly { // reset URI // }</code> statement.<p>
+     * 
+     * @param value the value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
      * @since 5.0 beta 1
      */
     public void setUri(String value) {
         m_uri = value;
+    }
+    
+    /**
+     * Switches the user in the context, required after a login.<p>
+     * 
+     * @param user the new user to use
+     * @param project the new users current project
+     */
+    protected void switchUser(
+        CmsUser user, 
+        CmsProject project
+    ) {
+        m_user = user;
+        m_currentProject = project;        
     }
 }

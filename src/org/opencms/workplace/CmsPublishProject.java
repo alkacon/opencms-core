@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -445,7 +445,7 @@ public class CmsPublishProject extends CmsReport {
                 try {
                     // switch to project which will be published
                     int projectId = Integer.parseInt(getParamProjectid());
-                    getCms().getRequestContext().setCurrentProject(projectId);
+                    getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
                 } catch (Exception e) {
                     OpenCms.getLog(this).error("Error switching project for publishing", e);
                 }

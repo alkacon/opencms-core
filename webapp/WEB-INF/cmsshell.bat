@@ -36,10 +36,10 @@ set CLASSPATH= %CLASSPATH%;lib/jug.jar
 set CLASSPATH= %CLASSPATH%;lib/xerces-1_4_4.jar
 set CLASSPATH= %CLASSPATH%;lib/dom4j.jar
 set CLASSPATH= %CLASSPATH%;lib/opencms-drivers.jar
-set CLASSPATH= %CLASSPATH%;lib/lucene-1.3-rc2.jar
-set CLASSPATH= %CLASSPATH%;lib/poi-2.0-pre3-20030728.jar
+set CLASSPATH= %CLASSPATH%;lib/lucene-1.3-final.jar
+set CLASSPATH= %CLASSPATH%;lib/poi-2.0-final-20040126.jar
 set CLASSPATH= %CLASSPATH%;lib/snowball-0.1.jar
-set CLASSPATH= %CLASSPATH%;lib/PDFBox-0.6.2.jar
+set CLASSPATH= %CLASSPATH%;lib/PDFBox-0.6.4.jar
 set CLASSPATH= %CLASSPATH%;classes
 
 @rem set opencms arguments

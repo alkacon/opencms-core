@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -45,7 +46,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.31 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -66,7 +67,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
      */
     
     public Object checked(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
         
         // was the allprojects checkbox checked?
@@ -97,7 +98,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         
         // is this the first-time, this page is viewed?
@@ -159,7 +160,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
             Hashtable parameters) throws CmsException {
         
         // Let's see if we have a session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
         int selected = 0;
         names.addElement("a1");

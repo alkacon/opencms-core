@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 5.1
  */
@@ -307,7 +307,7 @@ public abstract class CmsWorkplace {
         // check project setting        
         if (settings.getProject() != reqCont.currentProject().getId()) {
             try {                
-                reqCont.setCurrentProject(settings.getProject());
+                reqCont.setCurrentProject(cms.readProject(settings.getProject()));
             } catch (CmsException e) {
                 // do nothing
             }                    
@@ -1044,7 +1044,7 @@ public abstract class CmsWorkplace {
     protected void switchToCurrentProject() throws CmsException {
         if (m_currentProjectId != -1) {
             // switch back to the current users project
-            getCms().getRequestContext().setCurrentProject(m_currentProjectId); 
+            getCms().getRequestContext().setCurrentProject(getCms().readProject(m_currentProjectId)); 
         }
     }
     
@@ -1066,7 +1066,7 @@ public abstract class CmsWorkplace {
         } catch (Exception e) {
             throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
         }
-        getCms().getRequestContext().setCurrentProject(tempProject);
+        getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProject));
         return tempProject;
     }
     

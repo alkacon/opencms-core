@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,16 +29,17 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -52,7 +53,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.41 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.42 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -107,7 +108,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                 elementName, parameters, templateSelector);
         CmsTask task;
         int taskid = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         
         // getting the URL to which we need to return when we're done
         String lastUrl;
@@ -552,12 +553,12 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                 if(lastUrl.startsWith("http:")) {
                     
                     // complete path 
-                    context.getResponse().sendRedirect(lastUrl);
+                    CmsXmlTemplateLoader.getResponse(context).sendRedirect(lastUrl);
                 }
                 else {
                     
                     // relative to the opencms path
-                    context.getResponse().sendCmsRedirect(lastUrl);
+                    CmsXmlTemplateLoader.getResponse(context).sendCmsRedirect(lastUrl);
                 }
                 session.removeValue("lasturl");
             }

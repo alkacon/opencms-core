@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -173,7 +173,7 @@ public final class CmsSiteManager implements Cloneable {
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
-            if (workplaceMode && cms.getRequestContext().isAdmin()) {
+            if (workplaceMode && cms.isAdmin()) {
                 if (! siteroots.contains("/")) {
                     siteroots.add("/");
                 }   

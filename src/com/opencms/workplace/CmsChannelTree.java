@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2004/02/21 17:11:43 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,18 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
-import org.opencms.workplace.CmsWorkplaceAction;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2004/02/21 17:11:43 $
+ * @version $Revision: 1.34 $ $Date: 2004/02/22 13:52:27 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault {
@@ -202,7 +203,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get the formname
         String formname = (String)parameters.get(C_PARA_FORMNAME);
@@ -285,7 +286,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
 
         StringBuffer output = new StringBuffer();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         String foldername = null;
         String filelist = null;
@@ -299,7 +300,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
         //check if a folder parameter was included in the request.
 
         // if a foldername was included, overwrite the value in the session for later use.
-        foldername = cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDERTREE);
+        foldername = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_FOLDERTREE);
         if(foldername != null) {
             session.putValue(C_PARA_FOLDERTREE, foldername);
         }
@@ -312,7 +313,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
 
         // get the current folder to be displayed as maximum folder in the tree.
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -458,7 +459,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
                 else {
                     I_CmsResourceType type = cms.getResourceType(res.getType());
                     String icon = getIcon(cms, type, configFile);
-                    template.setData("icon", cms.getRequestContext().getRequest().getServletUrl() + configFile.getWpPicturePath() + icon);
+                    template.setData("icon", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + configFile.getWpPicturePath() + icon);
                     folderimg = template.getProcessedDataValue("TREEIMG_FILE", this);
                 }
 
@@ -528,7 +529,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
                 }
 
                 // set all data for the treeline tag
-                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()) + "?" + C_PARA_FILELIST
+                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()) + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));

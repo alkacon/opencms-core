@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,14 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.I_CmsResourceType;
 import org.opencms.main.CmsException;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -48,7 +50,7 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -69,7 +71,7 @@ public class CmsSearchForm extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         // get the session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String error = "";
         String reload = "";
         // flag for extended features in the editor, e.g. list of external links

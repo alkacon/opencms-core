@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.10 $ $Date: 2004/02/21 13:10:01 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/22 13:52:28 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -542,7 +542,7 @@ public class CmsSearchIndex {
         CmsProject currentProject = context.currentProject();
         context.saveSiteRoot();
         context.setSiteRoot(m_site);
-        context.setCurrentProject(m_cms.readProject(m_project).getId());
+        context.setCurrentProject(m_cms.readProject(m_project));
         
         Searcher searcher = null;
 
@@ -622,7 +622,7 @@ public class CmsSearchIndex {
             }
             
             context.restoreSiteRoot();
-            context.setCurrentProject(currentProject.getId());
+            context.setCurrentProject(currentProject);
         }
         
         searchCache.put(key, result);

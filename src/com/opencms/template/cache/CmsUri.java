@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/02/22 13:52:28 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.template.cache;
 
-import com.opencms.core.I_CmsResponse;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 
+import com.opencms.core.I_CmsResponse;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsCacheDirectives;
 
 import java.util.Enumeration;
@@ -143,7 +144,7 @@ public class CmsUri {
             }
         }
 
-        I_CmsResponse resp = cms.getRequestContext().getResponse();
+        I_CmsResponse resp = CmsXmlTemplateLoader.getResponse(cms.getRequestContext());
         // was there already a cache-control header set?
         if(!resp.containsHeader("Cache-Control")) {
             // only if the resource is cacheable and if the current project is online,

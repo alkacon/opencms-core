@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.setup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
+import org.opencms.main.CmsShell;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.OpenCms;
@@ -71,7 +72,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -970,10 +971,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         String moduleDependencyName = null;
         Map module = null;
 
-        if (m_availableModules != null) {
-            return m_availableModules;
-        }
-
         try {
             m_availableModules = (Map) new HashMap();
             m_moduleDependencies = (Map) new HashMap();
@@ -1123,9 +1120,9 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     }   
     
     /**
-     * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject)
+     * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
      */
-    public void initShellCmsObject(CmsObject cms) {
+    public void initShellCmsObject(CmsObject cms, CmsShell shell) {
         m_cms = cms;
     }
     
@@ -1182,7 +1179,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
                 I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
         );
         int id = project.getId();
-        m_cms.getRequestContext().setCurrentProject(id);
+        m_cms.getRequestContext().setCurrentProject(project);
         m_cms.getRequestContext().saveSiteRoot();
         m_cms.getRequestContext().setSiteRoot("/");
         m_cms.copyResourceToProject("/");
@@ -1193,6 +1190,31 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         // finally publish the project
         m_cms.unlockProject(id);
         m_cms.publishProject();
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#shellStart()
+     */
+    public void shellStart() {
+        System.out.println();
+        System.out.println("Starting Workplace import and database setup for OpenCms!");
+        
+        String[] copy = I_CmsConstants.C_COPYRIGHT;
+        for (int i = copy.length-1; i >= 0; i--) {
+            System.out.println(copy[i]);
+        }        
+        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionName());
+        System.out.println();
+        System.out.println();
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#shellExit()
+     */
+    public void shellExit() {
+        System.out.println();        
+        System.out.println();        
+        System.out.println("The setup is finished!\nThe OpenCms system used for the setup will now shut down.");
     }    
     
 }

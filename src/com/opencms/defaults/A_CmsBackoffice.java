@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,8 +36,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsSession;
+import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.master.CmsPlausibilizationException;
+import com.opencms.legacy.CmsXmlTemplateLoader;
+
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -55,6 +58,8 @@ import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Abstract class for generic backoffice display. It automatically
@@ -74,7 +79,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -268,7 +273,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         A_CmsContentDefinition cd = null;
 
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
+        session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //create new workplace templatefile object
         CmsXmlWpTemplateFile template = new CmsXmlWpTemplateFile(cms, templateFile);
         //get parameters
@@ -721,7 +727,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
 
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -816,7 +822,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
 
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -889,7 +895,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
 
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -978,7 +984,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
         if (cms.isAdmin() || cms.isManagerOfProject()) {
             // session will be created or fetched
-            I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+            I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
             //get the class of the content definition
             Class cdClass = getContentDefinitionClass();
 
@@ -1076,7 +1082,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
 
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -1225,7 +1231,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
      */
 
     public Integer getHistory(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
-        cms.getRequestContext().getSession(true);
+        CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String id = (String)parameters.get("id");
         if (id != null && !"".equals(id)) {
             Vector cdHistory = new Vector();
@@ -1282,7 +1288,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
         Object o = null;
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -1392,7 +1398,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         //init vars
 
         //create new or fetch existing session
-        CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String uri = cms.getRequestContext().getUri();
         String sessionSelectBoxValue = uri + "selectBoxValue";
         //get filter method from session
@@ -1546,7 +1552,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         //return var
         byte[] processResult = null;
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -1805,7 +1811,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         //return var
         byte[] processResult = null;
         // session will be created or fetched
-        I_CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -2128,7 +2134,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         }
 
         // session will be created or fetched
-        cms.getRequestContext().getSession(true);
+        CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
@@ -2919,7 +2925,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
      * @throws CmsException if something goes wrong
      */
     public Integer getFilter(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
-        CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         int returnValue = 0;
         String uri = cms.getRequestContext().getUri();
         String sessionSelectBoxValue = uri + "selectBoxValue";
@@ -2998,7 +3004,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
     public Integer getSelectedPage(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
 
         int returnValue = 0;
-        CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         // get all aviable template selectors
         Vector templateSelectors = (Vector)session.getValue("backofficepageselectorvector");
         // get the actual template selector
@@ -3366,7 +3372,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         // to do: replace the getUri method with getPathInfo if aviable
                         //String uri=  cms.getRequestContext().getUri();
                         //uri = "/"+uri.substring(1,uri.lastIndexOf("/"));
-                        //cms.getRequestContext().getResponse().sendCmsRedirect(uri);
+                        //CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(uri);
                         //return null;
                         // EF 08.11.01: return the templateselector "done"
                         // there the backoffice url of the module will be called
@@ -3524,8 +3530,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             boolean isFile = false;
             // loop through all uploaded files and check if one of those is equal to the value of
             // the tested parameter.
-            Enumeration uploadedFiles = cms.getRequestContext().getRequest().getFileNames();
-            byte[] content = cms.getRequestContext().getRequest().getFile(value);
+            Enumeration uploadedFiles = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFileNames();
+            byte[] content = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(value);
             while (uploadedFiles.hasMoreElements()) {
                 String filename = (String)uploadedFiles.nextElement();
                 // there is a match, so this parameter represents a fileupload.
@@ -3577,7 +3583,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
      * @throws CmsException if something goes wrong.
      */
     private String getTemplateSelector(CmsObject cms, CmsXmlWpTemplateFile template, Hashtable parameters, String templateSelector) throws CmsException {
-        CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //store the old templateSelector in the session
         if (templateSelector != null) {
             session.putValue("backofficepagetemplateselector", templateSelector);

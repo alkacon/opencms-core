@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.326 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.327 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.io.SAXReader;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.326 $ $Date: 2004/02/21 13:10:01 $
+ * @version $Revision: 1.327 $ $Date: 2004/02/22 13:52:28 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2605,7 +2605,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             clearResourceCache();
             // set project to online project if current project is the one which will be deleted 
             if (projectId == context.currentProject().getId()) {
-                context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
             }
             // delete the project
             m_projectDriver.deleteProject(deleteProject);
@@ -5356,7 +5356,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         }
                     }
                     if (publishProjectId == context.currentProject().getId()) {
-                        cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                        cms.getRequestContext().setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                     }
 
                 }
@@ -5768,6 +5768,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
             cmsFile = m_vfsDriver.readFile(context.currentProject().getId(), includeDeleted, resource.getStructureId());
+            if (cmsFile.isFolder() && (filename.charAt(filename.length() - 1) != '/')) {
+                filename += "/";
+            }
             cmsFile.setFullResourceName(filename);
         } catch (CmsException exc) {
             // the resource was not readable
@@ -7189,7 +7192,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // switch to the online project
             oldProject = context.currentProject();
-            context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
 
             if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // read the file content plus properties in the online project                   
@@ -7203,7 +7206,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
             }
             // switch back to the previous project
-            context.setCurrentProject(oldProject.getId());
+            context.setCurrentProject(oldProject);
 
             if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // create the file in the offline project     
@@ -7227,7 +7230,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw e;
         } finally {
             // switch back to the previous project
-            context.setCurrentProject(oldProject.getId());
+            context.setCurrentProject(oldProject);
             clearResourceCache();
         }
 
@@ -7840,8 +7843,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void unlockProject(CmsRequestContext context, int projectId) throws CmsException {
-        // read the project.
-        CmsProject project = readProject(projectId);
+        // read the project
+        CmsProject project = readProject(projectId); 
         // check the security
         if ((isAdmin(context) || isManagerOfProject(context)) && (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
 
@@ -7849,7 +7852,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_lockManager.removeResourcesInProject(projectId);
             clearResourceCache();
             m_projectCache.clear();
-            // cw/060104 we must also clear the permission cache
+            // we must also clear the permission cache
             m_permissionCache.clear();
         } else if (!isAdmin(context) && !isManagerOfProject(context)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] unlockProject() " + projectId, CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
@@ -8524,7 +8527,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             // save the current project before we switch to the online project
             oldProject = context.currentProject();
-            context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
 
             // read the export points and return immediately if there are no export points at all         
             exportPoints = m_registry.getExportpoints();
@@ -8588,13 +8591,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 OpenCms.getLog(this).error("Error updating export points", e);
             }
         } finally {
-            try {
-                context.setCurrentProject(oldProject.getId());
-            } catch (CmsException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error setting back current project in request context", e);
-                }
-            }
+            context.setCurrentProject(oldProject);
         }
     }
 

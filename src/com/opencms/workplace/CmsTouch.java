@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,15 +28,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.workplace.*;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -44,7 +45,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault {
 
@@ -70,14 +71,14 @@ public final class CmsTouch extends CmsWorkplaceDefault {
 			cms.touch(m_ResourceName, m_NewTimestamp, m_TouchRecursive);
 
 			// leave the session clean
-			this.clearSessionValues(cms.getRequestContext().getSession(true));
+			this.clearSessionValues(CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true));
 
 			// send the user back to the file listing after the work is done
 			try {
-				cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+				CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
 			}
 			catch (Exception e) {
-				throw new CmsException("Redirect failed :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
+				throw new CmsException("Redirect failed :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
 			}
 			return null;
 		}
@@ -90,7 +91,7 @@ public final class CmsTouch extends CmsWorkplaceDefault {
 	}
 
 	private void readInput(CmsObject cms, Hashtable theParameters) throws CmsException {
-		I_CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
 		// reset all values first
 		m_ResourceName = null;

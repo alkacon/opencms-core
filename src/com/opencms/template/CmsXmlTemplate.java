@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2004/02/19 11:46:11 $
-* Version: $Revision: 1.142 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.143 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.142 $ $Date: 2004/02/19 11:46:11 $
+ * @version $Revision: 1.143 $ $Date: 2004/02/22 13:52:27 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -165,7 +165,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     public Object getFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return cms.getRequestContext().getFileUri().getBytes();
+        String uri = cms.getRequestContext().getUri();
+        return uri.substring(uri.lastIndexOf("/") + 1);
     }
 
     /**
@@ -198,7 +199,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      */
     public Object mergeAbsoluteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String ocPath = new String((byte[])mergeAbsolutePath(cms,tagcontent, doc, userObject));
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         return (servletPath + ocPath).getBytes();
     }
     /**
@@ -219,7 +220,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
         try{
-            Enumeration parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
+            Enumeration parameters = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getParameterNames();
             StringBuffer paramQuery = new StringBuffer();
             while(parameters.hasMoreElements()){
                 String name = (String)parameters.nextElement();
@@ -394,7 +395,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public Object getPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String path = cms.getRequestContext().getUri();
         path = path.substring(0, path.lastIndexOf("/") + 1);
-        path = cms.getRequestContext().getRequest().getServletUrl() + path;
+        path = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + path;
         return path.getBytes();
     }
 
@@ -412,7 +413,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+        String query = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getQueryString();
         if(query != null && !"".equals(query)) {
             query = "?" + query;
         }
@@ -433,7 +434,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     public String getRequestIp(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getRemoteAddr();
+        return ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getRemoteAddr();
     }
 
     /**
@@ -451,7 +452,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @deprecated instead of this method you should use the link tag.
      */
     public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return cms.getRequestContext().getRequest().getServletUrl() + "/";
+        return CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + "/";
     }
 
     /**
@@ -468,7 +469,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     public String getSessionId(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true).getId();
+        return ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getSession(true).getId();
     }
 
     /**
@@ -561,11 +562,11 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
 
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        HttpServletRequest orgReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
+        String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         if(!servletPath.endsWith("/")){
             // Make sure servletPath always end's with a "/"
-            servletPath = cms.getRequestContext().getRequest().getServletUrl() + "/";
+            servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + "/";
         }
 
         // Make sure we don't have a double "/" in the style sheet path
@@ -848,7 +849,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
         try{
-            Enumeration parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
+            Enumeration parameters = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getParameterNames();
             StringBuffer paramQuery = new StringBuffer();
             while(parameters.hasMoreElements()){
                 String name = (String)parameters.nextElement();

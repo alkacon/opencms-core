@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 package org.opencms.i18n;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 
 import java.util.Locale;
 
@@ -46,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public interface I_CmsLocaleHandler {
 
@@ -56,11 +57,13 @@ public interface I_CmsLocaleHandler {
      * Note: the request context is not initialized completely, but it already 
      * has the requested resource URI set.<p> 
      * 
-     * @param context the request context
      * @param req the current http request (can be null)
+     * @param user the current user
+     * @param project the current project
+     * @param resource the URI of the requested resource (with full site root added)
      * @return the locale name to use for the given request context
      */
-    Locale getLocale(CmsRequestContext context, HttpServletRequest req);
+    Locale getLocale(HttpServletRequest req, CmsUser user, CmsProject project, String resource);
     
     /**
      * Will be called during system startup.<p>

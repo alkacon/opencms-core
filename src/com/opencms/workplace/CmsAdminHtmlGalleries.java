@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,15 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -43,7 +45,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.22 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.23 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -90,7 +92,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
 

@@ -1,4 +1,5 @@
 <%@ page import="
+    org.opencms.main.*,
 	org.opencms.workplace.*,
 	org.opencms.jsp.*"
 	buffer="none"
@@ -45,7 +46,7 @@ this.actDirectory;
 this.actDirId;
 
 this.userName="<%= wp.getSettings().getUser().getName() %>";
-this.servpath="<%= cms.getRequestContext().getRequest().getServletUrl() %>";
+this.servpath="<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 this.serverName="<%= request.getServerName() %>";
 
 this.lockedBy="<%=    wp.key("title.locked") %>";

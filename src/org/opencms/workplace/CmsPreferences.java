@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -305,7 +305,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         try {
             int projectId = Integer.parseInt(m_userSettings.getStartProject());
-            getCms().getRequestContext().setCurrentProject(projectId);
+            getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
             getSettings().setProject(projectId);            
         } catch (Exception e) {
             // ignore this exception

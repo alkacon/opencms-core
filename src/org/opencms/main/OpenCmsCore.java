@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,11 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
@@ -69,11 +71,6 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
-
-import com.opencms.core.CmsRequestHttpServlet;
-import com.opencms.core.CmsResponseHttpServlet;
-import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -224,6 +221,9 @@ public final class OpenCmsCore {
     /** The workplace manager contains information about the global workplace settings */
     private CmsWorkplaceManager m_workplaceManager;
 
+    /** Request parameter to force locale selection */
+    public static final String C_PARAMETER_LOCALE = "_locale";
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
@@ -307,7 +307,7 @@ public final class OpenCmsCore {
                         try {
                             file = cms.readFile(tmpResourceName);
                             // No exception? So we have found the default file                         
-                            cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
+                            cms.getRequestContext().setUri(tmpResourceName);
                         } catch (CmsSecurityException se) {
                             // Maybe no access to default file?
                             throw se;
@@ -322,7 +322,7 @@ public final class OpenCmsCore {
                             try {
                                 file = cms.readFile(tmpResourceName);
                                 // No exception? So we have found the default file                         
-                                cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
+                                cms.getRequestContext().setUri(tmpResourceName);
                                 // Stop looking for default files   
                                 break;
                             } catch (CmsSecurityException se) {
@@ -390,7 +390,7 @@ public final class OpenCmsCore {
     public void startScheduleJob(CmsCronEntry entry) {
         try {
             // TODO: Maybe implement site root as a parameter in cron job table 
-            CmsObject cms = initCmsObject(null, null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            CmsObject cms = initCmsObject(null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
@@ -828,18 +828,18 @@ public final class OpenCmsCore {
         String user,
         String password
     ) throws CmsException {
-        CmsRequestHttpServlet cmsReq = null;
-        CmsResponseHttpServlet cmsRes = null;
+//        CmsRequestHttpServlet cmsReq = null;
+//        CmsResponseHttpServlet cmsRes = null;
         String siteroot = null;
         // gather information from request / response if provided
         if ((req != null) && (res != null)) {
-            try {
-                cmsReq = new CmsRequestHttpServlet(req, getFileTranslator());
-                cmsRes = new CmsResponseHttpServlet(req, res);
+//            try {
+//                cmsReq = new CmsRequestHttpServlet(req, getFileTranslator());
+//                cmsRes = new CmsResponseHttpServlet(req, res);
                 siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
-            } catch (IOException e) {
-                throw new CmsException("Exception initializing CmsObject for user " + user, CmsException.C_UNKNOWN_EXCEPTION, e);
-            }
+//            } catch (IOException e) {
+//                throw new CmsException("Exception initializing CmsObject for user " + user, CmsException.C_UNKNOWN_EXCEPTION, e);
+//            }
         }
         // initialize the user        
         if (user == null) {
@@ -848,7 +848,7 @@ public final class OpenCmsCore {
         if (siteroot == null) {
             siteroot = "/";
         }
-        CmsObject cms = initCmsObject(cmsReq, cmsRes, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        CmsObject cms = initCmsObject(req, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
         // login the user if different from Guest
         if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
             cms.loginUser(user, password, I_CmsConstants.C_IP_LOCALHOST);
@@ -859,26 +859,115 @@ public final class OpenCmsCore {
     /**
      * Inits a CmsObject with the given users information.<p>
      * 
-     * @param cmsReq the current I_CmsRequest (usually initialized form the HttpServletRequest)
-     * @param cmsRes the current I_CmsResponse (usually initialized form the HttpServletResponse)
-     * @param user the name of the user to init
+     * @param req the current http request (or null)
+     * @param userName the name of the user to init
      * @param currentSite the users current site 
-     * @param project the id of the current project
+     * @param projectId the id of the users current project
      * @param sessionStorage the session storage for this OpenCms instance
      * @return the initialized CmsObject
      * @throws CmsException in case something goes wrong
      */
     protected CmsObject initCmsObject(
-        I_CmsRequest cmsReq, 
-        I_CmsResponse cmsRes,
-        String user, 
+        HttpServletRequest req, 
+        String userName,
         String currentSite, 
-        int project, 
+        int projectId, 
         CmsSessionInfoManager sessionStorage
     ) throws CmsException {
         CmsObject cms = new CmsObject();
-        CmsRequestContext context = new CmsRequestContext();
-        context.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, m_directoryTranslator, m_fileTranslator);
+
+        CmsUser user = m_driverManager.readUser(userName);
+        CmsProject project = m_driverManager.readProject(projectId);
+        
+        // get requested resource uri
+        String requestedResource = null;        
+        if (req != null) {
+            requestedResource = req.getPathInfo();
+        }
+        if (requestedResource == null) {
+            // path info can be null, so no 'else'
+            requestedResource = "/";
+        }               
+        
+        // get remote IP address
+        String remoteAddr;
+        if (req != null) {
+            remoteAddr = req.getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
+            if (remoteAddr == null) {
+                remoteAddr = req.getRemoteAddr();
+            }
+        } else {
+            remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
+        }
+        
+        // get locale
+        Locale locale;
+        if (getLocaleManager() != null) {
+            // locale manager is initialized
+            String localeStr;
+            if ((req != null) && ((localeStr = req.getParameter(C_PARAMETER_LOCALE)) != null)) {
+                // "_locale" parameter found in request
+                locale = CmsLocaleManager.getLocale(localeStr);
+            } else if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
+                // the workplace/login requires a special locale handler
+                locale = getWorkplaceManager().getLocale(req, user, project, requestedResource);
+            } else {
+                // request for resource outside of workplace, use default handler
+                locale = getLocaleManager().getLocaleHandler().getLocale(req, user, project, requestedResource);
+            }
+
+            if (locale == null) {
+                locale = OpenCms.getLocaleManager().getDefaultLocale();
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("No locale found - using default: " + locale);
+                }
+            }
+        } else {
+            // locale manager not initialized, this will be true _only_ during system startup
+            // the value set does not matter, no locale information form VFS is used on system startup
+            // this is just to protect against null pointer exceptions
+            locale = Locale.ENGLISH;
+        }      
+        
+        
+        // TODO: andling of encoding is broken, fix it
+       
+//    Here is the old code used to determine the encoding:         
+//        
+//    /**
+//     * Detects current content encoding to be used in HTTP response
+//     * based on requested resource or session state.
+//     */
+//    public void initEncoding() {
+//        try {
+//            m_encoding = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
+//        } catch (CmsException e) {
+//            m_encoding = null;
+//        }
+//        if ((m_encoding != null) && ! "".equals(m_encoding)) {
+//            // encoding was read from resource property
+//            return;
+//        } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+//            // try to get encoding from session for special system folder only                
+//            if (OpenCms.getLog(this).isDebugEnabled()) {                                
+//                OpenCms.getLog(this).debug("Can't get encoding property for resource "
+//                    + m_req.getRequestedResource() + ", trying to get it from session.");
+//            }                    
+//            I_CmsSession session = getSession(false);
+//            if (session != null) {
+//                m_encoding = (String)session.getValue(I_CmsConstants.C_SESSION_CONTENT_ENCODING);
+//            }
+//        }
+//        if (m_encoding == null || "".equals(m_encoding)) {
+//            // no encoding found - use default one
+//            if (OpenCms.getLog(this).isDebugEnabled()) {                                
+//                OpenCms.getLog(this).debug("No encoding found - using default: " + OpenCms.getSystemInfo().getDefaultEncoding());
+//            }                  
+//            m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+//        }
+//    }
+        
+        CmsRequestContext context = new CmsRequestContext(user, project, requestedResource, currentSite, locale, getSystemInfo().getDefaultEncoding(), remoteAddr, m_directoryTranslator, m_fileTranslator);
         cms.init(m_driverManager, context, sessionStorage);
         return cms;
     }
@@ -1527,23 +1616,18 @@ public final class OpenCmsCore {
      * 
      * @param req the current servlet request
      * @param res the current servlet response
-     * 
-     * @throws IOException in case of errors writing to the stream
      */
-    protected void showResource(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    protected void showResource(HttpServletRequest req, HttpServletResponse res) {
         CmsObject cms = null;
-        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, getFileTranslator());
-        CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res);
-
         try {
-            cms = initCmsObject(req, res, cmsReq, cmsRes);
+            cms = initCmsObject(req, res);
             // user is initialized, now deliver the requested resource
             CmsFile file = initResource(cms, cms.getRequestContext().getUri());
             if (file != null) {
                 // a file was read, go on process it
                 res.setContentType(getMimeType(file.getName(), cms.getRequestContext().getEncoding()));
                 showResource(req, res, cms, file);
-                updateUser(cms, cmsReq);
+                updateUser(cms, req);
             }
 
         } catch (Throwable t) {
@@ -1941,9 +2025,7 @@ public final class OpenCmsCore {
      */
     private CmsObject initCmsObject(
         HttpServletRequest req, 
-        HttpServletResponse res, 
-        I_CmsRequest cmsReq, 
-        I_CmsResponse cmsRes
+        HttpServletResponse res
     ) throws IOException, CmsException {
         CmsObject cms;
 
@@ -1982,10 +2064,10 @@ public final class OpenCmsCore {
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
             }
-            cms = initCmsObject(cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionInfoManager);
+            cms = initCmsObject(req, user, siteroot, project.intValue(), m_sessionInfoManager);
         } else {
             // no user name found in session or no session, login the user as guest user
-            cms = initCmsObject(cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            cms = initCmsObject(req, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
                 checkBasicAuthorization(cms, req, res);
@@ -2074,14 +2156,10 @@ public final class OpenCmsCore {
      * @param cms the current CmsObject initialized with the user data
      * @param cmsReq the current request
      */
-    private void updateUser(CmsObject cms, I_CmsRequest cmsReq) {
+    private void updateUser(CmsObject cms, HttpServletRequest req) {
         if (!cms.getRequestContext().isUpdateSessionEnabled()) {
             return;
         }
-
-        // get the original ServletRequest and response
-        HttpServletRequest req = cmsReq.getOriginalRequest();
-
         // get the session if it is there
         HttpSession session = req.getSession(false);
 

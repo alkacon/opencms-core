@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -937,7 +937,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     private boolean isAdmin(CmsObject cms) {
         boolean result;
         try {
-            result = cms.getRequestContext().isAdmin();
+            result = cms.isAdmin();
         } catch (Exception e) {
             result = false;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -242,15 +242,18 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
      * @return the dialog action: lock, change lock (steal) or unlock
      */
     public static int getDialogAction(CmsObject cms) {
-        if ("lock.html".equals(cms.getRequestContext().getFileUri())) {
+        String uri = cms.getRequestContext().getUri();
+        if (uri == null) {
+            return TYPE_UNLOCK;
+        } else if (uri.endsWith("lock.html")) {
             // a "lock" action is requested
-            return TYPE_LOCK;
-        } else if ("lockchange.html".equals(cms.getRequestContext().getFileUri())) {
+            return TYPE_LOCK;            
+        } else if (uri.endsWith("lockchange.html")) {
             // a "steal lock" action is requested
-            return TYPE_LOCKCHANGE;
+            return TYPE_LOCKCHANGE;            
         } else {
             // an "unlock" action is requested
-            return TYPE_UNLOCK;
+            return TYPE_UNLOCK;            
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/21 13:33:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -223,7 +223,7 @@ public class CmsShell {
                 
             }        
             
-            if (onlyStringMethod != null) {
+            if ((foundMethod == null) && (onlyStringMethod != null)) {
                 // no match found but String only signature available, use this
                 params = parameters.toArray();
                 foundMethod = onlyStringMethod;
@@ -396,22 +396,21 @@ public class CmsShell {
     private String m_prompt;
     
     /** Internal shell command object */
-    private CmsShellCommands m_shellCommands;
+    private I_CmsShellCommands m_shellCommands;
+    
+    /** Additional shell command object */
+    private I_CmsShellCommands m_additionaShellCommands;
 
     /**
      * Creates a new CmsShell.<p>
      * 
      * @param fileInputStream a (file) input stream from which commands are read
      * @param prompt the prompt format to set
-     * @param object optional object for additional shell commands, or null
+     * @param additionalShellCommands optional object for additional shell commands, or null
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
-    public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream, I_CmsShellCommands object) {
-        setPrompt(prompt);
-        
-        System.out.println();         
-        System.out.println("Welcome to the OpenCms shell!");            
-        System.out.println();  
+    public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream, I_CmsShellCommands additionalShellCommands) {
+        setPrompt(prompt);       
         
         try {
             // first initialize runlevel 1 
@@ -449,14 +448,25 @@ public class CmsShell {
             // set the site root to the default site
             m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
 
+            // initialize shell command object
+            m_shellCommands = new CmsShellCommands();
+            m_shellCommands.initShellCmsObject(m_cms, this);
+            
+            // initialize additional shell command object
+            if (additionalShellCommands != null) {
+                m_additionaShellCommands = additionalShellCommands;
+                m_additionaShellCommands.initShellCmsObject(m_cms, null);
+                m_additionaShellCommands.shellStart();
+            } else {
+                m_shellCommands.shellStart();
+            }
+            
             m_commandObjects = new ArrayList();            
-            // get all shell callable methods from the (optional) Object
-            if (object != null) {
-                m_commandObjects.add(new CmsCommandObject(object));
-                object.initShellCmsObject(m_cms);
+            if (m_additionaShellCommands != null) {
+                // get all shell callable methods from the the additionsl shell command object
+                m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
             }
             // get all shell callable methods from the CmsShellCommands
-            m_shellCommands = new CmsShellCommands(this, m_cms);
             m_commandObjects.add(new CmsCommandObject(m_shellCommands));          
             // get all shell callable methods from the CmsRequestContext
             m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext())); 
@@ -533,6 +543,11 @@ public class CmsShell {
      * Exits this shell.<p>
      */
     protected void exit() {
+        if (m_additionaShellCommands != null) {
+            m_additionaShellCommands.shellExit();
+        } else {
+            m_shellCommands.shellExit();
+        }
         try {
             m_opencms.destroy();
         } catch (Throwable e) {
@@ -587,7 +602,7 @@ public class CmsShell {
         }
         
         if (! foundSomething) {
-            System.out.println("No methods available matching: '" + searchString + "'");
+            System.out.println("No methods available matching: '*" + searchString + "*'");
         }        
     }    
 
@@ -627,7 +642,7 @@ public class CmsShell {
             }
             System.out.println(")");
             System.out.println("-----------------------------------------------");
-            m_shellCommands.help();
+            ((CmsShellCommands)m_shellCommands).help();
         }        
     }
     

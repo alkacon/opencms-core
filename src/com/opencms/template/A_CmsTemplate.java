@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,14 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.23 $ $Date: 2004/02/22 13:52:27 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 
@@ -156,7 +157,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @return <EM>true</EM> if exportable, <EM>false</EM> otherwise.
      */
     public boolean isExportable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        HttpServletRequest httpReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        HttpServletRequest httpReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         String queryString = "";
         if(httpReq != null){
             queryString = httpReq.getQueryString();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.defaults.master;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
 
@@ -64,7 +65,7 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         // session will be created or fetched
         CmsRequestContext req = cms.getRequestContext();
-        I_CmsSession session = req.getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(req, true);
         byte[] picture = new byte[0];
         try{
         //selected media content definition
@@ -83,17 +84,17 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
                     mType = "application/octet-stream";
                 }
                 // set the mimetype ...
-                req.getResponse().setContentType( mType );
+                CmsXmlTemplateLoader.getResponse(req).setContentType( mType );
                 //empty media
                 if(picture==null){
                     picture = emptyGIF;
                     // set the mimetype ...
-                    req.getResponse().setContentType("images/gif");
+                    CmsXmlTemplateLoader.getResponse(req).setContentType("images/gif");
                 }
             }else{
                 picture = emptyGIF;
                  // set the mimetype ...
-                req.getResponse().setContentType("images/gif");
+                CmsXmlTemplateLoader.getResponse(req).setContentType("images/gif");
         }
         }catch(Exception exx){
                 exx.printStackTrace(System.err);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/02/19 19:14:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -131,7 +131,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         boolean isAdmin = false;
         if (paras != null) {
             try {
-                isAdmin = cms.getRequestContext().isAdmin();
+                isAdmin = cms.isAdmin();
             } catch (Exception e) {
                 // isAdmin will be false
             }

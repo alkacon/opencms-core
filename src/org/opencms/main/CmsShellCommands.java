@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,9 +65,9 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
-class CmsShellCommands {
+class CmsShellCommands implements I_CmsShellCommands {
 
     /** The OpenCms context object */
     private CmsObject m_cms;
@@ -78,19 +78,12 @@ class CmsShellCommands {
     /**
      * Generate a new instance of the command processor.<p>
      * 
-     * @param shell the CmsShell that for this command processor
-     * @param cms an initilized context object
-     * @throws Exception if something goes wrong
+     * To initilize the command processor, you must call {@link #initShellCmsObject(CmsObject, CmsShell)}.
+     * 
+     * @see #initShellCmsObject(CmsObject, CmsShell)
      */
-    protected CmsShellCommands(CmsShell shell, CmsObject cms) throws Exception {
-        m_shell = shell;
-        m_cms = cms;
-        // print the version information
-        version();
-        // print the copyright message
-        copyright();
-        // print the help information
-        help();
+    protected CmsShellCommands() {
+        // noop
     }
 
     /**
@@ -154,7 +147,7 @@ class CmsShellCommands {
      * @see org.opencms.file.CmsRequestContext#setUri(String)
      */
     public void cd(String target) throws Exception {
-        String folder = m_cms.readAbsolutePath(m_cms.getRequestContext().currentFolder());
+        String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         if (! target.endsWith("/")) {
             target += "/";
         }
@@ -202,7 +195,7 @@ class CmsShellCommands {
                 OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
                 I_CmsConstants.C_PROJECT_TYPE_NORMAL
             );
-            m_cms.getRequestContext().setCurrentProject(project.getId());
+            m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
         } finally {
             m_cms.getRequestContext().restoreSiteRoot();
@@ -277,9 +270,7 @@ class CmsShellCommands {
     /**
      * Exits the shell.<p>
      */
-    public void exit() {    
-        System.out.println();
-        System.out.println("Goodbye!");
+    public void exit() {
         m_shell.exit();
     } 
     
@@ -438,7 +429,7 @@ class CmsShellCommands {
             I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
         );
         int id = project.getId();
-        m_cms.getRequestContext().setCurrentProject(id);
+        m_cms.getRequestContext().setCurrentProject(project);
         m_cms.getRequestContext().saveSiteRoot();
         m_cms.getRequestContext().setSiteRoot("/");
         m_cms.copyResourceToProject("/");
@@ -467,21 +458,11 @@ class CmsShellCommands {
             I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
         );
         int id = project.getId();
-        m_cms.getRequestContext().setCurrentProject(id);
+        m_cms.getRequestContext().setCurrentProject(project);
         m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
         m_cms.importResources(importFile, I_CmsConstants.C_ROOT);
         m_cms.unlockProject(id);
         m_cms.publishProject();
-    }
-
-    /**
-     * Checks if the current CmsSell user is a member of the project manager group.<p>
-     * 
-     * @return true if the user is a project manager
-     * @throws Exception if something goes wrong
-     */
-    public boolean isProjectManager() throws Exception {
-        return m_cms.getRequestContext().isProjectManager();
     }
 
     /**
@@ -505,8 +486,8 @@ class CmsShellCommands {
      * @throws Exception if something goes wrong
      * @see CmsObject#getResourcesInFolder(String)
      */
-    public void ls() throws Exception {
-        String folder = m_cms.readAbsolutePath(m_cms.getRequestContext().currentFolder());
+    public void ls() throws Exception {        
+        String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         Vector v = m_cms.getResourcesInFolder(folder);
         System.out.println("\nThe current folder '" + folder + "' contains " + v.size() + " resources");
         Iterator i = v.iterator();
@@ -608,27 +589,54 @@ class CmsShellCommands {
         m_shell.setPrompt(prompt);
     }
 
-    /**
-     * Publishes a project, unlocks the project first.<p>
-     *
-     * @param id the id of the project to be published
-     * @throws Exception if something goes wrong
-     * @see CmsObject#publishProject()
-     */
-    public void publishProject(int id) throws Exception {
-        m_cms.unlockProject(id);
-        m_cms.publishProject();
-    }
+//    /**
+//     * Publishes the project with the given id, unlocks the project first.<p>
+//     *
+//     * @param id the id of the project to be published
+//     * @throws Exception if something goes wrong
+//     * @see CmsObject#publishProject()
+//     */
+//    public void publishProject(int id) throws Exception {
+//        CmsProject oldProject = m_cms.getRequestContext().currentProject();
+//        CmsProject project = m_cms.readProject(id); 
+//        m_cms.unlockProject(id);
+//        try {
+//            m_cms.getRequestContext().setCurrentProject(project);      
+//            m_cms.publishProject();
+//        } finally {
+//            try {
+//                // read old project again, will throw exception if project was temporary
+//                project = m_cms.readProject(oldProject.getId());
+//                m_cms.getRequestContext().setCurrentProject(oldProject);
+//            } catch (Throwable t) {
+//                project = m_cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+//                m_cms.getRequestContext().setCurrentProject(project);
+//            }
+//        }
+//    }
+//    
+//    /**
+//     * Publishes the project with the given name, unlocks the project first.<p>
+//     *
+//     * @param name the name of the project to be published
+//     * @throws Exception if something goes wrong
+//     * @see CmsObject#publishProject()
+//     */    
+//    public void publishProject(String name) throws Exception {
+//        CmsProject project = m_cms.readProject(name);
+//        publishProject(project.getId());
+//    }
     
     /**
      * Returns the current folder set as URI in the request context.<p>
      * 
      * @return the current folder
      * @throws Exception if something goes wrong
-     * @see org.opencms.file.CmsRequestContext#currentFolder()
+     * @see org.opencms.file.CmsRequestContext#getUri()
+     * @see CmsResource#getFolderPath(String)
      */
     public String pwd() throws Exception {
-        return m_cms.readAbsolutePath(m_cms.getRequestContext().currentFolder());
+        return CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
     }
 
     /**
@@ -672,6 +680,28 @@ class CmsShellCommands {
     public CmsUser readOwnerOfProject(int project) throws Exception {
         return m_cms.readOwner(m_cms.readProject(project));
     }
+    
+    /**
+     * Sets the current project to the provided project id.<p>
+     * 
+     * @param id the project id to set
+     * @return the project set
+     * @throws Exception if something goes wrong
+     */
+    public CmsProject setCurrentProject(int id) throws Exception {
+        return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(id));
+    }
+    
+    /**
+     * Sets the current project to the provided project name.<p>
+     * 
+     * @param name the project name to set
+     * @return the project set
+     * @throws Exception if something goes wrong
+     */    
+    public CmsProject setCurrentProject(String name) throws Exception {
+        return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(name));
+    }    
 
     /**
      * Updates all configured search indexes.<p>
@@ -706,6 +736,14 @@ class CmsShellCommands {
      */
     public CmsResource uploadFile(String lokalfile, String folder, String filename, String type) throws Exception {
         return m_cms.createResource(folder, filename, m_cms.getResourceTypeId(type), null, importFile(lokalfile));
+    }
+    
+    /**
+     * Unlocks the current project, required before publishing.<p>
+     * @throws Exception if something goes wrong
+     */
+    public void unlockCurrentProject() throws Exception {
+        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
     }
     
     /**
@@ -758,5 +796,44 @@ class CmsShellCommands {
             throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
+     */
+    public void initShellCmsObject(CmsObject cms, CmsShell shell) {
+        m_cms = cms;   
+        m_shell = shell; 
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#shellStart()
+     */
+    public void shellStart() {
+        System.out.println();
+        System.out.println("Welcome to the OpenCms shell!");
+        System.out.println();
+
+        // print the version information
+        version();
+        // print the copyright message
+        copyright();
+        // print the help information
+        help();        
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#shellExit()
+     */
+    public void shellExit() {
+        System.out.println();        
+        System.out.println("Goodbye!");
+    }
+    
+    /**
+     * Exists so that the script can run without the wizard, does nothing.<p>
+     */
+    public void importModulesFromSetupBean() {
+        // noop, exists so that the script can run without the wizard
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateLinkConverter.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
 import com.opencms.htmlconverter.CmsHtmlConverter;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.net.URL;
 
@@ -47,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class is mostly required for database imports of OpenCms versions &lt; 5.0.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 5.3.2
  */
 public final class CmsXmlTemplateLinkConverter {
@@ -172,10 +173,10 @@ public final class CmsXmlTemplateLinkConverter {
             }
             converter.setConverterConfString(m_converterConfiguration);
             // get parameter to create the url object of the edited file
-            String servletPrefix = cms.getRequestContext().getRequest().getServletUrl();
-            String prot = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
-            String host = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-            int port = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerPort();
+            String servletPrefix = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
+            String prot = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getScheme();
+            String host = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerName();
+            int port = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerPort();
             URL urltool = new URL(prot, host, port, servletPrefix + path);
             converter.setServletPrefix(servletPrefix, relativeRoot);
             converter.setOriginalUrl(urltool);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2004/02/19 11:46:11 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.89 $ $Date: 2004/02/19 11:46:11 $
+ * @version $Revision: 1.90 $ $Date: 2004/02/22 13:52:27 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -300,7 +300,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result.append("<link rel=stylesheet type=\"text/css\" href=\"" + style + "\">\n");
             result.append("</HEAD>\n");
             result.append("<BASE href=\"");
-            I_CmsRequest req = m_cms.getRequestContext().getRequest();
+            I_CmsRequest req = CmsXmlTemplateLoader.getRequest(m_cms.getRequestContext());
             result.append(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getServletUrl() + (String)parameters.get("file"));
             result.append("\"></BASE>");
             result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");

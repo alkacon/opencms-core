@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsObject {
 
@@ -186,7 +186,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser addImportUser(String id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String defaultGroup, String address, String section, int type) throws CmsException {
-        return (m_driverManager.addImportUser(m_context, id, name, password, recoveryPassword, description, firstname, lastname, email, flags, additionalInfos, defaultGroup, address, section, type));
+        return m_driverManager.addImportUser(m_context, id, name, password, recoveryPassword, description, firstname, lastname, email, flags, additionalInfos, defaultGroup, address, section, type);
     }
 
     /**
@@ -215,7 +215,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
-        return (m_driverManager.addUser(m_context, name, password, group, description, additionalInfos));
+        return m_driverManager.addUser(m_context, name, password, group, description, additionalInfos);
     }
 
     /**
@@ -249,7 +249,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
-        return (m_driverManager.addWebUser(name, password, group, description, additionalInfos));
+        return m_driverManager.addWebUser(name, password, group, description, additionalInfos);
     }
 
     /**
@@ -277,7 +277,6 @@ public class CmsObject {
      * @param flags flags
      * @throws CmsException if something goes wrong
      */
-    // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
         CmsResource res = readFileHeader(resourceName);
         CmsAccessControlEntry acEntry = null;
@@ -305,7 +304,6 @@ public class CmsObject {
      * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
      * @throws CmsException if something goes wrong
      */
-    // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
         CmsResource res = readFileHeader(resourceName);
         CmsAccessControlEntry acEntry = null;
@@ -2227,7 +2225,7 @@ public class CmsObject {
     }
 
     /**
-     * Check if the history is enabled
+     * Check if the history is enabled.<p>
      *
      * @return boolean Is true if history is enabled
      */
@@ -2236,15 +2234,35 @@ public class CmsObject {
     }
 
     /**
-     * Checks, if the user has management access to the project.
+     * Checks if the user has management access to the project.
      *
-     * @return <code>true</code>, if the users current group is the admin-group; <code>false</code> otherwise.
+     * Please note: This is NOT the same as the {@link CmsObject#isProjectManager()} 
+     * check. If the user has management access to a project depends on the
+     * project settings.<p>
+     *
+     * @return true if the user has management access to the project
      * @throws CmsException if operation was not successful.
+     * @see #isProjectManager()
      */
     public boolean isManagerOfProject() throws CmsException {
         return m_driverManager.isManagerOfProject(m_context);
     }
-
+    
+    /**
+     * Checks if the user is a member of the project manager group.<p>
+     *
+     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()()} 
+     * check. If the user is a member of the project manager group, 
+     * he can create new projects.<p>
+     *
+     * @return true if the user is a member of the project manager group
+     * @throws CmsException if operation was not successful.
+     * @see #isManagerOfProject()
+     */    
+    public boolean isProjectManager() throws CmsException {
+        return m_driverManager.isProjectManager(m_context);
+    }
+    
     /**
      * Returns the user, who has locked a given resource.
      * <br>
@@ -2363,8 +2381,9 @@ public class CmsObject {
     public String loginUser(String username, String password, String remoteAddress) throws CmsException {
         // login the user
         CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress);
-        // init the new user
-        m_context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        CmsProject onlineProject = m_driverManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        m_context.switchUser(newUser, onlineProject);        
+//        m_context.init(newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), 0, 0, 0, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         init(m_driverManager, m_context, m_sessionStorage);
         // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
@@ -2384,8 +2403,10 @@ public class CmsObject {
     public String loginWebUser(String username, String password) throws CmsException {
         // login the user
         CmsUser newUser = m_driverManager.loginWebUser(username, password, m_context.getRemoteAddress());
+        CmsProject onlineProject = m_driverManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        m_context.switchUser(newUser, onlineProject);
         // init the new user
-        m_context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+//        m_context.init(newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), 0, 0, 0, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         init(m_driverManager, m_context, m_sessionStorage);
         // return the user-name
         return (newUser.getName());
@@ -2498,7 +2519,7 @@ public class CmsObject {
                 // set current project to online project if the published project was temporary
                 // and the published project is still the current project
                 if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
-                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    m_context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                 }
 
                 // fire an event that a project has been published
@@ -2757,7 +2778,7 @@ public class CmsObject {
      * or if the file couldn't be read.
      */
     public CmsFile readFile(String filename) throws CmsException {
-        return (m_driverManager.readFile(m_context, addSiteRoot(filename)));
+        return m_driverManager.readFile(m_context, addSiteRoot(filename));
     }
 
     /**
@@ -2772,7 +2793,7 @@ public class CmsObject {
      * or if the file couldn't be read.
      */
     public CmsFile readFile(String filename, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readFile(m_context, addSiteRoot(filename), includeDeleted));
+        return m_driverManager.readFile(m_context, addSiteRoot(filename), includeDeleted);
     }
 
     /**
@@ -3102,7 +3123,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
-        return (m_driverManager.readProject(task));
+        return m_driverManager.readProject(task);
     }
 
     /**
@@ -3114,7 +3135,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(int id) throws CmsException {
-        return (m_driverManager.readProject(id));
+        return m_driverManager.readProject(id);
     }
     
     /**
@@ -3125,7 +3146,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(String name) throws CmsException {
-        return (m_driverManager.readProject(name));
+        return m_driverManager.readProject(name);
     }     
 
     /**

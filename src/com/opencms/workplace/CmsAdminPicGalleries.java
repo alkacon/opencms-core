@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,19 @@
 package com.opencms.workplace;
 
 import org.opencms.db.CmsImportFolder;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
-import org.opencms.workplace.CmsWorkplaceAction;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypeImage;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -50,7 +51,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.53 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.54 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -97,7 +98,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
                 
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
                 
@@ -226,7 +227,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                 byte[] filecontent = new byte[0];
 
                 // get the filename
-                Enumeration files = cms.getRequestContext().getRequest().getFileNames();
+                Enumeration files = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFileNames();
                 while(files.hasMoreElements()) {
                     filename = (String)files.nextElement();
                 }
@@ -237,7 +238,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
 
                 // get the filecontent
                 if(filename != null) {
-                    filecontent = cms.getRequestContext().getRequest().getFile(filename);
+                    filecontent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(filename);
                 }
                 if(filecontent != null) {
                     session.putValue(C_PARA_FILECONTENT, filecontent);
@@ -279,16 +280,16 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                     // return to the filelist
                                     try {
                                         if((lasturl != null) && (lasturl != "")) {
-                                            cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                                         }
                                         else {
-                                            cms.getRequestContext().getResponse().sendCmsRedirect(
-                                                getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                                            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(
+                                                getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
                                         }
                                     } catch(Exception ex) {
                                         throw new CmsException(
                                             "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                            + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                            + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                     }
                                     return null;
                                     }
@@ -330,7 +331,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                         parameters, templateSelector);
                             }
                             try {
-                                cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                             }
                             catch(Exception ex) {
                                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() +

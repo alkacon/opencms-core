@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/02/22 13:54:41 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,11 +43,12 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.14 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.15 $ $Date: 2004/02/22 13:54:41 $
  */
 public interface I_CmsRequest {
 
-    public static final String C_CMS_REQUEST = "__I_CmsRequest";
+    /** Request context attribute name */
+    String C_CMS_REQUEST = "__I_CmsRequest";
     
     /**
      * Returns the content of an uploaded file.

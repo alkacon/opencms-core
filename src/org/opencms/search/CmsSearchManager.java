@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/20 19:50:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.search;
 
 import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsEvent;
@@ -134,7 +135,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/02/20 19:50:58 $
+ * @version $Revision: 1.10 $ $Date: 2004/02/22 13:52:28 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -668,12 +669,11 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         index = getIndex(indexName);
         
         CmsRequestContext context = m_cms.getRequestContext();
-        int currentProject = context.currentProject().getId();
-        int indexProject = m_cms.readProject(index.getProject()).getId();
+        CmsProject currentProject = context.currentProject();
         
         String currentSiteRoot = context.getSiteRoot();
         context.setSiteRoot(index.getSite());
-        context.setCurrentProject(indexProject);
+        context.setCurrentProject(m_cms.readProject(index.getProject()));
         if (report != null) {
             report.println(report.key("search.indexing_context") + context.getSiteRoot() + ", " + context.currentProject().getName(), I_CmsReport.C_FORMAT_NOTE);
         }

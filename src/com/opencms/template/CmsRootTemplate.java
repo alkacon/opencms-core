@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,14 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsResponse;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -44,7 +45,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.50 $ $Date: 2004/02/22 13:52:27 $
  */
 public class CmsRootTemplate {
 
@@ -85,7 +86,7 @@ public class CmsRootTemplate {
         Object cacheKey = templateClass.getKey(cms, masterTemplateUri, parameters, null);
         boolean cacheable = cd.isInternalCacheable();
 
-        I_CmsResponse resp = cms.getRequestContext().getResponse();
+        I_CmsResponse resp = CmsXmlTemplateLoader.getResponse(cms.getRequestContext());
 
         // was there already a cache-control header set?
         if(!resp.containsHeader("Cache-Control")) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,17 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.*;
-import org.opencms.workplace.CmsWorkplaceAction;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -47,7 +48,7 @@ import java.util.Map;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.29 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,7 +95,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
                 
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
 
@@ -202,14 +203,14 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 }
 
                 // get the parameters for the link file
-                String filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
+                String filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_RESOURCE);
                 if(filename != null) {
                     session.putValue("extlink.filename", filename);
                 } else {
                     // try to get the value from the session, e.g. after an error
                     filename = (String)session.getValue("extlink.filename")!=null?(String)session.getValue("extlink.filename"):"";
                 }
-                String link = cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
+                String link = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_LINK);
                 if(link != null) {
                     session.putValue("extlink.linkurl", link);
                 } else {
@@ -259,9 +260,9 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                         // now return to appropriate filelist
                         try {
                             if(lasturl != null) {
-                                cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                             } else {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath()
+                                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath()
                                     + "/externallinkgallery/");
                             }
                         } catch(Exception e) {
@@ -276,7 +277,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 }
 
                 if(lasturl == null) {
-                    lasturl = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
+                    lasturl = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
                 }
                 xmlTemplateDocument.setData("lasturl", lasturl);
                 // set the template for url check if check failed

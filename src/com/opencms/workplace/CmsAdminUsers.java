@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,15 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.43 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.44 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -130,7 +131,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         boolean userYetChanged = true;
@@ -140,18 +141,18 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
         String perspective = (String)parameters.get("perspective");
         if(perspective != null && perspective.equals("user")) {
             session.removeValue("ERROR");
-            if(reqCont.getRequest().getParameter("CHANGE") != null) {
+            if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("CHANGE") != null) {
 
                 // change data of selected user
                 perspective = "changeuser";
                 userYetChanged = false;
             }else {
-                if(reqCont.getRequest().getParameter("DELETE") != null) {
+                if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("DELETE") != null) {
 
                     // delete the selected user
                     perspective = "deleteuser";
                 }else {
-                    if(reqCont.getRequest().getParameter("NEW") != null) {
+                    if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("NEW") != null) {
 
                         // establish a new user
                         perspective = "newuser";
@@ -257,7 +258,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     session.putValue("selectedGroups", selectedGroups);
                     session.putValue("notSelectedGroups", notSelectedGroups);
                 }
-                if(reqCont.getRequest().getParameter("ADD") != null) {
+                if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("ADD") != null) {
 
                     // add a new group to selectedGroups
                     String groupname = (String)parameters.get("notselectgroup");
@@ -268,7 +269,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     session.putValue("selectedGroups", selectedGroups);
                     session.putValue("notSelectedGroups", notSelectedGroups);
                 }else {
-                    if(reqCont.getRequest().getParameter("REMOVE") != null) {
+                    if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("REMOVE") != null) {
 
                         // delete a new group from selectedGroups
                         // and move it to notSelectedGroups
@@ -283,7 +284,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                         session.putValue("selectedGroups", selectedGroups);
                         session.putValue("notSelectedGroups", notSelectedGroups);
                     }else {
-                        if(reqCont.getRequest().getParameter("OK") != null) {
+                        if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("OK") != null) {
 
                             // form submitted, try to establish new user
                             try {
@@ -414,7 +415,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     if((String)parameters.get("LOCK") != null) {
                         disabled = true;
                     }
-                    if(reqCont.getRequest().getParameter("ADD") != null) {
+                    if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("ADD") != null) {
 
                         // add a new group to selectedGroups
                         String groupname = (String)parameters.get("notselectgroup");
@@ -425,7 +426,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                             notSelectedGroups.removeElement(groupname);
                         }
                     }else {
-                        if(reqCont.getRequest().getParameter("REMOVE") != null) {
+                        if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("REMOVE") != null) {
 
                             // delete a group from selectedGroups
                             // and move it to notSelectedGroups
@@ -440,7 +441,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 selectedGroups.removeElement(groupname);
                             }
                         }else {
-                            if(reqCont.getRequest().getParameter("OK") != null) {
+                            if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("OK") != null) {
 
                                 // form submitted, try to change the user data
                                 try {
@@ -659,7 +660,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
 
     public Integer getGroupsOfUser(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String defaultGroup = (String)session.getValue("DEFAULTGROUP");
         if(defaultGroup == null) {
             defaultGroup = "";
@@ -686,7 +687,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
 
     public Integer getIndirectGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector selectedGroups = (Vector)session.getValue("selectedGroups");
         Vector indirectGroups = new Vector();
         String groupname, superGroupName;
@@ -739,7 +740,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
     public Integer getNotSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector notSelectedGroups = (Vector)session.getValue("notSelectedGroups");
         if(notSelectedGroups != null) {
 
@@ -776,7 +777,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
     public Integer getSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String defaultGroup = (String)session.getValue("DEFAULTGROUP");
         if(defaultGroup == null) {
             defaultGroup = "";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.42 $ $Date: 2004/02/22 13:52:27 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
@@ -72,18 +73,18 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
         String description = null;
         String foldername = null;
         String type = null;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial == null) {
 
-            filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
-            title = CmsEncoder.redecodeUriComponent(cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE));
+            filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_RESOURCE);
+            title = CmsEncoder.redecodeUriComponent(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_TITLE));
             keywords = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
             description = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
             // foldername = (String)session.getValue(C_PARA_FILELIST);
-            foldername = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+            foldername = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
             if(foldername == null) {
                 foldername = cms.readAbsolutePath(cms.rootFolder());
             }
@@ -102,14 +103,14 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
 
             // now return to filelist
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
             }
             catch(Exception e) {
-                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
+                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         } else {
-            session.putValue("type", cms.getRequestContext().getRequest().getParameter("type"));
+            session.putValue("type", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter("type"));
 
             // get the document to display
             CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);

@@ -6,7 +6,9 @@ login Admin admin
 
 # Create the setup project
 createTempfileProject
-setCurrentProject 2
+
+# Switch to the setup project
+setCurrentProject "_setupProject"
 
 # Initialize the default property definitions
 createPropertydefinition folder Title
@@ -101,6 +103,9 @@ addFileExtension jsp jsp
 # Switch to the root context
 setSiteRoot "/"
 
+# Set the path for the VFS database export / import
+writePackagePath "packages/"
+
 # Create folder structure
 createFolder "/" "system/"
 createFolder "/" "sites/"
@@ -113,19 +118,21 @@ chacc "/" "group" "Projectmanagers" "+v+w+r+c+i"
 chacc "/" "group" "Users" "+v+w+r+c+i"
 chacc "/" "group" "Guests" "+v+r+i"
 
-# Import the workplace and publish the project
+# Import the workplace
 importResources "setupdata/vfs" "/"
-publishProject "2"
-writePackagePath "packages/"
+
+# Publish the project
+unlockCurrentProject
+publishProject
+
+# Create the default "Offline" project
 createDefaultProject "Offline" "The Offline Project"
 setSiteRoot "/sites/default/"
 
-# Import the modules (stored in the setup bean)
-# that have been selected in the setup wizard
+# Import the modules that have been selected in the setup wizard
 importModulesFromSetupBean
 
 # Build search indexes
 updateIndex
 
-# The setup is finished
 exit

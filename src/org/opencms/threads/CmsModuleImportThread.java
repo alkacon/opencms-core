@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleImportThread.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1.10
  */
 public class CmsModuleImportThread extends A_CmsReportThread {
@@ -108,7 +108,7 @@ public class CmsModuleImportThread extends A_CmsReportThread {
                 getCms().getRequestContext().setSiteRoot("/");
                 // create a Project to import the module.
                 project = getCms().createProject("ImportModule", "A System generated project to import the module " + moduleName, OpenCms.getDefaultUsers().getGroupAdministrators(), OpenCms.getDefaultUsers().getGroupAdministrators(), I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
-                getCms().getRequestContext().setCurrentProject(project.getId());
+                getCms().getRequestContext().setCurrentProject(project);
                 // copy the root folder to the project
                 getCms().copyResourceToProject("/");
             } finally {

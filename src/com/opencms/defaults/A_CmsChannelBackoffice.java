@@ -25,6 +25,7 @@
 package com.opencms.defaults;
 
 import com.opencms.defaults.master.*;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.core.*;
 import org.opencms.file.*;
 import org.opencms.main.*;
@@ -54,7 +55,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
     public Integer getSelectedChannels(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters)
                     throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);        
         CmsMasterContent cd = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
         Vector channels = cd.getSelectedChannels();
         int size = channels.size();
@@ -79,7 +80,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
     public Integer getAvailableChannels(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters)
                     throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsMasterContent cd = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
         Vector channels = cd.getAvailableChannels(cms);
         int size = channels.size();
@@ -104,7 +105,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
     public Integer getMediaPosition(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters)
                     throws CmsException {
         //get session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //selected media content definition
         //media_position
         String media_position = null;
@@ -165,7 +166,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             String row="";
             //get the template
             CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile) doc;
-            I_CmsSession session = cms.getRequestContext().getSession(true);
+            I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
             CmsMasterContent masterCD = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
             //get the parameter
             Hashtable parameters = (Hashtable)userObject;
@@ -256,14 +257,14 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             } else if (media_action.equals("addPicture") && !media_name.equals("unknown")) {
                     // get the picture file and/or file from the RequestContext if there is any
                     CmsRequestContext reqCont = cms.getRequestContext();
-                    Enumeration enum = reqCont.getRequest().getFileNames();
+                    Enumeration enum = CmsXmlTemplateLoader.getRequest(reqCont).getFileNames();
                     String filename = "";
                     byte[] mediafile = null;
                     //get the file
                     while (enum.hasMoreElements()) {
                         filename = (String) enum.nextElement();
                         if (!filename.equals("unknown")) {
-                            mediafile = reqCont.getRequest().getFile(filename);
+                            mediafile = CmsXmlTemplateLoader.getRequest(reqCont).getFile(filename);
                             //set the media_mimetype
                             media_mimetype=CmsMasterMedia.computeMimetype(cms, filename);
                             //set the type

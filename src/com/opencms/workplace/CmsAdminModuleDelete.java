@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -36,9 +39,7 @@ import org.opencms.threads.CmsModuleDeleteThread;
 import org.opencms.threads.CmsModuleReplaceThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsRequestContext;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -80,7 +81,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsRegistry reg = cms.getRegistry();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)parameters.get(C_STEP);
         String moduleName = (String)parameters.get(C_MODULE);
         
@@ -125,7 +126,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
                 Vector wrongChecksum = new Vector();
                 Vector filesInUse = new Vector();
                 Vector resourcesForProject = new Vector();
-                reqCont.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                 reg.deleteGetConflictingFileNames(moduleName, filesWithProperty, missingFiles, wrongChecksum, filesInUse, resourcesForProject);
                 session.putValue(C_SESSION_MODULENAME, moduleName);
                 session.putValue(C_SESSION_MODULE_PROJECTFILES, resourcesForProject);

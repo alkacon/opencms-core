@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -35,8 +37,7 @@ import org.opencms.util.CmsUUID;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.A_CmsBackoffice;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpTemplateFile;
@@ -116,7 +117,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         moduleName = moduleName.trim();
         moduleName = moduleName.replace('.', '_'); //replace dots with underscores
         //session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         //default error
         String error="";
         //get values of all fields

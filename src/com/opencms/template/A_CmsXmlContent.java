@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2004/02/19 11:46:11 $
-* Version: $Revision: 1.101 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.101 $ $Date: 2004/02/19 11:46:11 $
+ * @version $Revision: 1.102 $ $Date: 2004/02/22 13:52:27 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -913,7 +913,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 String logUri = "";
                 try {
-                    logUri = " RequestUri is " + m_cms.getRequestContext().getFolderUri() + m_cms.getRequestContext().getFileUri() + ".";
+                    logUri = " RequestUri is " + m_cms.getRequestContext().getFolderUri() + m_cms.getRequestContext().getUri() + ".";
                 }
                 catch (Exception e) {}
                 OpenCms.getLog(this).error("Requested datablock  \"" + blockname + "\" not found in " + m_filename + " - " + logUri);

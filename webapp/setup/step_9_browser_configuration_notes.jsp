@@ -48,7 +48,7 @@ OpenCms Setup Wizard - Browser configuration
 		<td style="vertical-align: bottom;padding-top: 12px;">
 			<table border="0" cellpadding="0" cellspacing="0" style="vertical-align: bottom; height: 20px;">
 			<tr>
-				<td>Did you read this configuration notes?</td>
+				<td>Did you read these important configuration notes?</td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 25px;"><input type="radio" name="understood" value="true" onclick="toggleButton(false);"></td>
 				<td> yes</td>

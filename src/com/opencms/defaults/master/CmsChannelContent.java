@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,10 @@
 // TODO: remove group/user
 package com.opencms.defaults.master;
 
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -37,10 +41,7 @@ import org.opencms.util.CmsUUID;
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.CmsFilterMethod;
 import com.opencms.defaults.I_CmsExtendedContentDefinition;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -54,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.64 $
- * $Date: 2004/02/13 13:41:45 $
+ * $Revision: 1.65 $
+ * $Date: 2004/02/22 13:52:27 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -675,7 +676,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         int retValue = -1;
         String defaultGroup = OpenCms.getDefaultUsers().getGroupUsers();
         // make sure the user has a session
-        cms.getRequestContext().getSession(true);
+        CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String enteredGroup = this.getGroup();
         if(enteredGroup != null && !enteredGroup.equals("")) {
 

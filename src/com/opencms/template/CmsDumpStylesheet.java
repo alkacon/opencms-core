@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpStylesheet.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,20 @@
 
 package com.opencms.template;
 
-import org.opencms.file.*;
-import org.opencms.main.*;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 
-import com.opencms.core.*;
-import javax.servlet.http.*;
-import java.util.*;
+import com.opencms.legacy.CmsXmlTemplateLoader;
+
+import java.util.Hashtable;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Dump the correct stylesheet for the current browser.
  *
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.7 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/22 13:52:27 $
  */
 public class CmsDumpStylesheet extends CmsDumpTemplate {
 
@@ -56,7 +58,7 @@ public class CmsDumpStylesheet extends CmsDumpTemplate {
      * @return Array of bytes that contains the page.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        HttpServletRequest orgReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         int dotIdx = templateFile.lastIndexOf(".");
         String pre = templateFile.substring(0, dotIdx);
         String post = templateFile.substring(dotIdx);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.I_CmsConstants;
 
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.cache.CmsTimeout;
 
 import java.util.Enumeration;
@@ -197,7 +198,7 @@ public abstract class A_CmsCacheDirectives {
         // first we need the scheme of the request
         String scheme = "http";
         try{
-            scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+            scheme = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getScheme();
         }catch(Exception e){
         }
         String key = "key_"+scheme+"_";

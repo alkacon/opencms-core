@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,18 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.*;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
-import org.opencms.file.I_CmsResourceType;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Calendar;
@@ -65,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.82 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.83 $ $Date: 2004/02/22 13:52:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -386,10 +385,10 @@ public class CmsFileList extends A_CmsWpElement {
             C_FILELIST_GROUP_VALUE, C_FILELIST_ACCESS_VALUE, C_FILELIST_LOCKED_VALUE,
             C_NAME_FILEFOLDER, C_LOCKEDBY, C_FILELIST_CLASS_VALUE
         };
-        String servlets = cms.getRequestContext().getRequest().getServletUrl();
-        // I_CmsSession session = cms.getRequestContext().getSession(true);
+        String servlets = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
+        // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         
         if((currentFilelist == null) || (currentFilelist.length() == 0)) {
             currentFilelist = "/";
@@ -440,7 +439,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = cms.getResourceType(res.getType());
                     String icon = getIcon(cms, type, config);
-                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, cms.getRequestContext().getRequest().getServletUrl() + config.getWpPicturePath() + icon);
+                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + config.getWpPicturePath() + icon);
 
                     // set the link, but only if the folder is not deleted
                     if(res.getState() != I_CmsConstants.C_STATE_DELETED) {

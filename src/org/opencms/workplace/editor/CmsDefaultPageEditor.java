@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/02/22 13:52:28 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,18 +30,17 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.file.CmsFile;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsRequestContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.1.12
  */
@@ -222,7 +221,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         
         // redirect to the temporary file with current active element language
-        String param = "?" + CmsRequestContext.C_PARAMETER_LOCALE + "=" + getParamElementlanguage();
+        String param = "?" + OpenCmsCore.C_PARAMETER_LOCALE + "=" + getParamElementlanguage();
         sendCmsRedirect(getParamTempfile() + param);
     }
 

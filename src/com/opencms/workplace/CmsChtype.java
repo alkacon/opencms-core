@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,14 +28,15 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
-
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2004/02/21 17:11:43 $
+ * @version $Revision: 1.33 $ $Date: 2004/02/22 13:52:27 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -74,7 +75,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
             Hashtable parameters, String templateSelector) 
     throws CmsException {
         CmsRequestContext requestContext = cms.getRequestContext();
-        I_CmsSession session = requestContext.getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(requestContext, true);
 
         // the template to be displayed
         String template = null;
@@ -145,14 +146,14 @@ public class CmsChtype extends CmsWorkplaceDefault {
             // return to filelist
             try {
                 if (lasturl == null || "".equals(lasturl)) {
-					requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                    + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                    CmsXmlTemplateLoader.getResponse(requestContext).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                    + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
                 } else {
-                    requestContext.getResponse().sendRedirect(lasturl);
+                    CmsXmlTemplateLoader.getResponse(requestContext).sendRedirect(lasturl);
                 }
             } catch (Exception e) {
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                        + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
+                        + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         }

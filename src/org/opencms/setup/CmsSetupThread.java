@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupThread.java,v $
- * Date   : $Date: 2004/02/19 14:54:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/22 13:52:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsSetupThread extends Thread {
 
@@ -108,7 +108,7 @@ public class CmsSetupThread extends Thread {
             m_loggingThread.start();
     
             // start importing the workplace
-            CmsShell.startSetup(m_basePath + "WEB-INF/", m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt", m_shellCommands);
+            CmsShell.startSetup(m_basePath + "WEB-INF" + File.separator, m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt", m_shellCommands);
     
             // stop the logging thread
             try {
