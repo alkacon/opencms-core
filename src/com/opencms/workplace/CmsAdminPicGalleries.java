@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/02/02 14:49:27 $
+* Date   : $Date: 2001/02/07 14:30:07 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.13 $ $Date: 2001/02/02 14:49:27 $
+ * @version $Revision: 1.14 $ $Date: 2001/02/07 14:30:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -130,6 +130,15 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                     }
                     if((flag & C_ACCESS_GROUP_VISIBLE) == 0){
                         flag ^= C_ACCESS_GROUP_VISIBLE;
+                    }
+                    if((flag & C_ACCESS_OWNER_READ ) == 0){
+                        flag ^= C_ACCESS_OWNER_READ;
+                    }
+                    if((flag & C_ACCESS_OWNER_WRITE) == 0){
+                        flag ^= C_ACCESS_OWNER_WRITE;
+                    }
+                    if((flag & C_ACCESS_OWNER_VISIBLE) == 0){
+                        flag ^= C_ACCESS_OWNER_VISIBLE;
                     }
                     if((flag & C_ACCESS_PUBLIC_VISIBLE) == 0){
                         flag ^= C_ACCESS_PUBLIC_VISIBLE;
