@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2004/10/25 16:23:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/29 08:09:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.1
  */
@@ -152,18 +152,20 @@ public class CmsHistory extends CmsDialog {
             result.append("</tr>\n");
             result.append("<tr><td colspan=\"8\"><span style=\"height: 6px;\">&nbsp;</span></td></tr>\n");
             
-            // get all backup resources
+            // get all backup resources and build the table rows
             List backupFileHeaders = getCms().readAllBackupFileHeaders(resource);
             int size = backupFileHeaders.size();
             Iterator i = backupFileHeaders.iterator();
             while (i.hasNext()) {
                 CmsBackupResource file = (CmsBackupResource)i.next();                
+                // the tagId for get the Backup project 
                 int tagId = file.getTagId();
                 CmsBackupProject project = getCms().readBackupProject(tagId);
                 int versionId = project.getVersionId();
                 String filetype = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
                 long dateLastModified = file.getDateLastModified();                
                 long dateLastPublished = project.getPublishingDate();
+                // last edited by
                 String userName = "";
                 try {
                     userName = getCms().readUser(file.getUserLastModified()).getName();
