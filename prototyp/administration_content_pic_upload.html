@@ -10,12 +10,12 @@
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed onLoad="parent.frames[0].admincontenturl='administration_content_picgallery_files.html';" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name=UPLOAD id=UPLOAD action="edit_html_piclist_upload1.html" onSubmit="return checkFormData('UPLOAD','DATEINAME',null)">
+<form name=UPLOAD id=UPLOAD action="administration_content_pic_upload1.html" onSubmit="return checkFormData('UPLOAD','DATEINAME',null)">
 <table border=2 cellspacing=0 cellpadding=0 width=350>
 <tr><td>
 	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -33,7 +33,7 @@
 			<tr>
 				<td class=formular align=middle width=40%><INPUT disabled class=button width=100 type="submit" value=">> Weiter" id=FERTIG name=FERTIG></td>
 				<td class=formular align=middle width=20%>&nbsp;</td>
-				<td class=formular align=middle width=40%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='edit_html_piclist_content.html';"></td>
+				<td class=formular align=middle width=40%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='administration_content_picgallery_files.html';"></td>
 			</tr>
 			</table>
 		</td>
