@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/03/25 11:21:28 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/03/27 13:17:49 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.46 $ $Date: 2002/03/25 11:21:28 $ *
+ * @version $Revision: 1.47 $ $Date: 2002/03/27 13:17:49 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1834,19 +1834,6 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         res2.close();
         res3.close();
         res4.close();
-        statement.close();
-        // now delete the deleted files and folder from offline project and
-        // set state = unchanged for all other resources in offline project
-        statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_REMOVEALLDELETED"));
-        statement.setInt(1, projectId);
-        statement.setInt(2, C_STATE_DELETED);
-        statement.executeUpdate();
-        statement.close();
-        statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_SETALLUNCHANGED"));
-        statement.setInt(1, C_STATE_UNCHANGED);
-        statement.setInt(2, projectId);
-        statement.setInt(3, C_STATE_UNCHANGED);
-        statement.executeUpdate();
         statement.close();
     } catch (SQLException sqlexc) {
         CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
