@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/11 14:00:14 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 
 import java.io.Serializable;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -118,6 +117,7 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
     public int getResourceType() {
          return m_resourceType;
      }
+     
     /**
      * Returns a string-representation for this object.
      * This can be used for debugging.
@@ -136,96 +136,6 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
         output.append(m_launcherClass);
         return output.toString();
       }
-
-    /**
-    * Changes the group of a resource.
-    * <br>
-    * Only the group of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not existing in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user is owner of the resource or is admin</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param newGroup the name of the new group for this resource.
-    * @param chRekursive only used by folders.
-    *
-    * @throws CmsException if operation was not successful.
-    */
-    public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
-// TODO: remove this
-/*
-        cms.doChgrp(filename, newGroup);
-*/
-        }
-
-    /**
-    * Changes the flags of a resource.
-    * <br>
-    * Only the flags of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not existing in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * The user may change the flags, if he is admin of the resource.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user can write the resource</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param flags the new flags for the resource.
-    * @param chRekursive only used by folders.
-    *
-    * @throws CmsException if operation was not successful.
-    * for this resource.
-    */
-    public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
-// TODO: remove this
-/*
-        cms.doChmod(filename, flags);
-*/
-        }
-
-    /**
-    * Changes the owner of a resource.
-    * <br>
-    * Only the owner of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not existing in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * The user may change this, if he is admin of the resource.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user is owner of the resource or the user is admin</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param newOwner the name of the new owner for this resource.
-    * @param chRekursive only used by folders.
-    *
-    * @throws CmsException if operation was not successful.
-    */
-    public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
-// TODO: remove this
-/*
-        cms.doChown(filename, newOwner);
-*/
-        }
     
     /**
      * Change the timestamp of a resource.
@@ -278,9 +188,6 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
     */
     public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
         cms.doCopyFile(source, destination);
-        if(!keepFlags) {
-            setDefaultFlags(cms, destination);
-        }
     }
 
     /**
@@ -530,27 +437,6 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
     */
     public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException{
         cms.doUnlockResource(resource);
-    }
-
-    /**
-     * Set the access flags of the copied resource to the default values.
-     * @param cms The CmsObject.
-     * @param filename The name of the file.
-     * @throws Throws CmsException if something goes wrong.
-     */
-    protected void setDefaultFlags(CmsObject cms, String filename)
-        throws CmsException {
-
-        Hashtable startSettings=null;
-        Integer accessFlags=null;
-        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-        if (startSettings != null) {
-            accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-        }
-        if (accessFlags == null) {
-            accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
-        }
-        chmod(cms, filename, accessFlags.intValue(), false);
     }
 
     /**

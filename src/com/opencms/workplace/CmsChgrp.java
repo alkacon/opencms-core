@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/11 14:01:12 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the chgrp screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/11 14:01:12 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -107,8 +107,8 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 			C_GROUP_ADMIN))) {
 
 				// if the resource is a folder, check if there is a corresponding
-				boolean rekursive = (file.isFolder() && flags.equals("true"));
-				cms.chgrp(cms.readAbsolutePath(file), newgroup, rekursive);
+				// boolean rekursive = (file.isFolder() && flags.equals("true"));
+				// cms.chgrp(cms.readAbsolutePath(file), newgroup, rekursive);
 
 				session.removeValue(C_PARA_FILE);
 

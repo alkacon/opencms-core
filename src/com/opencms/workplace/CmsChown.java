@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/07/11 14:01:12 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * Template class for displaying the chown screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.35 $ $Date: 2003/07/11 14:01:12 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
     
@@ -105,10 +105,10 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
 			if((requestContext.currentUser().equals(cms.readOwner(file)))
 			|| (cms.userInGroup(requestContext.currentUser().getName(), C_GROUP_ADMIN))) {
 
-				boolean rekursive = false;
+				// boolean rekursive = false;
 				// if the resource is a folder, check if there is a corresponding
-				if(file.isFolder() && flags.equals("true")) rekursive = true;
-				cms.chown(cms.readAbsolutePath(file), newowner, rekursive);
+				// if(file.isFolder() && flags.equals("true")) rekursive = true;
+				// cms.chown(cms.readAbsolutePath(file), newowner, rekursive);
 				session.removeValue(C_PARA_FILE);
 
 				// return to filelist

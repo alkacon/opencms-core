@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/11 14:01:12 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/11 14:01:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -167,12 +167,12 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
+//                  TODO: check how to set the appropriate access using acl
+                    /*
                     cms.chgrp(cms.readAbsolutePath(folder), group);
                     int flag = folder.getAccessFlags();
 
                     // set the access rights for 'other' users
-//					TODO: check how to set the appropriate access using acl
-/*
                     if(read != ((flag & C_ACCESS_PUBLIC_READ) != 0)) {
                         flag ^= C_ACCESS_PUBLIC_READ;
                     }
@@ -200,8 +200,8 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     if((flag & C_ACCESS_PUBLIC_VISIBLE) == 0){
                         flag ^= C_ACCESS_PUBLIC_VISIBLE;
                     }
-*/
                     cms.chmod(cms.readAbsolutePath(folder), flag);
+                    */
                     cms.unlockResource(cms.readAbsolutePath(folder), false);
                 }
                 catch(CmsException ex) {

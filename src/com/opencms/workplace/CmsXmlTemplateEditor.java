@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/06 13:45:58 $
-* Version: $Revision: 1.100 $
+* Date   : $Date: 2003/07/11 14:01:12 $
+* Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.100 $ $Date: 2003/07/06 13:45:58 $
+ * @version $Revision: 1.101 $ $Date: 2003/07/11 14:01:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -100,14 +100,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         try {
             cms.copyResource(cms.readAbsolutePath(file), temporaryFilename);
-            cms.chmod(temporaryFilename, 91);
+            // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {
                     // try to re-use the old temporary file
                     cms.changeLockedInProject(tempProject, temporaryFilename);
                     cms.lockResource(temporaryFilename, true);
-                    cms.chmod(temporaryFilename, 91);
+                    // cms.chmod(temporaryFilename, 91);
                 } catch (Exception ex) {
                     ok = false;
                 }
@@ -125,7 +125,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             
             try {
                 cms.copyResource(cms.readAbsolutePath(file), extendedTempFile);
-                cms.chmod(extendedTempFile, 91);
+                // cms.chmod(extendedTempFile, 91);
             } catch (CmsException e) {
                 if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
                     cms.getRequestContext().setCurrentProject(curProject);

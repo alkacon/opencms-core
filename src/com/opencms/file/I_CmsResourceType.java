@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/11 14:00:14 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,81 +79,6 @@ public interface I_CmsResourceType {
      * @return the type of this resource-type.
      */
     int getResourceType();
-
-    /**
-    * Changes the group of a resource.
-    * <br>
-    * Only the group of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not existing in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user is owner of the resource or is admin</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param newGroup the name of the new group for this resource.
-    * @param chRekursive shows if the subResources (of a folder) should be changed too.
-    *
-    * @throws CmsException if operation was not successful.
-    */
-    void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException;
-
-    /**
-    * Changes the flags of a resource.
-    * <br>
-    * Only the flags of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not existing in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * The user may change the flags, if he is admin of the resource.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user can write the resource</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param flags the new flags for the resource.
-    * @param chRekursive shows if the subResources (of a folder) should be changed too.
-    *
-    * @throws CmsException if operation was not successful.
-    * for this resource.
-    */
-    void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException;
-
-    /**
-    * Changes the owner of a resource.
-    * <br>
-    * Only the owner of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not existing in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * The user may change this, if he is admin of the resource.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user is owner of the resource or the user is admin</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param newOwner the name of the new owner for this resource.
-    * @param chRekursive shows if the subResources (of a folder) should be changed too.
-    *
-    * @throws CmsException if operation was not successful.
-    */
-    void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException;
     
     /**
      * Change the timestamp of a resource.

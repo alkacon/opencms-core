@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/11 14:01:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/11 14:01:12 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -137,8 +137,8 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
 				// calculate the new access flags
 //				TODO: check how to set the appropriate access using acl
+                /*
 				int flag = 0;
-/*
 				if(ur != null && ur.equals("true"))
 					flag += C_PERMISSION_READ;
 				if(uw != null && uw.equals("true"))
@@ -159,10 +159,10 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 					flag += C_ACCESS_PUBLIC_VISIBLE;
 				if(ir != null && ir.equals("true"))
 					flag += C_ACCESS_INTERNAL_READ;
-*/
 				// modify the access flags
 				boolean rekursive = (file.isFolder() && allflag.equals("true"));
 				cms.chmod(cms.readAbsolutePath(file), flag, rekursive);
+                */
 
 				session.removeValue(C_PARA_FILE);
 

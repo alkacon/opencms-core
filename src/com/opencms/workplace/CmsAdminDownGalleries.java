@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/11 14:01:12 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.31 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/11 14:01:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -151,7 +151,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
         }
         if("new".equals(action)) {
             String galleryname = (String)parameters.get("NAME");
-            String group = (String)parameters.get("GROUP");
+//            String group = (String)parameters.get("GROUP");
 //            boolean read = parameters.get("READ") != null;
 //            boolean write = parameters.get("WRITE") != null;
             try {
@@ -162,12 +162,12 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
                 CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
                 cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
+                // TODO: check how to set the appropriate access using acl 
+                /*
                 cms.chgrp(cms.readAbsolutePath(folder), group);
                 int flag = folder.getAccessFlags();
 
                 // set the access rights for 'other' users
-                // TODO: check how to set the appropriate access using acl 
-                /*
                 if(read != ((flag & C_ACCESS_PUBLIC_READ) != 0)) {
                     flag ^= C_ACCESS_PUBLIC_READ;
                 }
@@ -195,8 +195,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 if((flag & C_ACCESS_PUBLIC_VISIBLE) == 0){
                     flag ^= C_ACCESS_PUBLIC_VISIBLE;
                 }
-                */
                cms.chmod(cms.readAbsolutePath(folder), flag);
+               */
                cms.unlockResource(cms.readAbsolutePath(folder), false);
             }
             catch(CmsException ex) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/11 06:25:23 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2003/07/11 13:59:40 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.88 $ $Date: 2003/07/11 06:25:23 $
+ * @version $Revision: 1.89 $ $Date: 2003/07/11 13:59:40 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -296,54 +296,6 @@ class CmsShellCommands implements I_CmsConstants {
     public void anonymousUser() {
         try {
             System.out.println(m_cms.anonymousUser());
-        } catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Changes the group for this resource<BR/>
-     *
-     * The user may change this, if he is admin of the resource.
-     *
-     * @param filename The complete path to the resource.
-     * @param newGroup The new of the new group for this resource.
-     */
-    public void chgrp(String filename, String newGroup) {
-        try {
-            m_cms.chgrp(filename, newGroup);
-        } catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Changes the flags for this resource<BR/>
-     *
-     * The user may change the flags, if he is admin of the resource.
-     *
-     * @param filename The complete path to the resource.
-     * @param flags The new flags for the resource.
-     */
-    public void chmod(String filename, String flags) {
-        try {
-            m_cms.chmod(filename, Integer.parseInt(flags));
-        } catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Changes the owner for this resource<BR/>
-     *
-     * The user may change this, if he is admin of the resource.
-     *
-     * @param filename The complete path to the resource.
-     * @param newOwner The name of the new owner for this resource.
-     */
-    public void chown(String filename, String newOwner) {
-        try {
-            m_cms.chown(filename, newOwner);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }

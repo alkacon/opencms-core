@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/11 14:01:12 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/11 14:01:12 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -102,11 +102,11 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                 String orgFolder = completePath + foldername + "/";
                 orgFolder = orgFolder.substring(C_VFS_PATH_BODIES.length() - 1);
                 CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
-                CmsFolder folder = cms.readFolder(orgFolder);
+//                CmsFolder folder = cms.readFolder(orgFolder);
                 cms.lockResource(cms.readAbsolutePath(newfolder));
-                cms.chown(cms.readAbsolutePath(newfolder), cms.readOwner(folder).getName());
-                cms.chgrp(cms.readAbsolutePath(newfolder), cms.readGroup(folder).getName());
-                cms.chmod(cms.readAbsolutePath(newfolder), folder.getAccessFlags());
+//                cms.chown(cms.readAbsolutePath(newfolder), cms.readOwner(folder).getName());
+//                cms.chgrp(cms.readAbsolutePath(newfolder), cms.readGroup(folder).getName());
+//                cms.chmod(cms.readAbsolutePath(newfolder), folder.getAccessFlags());
                 cms.unlockResource(cms.readAbsolutePath(newfolder), false);
             }
             completePath += foldername + "/";
@@ -186,7 +186,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         String template = null;
 
         byte[] content = new byte[0];
-        CmsResource contentFile = null;
+        // CmsResource contentFile = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         //get the current filelist
@@ -225,14 +225,14 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                     // create the page file
                     CmsResource file = cms.createResource(currentFilelist, newFile, "pdfpage", new Hashtable(),content);
                     // now create the page content file
-                    contentFile = cms.createResource(C_VFS_PATH_BODIES + currentFilelist.substring(1,
+                    cms.createResource(C_VFS_PATH_BODIES + currentFilelist.substring(1,
                                                      currentFilelist.length()), newFile, "plain", new Hashtable(),
                                                      C_DEFAULTBODY.getBytes());
 
                     // set the flags for the content file to internal use, the content
 
                     // should not be loaded
-                    cms.chmod(cms.readAbsolutePath(contentFile), contentFile.getAccessFlags() + C_ACCESS_INTERNAL_READ);
+                    // cms.chmod(cms.readAbsolutePath(contentFile), contentFile.getAccessFlags() + C_ACCESS_INTERNAL_READ);
 
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
