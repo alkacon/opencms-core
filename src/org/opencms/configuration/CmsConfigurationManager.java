@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/06/21 09:54:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/07/18 16:31:32 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.dom.DOMDocumentType;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -200,7 +203,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }        
         m_dtdPrefixes = new HashMap();
         addDtdPrefixMapping(this);
-        m_configurations = new ArrayList();        
+        m_configurations = new ArrayList();
     }
     
     /**
@@ -261,10 +264,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     public Element generateXml(Element parent) {
         // add the <configuration> node
         Element configurationElement = parent.addElement(N_CONFIGURATION);
-        Iterator i = m_configurations.iterator();        
-        while (i.hasNext()) {
+        for (int i=0; i<m_configurations.size(); i++) {
             // append the individual configuration 
-            I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)i.next();
+            I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)m_configurations.get(i);
             configurationElement
                 .addElement(N_CONFIG)
                 .addAttribute(I_CmsXmlConfiguration.A_CLASS, configuration.getClass().getName());
@@ -285,7 +287,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // set the document type        
         DOMDocumentType docType = new DOMDocumentType();
         docType.setElementName(N_ROOT);
-        docType.setPublicID(configuration.getDtdUrlPrefix() + configuration.getDtdFilename());
+        docType.setSystemID(configuration.getDtdUrlPrefix() + configuration.getDtdFilename());
         result.setDocType(docType); 
         
         Element root = result.addElement(N_ROOT);
@@ -321,9 +323,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @return the initialized configuration class instance, or <code>null</code> if this is not found
      */
     public I_CmsXmlConfiguration getConfiguration(Class clazz) {
-        Iterator i = m_configurations.iterator();
-        while (i.hasNext()) {
-            I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)i.next();
+        for (int i=0; i<m_configurations.size(); i++) {
+            I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)m_configurations.get(i);
             if (clazz.equals(configuration.getClass())) {
                 return configuration;
             }
@@ -499,5 +500,51 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                 }                
             }
         }
+    }
+
+    /**
+     * Writes the XML configuration for the provided configuration instance.<p>
+     * 
+     * @param clazz the configuration class to write the XML for
+     * @throws IOException in case of I/O errors while writing
+     * @throws CmsConfigurationException in case the given class is not a valid configuration classe
+     */
+    public void writeConfiguration(Class clazz) throws IOException, CmsConfigurationException {
+                
+        I_CmsXmlConfiguration configuration = getConfiguration(clazz);
+        if (configuration == null) {
+            throw new CmsConfigurationException("Configuration manager write requested for unknown class '" + clazz.getName() + "'", CmsConfigurationException.C_CONFIGURATION_ERROR);
+        }
+        
+        // generate the file URL for the XML input
+        File file = new File(m_baseFolder, configuration.getXmlFileName());     
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("XML output file URL is " + file.getAbsolutePath());
+        }
+        
+        // generate the XML document 
+        Document config = generateXml(configuration);
+                
+        // output the document
+        XMLWriter writer = null;        
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setIndentSize(4);
+        format.setTrimText(false);
+        format.setEncoding("UTF-8");
+        
+        try {
+            OutputStream out = new FileOutputStream(file);
+            writer = new XMLWriter(out, format);        
+            writer.write(config); 
+            writer.flush();
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+        
+        if (OpenCms.getLog(this).isInfoEnabled()) {
+            OpenCms.getLog(this).info("Successfully updated XML configuration file " + file.getAbsolutePath() + " for class '" + configuration.getClass().getName() + "'");
+        }        
     }
 }

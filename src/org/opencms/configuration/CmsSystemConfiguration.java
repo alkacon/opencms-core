@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/07/09 15:50:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/18 16:31:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduleManager;
@@ -112,6 +113,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the context requested uri. */
     protected static final String N_REQUESTEDURI = "requesteduri";   
     
+    /** The node name for the request handler classes. */
+    protected static final String N_REQUESTHANDLER = "requesthandler";    
+    
+    /** The node name for the request handlers. */
+    protected static final String N_REQUESTHANDLERS = "requesthandlers";
+    
     /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINIT = "resourceinit";
     
@@ -151,6 +158,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The mail settings. */
     private CmsMailSettings m_mailSettings;
     
+    /** A list of instanciated request handler classes. */
+    private List m_requestHandlers;        
+    
     /** A list of instanciated resource init handler classes. */
     private List m_resourceInitHandlers;
     
@@ -174,6 +184,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_versionHistoryEnabled = true;
         m_versionHistoryMaxCount = 10;
         m_resourceInitHandlers = new ArrayList();
+        m_requestHandlers = new ArrayList();
         m_configuredJobs = new ArrayList();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : initialized");
@@ -207,12 +218,36 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }    
     
     /**
+     * Adds a new instance of a request handler class.<p>
+     * 
+     * @param clazz the class name of the request handler to instanciate and add
+     */
+    public void addRequestHandler(String clazz) {
+        Object initClass;
+        try {
+            initClass = Class.forName(clazz).newInstance();
+        } catch (Throwable t) {
+            OpenCms.getLog(this).error(". Request handler class '" + clazz  + "' could not be instanciated", t);
+            return;
+        }
+        if (initClass instanceof I_CmsRequestHandler) {
+            m_requestHandlers.add(initClass);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Request handler      : " + clazz + " instanciated");
+            }
+        } else {        
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).error(". Request handler      : " + clazz + " invalid");
+            }
+        }
+    }
+    
+    /**
      * Adds a new instance of a resource init handler class.<p>
      * 
      * @param clazz the class name of the resource init handler to instanciate and add
      */
     public void addResourceInitHandler(String clazz) {
-        // initialize "resourceinit" registry classes
         Object initClass;
         try {
             initClass = Class.forName(clazz).newInstance();
@@ -307,6 +342,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add resource init classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, "addResourceInitHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, 0, A_CLASS);    
+
+        // add request handler classes
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, "addRequestHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" +  N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, 0, A_CLASS);    
     }
     
     /**
@@ -315,6 +354,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public Element generateXml(Element parent) {
         // generate vfs node and subnodes
         Element systemElement = parent.addElement(N_SYSTEM);        
+        
+        if (OpenCms.getRunLevel() > 1) {
+            // initialized OpenCms instance is available, use latest values
+            m_localeManager = OpenCms.getLocaleManager();
+            m_mailSettings = OpenCms.getSystemInfo().getMailSettings();
+            m_configuredJobs = OpenCms.getScheduleManager().getJobs();
+            m_versionHistoryEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
+            m_versionHistoryMaxCount = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+            // m_resourceInitHandlers instance must be the one from configuration
+            // m_requestHandlers instance must be the one from configuration
+        }
         
         // i18n nodes
         Element i18nElement = systemElement.addElement(N_I18N);
@@ -339,7 +389,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         mailElement.addElement(N_MAILFROM).setText(m_mailSettings.getMailFromDefault());
         i = m_mailSettings.getMailHosts().iterator();
         while (i.hasNext()) {
-            CmsMailSettings.CmsMailHost host = (CmsMailSettings.CmsMailHost)i.next();
+            CmsMailHost host = (CmsMailHost)i.next();
             Element hostElement = mailElement.addElement(N_MAILHOST)
                 .addAttribute(A_NAME, host.getHostname())
                 .addAttribute(A_ORDER, host.getOrder().toString())
@@ -389,12 +439,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             .addAttribute(A_COUNT, new Integer(m_versionHistoryMaxCount).toString());       
         
         // resourceinit
-        // TODO: create XML entries for resource init
         Element resourceinitElement = systemElement.addElement(N_RESOURCEINIT);        
         i = m_resourceInitHandlers.iterator();
         while (i.hasNext()) {
             I_CmsResourceInit clazz = (I_CmsResourceInit)i.next();
             Element handlerElement = resourceinitElement.addElement(N_RESOURCEINITHANDLER);
+            handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());            
+        }
+        
+        // request handlers
+        Element requesthandlersElement = systemElement.addElement(N_REQUESTHANDLERS);        
+        i = m_requestHandlers.iterator();
+        while (i.hasNext()) {
+            I_CmsRequestHandler clazz = (I_CmsRequestHandler)i.next();
+            Element handlerElement = requesthandlersElement.addElement(N_REQUESTHANDLER);
             handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());            
         }
         
@@ -426,6 +484,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsMailSettings getMailSettings() {
         return m_mailSettings;
     }
+    
+    /**
+     * Returns the list of instanciated request handler classes.<p>
+     * 
+     * @return the list of instanciated request handler classes
+     */
+    public List getRequestHandlers() {
+        return m_requestHandlers;
+    }    
     
     /**
      * Returns the list of instanciated resource init handler classes.<p>

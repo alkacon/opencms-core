@@ -13,7 +13,8 @@
 	mail,
 	scheduler,
 	versionhistory,
-	resourceinit? )>
+	resourceinit?,
+	requesthandlers? )>
 
 <!--
 # Version history settings.
@@ -53,6 +54,15 @@
 <!ELEMENT resourceinit (resourceinithandler*)>
 <!ELEMENT resourceinithandler EMPTY>
 <!ATTLIST resourceinithandler class CDATA #REQUIRED>
+
+<!--
+# Request handlers:
+# Request handlers are used for special requests that should NOT be mapped to a VFS resource.
+# See the JavaDoc of interface org.opencms.main.I_CmsRequestHandler for more details.
+-->
+<!ELEMENT requesthandlers (requesthandler*)>
+<!ELEMENT requesthandler EMPTY>
+<!ATTLIST requesthandler class CDATA #REQUIRED>
 
 <!--
 # Scheduler settings:

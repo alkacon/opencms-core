@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/06/17 13:33:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/07/18 16:31:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -557,7 +557,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             CmsExportPoint point = (CmsExportPoint)i.next();
             resourceloadersElement.addElement(N_EXPORTPOINT)
                 .addAttribute(A_URI, point.getUri())
-                .addAttribute(A_DESTINATION, point.getDestination());
+                .addAttribute(A_DESTINATION, point.getConfiguredDestination());
         }     
 
         // add miscellaneous configuration nodes

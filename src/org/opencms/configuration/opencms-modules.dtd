@@ -1,0 +1,146 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (modules)>
+
+<!--
+# <modules> configuration:
+#
+# The configuration of the OpenCms modules is done here.
+-->
+
+<!ELEMENT modules (module*)>
+
+<!--
+# <module> node:
+# Most elements of a module are optional.
+# The only thing required are name and version.
+# Of course a module without any elements at all does not make much sense.	
+-->
+
+<!ELEMENT module (
+	name, 
+	nicename?, 
+	class?, 
+	description?,
+	version,
+	authorname?,
+	authoremail?,
+	datecreated?,
+	userinstalled?,
+	dateinstalled?,
+	dependencies?,
+	exportpoints?,
+	resources?,
+	parameters?
+)>
+
+<!--
+# The name of the module, must be a valid Java package name.
+-->
+<!ELEMENT name (#PCDATA)>
+
+<!--
+# The (optional) "nice" name of the module, can be some spelling name for display purposes.
+# If no nice name is provided, the <name> is used also as nice name.
+-->
+<!ELEMENT nicename (#PCDATA)>
+
+<!--
+# The (optional) module class.
+# A module class mut implement the interface org.opencms.module.I_CmsModule.
+# Implementing a module class allows to have the module execute special 
+# code on certain system events, like startup or shutdown.
+-->
+<!ELEMENT class (#PCDATA)>
+
+<!--
+# The (optional) description of the module.
+# This can be any text that describes the module.
+# If not set the module description is empty.
+-->
+<!ELEMENT description (#PCDATA)>
+
+<!--
+# The version of the module.
+-->
+<!ELEMENT version (#PCDATA)>
+
+<!--
+# The (optional) name of author of the module.
+# If not set this is empty.
+-->
+<!ELEMENT authorname (#PCDATA)>
+
+<!--
+# The (optional) email address of author of the module.
+# If not set this is empty.
+-->
+<!ELEMENT authoremail (#PCDATA)>
+
+<!--
+# The (optinal) date the module was created.
+# If not set some default date in the past is used.
+-->
+<!ELEMENT datecreated (#PCDATA)>
+
+<!--
+# The (optinal) name of the user who uploaded/installed this module.
+# If not set this is empty.
+-->
+<!ELEMENT userinstalled (#PCDATA)>
+
+<!--
+# The (optinal) date the module was uploaded/installed
+# If not set some default date in the past is used.
+-->
+<!ELEMENT dateinstalled (#PCDATA)>
+
+<!--
+# The (optional) dependencies of the module.
+# A module A might require another module B to be installed to work correctly,
+# for example if the other module B contains certain classes, libs or resources
+# also required by module A. Of course more then one dependency is also possible.
+# The dependency list contains the name and (minimum) version of the required modules.
+-->
+<!ELEMENT dependencies (dependency*)>
+
+<!ELEMENT dependency EMPTY>
+<!ATTLIST dependency 
+	name CDATA #REQUIRED
+	version CDATA #IMPLIED>
+
+<!--
+# The (optional) export points of the module.
+# An export point is a folder inside the OpenCms VFS that is copied 1:1 to a 
+# location in the real file system during publishing. This is for example used to 
+# copy Java classes, JAR files or other system resouces from the VFS to the WEB-INF/classes or 
+# WEB-INF/lib folder. No link processing is done for resources written with export points. 
+-->
+<!ELEMENT exportpoints (exportpoint*)>
+<!ELEMENT exportpoint EMPTY>
+<!ATTLIST exportpoint 
+	uri CDATA #REQUIRED
+	destination CDATA #REQUIRED>
+	
+<!--
+# The (optional) resources of the module.
+# Any VFS resource configured here with it's uri is considered to be part of the module.
+# If a folder name is given all resources in the folder are also part of the module.
+# If a module is exported, the modules resources are exported together with the module,
+# the same goes for importing. 
+# Warning: If a module is deleted all module resources are also deleted!
+-->	
+<!ELEMENT resources (resource*)>
+<!ELEMENT resource EMPTY>
+<!ATTLIST resource uri CDATA #REQUIRED>
+
+<!--
+# The (optional) module parameters.
+# A module parameter is a simple key / value pair.
+# The information provided in the parameters can be used for example to
+# configure the module <class>.
+-->	
+<!ELEMENT parameters (param*)>
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
