@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2002/08/16 14:00:09 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/08/23 09:02:03 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -260,6 +260,11 @@ function DisplayChanged()
   }
 }
 
+var linkEditor = null;
+var linkEditorRange = null;
+var linkEditorSelection = null;
+var linkEditorStyleInputs = null;
+
 // which button is clicked
 function doEditHTML(para)
 {
@@ -405,12 +410,20 @@ function doEditHTML(para)
         break;     
     case 49:    
         DECMD_HYPERLINK_onclick();
-        break;                         
+        break;                
+    case 50:
+        var winheight = (USE_LINKSTYLEINPUTS?240:175);
+        linkEditor = EDITOR.EDIT_HTML;
+        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
+        linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
+        linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
+        linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
+        linkwin = window.open('edit_html_linkall.html','SetLink', "width=450, height=" + winheight + ", resizable=no, top=300, left=250");        
+        break;      	         
     default:
         alert("Sorry, the requested function code " + para + " is not implemented.");          
     }   
 }
-
     
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
