@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.1.50 Arakis - xx January 2001
+OpenCms 4.1.50 Arakis - 11 January 2001
 
 * Bugfixing Editor. Empty-titles causes not a nullpointer-exception any more.
 - Enabled cache-control headers vor proxy-caches.
