@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/18 17:01:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A collector to fetch sorted XML contents in a folder or subtree based on their priority and date values.<p>
+ * A collector to fetch sorted XML contents in a folder or subtree based on their priority
+ * and date or title values.<p>
+ * 
+ * The date or title information has to be stored as property of each resource.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.2
  */

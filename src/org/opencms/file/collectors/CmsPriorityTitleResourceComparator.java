@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/18 16:57:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,12 +50,10 @@ import java.util.Map;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.2 
  * 
- * @see org.opencms.file.CmsResource#getComparatorKey()
- * @see org.opencms.file.CmsResource#setComparatorKey(Object)
  */
 public class CmsPriorityTitleResourceComparator implements Comparator {
 
