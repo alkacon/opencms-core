@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/30 07:49:07 $
- * Version: $Revision: 1.181 $
+ * Date   : $Date: 2001/07/30 16:09:52 $
+ * Version: $Revision: 1.182 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.181 $ $Date: 2001/07/30 07:49:07 $
+ * @version $Revision: 1.182 $ $Date: 2001/07/30 16:09:52 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1149,6 +1149,22 @@ public void deleteFile(String filename) throws CmsException {
  */
 public void deleteFolder(String foldername) throws CmsException {
     deleteResource(foldername);
+}
+
+/**
+ * Deletes a folder.
+ * <br>
+ * This is a very complex operation, because all sub-resources may be
+ * deleted too.
+ *
+ * @param foldername the complete path of the folder.
+ *
+ * @exception CmsException if the folder couldn't be deleted, or if the user
+ * has not the rights to delete this folder.
+ *
+ */
+public void deleteEmptyFolder(String foldername) throws CmsException {
+    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
 }
 
 /**
