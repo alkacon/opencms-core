@@ -160,8 +160,8 @@ Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</
             Set set = cache.getCachedResources(cms);
 
             if (cache.cacheOffline()) {
-                Set online = new TreeSet();
-                Set offline = new TreeSet();
+                List online = new ArrayList();
+                List offline = new ArrayList();
                 Iterator i = set.iterator();
                 while(i.hasNext()) {
                     String resource = (String)i.next();
@@ -171,6 +171,8 @@ Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</
                         online.add(resource);
                     }
                 }
+                Collections.sort(offline);
+                Collections.sort(online);
 
                 out.write("<h2>Online resources:</h2>");
                 i = online.iterator();
@@ -180,7 +182,10 @@ Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</
                     if (showall) {
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
-                            Iterator s = variations.iterator();
+	                        List outlist = new ArrayList();
+                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next()));
+                            Collections.sort(outlist);
+                            Iterator s = outlist.iterator();
                             while (s.hasNext()) {
                                 String v = (String)s.next();
                                 out.write("&nbsp; &nbsp; &nbsp; &nbsp; Entry: " + v + "<br>");
@@ -198,7 +203,10 @@ Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</
                     if (showall) {
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
-                            Iterator s = variations.iterator();
+	                        List outlist = new ArrayList();
+                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next()));
+                            Collections.sort(outlist);
+                            Iterator s = outlist.iterator();
                             while (s.hasNext()) {
                                 String v = (String)s.next();
                                 out.write("&nbsp; &nbsp; &nbsp; &nbsp; Entry: " + v + "<br>");
@@ -216,7 +224,10 @@ Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</
                     if (showall) {
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
-                            Iterator s = variations.iterator();
+	                        List outlist = new ArrayList();
+                            for(Iterator j = variations.iterator(); j.hasNext(); outlist.add(j.next()));
+                            Collections.sort(outlist);
+                            Iterator s = outlist.iterator();
                             while (s.hasNext()) {
                                 String v = (String)s.next();
                                 out.write("&nbsp; &nbsp; &nbsp; &nbsp; Entry: " + v + "<br>");
