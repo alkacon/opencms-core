@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 1999/12/23 16:48:30 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/03 10:54:24 $
  */
 public interface I_CmsConstants
 {
@@ -318,5 +318,10 @@ public interface I_CmsConstants
       * This is the defintion for a database mountpoint.
       */
      static final int C_MOUNTPOINT_MYSQL=2;
+     
+     /**
+      * The name of the rood folder
+      */
+     static final String C_ROOT="/";
      
 }
