@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2004/12/10 11:42:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/13 11:30:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,12 +47,12 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.2
  */
 public class CmsImageGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "img_fs.jsp";
 
@@ -84,73 +85,87 @@ public class CmsImageGallery extends A_CmsGallery {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#applyButton()
      */
     public String applyButton() {
+
         if (MODE_VIEW.equals(getParamDialogMode())) {
-            return button(null, null, "apply_in", "button.paste", 0); 
+            // in view mode, generate disabled button
+            return button(null, null, "apply_in", "button.paste", 0);
         } else {
+            // in editor or widget mode, generate enabled button
             String uri = getParamResourcePath();
             if (CmsStringUtil.isEmpty(getParamDialogMode())) {
+                // in editor mode, create a valid link from resource path
                 uri = getJsp().link(uri);
             }
-            return button("javascript:pasteImage('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
+            return button(
+                "javascript:pasteImage('" + uri + "',document.form.title.value, document.form.title.value);",
+                null,
+                "apply",
+                "button.paste",
+                0);
         }
     }
-    
+
     /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
      */
     public String buildGalleryItemPreview() {
-        
-        StringBuffer html = new StringBuffer();                   
+
+        StringBuffer html = new StringBuffer(16);
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
                     html.append("<img alt=\"\" src=\"");
                     html.append(getJsp().link(getParamResourcePath()));
-                    html.append("\" border=\"0\">");                   
+                    html.append("\" border=\"0\">");
                 }
             }
         } catch (CmsException e) {
-            // ignore this exception
-        }                
-        
+            // reading the resource failed
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
+            }
+        }
+
         return html.toString();
-    }  
-        
+    }
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
-        
+
         return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
-    }     
-    
+    }
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewBodyStyle()
      */
     public String getPreviewBodyStyle() {
-        
+
         return "";
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#previewButton()
      */
     public String previewButton() {
-        return "";        
+
+        return "";
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#targetSelectBox()
      */
     public String targetSelectBox() {
+
         return "";
     }
 }

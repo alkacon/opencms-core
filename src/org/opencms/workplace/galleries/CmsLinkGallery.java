@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2004/12/10 11:42:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/13 11:30:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,12 +55,12 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.2
  */
 public class CmsLinkGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
 
@@ -93,20 +93,22 @@ public class CmsLinkGallery extends A_CmsGallery {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#applyButton()
      */
     public String applyButton() {
-        
+
         if (MODE_VIEW.equals(getParamDialogMode())) {
-            return button(null, null, "apply_in", "button.paste", 0); 
+            // in view mode, generate disabled button
+            return button(null, null, "apply_in", "button.paste", 0);
         } else {
             String uri = getParamResourcePath();
             if (CmsStringUtil.isEmpty(getParamDialogMode())) {
+                // in editor mode, create a valid link from resource path
                 uri = getJsp().link(uri);
             } else if (MODE_WIDGET.equals(getParamDialogMode())) {
-                // get real link target in widget mode
+                // get real link target in widget mode from file content
                 try {
                     CmsResource res = getCms().readResource(getParamResourcePath());
                     CmsFile file = getCms().readFile(getCms().getSitePath(res));
@@ -114,33 +116,41 @@ public class CmsLinkGallery extends A_CmsGallery {
                 } catch (CmsException e) {
                     // this should never happen
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());    
-                    }    
+                        OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
+                    }
                 }
             }
-            
-            return button("javascript:link('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
+
+            return button(
+                "javascript:link('" + uri + "',document.form.title.value, document.form.title.value);",
+                null,
+                "apply",
+                "button.paste",
+                0);
         }
     }
-    
+
     /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
      */
     public String buildGalleryItemPreview() {
-        
-        StringBuffer html = new StringBuffer();
+
+        StringBuffer html = new StringBuffer(32);
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
-                    String title = getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE);      
-                    String description = getJsp().property(I_CmsConstants.C_PROPERTY_DESCRIPTION, getParamResourcePath());
+                    String title = getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE);
+                    String description = getJsp().property(
+                        I_CmsConstants.C_PROPERTY_DESCRIPTION,
+                        getParamResourcePath());
                     String keywords = getJsp().property(I_CmsConstants.C_PROPERTY_KEYWORDS, getParamResourcePath());
                     String lastmodified = getSettings().getMessages().getDateTime(res.getDateLastModified());
-                    html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
-                    // Target
+                    html
+                        .append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
+                    // file target
                     CmsFile file = getCms().readFile(getCms().getSitePath(res));
                     String linkTarget = new String(file.getContents());
                     html.append("<tr align=\"left\">");
@@ -148,58 +158,66 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html.append(key("input.linkto"));
                     html.append("</b></td>");
                     html.append("<td width=\"65%\"><a href=\"#\" onclick=\"");
-                    html.append("javascript:window.open('"+getJsp().link(getCms().getSitePath(res))+"','_preview','')"); 
+                    html.append("javascript:window.open('");
+                    html.append(getJsp().link(getCms().getSitePath(res)));
+                    html.append("','_preview','')");
                     html.append("\">");
                     html.append(linkTarget);
                     html.append("</a></td>");
-                    // Name
-                    html.append(previewRow(key("label.name"), res.getName()));                    
-                    // Title
-                    html.append(previewRow(key("input.title"), title));                    
-                    // last modified
-                    html.append(previewRow(key("input.datelastmodified"), lastmodified));                                               
-                    // Description if exists
+                    // file name
+                    html.append(previewRow(key("label.name"), res.getName()));
+                    // file title
+                    html.append(previewRow(key("input.title"), title));
+                    // file last modified date
+                    html.append(previewRow(key("input.datelastmodified"), lastmodified));
+                    // file description if existing
                     if (CmsStringUtil.isNotEmpty(description)) {
-                        html.append(previewRow(key("input.description"), description));                        
+                        html.append(previewRow(key("input.description"), description));
                     }
-                    // Keywords if exists
+                    // file keywords if existing
                     if (CmsStringUtil.isNotEmpty(keywords)) {
-                        html.append(previewRow(key("input.keywords"), keywords));                        
+                        html.append(previewRow(key("input.keywords"), keywords));
                     }
-                    html.append("</table>");                    
+                    html.append("</table>");
                 }
             }
         } catch (CmsException e) {
-            // ignore this exception
+            // reading the resource or property value failed
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(e);
+            }
         }
         return html.toString();
-    }           
-    
+    }
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
-        
+
         return CmsResourceTypePointer.C_RESOURCE_TYPE_ID;
-    } 
-    
-    /**
-     * @see org.opencms.workplace.galleries.A_CmsGallery#wizardButton()
-     */
-    public String wizardButton() {
-        
-        return button("javascript:wizard();", null, "wizard", "title.new", 0);
     }
-    
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#getHeadFrameSetHeight()
+     */
+    public String getHeadFrameSetHeight() {
+
+        return "450";
+    }
+
     /**
      * Returns the url for the new CmsResourceTypePointer dialog.<p>
      * 
      * @return the url for the wizard dialog
      */
     public String getWizardUrl() {
-        
-        StringBuffer wizardUrl = new StringBuffer();
-        wizardUrl.append(getJsp().link(C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.C_RESOURCE_TYPE_NAME).getNewResourceUri()));
+
+        StringBuffer wizardUrl = new StringBuffer(8);
+        wizardUrl.append(getJsp().link(
+            C_PATH_DIALOGS
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.C_RESOURCE_TYPE_NAME)
+                    .getNewResourceUri()));
         wizardUrl.append("?action=newform&");
         wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);
         wizardUrl.append("=");
@@ -209,16 +227,24 @@ public class CmsLinkGallery extends A_CmsGallery {
         wizardUrl.append("=gallery_list&");
         wizardUrl.append(CmsNewResource.PARAM_CURRENTFOLDER);
         wizardUrl.append("=");
-                
-        return wizardUrl.toString();        
+
+        return wizardUrl.toString();
     }
-    
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#wizardButton()
+     */
+    public String wizardButton() {
+
+        return button("javascript:wizard();", null, "wizard", "title.new", 0);
+    }
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListHeadline()
      */
     protected String buildGalleryItemListHeadline() {
-        
-        StringBuffer headline = new StringBuffer();
+
+        StringBuffer headline = new StringBuffer(16);
         headline.append("<tr>");
         headline.append("<td class=\"headline\">&nbsp;</td>");
         headline.append("<td class=\"headline\" width=\"25%\">");
@@ -231,15 +257,7 @@ public class CmsLinkGallery extends A_CmsGallery {
         headline.append(key("input.linkto"));
         headline.append("</td>");
         headline.append("</tr>");
-        
+
         return headline.toString();
-    }
-    
-    /**
-     * @see org.opencms.workplace.galleries.A_CmsGallery#getHeadFrameSetHeight()
-     */
-    public String getHeadFrameSetHeight() {
-        
-        return "450";
     }
 }

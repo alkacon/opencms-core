@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2004/12/10 11:42:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/13 11:30:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsResource;
@@ -50,24 +51,25 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
 public class CmsOpenGallery extends CmsDialog {
-    
+
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "opengallery";        
-    
+    public static final String DIALOG_TYPE = "opengallery";
+
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsOpenGallery(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -76,27 +78,32 @@ public class CmsOpenGallery extends CmsDialog {
      * @param res the JSP response
      */
     public CmsOpenGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    } 
-    
+    }
+
     /**
-     * Generates a javascript window open for the requested gallerytype.<p>
+     * Generates a javascript window open for the requested gallery type.<p>
      * 
-     * @return a javascript window open for the requested gallerytype
+     * @return a javascript window open for the requested gallery type
      */
     public String openGallery() {
-        
-        StringBuffer jsOpener = new StringBuffer();
+
+        StringBuffer jsOpener = new StringBuffer(32);
         String galleryType = null;
         try {
             CmsResource res = getCms().readResource(getParamResource());
             if (res != null) {
-                String galleryPath = getParamResource();                
+                // get gallery path
+                String galleryPath = getParamResource();
                 if (!galleryPath.endsWith("/")) {
                     galleryPath += "/";
                 }
+                // get the matching gallery type name
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                String galleryUri = A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=" + galleryType;
+                String galleryUri = A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX
+                    + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME
+                    + "=" + galleryType;
                 jsOpener.append("window.open('");
                 jsOpener.append(getJsp().link(galleryUri));
                 jsOpener.append("&");
@@ -113,24 +120,22 @@ public class CmsOpenGallery extends CmsDialog {
             }
         } catch (CmsException e) {
             // requested type is not configured
-            String message = "Unable to open gallery for gallery type '"
-                + galleryType
-                + "'";                
+            String message = "Unable to open gallery for gallery type '" + galleryType + "'";
             OpenCms.getLog(CmsOpenGallery.class).error(message);
             throw new RuntimeException(message, e);
         }
-        
+
         return jsOpener.toString();
     }
-        
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);              
-    }     
+        setParamDialogtype(DIALOG_TYPE);
+    }
 }

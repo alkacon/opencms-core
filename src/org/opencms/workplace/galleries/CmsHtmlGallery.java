@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2004/12/10 15:37:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/13 11:30:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,12 +48,13 @@ import javax.servlet.jsp.PageContext;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.2
  */
 public class CmsHtmlGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "html_fs.jsp";
 
@@ -86,91 +87,104 @@ public class CmsHtmlGallery extends A_CmsGallery {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
+     * Generates the apply button and distinguishes between the different gallery modes.<p>
+     * 
      * @see org.opencms.workplace.galleries.A_CmsGallery#applyButton()
      */
     public String applyButton() {
+
         if (MODE_VIEW.equals(getParamDialogMode())) {
-            return button(null, null, "apply_in", "button.paste", 0); 
+            // in view mode, generate disabled button
+            return button(null, null, "apply_in", "button.paste", 0);
         } else if (MODE_WIDGET.equals(getParamDialogMode())) {
+            // in widget mode, get file content to apply to input field
             String content = "";
             try {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 CmsFile file = getCms().readFile(getCms().getSitePath(res));
                 content = new String(file.getContents());
+                // prepare the content for javascript usage
                 content = CmsStringUtil.escapeJavaScript(content);
             } catch (CmsException e) {
                 // this should never happen
                 if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());    
-                }    
+                    OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
+                }
             }
             content = CmsEncoder.escapeXml(content);
+            // use javascript function call with content as parameter
             return button("javascript:pasteContent('" + content + "')", null, "apply", "button.paste", 0);
         } else {
+            // in editor mode, use simple javascript function call
             return button("javascript:pasteContent()", null, "apply", "button.paste", 0);
         }
     }
-    
+
     /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
      */
     public String buildGalleryItemPreview() {
-        
-        StringBuffer html = new StringBuffer();
+
+        StringBuffer html = new StringBuffer(16);
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
                     html.append("<p><div id=\"icontent\" width=\"100%\" height=\"100%\">");
-                    html.append(getJsp().getContent(getParamResourcePath()));                    
-                    html.append("</div></p>");                    
+                    html.append(getJsp().getContent(getParamResourcePath()));
+                    html.append("</div></p>");
                 }
             }
         } catch (CmsException e) {
-            // ignore this exception
+            // reading the resource failed
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
+            }
         }
         return html.toString();
-    }   
-    
+    }
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
-        
+
         return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewBodyStyle()
      */
     public String getPreviewBodyStyle() {
-        
+
         return new String(" class=\"dialog\" unselectable=\"on\"");
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewDivStyle()
      */
     public String getPreviewDivStyle() {
-        
+
         return new String("style=\"width: 100%; margin-top: 5px\"");
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#previewButton()
      */
     public String previewButton() {
-        return "";        
+
+        return "";
     }
-    
+
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#targetSelectBox()
      */
     public String targetSelectBox() {
+
         return "";
-    }       
+    }
 }
