@@ -10072,6 +10072,15 @@
             </properties>
         </file>
         <file>
+            <source>system/workplace/templates/backoffice_edit</source>
+            <destination>system/workplace/templates/backoffice_edit</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>		
+        <file>
             <source>system/workplace/templates/ButtonTemplate</source>
             <destination>system/workplace/templates/ButtonTemplate</destination>
             <type>plain</type>
