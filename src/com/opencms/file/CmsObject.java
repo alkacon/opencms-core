@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/11/10 17:10:08 $
-* Version: $Revision: 1.432 $
+* Date   : $Date: 2004/01/06 12:52:05 $
+* Version: $Revision: 1.433 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.432 $
+ * @version $Revision: 1.433 $
  */
 public class CmsObject {
 
@@ -2476,7 +2476,7 @@ public class CmsObject {
         clearcache();
         
         // import the resources
-        m_driverManager.importFolder(this, m_context, importFile, addSiteRoot(importPath));
+        m_driverManager.importFolder(this, m_context, importFile, importPath);
         
         // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         clearcache();
