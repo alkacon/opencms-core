@@ -8,7 +8,7 @@
 
     addMenuEntry(resource_id, "language_key(explorer.context.project)",         "/XMLWORKPLACE/resource_to_project.html?initial=true","''",   "rules_key(a d dddd dddd dddd dddd dddd dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.copytoproject)",   "/XMLWORKPLACE/copy_to_project.html?initial=true",    "''",   "rules_key(d a dddd dddd dddd dddd dddd dddd dddd dddd)");
-    addMenuEntry(resource_id, "language_key(explorer.context.publish)",         "/JSPWORKPLACE/dialogs/publishresource.html",   "''",   "rules_key(d d iaaa iaaa iiii dddd dddd dddd iiii dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.publish)",         "/JSPWORKPLACE/dialogs/publishresource.html",   "''",   "rules_key(d d iaaa iaaa iaaa dddd dddd dddd iiii dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(a a aaaa aaaa aaaa dddd dddd dddd aaaa dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.editlink)",        "/XMLWORKPLACE/explorer_files_new_link.html?newlink=false",   "''","rules_key(d d iiii aaai aaai dddd dddd dddd aaai dddd)");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/09 10:17:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,13 @@ import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Utils;
 
+import org.opencms.main.OpenCms;
+import org.opencms.threads.CmsPublishThread;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.opencms.main.OpenCms;
-import org.opencms.threads.CmsPublishThread;
 
 /**
  * Creates the dialogs for publishing a project or a resource.<p> 
@@ -54,7 +54,7 @@ import org.opencms.threads.CmsPublishThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -246,10 +246,19 @@ public class CmsPublishProject extends CmsReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             default:
-                if (showUnlockConfirmation()) {   
-                    // some resources are locked, unlock them before publishing          
-                    try {
+                try {
+                    if ("true".equals(getParamDirectpublish())) {
+                        // check if the resource is locked in direct publish mode                     
+                        org.opencms.lock.CmsLock lock = getCms().getLock(getParamResource());
+                        if (!lock.isNullLock()) {
+                            // resource is locked, so unlock it
+                            getCms().unlockResource(getParamResource(), false);
+                        }  
+                    }
+                    if (showUnlockConfirmation()) {   
+                        // some resources are locked, unlock them before publishing                                 
                         if ("true".equals(getParamDirectpublish())) {
+                            // unlock subresources of a folder
                             String folderName = getParamResource();
                             if (!folderName.endsWith("/")) {
                                 folderName += "/";
@@ -257,16 +266,17 @@ public class CmsPublishProject extends CmsReport {
                             getCms().lockResource(folderName);
                             getCms().unlockResource(folderName, false);
                         } else {
+                            // unlock all project resources
                             getCms().unlockProject(Integer.parseInt(getParamProjectid()));                               
-                        } 
-                    } catch (CmsException e) {
-                        // error while unlocking resources, show error screen
-                        setParamErrorstack(e.getStackTraceAsString());
-                        setParamMessage(key("error.message.projectlockchange"));
-                        setParamReasonSuggestion(key("error.reason.projectlockchange") + "<br>\n" + key("error.suggestion.projectlockchange"));
-                        getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-                    }        
-                }
+                        }                         
+                    } 
+                } catch (CmsException e) {
+                    // error while unlocking resources, show error screen
+                    setParamErrorstack(e.getStackTraceAsString());
+                    setParamMessage(key("error.message.projectlockchange"));
+                    setParamReasonSuggestion(key("error.reason.projectlockchange") + "<br>\n" + key("error.suggestion.projectlockchange"));
+                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                }                    
                 
                 // start different publish threads for direct publish and publish project             
                 CmsPublishThread thread = null;
