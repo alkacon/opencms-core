@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/03/04 15:10:29 $
- * Version: $Revision: 1.476 $
+ * Date   : $Date: 2005/03/04 15:42:41 $
+ * Version: $Revision: 1.477 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.476 $ $Date: 2005/03/04 15:10:29 $
+ * @version $Revision: 1.477 $ $Date: 2005/03/04 15:42:41 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4634,6 +4634,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         int publishProjectId = dbc.currentProject().getId();
         boolean temporaryProject = (dbc.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
         boolean backupEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
+        boolean directPublish = publishList.isDirectPublish();
         int backupTagId = 0;
 
         try {
@@ -4680,7 +4681,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             // the project was stored in the backuptables for history
             // it will be deleted if the project_flag is C_PROJECT_TYPE_TEMPORARY
-            if (temporaryProject) {
+            if ((temporaryProject) && (!directPublish)) {
                 try {
                     m_projectDriver.deleteProject(dbc, dbc.currentProject());
                 } catch (CmsException e) {
