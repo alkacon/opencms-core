@@ -3,11 +3,12 @@
 <TEMPLATE>
 <![CDATA[
 <HTML>
+
 <script language=JavaScript>
 <!--
 function show_help()
 {
-	return '2_2_2_2_4_1.html';
+	return '2_2_2_2_4_3.html';
 }
 //-->
 </script>
@@ -21,27 +22,26 @@ function show_help()
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 
-<!-- tabele to center box-->
+
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<!-- build dialog -->
-<form id=RENAME name=RENAME>
-<table cellspacing=0 cellpadding=0 border=2 width=300px>
+<form id=MOVE name=MOVE>
+<table cellspacing=0 cellpadding=0 border=2 width=310px>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 			
 			<!-- Begin tablehead blue -->
 			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="title.rename" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+           		<td colspan=2 class="head">]]><LABEL value="title.move" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
 			</tr>
-			<!-- End tablehead blue -->
+			<!-- Ende tablehead blue -->
 			
 			<!-- Begin empty row -->
 			<tr> 
            		<td colspan=2 class="leerzeile">&nbsp;</td>
 			</tr>
-			<!-- Ende empty row -->
+			<!-- End empty row -->
 			
 			<tr>
 				<td class=dialogtxt colspan=2>
@@ -50,14 +50,18 @@ function show_help()
 				</td>
 			</tr>
 			
-			<!-- Begin Textfield -->
+			<!-- Begin dropdown-->
 			<tr>
-				<td class=formular width=10%>
-					]]><LABEL value="input.name" /><![CDATA[:</td>
-				<td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="50" length="50" method="setValue" /><![CDATA[</td>				
-				</tr>
-			<!-- End Textfield -->
-
+				<td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>				
+				<td class=dialogtxt>
+					]]><SELECT class="textfeld" name="folder" width="150" method="getFolder" /><![CDATA[
+				</td>
+			</tr>
+			<!-- End dropdown-->
+			<tr> 
+           		<td colspan=2 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked>]]><LABEL value="input.keeprights" /><![CDATA[</td>
+			</tr>
+			
 			<!-- Begin empty row -->
 			<tr> 
            		<td colspan=2 class="leerzeile">&nbsp;</td>
@@ -68,7 +72,7 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='rename.html?name='+document.RENAME.name.value;"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='move.html?&newfolder='+document.MOVE.folder.value+'&flags='+document.MOVE.RIGHT.checked;"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='explorer_files.html'"></td>
 				</tr>
 				</table>
@@ -82,12 +86,13 @@ function show_help()
 </form>
 </td></tr>
 </table>
+
 </body>
 </html>
 ]]>
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" />
+<ERRORPAGE title="error.title.copy" message="error.message.copy" reason="error.reason.copy" suggestion="error.suggestion.copy" ref="explorer_files.html" />
 </TEMPLATE>
 </WORKPLACE>

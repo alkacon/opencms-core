@@ -98,7 +98,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
@@ -157,7 +157,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
@@ -216,7 +216,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
@@ -278,7 +278,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
@@ -330,7 +330,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
@@ -382,7 +382,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>

@@ -6,6 +6,10 @@
 
 <script language=JavaScript>
 <!--
+
+//for the filename to delete
+var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
+
 function show_help()
 {
 	return '2_2_2_2_4_4.html';
@@ -26,7 +30,7 @@ function show_help()
 <tr><td align=middle valign=center>
 
 <form id=DELETE name=DELETE>
-]]><MESSAGEBOX title="messagebox.title.delete" message1="messagebox.message1.delete" message2="messagebox.message2.delete" button1="button.ok" button2="button.cancel" link1="delete.html?delete=true" link2="explorer_files.html" /><![CDATA[
+]]><MESSAGEBOX title="messagebox.title.delete"  message1="messagebox.message1.delete" message2="messagebox.message2.delete" button1="button.ok" button2="button.cancel" link1="delete.html?delete=true" link2="explorer_files.html" /><![CDATA[
 </form>
 </td></tr>
 </table>

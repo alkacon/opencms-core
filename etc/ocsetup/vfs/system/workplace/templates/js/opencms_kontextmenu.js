@@ -193,7 +193,8 @@ function doAction(action) {
 		}
 		case 5:
 		{
-			location.href='explorer_files_move.html';
+			//location.href='explorer_files_move.html';
+			location.href='move.html?file='+ kontextparam;
 			break;
 		} case 6: {
 			location.href='rename.html?file='+ kontextparam;

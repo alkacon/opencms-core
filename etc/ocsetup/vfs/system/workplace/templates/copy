@@ -33,7 +33,7 @@ function show_help()
 			
 			<!-- Begin tablehead blue -->
 			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="title.copy" /><![CDATA[</td>
+           		<td colspan=2 class="head">]]><LABEL value="title.copy" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
 			</tr>
 			<!-- Ende tablehead blue -->
 			
