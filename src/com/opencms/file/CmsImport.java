@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/06/11 17:04:23 $
-* Version: $Revision: 1.93 $
+* Date   : $Date: 2003/06/12 09:39:08 $
+* Version: $Revision: 1.94 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.93 $ $Date: 2003/06/11 17:04:23 $
+ * @version $Revision: 1.94 $ $Date: 2003/06/12 09:39:08 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -545,7 +545,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param fileCodes code of the written files (for the registry)
      *       not used when null
      */
-    private void importResource(
+    private CmsResource importResource(
         String source, 
         String destination, 
         String type, 
@@ -562,6 +562,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         boolean success = true;
         byte[] content = null;
         String fullname = null;
+        CmsResource res = null;
                 
         try {
             if (m_importingChannelData) {
@@ -573,8 +574,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     if ((type.equalsIgnoreCase(C_TYPE_FOLDER_NAME)) && (! destination.endsWith(C_FOLDER_SEPARATOR))) {
                         destination += C_FOLDER_SEPARATOR;
                     }
-                    CmsResource res = m_cms.readFileHeader(C_ROOT + destination);
-                    channelId = m_cms.readProperty(res.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CHANNELID);
+                    CmsResource channel = m_cms.readFileHeader(C_ROOT + destination);
+                    channelId = m_cms.readProperty(channel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CHANNELID);
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
@@ -613,7 +614,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             } 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
                
-            CmsResource res = m_cms.importResource(source, destination, type, user, group, access, lastmodified,
+            res = m_cms.importResource(source, destination, type, user, group, access, lastmodified,
                                         properties, launcherStartClass, content, m_importPath);
 
             if(res != null){
@@ -646,6 +647,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 fileCodes.addElement(new String(digestContent));
             }
         }
+        
+        return res;
     }
 
     /**
@@ -798,7 +801,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     }
     
                     // import the specified file 
-                    importResource(source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
 
 					// write all imported access control entries for this file
 					acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
@@ -814,9 +817,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 						String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
 
 						// add the entry to the list
-						// addImportAccessControlEntry(resid, id, allowed, denied, flags);
+						addImportAccessControlEntry(res, id, allowed, denied, flags);
 					}
-					// importAccessControlEntries(destination);
+					importAccessControlEntries(res);
 					
                 } else {
                     // skip the file import, just print out the information to the report
@@ -1040,13 +1043,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
     }
 
-	private void importAccessControlEntries(String destination)
+	private void importAccessControlEntries(CmsResource res)
 		throws CmsException {
 		try {
 			try {
 				m_report.print(m_report.key("report.importing_accesscontrolentries"), I_CmsReport.C_FORMAT_NOTE);
 				m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-				m_cms.writeAccessControlEntries(C_ROOT + destination, m_acEntriesToCreate);
+				m_cms.writeAccessControlEntries(res.getAbsolutePath(), m_acEntriesToCreate);
 				m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 			} catch (CmsException exc){
 				m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
@@ -1058,9 +1061,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 		}
 	}
 	
-	private void addImportAccessControlEntry (String resid, String id, String allowed, String denied, String flags) {
+	private void addImportAccessControlEntry (CmsResource res, String id, String allowed, String denied, String flags) {
 
-		CmsAccessControlEntry ace = new CmsAccessControlEntry(new CmsUUID(resid), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
+		CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceAceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
 		m_acEntriesToCreate.add(ace);
 	}		
 		

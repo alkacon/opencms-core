@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/11 17:03:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/12 09:38:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.12 $ $Date: 2003/06/11 17:03:42 $
+ * @version $Revision: 1.13 $ $Date: 2003/06/12 09:38:09 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
@@ -1281,7 +1281,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 folderIdIndex.put(currentFolder.getResourceId(), newFolder.getResourceId());
                 
                 // copy the access control entries of the folder
-				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFolder.getResourceId(), newFolder.getResourceId());
+				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFolder.getResourceAceId(), newFolder.getResourceAceId());
 
                 // copy properties
                 Map props = new HashMap();
@@ -1359,6 +1359,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     m_sqlManager.closeAll(conn, stmt, null);
                 }
                 folderIdIndex.put(currentFolder.getResourceId(), onlineFolder.getResourceId());
+
+				// copy the access control entries of the folder
+				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFolder.getResourceAceId(), newFolder.getResourceAceId());
+
                 // copy properties
                 Map props = new HashMap();
                 try {
@@ -1423,7 +1427,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
-                try {
+                try {                	
                     m_driverManager.getVfsDriver().deleteResource(currentOnlineFile);
                     m_driverManager.getVfsDriver().deleteResource(currentFile);
                 } catch (CmsException exc) {
@@ -1431,6 +1435,16 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
+				try {                	         
+					m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
+					m_driverManager.getUserDriver().removeAllAccessControlEntries(currentProject, currentFile.getResourceAceId());
+
+				} catch (CmsException exc) {
+					if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+					}
+				}
+                  
                 // I_CmsConstants.C_STATE_CHANGED
             } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
                 changedResources.addElement(currentFile.getResourceName());
@@ -1639,6 +1653,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             m_driverManager.getVfsDriver().removeFolderForPublish(onlineProject.getId(), currentFolder.getResourceName());
             m_driverManager.getVfsDriver().removeFolderForPublish(projectId, currentFolder.getResourceName());
+            
+            // delete both online and offline access control entries applied to this folder
+            m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, delOnlineFolder.getResourceAceId());
+            m_driverManager.getUserDriver().removeAllAccessControlEntries(currentProject, currentFolder.getResourceAceId());
+
         } // end of for
         return changedResources;
     }

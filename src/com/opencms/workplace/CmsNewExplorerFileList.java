@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/06/04 13:39:33 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/06/12 09:39:55 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2003/06/04 13:39:33 $
+ * @version $Revision: 1.65 $ $Date: 2003/06/12 09:39:55 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -400,29 +400,33 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(",");            
             // owner
             if(showOwner){
-                content.append("\"");                
-                content.append(cms.readUser(res.getOwnerId()).getName());
-                
-				// TODO: preliminary display of current rights in file list - rework this later
-				// get the new permissions
-				//int perms = cms.getAccessControlList(res.getAbsolutePath()).getPermissions(cms.getRequestContext().currentUser());
-				//String permString = "(" + (((perms & I_CmsConstants.C_ACCESS_READ)>0)?"r":"-") + (((perms & I_CmsConstants.C_ACCESS_WRITE)>0)?"w":"-") + (((perms & I_CmsConstants.C_ACCESS_VISIBLE)>0)?"v":"-") + ")";
-				//content.append(" " + permString);
-
-                content.append("\",");                
+            	// TODO: remove this later
+                // content.append("\"");                
+                // content.append(cms.readUser(res.getOwnerId()).getName());
+                // content.append("\",");
+				
+				// currently, the current permissions are displayed here
+				content.append("\"");
+				content.append(cms.getPermissions(res.getAbsolutePath()).getPermissionString());
+				content.append("\",");
+				                
             }else{
                 content.append("\"\",");
             }
             // group
             if(showGroup){
-                content.append("\"");                
-                content.append(cms.readGroup(res).getName());
-                content.append("\",");                
+				// TODO: remove this later
+                // content.append("\"");                
+                // content.append(cms.readGroup(res).getName());
+                // content.append("\","); 
+				content.append("\"\",");               
             }else{
                 content.append("\"\",");
             }
+			// TODO: remove this later
             // accessFlags
-            content.append(res.getAccessFlags());
+            //content.append(res.getAccessFlags());
+            content.append(0);
             content.append(",");            
             // locked by
             if(res.isLockedBy().isNullUUID()) {

@@ -40,7 +40,7 @@ public abstract class CmsAccessGuard {
 			boolean hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) == requiredPermissions.getPermissions();
 			
 			if (blockAccess && ! hasPermissions) {
-				throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_ACCESS);
+				throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getAbsolutePath() + ", required permissions are " + requiredPermissions.getPermissionString(), CmsException.C_NO_ACCESS);
 			}
 			
 			return hasPermissions;

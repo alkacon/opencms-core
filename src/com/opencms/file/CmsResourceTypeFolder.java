@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/06/11 17:04:23 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/06/12 09:39:08 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -421,64 +421,67 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         CmsFile currentFile = null;
         
         // check the access rights
-        if((cms.getRequestContext().currentUser().equals(cms.readOwner(currentFolder))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))) {
-            if (touchRecursive) {
-                // collect all folders and files by traversing the tree on a breadth first search
-                unvisited.add( currentFolder );
-                
-                while (unvisited.size()>0) {
-                    // visit all unvisited folders
-                    Enumeration unvisitedFolders = unvisited.elements();
-                    while (unvisitedFolders.hasMoreElements()) {
-                        currentFolder = (CmsFolder)unvisitedFolders.nextElement();
-                        
-                        // remove the current folder from the unvisited folders
-                        unvisited.remove( (CmsFolder)currentFolder );
-                        // add the current folder to the set of all folders to be touched
-                        allFolders.add( (CmsFolder)currentFolder );
-                        // add the files in the current folder to the set of all files to be touched
-                        allFiles.addAll( cms.getFilesInFolder(currentFolder.getAbsolutePath(), true) );
-                        // add all sub-folders in the current folder to visit them in the next iteration                        
-                        unvisited.addAll( cms.getSubFolders(currentFolder.getAbsolutePath(),true) );
-                    }
-                }
-            }
-            else {
-                allFolders.add( (CmsFolder)currentFolder );
-            }
+        // TODO: normally, only resources with write access should be collected here
+        // in order to prevent exceptions while touching
+        if (!cms.checkPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS))
+        	return;
+        
+        if (touchRecursive) {
+            // collect all folders and files by traversing the tree on a breadth first search
+            unvisited.add( currentFolder );
             
-            // touch the folders that we collected before
-            Enumeration touchFolders = allFolders.elements();
-            while (touchFolders.hasMoreElements()) {
-                currentFolder = (CmsFolder)touchFolders.nextElement();
-                
-                if (DEBUG>0) System.err.println( "touching: " + currentFolder.getAbsolutePath() );
-
-                // touch the folder itself
-                cms.doTouch( currentFolder.getAbsolutePath(), timestamp );
-                
-                // touch its counterpart under content/bodies
-                String bodyFolder = C_VFS_PATH_BODIES.substring( 0, C_VFS_PATH_BODIES.lastIndexOf("/")) + currentFolder.getAbsolutePath();
-                try {
-                    cms.readFolder( bodyFolder );
-                    cms.doTouch( bodyFolder, timestamp );
+            while (unvisited.size()>0) {
+                // visit all unvisited folders
+                Enumeration unvisitedFolders = unvisited.elements();
+                while (unvisitedFolders.hasMoreElements()) {
+                    currentFolder = (CmsFolder)unvisitedFolders.nextElement();
+                    
+                    // remove the current folder from the unvisited folders
+                    unvisited.remove( (CmsFolder)currentFolder );
+                    // add the current folder to the set of all folders to be touched
+                    allFolders.add( (CmsFolder)currentFolder );
+                    // add the files in the current folder to the set of all files to be touched
+                    allFiles.addAll( cms.getFilesInFolder(currentFolder.getAbsolutePath(), true) );
+                    // add all sub-folders in the current folder to visit them in the next iteration                        
+                    unvisited.addAll( cms.getSubFolders(currentFolder.getAbsolutePath(),true) );
                 }
-                catch(CmsException e) {}                
             }
-            
-            // touch the files/resources that we collected before
-            Enumeration touchFiles = allFiles.elements();
-            while (touchFiles.hasMoreElements()) {
-                currentFile = (CmsFile)touchFiles.nextElement();
-                
-                if (DEBUG>0) System.err.println( "touching: " + currentFile.getAbsolutePath() );
-                
-                if(currentFile.getState()!=I_CmsConstants.C_STATE_DELETED) {
-                    // touch the file itself
-                    cms.touch( currentFile.getAbsolutePath(), timestamp, false );
-                }
-            }            
         }
+        else {
+            allFolders.add( (CmsFolder)currentFolder );
+        }
+        
+        // touch the folders that we collected before
+        Enumeration touchFolders = allFolders.elements();
+        while (touchFolders.hasMoreElements()) {
+            currentFolder = (CmsFolder)touchFolders.nextElement();
+            
+            if (DEBUG>0) System.err.println( "touching: " + currentFolder.getAbsolutePath() );
+
+            // touch the folder itself
+            cms.doTouch( currentFolder.getAbsolutePath(), timestamp );
+            
+            // touch its counterpart under content/bodies
+            String bodyFolder = C_VFS_PATH_BODIES.substring( 0, C_VFS_PATH_BODIES.lastIndexOf("/")) + currentFolder.getAbsolutePath();
+            try {
+                cms.readFolder( bodyFolder );
+                cms.doTouch( bodyFolder, timestamp );
+            }
+            catch(CmsException e) {}                
+        }
+        
+        // touch the files/resources that we collected before
+        Enumeration touchFiles = allFiles.elements();
+        while (touchFiles.hasMoreElements()) {
+            currentFile = (CmsFile)touchFiles.nextElement();
+            
+            if (DEBUG>0) System.err.println( "touching: " + currentFile.getAbsolutePath() );
+            
+            if(currentFile.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                // touch the file itself
+                cms.touch( currentFile.getAbsolutePath(), timestamp, false );
+            }
+        }            
     }    
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/11 17:04:23 $
-* Version: $Revision: 1.282 $
+* Date   : $Date: 2003/06/12 09:39:08 $
+* Version: $Revision: 1.283 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.282 $
+ * @version $Revision: 1.283 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4501,7 +4501,8 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	}
 	
 	public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
-		CmsResource resource = readFileHeader(resourceName);
+		// reading permissions is allowed even if the resource is marked as deleted
+		CmsResource resource = readFileHeader(resourceName, true);
 		CmsUser user = m_context.currentUser();
 		
 		return m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user);		

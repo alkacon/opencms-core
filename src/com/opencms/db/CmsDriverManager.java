@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/11 17:03:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/06/12 09:38:39 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,13 +101,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.19 $ $Date: 2003/06/11 17:03:42 $
+ * @version $Revision: 1.20 $ $Date: 2003/06/12 09:38:39 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.19 $ $Date: 2003/06/11 17:03:42 $
+ * @version $Revision: 1.20 $ $Date: 2003/06/12 09:38:39 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -195,7 +195,7 @@ public class CmsDriverManager implements I_CmsConstants {
 			
 			permissions.denyPermissions(denied);
 
- System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
+ // System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
 
 			return permissions;
 		}
