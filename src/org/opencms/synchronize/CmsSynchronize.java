@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.27 $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/04/11 17:29:48 $
+ * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/04/11 17:29:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.28 $ $Date: 2004/04/11 17:29:48 $
  */
 public class CmsSynchronize {
 
@@ -126,7 +126,7 @@ public class CmsSynchronize {
 
         m_destinationPathInRfs = OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs();
         // check if the synchronize path in the FS ends with a seperator. If so, remove it
-        if (m_destinationPathInRfs.endsWith(File.separator)) {
+        if (m_destinationPathInRfs.endsWith(File.separator) || m_destinationPathInRfs.endsWith("/")) {
             m_destinationPathInRfs = m_destinationPathInRfs.substring(0, m_destinationPathInRfs.length() - 1);
         }
 
@@ -333,7 +333,7 @@ public class CmsSynchronize {
             for (int i = 0; i < res.length; i++) {                
                 // get the relative filename
                 String resname = res[i].getAbsolutePath();
-                resname = resname.substring(m_destinationPathInRfs.length(), resname.length());
+                resname = resname.substring(m_destinationPathInRfs.length());
                 // translate the folder seperator if nescessary
                 resname = resname.replace(File.separatorChar, '/');
                 // now check if this resource was already processed, by looking 
@@ -555,6 +555,7 @@ public class CmsSynchronize {
                             break;
                         }
                     }
+                    fsFile.setLastModified(res.getDateLastModified());
                 } else {
                     m_report.print(m_report.key("report.sync_exporting_folder"), I_CmsReport.C_FORMAT_NOTE);     
                     m_report.print(m_cms.readAbsolutePath(res));               
@@ -873,10 +874,10 @@ public class CmsSynchronize {
      * @throws CmsException if something goes wrong
      */
     private void createNewLocalFile(File newFile) throws CmsException {
-        FileOutputStream fOut = null;
         if (newFile.exists()) {
             throw new CmsException("[" + this.getClass().getName() + "] " + newFile.getPath() + " already exists on filesystem");
         }
+        FileOutputStream fOut = null;
         try {
             File parentFolder = new File(newFile.getPath().replace('/', File.separatorChar).substring(0, newFile.getPath().lastIndexOf(File.separator)));
             parentFolder.mkdirs();
