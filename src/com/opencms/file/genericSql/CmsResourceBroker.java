@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/21 09:11:39 $
-* Version: $Revision: 1.306 $
+* Date   : $Date: 2002/02/04 16:42:08 $
+* Version: $Revision: 1.307 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.306 $ $Date: 2002/01/21 09:11:39 $
+ * @version $Revision: 1.307 $ $Date: 2002/02/04 16:42:08 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4422,7 +4422,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject), m_enableHistory);
                 // now publish the module masters
                 Vector publishModules = new Vector();
-                cms.getRegistry().getModulePublishables(publishModules);
+                cms.getRegistry().getModulePublishables(publishModules, null);
                 int versionId = 0;
                 long publishDate = System.currentTimeMillis();
                 if(m_enableHistory){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/02/01 13:59:02 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/02/04 16:42:08 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.15 $ $Date: 2002/02/01 13:59:02 $
+ * @version $Revision: 1.16 $ $Date: 2002/02/04 16:42:08 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -60,10 +60,11 @@ public class CmsStaticExport implements I_CmsConstants{
     private boolean m_afterPublish = false;
 
     /**
-     * If called after publish project this vector contains all resouces that
-     * are part of the project. We only export links if they are in the project.
+     * In this vector we store the links that have changed after publish. It is
+     * used by the search.
+     * It contains compleate links (after linkreplace rules).
      */
-//    private Vector m_projectResources = null;
+    private Vector m_changedLinks = null;
 
     private static Perl5Util c_perlUtil = null;
 
@@ -118,7 +119,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsStaticExport(CmsObject cms, Vector startpoints, boolean doTheExport,
-                     Vector projectResources, CmsPublishedResources changedResources)
+                     Vector changedLinks, CmsPublishedResources changedResources)
                      throws CmsException{
         m_cms = cms;
         m_startpoints = startpoints;
@@ -151,15 +152,7 @@ public class CmsStaticExport implements I_CmsConstants{
                 }else{
                     exportLinks = getStartLinks();
                 }
-    /*            // we only need the names of the projectResources
-                if(projectResources != null){
-                    m_projectResources = new Vector(projectResources.size());
-                    for(int i=0; i<projectResources.size(); i++){
-                        m_projectResources.addElement(
-                            ((CmsResource)projectResources.elementAt(i)).getAbsolutePath());
-                    }
-                }
-    */            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                             "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
                 }
@@ -167,6 +160,7 @@ public class CmsStaticExport implements I_CmsConstants{
                     String aktLink = (String)exportLinks.elementAt(i);
                     exportLink(aktLink, exportLinks);
                 }
+                setChangedLinkVector(exportLinks);
             }catch(NullPointerException e){
                 // no original request
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -175,25 +169,6 @@ public class CmsStaticExport implements I_CmsConstants{
                 }
             }
         }
-    }
-
-    /**
-     * Checks if the link is part of the project if the export was started after
-     * publish project.
-     *
-     * @param link The link.
-     * /
-    private boolean linkIsInProject(String link){
-        if(m_projectResources == null){
-            // we want to export all
-            return true;
-        }
-        for(int i=0; i<m_projectResources.size(); i++){
-            if(link.startsWith((String)m_projectResources.elementAt(i))){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -680,6 +655,20 @@ public class CmsStaticExport implements I_CmsConstants{
         // nothing changed
         paramterOnly.add(new Boolean(true));
         return retValue;
+    }
+
+    /**
+     * fills the vector of the changed links.
+     */
+    private void setChangedLinkVector(Vector exportLinks){
+        if(m_changedLinks != null){
+            int oldMode = m_cms.getMode();
+            m_cms.setMode(C_MODUS_ONLINE);
+            for(int i=0; i<exportLinks.size(); i++){
+                m_changedLinks.add(m_cms.getLinkSubstitution((String)exportLinks.elementAt(i)));
+            }
+            m_cms.setMode(oldMode);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/01/18 13:37:45 $
-* Version: $Revision: 1.194 $
+* Date   : $Date: 2002/02/04 16:42:08 $
+* Version: $Revision: 1.195 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.194 $ $Date: 2002/01/18 13:37:45 $
+ * @version $Revision: 1.195 $ $Date: 2002/02/04 16:42:08 $
  */
 public interface I_CmsConstants {
 
@@ -1223,6 +1223,13 @@ public interface I_CmsConstants {
     static final int C_MODUS_OFFLINE = 1;
     static final int C_MODUS_EXPORT = 2;
     static final int C_MODUS_EXTERN = 3;
+
+    /**
+     * The attribute of the publishclass tag in the modules registry used to show
+     * that this method needs the vector of the changed links for publishing.
+     * (i.e. the search module)
+     */
+    static final String C_PUBLISH_METHOD_LINK = "linkpublish";
 }
 
 

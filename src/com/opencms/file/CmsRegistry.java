@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2001/12/03 10:46:53 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/02/04 16:42:08 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2001/12/03 10:46:53 $
+ * @version $Revision: 1.41 $ $Date: 2002/02/04 16:42:08 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1166,15 +1166,28 @@ public String getModuleViewUrl(String modulname) {
  * Returns all publishable classes for all modules.
  *
  * @parameter Vector classes in this parameter the classes will be returned.
+ * @parameter String requiredMethod The value of the methodTag for the different
+ *      methods useable after publish.
+ *          null means the standard publish method
+ *          "linkpublish" means the method that needs the changed links as parameter (i.e. search)
  * @return int the amount of classes.
  */
-public int getModulePublishables(Vector classes) {
+public int getModulePublishables(Vector classes, String requiredMethod) {
+    if(requiredMethod == null){
+        requiredMethod = "";
+    }
     try {
         NodeList classList = m_xmlReg.getElementsByTagName("publishclass");
         for (int x = 0; x < classList.getLength(); x++) {
             try {
-                String name = ((Element) classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                classes.addElement(name);
+                String methodValue = ((Element) classList.item(x)).getAttribute("method");
+                if(methodValue == null){
+                    methodValue = "";
+                }
+                if(methodValue.equals(requiredMethod)){
+                    String name = ((Element) classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                    classes.addElement(name);
+                }
             } catch(Exception exc) {
                 // ignore the exception and try the next view-pair.
             }

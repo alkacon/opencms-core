@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2001/10/31 13:04:18 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/02/04 16:42:08 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2001/10/31 13:04:18 $
+ * @version $Revision: 1.25 $ $Date: 2002/02/04 16:42:08 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -452,9 +452,13 @@ public String getModuleViewUrl(String modulename);
  * Returns all publishable classes for all modules.
  *
  * @parameter Vector classes in this parameter the classess will be returned.
+ * @parameter String requiredMethod The value of the methodTag for the different
+ *      methods useable after publish.
+ *          null means the standard publish method
+ *          "linkpublish" means the method that needs the changed links as parameter (i.e. search)
  * @return int the amount of classess.
  */
-public int getModulePublishables(Vector classes);
+public int getModulePublishables(Vector classes, String requiredMethod);
 
 /**
  * Returns all repositories for all modules.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/01/18 08:29:02 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/02/04 16:42:08 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -245,11 +245,37 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
     }
 
     /**
+     *
+     * @param cms. The CmsObject.
+     * @param changedLinks A vector of STrings with the links that have changed
+     *       during the publishing.
+     */
+    public static void getModulPublishMethods(CmsObject cms, Vector changedLinks) throws CmsException{
+        // now publish the module masters
+        Vector publishModules = new Vector();
+        cms.getRegistry().getModulePublishables(publishModules, cms.C_PUBLISH_METHOD_LINK);
+
+        for(int i = 0; i < publishModules.size(); i++){
+            // call the publishProject method of the class with parameters:
+            // cms, changedLinks
+            try{
+                Class.forName((String)publishModules.elementAt(i)).getMethod("publishLinks",
+                                        new Class[] {CmsObject.class, Vector.class}).invoke(
+                                        null, new Object[] {cms, changedLinks});
+            } catch(Exception ex){
+            ex.printStackTrace();
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish data of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
      * Gets the stack-trace of a exception, and returns it as a string.
      * @param e The exception to get the stackTrace from.
      * @return the stackTrace of the exception.
      */
-
     public static String getStackTrace(Exception e) {
 
         // print the stack-trace into a writer, to get its content
