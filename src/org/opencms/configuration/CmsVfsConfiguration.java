@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/12/05 17:29:34 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/12/07 15:13:07 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,10 +59,7 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-
-    /** The suffix attribute. */
-    public static final String A_SUFFIX = "suffix";
-
+    
     /** The node name of an resource type mapping. */
     public static final String N_MAPPING = "mapping";
 
@@ -322,8 +319,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENT, "setXmlContentTypeManager");
 
         // XML content widgets add rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, "addWidget", 1);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, "addWidget", 2);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 0, A_CLASS);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 1, A_ALIAS);
 
         // XML content schema type add rules
         digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, "addSchemaType", 2);
@@ -420,8 +418,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         it = m_xmlContentTypeManager.getRegisteredWidgetNames().iterator();
         while (it.hasNext()) {
             String widget = (String)it.next();
-            xmlWidgetsElement.addElement(N_WIDGET)
-                .addAttribute(A_CLASS, widget);
+            Element widgetElement = xmlWidgetsElement.addElement(N_WIDGET).addAttribute(A_CLASS, widget);
+            String alias = m_xmlContentTypeManager.getRegisteredWidgetAlias(widget);
+            if (alias != null) {
+                widgetElement.addAttribute(A_ALIAS, alias);
+            }
         }
         
         // XML content types 

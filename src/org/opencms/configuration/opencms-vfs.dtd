@@ -109,7 +109,7 @@
 
 <!ELEMENT widgets (widget*)>
 <!ELEMENT widget EMPTY>
-<!ATTLIST widget class CDATA #REQUIRED>
+<!ATTLIST widget class CDATA #REQUIRED alias CDATA #IMPLIED>
 
 <!ELEMENT schematypes (schematype*)>
 <!ELEMENT schematype EMPTY>

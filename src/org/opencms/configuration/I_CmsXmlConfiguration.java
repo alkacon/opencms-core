@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/07 15:13:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandler {
+
+    /** The alias attribute. */
+    String A_ALIAS = "alias";
     
     /** The "class" attribute. */
     String A_CLASS = "class";
@@ -66,9 +69,6 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The "name" attribute. */
     String A_NAME = "name";
-    
-    /** The "value" attribute. */
-    String A_VALUE = "value";       
 
     /** The "order" attribute. */
     String A_ORDER = "order";
@@ -78,6 +78,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     
     /** The "protocol" attribute. */
     String A_PROTOCOL = "protocol";
+    
+    /** The suffix attribute. */
+    String A_SUFFIX = "suffix";
     
     /** The "to" attribute. */
     String A_TO = "to";    
@@ -90,6 +93,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     
     /** The "user" attribute. */
     String A_USER = "user";
+    
+    /** The "value" attribute. */
+    String A_VALUE = "value";       
     
     /** Individual export point node. */
     String N_EXPORTPOINT = "exportpoint";

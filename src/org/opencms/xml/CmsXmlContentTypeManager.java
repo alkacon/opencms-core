@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/12/05 17:29:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/07 15:13:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,33 +60,38 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
 
     /** Stores the initialized XML content handlers. */
     private Map m_contentHandlers;
+    
+    /** Stores the registered content widgets. */
+    private Map m_defaultWidgets;
 
     /** Stores the registered content types. */
     private Map m_registeredTypes;
 
-    /** Stores the registered content widgets. */
-    private Map m_defaultWidgets;
-
     /** Stores the registed content widgegts by class name. */
     private Map m_registeredWidgets;
 
+    /** The alias names for the widgets. */
+    private Map m_widgetAliases;
+    
     /**
      * Creates a new content type manager.<p> 
      */
     public CmsXmlContentTypeManager() {
 
+        // use the fast hash map implementation since there will be far more read then write accesses
+
         m_registeredTypes = new HashMap();
         m_defaultWidgets = new HashMap();
         m_registeredWidgets = new HashMap();
+        m_widgetAliases = new HashMap();
 
-        // use the fast hash map implementation since there will be far more read then write accesses
         FastHashMap fastMap = new FastHashMap();
         fastMap.setFast(true);
         m_contentHandlers = fastMap;
@@ -105,9 +110,9 @@ public class CmsXmlContentTypeManager {
 
         CmsXmlContentTypeManager typeManager = new CmsXmlContentTypeManager();
         
-        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget");
-        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget");
-        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlStringWidget");
+        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget", null);
+        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget", null);
+        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlStringWidget", null);
         
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlDateTimeValue",
@@ -155,26 +160,6 @@ public class CmsXmlContentTypeManager {
     }
 
     /**
-     * Adds a XML content editor widget class, making this widget available for the XML content editor.<p>
-     * 
-     * @param className the widget class to add
-     */
-    public void addWidget(String className) {
-
-        Class widgetClazz;
-        I_CmsXmlWidget widget;
-        try {
-            widgetClazz = Class.forName(className);
-            widget = (I_CmsXmlWidget)widgetClazz.newInstance();
-        } catch (Exception e) {
-            OpenCms.getLog(this).error("Error initializing XML widget for class: " + className, e);
-            return;
-        } 
-        
-        m_registeredWidgets.put(widgetClazz.getName(), widget);
-    }
-
-    /**
      * Adds a new XML content type schema class and XML widget to the manager by class names.<p>
      * 
      * @param className class name of the XML content schema type class to add
@@ -201,7 +186,7 @@ public class CmsXmlContentTypeManager {
         }
 
         // add the editor widget for the schema type        
-        I_CmsXmlWidget widget = (I_CmsXmlWidget)m_registeredWidgets.get(defaultWidget);
+        I_CmsXmlWidget widget = getWidget(defaultWidget);
         if (widget == null) {
             OpenCms.getLog(this).error(
                 "Error initializing default widget '" + defaultWidget + "' for content type: " + type.getTypeName());
@@ -216,9 +201,46 @@ public class CmsXmlContentTypeManager {
                 ". XML content config   : added schema type '"
                     + type.getTypeName()
                     + "' using default widget '"
-                    + defaultWidget
+                    + widget.getClass().getName()
                     + "'");
         }
+    }
+
+    /**
+     * Adds a XML content editor widget class, making this widget available for the XML content editor.<p>
+     * 
+     * @param className the widget class to add
+     * @param aliasName the (optional) alias name to use for the widget class
+     */
+    public void addWidget(String className, String aliasName) {
+
+        Class widgetClazz;
+        I_CmsXmlWidget widget;
+        try {
+            widgetClazz = Class.forName(className);
+            widget = (I_CmsXmlWidget)widgetClazz.newInstance();
+        } catch (Exception e) {
+            OpenCms.getLog(this).error("Error initializing XML widget for class: " + className, e);
+            return;
+        } 
+                
+        m_registeredWidgets.put(widgetClazz.getName(), widget);
+        
+        if (aliasName != null) {
+            m_widgetAliases.put(aliasName, widgetClazz.getName());
+        }
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            String addOn = "";
+            if (aliasName != null) {
+                addOn = " alias '" + aliasName + "'";                
+            }
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". XML content config   : added widget '"
+                    + widgetClazz.getName()
+                    + "'"
+                    + addOn);
+        }        
     }
 
     /**
@@ -352,17 +374,6 @@ public class CmsXmlContentTypeManager {
         return (I_CmsXmlWidget)m_defaultWidgets.get(typeName);
     }
 
-    /**
-     * Returns an initialized widget class by it's class name.<p>
-     *  
-     * @param className the class name to get the widget for
-     * @return the widget instance for the class name
-     */
-    public I_CmsXmlWidget getEditorWidget(String className) {
-
-        return (I_CmsXmlWidget)m_registeredWidgets.get(className);
-    }
-
     /** 
      * Retruns an alphabetically sorted list of all configured XML content schema types.<p>
      * 
@@ -374,6 +385,30 @@ public class CmsXmlContentTypeManager {
         Collections.sort(result);
         return result;
     }
+
+    /**
+     * Returns the alias for the given Widget class name, may be <code>null</code> if no alias is defined for 
+     * the class.<p>
+     * 
+     * @param className the name of the widget
+     * @return the alias for the given Widget class name, may be <code>null</code> if no alias is defined for 
+     * the class
+     */
+    public String getRegisteredWidgetAlias(String className) {
+
+        // this implementation could be improved for performance, 
+        // but since it's very seldom used it's currently just a straight map iteration 
+        Iterator i = m_widgetAliases.keySet().iterator();
+        while (i.hasNext()) {
+            String aliasName = (String)i.next();
+            String clazzName = (String)m_widgetAliases.get(aliasName);
+            if (clazzName.equals(className)) {
+                // the alias mapping was found
+                return aliasName;
+            }
+        }        
+        return  null;
+    }
     
     /** 
      * Retruns an alphabetically sorted list of the class names of all configured XML widgets.<p>
@@ -384,6 +419,26 @@ public class CmsXmlContentTypeManager {
 
         List result = new ArrayList(m_registeredWidgets.keySet());
         Collections.sort(result);
+        return result;
+    }
+
+    /**
+     * Returns an initialized widget class by it's class name or by it's alias.<p>
+     *  
+     * @param name the class name or alias name to get the widget for
+     * @return the widget instance for the class name
+     */
+    public I_CmsXmlWidget getWidget(String name) {
+
+        // first look up by class name
+        I_CmsXmlWidget result = (I_CmsXmlWidget)m_registeredWidgets.get(name);
+        if (result == null) {
+            // not found by class name, look up an alias
+            String className = (String)m_widgetAliases.get(name);
+            if (className != null) {
+                return (I_CmsXmlWidget)m_registeredWidgets.get(className);
+            }
+        }    
         return result;
     }
 

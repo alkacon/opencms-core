@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/06 13:20:39 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/07 15:13:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
+import org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -65,7 +66,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -105,7 +106,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveNestedElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAccessNestedElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValueIndex"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testGuiWidgetMapping"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
@@ -532,7 +533,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      * 
      * @throws Exception in case something goes wrong
      */
-    public void testGuiWidgetMapping() throws Exception {
+    public void testLayoutWidgetMapping() throws Exception {
 
         CmsObject cms = getCmsObject();
         echo("Testing mapping of the XML content GUI to different widgets");
@@ -553,11 +554,20 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-5.xml", CmsEncoder.C_UTF8_ENCODING);
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
 
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        
+        I_CmsXmlWidget widget;        
+
         // make sure the selected widgets are of the configured "non-standard" type
-        I_CmsXmlWidget widget = definition.getContentHandler().getWidget(
-            xmlcontent.getValue("Title", Locale.ENGLISH));
+        widget = definition.getContentHandler().getWidget(xmlcontent.getValue("Title", Locale.ENGLISH));
         assertNotNull(widget);
         assertEquals(CmsXmlBooleanWidget.class.getName(), widget.getClass().getName());
+        
+        // make sure the alias name works
+        widget = definition.getContentHandler().getWidget(xmlcontent.getValue("Test", Locale.ENGLISH));
+        assertNotNull(widget);
+        assertEquals(CmsXmlHtmlWidget.class.getName(), widget.getClass().getName());
     }
 
     /**

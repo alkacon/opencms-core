@@ -81,13 +81,13 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />	
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsImageWidget" /> 		
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" alias="BooleanWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" alias="ColorpickerWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" alias="DateTimeWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" alias="HtmlWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget" />			
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsImageWidget" alias="VfsImageWidget" /> 	
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />

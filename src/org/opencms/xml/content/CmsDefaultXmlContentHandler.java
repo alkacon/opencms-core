@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/06 13:20:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/07 15:13:07 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -448,7 +448,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             throw new CmsXmlException("Unregistered XML content type " + elementName + " used for layout widget");
         }
 
-        I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(className);
+        I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getWidget(className);
 
         if (widget == null) {
             throw new CmsXmlException("Unregistered XML widget '"

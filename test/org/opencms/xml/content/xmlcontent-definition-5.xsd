@@ -15,6 +15,7 @@
 	<xsd:complexType name="OpenCmsWidgetmappingtest">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Test" type="OpenCmsString" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -24,6 +25,7 @@
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 			<layouts>
 				<layout element="Title" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
+				<layout element="Test" widget="HtmlWidget" />				
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
