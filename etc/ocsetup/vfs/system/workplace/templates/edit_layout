@@ -11,6 +11,9 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
 
 	]]><ELEMENT name="edit_options"/><![CDATA[
+	
+	<!-- OpenCms context prefix, required for page editor because no link replacement is done here -->
+	var linkEditorPrefix = "]]><PROCESS>OpenCmsContext</PROCESS><![CDATA[";
 
 	<!-- Sets the Document Source-Code for later including into the text editor -->
 	var text="]]><METHOD name="setText"/><![CDATA[";
