@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/29 15:13:25 $
- * Version: $Revision: 1.182 $
+ * Date   : $Date: 2001/01/29 18:06:00 $
+ * Version: $Revision: 1.183 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.182 $ $Date: 2001/01/29 15:13:25 $ * 
+ * @version $Revision: 1.183 $ $Date: 2001/01/29 18:06:00 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -1391,11 +1391,30 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		
 		try	{			
 			// serialize the hashtable
+			StringBuffer notSerializable = new StringBuffer();
 			ByteArrayOutputStream bout= new ByteArrayOutputStream();            
 			ObjectOutputStream oout=new ObjectOutputStream(bout);
+			Enumeration keys = data.keys();
+			while(keys.hasMoreElements()) {
+				Object key = keys.nextElement();
+				Object sessionValue = data.get(key);
+				if( sessionValue instanceof Serializable ) {
+					// this value is serializeable -> write it to the outputstream
+					oout.writeObject(key);
+					oout.writeObject(sessionValue);
+				} else {
+					// this object is not serializeable -> remark for warning
+					notSerializable.append(key);
+					notSerializable.append("; ");
+				}
+			}
 			oout.writeObject(data);
 			oout.close();
 			value=bout.toByteArray();
+			
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] warning, following entrys are not serializeable in the session: " + notSerializable.toString() + ".");
+			}
 
 			con = DriverManager.getConnection(m_poolName);
 			
@@ -5957,7 +5976,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		throws CmsException {
 		PreparedStatement statement = null;
 		ResultSet res = null;
-		Hashtable session = null;
+		Hashtable session = new Hashtable();
 		Connection con = null;
 
 		try	{			
@@ -5975,7 +5994,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
 				ObjectInputStream oin = new ObjectInputStream(bin);
-				session =(Hashtable)oin.readObject();
+				while(oin.available() > 0) {
+					Object key = oin.readObject();
+					Object sessionValue = oin.readObject();
+					session.put(key, sessionValue);
+				}
+				return session;
 			} else {
 				deleteSessions();
 			}            
