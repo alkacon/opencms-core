@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/05 19:17:28 $
- * Version: $Revision: 1.205 $
+ * Date   : $Date: 2000/12/06 15:47:44 $
+ * Version: $Revision: 1.206 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.205 $ $Date: 2000/12/05 19:17:28 $
+ * @version $Revision: 1.206 $ $Date: 2000/12/06 15:47:44 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -71,6 +71,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Constant to count the file-system changes.
 	 */
 	protected long m_fileSystemChanges = 0;
+
+	/**
+	 * Constant to count the file-system changes if Folders are involved.
+	 */
+	protected long m_fileSystemFolderChanges = 0;
 
 	/**
 	 * Hashtable with resource-types.
@@ -4853,7 +4858,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 							","+ Integer.toString(res.getType()), returnValue);
 			
 		}
-		System.err.println("");
+		if (returnValue.equals("")){returnValue=null;}
 		return returnValue;
 	}
 	/**
