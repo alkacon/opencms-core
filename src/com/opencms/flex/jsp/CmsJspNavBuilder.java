@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/03/14 12:54:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/05/08 15:03:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -256,7 +256,7 @@ public class CmsJspNavBuilder {
      * A tree navigation includes all nav elements that are required to display a tree structure.
      * However, the data structure is a simple list.
      * Each of the nav elements in the list has the {@link CmsJspNavElement#getNavTreeLevel()} set
-     * to the level it belongs to. Use this information to distinguish between the nav levels.
+     * to the level it belongs to. Use this information to distinguish between the nav levels.<p>
      * 
      * @param cms context provider for the current request
      * @param folder the selected folder
@@ -306,6 +306,78 @@ public class CmsJspNavBuilder {
         }
         return result;
     }
+    
+    /**
+     * @see #getNavigationBreadCrumb(String, int, int, boolean) 
+     */
+    public ArrayList getNavigationBreadCrumb() {
+        return getNavigationBreadCrumb(m_requestUriFolder, 0, -1, true);
+    }
+    
+    /**
+     * @see #getNavigationBreadCrumb(String, int, int, boolean) 
+     */
+    public ArrayList getNavigationBreadCrumb(int startlevel, int endlevel) {
+        return getNavigationBreadCrumb(m_requestUriFolder, startlevel, endlevel, true);
+    }
+    
+    /**
+     * @see #getNavigationBreadCrumb(String, int, int, boolean) 
+     */
+    public ArrayList getNavigationBreadCrumb(int startlevel, boolean currentFolder) {
+        return getNavigationBreadCrumb(m_requestUriFolder, startlevel, -1, currentFolder);
+    }
+    
+    /** 
+     * Build a "bread crump" path navigation to the given folder.<p>
+     * 
+     * The startlevel marks the point where the navigation starts from, if negative, 
+     * the count of steps to go down from the given folder.
+     * The endlevel is the maximum level of the navigation path, set it to -1 to build the
+     * complete navigation to the given folder.
+     * You can include the given folder in the navigation by setting currentFolder to true,
+     * otherwise false.<p> 
+     * 
+     * @param folder the selected folder
+     * @param startlevel the start level, if negative, go down |n| steps from selected folder
+     * @param endlevel the end level, if -1, build navigation to selected folder
+     * @param currentFolder include the selected folder in navigation or not
+     * @return ArrayList sorted list of navigation elements
+     */
+    public ArrayList getNavigationBreadCrumb(String folder, int startlevel, int endlevel, boolean currentFolder) {
+        ArrayList result = new ArrayList(0);
+               
+        int level =  CmsResource.getPathLevel(folder);
+        // decrease folder level if current folder is not displayed
+        if (!currentFolder) {
+            level -= 1;
+        }
+        // check current level and change endlevel if it is higher or -1
+        if (level < endlevel || endlevel == -1) {
+            endlevel = level;
+        }
+        
+        // if startlevel is negative, display only |startlevel| links
+        if (startlevel < 0) {
+            startlevel = endlevel + startlevel +1;
+            if (startlevel < 0) {
+                startlevel = 0;
+            }
+        }
+        
+        // create the List of navigation elements     
+        for (int i=startlevel; i<=endlevel; i++) {
+            String navFolder = CmsResource.getPathPart(folder, i);
+            CmsJspNavElement e = getNavigationForResource(navFolder);
+            // only add element if navigation properties are present
+            if (e.isInNavigation()) {
+                result.add(e);
+            }
+        }
+        
+        return result;
+    }
+    
 
     /**
      * Returns all subfolders of a sub channel that has 
