@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/11 06:24:33 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/11 06:24:33 $
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -98,17 +98,17 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Gets the current project of a user from the session storage.
+     * Gets the current project of a user from the session storage.<p>
      *
-     * @param sessionID The actual session Id.
-     * @return The name of the project of the user or the default project;
+     * @param sessionID the current session id
+     * @return the current project of a user
      */
     public Integer getCurrentProject(String sessionId) {
         Hashtable userinfo = null;
         Integer currentProject = new Integer(C_PROJECT_ONLINE_ID);
         userinfo = getUser(sessionId);
 
-        // this user does exist, so get his current Project.
+        // this user does exist, so get his current project
         if(userinfo != null) {
             currentProject = (Integer)userinfo.get(C_SESSION_PROJECT);
             if(currentProject == null) {
@@ -117,6 +117,27 @@ public class CmsCoreSession implements I_CmsConstants {
         }
         return currentProject;
     }
+    
+    /**
+     * Gets the current site of a user from the session storage.
+     *
+     * @param sessionID the current session id
+     * @return the current site of a user
+     */
+    public String getCurrentSite(String sessionId) {
+        Hashtable userinfo = null;
+        String currentSite = C_VFS_DEFAULT;
+        userinfo = getUser(sessionId);
+
+        // this user does exist, so get his current site
+        if(userinfo != null) {
+            currentSite = (String)userinfo.get(C_SESSION_CURRENTSITE);
+            if(currentSite == null) {
+                currentSite = C_VFS_DEFAULT;
+            }
+        }
+        return currentSite;
+    }    
 
     /**
      * Gets the complete user information of a user from the session storage.
