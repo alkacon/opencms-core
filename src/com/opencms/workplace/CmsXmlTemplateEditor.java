@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/06/09 18:20:05 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.30 $ $Date: 2000/06/09 18:20:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -674,6 +674,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             cms.copyFile(file.getAbsolutePath(), temporaryFilename);  
 			cms.chmod(temporaryFilename, 91);
         } catch(CmsException e) {
+            if((e.getType() != e.C_FILE_EXISTS) && (e.getType() != e.C_SQL_ERROR)) {
+                // This was no file exists exception.
+                // Vary bad. We should not go on here since we may run
+                // in an endless loop.
+                throw e;
+            }
             ok = false;        
         }
         
@@ -686,7 +692,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             try {
                 cms.copyFile(file.getAbsolutePath(), extendedTempFile);  
 				cms.chmod(extendedTempFile, 91);
-            } catch(Exception e) {
+            } catch(CmsException e) {
+                if((e.getType() != e.C_FILE_EXISTS) && (e.getType() != e.C_SQL_ERROR)) {
+                    // This was no file exists exception.
+                    // Vary bad. We should not go on here since we may run
+                    // in an endless loop.
+                    throw e;
+                }
                 // temp file could not be created
                 loop++;
                 ok=false;
