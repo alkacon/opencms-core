@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/02/18 14:28:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/22 11:22:42 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/02/18 14:28:42 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/22 11:22:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -60,6 +60,20 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 	private static final String C_PROJECT_UNLOCK = "project_unlock";
             
     /**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+
+	/**
      * Handling of the special workplace <CODE>&lt;PROJECTLIST&gt;</CODE> tags.
      * <P>
      * Returns the processed code with the actual elements.

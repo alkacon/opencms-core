@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/22 11:22:42 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,11 +44,11 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.5 $ $Date: 2000/02/22 11:16:44 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/22 11:22:42 $
  */
 public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
-     /**
+    /**
      * Indicates if the results of this class are cacheable.
      * 
      * @param cms A_CmsObject Object for accessing system resources
@@ -61,7 +61,7 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_C
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
-    
+
     /**
      * Handling of the <CODE>&lt;MESSAGEBOX&gt;</CODE> tags.
      * <P>
