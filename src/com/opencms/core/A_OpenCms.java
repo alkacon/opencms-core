@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/07/14 18:43:54 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/07/17 12:58:15 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,9 +57,12 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.41 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/17 12:58:15 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
+
+    private static final String C_DEFAULT_VERSION_NUMBER = "5.1.x";
+    private static final String C_DEFAULT_VERSION_NAME = "Salusa Secundus"; 
 
     /** The driver manager to access the database */
     protected static CmsDriverManager m_driverManager = null;
@@ -80,10 +83,10 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     private static String m_defaultEncoding = "ISO-8859-1";    
 
     /** The version name (including version number) of this OpenCms installation */
-    private static String m_versionName = null;
+    private static String m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
     
     /** The version number of this OpenCms installation */
-    private static String m_versionNumber = null;
+    private static String m_versionNumber = C_DEFAULT_VERSION_NUMBER;
         
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */   
 	private static String m_openCmsContext = null;
@@ -370,13 +373,12 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         Properties props = new Properties();
         try {
             props.load(o.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
-        } catch(java.io.IOException exc) {
+        } catch(Throwable t) {
             // ignore this exception - no properties found
-            m_versionName = "unknown";
             return;
         }
-        m_versionNumber = props.getProperty("version.number", "5.x");
-        m_versionName = m_versionNumber + " " + props.getProperty("version.name", "??");
+        m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
+        m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
     }
     
     /**
