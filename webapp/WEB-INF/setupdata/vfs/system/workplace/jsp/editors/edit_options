@@ -4,6 +4,8 @@ font.size=true
 font.face=true
 font.color=true
 bg.color=true
+
+button.customized=true
 button.print=false
 
 option.newbody=true
