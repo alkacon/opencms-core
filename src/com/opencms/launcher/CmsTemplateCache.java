@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsTemplateCache.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,15 +29,16 @@ package com.opencms.launcher;
  */
 
 import com.opencms.core.*;
+import com.opencms.file.*;
 import java.util.*;
-
 
 /**
  */
 class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 
 	/** Hashtable to store the cached data */
-	private Hashtable templateCache = new Hashtable();
+	// TODO: get the cache-size from properties
+	private CmsCache templateCache = new CmsCache(1000);
 	
 	/** Default constructor to create a template cache */
 	public CmsTemplateCache() {
@@ -58,7 +59,11 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 	 * @param key Key of the template that should be deleted.
 	 */    
 	public void clearCache(Object key) {
-		templateCache.remove(key);
+		if(key instanceof String) {
+			templateCache.remove((String)key);
+		} else {
+			System.err.println("clearCache: " + key);
+		}
 	}
 	/**
 	 * Gets a previously cached template with the given key.
@@ -69,7 +74,12 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache.");            
 		}
-		return (byte[])templateCache.get(key);
+		if(key instanceof String) {
+			return (byte[])templateCache.get((String)key);
+		} else {
+			System.err.println("get: " + key);
+			return null;
+		}
 	}
 	/**
 	 * Checks if there exists a cached template content for
@@ -78,8 +88,12 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 	 * @return <EM>true</EM> if a cached content was found, <EM>false</EM> otherwise.
 	 */
 	public boolean has(Object key) {
-		return templateCache.containsKey(key);
-	   // return false;
+		if(key instanceof String) {
+			return templateCache.get((String)key) != null;
+		} else {
+			System.err.println("has: " + key);
+			return false;
+		}
 	}
 	/**
 	 * Stores a template content in the cache using the given key.
@@ -87,6 +101,10 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 	 * @param content Template content to store.
 	 */
 	public void put(Object key, byte[] content) {
-		 templateCache.put(key, content);
+		if(key instanceof String) {
+			templateCache.put((String)key, content);
+		} else {
+			System.err.println("put: " + key);
+		}
 	}
 }

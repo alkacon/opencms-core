@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/12/19 09:42:09 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2000/12/19 09:42:09 $
+ * @version $Revision: 1.44 $ $Date: 2000/12/22 17:31:21 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
 	
@@ -641,6 +641,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 		
 	  	return (((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + cms.getRequestContext().getUri()).getBytes();
 	}
+	
 	/**
 	 * Indicates if the results of this class are cacheable.
 	 * <P>
@@ -655,21 +656,33 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
 	 */
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-		if(templateSelector==null || "".equals(templateSelector)) {
-			templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
-		}
-		boolean cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, elementName, parameters, templateSelector));
-		if(C_DEBUG && A_OpenCms.isLogging()) {
-			String errorMessage = getClassName() + "Template class " + getClass().getName() + " with file " + templateFile + " is ";
-			if(cacheable) {
-				errorMessage = errorMessage + "cacheable.";
+		boolean cacheable;
+		try {
+			if (!cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
+				// never cache offline-resources
+				return false;
 			} else {
-				errorMessage = errorMessage + "not cacheable.";
+				if (templateSelector == null || "".equals(templateSelector)) {
+					templateSelector = (String) parameters.get(C_FRAME_SELECTOR);
+				}
+				cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, elementName, parameters, templateSelector));
+				if (C_DEBUG && A_OpenCms.isLogging()) {
+					String errorMessage = getClassName() + "Template class " + getClass().getName() + " with file " + templateFile + " is ";
+					if (cacheable) {
+						errorMessage = errorMessage + "cacheable.";
+					} else {
+						errorMessage = errorMessage + "not cacheable.";
+					}
+					A_OpenCms.log(C_OPENCMS_DEBUG, errorMessage);
+				}
 			}
-			A_OpenCms.log(C_OPENCMS_DEBUG, errorMessage);
+		} catch (CmsException exc) {
+			// there was an exception => don't cache this res.
+			cacheable = false;
 		}
 		return cacheable;
 	}
+	
 	/**
 	 * Tests, if the template cache is setted.
 	 * @return <code>true</code> if setted, <code>false</code> otherwise.

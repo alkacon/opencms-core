@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/11/20 11:06:47 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.61 $ $Date: 2000/11/20 11:06:47 $
+ * @version $Revision: 1.62 $ $Date: 2000/12/22 17:31:21 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -260,7 +260,11 @@ protected static void printMethod(Method method)
  */
 private void printPrompt()
 {
-	System.out.print("{" + m_cms.getRequestContext().currentUser().getName() + "@" + m_cms.getRequestContext().currentProject().getName() + "}> ");
+	System.out.print("{" + m_cms.getRequestContext().currentUser().getName() + "@" + m_cms.getRequestContext().currentProject().getName() + "} ");
+	long total=Runtime.getRuntime().totalMemory()/1024;
+	long free=Runtime.getRuntime().freeMemory()/1024;
+	System.out.print( ("["+total+"/"+free+"/"+(total-free)+"]"));
+	System.out.println("> ");
 }
 /**
  * Gives the usage-information to the user.

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCachedObject.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ package com.opencms.file;
  * 
  * @author Michael Emmerich
  * @author Andreas Schoutem
- * @version $Revision: 1.8 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.9 $ $Date: 2000/12/22 17:31:21 $
  */
 public class CmsCachedObject implements Cloneable
 {
@@ -95,10 +95,11 @@ public class CmsCachedObject implements Cloneable
 			return new CmsCachedObject(((java.util.Hashtable)m_contents).clone());
 		} else if(m_contents instanceof String) {
 			return new CmsCachedObject( new String((String)m_contents));
+		} else if (m_contents instanceof byte[]) {
+            return new CmsCachedObject(((byte[])m_contents).clone());
 		} else {
 			System.err.println( m_contents.getClass().getName() );
 			throw new InternalError();
-
 		}
 	}
 	/**

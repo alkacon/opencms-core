@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/11/07 13:13:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/11/07 13:13:08 $
+ * @version $Revision: 1.20 $ $Date: 2000/12/22 17:31:21 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
 	
@@ -93,7 +93,7 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
 
 		// only if the resource is cacheable and if the current project is online,
 		// then the browser may cache the resource
-		if( cacheable && cms.getRequestContext().currentProject().equals(cms.onlineProject())) {				
+		if( cacheable && cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
 		    // set max-age to 5 minutes. In this time a proxy may cache this content.
 		    resp.setHeader("Cache-Control", "max-age=300, must-revalidate");
 		} else {

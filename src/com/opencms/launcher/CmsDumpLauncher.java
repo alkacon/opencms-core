@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
- * Date   : $Date: 2000/12/05 10:59:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/12/05 10:59:53 $
+ * @version $Revision: 1.15 $ $Date: 2000/12/22 17:31:21 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
 		
@@ -92,7 +92,7 @@ public class CmsDumpLauncher extends A_CmsLauncher {
 			}
 			throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
 		}
-				
+		
 		Hashtable newParameters = new Hashtable();
 		I_CmsRequest req = cms.getRequestContext().getRequest();
 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/12/13 18:03:09 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2000/12/22 17:31:21 $
+ * Version: $Revision: 1.147 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.146 $ $Date: 2000/12/13 18:03:09 $ 
+ * @version $Revision: 1.147 $ $Date: 2000/12/22 17:31:21 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -386,6 +386,7 @@ public void chtype(String filename, String newType) throws CmsException {
  */
 public void clearcache() {
 	m_rb.clearcache();
+	System.gc();
 }
 /**
  * Copies a file.
