@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/01/31 10:00:32 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/01/31 16:53:33 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $ $Date: 2003/01/31 10:00:32 $
+ * @version $Revision: 1.29 $ $Date: 2003/01/31 16:53:33 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -71,7 +71,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     private Configurations m_conf = null;
     
     /** Default encoding, can be overwritten in "opencms.properties" */
-    private static String m_defaultEncoding = "UTF-8";    
+    private static String m_defaultEncoding = "ISO-8859-1";    
     
     /**
      * Destructor, should be called when the the class instance is shut down.
@@ -299,9 +299,9 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * Return the OpenCms default character encoding.
      * The default is set in the "opencms.properties" file.
      * If this is not set in "opencms.properties" the default 
-     * is "UTF-8". 
+     * is "ISO-8859-1". 
      * 
-     * @return The default encoding (e.g. "UTF-8")
+     * @return The default encoding (e.g. "UTF-8" or "ISO-8859-1")
      */
     public static String getDefaultEncoding() {
         return m_defaultEncoding;
