@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/12/03 07:46:58 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/04/24 07:10:26 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2001/12/03 07:46:58 $
+ * @version $Revision: 1.44 $ $Date: 2002/04/24 07:10:26 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -169,10 +169,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             }
         }
 
+        String mode = (String)parameters.get("mode");
         // if the parameter mode=listonly is set, only the list will be shown
-        boolean listonly = "listonly".equals(parameters.get("mode"));
+        boolean listonly = "listonly".equals(mode);
         // if the parameter mode=projectview is set, all changed files in that project will be shown
-        boolean projectView = "projectview".equals(parameters.get("mode"));
+        boolean projectView = "projectview".equals(mode);
         boolean noKontext = "false".equals(parameters.get("kontext"));
 
         // the flaturl to use for changing folders
@@ -248,7 +249,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         boolean showSize = (filelist & C_FILELIST_SIZE) > 0;
 
         // now get the entries for the filelist
-        Vector resources = getRessources(cms, currentFolder, projectView);
+        Vector resources = getRessources(cms, currentFolder, parameters);
 
         // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE
         // but only in the explorer view
@@ -588,23 +589,65 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
      *
      * @param cms The CmsObject
      * @param param The name of the folder
-     * @param projectView True if the projectview is shown
+     * @param parameters The parameters of the request
      * @return The vector with all ressources
      */
-    private Vector getRessources(CmsObject cms, String param, boolean projectView) throws CmsException {
-        if(projectView) {
+    private Vector getRessources(CmsObject cms, String param, Hashtable parameters) throws CmsException {
+        String mode = (String)parameters.get("mode")!=null?(String)parameters.get("mode"):"";
+        String submode = (String)parameters.get("submode")!=null?(String)parameters.get("submode"):"";
+        if("projectview".equals(mode)) {
             I_CmsSession session = cms.getRequestContext().getSession(true);
-            String filter = new String();
-            filter = (String) session.getValue("filter");
-            String projectId = (String) session.getValue("projectid");
-            int currentProjectId;
-            if(projectId == null || "".equals(projectId)){
-                currentProjectId = cms.getRequestContext().currentProject().getId();
+            if("search".equals(submode)){
+                Vector resources = new Vector();
+                String currentFilter = (String)session.getValue("ocms_search.currentfilter");
+                CmsSearchFormObject searchForm = null;
+                if(currentFilter != null){
+                    searchForm = (CmsSearchFormObject)((Hashtable)session.getValue("ocms_search.allfilter")).get(currentFilter);
+                    if((currentFilter != null) && (searchForm != null)){
+                        // flag for using lucene for search
+                        I_CmsRegistry registry = cms.getRegistry();
+                        boolean luceneEnabled = "on".equals(registry.getSystemValue("searchbylucene"));
+                        if("property".equals(currentFilter)){
+                            String definition = searchForm.getValue02();
+                            String value = searchForm.getValue03();
+                            int type = Integer.parseInt(searchForm.getValue01());
+                            resources = cms.getResourcesWithProperty(definition, value, type);
+                        } else if ("filename".equals(currentFilter)){
+                            String filename = searchForm.getValue01();
+                            // if lucene is enabled the use lucene for searching by filename
+                            // else use the method that reads from the database
+                            if(luceneEnabled){
+                                // put here the lucene search for filenames
+                            } else {
+                                resources = cms.readResourcesLikeName(filename);
+                            }
+                        } else if ("content".equals(currentFilter)){
+                            // this search is only available if lucene is enabled
+                            String content = searchForm.getValue01();
+                        }
+                    }
+                }
+                // remove the channel resources
+                for(int i=0; i<resources.size(); i++){
+                    CmsResource curRes = (CmsResource)resources.elementAt(i);
+                    if(curRes.getResourceName().startsWith(cms.getRequestContext().getSiteName()+cms.C_ROOTNAME_COS)){
+                        resources.remove(i);
+                    }
+                }
+                return resources;
             } else {
-                currentProjectId = Integer.parseInt(projectId);
+                String filter = new String();
+                filter = (String) session.getValue("filter");
+                String projectId = (String) session.getValue("projectid");
+                int currentProjectId;
+                if(projectId == null || "".equals(projectId)){
+                    currentProjectId = cms.getRequestContext().currentProject().getId();
+                } else {
+                    currentProjectId = Integer.parseInt(projectId);
+                }
+                session.removeValue("filter");
+                return cms.readProjectView(currentProjectId, filter);
             }
-            session.removeValue("filter");
-            return cms.readProjectView(currentProjectId, filter);
         } else {
             return cms.getResourcesInFolder(param);
         }
