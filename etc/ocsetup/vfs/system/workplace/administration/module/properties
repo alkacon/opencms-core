@@ -130,6 +130,17 @@ function show_help()
 {
 	return '2_2_2_2_9.html';
 }
+
+function checkHowMuch(){
+
+	if(!document.META.selectpar){
+			document.META.CANCEL.disabled=true;
+	}
+
+
+}
+
+
 //-->
 </script>
 <head>
@@ -137,7 +148,7 @@ function show_help()
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='head_module2.html';">
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='head_module2.html';checkHowMuch();">
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
@@ -267,17 +278,17 @@ function show_help()
 			</tr>
 			<tr>
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.parameter"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>paraname</PROCESS><![CDATA[&nbsp; </td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>paraname</PROCESS><![CDATA[</td>
 				
 			</tr>
 			<tr>
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.description"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>paratext</PROCESS><![CDATA[&nbsp; </td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>paratext</PROCESS><![CDATA[</td>
 			</tr>
 
 			<tr>
 				<td class=dialogtxt>]]><LABEL value="module.lable.type"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>paratype</PROCESS><![CDATA[&nbsp; </td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>paratype</PROCESS><![CDATA[</td>
 			</tr>
 
 			<tr>
