@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/20 16:08:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/21 14:00:39 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/20 16:08:57 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/21 14:00:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -591,7 +591,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     }
     
     private String createTemporaryFile(A_CmsObject cms, A_CmsResource file) throws CmsException{
-        String temporaryFilename = file.getPath() + C_WP_TEMP_PREFIX + file.getName();
+        String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
         
         // This is the code for single temporary files.
         // re-activate it, if the cms object provides a special

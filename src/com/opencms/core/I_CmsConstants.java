@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/02/20 21:31:26 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/02/21 14:00:55 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.46 $ $Date: 2000/02/20 21:31:26 $
+ * @version $Revision: 1.47 $ $Date: 2000/02/21 14:00:55 $
  */
 public interface I_CmsConstants
 {
@@ -84,6 +84,9 @@ public interface I_CmsConstants
       */     
      static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
      
+     /** prefix for temporary files */
+     public static final String C_TEMP_PREFIX = "~";
+          
 	 /**
 	  * The last index, that was used for resource-types.
 	  */
