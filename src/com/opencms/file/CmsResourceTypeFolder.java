@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/23 07:40:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/07/23 11:14:39 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -674,7 +674,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	* or if the file couldn't be moved.
 	*/
 	public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
-
         // it is a folder so we need the end /
         destination = destination +"/";
        // we have to copy the folder and all resources in the folder
@@ -727,7 +726,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	* to rename the file, or if the file couldn't be renamed.
 	*/
 	public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
-
+        // first of all check the new name
+        validResourcename(newname);
        // we have to copy the folder and all resources in the folder
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
@@ -887,4 +887,25 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
+    /**
+     * Checks if there are at least one character in the resourcename
+     *
+     * @param resourcename String to check
+     *
+     * @exception throws a exception, if the check fails.
+     */
+    protected void validResourcename( String resourcename )
+        throws CmsException {
+        if (resourcename == null) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
+                CmsException.C_BAD_NAME);
+        }
+
+        int l = resourcename.trim().length();
+
+        if (l == 0) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
+                CmsException.C_BAD_NAME);
+        }
+    }
 }
