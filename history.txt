@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/09/21 16:37:07 $
- * Version: $Revision: 1.566 $
+ * Date   : $Date: 2004/09/27 17:15:04 $
+ * Version: $Revision: 1.567 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 5.5.2 Caladan (aka 6.0 xxx) - xxx, 2004
 ! Locale handler for the workplace has been made configurable
 * Fixed issue with translated module name not correctly written to log
+* Fixed isses with legacy master module permissions and history
 
 OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - September 20, 2004
 ! Junit test suites now have nice display names
