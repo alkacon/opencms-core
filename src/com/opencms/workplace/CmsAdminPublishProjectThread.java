@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
-* Date   : $Date: 2002/05/31 13:20:58 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/11/29 14:39:22 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,9 +73,12 @@ public class CmsAdminPublishProjectThread extends Thread implements I_CmsConstan
             m_cms.publishProject(m_projectId, m_report);
         }
         catch(CmsException e) {
+            /*
             m_report.addSeperator(0);
             m_report.addSeperator(0);
             m_report.addString(e.getMessage());
+            */
+            
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }

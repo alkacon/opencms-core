@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2002/11/07 13:29:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/11/29 14:39:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 /**
  * @author Hanjo Riege
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 
 import com.opencms.file.*;
@@ -60,15 +60,21 @@ public class CmsAdminLinkmanagementThread extends Thread {
             (new LinkChecker()).checkProject(m_cms, m_projectId, m_report);
         }
         catch(CmsException e) {
+            /*
             m_report.addSeperator(0);
-            m_report.addString(e.getMessage());            
+            m_report.addString(e.getMessage());    
+            */      
+             
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
+                
+                /*
                 StackTraceElement[] stack = e.getStackTrace();
                 int len = (stack.length>5)?5:stack.length;
                 for (int i=0; i<len; i++) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, " > " + stack[i]);
                 }
+                */
             }
         }
     }
