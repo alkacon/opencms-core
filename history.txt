@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/18 15:06:23 $
- * Version: $Revision: 1.430 $
+ * Date   : $Date: 2003/01/20 17:59:21 $
+ * Version: $Revision: 1.431 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,10 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.0 (next version)
+* Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed
+- Removed unused variables in all classes
 
 OpenCms 5.0 "release candidate" (rc) 1  Kaitain - 18 December 2002
 ! Added report output for module management (import / export / delete)
