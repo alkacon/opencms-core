@@ -3,7 +3,7 @@ PACKAGE BODY OpenCmsGroup IS
 ------------------------------------------------------------------------------------
 -- declare variables/procedures/functions which are used in this package
 ------------------------------------------------------------------------------------
-  bAnyList VARCHAR2(100) := ''; -- string with IDs of selected groups
+  bAnyList VARCHAR2(32767) := ''; -- string with IDs of selected groups
   FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
 
 ------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ PACKAGE BODY OpenCmsGroup IS
              -- if the group wasn't called already => find subgroup and edit query-string
              vQueryStr := vQueryStr||' union select * from cms_groups where group_id='||to_char(vSubId);
            END IF;
-           vSubId := opencmsgroup.getParent(vSubId);           
+           vSubId := opencmsgroup.getParent(vSubId);
          END LOOP;
        END IF;
      END LOOP;
