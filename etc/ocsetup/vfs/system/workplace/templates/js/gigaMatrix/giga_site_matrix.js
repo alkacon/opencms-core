@@ -37,7 +37,7 @@ function _addSiteNode(cmsSiteId, cmsSiteName, domainIdRef, siteTypeIdRef, siteEn
 	this.siteNodes[cmsSiteId]["domainIdRef"] = domainIdRef;
 	this.siteNodes[cmsSiteId]["siteTypeIdRef"] = siteTypeIdRef;
 	this.siteNodes[cmsSiteId]["cmsSiteId"] = cmsSiteId;
-	this.siteNodes[cmsSiteId]["cmsSiteName"] = cmsSiteId;
+	this.siteNodes[cmsSiteId]["cmsSiteName"] = cmsSiteName;
 	this.siteNodes[cmsSiteId]["siteEnabled"] = siteEnabled;
 }
 
