@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/19 01:51:38 $
- * Version: $Revision: 1.487 $
+ * Date   : $Date: 2003/07/22 13:01:54 $
+ * Version: $Revision: 1.488 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,11 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+
+OpenCms 5.1.3 Salusa Secundus - July 22, 2003
+! Export version set to 3, new format for the export, older versions 
+  (up to 2) are still supported and will automatically convert the 
+  pages to the new format, i.e. convert resource type of "page" to "newpage"
 - Moved all access to the legacy "element cache" from the 
   CmsRequestContext to the CmsXmlTemplate loader
 - The old resource type "link" is now called "pointer"
