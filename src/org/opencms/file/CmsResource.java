@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/03/13 09:48:39 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/03/18 10:09:29 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -87,7 +87,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return (date1 > date2) ? -1 : (date1 < date2) ? 1 : 0;
         }
     };
-    
+
     /**
      * A comparator for the root path of 2 resources.<p>
      */
@@ -107,10 +107,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
             CmsResource r1 = (CmsResource)o1;
             CmsResource r2 = (CmsResource)o2;
-            
+
             return r1.getRootPath().compareTo(r2.getRootPath());
         }
-    };    
+    };
 
     /** The default expiration date of a resource (which is: never expires). */
     public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
@@ -120,6 +120,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The size of the content. */
     protected int m_length;
+
+    /** The custom comparator key to use for special sort operations. */
+    private Object m_comparatorKey;
 
     /** The creation date of this resource. */
     private long m_dateCreated;
@@ -135,7 +138,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The flags of this resource. */
     private int m_flags;
-    
+
     /** Indicates if this resource is a folder or not. */
     private boolean m_isFolder;
 
@@ -204,7 +207,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID userLastModified,
         long dateReleased,
         long dateExpired,
-        int linkCount, int size) {
+        int linkCount,
+        int size) {
 
         m_structureId = structureId;
         m_resourceId = resourceId;
@@ -385,7 +389,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_userLastModified,
             m_dateReleased,
             m_dateExpired,
-            m_siblingCount, 
+            m_siblingCount,
             m_length);
 
         if (isTouched()) {
@@ -419,6 +423,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return ((CmsResource)obj).getStructureId().equals(getStructureId());
         }
         return false;
+    }
+
+    /**
+     * Returns the custom comparator key to use for special sort operations.<p>
+     *
+     * @return the custom comparator key to use for special sort operations
+     */
+    public Object getComparatorKey() {
+
+        return m_comparatorKey;
     }
 
     /**
@@ -482,7 +496,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public int getLength() {
 
         // make sure folders always have a -1 size
-        return m_isFolder?-1:m_length;
+        return m_isFolder ? -1 : m_length;
     }
 
     /**
@@ -667,6 +681,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public boolean isTouched() {
 
         return m_isTouched;
+    }
+
+    /**
+     * Sets the custom comparator key to use for special sort operations.<p>
+     *
+     * @param comparatorKey the custom comparator key to set
+     */
+    public void setComparatorKey(Object comparatorKey) {
+
+        m_comparatorKey = comparatorKey;
     }
 
     /**
