@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_kontextmenu.js,v $
- * Date   : $Date: 2000/03/21 16:48:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/23 14:18:43 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -93,6 +93,9 @@ var DO_PTASK=10;
 var DO_TASK=99;
 
 var DO_PREACT=20;
+//==ADMINISTRATION/MODULES=================================
+var DO_DELMOD=60;
+var DO_PREFMOD=61;
 //==TASKS=================================
 var DO_TASKREQUEST= 70;
 var DO_TASKACCEPT=  71;
@@ -357,6 +360,16 @@ function doAction(action) // which action on layer is clicked
 		case 51:
 		{
 			location.href='explorer_files_takeover.html';
+			break;
+		}
+		case 60:
+		{
+			location.href='administration_content_module_overwrite.html';
+			break;
+		}
+		case 61:
+		{
+			location.href='administration_content_modules_proper.html';
 			break;
 		}
 		case 70:
