@@ -386,12 +386,12 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
 			<!-- Ende Leerzeile-->
 			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=middle><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=center>]]><LABEL value="input.filter"/><![CDATA[ ]]><PROCESS>filtername</PROCESS><![CDATA[:
+           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=left>]]><LABEL value="input.filter"/><![CDATA[ ]]><PROCESS>filtername</PROCESS><![CDATA[:
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>	
 			<tr>
-				<td class=dialogtxt align=center>]]><PROCESS>filtererror</PROCESS><![CDATA[!
+				<td class=dialogtxt align=left>]]><PROCESS>filtererror</PROCESS><![CDATA[
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>
 				<!-- Beginn Leerzeile-->
@@ -406,7 +406,6 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 				<tr>
 					<td class=formular align=center><INPUT class=button width = 100                        
 						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
 				</table>
 			</td>
 			</tr>
@@ -456,12 +455,12 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
 			<!-- Ende Leerzeile-->
 			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=middle><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=center>]]><LABEL value="explorer.context.delete"/><![CDATA[
+           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.delete"/><![CDATA[
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>	
 			<tr>
-				<td class=dialogtxt align=center>]]><PROCESS>deleteerror</PROCESS><![CDATA[!
+				<td class=dialogtxt align=left>]]><PROCESS>deleteerror</PROCESS><![CDATA[!
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>
 				<!-- Beginn Leerzeile-->
@@ -474,7 +473,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                        
+					<td class=formular align=center><INPUT class=button width = 100                       
 						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
 				</tr>
 				</table>
@@ -526,12 +525,12 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
 			<!-- Ende Leerzeile-->
 			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=middle><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=center>]]><LABEL value="explorer.context.lock"/><![CDATA[
+           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.lock"/><![CDATA[
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>	
 			<tr>
-				<td class=dialogtxt align=center>]]><PROCESS>lockerror</PROCESS><![CDATA[!
+				<td class=dialogtxt align=left>]]><PROCESS>lockerror</PROCESS><![CDATA[!
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>
 				<!-- Beginn Leerzeile-->
