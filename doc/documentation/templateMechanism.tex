@@ -1761,6 +1761,13 @@ static export.\\ \hline
 Returns the path of the requested file.\\ \hline
 {\bf {\meth getFileUri()}}&
 Returns the file name of the requested file.\\ \hline
+{\bf {\meth getUri()}}&
+Returns the link to the requested file parsed through the getLinkSubstitution method. 
+If needed you can submit parameters in the tagcontent (like "cmsframe=main&id=7")\\ \hline
+{\bf {\meth getUriWithParameter()}}&
+Returns the link to the requested file parsed through the getLinkSubstitution method. 
+If needed you can submit parameters in the tagcontent. These parameters will be
+added to the parameters in the requestcontext.\\ \hline
 {\bf {\meth getStyleSheet()}}&
 Is useful for inserting the appropriate style sheet
 definition for different browsers in a template. Two data blocks with
