@@ -184,7 +184,7 @@
                 <form method="get">
                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
                 	<input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA["/>
-					<input type=image src="/pics/system/ic_admin_enter.gif" value="]><label value="button.reload"/><![CDATA[!" onClick="javascript:window.top.body.admin_content.reload();"/>        
+					<input type=image src="/pics/system/ic_admin_enter.gif" value="]><label value="button.reload"/><![CDATA[!" onClick="javascript:window.top.body.bo_content.reload();"/>        
             	</form>
             </div>            
         </td>
@@ -249,26 +249,26 @@ start();
 ]]>
 
 <contextmenue name="backofficeedit"> 
-	<contextentry name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextentry name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
 	<contextentry name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelockuser"> 
-	<contextdisabled name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextdisabled name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
 	<contextdisabled name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.overridelock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
 </contextmenue>
 		
 <contextmenue name="backofficelock"> 
-	<contextentry name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextentry name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
 	<contextentry name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.unlock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
 	</contextmenue>
 
 <contextmenue name="backofficenolock"> 
-	<contextdisabled name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextdisabled name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
 	<contextdisabled name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.lock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
