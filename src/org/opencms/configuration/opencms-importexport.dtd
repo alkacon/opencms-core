@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport?)>
+<!ELEMENT opencms (importexport, staticexport)>
 
 <!--
 # <importexport> configuration:
@@ -116,6 +116,7 @@
 	exportpath,
 	defaultpropertyvalue,
 	defaultsuffixes?,
+	exportheaders?,
 	rendersettings)>
 <!ATTLIST staticexport enabled (TRUE|true|FALSE|false) #REQUIRED>
 
@@ -156,6 +157,14 @@
 
 <!ELEMENT suffix EMPTY>
 <!ATTLIST suffix key CDATA #REQUIRED>
+
+<!--
+# A list of http headers which can be used when exporting plain resources (e.g. binary 
+# files like pdf).
+-->
+<!ELEMENT exportheaders (header+)>
+
+<!ELEMENT header (#PCDATA)>
 
 <!--
 # The render settings control how template based resources are written to 

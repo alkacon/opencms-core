@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsExportFolderMatcher.java,v $
- * Date   : $Date: 2004/07/07 18:44:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/08 13:52:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,21 +33,18 @@ package org.opencms.util;
 
 import org.opencms.staticexport.CmsExportFolderMatcher;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
 public class TestCmsExportFolderMatcher extends TestCase {
-
-    // default folder (same as in "opencms.properties")
-    private static String folders[] = {"\\/sites\\/.*",
-                "\\/system\\/galleries\\/.*", "\\/system\\/modules\\/.*\\/resources\\/.*" 
-    };
-     
+   
     private static String checkRes ="/system/opencms.ini";
     
     /**
@@ -63,6 +60,13 @@ public class TestCmsExportFolderMatcher extends TestCase {
      * Tests for the resource name translation.<p>
      */
     public void testTranslateResource() {
+        
+        /** default folders. */
+        ArrayList folders = new ArrayList(); 
+        
+        folders.add("\\/sites\\/.*");
+        folders.add("\\/system\\/galleries\\/.*");
+        folders.add("\\/system\\/modules\\/.*\\/resources\\/.*");
         
         CmsExportFolderMatcher matcher = new CmsExportFolderMatcher(folders, checkRes); 
         

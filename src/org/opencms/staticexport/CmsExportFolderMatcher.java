@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsExportFolderMatcher.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/08 13:52:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.staticexport;
 import org.opencms.util.CmsStringSubstitution;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,7 @@ import java.util.regex.Pattern;
  * a static export.<p> 
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsExportFolderMatcher {
 
@@ -54,12 +55,13 @@ public class CmsExportFolderMatcher {
      * @param vfsFolders array of vfsFolder used for static export 
      * @param checkResource additional resource name to be added to the static export
      */
-    public CmsExportFolderMatcher(String[] vfsFolders, String checkResource) {
+    public CmsExportFolderMatcher(List vfsFolders, String checkResource) {
         
         m_vfsFolders = new ArrayList();
         
-        for (int i = 0; i < vfsFolders.length; i++) {
-            m_vfsFolders.add(Pattern.compile(vfsFolders[i]));
+        Iterator i = vfsFolders.iterator();
+        while (i.hasNext()) {
+            m_vfsFolders.add(Pattern.compile((String)i.next()));
         }
                     
         m_vfsFolders.add(Pattern.compile(CmsStringSubstitution.escapePattern(checkResource)));     

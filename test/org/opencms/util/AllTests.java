@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/AllTests.java,v $
- * Date   : $Date: 2004/07/07 18:44:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/08 13:52:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -60,7 +60,8 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestCmsResourceTranslator.class));
         suite.addTest(new TestSuite(TestCmsStringSubstitution.class));
         suite.addTest(new TestSuite(TestCmsBrowserMatcher.class));
-        suite.addTest(new TestSuite(TestCmsUUID.class));        
+        suite.addTest(new TestSuite(TestCmsUUID.class));
+        suite.addTest(new TestSuite(TestCmsExportFolderMatcher.class)); 
         //$JUnit-END$
         return suite;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/08 13:52:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.staticexport.CmsStaticExportManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -97,8 +98,63 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /** The principal translation node. */
     protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
     
+    /**  The main configuration node for static export name. */
+    protected static final String N_STATICEXPORT = "staticexport";
+
+    /**  The node name of the static export default node. */
+    protected static final String N_STATICEXPORT_DEFAULT = "defaultpropertyvalue";
+    
+    /**  The node name of the static export defualtsuffix node. */
+    protected static final String N_STATICEXPORT_DEFAULTSUFFIXES = "defaultsuffixes";
+    
+    /**  The node name of the static export exportheaders node. */    
+    protected static final String N_STATICEXPORT_EXPORTHEADERS = "exportheaders";
+    
+    /**  The node name of the static export exportpath node. */    
+    protected static final String N_STATICEXPORT_EXPORTPATH = "exportpath";
+    
+    /**  The node name of the static export exporturl node. */    
+    protected static final String N_STATICEXPORT_EXPORTURL = "exporturl";
+    
+    /**  The node name of the static export header node. */
+    protected static final String N_STATICEXPORT_HEADER = "header";
+    
+    /**  The node name of the static export mode node. */
+    protected static final String N_STATICEXPORT_MODE = "mode";
+    
+    /**  The node name of the static export plainoptimization node. */    
+    protected static final String N_STATICEXPORT_PLAINOPTIMIZATION = "plainoptimization";
+    
+    /**  The node name of the static export rfx-prefix node. */    
+    protected static final String N_STATICEXPORT_RFS_PREFIX = "rfs-prefix";
+    
+    /**  The node name of the static export rendersettings node. */    
+    protected static final String N_STATICEXPORT_RENDERSETTINGS = "rendersettings";
+
+    /**  The node name of the static export regex node. */    
+    protected static final String N_STATICEXPORT_REGEX = "regex";
+    
+    /**  The node name of the static export relativelinks node. */    
+    protected static final String N_STATICEXPORT_RELATIVELINKS = "userelativelinks";
+    
+    /**  The node name of the static export resourcestorender node. */    
+    protected static final String N_STATICEXPORT_RESOURCESTORENDER = "resourcestorender";
+   
+    /**  The node name of the static export suffix node. */    
+    protected static final String N_STATICEXPORT_SUFFIX = "suffix";
+    
+    /**  The node name of the static export testresource node. */    
+    protected static final String N_STATICEXPORT_TESTRESOURCE = "testresource";
+    
+    /**  The node name of the static export vfx-prefix node. */    
+    protected static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
+
+    
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
+        
+    /** The configured static export manager. */
+    private CmsStaticExportManager m_staticExportManager;
     
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -113,10 +169,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
-    public void addXmlDigesterRules(Digester digester) {                                                
+    public void addXmlDigesterRules(Digester digester) {
         // add finish rule
         digester.addCallMethod("*/" + N_IMPORTEXPORT, "initializeFinished");   
-        
+               
         // creation of the import/export manager        
         digester.addObjectCreate("*/" + N_IMPORTEXPORT, CmsImportExportManager.class);                         
         // import/export manager finished
@@ -151,8 +207,42 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 
         // add rules for the ignored properties
         digester.addCallMethod("*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IGNOREDPROPERTIES + "/" + N_PROPERTY, "addIgnoredProperty", 1); 
-        digester.addCallParam("*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IGNOREDPROPERTIES + "/" + N_PROPERTY, 0, A_NAME);                      
-    }
+        digester.addCallParam("*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IGNOREDPROPERTIES + "/" + N_PROPERTY, 0, A_NAME);
+        
+        // creation of the static export manager        
+        digester.addObjectCreate("*/" +  N_STATICEXPORT, CmsStaticExportManager.class);           
+        // static export manager finished
+        digester.addSetNext("*/" + N_STATICEXPORT, "setStaticExportManager");
+        // export enabled role
+        digester.addCallMethod("*/" + N_STATICEXPORT, "setExportEnabled", 1); 
+        digester.addCallParam("*/" + N_STATICEXPORT, 0, A_ENABLED);         
+        // mode rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_MODE , "setMode", 0); 
+        // exportpath rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTPATH , "setExportPath", 0); 
+        // default property rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_DEFAULT , "setDefault", 0); 
+        // export suffix rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_DEFAULTSUFFIXES + "/" + N_STATICEXPORT_SUFFIX, "setExportSuffix", 1);  
+        digester.addCallParam("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_DEFAULTSUFFIXES + "/" + N_STATICEXPORT_SUFFIX, 0, A_KEY); 
+        // header rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTHEADERS + "/" + N_STATICEXPORT_HEADER , "setExportHeader", 0);       
+        // rfs-prefix rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_RFS_PREFIX , "setRfsPrefix", 0); 
+        // vfs-prefix rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_VFS_PREFIX , "setVfsPrefix", 0);  
+        // relative links rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_RELATIVELINKS , "setRelativeLinks", 0);  
+        // exporturl rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_EXPORTURL , "setExportUrl", 0);  
+        // plain export optimization rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_PLAINOPTIMIZATION , "setPlainExportOptimization", 0);  
+        // test resource rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_TESTRESOURCE , "setTestResource", 1);  
+        digester.addCallParam("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_TESTRESOURCE, 0, A_URI);
+        // resources to export rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_RESOURCESTORENDER + "/" + N_STATICEXPORT_REGEX , "setExportFolderPattern", 0);  
+        }
     
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
@@ -226,6 +316,69 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             propertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, property);
         }            
         
+        // <staticexport> node
+        Element staticexportElement = importexportElement.addElement(N_STATICEXPORT);
+        staticexportElement.addAttribute(A_ENABLED, m_staticExportManager.getExportEnabled());
+        
+        // <mode> node
+        staticexportElement.addElement(N_STATICEXPORT_MODE).addText(m_staticExportManager.getMode());
+        
+        // <exportpath> node
+        staticexportElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(m_staticExportManager.getExportPathUnmodified());
+        
+        // <defaultpropertyvalue> node
+        staticexportElement.addElement(N_STATICEXPORT_DEFAULT).addText(m_staticExportManager.getDefault());
+        
+        // <defaultsuffixes> node and its <suffix> sub nodes
+        Element defaultsuffixesElement = staticexportElement.addElement(N_STATICEXPORT_DEFAULTSUFFIXES);
+        
+        i = m_staticExportManager.getExportSuffixes().iterator();
+        while (i.hasNext()) {
+            String suffix = (String)i.next();
+            Element suffixElement = defaultsuffixesElement.addElement(N_STATICEXPORT_SUFFIX);
+            suffixElement.addAttribute(A_KEY, suffix);
+        }
+        
+        // <exportheaders> node and its <header> sub nodes
+        i = m_staticExportManager.getExportHeaders().iterator();
+        if (i.hasNext()) {
+            Element exportheadersElement = staticexportElement.addElement(N_STATICEXPORT_EXPORTHEADERS);
+            while (i.hasNext()) {
+                String header = (String)i.next();
+                exportheadersElement.addElement(N_STATICEXPORT_HEADER).addText(header);            }
+        }
+        
+        // <rendersettings> node
+        Element rendersettingsElement = staticexportElement.addElement(N_STATICEXPORT_RENDERSETTINGS);
+        
+        // <rfsPrefix> node
+        rendersettingsElement.addElement(N_STATICEXPORT_RFS_PREFIX).addText(m_staticExportManager.getRfsPrefixUnsubstituted());
+        
+        // <vfsPrefix> node
+        rendersettingsElement.addElement(N_STATICEXPORT_VFS_PREFIX).addText(m_staticExportManager.getVfsPrefixUnsubstituted());
+        
+        // <userelativelinks> node
+        rendersettingsElement.addElement(N_STATICEXPORT_RELATIVELINKS).addText(m_staticExportManager.getRelativeLinks());
+        
+        // <exporturl> node
+        rendersettingsElement.addElement(N_STATICEXPORT_EXPORTURL).addText(m_staticExportManager.getExportUrlUnsubstituted());
+        
+        // <plainoptimization> node
+        rendersettingsElement.addElement(N_STATICEXPORT_PLAINOPTIMIZATION).addText(m_staticExportManager.getPlainExportOptimization());
+        
+        // <testresource> node
+        Element testresourceElement = rendersettingsElement.addElement(N_STATICEXPORT_TESTRESOURCE);
+        testresourceElement.addAttribute(A_URI, m_staticExportManager.getTestResource());
+        
+        // <resourcestorender> node and <regx> subnodes
+        Element resourcetorenderElement = rendersettingsElement.addElement(N_STATICEXPORT_RESOURCESTORENDER);
+       
+        i =  m_staticExportManager.getExportFolderPatterns().iterator();
+        while (i.hasNext()) {
+            String pattern = (String)i.next();
+            resourcetorenderElement.addElement(N_STATICEXPORT_REGEX).addText(pattern);
+        }
+        
         // return the configured node
         return importexportElement;
     }
@@ -247,6 +400,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     }
     
     /**
+     * Returns the initialized static export manager.<p>
+     * 
+     * @return the initialized static export manager
+     */
+    public CmsStaticExportManager getStaticExportManager() {
+        return m_staticExportManager;
+    }
+    
+    
+    /**
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
@@ -266,4 +429,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import manager init  : finished");
         }
     }
+    
+    /**
+     * Sets the generated static export manager.<p>
+     * 
+     * @param manager the static export manager to set
+     */
+    public void setStaticExportManager(CmsStaticExportManager manager) {
+        m_staticExportManager = manager;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export manager settings init  : finished");
+        }
+    }
+    
+    
 }

@@ -44,4 +44,35 @@
 			<ignoredproperties/>
 		</import>
 	</importexport>
+	<staticexport enabled="true">
+		<mode>on-demand</mode>
+		<exportpath>export</exportpath>
+		<defaultpropertyvalue>true</defaultpropertyvalue>
+		<defaultsuffixes>
+			<suffix key=".jpg"/>
+			<suffix key=".gif"/>
+			<suffix key=".png"/>
+			<suffix key=".doc"/>
+			<suffix key=".xls"/>
+			<suffix key=".ppt"/>
+			<suffix key=".pdf"/>
+			<suffix key=".txt"/>
+			<suffix key=".css"/>
+			<suffix key=".zip"/>
+			<suffix key=".swf"/>
+		</defaultsuffixes>
+		<rendersettings>
+			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>
+			<userelativelinks>false</userelativelinks>			
+			<exporturl>http://127.0.0.1:8080${CONTEXT_NAME}/handle404</exporturl>
+			<plainoptimization>true</plainoptimization>
+			<testresource uri="/system/shared/page.dtd"/>
+			<resourcestorender>
+				<regex>\\/sites\\/.*</regex>
+				<regex>\\/system\\/galleries\\/.*</regex>
+				<regex>\\/system\\/modules\\/.*\\/resources\\/.*</regex>
+			</resourcestorender>
+		</rendersettings>
+	</staticexport>  
 </opencms>

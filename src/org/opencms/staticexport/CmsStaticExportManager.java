@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/07/08 13:52:47 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,7 +69,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 
 /**
@@ -78,12 +76,9 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
-
-    /** Cache value to indicate a true 404 error. */
-    private static final String C_CACHEVALUE_404 = "?404";
 
     /** Marker for error message attribute. */
     public static final String C_EXPORT_ATTRIBUTE_ERROR_MESSAGE = "javax.servlet.error.message";
@@ -108,6 +103,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Marker for externally redirected 404 uri's. */
     public static final String C_EXPORT_MARKER = "exporturi";
+    
+    /** Cache value to indicate a true 404 error. */
+    private static final String C_CACHEVALUE_404 = "?404";
+    
+    /** value for "after-publish" mode. */
+    private static String C_MODE_AFTERPUBLISH = "after-publish";
+
+    /** value for "on-demand" mode. */
+    private static String C_MODE_ONDEMAND = "on-demand";
 
     /** Matcher for  selecting those resources which should be part of the staic export. */
     private static CmsExportFolderMatcher m_exportFolderMatcher;
@@ -118,8 +122,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Cache for the online links. */
     private Map m_cacheOnlineLinks;
 
+    /** List of export resources which should be part of the static export. */
+    private List m_exportFolders;
+
     /** The additional http headers for the static export. */
-    private String[] m_exportHeaders;
+    private List m_exportHeaders;
 
     /** List of all resources that have the "exportname" property set. */
     private Map m_exportnameResources;
@@ -131,17 +138,23 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private boolean m_exportRelativeLinks;
 
     /** List of export suffixes where the "export" property default is always "true". */
-    private String[] m_exportSuffixes;
-
+    private List m_exportSuffixes;
+    
     /** Export url to send internal requests to. */
     private String m_exportUrl;
 
+    /** Export url with unstubstituted context values. */
+    private String m_exportUrlUnsubstituted;
+    
     /** Indicates if the quick static export for plain resources is enabled. */
     private boolean m_quickPlainExport;
 
     /** Prefix to use for exported files. */
     private String m_rfsPrefix;
 
+    /** Prefix to use for exported files with unstubstituted context values. */
+    private String m_rfsPrefixUnsubstituted;
+    
     /** Indicates if the static export is enabled or diabled. */
     private boolean m_staticExportEnabled;
 
@@ -151,167 +164,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** The path to where the static export will be written. */
     private String m_staticExportPath;
 
+    /** The path to where the static export will be written without the complete rfs path. */
+    private String m_staticExportPathUnmodified;
+    
     /** Vfs Name of a resource used to do a "static export required" test. */
     private String m_testResource;
 
     /** Prefix to use for internal OpenCms files. */
     private String m_vfsPrefix;
 
+    /** Prefix to use for internal OpenCms files with unstubstituted context values. */
+    private String m_vfsPrefixUnsubstituted;
+    
     /**
      * Creates a new static export property object.<p>
-     */
-    public CmsStaticExportManager() {
-
-        m_exportRelativeLinks = false;
-        m_staticExportEnabled = false;
-        m_exportPropertyDefault = true;
-
-        LRUMap lruMap1 = new LRUMap(2048);
-        m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheOnlineLinks", lruMap1);
-        }
-
-        LRUMap lruMap2 = new LRUMap(2048);
-        m_cacheExportUris = Collections.synchronizedMap(lruMap2);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheExportUris", lruMap2);
-        }
-
-        // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_UPDATE_EXPORTS});
-    }
-
-    /**
-     * Initializes the static export manager with the OpenCms system configuration.<p>
      * 
-     * @param configuration the OpenCms configuration
-     * @param cms an OpenCms context object (not used in static export manager)
-     * @return the initialized site manager
      */
-    public static CmsStaticExportManager initialize(ExtendedProperties configuration, CmsObject cms) {
-
-        CmsStaticExportManager exportManager = new CmsStaticExportManager();
-
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("Created static export manager" + ((cms != null) ? (" with CmsObject " + cms) : ""));
-        }
-
-        // set if the static export is enabled or not
-        exportManager.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString(
-            "staticexport.enabled",
-            "false")));
-
-        // set if the static export is set to export on publish or export on demand
-        exportManager.setStaticExportOnDemand(!"true".equalsIgnoreCase(configuration.getString(
-            "staticexport.onpublish",
-            "false")));
-
-        // set the default value for the "export" property
-        exportManager.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString(
-            "staticexport.export_default",
-            "false")));
-
-        // set if the quick plain export is enabled or not
-        exportManager.setQuickPlainExport("true".equalsIgnoreCase(configuration.getString(
-            "staticexport.quick_plain_export",
-            "true")));
-
-        // set the export URL
-        exportManager.setExportUrl(configuration.getString(
-            "staticexport.url",
-            "http://127.0.0.1:8080/opencms/handle404"));
-
-        // set the export suffixes
-        String[] exportSuffixes = configuration.getStringArray("staticexport.export_suffixes");
-        if (exportSuffixes == null) {
-            exportSuffixes = new String[0];
-        }
-        exportManager.setExportSuffixes(exportSuffixes);
-
-        // set the static export folders in the vfs
-        String[] exportVfsFolders = configuration.getStringArray("staticexport.vfs_folders");
-        if (exportVfsFolders == null) {
-            exportVfsFolders = new String[0];
-        }
-
-        // get the test resource
-        exportManager.setTestResource(configuration.getString("staticexport.testresource", "/system/shared/page.dtd"));
-
-        m_exportFolderMatcher = new CmsExportFolderMatcher(exportVfsFolders, exportManager.getTestResource());
-
-        // set the path for the export
-        exportManager.setExportPath(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
-            configuration.getString("staticexport.export_path", "export")));
-
-        // replace the "magic" names                 
-        String servletName = OpenCms.getSystemInfo().getServletPath();
-        String contextName = OpenCms.getSystemInfo().getContextPath();
-
-        // set the "magic" names in the extended properties
-        configuration.setProperty("CONTEXT_NAME", contextName);
-        configuration.setProperty("SERVLET_NAME", servletName);
-
-        // set the export URL
-        exportManager.setExportUrl(configuration.getString(
-            "staticexport.url",
-            "http://127.0.0.1:8080" + contextName + "/handle404"));
-
-        // get the export prefix variables for rfs and vfs
-        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
-        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
-
-        // set the export prefix variables for rfs and vfs
-        exportManager.setRfsPrefix(rfsPrefix);
-        exportManager.setVfsPrefix(vfsPrefix);
-
-        // set if links in the export should be relative or not
-        exportManager.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false));
-
-        // initialize "exportname" folders
-        exportManager.setExportnames();
-
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (exportManager.isStaticExportEnabled() ? "enabled" : "disabled"));
-            if (exportManager.isStaticExportEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + exportManager.getExportPropertyDefault());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + exportManager.getExportPath());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + exportManager.getRfsPrefix());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + exportManager.getVfsPrefix());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (exportManager.relativLinksInExport() ? "relative" : "absolute"));
-            }
-        }
-
-        // initialize specific static export headers
-        String[] exportHeaders = null;
-        try {
-            exportHeaders = configuration.getStringArray("staticexport.headers");
-            for (int i = 0; i < exportHeaders.length; i++) {
-                if (CmsStringSubstitution.split(exportHeaders[i], ":").length == 2) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + exportHeaders[i]);
-                    }
-                } else {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : " + "invalid header: " + exportHeaders[i] + ", using default headers");
-                    }
-                    exportHeaders = null;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : non-critical error " + e.toString());
-            }
-        }
-        exportManager.setExportHeaders(exportHeaders);
-
-        return exportManager;
+    public CmsStaticExportManager() {     
+        m_exportSuffixes = new ArrayList();
+        m_exportFolders = new ArrayList();
+        m_exportHeaders = new ArrayList();    
     }
 
     /**
@@ -657,6 +529,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         return (String)m_cacheOnlineLinks.get(vfsName);
     }
+    
+    /**
+     * Gets the default property value as a string representation.<p>
+     * 
+     * @return "true" or "false"
+     */
+    public String getDefault() {
+        if (m_exportPropertyDefault) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
 
     /**
      * Returns the export data for the request, if null is returned no export is required.<p>
@@ -712,19 +597,44 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         return getExportData(rfsName, vfsName, cms);
     }
+    
+    /**
+     * Gets the export enbled value as a string representation.<p>
+     * 
+     * @return "true" or "false"
+     */
+    public String getExportEnabled() {
+        if (m_staticExportEnabled) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+    /**
+     * Returns list of resouces patterns which are part of the export.<p>
+     * 
+     * @return the of resouces patterns which are part of the export.
+     */
+    public List getExportFolderPatterns() {
+
+        return Collections.unmodifiableList(m_exportFolders);
+    }
 
     /**
      * Returns specific http headers for the static export.<p>
      * 
      * If the header <code>Cache-Control</code> is set, OpenCms will not use its default headers.<p>
      * 
-     * @return the list of http export headers from opencms.properties
+     * @return the list of http export headers
      */
     public List getExportHeaders() {
 
-        return Collections.unmodifiableList(Arrays.asList(m_exportHeaders));
+        return Collections.unmodifiableList(m_exportHeaders);
     }
 
+    
+    
     /**
      * Returns the list of all resources that have the "exportname" property set.<p>
      * 
@@ -746,6 +656,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the export path for the static export without the complete rfs path.<p>
+     * 
+     * @return the export path for the static export without the complete rfs path
+     */
+    public String getExportPathUnmodified() {
+
+        return m_staticExportPathUnmodified;
+    }
+    
+    /**
      * Returns true if the default value for the resource property "export" is true.<p>
      * 
      * @return true if the default value for the resource property "export" is true
@@ -753,6 +673,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean getExportPropertyDefault() {
 
         return m_exportPropertyDefault;
+    }
+    
+    /**
+     * Gets the list of resouce suffixes which will be exported by default.<p>
+     * 
+     * @return list of resouce suffixe
+     */
+    public List getExportSuffixes() {
+        return m_exportSuffixes;
     }
 
     /**
@@ -764,6 +693,42 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         return m_exportUrl;
     }
+    
+    /**
+     * Returns the export url used for internal requests with unsubstituted context values.<p>
+     * 
+     * @return the export url with unsubstituted context values
+     */
+    public String getExportUrlUnsubstituted() {
+
+        return m_exportUrlUnsubstituted;
+    }
+    
+    /**
+     * Gets the mode in which the static export is working.<p>
+     * 
+     * @return either "on-demand" or "after-publish";
+     */
+    public String getMode() {
+        if (m_staticExportOnDemand) {
+            return C_MODE_ONDEMAND;
+        } else {
+            return C_MODE_AFTERPUBLISH;
+        }
+    }
+    
+    /**
+     * Gets the plain export optimization value as a string representation.<p>
+     * 
+     * @return "true" or "false"
+     */
+    public String getPlainExportOptimization() {
+        if (m_quickPlainExport) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
 
     /**
      * Returns true if the quick plain export is enabled.<p>
@@ -773,6 +738,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean getQuickPlainExport() {
 
         return m_quickPlainExport;
+    }
+    
+    /**
+     * Gets the relative links value as a string representation.<p>
+     * 
+     * @return "true" or "false"
+     */
+    public String getRelativeLinks() {
+        if (m_exportRelativeLinks) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     /**
@@ -844,6 +822,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         return m_rfsPrefix;
     }
+    
+    /**
+     * Returns the prefix for exported links in the "real" file system with unsubstituted context values.<p>
+     * 
+     * @return the prefix for exported links in the "real" file system with unsubstituted context values.
+     */
+    public String getRfsPrefixUnsubstituted() {
+
+        return m_rfsPrefixUnsubstituted;
+    }
 
     /**
      * Returns the vfs name of the test resource.<p>
@@ -899,6 +887,68 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the prefix for internal links in the vfs with unsubstituted context values.<p>
+     * 
+     * @return the prefix for internal links in the vfs with unsubstituted context values
+     */
+    public String getVfsPrefixUnsubstituted() {
+
+        return m_vfsPrefixUnsubstituted;
+    }
+
+    /**
+     * Initializes the static export manager with the OpenCms system configuration.<p>
+     * 
+     * @param cms an OpenCms context object
+     */
+    public void initialize(CmsObject cms) {
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("Created static export manager" + ((cms != null) ? (" with CmsObject " + cms) : ""));
+        }
+
+        LRUMap lruMap1 = new LRUMap(2048);
+        m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            // map must be of type "LRUMap" so that memory monitor can acecss all information
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheOnlineLinks", lruMap1);
+        }
+
+        LRUMap lruMap2 = new LRUMap(2048);
+        m_cacheExportUris = Collections.synchronizedMap(lruMap2);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            // map must be of type "LRUMap" so that memory monitor can acecss all information
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheExportUris", lruMap2);
+        }
+
+        // register this object as event listener
+        OpenCms.addCmsEventListener(this, new int[] {
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_UPDATE_EXPORTS});
+
+        m_exportFolderMatcher = new CmsExportFolderMatcher(m_exportFolders, m_testResource);
+
+        // initialize "exportname" folders
+        setExportnames();
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (isStaticExportEnabled() ? "enabled" : "disabled"));
+            if (isStaticExportEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + getExportPropertyDefault());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + getExportPath());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + getRfsPrefix());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + getVfsPrefix());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (relativLinksInExport() ? "relative" : "absolute"));
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export mode          : " + (getMode()));
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export URL           : " + (getExportUrl()));
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export optimization  : " + (getPlainExportOptimization()));
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export testresource  : " + (getTestResource()));
+            }
+        }
+    }
+
+    /**
      * Returns true if the static export is enabled.<p>
      * 
      * @return true if the static export is enabled
@@ -929,10 +979,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (resourceName == null) {
             return false;
         }
-        for (int i = 0; i < m_exportSuffixes.length; i++) {
-            if (resourceName.endsWith(m_exportSuffixes[i])) {
+        if (resourceName.indexOf(".") > 0) {
+            String suffix = resourceName.substring(resourceName.lastIndexOf(".")).toLowerCase();
+            if (m_exportSuffixes.contains(suffix)) {
                 return true;
             }
+        } else {
+            return false;
         }
         return false;
     }
@@ -945,6 +998,156 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean relativLinksInExport() {
 
         return m_exportRelativeLinks;
+    }
+    
+    /**
+     * Sets the default property value.<p>
+     * 
+     * @param value must be "true" or "false"
+     */
+    public void setDefault(String value) {
+        m_exportPropertyDefault = Boolean.valueOf(value).booleanValue();
+    }
+    
+    /**
+     * Sets the export enbled value.<p>
+     * 
+     * @param value must be "true" or "false"
+     */
+    public void setExportEnabled(String value) {
+        m_staticExportEnabled = Boolean.valueOf(value).booleanValue();
+    }
+    
+    
+    /**
+     * Adds a resource pattern to the list of resouces which are part of the export.<p>
+     * 
+     * @param folder the folder pattern to add to the list.
+     */
+    public void setExportFolderPattern(String folder) {
+        m_exportFolders.add(folder);
+    }
+
+    /**
+     * Sets specific http header for the static export.<p>
+     * 
+     * The format of the headers must be "header:value".<p> 
+     *  
+     * @param exportHeader a specific http header
+     */
+    public void setExportHeader(String exportHeader) {
+                
+        if (CmsStringSubstitution.split(exportHeader, ":").length == 2) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + exportHeader);
+            }
+            m_exportHeaders.add(exportHeader);
+        } else {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : " + "invalid header: " + exportHeader + ", using default headers");
+            }
+        }
+    }
+
+    /**
+     * Sets the path where the static export is written.<p>
+     * 
+     * @param path the path where the static export is written
+     */
+    public void setExportPath(String path) {
+
+        m_staticExportPath = path;
+        if (!m_staticExportPath.endsWith(File.separator)) {
+            m_staticExportPath += File.separator;
+        }
+        m_staticExportPathUnmodified = m_staticExportPath;
+        m_staticExportPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(m_staticExportPath);
+        
+    } 
+   
+    /**
+     * Adds a suffix to the list of resouce suffixes which will be exported by default.<p>
+     * 
+     * @param suffix the suffix to add to the list.
+     */
+    public void setExportSuffix(String suffix) {
+        m_exportSuffixes.add(suffix.toLowerCase());
+    }
+     
+    /**
+     * Sets the export url.<p>
+     * 
+     * @param url the export url
+     */
+    public void setExportUrl(String url) {
+
+        m_exportUrl = insertContextStrings(url);
+        m_exportUrlUnsubstituted = url;
+    }
+    
+    /**
+     * Sets the mode in which the static export is working.<p>
+     * 
+     * Possible values are "on-demand" and "after-publish".
+     * 
+     * @param mode the mode of the static export
+     */
+    public void setMode(String mode) {
+        if (mode.equals(C_MODE_ONDEMAND)) {
+            m_staticExportOnDemand = true;
+        } else {
+            m_staticExportOnDemand = false;
+        }
+    }
+    
+    /**
+     * Sets the plain export optimization value.<p>
+     * 
+     * @param value must be "true" or "false"
+     */
+    public void setPlainExportOptimization(String value) {
+        m_quickPlainExport = Boolean.valueOf(value).booleanValue();
+    }
+    
+    /**
+     * Sets the relative links value.<p>
+     * 
+     * @param value must be "true" or "false"
+     */
+    public void setRelativeLinks(String value) {
+        m_exportRelativeLinks = Boolean.valueOf(value).booleanValue();
+    }
+
+    /**
+     * Sets the prefix for exported links in the "real" file system.<p>
+     * 
+     * @param rfsPrefix the prefix for exported links in the "real" file system
+     */
+    public void setRfsPrefix(String rfsPrefix) {
+
+        m_rfsPrefix = insertContextStrings(rfsPrefix);
+        m_rfsPrefixUnsubstituted = rfsPrefix;
+    }
+
+    /**
+     * Sets the test resource.<p>
+     *  
+     * @param testResource the vfs name of the test resource
+     */
+    public void setTestResource(String testResource) {
+
+        m_testResource = testResource;
+    }
+
+    /**
+     * Sets the prefix for internal links in the vfs.<p>
+     * 
+     * @param vfsPrefix the prefix for internal links in the vfs
+     */
+    public void setVfsPrefix(String vfsPrefix) {
+
+        m_vfsPrefix = insertContextStrings(vfsPrefix);
+        m_vfsPrefixUnsubstituted = vfsPrefix;
     }
 
     /**
@@ -1467,6 +1670,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         return vfsName;
     }
+    
+    
+    /**
+     * Substitutes the ${CONTEXT_NAME} and ${SERVLET_NAME} in a path with the real values.<p>
+     * 
+     * @param path the path to substitute
+     * @return path with real context values
+     */
+    private String insertContextStrings(String path) {
+        String value = path;
+
+        // replace the "magic" names                 
+        String servletName = OpenCms.getSystemInfo().getServletPath();
+        String contextName = OpenCms.getSystemInfo().getContextPath();
+        
+        value = CmsStringSubstitution.substitute(value, "${CONTEXT_NAME}", contextName);
+        value = CmsStringSubstitution.substitute(value, "${SERVLET_NAME}", servletName);  
+        
+        return value;
+    }
 
     /**
      * Scrubs the "export" folder.<p>
@@ -1614,21 +1837,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Sets specific http headers for the static export.<p>
-     * 
-     * The format of the headers must be "header:value".<p> 
-     *  
-     * @param exportHeaders the list of http export headers to set
-     */
-    private void setExportHeaders(String[] exportHeaders) {
-
-        m_exportHeaders = exportHeaders;
-        if (m_exportHeaders == null) {
-            m_exportHeaders = new String[0];
-        }
-    }
-
-    /**
      * Set the list of all resources that have the "exportname" property set.<p>
      */
     private synchronized void setExportnames() {
@@ -1664,118 +1872,5 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
     }
-
-    /**
-     * Sets the path where the static export is written.<p>
-     * 
-     * @param path the path where the static export is written
-     */
-    private void setExportPath(String path) {
-
-        m_staticExportPath = path;
-        if (!m_staticExportPath.endsWith(File.separator)) {
-            m_staticExportPath += File.separator;
-        }
-    }
-
-    /**
-     * Sets the default for the "export" resource property, 
-     * possible values are "true", "false" or "dynamic".<p>
-     *  
-     * @param value the default for the "export" resource property
-     */
-    private void setExportPropertyDefault(boolean value) {
-
-        m_exportPropertyDefault = value;
-    }
-
-    /**
-     * Controls if links in exported files are relative or absolute.<p>
-     * 
-     * @param value if true, links in exported files are relative
-     */
-    private void setExportRelativeLinks(boolean value) {
-
-        m_exportRelativeLinks = value;
-    }
-
-    /**
-     * Sets the list of export suffices.<p>
-     * 
-     * @param exportSuffixes the list of export suffixes
-     */
-    private void setExportSuffixes(String[] exportSuffixes) {
-
-        m_exportSuffixes = exportSuffixes;
-    }
-
-    /**
-     * Sets the export url.<p>
-     * 
-     * @param url the export url
-     */
-    private void setExportUrl(String url) {
-
-        m_exportUrl = url;
-    }
-
-    /**
-     * Controls if hte quick plain export is enabled.<p>
-     * 
-     * @param value if true, the quick plain export is enabled
-     */
-    private void setQuickPlainExport(boolean value) {
-
-        m_quickPlainExport = value;
-    }
-
-    /**
-     * Sets the prefix for exported links in the "real" file system.<p>
-     * 
-     * @param rfsPrefix the prefix for exported links in the "real" file system
-     */
-    private void setRfsPrefix(String rfsPrefix) {
-
-        m_rfsPrefix = rfsPrefix;
-    }
-
-    /**
-     * Controls if the static export is enabled or not.<p>
-     * 
-     * @param value if true, the static export is enabled
-     */
-    private void setStaticExportEnabled(boolean value) {
-
-        m_staticExportEnabled = value;
-    }
-
-    /**
-     * Controls if the static export operates in "on demand" or "after publish" mode.<p>
-     * 
-     * @param value if true, the static export is set to "on demand" mode
-     */
-    private void setStaticExportOnDemand(boolean value) {
-
-        m_staticExportOnDemand = value;
-    }
-
-    /**
-     * Sets the test resource.<p>
-     *  
-     * @param testResource the vfs name of the test resource
-     */
-    private void setTestResource(String testResource) {
-
-        m_testResource = testResource;
-    }
-
-    /**
-     * Sets the prefix for internal links in the vfs.<p>
-     * 
-     * @param vfsPrefix the prefix for internal links in the vfs
-     */
-    private void setVfsPrefix(String vfsPrefix) {
-
-        m_vfsPrefix = vfsPrefix;
-    }
+    
 }

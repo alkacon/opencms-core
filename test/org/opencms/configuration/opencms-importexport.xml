@@ -52,7 +52,7 @@
 	</importexport>      
 	<staticexport enabled="true">
 		<mode>on-demand</mode>
-		<exportpath>export/</exportpath>
+		<exportpath>export</exportpath>
 		<defaultpropertyvalue>true</defaultpropertyvalue>
 		<defaultsuffixes>
 			<suffix key=".jpg"/>
@@ -67,6 +67,10 @@
 			<suffix key=".zip"/>
 			<suffix key=".swf"/>
 		</defaultsuffixes>
+		<exportheaders>
+			<header>testheader:testvalue</header>
+			<header>testheader2:testvalue2</header>
+		</exportheaders>
 		<rendersettings>
 			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
 			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>
