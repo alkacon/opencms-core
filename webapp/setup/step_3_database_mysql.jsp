@@ -99,10 +99,10 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 <%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
 
 <% if(setupOk)	{ %>
-<form method="POST" onSubmit="return checkSubmit()">
+<form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
-	<td height="375" align="center" valign="top">
+	<td align="center" valign="top">
 		<table border="0">
 			<tr>
 				<td align="center">

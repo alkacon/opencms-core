@@ -128,16 +128,16 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
 <% if(setupOk)	{ %>
-<form method="POST" onSubmit="return checkSubmit()">
+<form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
-	<td height="375" align="center" valign="top">
+	<td align="center" valign="top">
 		<table border="0">
 			<tr>
 				<td align="center">
 					<table border="0" cellpadding="2">
 						<tr>
-							<td width="150" class="bold">
+							<td width="150" style="font-weight:bold;">
 								Select Database
 							</td>
 							<td width="250">
@@ -175,7 +175,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 
 			<tr>
 				<td>
-					<table border="0" cellpadding="5" cellspacing="0" class="header">
+					<table border="0" cellpadding="5" cellspacing="0">
 						<tr><td>&nbsp;</td><td>User</td><td>Password</td></tr>
 						<tr>
 							<td>Setup Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
