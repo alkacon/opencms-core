@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
  * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/05 08:47:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/11/05 13:05:11 $
+ * Version: $Revision: 1.5 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -687,7 +687,7 @@ public class CmsDbAccess {
         dataset.m_groupId = res.getInt(i++);
         dataset.m_lockedInProject = res.getInt(i++);
         // compute project based on the current project and the channels
-        dataset.m_projectId = computeProjectId(cms, dataset.m_masterId);
+        dataset.m_projectId = computeProjectId(cms, dataset);
         dataset.m_accessFlags = res.getInt(i++);
         dataset.m_state = res.getInt(i++);
         dataset.m_lockedBy =res.getInt(i++);
@@ -714,7 +714,7 @@ public class CmsDbAccess {
     /**
      * Computes the correct project id based on the channels.
      */
-    protected int computeProjectId(CmsObject cms, int masterId) throws SQLException  {
+    protected int computeProjectId(CmsObject cms, CmsMasterDataSet dataset) throws SQLException  {
         int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
         int offlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
 
@@ -725,14 +725,22 @@ public class CmsDbAccess {
             // ignore the exception
         }
 
-        if(isOnlineProject(cms)) {
-            // this is the online project -> return online projectid
-        } else {
+        if(!isOnlineProject(cms)) {
             // this is a offline project -> compute if we have to return the
             // online project id or the offline project id
+
+            // the owner and the administrtor has always access
+            try {
+                if( (cms.getRequestContext().currentUser().getId() == dataset.m_userId) ||
+                     cms.isAdmin()) {
+                     return offlineProjectId;
+                }
+            } catch(CmsException exc) {
+                // ignore the exception -> we are not admin
+            }
+
             String statement_key = "read_channel_offline";
             String poolToUse = m_poolName;
-            // get the offline projectid
 
             PreparedStatement stmnt = null;
             ResultSet res = null;
@@ -741,7 +749,7 @@ public class CmsDbAccess {
                 cms.setContextToCos();
                 con = DriverManager.getConnection(poolToUse);
                 stmnt = sqlPrepare(con, statement_key);
-                stmnt.setInt(1, masterId);
+                stmnt.setInt(1, dataset.m_masterId);
                 res = stmnt.executeQuery();
                 while(res.next()) {
                     // get the channel id
