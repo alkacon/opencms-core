@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/06/13 23:32:06 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,26 +56,26 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsImportFolder {
 
-    /**  The OpenCms contect object that provides the permissions */
+    /** The OpenCms context object that provides the permissions. */
     private CmsObject m_cms;
 
-    /**  The name of the import folder to load resources from */
+    /** The name of the import folder to load resources from. */
     private String m_importFolderName;
 
-    /** The import path in the OpenCms VFS */
+    /** The import path in the OpenCms VFS. */
     private String m_importPath;
 
-    /** The resource (folder or ZIP file) to import from in the real file system */
+    /** The resource (folder or ZIP file) to import from in the real file system. */
     private File m_importResource;
 
-    /** Will be true if the import resource a valid ZIP file */
+    /** Will be true if the import resource is a valid ZIP file. */
     private boolean m_validZipFile;
 
-    /** The import resource ZIP stream to load resources from */    
+    /** The import resource ZIP stream to load resources from. */    
     private ZipInputStream m_zipStreamIn;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,21 +48,30 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
 public class CmsUserSettings {
     
+    /** The default button style. */
     private static final int C_BUTTONSTYLE_DEFAULT = 1;
     
+    /** The default number of entries per page. */
     private static final int C_ENTRYS_PER_PAGE_DEFAULT = 50;
     
-    /** Identifierprefix for all keys in the user additional info table */
+    /** Identifier prefix for all keys in the user additional info table. */
     private static final String C_PREFERENCES = "USERPREFERENCES_";
         
-    /** Identifier for the workplace report type setting key */
+    /** Identifier for the workplace report type setting key. */
     public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
+
+    /** The user object for the current settings. */
+    private CmsUser m_user;
+
+    /** Member variables to store all the data of the user settings. */
+    private int m_workplaceButtonStyle;
+    private String m_workplaceReportType;
     private boolean m_dialogDirectpublish;
     private int m_dialogFileCopy;
     private int m_dialogFileDelete;
@@ -80,13 +89,7 @@ public class CmsUserSettings {
     private boolean m_taskShowProjects;
     private String m_taskStartupfilter;
     private boolean m_uploadApplet;
-  
-    private CmsUser m_user;
     private String m_view;
-    
-    /** member variables to store all the data of the user settings */
-    private int m_workplaceButtonStyle;
-    private String m_workplaceReportType;
 
     /**
      * Creates an empty new user settings object.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2004/06/13 23:32:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,114 +50,114 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2004/06/13 23:32:06 $
+ * @version $Revision: 1.22 $ $Date: 2004/06/14 12:19:33 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
 
-    /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections.<p> */
+    /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections. */
     public static final String C_DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
     
-    /** The default OpenCms JDBC pool URL.<p> */
+    /** The default OpenCms JDBC pool URL. */
     public static final String C_OPENCMS_DEFAULT_POOL_URL = "opencms:default";
 
     /**
-     * Prefix for database keys
+     * Prefix for database keys.
      */
     public static final String C_KEY_DATABASE = "db.";
     
     /**
-     * Key for database name
+     * Key for the database name.
      */
     public static final String C_KEY_DATABASE_NAME = C_KEY_DATABASE + "name";
     
     /**
-     * Key for pool id
+     * Key for the pool id.
      */
     public static final String C_KEY_DATABASE_POOL = C_KEY_DATABASE + "pool";
     
     /**
-     * Key for statement pooling
+     * Key for statement pooling.
      */
     public static final String C_KEY_DATABASE_STATEMENTS = C_KEY_DATABASE + "statements";
 
     /**
-     * Key for jdbc driver
+     * Key for jdbc driver.
      */
     public static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
     
     /**
-     * Key for jdbc url
+     * Key for jdbc url.
      */
     public static final String C_KEY_JDBC_URL = "jdbcUrl";
     
     /**
-     * Key for jdbc url params
+     * Key for jdbc url params.
      */
     public static final String C_KEY_JDBC_URL_PARAMS = C_KEY_JDBC_URL + ".params";    
     
     /**
-     * Key for max active connections
+     * Key for maximum active connections.
      */
     public static final String C_KEY_MAX_ACTIVE = "maxActive";
     
     /**
-     * Key for max idle connections
+     * Key for maximum idle connections.
      */
     public static final String C_KEY_MAX_IDLE = "maxIdle";
     
     /**
-     * Key for max wait time
+     * Key for maximum wait time.
      */
     public static final String C_KEY_MAX_WAIT = "maxWait";
     
     /**
-     * Key for database password
+     * Key for database password.
      */
     public static final String C_KEY_PASSWORD = "password";
     
     /**
-     * Key for default
+     * Key for default.
      */
     public static final String C_KEY_POOL_DEFAULT = "default";
     
     /**
-     * Key for pool url
+     * Key for pool url.
      */
     public static final String C_KEY_POOL_URL = "poolUrl";
     
     /**
-     * Key for pool user
+     * Key for pool user.
      */
     public static final String C_KEY_POOL_USER = "user";
     
     /**
-     * Key for vfs pool
+     * Key for vfs pool.
      */
     public static final String C_KEY_POOL_VFS = "vfs";
     
     /**
-     * Key for pooling flag
+     * Key for pooling flag.
      */
     public static final String C_KEY_POOLING = "pooling";
 
     /**
-     * Key for test on borrow flag
+     * Key for test on borrow flag.
      */
     public static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
     
     /**
-     * Key for test query
+     * Key for test query.
      */
     public static final String C_KEY_TEST_QUERY = "testQuery";
     
     /**
-     * Comment for <code>C_KEY_USERNAME</code>
+     * Comment for <code>C_KEY_USERNAME</code>.
      */
     public static final String C_KEY_USERNAME = "user";
     
     /**
-     * Comment for <code>C_KEY_WHEN_EXHAUSTED_ACTION</code>
+     * Comment for <code>C_KEY_WHEN_EXHAUSTED_ACTION</code>.
      */
     public static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
 

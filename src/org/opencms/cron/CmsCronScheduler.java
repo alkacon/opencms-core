@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronScheduler.java,v $
- * Date   : $Date: 2004/06/13 23:31:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,18 +42,18 @@ import java.util.GregorianCalendar;
  * A deamon- thread that automatically executes scheduled Cms cron- jobs.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.3 $ $Date: 2004/06/13 23:31:29 $
+ * @version $Revision: 1.4 $ $Date: 2004/06/14 12:19:33 $
  * @since 5.1.12
  */
 public class CmsCronScheduler extends Thread {
 
-    /** The crontable to use */
+    /** The crontable to use. */
     private CmsCronTable m_table;
 
-    /** The A_OpenCms to get access to the system */
+    /** The OpenCms core to get access to the system. */
     private OpenCmsCore m_opencms;
 
-    /** Flag to indicate if OpenCms has already been shut down */
+    /** Flag to indicate if OpenCms has already been shut down. */
     private boolean m_destroyed;
 
     /**
@@ -76,7 +76,7 @@ public class CmsCronScheduler extends Thread {
     }
 
     /**
-     * The run-method of this thread awakes every minute to launch jobs at issue.<p>
+     * The run method of this thread awakes every minute to launch jobs at issue.<p>
      */
     public void run() {
         Calendar lastRun = new GregorianCalendar();

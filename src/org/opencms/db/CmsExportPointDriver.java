@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2004/04/05 14:23:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,14 +46,14 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsExportPointDriver {
 
-    /** The configured exportpoints */
+    /** The configured export points. */
     private Set m_exportpoints;
     
-    /** The exportpoints resolved to a lookup map */
+    /** The export points resolved to a lookup map. */
     private HashMap m_exportpointLookupMap;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/06/13 23:32:19 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/06/14 12:22:28 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.59 $ $Date: 2004/06/13 23:32:19 $
+ * @version $Revision: 1.60 $ $Date: 2004/06/14 12:22:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -89,12 +89,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     protected String m_digestFileEncoding;
     
     /**
-     * The driver manager
+     * The driver manager.
      */
     protected CmsDriverManager m_driverManager;
 
     /**
-     * The sql manager
+     * The SQL manager.
      */ 
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 

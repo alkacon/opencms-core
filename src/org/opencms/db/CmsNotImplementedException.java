@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsNotImplementedException.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,14 @@ import org.opencms.main.CmsException;
  * This exception may be thrown by various driver implementation classes. 
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.3 $ $Date: 2004/06/14 12:19:33 $
  * @since 5.1.2
  */
 public class CmsNotImplementedException extends CmsException {
 
     // the allowed type range for this exception is >=400 and <500    
     
-    /** Administrator privileges required */
+    /** Administrator privileges required. */
     public static final int C_NOT_IMPLEMENTED_EXCEPTION = 400;   
         
     /**

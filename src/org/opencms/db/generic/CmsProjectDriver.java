@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/13 23:32:19 $
- * Version: $Revision: 1.168 $
+ * Date   : $Date: 2004/06/14 12:22:28 $
+ * Version: $Revision: 1.169 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,29 +76,29 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.168 $ $Date: 2004/06/13 23:32:19 $
+ * @version $Revision: 1.169 $ $Date: 2004/06/14 12:22:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjectDriver, I_CmsEventListener {
 
-    /** Internal debugging flag*/
+    /** Internal debugging flag. */
     private static final boolean C_DEBUG = false;
 
-    /** Table-key for projects */
+    /** Table key for projects. */
     protected static final String C_TABLE_PROJECTS = "CMS_PROJECTS";
 
-    /** Table-key for system properties */
+    /** Table key for system properties. */
     protected static final String C_TABLE_SYSTEMPROPERTIES = "CMS_SYSTEMPROPERTIES";
 
-    /** The driver manager */
+    /** The driver manager. */
     protected CmsDriverManager m_driverManager;
 
-    /** Array containing all max-ids for the tables */
+    /** Array containing all max-ids for the tables. */
     protected int[] m_maxIds;
 
-    /** The sql manager */
+    /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronScheduleJobStarter.java,v $
- * Date   : $Date: 2003/11/13 16:32:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,21 +40,21 @@ import java.util.Calendar;
  * This class starts all needed jobs for the current time.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.2 $ $Date: 2003/11/13 16:32:30 $
+ * @version $Revision: 1.3 $ $Date: 2004/06/14 12:19:33 $
  * @since 5.1.12
  */
 public class CmsCronScheduleJobStarter extends Thread {
 
-    /** The crontable to use */
+    /** The crontable to use. */
     private CmsCronTable m_table;
 
-    /** The time of this run */
+    /** The time of this run. */
     private Calendar m_thisRun;
 
-    /** The time of the last run */
+    /** The time of the last run. */
     private Calendar m_lastRun;
 
-    /** OpenCms to get access to the system */
+    /** OpenCms vore to get access to the system. */
     private OpenCmsCore m_opencms;
 
     /**

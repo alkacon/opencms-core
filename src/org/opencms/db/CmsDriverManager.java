@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/14 11:22:42 $
- * Version: $Revision: 1.380 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.381 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.380 $ $Date: 2004/06/14 11:22:42 $
+ * @version $Revision: 1.381 $ $Date: 2004/06/14 12:19:33 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -86,12 +86,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     private class CacheId extends Object {
 
         /**
-         * Name of the object
+         * Name of the object.
          */
         public String m_name;
         
         /**
-         * Id of the object
+         * Id of the object.
          */
         public CmsUUID m_uuid;
 
@@ -194,103 +194,103 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     }
 
-    /** Cache key for all properties */
+    /** Cache key for all properties. */
     public static final String C_CACHE_ALL_PROPERTIES = "_CAP_";
 
-    /** Cache key for null value */
+    /** Cache key for null value. */
     public static final String C_CACHE_NULL_PROPERTY_VALUE = "_NPV_";
 
-    /** Key for indicating no changes */
+    /** Key for indicating no changes. */
     public static final int C_NOTHING_CHANGED = 0;
     
-    /** Key to indicate complete update */
+    /** Key to indicate complete update. */
     public static final int C_UPDATE_ALL = 3;
     
-    /** Key to indicate update of resource record */
+    /** Key to indicate update of resource record. */
     public static final int C_UPDATE_RESOURCE = 4;
     
-    /** Key to indicate update of resource state */
+    /** Key to indicate update of resource state. */
     public static final int C_UPDATE_RESOURCE_STATE = 1;
     
-    /** Key to indicate update of structure record */
+    /** Key to indicate update of structure record. */
     public static final int C_UPDATE_STRUCTURE = 5;
     
-    /** Key to indicate update of structure state */
+    /** Key to indicate update of structure state. */
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
 
-    /** Separator for user cache */
+    /** Separator for user cache. */
     private static final char C_USER_CACHE_SEP = '\u0000';
         
-    /** Indicates that allowed permissions */
+    /** Indicates allowed permissions. */
     private static final Integer PERM_ALLOWED = new Integer(0);
     
-    /** Indicates denies permissions */
+    /** Indicates denied permissions. */
     private static final Integer PERM_DENIED = new Integer(1);
     
-    /** Indicates a resource was filtered during permission check */
+    /** Indicates a resource was filtered during permission check. */
     private static final Integer PERM_FILTERED = new Integer(2);    
     
-    /** Cache for access control lists */
+    /** Cache for access control lists. */
     private Map m_accessControlListCache;
 
-    /** The backup driver */
+    /** The backup driver. */
     private I_CmsBackupDriver m_backupDriver;
 
-    /** The configuration of the property-file */
+    /** The configuration of the property-file. */
     private ExtendedProperties m_configuration;
     
-    /** Cache for groups */
+    /** Cache for groups. */
     private Map m_groupCache;
 
-    /** The lock manager */
+    /** The lock manager. */
     private CmsLockManager m_lockManager = OpenCms.getLockManager();
 
-    /** The class used for password validation */
+    /** The class used for password validation. */
     private I_CmsPasswordValidation m_passwordValidationClass;
 
-    /** The class used for cache key generation */
+    /** The class used for cache key generation. */
     private I_CmsCacheKey m_keyGenerator;
         
-    /** Cache for permission checks */
+    /** Cache for permission checks. */
     private Map m_permissionCache;
     
-    /** Cache for offline projects */
+    /** Cache for offline projects. */
     private Map m_projectCache;
 
-    /** The project driver */
+    /** The project driver. */
     private I_CmsProjectDriver m_projectDriver;
     
-    /** Cache for properties */
+    /** Cache for properties. */
     private Map m_propertyCache;
 
-    /** The Registry */
+    /** The Registry. */
     private CmsRegistry m_registry;
     
-    /** Cache for resources */
+    /** Cache for resources. */
     private Map m_resourceCache;
     
-    /** Cache for resource lists */
+    /** Cache for resource lists. */
     private Map m_resourceListCache;
 
-    /** Hashtable with resource-types */
+    /** Hashtable with resource types. */
     private I_CmsResourceType[] m_resourceTypes;
     
-    /** Cache for user data */
+    /** Cache for user data. */
     private Map m_userCache;
 
     /** The user driver. */
     private I_CmsUserDriver m_userDriver;
     
-    /** Cache for user groups */
+    /** Cache for user groups. */
     private Map m_userGroupsCache;
 
-    /** The VFS driver */
+    /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
 
-    /** The workflow driver */
+    /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
     
-    /** The HTML link validator */
+    /** The HTML link validator. */
     private CmsHtmlLinkValidator m_htmlLinkValidator;
 
     /**

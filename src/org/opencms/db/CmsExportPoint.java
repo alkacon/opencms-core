@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2004/03/07 19:22:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 12:19:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsExportPoint {
     
-    /** The destination path in the "real" file system, relative to the web application folder */
+    /** The destination path in the "real" file system, relative to the web application folder. */
     private String m_destination;
 
-    /** The URI of the OpenCms VFS resource (folder) of the export point */
+    /** The URI of the OpenCms VFS resource (folder) of the export point. */
     private String m_uri;
     
     /**
