@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.11 Gom Jabbar   - xx September 2001
+OpenCms 4.5.11 Gom Jabbar   - 24 September 2001
 ! Now there is a history of published projects in the project backoffice. The number of displayed
   projects is limited to the last 300.
 ! When copying a resource only one entry is needed. If the path is not given the resource will be copied
@@ -20,12 +20,12 @@ OpenCms 4.5.11 Gom Jabbar   - xx September 2001
   must be removed. For the administrator all icons are visible.
 ! The texteditor for pages can be opened directly from the context menu. The menu item for editing the
   control page has been moved down.
+* When a project is published the version id for the history must be read from the backup-projects 
+  and backup-resources. After that (before the resources are published) the project is stored for the history.
 - When the database is exported excluding the system the folders /system/, /pics/system/ amd /moduledemos/
   are excluded.
 - When a project is deleted the waiting page is shown with the blue growing picture.
 - A new project includes /content/elements/ if the extendedNavigation-flag is set.
-* When a project is published the version id for the history must be read from the backup-projects 
-  and backup-resources. After that (before the resources are published) the project is stored for the history.
   
 OpenCms 4.4.3   Gom Jabbar   - 13 September 2001
 - new major release created
