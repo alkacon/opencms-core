@@ -291,15 +291,15 @@ case 6:
 			<table border="0" cellpadding="4" cellspacing="0">
 			<tr>
 				<td style="white-space: nowrap;"><%= wp.key("input.oldpwd") %></td>
-				<td><input type="password" name="<%= wp.PARAM_OLDPASSWORD %>" maxlength="8" style="width: 200px;"></td>
+				<td><input type="password" name="<%= wp.PARAM_OLDPASSWORD %>" maxlength="32" style="width: 200px;"></td>
 			</tr>
 			<tr>
 				<td style="white-space: nowrap;"><%= wp.key("input.newpwd") %></td>
-				<td><input type="password" name="<%= wp.PARAM_NEWPASSWORD %>" maxlength="8" style="width: 200px;"></td> 
+				<td><input type="password" name="<%= wp.PARAM_NEWPASSWORD %>" maxlength="32" style="width: 200px;"></td> 
 			</tr>
 			<tr>
 				<td style="white-space: nowrap;"><%= wp.key("input.newpwdrepeat") %></td>
-				<td><input type="password" name="confirmpassword" maxlength="8" style="width: 200px;"></td>
+				<td><input type="password" name="confirmpassword" maxlength="32" style="width: 200px;"></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
