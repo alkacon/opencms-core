@@ -138,7 +138,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 												  "WHERE METAINFO.METADEF_ID = METADEF.METADEF_ID and " +
 												  "METAINFO.RESOURCE_NAME = ? and " +
 												  "METAINFO.PROJECT_ID = ? and " +
-												  "METADEF.NAME = ? and " +
+												  "METADEF.METADEF_NAME = ? and " +
 												  "METADEF.RESOURCE_TYPE = ?";
 
 	/**
@@ -160,15 +160,14 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
      */    
     private static final String C_METAINFO_DELETEALL = "DELETE FROM METAINFO " + 
 													   "WHERE RESOURCE_NAME = ? and " +
-													   "PROJECT_ID = ? and " +
-													   "RESOURCE_TYPE = ?";
+													   "PROJECT_ID = ?";
 
 	/**
      * SQL Command for reading metainformations.
      */    
     private static final String C_METAINFO_DELETE = "DELETE FROM METAINFO " + 
-													"WHERE " + C_METADEF_ID + " = ? and" +
-													C_RESOURCE_NAME + " = ? and" +
+													"WHERE " + C_METADEF_ID + " = ? and " +
+													C_RESOURCE_NAME + " = ? and " +
 													C_PROJECT_ID + " = ? ";
 
 	/**
@@ -254,7 +253,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private A_CmsMetadefinition readMetadefinition(String name, int type)
+	public A_CmsMetadefinition readMetadefinition(String name, int type)
 		throws CmsException {
 		 try {
 			 ResultSet result;
@@ -293,12 +292,27 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */	
 	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype)
 		throws CmsException {
+		return(readAllMetadefinitions(resourcetype.getResourceType()));
+	}
+	
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllMetadefinitions(int resourcetype)
+		throws CmsException {
  		 Vector metadefs = new Vector();
 
 		 try {
 			 ResultSet result;
 			 synchronized(m_statementReadAllMetadefA) {
-				m_statementReadAllMetadefA.setInt(1,resourcetype.getResourceType());
+				m_statementReadAllMetadefA.setInt(1,resourcetype);
 				result = m_statementReadAllMetadefA.executeQuery();
 			 }
 			 
@@ -327,12 +341,28 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */	
 	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype, int type)
 		throws CmsException {
+		return(readAllMetadefinitions(resourcetype.getResourceType(), type));
+	}
+
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllMetadefinitions(int resourcetype, int type)
+		throws CmsException {
  		 Vector metadefs = new Vector();
 
 		 try {
 			 ResultSet result;
 			 synchronized(m_statementReadAllMetadefB) {
-				m_statementReadAllMetadefB.setInt(1,resourcetype.getResourceType());
+				m_statementReadAllMetadefB.setInt(1,resourcetype);
 				m_statementReadAllMetadefB.setInt(2,type);
 				result = m_statementReadAllMetadefB.executeQuery();
 			 }
@@ -348,7 +378,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	}
-
+	
 	/**
 	 * Creates the metadefinition for the resource type.<BR/>
 	 * 
@@ -449,10 +479,10 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		try {
 			synchronized(m_statementUpdateMetadef) {
 				m_statementUpdateMetadef.setInt(1, metadef.getMetadefType() );
-				m_statementDeleteMetadef.setInt(2, metadef.getId() );
-				m_statementDeleteMetadef.executeUpdate();
+				m_statementUpdateMetadef.setInt(2, metadef.getId() );
+				m_statementUpdateMetadef.executeUpdate();
 			}
-			return( readMetadefinition(metadef.getName(), metadef.getMetadefType()) );
+			return( readMetadefinition(metadef.getName(), metadef.getType()) );
 		 } catch( SQLException exc ) {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }		
@@ -474,7 +504,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			 ResultSet result;
 			 
 			 synchronized(m_statementReadMetainfo) {
-				m_statementReadMetainfo.setString(1, resource.getName());
+				m_statementReadMetainfo.setString(1, resource.getPath());
 				m_statementReadMetainfo.setInt(2, resource.getProjectId());
 				m_statementReadMetainfo.setString(3, meta);
 				m_statementReadMetainfo.setInt(4, resource.getType());
@@ -611,7 +641,6 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			synchronized(m_statementDeleteAllMetainfo) {
 				m_statementDeleteAllMetainfo.setString(1, resource.getAbsolutePath());
 				m_statementDeleteAllMetainfo.setInt(2, resource.getProjectId());
-				m_statementDeleteAllMetainfo.setInt(3, resource.getType());
 
 				m_statementDeleteAllMetainfo.executeQuery();
 			}			

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/01/07 18:46:09 $ 
+ * @version $Revision: 1.19 $ $Date: 2000/01/11 10:24:30 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -61,8 +61,10 @@ public abstract class A_CmsObject {
 	 * Returns the anonymous user object.
 	 * 
 	 * @return the anonymous user object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsUser anonymousUser();
+	abstract public A_CmsUser anonymousUser() 
+		throws CmsException;
 	
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
@@ -723,6 +725,49 @@ public abstract class A_CmsObject {
 		throws CmsException;
 
 	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	abstract public Vector readAllMetadefinitions(String resourcetype)
+		throws CmsException;
+	
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	abstract public Vector readAllMetadefinitions(String resourcetype, int type)
+		throws CmsException;
+	
+	/**
+	 * Creates the metadefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the metadefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the metadefinition.
+	 * @param type The type of the metadefinition (normal|mandatory|optional)
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract public A_CmsMetadefinition createMetadefinition(String name, 
+															 String resourcetype, 
+															 int type)
+		throws CmsException;
+	
+	/**
 	 * Returns a Metainformation of a file or folder.
 	 * 
 	 * @param name The resource-name of which the Metainformation has to be read.
@@ -763,11 +808,11 @@ public abstract class A_CmsObject {
 	 * 
 	 * @param name The resource-name of which the Metainformation has to be read
 	 * 
-	 * @return Vector of Metainformation as Strings.
+	 * @return Hashtable of Metainformation as Strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public Vector readAllMetainformations(String name)
+	abstract public Hashtable readAllMetainformations(String name)
 		throws CmsException;
 	
 	/**
@@ -1028,24 +1073,13 @@ public abstract class A_CmsObject {
 	 * Reads the Metadefinition for the resource type.<BR/>
 	 * 
 	 * @param name The name of the Metadefinition to read.
-	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @param resourcetype The name of the resource-type for the Metadefinition.
 	 * @return the Metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	abstract public A_CmsMetadefinition readMetadefinition(String name, 
-														   A_CmsResourceType type)
-		throws CmsException;
-
-	/**
-	 * Reads all Metadefinitions for the resource type.<BR/>
-	 * 
-	 * @param resourcetype The resource-type for the Metadefinition.
-	 * @return a Vector of Metadefinitions.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	abstract public Vector getAllMetadefinitions(A_CmsResourceType type)
+														   String resourcetype)
 		throws CmsException;
 
 	/**
@@ -1053,29 +1087,22 @@ public abstract class A_CmsObject {
 	 * 
 	 * Only the admin can do this.
 	 * 
-	 * @param name The name of the Metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the Metadefinition.
-	 * @param type The type of the Metadefinition (normal|mandatory|optional)
+	 * @param metadef The metadef to be written.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a Metadefinition with the same name for this resource-type exists already.
 	 */
-	abstract public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
-									int type)
+	abstract public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition definition)
 		throws  CmsException;
 	
 	/**
 	 * Delete the Metadefinition for the resource type.<BR/>
 	 * 
-	 * Only the admin can do this.
-	 * 
 	 * @param name The name of the Metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @param resourcetype The name of the resource-type for the Metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public void deleteMetadefinition(String name, A_CmsResourceType type)
+	abstract public void deleteMetadefinition(String name, String resourcetype)
 		throws CmsException;
 
 	/**

@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/01/06 11:52:08 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/11 10:24:30 $
  */
 public class CmsException extends Exception {
 	
@@ -98,6 +98,11 @@ public class CmsException extends Exception {
     */
     public final static int C_INTERNAL_FILE= 15;
     
+    /**
+    * Definition of error code mandatory-metainfo.
+    */
+    public final static int C_MANDATORY_METAINFO= 16;
+	
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
 							"Access denied ",
@@ -115,6 +120,7 @@ public class CmsException extends Exception {
                             "Locked Resource ",
                             "Filesystem exception ",
                             "Internal use only ",
+                            "Metainformation is mandatory ",
 							};
     
 	/** 

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/01/07 18:46:09 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/11 10:24:30 $
  */
 interface I_CmsResourceBroker {
 
@@ -129,7 +129,8 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the metadefinition to read.
-	 * @param type The resource type for which the metadefinition is valid.
+	 * @param resourcetype The name of the resource type for which the metadefinition 
+	 * is valid.
 	 * 
 	 * @return metadefinition The metadefinition that corresponds to the overgiven
 	 * arguments - or null if there is no valid metadefinition.
@@ -138,7 +139,7 @@ interface I_CmsResourceBroker {
 	 */
 	public A_CmsMetadefinition readMetadefinition(A_CmsUser currentUser, 
 												  A_CmsProject currentProject, 
-												  String name, A_CmsResourceType type)
+												  String name, String resourcetype)
 		throws CmsException;
 	
 	/**
@@ -149,7 +150,7 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * @param resourcetype The name of the resource type to read the metadefinitions for.
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
@@ -157,7 +158,7 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
 	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
-										 A_CmsResourceType resourcetype)
+										 String resourcetype)
 		throws CmsException;
 	
 	/**
@@ -168,7 +169,7 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * @param resourcetype The name of the resource type to read the metadefinitions for.
 	 * @param type The type of the metadefinition (normal|mandatory|optional).
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
@@ -177,7 +178,7 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
 	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
-										 A_CmsResourceType resourcetype, int type)
+										 String resourcetype, int type)
 		throws CmsException;
 
 	/**
@@ -189,7 +190,7 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the metadefinition.
+	 * @param resourcetype The name of the resource-type for the metadefinition.
 	 * @param type The type of the metadefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
@@ -197,7 +198,7 @@ interface I_CmsResourceBroker {
 	public A_CmsMetadefinition createMetadefinition(A_CmsUser currentUser, 
 													A_CmsProject currentProject, 
 													String name, 
-													A_CmsResourceType resourcetype, 
+													String resourcetype, 
 													int type)
 		throws CmsException;
 		
@@ -209,12 +210,14 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param metadef The metadef to be deleted.
+	 * @param name The name of the metadefinition to read.
+	 * @param resourcetype The name of the resource type for which the 
+	 * metadefinition is valid.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void deleteMetadefinition(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 A_CmsMetadefinition metadef)
+									 String name, String resourcetype)
 		throws CmsException;
 	
 	/**
@@ -240,11 +243,12 @@ interface I_CmsResourceBroker {
 	 * Returns a Metainformation of a file or folder.
 	 * 
 	 * <B>Security</B>
-	 * All users are granted.
+	 * Only the user is granted, who has the right to view the resource.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation has 
+	 * to be read.
 	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
 	 * 
 	 * @return metainfo The metainfo as string.
@@ -252,8 +256,8 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public String readMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
-									  A_CmsResource resource, String meta)
-		throws CmsException;	
+									  String resource, String meta)
+		throws CmsException;
 
 	/**
 	 * Writes a Metainformation for a file or folder.
@@ -263,14 +267,15 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation has 
+	 * to be read.
 	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
 	 * @param value The value for the metainfo to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void writeMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 A_CmsResource resource, String meta, String value)
+									 String resource, String meta, String value)
 		throws CmsException;
 
 	/**
@@ -281,31 +286,33 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation 
+	 * has to be read.
 	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void writeMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
-									  A_CmsResource resource, Hashtable metainfos)
+									  String resource, Hashtable metainfos)
 		throws CmsException;
 
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
 	 * 
 	 * <B>Security</B>
-	 * All users are granted.
+	 * Only the user is granted, who has the right to view the resource.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation has to be 
+	 * read.
 	 * 
 	 * @return Vector of Metainformation as Strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public Hashtable readAllMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
-											 A_CmsResource resource)
+											 String resource)
 		throws CmsException;
 	
 	/**
@@ -316,13 +323,14 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformations 
+	 * have to be deleted.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void deleteAllMetainformations(A_CmsUser currentUser, 
 										  A_CmsProject currentProject, 
-										  A_CmsResource resource)
+										  String resource)
 		throws CmsException;
 
 	/**
@@ -333,14 +341,15 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation 
+	 * has to be read.
 	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void deleteMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
-									  A_CmsResource resource, String meta)
-		throws CmsException;     	
+									  String resource, String meta)
+		throws CmsException;
 
 	// user and group stuff
 	

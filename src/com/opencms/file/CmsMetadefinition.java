@@ -4,7 +4,7 @@ package com.opencms.file;
  * This class describes a metadefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/17 14:35:31 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/11 10:24:30 $
  */
 public class CmsMetadefinition extends A_CmsMetadefinition {
 	/**
@@ -82,6 +82,17 @@ public class CmsMetadefinition extends A_CmsMetadefinition {
 	}
 	
 	/**
+	 * Sets the type for this metadefinition.
+	 * The type may be C_METADEF_TYPE_NORMAL, C_METADEF_TYPE_OPTIONAL or
+	 * C_METADEF_TYPE_MANDATORY.
+	 * 
+	 * @param type The new type fot this metadefinition.
+	 */
+	public void setMetadefType(int type) {
+		m_metadefinitionType = type;
+	}
+	
+	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
 	 * 
@@ -93,6 +104,10 @@ public class CmsMetadefinition extends A_CmsMetadefinition {
         output.append(m_name);
         output.append(" , Id=");
         output.append(m_id);
+        output.append(" , ResourceType=");
+        output.append(getType());
+        output.append(" , MetadefType=");
+        output.append(getMetadefType());
         return output.toString();
 	}
 	

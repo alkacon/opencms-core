@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/01/07 18:46:09 $ 
+ * @version $Revision: 1.15 $ $Date: 2000/01/11 10:24:30 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -80,9 +80,12 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * Returns the anonymous user object.
 	 * 
 	 * @return the anonymous user object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsUser anonymousUser() {
-		return null; // TODO: implement this!
+	public A_CmsUser anonymousUser() 
+		throws CmsException {
+		return( c_rb.anonymousUser(m_context.currentUser(), 
+								   m_context.getCurrentProject()) );
 	}
 	
 	/**
@@ -836,7 +839,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		return null; // TODO: implement this! 
 	}
-
+	
 	/**
 	 * Returns a Metainformation of a file or folder.
 	 * 
@@ -849,7 +852,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public String readMetainformation(String name, String meta)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readMetainformation(m_context.currentUser(), 
+										 m_context.getCurrentProject(), 
+										 name, meta) );
 	}
 
 	/**
@@ -863,7 +868,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeMetainformation(String name, String meta, String value)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.writeMetainformation(m_context.currentUser(),m_context.getCurrentProject(), 
+								  name, meta, value);
 	}
 
 	/**
@@ -876,7 +882,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeMetainformations(String name, Hashtable metainfos)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.writeMetainformations(m_context.currentUser(),m_context.getCurrentProject(), 
+								  name, metainfos);
 	}
 
 	/**
@@ -888,9 +895,11 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector readAllMetainformations(String name)
+	public Hashtable readAllMetainformations(String name)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readAllMetainformations(m_context.currentUser(), 
+											 m_context.getCurrentProject(), 
+											 name) );
 	}
 	
 	/**
@@ -902,7 +911,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void deleteAllMetainformations(String resourcename)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteAllMetainformations(m_context.currentUser(), 
+									   m_context.getCurrentProject(), 
+									   resourcename);
 	}
 
 	/**
@@ -915,7 +926,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void deleteMetainformation(String resourcename, String meta)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteMetainformation(m_context.currentUser(), 
+								   m_context.getCurrentProject(), 
+								   resourcename, meta);
 	}
 
 	/**
@@ -1220,65 +1233,106 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllMetadefinitions(String resourcetype)
+		throws CmsException {
+		return( c_rb.readAllMetadefinitions(m_context.currentUser(), 
+											m_context.getCurrentProject(), 
+											resourcetype ) );
+	}
+	
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllMetadefinitions(String resourcetype, int type)
+		throws CmsException {
+		return( c_rb.readAllMetadefinitions(m_context.currentUser(), 
+											m_context.getCurrentProject(), 
+											resourcetype, type ) );
+	}
+	
+	/**
+	 * Creates the metadefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the metadefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the metadefinition.
+	 * @param type The type of the metadefinition (normal|mandatory|optional)
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public A_CmsMetadefinition createMetadefinition(String name, String resourcetype, 
+													int type)
+		throws CmsException {
+		return( c_rb.createMetadefinition(m_context.currentUser(), 
+										  m_context.getCurrentProject(), 
+										  name,
+										  resourcetype,
+										  type) );
+	}
+	
+	/**
 	 * Reads the Metadefinition for the resource type.<BR/>
 	 * 
 	 * @param name The name of the Metadefinition to read.
-	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @param resourcetype The name of the resource type for the Metadefinition.
 	 * @return the Metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public A_CmsMetadefinition readMetadefinition(String name, 
-														   A_CmsResourceType type)
+												  String resourcetype)
 		throws CmsException { 
-		return null; // TODO: implement this! 
-	}
-
-	/**
-	 * Reads all Metadefinitions for the resource type.<BR/>
-	 * 
-	 * @param resourcetype The resource-type for the Metadefinition.
-	 * @return a Vector of Metadefinitions.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector getAllMetadefinitions(A_CmsResourceType type)
-		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readMetadefinition(m_context.currentUser(), 
+										m_context.getCurrentProject(), 
+										name,
+										resourcetype) );
 	}
 
 	/**
 	 * Writes the Metadefinition for the resource type.<BR/>
 	 * 
-	 * Only the admin can do this.
-	 * 
-	 * @param name The name of the Metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the Metadefinition.
-	 * @param type The type of the Metadefinition (normal|mandatory|optional)
+	 * @param metadef The metadef to be written.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a Metadefinition with the same name for this resource-type exists already.
 	 */
-	public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
-									int type)
+	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition definition)
 		throws  CmsException { 
-		return ; // TODO: implement this! 
+		return( c_rb.writeMetadefinition(m_context.currentUser(), 
+										 m_context.getCurrentProject(), 
+										 definition) );
 	}
 	
 	/**
 	 * Delete the Metadefinition for the resource type.<BR/>
 	 * 
-	 * Only the admin can do this.
-	 * 
 	 * @param name The name of the Metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @param resourcetype The name of the resource-type for the Metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(String name, A_CmsResourceType type)
+	public void deleteMetadefinition(String name, String resourcetype)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteMetadefinition(m_context.currentUser(), 
+								  m_context.getCurrentProject(), 
+								  name, resourcetype);
 	}
 
 	/**

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/01/10 18:15:04 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/11 10:24:30 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -252,7 +252,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the metadefinition to read.
-	 * @param type The resource type for which the metadefinition is valid.
+	 * @param resourcetype The name of the resource type for which the 
+	 * metadefinition is valid.
 	 * 
 	 * @return metadefinition The metadefinition that corresponds to the overgiven
 	 * arguments - or null if there is no valid metadefinition.
@@ -261,10 +262,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public A_CmsMetadefinition readMetadefinition(A_CmsUser currentUser, 
 												  A_CmsProject currentProject, 
-												  String name, A_CmsResourceType type)
+												  String name, String resourcetype)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// no security check is needed here
+		return( m_metadefRb.readMetadefinition(name, this.getResourceType(currentUser, 
+																		  currentProject, 
+																		  resourcetype)) );
 	}
 	
 	/**
@@ -275,7 +278,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
@@ -283,10 +287,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
 	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
-										 A_CmsResourceType resourcetype)
+										 String resourcetype)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		
+		// No security to check
+		return( m_metadefRb.readAllMetadefinitions(getResourceType(currentUser, 
+																   currentProject, 
+																   resourcetype) ) );
 	}
 	
 	/**
@@ -297,7 +304,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * @param resourcetype The name of the resource type to read the metadefinitions for.
 	 * @param type The type of the metadefinition (normal|mandatory|optional).
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
@@ -306,12 +313,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
 	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
-										 A_CmsResourceType resourcetype, int type)
+										 String resourcetype, int type)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		
+		// No security to check
+		return( m_metadefRb.readAllMetadefinitions(getResourceType(currentUser, 
+																   currentProject, 
+																   resourcetype), type ) );
 	}
-
+	
 	/**
 	 * Creates the metadefinition for the resource type.<BR/>
 	 * 
@@ -321,7 +331,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the metadefinition.
+	 * @param resourcetype The name of the resource-type for the metadefinition.
 	 * @param type The type of the metadefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
@@ -329,11 +339,20 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public A_CmsMetadefinition createMetadefinition(A_CmsUser currentUser, 
 													A_CmsProject currentProject, 
 													String name, 
-													A_CmsResourceType resourcetype, 
+													String resourcetype, 
 													int type)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			return( m_metadefRb.createMetadefinition(name, 
+													 getResourceType(currentUser, 
+																	 currentProject, 
+																	 resourcetype),
+													 type) );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 		
 	/**
@@ -344,15 +363,27 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param metadef The metadef to be deleted.
+	 * @param name The name of the metadefinition to read.
+	 * @param resourcetype The name of the resource type for which the 
+	 * metadefinition is valid.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void deleteMetadefinition(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 A_CmsMetadefinition metadef)
+									 String name, String resourcetype)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			// first read and then delete the metadefinition.
+			m_metadefRb.deleteMetadefinition(
+				m_metadefRb.readMetadefinition(name, 
+											   getResourceType(currentUser, 
+															   currentProject, 
+															   resourcetype)));
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 	
 	/**
@@ -363,7 +394,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param metadef The metadef to be deleted.
+	 * @param metadef The metadef to be written.
 	 * 
 	 * @return The metadefinition, that was written.
 	 * 
@@ -373,19 +404,25 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 												   A_CmsProject currentProject, 
 												   A_CmsMetadefinition metadef)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			return( m_metadefRb.writeMetadefinition(metadef) );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 	
 	/**
 	 * Returns a Metainformation of a file or folder.
 	 * 
 	 * <B>Security</B>
-	 * All users are granted.
+	 * Only the user is granted, who has the right to view the resource.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation has 
+	 * to be read.
 	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
 	 * 
 	 * @return metainfo The metainfo as string.
@@ -393,10 +430,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public String readMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
-									  A_CmsResource resource, String meta)
+									  String resource, String meta)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// TODO: check the security
+		// TODO: read the resource realy!
+		// A fake resource is created to check metainfo-handling
+		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		return( m_metadefRb.readMetainformation(res, meta) );
 	}	
 
 	/**
@@ -407,17 +448,22 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation has 
+	 * to be read.
 	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
 	 * @param value The value for the metainfo to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void writeMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 A_CmsResource resource, String meta, String value)
+									 String resource, String meta, String value)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// TODO: check the security
+		// TODO: read the resource realy!
+		// A fake resource is created to check metainfo-handling
+		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		m_metadefRb.writeMetainformation(res, meta, value);
 	}
 
 	/**
@@ -428,37 +474,47 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation 
+	 * has to be read.
 	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void writeMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
-									  A_CmsResource resource, Hashtable metainfos)
+									  String resource, Hashtable metainfos)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// TODO: check the security
+		// TODO: read the resource realy!
+		// A fake resource is created to check metainfo-handling
+		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		m_metadefRb.writeMetainformations(res, metainfos);
 	}
 
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
 	 * 
 	 * <B>Security</B>
-	 * All users are granted.
+	 * Only the user is granted, who has the right to view the resource.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation has to be 
+	 * read.
 	 * 
-	 * @return Vector of Metainformation as Strings.
+	 * @return Hashtable of Metainformation as Strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public Hashtable readAllMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
-											 A_CmsResource resource)
+											 String resource)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// TODO: check the security
+		// TODO: read the resource realy!
+		// A fake resource is created to check metainfo-handling
+		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		return( m_metadefRb.readAllMetainformations(res) );
 	}
 	
 	/**
@@ -469,16 +525,30 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformations 
+	 * have to be deleted.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void deleteAllMetainformations(A_CmsUser currentUser, 
 										  A_CmsProject currentProject, 
-										  A_CmsResource resource)
+										  String resource)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// TODO: check the security
+		// TODO: read the resource realy!
+		// A fake resource is created to check metainfo-handling
+		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		// are there some mandatory metadefs?
+		if( m_metadefRb.readAllMetadefinitions(res.getType(), 
+											   C_METADEF_TYPE_MANDATORY).size() == 0  ) {
+			// no - delete them all
+			m_metadefRb.deleteAllMetainformations(res);
+		} else {
+			// yes - throw exception
+			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_MANDATORY_METAINFO],
+				CmsException.C_MANDATORY_METAINFO);
+		}
 	}
 
 	/**
@@ -489,16 +559,33 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param resource The name of the resource of which the Metainformation 
+	 * has to be read.
 	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public void deleteMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
-									  A_CmsResource resource, String meta)
+									  String resource, String meta)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// TODO: check the security
+		// TODO: read the resource realy!
+		// A fake resource is created to check metainfo-handling
+		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+
+		// read the metadefinition
+		A_CmsMetadefinition metadef = m_metadefRb.readMetadefinition(meta, res.getType());
+		
+		// is this a mandatory metadefinition?
+		if(  (metadef != null) && 
+			 (metadef.getMetadefType() != C_METADEF_TYPE_MANDATORY )  ) {
+			// no - delete the information
+			m_metadefRb.deleteMetainformation(res, meta);
+		} else {
+			// yes - throw exception
+			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_MANDATORY_METAINFO],
+				CmsException.C_MANDATORY_METAINFO);
+		}
 	}
 
 	// user and group stuff
@@ -1664,7 +1751,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				((c < '0') || (c > '9')) &&
 				((c < 'A') || (c > 'Z')) &&
 				(c != '-') && (c != '/') && (c != '.') &&
-				(c != '|') && (c != '_') //removed because auf MYSQL regexp syntax
+				(c != '|') && (c != '_') //removed because of MYSQL regexp syntax
 				) {
 				throw new CmsException(CmsException.C_EXTXT[CmsException.C_BAD_NAME],
 					CmsException.C_BAD_NAME);

@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/22 10:24:08 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/11 10:24:30 $
  */
 interface I_CmsAccessMetadefinition {
 
@@ -26,6 +26,20 @@ interface I_CmsAccessMetadefinition {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public A_CmsMetadefinition readMetadefinition(String name, A_CmsResourceType type)
+		throws CmsException;
+	
+	/**
+	 * Reads a metadefinition for the given resource type.
+	 * 
+	 * @param name The name of the metadefinition to read.
+	 * @param type The resource type for which the metadefinition is valid.
+	 * 
+	 * @return metadefinition The metadefinition that corresponds to the overgiven
+	 * arguments - or null if there is no valid metadefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public A_CmsMetadefinition readMetadefinition(String name, int type)
 		throws CmsException;
 	
 	/**
@@ -45,6 +59,19 @@ interface I_CmsAccessMetadefinition {
 	 * Reads all metadefinitions for the given resource type.
 	 * 
 	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllMetadefinitions(int resourcetype)
+		throws CmsException;
+	
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the metadefinitions for.
 	 * @param type The type of the metadefinition (normal|mandatory|optional).
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
@@ -55,6 +82,20 @@ interface I_CmsAccessMetadefinition {
 	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype, int type)
 		throws CmsException;
 
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the metadefinitions for.
+	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 * 
+	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllMetadefinitions(int resourcetype, int type)
+		throws CmsException;
+	
 	/**
 	 * Creates the metadefinition for the resource type.<BR/>
 	 * 

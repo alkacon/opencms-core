@@ -4,7 +4,7 @@ package com.opencms.file;
  * This abstract class describes a metadefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/17 14:46:59 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/11 10:24:30 $
  */
 abstract public class A_CmsMetadefinition {
 	/**
@@ -36,6 +36,15 @@ abstract public class A_CmsMetadefinition {
 	 * @return the type of this metadefinition.
 	 */
 	abstract public int getMetadefType();
+	
+	/**
+	 * Sets the type for this metadefinition.
+	 * The type may be C_METADEF_TYPE_NORMAL, C_METADEF_TYPE_OPTIONAL or
+	 * C_METADEF_TYPE_MANDATORY.
+	 * 
+	 * @param type The new type fot this metadefinition.
+	 */
+	abstract public void setMetadefType(int type);
 	
 	/**
 	 * Returns a string-representation for this object.

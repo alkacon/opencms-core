@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/07 18:46:09 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/11 10:24:30 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -709,8 +709,7 @@ public class CmsShell implements I_CmsConstants {
 	 * @param launcherClass the name of the launcher-class normaly ""
 	 */
 	public void addResourceType(String resourceType, String launcherType, 
-								String launcherClass) {
-		
+								String launcherClass) {		
 		try {
 			System.out.println( m_cms.addResourceType(resourceType, 
 													  Integer.parseInt(launcherType), 
@@ -718,5 +717,200 @@ public class CmsShell implements I_CmsConstants {
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		
+	}
+
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 */	
+	public void readAllMetadefinitions(String resourcetype) {
+		try {
+			Vector metadefs = m_cms.readAllMetadefinitions(resourcetype);
+			for( int i = 0; i < metadefs.size(); i++ ) {
+				System.out.println( (A_CmsMetadefinition)metadefs.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Creates the metadefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the metadefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the metadefinition.
+	 * @param type The type of the metadefinition (normal|mandatory|optional)
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void createMetadefinition(String name, String resourcetype, String type)
+		throws CmsException {
+		try {
+			System.out.println( m_cms.createMetadefinition(name, resourcetype, 
+														   Integer.parseInt(type)) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Reads all metadefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 */	
+	public void readAllMetadefinitions(String resourcetype, String type) {
+		try {
+			Vector metadefs = m_cms.readAllMetadefinitions(resourcetype, 
+														   Integer.parseInt(type));
+			for( int i = 0; i < metadefs.size(); i++ ) {
+				System.out.println( (A_CmsMetadefinition)metadefs.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Reads the Metadefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the Metadefinition to read.
+	 * @param resourcetype The name of the resource type for the Metadefinition.
+	 */
+	public void readMetadefinition(String name, String resourcetype) {
+		try {
+			System.out.println( m_cms.readMetadefinition(name, resourcetype) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Writes the Metadefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the Metadefinition to overwrite.
+	 * @param resourcetype The name of the resource type to read the 
+	 * metadefinitions for.
+	 * @param type The new type of the metadefinition (normal|mandatory|optional).
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void writeMetadefinition(String name, 
+									String resourcetype, 
+									String type) {
+		try {
+			A_CmsMetadefinition metadef = m_cms.readMetadefinition(name, resourcetype);
+			metadef.setMetadefType(Integer.parseInt(type));			
+			System.out.println( m_cms.writeMetadefinition(metadef) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Delete the Metadefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the Metadefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the Metadefinition.
+	 */
+	public void deleteMetadefinition(String name, String resourcetype) {
+		try {
+			m_cms.deleteMetadefinition(name, resourcetype);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Returns a Metainformation of a file or folder.
+	 * 
+	 * @param name The resource-name of which the Metainformation has to be read.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 */
+	public void readMetainformation(String name, String meta) {
+		try {
+			System.out.println( m_cms.readMetainformation(name, meta) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+		
+	/**
+	 * Writes a Metainformation for a file or folder.
+	 * 
+	 * @param name The resource-name of which the Metainformation has to be set.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
+	 * @param value The value for the metainfo to be set.
+	 */
+	public void writeMetainformation(String name, String meta, String value) {
+		try {
+			m_cms.writeMetainformation(name, meta, value);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Returns a list of all Metainformations of a file or folder.
+	 * 
+	 * @param resource The name of the resource of which the Metainformation has to be 
+	 * read.
+	 */
+	public void readAllMetainformations(String resource) {
+		try {
+			Hashtable metainfos = m_cms.readAllMetainformations(resource);
+			Enumeration keys = metainfos.keys();
+			Object key;
+			
+			while(keys.hasMoreElements()) {
+				key = keys.nextElement();
+				System.out.print(key + "=");
+				System.out.println(metainfos.get(key));
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Deletes all Metainformation for a file or folder.
+	 * 
+	 * @param resource The name of the resource of which the Metainformations 
+	 * have to be deleted.
+	 */
+	public void deleteAllMetainformations(String resource) {
+		try {
+			m_cms.deleteAllMetainformations(resource);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Deletes a Metainformation for a file or folder.
+	 * 
+	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
+	 */
+	public void deleteMetainformation(String resourcename, String meta) {
+		try {
+			m_cms.deleteMetainformation(resourcename, meta);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Returns the anonymous user object.
+	 */
+	public void anonymousUser() {
+		try {
+			System.out.println( m_cms.anonymousUser() );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
 	}
 }
