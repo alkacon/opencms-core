@@ -2521,6 +2521,15 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_histproperties.gif</source>
+            <destination>pics/system/ic_histproperties.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_htmlgallery.gif</source>
             <destination>pics/system/ic_htmlgallery.gif</destination>
             <type>image</type>
@@ -5907,6 +5916,53 @@
         <file>
             <source>system/workplace/administration/project/historyprojects/projectlist</source>
             <destination>system/workplace/administration/project/historyprojects/projectlist</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <destination>system/workplace/administration/project/historyproperties</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.histproperties]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_histproperties]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[5.0]]></value>
+                </property>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/project/historyproperties/index.html</source>
+            <destination>system/workplace/administration/project/historyproperties/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>	
+        <file>
+            <source>system/workplace/administration/project/historyproperties/history_properties</source>
+            <destination>system/workplace/administration/project/historyproperties/history_properties</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
