@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlProjectXParser.java,v $
- * Date   : $Date: 2000/05/12 07:43:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/20 09:51:12 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/05/12 07:43:56 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/20 09:51:12 $
  */
 public class CmsXmlProjectXParser implements I_CmsXmlParser, I_CmsLogChannels {
     
@@ -122,7 +122,7 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser, I_CmsLogChannels {
         int type = source.getNodeType();
     	switch (type) {
     		
-        case doc.ELEMENT_NODE: {
+        case Document.ELEMENT_NODE: {
             	Element newelement;
                 newelement = doc.createElement(source.getNodeName());
         	    NamedNodeMap srcattr = source.getAttributes();
@@ -139,7 +139,7 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser, I_CmsLogChannels {
 		        break;
             }
 
-        case doc.ATTRIBUTE_NODE: {
+        case Document.ATTRIBUTE_NODE: {
   		         newnode = doc.createAttribute(source.getNodeName());
                  newnode.setNodeValue(source.getNodeValue());
                  deep = true;
@@ -147,52 +147,52 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser, I_CmsLogChannels {
 		        break;
             }
 
-	    case doc.TEXT_NODE: {
+	    case Document.TEXT_NODE: {
 		        newnode = doc.createTextNode(source.getNodeValue());
                 break;
             }
 
-	    case doc.CDATA_SECTION_NODE: {
+	    case Document.CDATA_SECTION_NODE: {
 		        newnode = doc.createCDATASection(source.getNodeValue());
 		        break;
             }
 
-    	case doc.ENTITY_REFERENCE_NODE: {
+    	case Document.ENTITY_REFERENCE_NODE: {
 		        break;
             }
 
                                     
                                         
-    	case doc.ENTITY_NODE: {
+    	case Document.ENTITY_NODE: {
         		break;
             }
 
-    	case doc.PROCESSING_INSTRUCTION_NODE: {
+    	case Document.PROCESSING_INSTRUCTION_NODE: {
 		        newnode = doc.createProcessingInstruction(source.getNodeName(),
 						      source.getNodeValue());
 		        break;
             }
 
-    	case doc.COMMENT_NODE: {
+    	case Document.COMMENT_NODE: {
 		        newnode = doc.createComment(source.getNodeValue());
 		        break;
             }
 
-   	    case doc.DOCUMENT_TYPE_NODE: {
+   	    case Document.DOCUMENT_TYPE_NODE: {
         		break;
             }
 
-    	case doc.DOCUMENT_FRAGMENT_NODE: {
+    	case Document.DOCUMENT_FRAGMENT_NODE: {
 		        newnode = doc.createDocumentFragment();
 	        	// No name, kids carry value
 		        break;
             }
 
-        case doc.NOTATION_NODE: {
+        case Document.NOTATION_NODE: {
     		break;
             }
 
-    	case doc.DOCUMENT_NODE : // Document can't be child of Document
+    	case Document.DOCUMENT_NODE : // Document can't be child of Document
     	    default: {	
             }
         }
