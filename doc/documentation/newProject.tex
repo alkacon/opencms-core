@@ -1,7 +1,7 @@
-\chapter{The New Projectmechanism}
+\section{The Projectmechanism}
 \index{Projectmechanism}
 
-OpenCms 4.4 contains the new projectmechanism where the offline
+Since version 4.4 OpenCms contains the new projectmechanism where the offline
 resources only exist once. The projects that can be created are
 views on the offline resources.
 
@@ -12,7 +12,7 @@ The advantages are:
 \item In each project is always the last version of a resource shown. So you can not loose changes when publishing a resource that is referenced by more than one project.
 \end{itemize}
 
-\section{Data structure}
+\subsection{Data structure}
 \index{resources data structure} \index{resources online}
 \index{resources offline} \index{resources backup}
 
@@ -60,7 +60,7 @@ c ontains the ID of a project and the names of the resources that
 were selected when the project was created. The entries describe
 the view of the project on the offline resources.
 
-\section{Installing OpenCms}
+\subsection{During installation of OpenCms}
 
 When you setup OpenCms the first time to install the workplace
 some data is filled in by default. With regard to the new
@@ -83,7 +83,7 @@ to the online tables and to the backup tables. The temporary setup
 project will be deleted but the resources still exist in the
 offline tables and can be accessed by creating a new project.
 
-\section{Creating a new project}
+\subsection{Creating a new project}
 \index{Project permanent}
 \index{Project temporary}
 
@@ -117,7 +117,7 @@ To avoid that resources that are in work in one project are
 published unintentional by another project it is dissuaded from
 creating projects that reference the same resources.
 
-\section{The view of the project}
+\subsection{The view of the project}
 
 The explorer shows all offline resources in an offline project.
 The resources that does not belong to the project are grey. The
@@ -141,7 +141,7 @@ The new, changed or deleted resource gets a little flag. The red
 flag means the resources was changed in the current project, the
 grey one means the resource was changed in another project.
 
-\section{Publish a project}
+\subsection{Publish a project}
 \index{publish project}
 
 Before a project is published all resources that are locked in

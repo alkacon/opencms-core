@@ -4,13 +4,13 @@
 This chapter describes all external parts required to run OpenCms.
 If you want to prepare an installation, please collect all
 components listed here. If you download a major release of OpenCms
-(e.g. version 4.4), Xerces, JavaMail and FOP will be shipped with
-the distribution.
+(e.g. version 4.6), mySql-databasedriver, Xerces, JavaMail, Fesi, 
+jakarta-oro and Tidy will be shipped with the distribution.
 
 \section{Operating System}
 OpenCms is implemented in 100\% Java. Since Java should be platform independent, OpenCms should run
 on all operating systems supporting Java. Currently, we have installations running on
-Red Hat Linux 6.1 (\rqhttp{http://www.redhat.com}{http://www.redhat.com}). Other
+Red Hat Linux 7.2 (\rqhttp{http://www.redhat.com}{http://www.redhat.com}). Other
 Linux or Unix brands should work without problems. We also have installations on
 Windows NT 4.0 and Windows 2000.
 
@@ -26,13 +26,13 @@ iis})
 has also been successfully tried with OpenCms. Other web servers should also be working without problems.
 
 \section{Servlet runtime engine}
-The Java Servlet API (JSDK) 2.2 and a servlet engine are needed by
+The Java Servlet API (JSDK) 2.3 and a servlet engine are needed by
 the webserver to start up Java programs on http requests. The
 servlet standard has been developed by SUN, see
 \rqhttp{http://java.sun.com/products/servlet/index.html}{http://java.sun.com/products/servlet/index.html}.
 We are most often using TOMCAT as a Java Servlets and Java Server
 Pages reference implementation from the Apache Group. Please use
-Tomcat 3.3 instead of 3.2.x. See
+Tomcat 4.x. See
 \rqhttp{http://jakarta.apache.org/}{http://jakarta.apache.org/}
 
 For an Microsoft IIS installation, we have successfully used Jrun from Allaire \\
@@ -53,17 +53,15 @@ The OpenCms architecture allows to use any SQL capable database that offers a JD
 These include enterprise databases like e.g. Oracle (\rqhttp{http://www.oracle.com}{http://www.oracle.com}),
 but also Open Source databases like MySQL (\rqhttp{http://www.mysql.com}{http://www.mysql.com}).
 
-The reference installation uses MySQL. In order to access this database, the last pre-release
-beta version of the mm JDBC driver is suggested\\
-(\rqhttp{http://www.worldserver.com/mm.mysql}{http://www.worldserver.com/mm.mysql}. For
-development currently we are using version version 3.23 of the database and version 2.0.1 of the
+The reference installation uses MySQL. (\rqhttp{http://www.worldserver.com/mm.mysql}{http://www.worldserver.com/mm.mysql}. 
+For development currently we are using version version 3.23 of the database and version 2.0.4 of the
 JDBC driver.
 
 \section{XML Parser}
 OpenCms makes heavy use of XML to store content and template data. For XML parsing, we make use of
 the excellent Xerces developed by the Apache Group\\
 (\rqhttp{http://xml.apache.org/xerces-j/index.html}{http://xml.apache.org/xerces-j/index.html}).
-We recommend using version 1.2.3.
+We recommend using version 1.4.4.
 
 \section{Mail API}
 The integrated task management is able to send mails when task events occur.
@@ -73,5 +71,15 @@ To enable this feature you will need the JavaMail 1.2 API available at \\
 (\rqhttp{http://www.javasoft.com/beans/glasgow/jaf.html}{http://www.javasoft.com/beans/glasgow/jaf.html}).
 
 \section{FESI (a Free EcmaScript Interpreter)}
-OpenCms uses FESI as Interpreter for EcmaScript.
-(\rqhttp{http://home.worldcom.ch/jmlugrin/fesi}{http://home.worldcom.ch/jmlugrin/fesi}).
+OpenCms uses FESI as Interpreter for EcmaScript. This interpreter is used by OpenCms if you start the cmsshell in
+ExmaScript mode.
+(\rqhttp{http://home.worldcom.ch/jmlugrin/fesi}{http://home.worldcom.ch/jmlugrin/fesi})
+
+\section{JTidy}
+OpenCms uses JTidy release 7 to cleanup and parse HTML-fragments produced by the HTML-Control. 
+(\rqhttp{http://sourceforge.net/projects/jtidy}{http://sourceforge.net/projects/jtidy})
+
+\section{Jakarta-ORO}
+OpenCms uses regular expressions for linkreplacements in case of static export. Therefor jakarta-oro-2.0.4.jar
+is used.
+(\rqhttp{http://jakarta.apache.org/oro/index.html}{http://jakarta.apache.org/oro/index.html})

@@ -4,7 +4,7 @@
 
 \subsection{What is OpenCms?}
 
-OpenCms 4.4 is a Content Management System that is based on Open
+OpenCms 4.6 is a Content Management System that is based on Open
 Source Software. Complex Intranet and Internet web sites are
 quickly and inexpensively created, maintained and managed.
 
@@ -34,8 +34,8 @@ based on Java technology.
 \subsection{Configuring the client}
 
 Netscape Navigator or Microsoft Internet Explorer must be
-installed on the client. Regardless of the browser you choose, its
-version must be 4.0 or higher. Configuration details for each of
+installed on the client. You should use IE 5.x or higher or
+Netscape Navigator 6.2 or higher. Configuration details for each of
 the browsers can be found in the Appendix. The OpenCms client is
 currently optimized for a Windows operating system (95/98/NT) and
 Microsoft Internet Explorer.
@@ -57,7 +57,7 @@ designed to get you up and running as quickly as possible.
 
 Open your Internet browser and enter
 
-http://localhost/opencms/opencms/index.html
+http://localhost:8080/opencms/opencms/index.html
 
 to access the OpenCms site.
 
@@ -82,14 +82,14 @@ following the instructions described below.
 
 Activate the "Workplace" to edit a page in OpenCms. The
 "Workplace" is the OpenCms user interface that is used to change,
-delete an create new pages. The "Workplace" is entirely based on
+delete and create new pages. The "Workplace" is entirely based on
 HTML, which is why you don't have to install additional software
 to run it from your Internet browser.
 
 Enter the following address in your browser to start the
 "Workplace:"
 
-http://localhost/opencms/opencms/system/workplace/action/login.html
+http://localhost:8080/opencms/opencms/system/workplace/action/login.html
 
 \subsubsection{Logging into the system}
 
@@ -342,7 +342,7 @@ access the context-sensitive menu. Select the menu item "Publish"
 \end{figure}
 
 Start the demo application again:\\
-http://localhost/opencms/opencms/projects/index.html The test page
+http://localhost:8080/opencms/opencms/projects/index.html The test page
 is displayed with your modifications (Figure~\ref{demopage02}).
 
 \begin{figure}[hbt]
@@ -422,7 +422,7 @@ for other users.
 
 Publish the project as explained under "Publishing a project" and
 open the demo application:
-http://localhost/opencms/opencms/projects/index.html
+http://localhost:8080/opencms/opencms/projects/index.html
 
 The demo page is displayed with the new link. Click on the link to
 view your new page (Figure~\ref{demopage03}).
@@ -502,8 +502,7 @@ components such as logos or text fields that can be freely
 defined. The template determines the page's layout.
 \item The content is displayed in the Body. Content is freely defined. Its
 layout is based on previously defined format templates. The format
-templates, which are defined in the CSS file, ensure that the
-content is uniformly displayed.
+templates ensure that the content is uniformly displayed.
 \end{itemize}
 
 \begin{figure}[hbt]
@@ -554,10 +553,10 @@ be accessed via the "History" option in the context-sensitive menu
 To create new content, the user creates a new file or directory by
 clicking on the "New" button on the menu bar. This opens a dialog
 window in which the user selects the element to create: "Folder,"
-"Page," "Link", "Text", "XMLTemplate" or "Load new file." The
+"Page," "Link", "Text", "XMLTemplate" or "Upload new file." The
 name, title and navigator text as well as the position of the file
 or directory in the navigator, are defined in separate dialog
-boxes. Selecting the option "Load new file" enables users to load
+boxes. Selecting the option "Upload new file" enables users to load
 files that are stored on their PC's local hard disks into an
 OpenCms directory. Users access their assigned directories and
 files via the file explorer.
@@ -576,24 +575,152 @@ directory's status and the user's access permissions:
 the editing phase to prevent them from being accessed or modified
 by several users at the same time. A file or directory is unlocked
 when the user has finished modifying it.
+
 \item Edit page: Clicking opens a WYSIWYG editor in which the file can be modified.
 At this stage, no HTML knowledge is required to modify a page.
+
 \item Edit control code: Clicking opens a text editor in which
 control codes can be edited. Extensive HTML knowledge is required
 to make modifications of this type.
+
 \item Publish directly: A single resource can be published
 directly. This item is enabled when a changed file is unlocked.
+
 \item History: The history file displays all of the file's previous
 versions. The history file enables users to see who made which
 modifications when. When the file is locked a button for restoring
 a version is shown in the "Detail" of the version.
+
 \item The respective access
 attributes for the individual files and directories are set on the
 system side by using the functions "Change owner," "Change group"
 and "Change permissions".
+
 \item Standard functions such as "Copy,"
 "Rename" and "Delete" can be selected from the context-sensitive
 menus.
+
+\item Undelete resources \index{undelete} When a resource
+that already exists in the online project is deleted it is marked
+by crossing out its entry in the file list. Now it is possible to
+undelete these resources. When undeleting a folder all
+subresources in this folder that were marked as deleted are
+undeleted, too. You must have write access to undelete a resource.
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=\sgw]
+                   {pics/newProject/undel03}
+\caption[Undelete a resource]
+           {Undelete a resource}
+\label{undel}
+\end{center}
+\end{figure}
+
+After the resource is undeleted its state is set to changed and
+the resource is locked by the current user.
+
+
+\item Undo changes  \index{undo}
+
+Changes of a resource can now be undone. The resource must be
+marked as changed and it must be locked. You must have write
+access to the resource. When the changes of a folder are undone
+all changes of subresources are undone, too. This feature copies
+the information from the online project, so all changes that were
+not published are lost and new resources are deleted.
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=\sgw]
+                   {pics/newProject/undo01}
+\caption[Undo changes of a resource]
+           {Undo changes of a resource}
+\label{undo}
+\end{center}
+\end{figure}
+
+
+\item Restore a version from history  \index{history}
+
+Now older versions of a file can be restored from the history. The
+file must be locked. This feature currently works only for files
+not for folders. The function is only enabled for locked files. It
+is implemented in the detail view of the history.
+
+You have to choose the version from the list of versions and click
+on the detail button. To restore the version click on the "Restore
+version"-button. You must have write access to the file if you
+want to restore a version.
+
+\begin{figure}[hbt]
+\begin{minipage}[b]{0.49\linewidth}
+\begin{center}
+\includegraphics[width=\sgw]
+                   {pics/newProject/restore01}
+\end{center}
+\end{minipage}
+\begin{minipage}[b]{0.49\linewidth}
+\begin{center}
+\includegraphics[width=\sgw]
+                   {pics/newProject/restore02}
+\end{center}
+\end{minipage}
+\caption[Restore a version]
+           {Restore a version}
+\label{restorever}
+\end{figure}
+
+
+\item Publish a resource \index{publish resource}
+
+Resources can now be published directly. They must be unlocked to
+enable the function in the context menu. Only the projectmanager
+and the administrator are allowed to publish resources.
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=\sgw]
+                   {pics/newProject/publish03}
+\caption[Publish a resource]
+           {Publish a resource}
+\label{publishres}
+\end{center}
+\end{figure}
+
+When a resource is published directly
+
+\begin{itemize}
+\item a temporary project is created
+\item the resource is copied to the new project
+\item the projectid of the resource and all its subresources is set to the new project
+\item the new project is published and deleted.
+\end{itemize}
+
+
+\item Copy a resource to the project
+
+A resource that does not belongs to the current offline project is
+colored grey. You can copy this resource to the current offline
+project with this new feature in the context menu. Only the
+projectmanager and the administrator are allowed to copy resources
+to the project.
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=\sgw]
+                   {pics/newProject/copyPro02}
+\caption[Copy a resource to project]
+           {Copy a resource to project}
+\label{copytoproject}
+\end{center}
+\end{figure}
+
+You can also copy the parent resource of an already existing
+resource to the project, but it is not possible to copy the root
+folder to an existing project. For this you must create a new
+project.
+
 \end{itemize}
 
 \subsection{Access permissions}
@@ -608,11 +735,11 @@ several (Figure~\ref{newgroup}).
 The following groups are pre-defined in OpenCms:
 
 \begin{itemize}
-\item Administrator: An administrator has full access permissions to
+\item Administrators: An administrator has full access permissions to
 all of the files and directories. Administrators create and manage
 users and user groups.
 \item Project manager: A project manager creates new projects and coordinates their workflow. A project manager's access permissions are restricted to the projects he/she creates. A project manager can, however, access all of the files and directories within his/her projects. A project manager can also publish projects, i.e. put them online.
-\item User: A user can create new files and directories within the project he/she is assigned to. As the owner, the user has full access permissions to the files and directories he/she creates.
+\item Users: A user can create new files and directories within the project he/she is assigned to. As the owner, the user has full access permissions to the files and directories he/she creates.
 \item Guest: This group consists of all other users, such as visitors.
 \end{itemize}
 

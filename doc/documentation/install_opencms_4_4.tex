@@ -15,14 +15,11 @@ For details on how to install these components on your operating
 system, see the documentation that comes with them.
 
 \section{Installing Tomcat}
-Note: OpenCms does not work correctly with Tomcat 3.2.x. Tomcat
-3.2.x uses its own XML parser which results in major errors while
-using OpenCms. Please use Tomcat 4 instead.
 
 Install JakartaTomcat
 \rqhttp{http://jakarta.apache.org/tomcat/index.html}{http://jakarta.apache.org/tomcat/index.html}
-into a folder of your choice. This is the JAKARTA\_HOME folder.
-Don't forget to set the environment variables JAKARTA\_HOME and
+into a folder of your choice. This is the CATALINA\_HOME folder.
+Don't forget to set the environment variables CATALINA\_HOME and
 JAVA\_HOME.
 
 Test the installation by running tomcat in standalone mode and
@@ -39,7 +36,7 @@ commandline that is used to start Tomcat:
 
 \texttt{-Dfile.encoding=ISO8859\_1}
 
-You can set the environment varibale CATALINA\_OPTS to do so.
+You can also set the environment varibale CATALINA\_OPTS to do so.\\
 (\texttt{CATALINA\_OPTS=-Dfile.encoding=ISO8859\_1})
 
 \section{Installing MySQL}
@@ -73,7 +70,7 @@ OpenCms.
 \section{Install OpenCms using the Setup-Wizard}
 Start the Setup-Wizard by pointing your webbrowser to\\
 \rqhttp{http://localhost:8080/opencms/ocsetup}
-	{http://localhost:8080/opencms/ocsetup}.
+    {http://localhost:8080/opencms/ocsetup}.
 
 Note: Maybe you have to replace \texttt{localhost} with your
 servername. The port 8080 is only used if you start Tomcat in
@@ -95,16 +92,17 @@ password as soon as possible. The login URL of OpenCms is:\\
 After you have installed OpenCms you should look at the security.
 Change the Admin password of OpenCms by calling the user
 preferences ("hammer" icon on the main screen of the workplace).
-Then can add a password to the MySQL database. Enter the following
+Then you should add a password to the MySQL database. Enter the following
 commands
 at the MySQL command line.\\
 
 \begin{quote}
 \begin{verbatim}
-use mysql; insert into user values ('localhost', 'ocmsuser',
-password('XXXXX'),'N','N','N','N','N','N','N','N','N',
-'N','N','N','N','N'); insert into db values ('localhost',
-'opencms42', 'ocmsuser', 'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y');
+use mysql;
+insert into user values ('localhost', 'ocmsuser',password('XXXXX'),
+  'N','N','N','N','N','N','N','N','N','N','N','N','N','N');
+insert into db values ('localhost', 'opencms42', 'ocmsuser', 'Y','Y',
+  'Y','Y','Y','Y','Y','Y','Y','Y');
 flush privileges;
 \end{verbatim}
 \end{quote}
