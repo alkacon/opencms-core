@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/02/26 15:19:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/03/31 15:48:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -238,7 +238,9 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_resourceMap.get(i.next());
             java.util.Iterator allEntries = v.map.values().iterator();
             while (allEntries.hasNext()) {
-                this.m_EntryLruCache.remove( (I_CmsFlexLruCacheObject)allEntries.next() );
+                I_CmsFlexLruCacheObject nextObject = (I_CmsFlexLruCacheObject)allEntries.next();
+                allEntries.remove();
+                this.m_EntryLruCache.remove( nextObject );
             }
             v.map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
         }
@@ -773,7 +775,9 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                     m_size -= v.map.size();
                     java.util.Iterator allEntries = v.map.values().iterator();
                     while (allEntries.hasNext()) {
-                        this.m_EntryLruCache.remove( (I_CmsFlexLruCacheObject)allEntries.next() );
+                        I_CmsFlexLruCacheObject nextObject = (I_CmsFlexLruCacheObject)allEntries.next();
+                        allEntries.remove();
+                        this.m_EntryLruCache.remove( nextObject );
                     }
                     v.map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
                 } else {
@@ -781,7 +785,9 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                     m_size -= v.map.size();
                     java.util.Iterator allEntries = v.map.values().iterator();
                     while (allEntries.hasNext()) {
-                        this.m_EntryLruCache.remove( (I_CmsFlexLruCacheObject)allEntries.next() );
+                        I_CmsFlexLruCacheObject nextObject = (I_CmsFlexLruCacheObject)allEntries.next();
+                        allEntries.remove();
+                        this.m_EntryLruCache.remove( nextObject );
                     }
                     
                     this.m_VariationCache.remove( (I_CmsFlexLruCacheObject)v );
@@ -812,7 +818,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.14 $ 
+     * @version $Revision: 1.15 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         
