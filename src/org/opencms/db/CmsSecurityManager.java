@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/25 13:16:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/07 16:19:50 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -93,11 +93,11 @@ public final class CmsSecurityManager {
     /** Indicates denied permissions. */
     private static final Integer PERM_DENIED_INTEGER = new Integer(PERM_DENIED);
 
-    /** The initialized OpenCms driver manager to access the database. */
-    protected CmsDriverManager m_driverManager;
-
     /** The factory to create runtime info objects. */
     protected I_CmsDbContextFactory m_dbContextFactory;
+
+    /** The initialized OpenCms driver manager to access the database. */
+    protected CmsDriverManager m_driverManager;
 
     /** The class used for cache key generation. */
     private I_CmsCacheKey m_keyGenerator;
@@ -1031,40 +1031,6 @@ public final class CmsSecurityManager {
      * All users are granted.<p>
      *
      * @param context the current request context
-     * @param agentName username who will edit the task
-     * @param roleName usergroupname for the task
-     * @param taskname name of the task
-     * @param timeout time when the task must finished
-     * @param priority Id for the priority
-     * @return A new Task Object
-     * @throws CmsException if something goes wrong
-     */
-    public CmsTask createTask(
-        CmsRequestContext context,
-        String agentName,
-        String roleName,
-        String taskname,
-        long timeout,
-        int priority) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        CmsTask result = null;
-        try {
-            result = m_driverManager.createTask(dbc, agentName, roleName, taskname, timeout, priority);
-        } catch (Exception e) {
-            dbc.report(null, null, e);
-        } finally {
-            dbc.clear();
-        }        
-        return result;                  
-    }
-
-    /**
-     * Creates a new task.<p>
-     *
-     * All users are granted.<p>
-     *
-     * @param context the current request context
      * @param currentUser the current user
      * @param projectid the current project id
      * @param agentName user who will edit the task
@@ -1110,6 +1076,40 @@ public final class CmsSecurityManager {
             dbc.clear();
         }        
         return result;        
+    }
+
+    /**
+     * Creates a new task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param agentName username who will edit the task
+     * @param roleName usergroupname for the task
+     * @param taskname name of the task
+     * @param timeout time when the task must finished
+     * @param priority Id for the priority
+     * @return A new Task Object
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTask createTask(
+        CmsRequestContext context,
+        String agentName,
+        String roleName,
+        String taskname,
+        long timeout,
+        int priority) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
+        CmsTask result = null;
+        try {
+            result = m_driverManager.createTask(dbc, agentName, roleName, taskname, timeout, priority);
+        } catch (Exception e) {
+            dbc.report(null, null, e);
+        } finally {
+            dbc.clear();
+        }        
+        return result;                  
     }
 
     /**
@@ -1355,38 +1355,6 @@ public final class CmsSecurityManager {
 
         CmsUser user = readUser(context, userId);
         deleteUser(context, user);        
-    }
-
-    /**
-     * Deletes a user.<p>
-     *
-     * @param context the current request context
-     * @param user the user to be deleted
-     * 
-     * @throws CmsException if something goes wrong
-     */    
-    private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
-        
-        if (!isAdmin(context)) {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] deleteUser() " + user.getName(),
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-
-        if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] deleteUser() " + user.getName(),
-                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-        }
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            m_driverManager.deleteUser(dbc, context.currentProject(), user.getId());
-        } catch (Exception e) {
-            dbc.report(null, "Error deleting user " + user.getName(), e);
-        } finally {
-            dbc.clear();
-        }
     }
     
     /**
@@ -2097,6 +2065,56 @@ public final class CmsSecurityManager {
         }        
         return result;
     }
+    
+    /**
+     * Checks if the given resource or the current project can be published by the current user 
+     * using his current OpenCms context.<p>
+     * 
+     * If the resource parameter is <code>null</code>, then the current project is checked,
+     * otherwise the resource is checked for direct publish permissions.<p>
+     * 
+     * @param context the current request context
+     * @param directPublishResource the direct publish resource (optional, if null only the current project is checked)
+     * 
+     * @return true if the current user can direct publish the given resource in his current context
+     */
+    public boolean hasPublishPermissions(CmsRequestContext context, CmsResource directPublishResource) {
+
+        // has the current user the required permissions to publish the current project/direct published resource?
+        boolean hasPublishPermissions = false;
+
+        // the current user either has to be a member of the administrators group
+        hasPublishPermissions |= isAdmin(context);
+
+        // or he has to be a member of the project managers group
+        hasPublishPermissions |= isManagerOfProject(context);
+
+        if (directPublishResource != null) {
+
+            try {
+                // or he has the explicit permission to direct publish a resource
+                hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(
+                    context,
+                    directPublishResource,
+                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                    true,
+                    CmsResourceFilter.ALL));
+
+            } catch (CmsException e) {
+                // any exception here means the user has no publish permissions
+                return false;
+            }
+        }
+
+        // and the current project must be different from the online project
+        hasPublishPermissions &= (context.currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID);
+
+        // and the project flags have to be set to zero
+        hasPublishPermissions &= (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
+
+        // return the result
+        return hasPublishPermissions;
+    }
 
     /**
      * Writes a vector of access control entries as new access control entries of a given resource.<p>
@@ -2446,34 +2464,19 @@ public final class CmsSecurityManager {
         int publishProjectId = context.currentProject().getId();
 
         // has the current user the required permissions to publish the current project/direct published resource?
-        boolean hasPublishPermissions = false;
-
-        // the current user either has to be a member of the administrators group
-        hasPublishPermissions |= isAdmin(context);
-
-        // or he has to be a member of the project managers group
-        hasPublishPermissions |= isManagerOfProject(context);
+        boolean hasPublishPermissions;
 
         if (publishList.isDirectPublish()) {
-
+            // pass the direct publish resource to the permission test
             CmsResource directPublishResource = publishList.getDirectPublishResource();
-
-            // or he has the explicit permission to direct publish a resource
-            hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(
-                context,
-                directPublishResource,
-                CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
-                true,
-                CmsResourceFilter.ALL));
+            hasPublishPermissions = hasPublishPermissions(context, directPublishResource);
+        } else {
+            // pass null, will only check the current project
+            hasPublishPermissions = hasPublishPermissions(context, null);
         }
 
-        // and the current project must be different from the online project
-        hasPublishPermissions &= (publishProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID);
-
-        // and the project flags have to be set to zero
-        hasPublishPermissions &= (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
-
         if (hasPublishPermissions) {
+
             CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
             try {
                 m_driverManager.publishProject(cms, dbc, publishList, report);
@@ -2500,7 +2503,7 @@ public final class CmsSecurityManager {
                 + "] could not publish project "
                 + publishProjectId, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        
+
         return publishList.getPublishHistoryId();
     }
 
@@ -3596,30 +3599,6 @@ public final class CmsSecurityManager {
      *
      * All users are granted.<p>
      * 
-     * @param username the name of the user that is to be read
-     *
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsUser readUser(String username) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext();   
-        CmsUser result = null;
-        try {
-            result = m_driverManager.readUser(dbc, username);
-        } catch (Exception e) {
-            dbc.report(null, null, e);
-        } finally {
-            dbc.clear();
-        }        
-        return result;
-    }
-
-    /**
-     * Returns a user object.<p>
-     *
-     * All users are granted.<p>
-     * 
      * @param context the current request context
      * @param username the name of the user that is to be read
      * @param type the type of the user
@@ -3658,6 +3637,30 @@ public final class CmsSecurityManager {
         CmsUser result = null;
         try {
             result = m_driverManager.readUser(dbc, username, password);
+        } catch (Exception e) {
+            dbc.report(null, null, e);
+        } finally {
+            dbc.clear();
+        }        
+        return result;
+    }
+
+    /**
+     * Returns a user object.<p>
+     *
+     * All users are granted.<p>
+     * 
+     * @param username the name of the user that is to be read
+     *
+     * @return user read form the cms
+     * @throws CmsException if operation was not succesful
+     */
+    public CmsUser readUser(String username) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();   
+        CmsUser result = null;
+        try {
+            result = m_driverManager.readUser(dbc, username);
         } catch (Exception e) {
             dbc.report(null, null, e);
         } finally {
@@ -4745,4 +4748,36 @@ public final class CmsSecurityManager {
                 return;
         }
     }    
+
+    /**
+     * Deletes a user.<p>
+     *
+     * @param context the current request context
+     * @param user the user to be deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
+        
+        if (!isAdmin(context)) {
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] deleteUser() " + user.getName(),
+                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+
+        if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] deleteUser() " + user.getName(),
+                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+        }
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.deleteUser(dbc, context.currentProject(), user.getId());
+        } catch (Exception e) {
+            dbc.report(null, "Error deleting user " + user.getName(), e);
+        } finally {
+            dbc.clear();
+        }
+    }
 }

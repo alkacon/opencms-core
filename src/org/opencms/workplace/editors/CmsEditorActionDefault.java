@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/07 16:19:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
@@ -135,26 +135,8 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
      * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#isButtonActive(CmsJspActionElement, java.lang.String)
      */
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
-        try {
-            //get the lock type of the resource
-            org.opencms.lock.CmsLock lock = jsp.getCmsObject().getLock(resourceName);
-            int lockType = lock.getType();
-            if (lockType == CmsLock.C_TYPE_INHERITED || lockType == CmsLock.C_TYPE_SHARED_INHERITED) {
-                //lock is inherited, unlocking & publishing not possible, so disable button 
-                return false;
-            }
-            if (!jsp.getCmsObject().isManagerOfProject()) {
-                // user has no right to publish the resource, so disable the button
-                return false;
-            }
-        } catch (CmsException e) {
-            // getting the lock went wrong, disable button
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
-            }            
-            return false;
-        }
-        return true;
+        
+        return jsp.getCmsObject().hasPublishPermissions(resourceName);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/25 13:16:52 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2004/12/07 16:19:50 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1266,6 +1266,32 @@ public class CmsObject {
         return m_securityManager.isInsideCurrentProject(m_context, addSiteRoot(resourcename));
     }      
     
+    /**
+     * Checks if the given resource or the current project can be published by the current user 
+     * using his current OpenCms context.<p>
+     * 
+     * If the resource parameter is <code>null</code>, then the current project is checked,
+     * otherwise the resource is checked for direct publish permissions.<p>
+     * 
+     * @param resourcename the direct publish resource name (optional, if null only the current project is checked)
+     * 
+     * @return true if the current user can direct publish the given resource in his current context
+     */
+    public boolean hasPublishPermissions(String resourcename) {
+
+        CmsResource resource = null;
+        if (resourcename != null) {
+            // resource name is optional
+            try {
+                resource = readResource(resourcename, CmsResourceFilter.ALL);
+            } catch (CmsException e) {
+                // if any exception (e.g. security) occurs the result is false
+                return false;
+            }
+        }
+        // now perform the permission test
+        return m_securityManager.hasPublishPermissions(m_context, resource);
+    }
     
     /**
      * Checks if the current user has "Administrator" permissions.<p>

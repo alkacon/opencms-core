@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/07 16:19:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -83,6 +83,7 @@ public class TestPermissions extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestPermissions.class.getName());
                 
+        suite.addTest(new TestPermissions("testPublishPermissions"));
         suite.addTest(new TestPermissions("testVisiblePermission"));
         suite.addTest(new TestPermissions("testVisiblePermissionForFolder"));
         suite.addTest(new TestPermissions("testFilterForFolder"));
@@ -104,6 +105,61 @@ public class TestPermissions extends OpenCmsTestCase {
         
         return wrapper;
     }
+    
+    /**
+     * Test the publish permisssions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishPermissions() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish permissions for a user");
+        
+        String resource = "/folder1/page1.html";
+
+        cms.lockResource(resource);
+        // modify the resource permissions for the tests
+        // remove all "Users" group permissions 
+        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        // allow read and write for user "test1"
+        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        // allow read and write and direct publish for user "test2"
+        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.unlockResource(resource);
+        
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        if (cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions available but should not be available for user test1");
+        }
+        
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        if (! cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions unavailable but should be available for user test2");
+        }
+        
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        if (! cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions unavailable but should be available for user Admin");
+        }
+        
+        // add user "test1" to project manager group
+        cms.addUserToGroup("test1", OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        
+        cms.loginUser("test1", "test1");
+        // first check in "online" project
+        assertEquals(I_CmsConstants.C_PROJECT_ONLINE_ID, cms.getRequestContext().currentProject().getId());
+        if (cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions available but should not be available for user test1 in online project");
+        }
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        if (! cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions unavailable but should be available for user test1 because he is a project manager");
+        }        
+    }  
  
     /**
      * @throws Throwable if something goes wrong
@@ -276,6 +332,8 @@ public class TestPermissions extends OpenCmsTestCase {
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
         cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        // also for "Project managers" to avoid conflicts with other tests in this suite
+        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
         // allow only read for user "test1"
         cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
         // allow read and visible for user "test2"
@@ -322,6 +380,8 @@ public class TestPermissions extends OpenCmsTestCase {
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
         cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        // also for "Project managers" to avoid conflicts with other tests in this suite
+        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
         // allow only read for user "test1"
         cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
         // allow read and visible for user "test2"
