@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/18 16:13:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/07/20 09:10:02 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/07/18 16:13:49 $
+ * @version $Revision: 1.8 $ $Date: 2000/07/20 09:10:02 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2777,7 +2777,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		// read the user
-		CmsUser user = readUser(currentUser, currentProject, username, oldPassword);
+		CmsUser user;
+		try {
+			user = readUser(currentUser, currentProject, username, oldPassword);
+		} catch(CmsException exc) {
+			// this is no system-user - maybe a webuser?
+			user = readWebUser(currentUser, currentProject, username, oldPassword);
+		}
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
 			m_dbAccess.setPassword(username, newPassword);
@@ -2847,7 +2853,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		// read the user
-		CmsUser user = readUser(currentUser, currentProject, username, password);
+		CmsUser user;
+		try {
+			user = readUser(currentUser, currentProject, username, password);
+		} catch(CmsException exc) {
+			// this is no system-user - maybe a webuser?
+			user = readWebUser(currentUser, currentProject, username, password);
+		}
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
 			m_dbAccess.setRecoveryPassword(username, newPassword);
