@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/04/28 12:02:05 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/28 13:51:55 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/04/28 12:02:05 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/28 13:51:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -277,16 +277,14 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
             configFile.getWorkplaceIniData(m_viewNames, m_viewLinks,"WORKPLACEVIEWS","VIEW");            
         }
-		//------- TEMPORARY: NOT display admin view if user should't see it  
+		//------- TEMPORARY: NOT display admin view if user should't see it 
+		// to remove this feature delete the lines with: //--TEMPADMIN ...
+		boolean adminView = true;
+		boolean omittedAdmin = false;
 		if (!(reqCont.isAdmin() || reqCont.isProjectManager())) {
-			// should not see the Administration view	 
-			int indexAdmin = m_viewNames.indexOf("admin");
-			if (indexAdmin != -1 ){
-				m_viewLinks.removeElementAt(indexAdmin);
-				m_viewNames.removeElementAt(indexAdmin);	
-			}
+			adminView = false; 
 		}
-		//--------------
+		//-------------- ... and above 5 lines
 		
 		
         // OK. Now m_viewNames and m_viewLinks contail all available
@@ -297,11 +295,16 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         for(int i=0; i<numViews; i++) {
             String loopValue = (String)m_viewLinks.elementAt(i);
             String loopName = (String)m_viewNames.elementAt(i);
-			values.addElement(loopValue);
-			names.addElement(lang.getLanguageValue("select." + loopName));
-			if(loopValue.equals(currentView)) {
-                currentViewIndex = i;
-			} 
+			if (!adminView && loopName.equals("admin")){ //--TEMPADMIN
+				omittedAdmin = true; 	//--TEMPADMIN
+			} else { //--TEMPADMIN
+				values.addElement(loopValue);
+				names.addElement(lang.getLanguageValue("select." + loopName));
+				if(loopValue.equals(currentView)) {
+					currentViewIndex = omittedAdmin? i-1 : i; // = i 
+				}
+			} //--TEMPADMIN
+			
         }
         return new Integer(currentViewIndex);
     }
