@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<WP_BUTTONS>
+	<defaultbutton><![CDATA[<A href="#" onmousedown="ChPush(']]><PROCESS>name</PROCESS><![CDATA[');doEdit(]]><PROCESS>action</PROCESS><![CDATA[);" onmouseout="ChOff(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseover="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseup="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')"><IMG alt="]]><PROCESS>alt</PROCESS><![CDATA[" border=0 name=]]><PROCESS>name</PROCESS><![CDATA[ src="../pics/]]><PROCESS>name</PROCESS><![CDATA[_off.gif" ></a>]]></defaultbutton>
+	<buttonseparator><![CDATA[<IMG border=0 height=32 src="../pics/gr_line.gif" width=2>]]></buttonseparator>
+</WP_BUTTONS>
