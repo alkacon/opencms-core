@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.34 Chusuk       - xx February 2001
+* Static export throwed a NullPointerexception while setup. 
 ! The copy method of the mastermodule now returns the id of the new content definition. 
   The dataset can be cloned.
 
