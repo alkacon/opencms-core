@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/15 13:36:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/18 15:49:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,16 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -60,6 +63,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -69,7 +73,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/08/15 13:36:49 $ 
+ * @version $Revision: 1.3 $ $Date: 2003/08/18 15:49:53 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -85,15 +89,22 @@ class CmsShellCommands {
     private OpenCmsCore m_openCms;
 
     /**
+     * The driver manager to provide low-level access.<p>
+     */
+    private CmsDriverManager m_driverManager;
+    
+    /**
      * Generate a new instance of CmsShellCommands.<p>
      * 
      * @param openCms an initialized OpenCms object (i.e. "operating system")
      * @param cms an initialized CmsObject (i.e. "command shell")
+     * @param driverManager the driver manager
      * @throws Exception if something goes wrong
      */
-    public CmsShellCommands(OpenCmsCore openCms, CmsObject cms) throws Exception {
+    public CmsShellCommands(OpenCmsCore openCms, CmsObject cms, CmsDriverManager driverManager) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
+        m_driverManager = driverManager;
         m_openCms.initUser(m_cms, null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
@@ -3445,6 +3456,48 @@ class CmsShellCommands {
 
             // write it back
             m_cms.writeUser(user);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    
+    /**
+     * Does some performance measurements of the OpenCms core.<p>
+     */
+    public void perf() {
+        
+        final int MAX_TESTS = 10000;
+        
+        try {
+        
+            I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver();
+            CmsFolder systemFolder = m_driverManager.readFolder(m_cms.getRequestContext(), I_CmsConstants.VFS_FOLDER_SYSTEM); 
+            Random random = new Random();
+            int projectId = m_cms.getRequestContext().currentProject().getId();
+
+            List testResources = vfsDriver.getResourcesInTimeRange(projectId, 0, System.currentTimeMillis());
+            int numResources = testResources.size();
+            System.out.println("#Resources:\t" + numResources);
+            long totalTime = 0, minTime = 0, maxTime = 0, t, tt;
+            
+            // readFileHeader
+            totalTime = 0; 
+            minTime = 0;
+            maxTime = 0;
+            System.out.print("readFileHeader:\t");
+            for (int i = MAX_TESTS; i > 0; --i) {
+                int index = random.nextInt(numResources);
+                CmsResource res = (CmsResource)testResources.get(index);
+                t = System.currentTimeMillis();
+                    vfsDriver.readFileHeader(projectId, res.getParentId(), res.getResourceName(), true);            
+                tt = System.currentTimeMillis() - t;
+                totalTime += tt;
+                minTime = (minTime==0 | minTime > tt) ? tt : minTime;
+                maxTime = (maxTime==0 | maxTime < tt) ? tt : maxTime;
+                if ((i % 100) == 0) System.out.print(".");
+            }
+            System.out.println("\rreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / MAX_TESTS) + " ms");
+            
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

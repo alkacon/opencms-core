@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/18 10:13:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/18 15:49:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -571,6 +571,15 @@ public class OpenCmsCore {
         return m_conf;
     }
 
+    /**
+     * Returns an initialized CmsShell.<p>
+     * 
+     * @return a CmsShell object
+     */
+    public CmsShell getCmsShell() {
+        return new CmsShell(this, m_driverManager);    
+    }
+    
     /**
      * Return the OpenCms default character encoding.<p>
      * 

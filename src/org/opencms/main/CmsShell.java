@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/18 15:49:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.main;
 
 
+import org.opencms.db.CmsDriverManager;
+
 import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -56,7 +58,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Revision: 1.2 $ $Date: 2003/08/18 15:49:53 $
  */
 public class CmsShell {
 
@@ -64,25 +66,28 @@ public class CmsShell {
     public static final String C_COMMENT_CHAR = "#";
 
     /** If set to true, all commands are echoed */
-    static boolean m_echo;
+    static boolean m_echo = false;
 
     /** Indicates if the 'exit' command has been called */
-    static boolean m_exitCalled;
+    static boolean m_exitCalled = false;
 
     /** If true, then print only the short version of the Exception in the command line */
-    static boolean m_shortException;
+    static boolean m_shortException = false;
 
     /** The OpenCms context object */
-    protected CmsObject m_cms;
+    protected CmsObject m_cms = null;
 
     /** If set to true, the memory-logging is enabled */
-    boolean m_logMemory;
+    boolean m_logMemory = false;
 
     /** The OpenCms system object */
-    private OpenCmsCore m_openCms;
+    private OpenCmsCore m_openCms = null;
     
     /** Internal shell command object */
-    private CmsShellCommands m_shellCommands;
+    private CmsShellCommands m_shellCommands = null;
+    
+    /** Internal driver manager */
+    private CmsDriverManager m_driverManager = null;
 
     /**
      * Creates a new CmsShell.<p>
@@ -93,13 +98,40 @@ public class CmsShell {
             System.out.println("%%% props: " + propsPath);
             Configurations conf = new Configurations(new ExtendedProperties(propsPath));
             m_openCms = new OpenCmsCore(conf);
-            m_openCms.initVersion(this);
-            m_cms = new CmsObject();
-            m_logMemory = conf.getBoolean("log.memory", false);
-            m_shortException = false;
-            m_exitCalled = false;
+
             m_echo = false;
+            m_exitCalled = false;
+            m_shortException = false;
+            m_logMemory = conf.getBoolean("log.memory", false);            
+                        
+            // initialize shell instance with values obtained from core protoype
+            CmsShell newShell = m_openCms.getCmsShell();
+            m_openCms = newShell.m_openCms;
+            m_cms = newShell.m_cms;
+            m_shellCommands = newShell.m_shellCommands;
+            m_driverManager = newShell.m_driverManager;
+                        
+        } catch (Exception exc) {
+            printException(exc);
+        }
+    }
+    
+    /**
+     * Creates a new CmsShell.<p>
+     * 
+     * @param openCms the cms core object
+     * @param driverManager the driver manager
+     */
+    public CmsShell(OpenCmsCore openCms, CmsDriverManager driverManager) {
+        try {
+            m_openCms = openCms;
+            m_openCms.initVersion(this);
+            
+            m_cms = new CmsObject();
             m_openCms.initUser(m_cms, null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+
+            m_driverManager = driverManager;
+            
         } catch (Exception exc) {
             printException(exc);
         }
@@ -200,7 +232,7 @@ public class CmsShell {
      */
     public void commands(FileInputStream input) {
         try {
-            this.m_shellCommands = new CmsShellCommands(m_openCms, m_cms);
+            this.m_shellCommands = new CmsShellCommands(m_openCms, m_cms, m_driverManager);
             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(input));
             while (!m_exitCalled) {
                 printPrompt();
