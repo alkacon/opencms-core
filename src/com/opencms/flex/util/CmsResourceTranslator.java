@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsResourceTranslator.java,v $
- * Date   : $Date: 2003/02/01 19:14:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/02/21 17:17:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator implements I_CmsLogChannels {
@@ -168,5 +168,16 @@ public class CmsResourceTranslator implements I_CmsLogChannels {
         }
         // Return last translation (or original if no matching translation found)
         return resourceName;
+    }
+    
+    /**
+     * Returns a copy of the initialized translation rules.<p>
+     * 
+     * @return String[] a copy of the initialized translation rules
+     */
+    public String[] getTranslations() {
+        String[] copy = new String[m_translations.length];
+        System.arraycopy(m_translations, 0, copy, 0, m_translations.length);
+        return copy;
     }
 }
