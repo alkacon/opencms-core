@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/08/30 14:05:14 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.core.A_OpenCms;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper {
     
@@ -119,35 +119,29 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
                 boolean p_on = l.contains("online");
                 boolean p_off = l.contains("offline");                
                 if (l.contains("purge") && firstCall) {
-                    // m_cache.purgeJspRepository(m_cms);
-                    // m_cache.clear(m_cms);
                     A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new java.util.HashMap(0)));
                     A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     dorecompile = false;
                 } else if ((l.contains("clearcache") || dorecompile) && firstCall) {
                     if (! (p_on || p_off)) {
-                        // m_cache.clear(m_cms);
                         A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ALL))));
                     } else {
-                        // if (p_on) m_cache.clearOnline(m_cms);
-                        // if (p_off) m_cache.clearOffline(m_cms);
                         if (p_on) A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
                         if (p_off) A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
                     }                    
                 } else if (l.contains("clearentries") && firstCall) {
                     if (! (p_on || p_off)) {
-                        // m_cache.clearEntries(m_cms);
                         A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     } else {
-                        // if (p_on) m_cache.clearOnlineEntries(m_cms);
-                        // if (p_off) m_cache.clearOfflineEntries(m_cms);
                         if (p_on) A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
-                        if (p_off)  A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));              }
+                        if (p_off)  A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));              
+                    }
                 }
             }
         }  
         m_canCache = (((m_isOnline || m_cache.cacheOffline()) && ! nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
+        if (DEBUG) System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_resource);
     }
         
     /** 
@@ -167,6 +161,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
         m_canCache = req.isCacheable();
         m_doRecompile = req.isDoRecompile();
         m_includeCalls = req.getCmsIncludeCalls();        
+        if (DEBUG) System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_resource);
     }
     
     /** 
