@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/09/23 07:50:25 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -219,11 +219,11 @@ public interface I_CmsResourceType {
      * Restores a file in the current project with a version from the backup.<p>
      *
      * @param cms the current cms context
-     * @param version the version id to resource form the backup
+     * @param tag the tag id to resource form the backup
      * @param resourcename the name of the resource to apply this operation to
      * @throws CmsException if something goes wrong
      */
-    void restoreResource(CmsObject cms, int version, String resourcename) throws CmsException;
+    void restoreResource(CmsObject cms, int tag, String resourcename) throws CmsException;
 
     /**
      * Copies a resource to the currently selected project.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/22 09:21:06 $
- * Version: $Revision: 1.248 $
+ * Date   : $Date: 2003/09/23 07:50:24 $
+ * Version: $Revision: 1.249 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.248 $ $Date: 2003/09/22 09:21:06 $
+ * @version $Revision: 1.249 $ $Date: 2003/09/23 07:50:24 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -5370,19 +5370,19 @@ public class CmsDriverManager extends Object {
      * A file is read from the backup resources.
      *
      * @param context the current request context
-     * @param versionId the id of the version of the file
+     * @param tagId the id of the tag of the file
      * @param filename the name of the file to be read
      * @return the file read from the Cms.
      * @throws CmsException if operation was not succesful
      */
-    public CmsBackupResource readBackupFile(CmsRequestContext context, int versionId, String filename) throws CmsException {
+    public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, String filename) throws CmsException {
         CmsBackupResource backupResource = null;
 
         try {
             List path = readPath(context, filename, false);
             CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
-            backupResource = m_backupDriver.readBackupFile(versionId, resource.getResourceId());
+            backupResource = m_backupDriver.readBackupFile(tagId, resource.getResourceId());
             backupResource.setFullResourceName(filename);
         } catch (CmsException exc) {
             throw exc;
@@ -7285,11 +7285,11 @@ public class CmsDriverManager extends Object {
      * Restores a file in the current project with a version in the backup.<p>
      *
      * @param context the current request context
-     * @param versionId the version id of the resource
+     * @param tagId the tag id of the resource
      * @param filename the name of the file to restore
      * @throws CmsException if operation was not succesful
      */
-    public void restoreResource(CmsRequestContext context, int versionId, String filename) throws CmsException {
+    public void restoreResource(CmsRequestContext context, int tagId, String filename) throws CmsException {
         if (context.currentProject().isOnlineProject()) {
             // this is the onlineproject
             throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -7299,7 +7299,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, offlineFile, I_CmsConstants.C_WRITE_ACCESS);
 
         int state = I_CmsConstants.C_STATE_CHANGED;
-        CmsBackupResource backupFile = readBackupFile(context, versionId, filename);
+        CmsBackupResource backupFile = readBackupFile(context, tagId, filename);
         if (offlineFile.getState() == I_CmsConstants.C_STATE_NEW) {
             state = I_CmsConstants.C_STATE_NEW;
         }

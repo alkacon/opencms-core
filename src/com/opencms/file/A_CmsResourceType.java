@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/09/23 07:50:25 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -154,8 +154,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#restoreResource(com.opencms.file.CmsObject, int, java.lang.String)
      */
-    public void restoreResource(CmsObject cms, int version, String resourcename) throws CmsException {
-        cms.doRestoreResource(version, resourcename);
+    public void restoreResource(CmsObject cms, int tag, String resourcename) throws CmsException {
+        cms.doRestoreResource(tag, resourcename);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/22 10:57:34 $
-* Version: $Revision: 1.416 $
+* Date   : $Date: 2003/09/23 07:50:24 $
+* Version: $Revision: 1.417 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.416 $
+ * @version $Revision: 1.417 $
  */
 public class CmsObject {
 
@@ -1396,13 +1396,13 @@ public class CmsObject {
     /**
      * Restores a file in the current project with a version in the backup
      *
-     * @param versionId The version id of the resource
+     * @param tagId The tag id of the resource
      * @param filename The name of the file to restore
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    protected void doRestoreResource(int versionId, String filename) throws CmsException {
-        m_driverManager.restoreResource(m_context, versionId, addSiteRoot(filename));
+    protected void doRestoreResource(int tagId, String filename) throws CmsException {
+        m_driverManager.restoreResource(m_context, tagId, addSiteRoot(filename));
     }
 
     /**
@@ -2950,15 +2950,15 @@ public class CmsObject {
      * The reading includes the filecontent.
      *
      * @param filename the complete path of the file to be read.
-     * @param versionId the version id of the resource
+     * @param tagId the tag id of the resource
      *
      * @return file the read file.
      *
      * @throws CmsException , if the user has not the rights
      * to read the file, or if the file couldn't be read.
      */
-    public CmsBackupResource readBackupFile(String filename, int versionId) throws CmsException {
-        return (m_driverManager.readBackupFile(m_context, versionId, addSiteRoot(filename)));
+    public CmsBackupResource readBackupFile(String filename, int tagId) throws CmsException {
+        return (m_driverManager.readBackupFile(m_context, tagId, addSiteRoot(filename)));
     }
 
     /**
@@ -3791,13 +3791,13 @@ public class CmsObject {
     /**
      * Restores a file in the current project with a version in the backup
      *
-     * @param versionId The version id of the resource
+     * @param tagId The tag id of the resource
      * @param filename The name of the file to restore
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void restoreResource(int versionId, String filename) throws CmsException {
-        getResourceType(readFileHeader(filename).getType()).restoreResource(this, versionId, filename);
+    public void restoreResource(int tagId, String filename) throws CmsException {
+        getResourceType(readFileHeader(filename).getType()).restoreResource(this, tagId, filename);
     }
 
     /**

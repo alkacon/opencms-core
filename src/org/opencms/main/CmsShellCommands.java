@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/22 10:58:42 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/23 07:50:25 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2003/09/22 10:58:42 $ 
+ * @version $Revision: 1.21 $ $Date: 2003/09/23 07:50:25 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -2745,14 +2745,14 @@ class CmsShellCommands {
     /**
      * Restores a file in the current project with a version in the backup
      *
-     * @param versionId The version id of the resource
+     * @param tagId The tag id of the resource
      * @param filename The name of the file to restore
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void restoreResource(String versionId, String filename) throws CmsException {
+    public void restoreResource(String tagId, String filename) throws CmsException {
         try {
-            m_cms.restoreResource(Integer.parseInt(versionId), filename);
+            m_cms.restoreResource(Integer.parseInt(tagId), filename);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

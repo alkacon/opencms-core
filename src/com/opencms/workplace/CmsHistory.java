@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/09/23 07:50:25 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.36 $ $Date: 2003/09/23 07:50:25 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {
@@ -180,7 +180,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
                     userName = file.getLastModifiedByName();
                 }
                 long lastModified = file.getDateLastModified();
-                String output = "["+file.getVersionId()+"/"+file.getTagId()+"]&nbsp;&nbsp;&nbsp;"+Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                String output = "["+file.getVersionId()+"]&nbsp;&nbsp;&nbsp;"+Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                                 + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                                 + userName;
                 names.addElement(output);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/23 07:21:55 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2003/09/23 07:50:25 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.61 $ $Date: 2003/09/23 07:21:55 $
+ * @version $Revision: 1.62 $ $Date: 2003/09/23 07:50:25 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -387,7 +387,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(int, com.opencms.flex.util.CmsUUID)
      */
-    public CmsBackupResource readBackupFile(int versionId, CmsUUID resourceId) throws CmsException {
+    public CmsBackupResource readBackupFile(int tagId, CmsUUID resourceId) throws CmsException {
         CmsBackupResource file = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -397,7 +397,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_BACKUP");
             stmt.setString(1, resourceId.toString());
-            stmt.setInt(2, versionId);
+            stmt.setInt(2, tagId);
             res = stmt.executeQuery();
             if (res.next()) {
                 file = createBackupResource(res, true);
