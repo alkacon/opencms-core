@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/27 10:44:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/11/27 11:40:24 $
+ * Version: $Revision: 1.8 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -241,7 +241,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //set data in template
         template.setData("channelId", ""+cd.getChannelId());
         template.setData("channelName", cd.getChannelName());
-        template.setData("title", cd.getTitle());
+        template.setData("title", Encoder.escape(cd.getTitle()));
         template.setData("parentName", cd.getParentName());
         template.setData("error", error);
 
@@ -257,7 +257,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }catch (CmsException exc){
                 template.setData("channelId", idvalue);
                 template.setData("channelName", channelname);
-                template.setData("title", title);
+                template.setData("title", Encoder.escape(title));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
                 template.setData("error", error);
@@ -266,7 +266,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }catch (Exception e){
                 template.setData("channelId", idvalue);
                 template.setData("channelName", channelname);
-                template.setData("title", title);
+                template.setData("title", Encoder.escape(title));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
                 template.setData("error", error);
@@ -287,7 +287,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }catch (CmsException exc){
                 template.setData("channelId", idvalue);
                 template.setData("channelName", channelname);
-                template.setData("title", title);
+                template.setData("title", Encoder.escape(title));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
                 template.setData("error", error);
@@ -297,7 +297,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 e.printStackTrace(System.err);
                 template.setData("channelId",  idvalue);
                 template.setData("channelName", channelname);
-                template.setData("title", title);
+                template.setData("title", Encoder.escape(title));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
                 template.setData("error", error);
