@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.320 $
+ * Date   : $Date: 2004/02/13 14:16:40 $
+ * Version: $Revision: 1.321 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.320 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.321 $ $Date: 2004/02/13 14:16:40 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7570,7 +7570,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param oldPassword the old password
      * @param newPassword the new password
      * @throws CmsException if the user data could not be read from the database
-     * @throws CmsSecurityException if the specified username and old password could not be verified
      */
     public void resetPassword(String username, String oldPassword, String newPassword) throws CmsException {
         boolean noSystemUser = false;
