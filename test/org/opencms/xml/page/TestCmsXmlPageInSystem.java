@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/24 15:57:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.test.OpenCmsTestPropertiesSingleton;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.0
  */
@@ -66,6 +67,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlPageInSystem.class.getName());

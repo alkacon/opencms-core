@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/24 15:57:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.file;
 
 import org.opencms.lock.CmsLock;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.test.OpenCmsTestPropertiesSingleton;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -68,6 +69,7 @@ public class TestCopy extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
         suite.setName(TestCopy.class.getName());

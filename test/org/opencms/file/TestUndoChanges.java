@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/11/03 13:22:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/24 15:57:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.test.OpenCmsTestPropertiesSingleton;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestResourceStorage;
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -68,6 +69,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
         suite.setName(TestUndoChanges.class.getName());

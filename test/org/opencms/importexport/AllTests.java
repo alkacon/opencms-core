@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/AllTests.java,v $
- * Date   : $Date: 2004/10/15 17:49:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/24 15:57:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,14 @@
 
 package org.opencms.importexport;
 
+import org.opencms.test.OpenCmsTestPropertiesSingleton;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0
  */
@@ -55,6 +57,7 @@ public final class AllTests {
      * @return the JUnit test suite for this package
      */
     public static Test suite() {
+        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         TestSuite suite = new TestSuite("Tests for package org.opencms.importexport");
         //$JUnit-BEGIN$
         suite.addTestSuite(TestCmsImport.class);
