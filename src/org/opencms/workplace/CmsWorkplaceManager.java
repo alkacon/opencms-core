@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/04/28 22:31:25 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/05/06 08:06:07 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,11 @@ import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.editor.CmsEditorHandler;
 import org.opencms.workplace.editor.CmsWorkplaceEditorManager;
@@ -62,11 +64,11 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.3.1
  */
-public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
+public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEventListener {
     
     /** The default encoding for the workplace (UTF-8) */
     // TODO: Encoding feature of the workplace is not active 
@@ -155,6 +157,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         // m_defaultEncoding = C_DEFAULT_WORKPLACE_ENCODING;
+        
+        // register this object as event listener
+        OpenCms.addCmsEventListener(this, new int[] {
+                I_CmsEventListener.EVENT_WORKPLACE_UPDATE,
+         });
+        
     }
     
     /**
@@ -233,6 +241,32 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public boolean autoLockResources() {
         return m_autoLockResources;
+    }
+    
+    
+    /**
+     * Implements the CmsEvent interface, the to trigger the workplace to reinitalize several settings like locales, editors, etc. <p>
+     *
+     * @param event CmsEvent that has occurred
+     */
+    public synchronized void cmsEvent(CmsEvent event) {  
+
+        switch (event.getType()) {       
+            case I_CmsEventListener.EVENT_WORKPLACE_UPDATE:
+                try {
+                    // re-initialize the locale handler
+                    initHandler(event.getCmsObject()); 
+                    // re-initilize the editor manager           
+                    m_editorManager = new CmsWorkplaceEditorManager(event.getCmsObject());
+                } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error re-initalizing WorkplaceManger", e);  
+                    }
+                }
+                break;
+            default:
+        // no operation
+        }
     }
     
     /**

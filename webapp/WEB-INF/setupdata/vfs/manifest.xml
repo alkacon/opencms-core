@@ -4812,6 +4812,53 @@
             <accesscontrol/>
         </file>
 		<file>
+			<destination>system/workplace/administration/reinitworkplace</destination>
+			<type>folder</type>
+			<uuidresource>a4859331-9e96-11d8-aa6e-3dcab3747faf</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1083763133000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1083763084000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.reinitworkplace]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_reinitworkplace]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/administration/reinitworkplace/index.html</source>
+			<destination>system/workplace/administration/reinitworkplace/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>0f435d15-9e98-11d8-8957-3dcab3747faf</uuidresource>
+			<uuidcontent>0f435d16-9e98-11d8-8957-3dcab3747faf</uuidcontent>
+			<datelastmodified>1083768366000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1083763693000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Re-Initialize Workplace]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+
+
+		<file>
 			<destination>system/workplace/administration/searchindex</destination>
 			<type>folder</type>
 			<uuidresource>2f7e99b2-5bd4-11d8-9fd1-f4fdb0085a76</uuidresource>
@@ -11929,6 +11976,20 @@
             <properties/>
             <accesscontrol/>
         </file>
+		<file>
+			<source>system/workplace/resources/ic_reinitworkplace.gif</source>
+			<destination>system/workplace/resources/ic_reinitworkplace.gif</destination>
+			<type>image</type>
+			<uuidresource>eddc2443-9e96-11d8-aa6e-3dcab3747faf</uuidresource>
+			<uuidcontent>eddc2444-9e96-11d8-aa6e-3dcab3747faf</uuidcontent>
+			<datelastmodified>1083770035000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1083763208000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/ic_search.gif</source>
 			<destination>system/workplace/resources/ic_search.gif</destination>

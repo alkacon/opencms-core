@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/05/06 08:06:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -297,6 +297,17 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_PROPERTY_DEFINITION_MODIFIED = 26;
+    
+    /**
+     * Event "the workplace should update all its internal caching".<p>
+     * 
+     * This event reinitalized various workplace settings that normally only are set during
+     * system startup:
+     * <ul>
+     * <li> Locale configuration
+     * </ul>
+     */
+    int EVENT_WORKPLACE_UPDATE = 27;
     
 }
 
