@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/10 08:10:18 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/10 09:56:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -71,8 +71,8 @@ public abstract class CmsWorkplace {
     
     /** Path definitions for workplace */
     protected static final String C_PATH_WORKPLACE = "/system/workplace/jsp/";
-    protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE;
-    protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "dialogs/common/";
+    protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "dialogs/";
+    protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "common/";
     
     protected static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "explorer_files.html";
     protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.html";
