@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/14 20:12:41 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.75 $ $Date: 2003/07/14 20:12:41 $
+ * @version $Revision: 1.76 $ $Date: 2003/07/15 18:42:07 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -1600,32 +1601,52 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     }
 
     /**
-     * Returns all Resourcetypes and korresponding parameter for System and all modules.
-     *
-     * @param Vector names in this parameter the names of the Resourcetypes will be returned.
-     * @param Vector launcherTypes in this parameters the launcherType will be returned(int).
-     * @param Vector launcherClass in this parameters the launcherClass will be returned.
-     * @param Vector resourceClass in this parameters the resourceClass will be returned.
-     * @return int the amount of resourcetypes.
+     * @see com.opencms.file.I_CmsRegistry#getResourceTypes()
      */
-    public int getResourceTypes(Vector names, Vector launcherTypes, Vector launcherClass, Vector resourceClass){
-        try{
-            NodeList resTypes = m_xmlReg.getElementsByTagName("restype");
-            for (int x = 0; x < resTypes.getLength(); x++){
-                try{
-                    String resClass = ((Element)resTypes.item(x)).getElementsByTagName("resourceClass").item(0).getFirstChild().getNodeValue();
-                    resourceClass.addElement(resClass);
-                }catch(Exception exc){
+    public List getResourceTypes() {
+        List result = new ArrayList();
+        try {
+            Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
+            NodeList resTypes = systemElement.getElementsByTagName("resourcetype").item(0).getChildNodes();
+            for (int x = 0; x < resTypes.getLength(); x++) {
+                try {
+                    String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
+                    result.add(className);
+                } catch (Exception exc) {
                     System.err.println(exc);
                     // ignore the exeption
                 }
             }
-            return resourceClass.size();
-        }catch(Exception e){
+        } catch (Exception e) {
             // no returnvalues
-            return 0;
+            System.err.println(e);
         }
+        return result;
     }
+    
+    /**
+     * @see com.opencms.file.I_CmsRegistry#getResourceLoaders()
+     */
+    public List getResourceLoaders() {
+        List result = new ArrayList();
+        try {
+            Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
+            NodeList resTypes = systemElement.getElementsByTagName("resourceloader").item(0).getChildNodes();
+            for (int x = 0; x < resTypes.getLength(); x++) {
+                try {
+                    String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
+                    result.add(className);
+                } catch (Exception exc) {
+                    System.err.println(exc);
+                    // ignore the exeption
+                }
+            }
+        } catch (Exception e) {
+            // no returnvalues
+            System.err.println(e);
+        }
+        return result;
+    } 
 
     /**
      * Returns a value for a system-key.

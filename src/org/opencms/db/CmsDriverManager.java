@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 16:11:24 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/07/15 18:42:07 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.52 $ $Date: 2003/07/15 16:11:24 $
+ * @version $Revision: 1.53 $ $Date: 2003/07/15 18:42:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -134,7 +134,7 @@ public class CmsDriverManager extends Object {
     /**
      * Hashtable with resource-types.
      */
-    protected Hashtable m_resourceTypes = null;
+    protected I_CmsResourceType[] m_resourceTypes = null;
 
     // Define caches for often read resources
     protected Map m_userCache = null;
@@ -2873,38 +2873,33 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Returns a Vector with all I_CmsResourceTypes.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
-     * Returns a Hashtable with all I_CmsResourceTypes.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * Returns an array with all all initialized resource types.<p>
+     * 
+     * @param context the current cms context
+     * @return array with all initialized resource types
+     * @throws CmsException if something goes wrong
      */
-    public Hashtable getAllResourceTypes(CmsRequestContext context) throws CmsException {
+    public I_CmsResourceType[] getAllResourceTypes(CmsRequestContext context) throws CmsException {
         // check, if the resourceTypes were read bevore
         if (m_resourceTypes == null) {
             synchronized (this) {
                 // get the resourceTypes from the registry
-                m_resourceTypes = new Hashtable();
-                Vector resTypeNames = new Vector();
-                Vector launcherTypes = new Vector();
-                Vector launcherClass = new Vector();
-                Vector resourceClass = new Vector();
-                int resTypeCount = m_registry.getResourceTypes(resTypeNames, launcherTypes, launcherClass, resourceClass);
-                for (int i = 0; i < resTypeCount; i++) {
+                List resTypes = m_registry.getResourceTypes();                
+                m_resourceTypes = new I_CmsResourceType[resTypes.size() * 2];
+                for (int i = 0; i < resTypes.size(); i++) {
                     // add the resource-type
-                    try {
-                        Class c = Class.forName((String) resourceClass.elementAt(i));
-                        I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
-                        m_resourceTypes.put(resTypeClass.getResourceTypeName(), resTypeClass);
+                    try {                        
+                        I_CmsResourceType resTypeClass = (I_CmsResourceType)Class.forName((String)resTypes.get(i)).newInstance();
+                        int pos = resTypeClass.getResourceType();
+                        if (pos > m_resourceTypes.length) {
+                            I_CmsResourceType[] buffer = new I_CmsResourceType[pos * 2];
+                            System.arraycopy(m_resourceTypes, 0, buffer, 0, m_resourceTypes.length);
+                            m_resourceTypes = buffer;
+                        }
+                        m_resourceTypes[pos] = resTypeClass;
                     } catch (Exception e) {
                         e.printStackTrace();
-                        throw new CmsException("[" + getClass().getName() + "] Error while getting ResourceType: " + (String) resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION);
+                        throw new CmsException("[" + getClass().getName() + "] Error while getting ResourceType: " + resTypes.get(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION);
                     }
                 }
             }
@@ -3676,59 +3671,39 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Returns a I_CmsResourceType.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param resourceType the id of the resourceType to get.
-     *
-     * Returns a I_CmsResourceType.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * Returns the initialized resource type instance for the given id.<p>
+     * 
+     * @param resourceType the id of the resourceType to get
+     * @return the initialized resource type instance for the given id
+     * @throws CmsException if something goes wrong
      */
     public I_CmsResourceType getResourceType(CmsRequestContext context, int resourceType) throws CmsException {
-        // TODO: Optimize getResourceType
-        Hashtable types = getAllResourceTypes(context);
-        Enumeration keys = types.keys();
-        I_CmsResourceType currentType;
-        while (keys.hasMoreElements()) {
-            currentType = (I_CmsResourceType) types.get(keys.nextElement());
-            if (currentType.getResourceType() == resourceType) {
-                return (currentType);
-            }
+        try {
+            return getAllResourceTypes(context)[resourceType];
+        } catch (Exception e) {
+            throw new CmsException("[" + this.getClass().getName() + "] Unknown resource type id requested: " + resourceType, CmsException.C_NOT_FOUND);
         }
-        // was not found - throw exception
-        throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, CmsException.C_NOT_FOUND);
     }
 
     /**
-     * Returns a I_CmsResourceType.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param resourceType the name of the resource to get.
-     *
-     * Returns a I_CmsResourceType.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * Returns the initialized resource type instance for the given resource type name.<p>
+     * 
+     * @param resourceType the name of the resourceType to get
+     * @return the initialized resource type instance for the given id
+     * @throws CmsException if something goes wrong
      */
     public I_CmsResourceType getResourceType(CmsRequestContext context, String resourceType) throws CmsException {
-        // TODO: Optimize getResourceType
         try {
-            I_CmsResourceType type = (I_CmsResourceType) getAllResourceTypes(context).get(resourceType);
-            if (type == null) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, CmsException.C_NOT_FOUND);
+            I_CmsResourceType[] types =  getAllResourceTypes(context);
+            for (int i=0; i<types.length; i++) {
+                I_CmsResourceType t = types[i];
+                if ((t != null) && (t.getResourceTypeName().equals(resourceType))) {
+                    return t;
+                } 
             }
-            return type;
-        } catch (NullPointerException exc) {
-            // was not found - throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, CmsException.C_NOT_FOUND);
+            throw new Exception("Resource type not found");
+        } catch (Exception e) {
+            throw new CmsException("[" + this.getClass().getName() + "] Unknown resource type name requested: " + resourceType, CmsException.C_NOT_FOUND);
         }
     }
 

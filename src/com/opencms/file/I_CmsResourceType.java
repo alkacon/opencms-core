@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/15 16:11:24 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/07/15 18:42:07 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -253,7 +253,6 @@ public interface I_CmsResourceType {
      * @param uuid  the structure uuid of the resource
      * @param uuidfile  the file uuid of the resource
      * @param uuidresource  the resource uuid of the resource* 
-     * @param type the type of the resource
      * @param access the access flags (deprecated)
      * @param lastmodified the date of last modification
      * @param properties properties of the resource
@@ -265,5 +264,5 @@ public interface I_CmsResourceType {
      */
     // TODO: Remove user / group / access
     // TODO: Add "creation date" (?)
-    CmsResource importResource(CmsObject cms, String resourcename, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
+    CmsResource importResource(CmsObject cms, String resourcename, String destination, String uuid, String uuidfile, String uuidresource, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,8 +41,9 @@ import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -50,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/15 18:42:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -174,14 +175,14 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
             Hashtable parameters, Object callingObj) throws CmsException {
         StringBuffer result = new StringBuffer();
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
-        Enumeration allResTypes = cms.getAllResourceTypes().elements();
+        List allResTypes = cms.getAllResourceTypes();
+        Iterator i = allResTypes.iterator();
 
         // Loop through all resource types
-        while(allResTypes.hasMoreElements()) {
-            I_CmsResourceType currResType = (I_CmsResourceType)allResTypes.nextElement();
-            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj,
-                    currResType));
-            if(allResTypes.hasMoreElements()) {
+        while(i.hasNext()) {
+            I_CmsResourceType currResType = (I_CmsResourceType)i.next();
+            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, currResType));
+            if(i.hasNext()) {
                 result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY,
                         callingObj));
             }

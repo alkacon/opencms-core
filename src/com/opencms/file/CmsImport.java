@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/15 16:11:24 $
-* Version: $Revision: 1.106 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.107 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.106 $ $Date: 2003/07/15 16:11:24 $
+ * @version $Revision: 1.107 $ $Date: 2003/07/15 18:42:07 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -620,7 +620,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
 
-            res = m_cms.importResource(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, launcherStartClass, content, m_importPath);
+            res = m_cms.importResource(source, destination, uuid, uuidfile, uuidresource, m_cms.getResourceTypeId(type), access, lastmodified, properties, launcherStartClass, content, m_importPath);
 
             if (res != null) {
                 if (CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)) {

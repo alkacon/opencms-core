@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2003/07/15 12:30:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/15 18:42:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,7 @@ import java.util.Map;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
- * @deprecated compatiblePlain should not be used longer, it will be removed in the next release
+ * @version $Revision: 1.11 $
  */
 public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
 

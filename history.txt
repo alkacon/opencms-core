@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/11 19:44:24 $
- * Version: $Revision: 1.484 $
+ * Date   : $Date: 2003/07/15 18:42:07 $
+ * Version: $Revision: 1.485 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,11 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+- Improved format in the registry.xml for declaring ResourceTypes and ResourceLoaders
+- Improved handling of ResourceLoaders in CmsLauncherManager
+- Improved handling of ResourceTypes in CmsObject and CmsDriverManager
+- Refactored and improved all implementations of I_CmsResourceType 
+! Added new resource type "newpage" for pages without traditional bodies
 - Removed chown / chgrp / chmod in resource type interface because of new ACL logic
 - OpenCms export version set to 3
 - Added optional saving of XMLTemplate body files directly in 

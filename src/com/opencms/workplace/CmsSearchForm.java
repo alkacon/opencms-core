@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,8 +37,9 @@ import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.file.I_CmsResourceType;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -48,7 +49,7 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/15 18:42:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -250,12 +251,13 @@ System.err.println("add propertydef: "+((CmsPropertydefinition)propdefs.elementA
 System.err.println("getResourceTypes");
         String resourcetype = (String)parameters.get("restype");
 System.err.println("cur resourcetype: "+resourcetype);
-        Enumeration restypes = cms.getAllResourceTypes().keys();
         names.add("---");
         values.add("");
         int i = 1;
-        while(restypes.hasMoreElements()){
-            String type = (String)restypes.nextElement();
+        List restypes = cms.getAllResourceTypes();
+        Iterator j = restypes.iterator(); 
+        while(j.hasNext()){
+            String type = ((I_CmsResourceType)j.next()).getResourceTypeName();
 System.err.println("add restype: "+type);
             names.add(type);
             values.add(type);
@@ -277,9 +279,10 @@ System.err.println("cur restype: "+i);
         template.setData("value","");
         template.setData("check","");
         typeOptions.append(template.getProcessedDataValue("selectoption",this));
-        Enumeration restypes = cms.getAllResourceTypes().elements();
-        while(restypes.hasMoreElements()){
-            I_CmsResourceType curType = (I_CmsResourceType)restypes.nextElement();
+        List allResTypes = cms.getAllResourceTypes();
+        Iterator i = allResTypes.iterator();
+        while(i.hasNext()) {
+            I_CmsResourceType curType = (I_CmsResourceType)i.next();
             String type = curType.getResourceTypeName();
             int typeId = curType.getResourceType();
             template.setData("name",type);

@@ -1,36 +1,25 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <registry>
     <system>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeFolder</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypePage</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeLink</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypePlain</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeXMLTemplate</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeBinary</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeImage</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeCompatiblePlain</resourceClass>
-        </restype>
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeJsp</resourceClass>
-        </restype>   
-        <restype>
-            <resourceClass>com.opencms.file.CmsResourceTypeNewPage</resourceClass>
-        </restype>   
+        <resourcetype>
+            <class>com.opencms.file.CmsResourceTypeFolder</class>
+            <class>com.opencms.file.CmsResourceTypePage</class>
+            <class>com.opencms.file.CmsResourceTypeLink</class>
+            <class>com.opencms.file.CmsResourceTypePlain</class>
+            <class>com.opencms.file.CmsResourceTypeXMLTemplate</class>
+            <class>com.opencms.file.CmsResourceTypeBinary</class>
+            <class>com.opencms.file.CmsResourceTypeImage</class>
+            <class>com.opencms.file.CmsResourceTypeCompatiblePlain</class>
+            <class>com.opencms.file.CmsResourceTypeJsp</class>
+            <class>com.opencms.file.CmsResourceTypeNewPage</class>
+        </resourcetype>  
+        <resourceloader>
+            <class>org.opencms.loader.CmsXmlTemplateLoader</class>
+            <class>org.opencms.loader.CmsDumpLoader</class>
+            <class>com.opencms.launcher.CmsLinkLauncher</class>
+            <class>org.opencms.loader.CmsJspLoader</class>
+            <class>org.opencms.loader.CmsPageLoader</class>
+        </resourceloader>        
         <view>
             <name>select.explorer</name>
             <url>/system/workplace/action/explorer_new.html</url>
@@ -63,13 +52,6 @@
             <mailto>nobody@nowhere.com</mailto>
             <mailtemplate>/system/workplace/templates/urlcheckform</mailtemplate>
         </checklink>
-        <launchers>
-            <launcher1>org.opencms.loader.CmsXmlTemplateLoader</launcher1>
-            <launcher2>org.opencms.loader.CmsDumpLoader</launcher2>
-            <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
-            <launcher4>org.opencms.loader.CmsJspLoader</launcher4>
-            <launcher5>org.opencms.loader.CmsPageLoader</launcher5>
-        </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
         <searchbylucene>off</searchbylucene>

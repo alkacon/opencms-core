@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import com.opencms.util.Utils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -48,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/15 18:42:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -223,16 +225,16 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         Hashtable extensions = cms.readFileExtensions();
         Hashtable extByFiletypes = turnAround(extensions);
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
-        Enumeration allResTypes = cms.getAllResourceTypes().elements();
+        List allResTypes = cms.getAllResourceTypes();
+        Iterator i = allResTypes.iterator();
 
         // Loop through all resource types
-        while(allResTypes.hasMoreElements()) {
-            I_CmsResourceType currResType = (I_CmsResourceType)allResTypes.nextElement();
+        while(i.hasNext()) {
+            I_CmsResourceType currResType = (I_CmsResourceType)i.next();
             String resTypeName = currResType.getResourceTypeName();
             Vector suffList = (Vector)extByFiletypes.get(resTypeName);
-            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj,
-                    resTypeName, suffList));
-            if(allResTypes.hasMoreElements()) {
+            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, resTypeName, suffList));
+            if(i.hasNext()) {
                 result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY, callingObj));
             }
         }

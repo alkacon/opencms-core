@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 16:11:24 $
-* Version: $Revision: 1.323 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.324 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.323 $
+ * @version $Revision: 1.324 $
  */
 public class CmsObject extends Object {
 
@@ -378,9 +379,7 @@ public class CmsObject extends Object {
     	 * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
-        CmsResource res = m_driverManager.readFileHeader(m_context, addSiteRoot(resourcename), true);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.changeLockedInProject(this, projectId, resourcename);
+        getResourceType(readFileHeader(resourcename, projectId).getType()).changeLockedInProject(this, projectId, resourcename);
     }
 
     /**
@@ -474,9 +473,7 @@ public class CmsObject extends Object {
      * @throws CmsException if operation was not successful.
      */
     public void chtype(String filename, int newType) throws CmsException {
-        CmsResource res = readFileHeader(filename);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.chtype(this, filename, newType);
+        getResourceType(readFileHeader(filename).getType()).chtype(this, filename, newType);
     }
 
     /**
@@ -534,9 +531,7 @@ public class CmsObject extends Object {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        CmsResource res = readFileHeader(source);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.copyResource(this, source, destination, false);
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false);
     }
     
     /**
@@ -551,9 +546,7 @@ public class CmsObject extends Object {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination, boolean keepFlags) throws CmsException {
-        CmsResource res = readFileHeader(source);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.copyResource(this, source, destination, keepFlags);
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, keepFlags);
     }
 
     /**
@@ -566,9 +559,7 @@ public class CmsObject extends Object {
          * @throws CmsException if operation was not successful.
      */
     public void copyResourceToProject(String resource) throws CmsException {
-        CmsResource res = readFileHeader(resource);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.copyResourceToProject(this, resource);
+        getResourceType(readFileHeader(resource).getType()).copyResourceToProject(this, resource);
     }
 
     /**
@@ -784,20 +775,19 @@ public class CmsObject extends Object {
     }
 
     public CmsResource createResource(String newResourceName, int type, Map properties, byte[] contents, Object parameter) throws CmsException {
-        I_CmsResourceType rt = getResourceType(type);
-        return rt.createResource(this, newResourceName, properties, contents, parameter);
+        return getResourceType(type).createResource(this, newResourceName, properties, contents, parameter);
     }
 
     public CmsResource createResource(String folder, String name, int type) throws CmsException {
-        return this.createResource(folder + name, type, new HashMap(), new byte[0], null);
+        return createResource(folder + name, type, new HashMap(), new byte[0], null);
     }
 
     public CmsResource createResource(String folder, String name, int type, Map properties) throws CmsException {
-        return this.createResource(folder + name, type, properties, new byte[0], null);
+        return createResource(folder + name, type, properties, new byte[0], null);
     }
 
     public CmsResource createResource(String folder, String name, int type, Map properties, byte[] contents) throws CmsException {
-        return this.createResource(folder + name, type, properties, contents, null);
+        return createResource(folder + name, type, properties, contents, null);
     }
 
     /**
@@ -1010,9 +1000,7 @@ public class CmsObject extends Object {
      * has not the appropriate rights to delete the file.
      */
     public void deleteResource(String filename) throws CmsException {
-        CmsResource res = readFileHeader(filename);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.deleteResource(this, filename);
+        getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename);
     }
     /**
      * Deletes a user from the Cms.
@@ -1499,8 +1487,7 @@ public class CmsObject extends Object {
      * Exports a resource.
      */
     public CmsFile exportResource(CmsFile file) throws CmsException {
-        I_CmsResourceType rt = getResourceType(file.getType());
-        return rt.exportResource(this, file);
+        return getResourceType(file.getType()).exportResource(this, file);
     }
     
     /**
@@ -1724,14 +1711,13 @@ public class CmsObject extends Object {
     }
     
     /**
-     * Returns a Hashtable with all I_CmsResourceTypes.
+     * Returns a List with all initialized resource types.<p>
      *
-     * @return returns a Vector with all I_CmsResourceTypes.
-     *
-     * @throws CmsException if operation was not successful.
+     * @return a List with all initialized resource types
+     * @throws CmsException if something goes wrong
      */
-    public Hashtable getAllResourceTypes() throws CmsException {
-        return (m_driverManager.getAllResourceTypes(m_context));
+    public List getAllResourceTypes() throws CmsException {
+        return Arrays.asList(m_driverManager.getAllResourceTypes(m_context));
     }
 
     /**
@@ -2199,18 +2185,23 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Returns a I_CmsResourceType.
-     *
-     * @param resourceType the id of the resource to get.
-     *
-     * @return a CmsResourceType.
-     *
-     * @throws CmsException if operation was not successful.
+     * Returns the initialized resource type instance for the given id.<p>
+     * 
+     * @param resourceType the id of the resourceType to get
+     * @return the initialized resource type instance for the given id
+     * @throws CmsException if something goes wrong
      */
     public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
         return m_driverManager.getResourceType(m_context, resourceType);
     }
     
+    /**
+     * Returns the resource type id for the given resource type name.<p>
+     * 
+     * @param resourceType the name of the resourceType to get the id for
+     * @return the resource type id for the given resource type name
+     * @throws CmsException if something goes wrong
+     */    
     public int getResourceTypeId(String resourceType) throws CmsException {
         I_CmsResourceType type = m_driverManager.getResourceType(m_context, resourceType);
         if (type != null) {
@@ -2218,20 +2209,6 @@ public class CmsObject extends Object {
         } else {
             return I_CmsConstants.C_UNKNOWN_ID;
         }
-    }
-    
-    /**
-     * Returns a I_CmsResourceType.
-     *
-     * @param resourceType the name of the resource to get.
-     *
-     * @return a CmsResourceType.
-     *
-     * @throws CmsException if operation was not successful.
-     * @deprecated use {@link #getResourceType(int)} instead
-     */
-    public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
-        return m_driverManager.getResourceType(m_context, resourceType);
     }
     
     /**
@@ -2454,10 +2431,8 @@ public class CmsObject extends Object {
      * @return the imported CmsResource
      * @throws CmsException if operation was not successful
      */
-    public CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
-        I_CmsResourceType rt = getResourceType(type);
-      
-        return rt.importResource(this, source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, launcherStartClass, content, importPath);
+    public CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, int type, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException { 
+        return getResourceType(type).importResource(this, source, destination, uuid, uuidfile, uuidresource, access, lastmodified, properties, launcherStartClass, content, importPath);
     }
 
     /**
@@ -2716,9 +2691,7 @@ public class CmsObject extends Object {
      * It will also be thrown, if there is a existing lock and force was set to false.
      */
     public void lockResource(String resource, boolean force) throws CmsException {
-        CmsResource res = readFileHeader(resource);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.lockResource(this, resource, force);
+        getResourceType(readFileHeader(resource).getType()).lockResource(this, resource, force);
     }
 
     /**
@@ -2792,9 +2765,7 @@ public class CmsObject extends Object {
      * or if the file couldn't be moved.
      */
     public void moveResource(String source, String destination) throws CmsException {
-        CmsResource res = readFileHeader(source);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.moveResource(this, source, destination);
+        getResourceType(readFileHeader(source).getType()).moveResource(this, source, destination);
     }
 
     /**
@@ -3982,9 +3953,7 @@ public class CmsObject extends Object {
      * to rename the file, or if the file couldn't be renamed.
      */
     public void renameResource(String oldname, String newname) throws CmsException {
-        CmsResource res = readFileHeader(oldname);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.renameResource(this, oldname, newname);
+        getResourceType(readFileHeader(oldname).getType()).renameResource(this, oldname, newname);
     }
 
     /**
@@ -4009,8 +3978,7 @@ public class CmsObject extends Object {
             resProps.putAll(properties);
         }
 
-        I_CmsResourceType res = getResourceType(readFileHeader(resName, true).getType());
-        res.replaceResource(this, resName, resProps, content, type);
+        getResourceType(readFileHeader(resName, true).getType()).replaceResource(this, resName, resProps, content, type);
 
         // clean-up the link management
         joinLinksToTargets(new CmsShellReport());
@@ -4025,9 +3993,7 @@ public class CmsObject extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(int versionId, String filename) throws CmsException {
-        CmsResource res = readFileHeader(filename);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.restoreResource(this, versionId, filename);
+        getResourceType(readFileHeader(filename).getType()).restoreResource(this, versionId, filename);
     }
 
     /**
@@ -4226,9 +4192,7 @@ public class CmsObject extends Object {
      * @param boolean flag to touch recursively all sub-resources in case of a folder
      */
     public void touch(String resourceName, long timestamp, boolean touchRecursive) throws CmsException {
-        CmsResource resource = readFileHeader(resourceName);
-        I_CmsResourceType resourceType = this.getResourceType(resource.getType());
-        resourceType.touch(this, resourceName, timestamp, touchRecursive);
+        getResourceType(readFileHeader(resourceName).getType()).touch(this, resourceName, timestamp, touchRecursive);
     }
 
     /**
@@ -4241,9 +4205,7 @@ public class CmsObject extends Object {
      */
     public void undeleteResource(String filename) throws CmsException {
         //read the file header including deleted
-        CmsResource res = m_driverManager.readFileHeader(m_context, addSiteRoot(filename), true);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.undeleteResource(this, filename);
+        getResourceType(readFileHeader(filename, true).getType()).undeleteResource(this, filename);
     }
 
     /**
@@ -4256,9 +4218,7 @@ public class CmsObject extends Object {
      */
     public void undoChanges(String filename) throws CmsException {
         //read the file header including deleted
-        CmsResource res = m_driverManager.readFileHeader(m_context, addSiteRoot(filename), true);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.undoChanges(this, filename);
+        getResourceType(readFileHeader(filename, true).getType()).undoChanges(this, filename);
     }
     
     /**
@@ -4283,9 +4243,7 @@ public class CmsObject extends Object {
      * to unlock this resource.
      */
     public void unlockResource(String resource, boolean forceRecursive) throws CmsException {
-        CmsResource res = readFileHeader(resource);
-        I_CmsResourceType rt = getResourceType(res.getType());
-        rt.unlockResource(this, resource, forceRecursive);
+        getResourceType(readFileHeader(resource).getType()).unlockResource(this, resource, forceRecursive);
     }
 
     /**

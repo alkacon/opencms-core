@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2003/03/04 18:48:06 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/07/15 18:42:07 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2003/03/04 18:48:06 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/15 18:42:07 $
  */
 public interface I_CmsRegistry extends Cloneable {
 
@@ -587,15 +587,18 @@ public interface I_CmsRegistry extends Cloneable {
     public String[] getRepositories();
 
     /**
-     * Returns all Resourcetypes and korresponding parameter for System and all modules.
+     * Returns a list of all configured resource type classes.<p>
      *
-     * @param Vector names in this parameter the names of the Resourcetypes will be returned.
-     * @param Vector launcherTypes in this parameters the launcherType will be returned(int).
-     * @param Vector launcherClass in this parameters the launcherClass will be returned.
-     * @param Vector resourceClass in this parameters the resourceClass will be returned.
-     * @return int the amount of resourcetypes.
+     * @return a list of all configured resource type classes
      */
-    public int getResourceTypes(Vector names, Vector launcherTypes, Vector launcherClass, Vector resourceClass);
+    public List getResourceTypes();
+
+    /**
+     * Returns a list of all configured resource loader classes.<p>
+     *
+     * @return a list of all configured resource loader classes
+     */
+    public List getResourceLoaders();
 
     /**
      * Returns a value for a system-key.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/07/15 12:30:13 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/15 18:42:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.file.I_CmsResourceType;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -44,7 +43,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2003/07/15 12:30:13 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/15 18:42:07 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
 

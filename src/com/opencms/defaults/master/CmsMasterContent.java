@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/07/15 09:31:38 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/15 18:42:07 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.36 $
- * $Date: 2003/07/15 09:31:38 $
+ * $Revision: 1.37 $
+ * $Date: 2003/07/15 18:42:07 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -998,8 +998,6 @@ public abstract class CmsMasterContent
      * @return a boolean
      */
     protected static boolean hasWriteAccess(CmsObject cms, CmsResource resource) throws CmsException {
-        CmsUser currentUser = cms.getRequestContext().currentUser();
-
         // check the rights for the current resource
         return cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS);
         /*
