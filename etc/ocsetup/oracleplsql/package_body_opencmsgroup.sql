@@ -20,9 +20,9 @@ PACKAGE BODY OpenCmsGroup IS
       vSubId  NUMBER;
   BEGIN
 	FOR vUserGroups IN cUserGroups
-	LOOP	
-      IF vUserGroups.group_id != pGroupId THEN    
-	    vSubId := getParent(vUserGroups.group_id);		       
+	LOOP
+      IF vUserGroups.group_id != pGroupId THEN
+	    vSubId := getParent(vUserGroups.group_id);
         WHILE vSubId IS NOT NULL LOOP
 	        IF vSubId != pGroupId THEN
               vSubId := getParent(vSubId);
@@ -33,7 +33,7 @@ PACKAGE BODY OpenCmsGroup IS
       ELSE
         RETURN 1;
       END IF;
-    END LOOP; 
+    END LOOP;
     RETURN 0;
   END userInGroup;
 ---------------------------------------------------------------------------------
@@ -50,25 +50,28 @@ PACKAGE BODY OpenCmsGroup IS
       recUserGroup curUserGroups%ROWTYPE;
       curGroups userTypes.anyCursor;
       vSubId  NUMBER;
-      vQueryStr VARCHAR2(5000) := '';
+      vQueryStr VARCHAR2(32767) := '';
    BEGIN
      -- create query-String dynamicly
      -- first select with groups the user belongs to directly
-	  FOR recUserGroup IN curUserGroups
-     -- loop for all groups the user belongs to directly
-	  LOOP
-        IF addInList(recUserGroup.group_id) THEN
-          -- if the group wasn't called already => find subgroup
-	      vSubId := opencmsgroup.getParent(recUserGroup.group_id);
-          WHILE vSubId IS NOT NULL LOOP
-            IF addInList(vSubId) THEN
-              -- if the group wasn't called already => find subgroup and edit query-string
-              vQueryStr := vQueryStr||' union select * from cms_groups where group_id='||to_char(vSubId);
-              vSubId := opencmsgroup.getParent(vSubId);
-            END IF;
-          END LOOP;
-        END IF;
-      END LOOP;
+     OPEN curUserGroups;
+	 LOOP
+	   FETCH curUserGroups INTO recUserGroup;
+       -- loop for all groups the user belongs to directly
+	   EXIT WHEN curUserGroups%NOTFOUND;
+       IF addInList(recUserGroup.group_id) THEN
+         -- if the group wasn't called already => find subgroup
+	     vSubId := opencmsgroup.getParent(recUserGroup.group_id);
+         WHILE vSubId IS NOT NULL LOOP
+           IF addInList(vSubId) THEN
+             -- if the group wasn't called already => find subgroup and edit query-string
+             vQueryStr := vQueryStr||' union select * from cms_groups where group_id='||to_char(vSubId);
+           END IF;
+           vSubId := opencmsgroup.getParent(vSubId);           
+         END LOOP;
+       END IF;
+     END LOOP;
+     CLOSE curUserGroups;
      bAnyList := '';
      -- open and return the cursor
      OPEN curGroups FOR 'select g.* from cms_groupusers gu, cms_users u, cms_groups g'||
@@ -148,7 +151,7 @@ PACKAGE BODY OpenCmsGroup IS
 -------------------------------------------------------------------
     FUNCTION getParent(pGroupId NUMBER) RETURN NUMBER IS
       vParentId NUMBER;
-    BEGIN 
+    BEGIN
       select decode(parent_group_id, -1, NULL, parent_group_id) into vParentId
              from cms_groups
              where group_id = pGroupId;
