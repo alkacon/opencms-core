@@ -28,7 +28,7 @@ function viewSelection() {
 <form name="head" id="head">
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
-		<td class=menu><img src="pics/logokunde.gif" border=0 widht=56 height=32></td>
+		<td class=menu><img src="pics/logokunde.gif" border=0 width=56 height=32></td>
 		<td class=menubold><p class=einzug>Projekt:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
 			<select class=textfeld name="project" width=150 style="width:150px" onchange="window.top.body.location.href=this.options[this.selectedIndex].value">
@@ -46,7 +46,7 @@ function viewSelection() {
 		</td>
 		<td class=dialogtxt><p class=tab><a href="javascript:window.top.body.location.reload(true)" onMouseDown="ChPush('bt_reload')" onMouseUp="ChOn('bt_reload')" onMouseOver="ChOn('bt_reload')" onMouseOut="ChOff('bt_reload')"><IMG SRC="pics/bt_reload_off.gif" alt="Aktualisieren" name="bt_reload" border=0 width=32 height=32></a></td>
 		<td class=dialogtxt><a href="einstellungen_expl.html" target=body onMouseDown="ChPush('bt_einstellungen')" onMouseUp="ChOn('bt_einstellungen')" onMouseOver="ChOn('bt_einstellungen')" onMouseOut="ChOff('bt_einstellungen')"><img src="pics/bt_einstellungen_off.gif" alt="Einstellungen" name="bt_einstellungen" border=0 width=32 height=32></a></td>
-		<td class=dialogtxt><a href="login.html" target="_blank" onClick="alert('Wollen Sie die Anwendung wirklich verlassen?');top.close();" onMouseDown="ChPush('bt_exit')" onMouseUp="ChOn('bt_exit');" onMouseOver="ChOn('bt_exit')" onMouseOut="ChOff('bt_exit')"><img src="pics/bt_exit_off.gif" alt="Abmelden" name="bt_exit" border=0 width=32 height=32></a></td>
+		<td class=dialogtxt><a href="#" onClick="alert('Wollen Sie die Anwendung wirklich verlassen?');top.location.href='login.html';" onMouseDown="ChPush('bt_exit')" onMouseUp="ChOn('bt_exit');" onMouseOver="ChOn('bt_exit')" onMouseOut="ChOff('bt_exit')"><img src="pics/bt_exit_off.gif" alt="Abmelden" name="bt_exit" border=0 width=32 height=32></a></td>
 		<td class=dialogtxt><a href="javascript:contextHelp()" onMouseDown="ChPush('bt_hilfe')" onMouseUp="ChOn('bt_hilfe')" onMouseOver="ChOn('bt_hilfe')" onMouseOut="ChOff('bt_hilfe')"><img src="pics/bt_hilfe_off.gif" alt="Hilfe" name="bt_hilfe" border=0 width=32 height=32></a></td>
 		<td class=dialogtxt width="100%">&nbsp;</td>
 		<td class=dialogtxt><img src="pics/opencms_grau.gif" width=114 height=32 border=0 alt="OpenCms"><br></a></td>

@@ -15,15 +15,15 @@
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name=UPLOAD id=UPLOAD action="edit_html_piclist_upload1.html" onSubmit="return checkFormData('UPLOAD','DATEINAME',null)">
-<table border=2 cellspacing=0 cellpadding=0 width=350>
+<form name=UPLOAD id=UPLOAD action="edit_html_piclist_UPLOAD1.html" onSubmit="return checkFilePath('UPLOAD','DATEINAME',':\\');">
+<table border=2 cellspacing=0 cellpadding=0 width=450>
 <tr><td>
 	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 	<tr><td colspan=2 class=head>Bilddatei hochladen</td></tr>
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=10%>Name:</td>
-		<td class=dialogtxt align=left><INPUT size="20" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.FERTIG.disabled=false"></td>
+		<td class=dialogtxt align=left><INPUT size="20" maxlength="50" class="textfeld1" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.FERTIG.disabled=false"></td>
 	</tr>
 	<tr>
 		<td colspan=2 class=leerzeile>&nbsp;</td>

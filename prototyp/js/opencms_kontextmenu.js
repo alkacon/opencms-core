@@ -288,7 +288,7 @@ function doAction(action) // which action on layer is clicked
 		
 		case 18:
 		{
-			location.href='administriation_content_pic_replace.html';
+			location.href='administration_content_pic_replace.html';
 			break;
 		}
 		case 30:

@@ -37,6 +37,9 @@ var selectedTask=0;
 var lastVisited="tasks_content_nafm.html";
 var formID;
 
+// List of valid characters for INPUT fields containing names:
+var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 // perform a simple browser check
 ns = (document.layers)? true:false;
 ie = (document.all)? true:false;
@@ -342,7 +345,7 @@ function checkPiclistNav()
 // date:	13.03.2000
 // update:	14.03.2000
 //
-// Method checkFormData performs a client-side check of fields containing names.
+// Method checkFormData performs a client-side check of form fields containing names.
 // Form can be surrounded by <DIV>-section (layer).
 // 
 // @param form Name of the form where the field to be checked is situated
@@ -355,9 +358,6 @@ function checkFormData(form,field,lyr)
 {
 	var result=true;
 	var at_pos, entry, strLength;
-	
-	// List of valid characters:
-	var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
 	if (ie || lyr==null)
 		entry = eval('document.' + form +'.'+ field + '.value');
@@ -380,4 +380,40 @@ function checkFormData(form,field,lyr)
 	}
 	return result;
 }
+
+//------------------------------------------------------------------------------------
+// checkFilePath(formName,srcField,fileSeperators)
+// 
+// author:	Matthias Schreiber
+// company:	mindfact interaktive medien ag
+// date:	16.03.2000
+// update:	
+//
+// Method checkFilePath performs a client-side check of form fields containing absolute filepaths.
+// 
+// 
+// @param formName Name of the form where the field to be checked is situated
+// @param srcfield Name of the field to be checked
+// @param fileSeperators All the file seperators which are used by your OS (for win it's: ':\\')
+// 
+//------------------------------------------------------------------------------------
+
+function checkFilePath(formName,srcField,fileSeperators)
+{
+	var at_pos, entry, strLength;
 	
+	charList = charList + fileSeperators;
+	entry = eval('document.' + formName +'.'+ srcField + '.value');
+	strLength=entry.length;
+	
+	for (i=0; i < strLength; i++) 
+	{
+		if (charList.indexOf(entry.charAt(i))==-1)
+		{
+			alert('Unerlaubtes Zeichen in Eingabefeld: '+ entry.charAt(i));
+			eval('document.' + formName +'.'+ srcField + '.focus()');
+			return false;
+		}
+	}
+	return true;
+}

@@ -1,0 +1,109 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_8.html';
+}
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_top.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=DATATYPES name=DATATYPES action="administration_content_top.html" onSubmit="return checkFormData('DATATYPES','EXTENSION',null)">
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+	<tr><td class=head>Verwaltung von Dateitypen</td></tr>
+	<tr><td class=leerzeile>&nbsp;</td></tr>
+	
+	<tr>
+		<td class=dialogtxt>
+			<table border=1 width=100%>
+				<tr><td class=dialogtxt>
+					<table border=0 cellspacing=0 cellpadding=5 width=100% >
+					<tr><td class=formular nowrap>
+						Dateiendung:
+						</td>
+						<td class=dialogtxt width=100%>
+						<select name="TEAM" width=150 style="width:150px" onchange="">
+						<option selected>Dateiendung wählen ...			
+						<option value="pic">.html
+						<option value="plain">.txt
+						<option value="binary">.xml
+						<option value="script">.pdf
+						<option value="xml">.js
+						</select>
+						</td>
+						<!--
+						<td class=dialogtxt width=100%>
+						<input type="text" class="textfeld" size=10 maxlength=10 name="EXTENSION" id="EXTENSION">
+						</td>
+						-->
+					</tr>
+					<tr><td class=formular nowrap>
+						zugeordnet zu:
+						</td>
+						<td class=dialogtxt width=100%>
+						<select name="TEAM" width=150 style="width:150px" onchange="">
+						<option selected>Bitte Dateityp wählen ...			
+						<option value="pic">Bild
+						<option value="plain">Seite
+						<option value="binary">Binär
+						<option value="script">Skript
+						<option value="xml">XML Template
+						</select>
+						</td>
+					</tr>
+					</table>
+					<br><br>
+					<table border=0 cellspacing=0 cellpadding=5 width=100% >
+					<tr>
+						<td class=dialogtxt align=right width=60%><INPUT class=button width=100 type="button" value="Neu" id=NEW name=NEW onClick="location.href='administration_content_datatypes_new.html';"></td>
+						<td class=dialogtxt align=middle width=20%><INPUT class=button width=100 type="button" value="Bearbeiten" id=EDIT name=EDIT onClick="location.href='administration_content_datatypes_edit.html';"></td>
+						<td class=dialogtxt align=left width=20%><INPUT class=button width=100 type="button" value="Löschen" id=DELETE name=DELETE onClick="location.href='administration_content_datatypes_delete.html"></td>
+					</tr>
+					</table>
+				</td></tr>
+			</table>
+		</td>
+	</tr>
+	<tr><td class=dialogtxt>
+			<table border=0 cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=50%><INPUT class=button width = 100 type="submit" value="OK" id=OK name=OK></td>
+				<td class=formular align=left width=50%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='administration_content_top.html';window.top.body.admin_head.location.href='administration_head.html'"></td>
+			</tr>
+			</table>
+		</td></tr>
+		</table>
+	</td>
+</tr>
+</table>
+</form>
+
+<!--nicht für Realisierung relevant-->
+<p>
+<A href="administration_content_datatypes_01.html">[Fehlermeldung]</A>
+</p>
+<!--Ende nicht für Realisierung relevant-->
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+
