@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/02/23 19:44:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/22 10:36:57 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,9 +42,9 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/02/23 19:44:16 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/22 10:36:57 $
  */
-public class CmsRootTemplate implements I_CmsLogChannels {
+public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
     
     /**
      * Gets the processed content of the requested master template by calling
@@ -66,16 +66,16 @@ public class CmsRootTemplate implements I_CmsLogChannels {
         
         byte[] result;
         //String cacheKey = cms.getUrl();
-        Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, "root");
+        Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
     
-        boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, "root");
+        boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
         if(cacheable
                 && cache.has(cacheKey) 
-                && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), null, parameters, "root")) {
+                && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null)) {
             result = cache.get(cacheKey);
         } else {
             try {
-                result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), null, parameters, "root");
+                result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters);
           } catch(CmsException e) {
                 cache.clearCache(cacheKey);
                 if(A_OpenCms.isLogging()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/02/20 16:07:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/22 10:40:17 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,9 +54,9 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/20 16:07:52 $
+ * @version $Revision: 1.12 $ $Date: 2000/03/22 10:40:17 $
  */
-public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
+public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants { 	
         
     /**
  	 * Starts generating the output.
@@ -104,10 +104,18 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
             throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
         }
         
-        // Now look for parameters in the body file 
-        
+        // Now look for parameters in the page file...                
         Hashtable newParameters = new Hashtable();
         
+        // ... first the params of the master template...
+        Enumeration masterTemplateParams = doc.getParameterNames();
+        while(masterTemplateParams.hasMoreElements()) {
+            String paramName = (String)masterTemplateParams.nextElement();
+            String paramValue = doc.getParameter(paramName);
+            newParameters.put(C_ROOT_TEMPLATE_NAME + "." + paramName, paramValue);
+        }
+                        
+        // ... and now the params of all subtemplates
         Enumeration elementDefinitions = doc.getElementDefinitions();
         while(elementDefinitions.hasMoreElements()) {
             String elementName = (String)elementDefinitions.nextElement();
@@ -124,10 +132,10 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
                 newParameters.put(elementName + "._TEMPLATESELECTOR_", doc.getElementTemplSelector(elementName));
             }
             
-            Enumeration parameters = doc.getParameterNames(elementName);
+            Enumeration parameters = doc.getElementParameterNames(elementName);
             while(parameters.hasMoreElements()) {
                 String paramName = (String)parameters.nextElement();
-                String paramValue = doc.getParameter(elementName, paramName);
+                String paramValue = doc.getElementParameter(elementName, paramName);
                 if(paramValue!=null) {
                     newParameters.put(elementName + "." + paramName, paramValue);
                 } else {

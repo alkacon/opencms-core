@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/03/17 09:36:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/03/22 10:37:30 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2000/03/17 09:36:11 $
+ * @version $Revision: 1.21 $ $Date: 2000/03/22 10:37:30 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -397,15 +397,15 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
         
         // Get the styles from the parameter hashtable
-        String styleIE = (String)parameterHashtable.get("root.stylesheet-ie");
-        String styleNS = (String)parameterHashtable.get("root.stylesheet-ns");
+        String styleIE = (String)parameterHashtable.get(C_ROOT_TEMPLATE_NAME + ".stylesheet-ie");
+        String styleNS = (String)parameterHashtable.get(C_ROOT_TEMPLATE_NAME + ".stylesheet-ns");
                 
         if(styleIE == null) {
-            styleIE = templateFile.getParameter("root", "stylesheet-ie");
+            styleIE = templateFile.getParameter(C_ROOT_TEMPLATE_NAME, "stylesheet-ie");
         }
 
         if(styleNS == null) {
-            styleNS = templateFile.getParameter("root", "stylesheet-ns");
+            styleNS = templateFile.getParameter(C_ROOT_TEMPLATE_NAME, "stylesheet-ns");
         }
         
         // TODO: Check if the parameters really exist

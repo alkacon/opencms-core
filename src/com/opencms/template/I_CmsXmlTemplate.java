@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/22 10:38:06 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,8 @@ package com.opencms.template;
 import com.opencms.file.*;
 import com.opencms.core.*;
 
+import java.util.*;
+
 /**
  * Interface for OpenCms XML template classes.
  * <P>
@@ -48,7 +50,7 @@ import com.opencms.core.*;
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/22 10:38:06 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
     
@@ -69,4 +71,19 @@ public interface I_CmsXmlTemplate extends I_CmsTemplate {
      */
     public Object templateElement(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException;
+    
+    /**
+     * Reads in the template file and starts the XML parser for the expected
+     * content type.
+     * <P>
+     * Every extending class not using CmsXmlTemplateFile as content type
+     * should override this method.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param templateFile Filename of the template file.
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     */
+    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException;        
 }

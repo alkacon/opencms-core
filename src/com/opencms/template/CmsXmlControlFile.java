@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2000/03/15 13:56:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/22 10:37:16 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/03/15 13:56:05 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/22 10:37:16 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -136,6 +136,41 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     public void setMasterTemplate(String template) {
         setData("masterTemplate", template);
     }
+
+    /**
+     * Gets an enumeration of all parameter names of the master template.
+     * @return Enumeration of all names.
+     * @exception CmsException
+     */
+    public Enumeration getParameterNames() throws CmsException {
+        NodeList parameterTags = getXmlDocument().getDocumentElement().getChildNodes();
+        return getNamesFromNodeList(parameterTags, "PARAMETER", false);            
+    }
+
+    /**
+     * Gets the value of a single parameter of the master template.
+     * @param parameterName Name of the requested parameter.
+     */
+    public String getParameter(String parameterName) throws CmsException {
+        return getDataValue("PARAMETER." + parameterName);        
+    }
+
+    /**
+     * Set the value of a single parameter of the master template.
+     * @param parameterName Name of the requested parameter.
+     * @param parameterValue Value to be set
+     */
+    public void setParameter(String parameterName, String parameterValue) throws CmsException {
+        if(! hasData("PARAMETER." + parameterName)) {
+            Document doc = getXmlDocument();
+            Element e = doc.createElement("PARAMETER");
+            e.setAttribute("name", parameterName);
+            e.appendChild(doc.createTextNode(parameterValue));
+            setData("PARAMETER." + parameterName, e);                            
+        } else {            
+            setData("PARAMETER." + parameterName, parameterValue);        
+        }
+    }    
     
     /**
      * Checks if the body file contains a definition of the 
@@ -241,7 +276,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @return Enumeration of all names.
      * @exception CmsException
      */
-    public Enumeration getParameterNames(String elementName) throws CmsException {
+    public Enumeration getElementParameterNames(String elementName) throws CmsException {
         Element elementDefinition = getData("elementdef." + elementName);
         NodeList parameterTags = elementDefinition.getChildNodes();
         return getNamesFromNodeList(parameterTags, "PARAMETER", false);            
@@ -252,7 +287,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param elementName Name of the subelement.
      * @param parameterName Name of the requested parameter.
      */
-    public String getParameter(String elementName, String parameterName) throws CmsException {
+    public String getElementParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
     }
 
@@ -262,7 +297,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param parameterName Name of the requested parameter.
      * @param parameterValue Value to be set
      */
-    public void setParameter(String elementName, String parameterName, String parameterValue) throws CmsException {
+    public void setElementParameter(String elementName, String parameterName, String parameterValue) throws CmsException {
         createElementDef(elementName);
         if(! hasData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName)) {
             Document doc = getXmlDocument();
