@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/12 11:33:30 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/11/13 16:32:30 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -2231,10 +2231,9 @@ public final class OpenCmsCore {
      * @param entry the CmsCronEntry to start.
      */
     public void startScheduleJob(CmsCronEntry entry) {
-        CmsObject cms;
         try {
             // TODO: Maybe implement site root as a parameter in cron job table 
-            cms = initCmsObject(null, null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            CmsObject cms = initCmsObject(null, null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();

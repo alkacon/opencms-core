@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronScheduleJobStarter.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/13 16:32:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Calendar;
  * This class starts all needed jobs for the current time.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.1 $ $Date: 2003/10/29 13:00:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/13 16:32:30 $
  * @since 5.1.12
  */
 public class CmsCronScheduleJobStarter extends Thread {
@@ -86,5 +86,9 @@ public class CmsCronScheduleJobStarter extends Thread {
                 m_opencms.startScheduleJob(m_table.get(i));
             }
         }
+        m_table = null;
+        m_lastRun = null;
+        m_thisRun = null;
+        m_opencms = null;
     }
 }

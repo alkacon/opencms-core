@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronScheduleJob.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/13 16:32:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsObject;
  * This thread launches one job in its own thread.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.1 $ $Date: 2003/10/29 13:00:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/13 16:32:30 $
  * @since 5.1.12
  */
 public class CmsCronScheduleJob extends Thread {
@@ -57,6 +57,7 @@ public class CmsCronScheduleJob extends Thread {
      * @param entry the entry to launch.
      */
     public CmsCronScheduleJob(CmsObject cms, CmsCronEntry entry) {
+        super("OpenCms: Cron job " + entry);
         m_cms = cms;
         m_entry = entry;
     }
@@ -75,7 +76,7 @@ public class CmsCronScheduleJob extends Thread {
             String retValue = job.launch(m_cms, m_entry.getModuleParameter());
             // log the returnvalue to the logfile
             if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Successful launch of job " + m_entry + (retValue != null ? " Message: " + retValue : ""));
+                OpenCms.getLog(this).info("Successful launch of job " + m_entry + (((retValue != null) && (! "".equals(retValue))) ? " Message: " + retValue : ""));
             }
         } catch (Exception exc) {
             // log the exception
@@ -83,6 +84,7 @@ public class CmsCronScheduleJob extends Thread {
                 OpenCms.getLog(this).error("Error running job for " + m_entry, exc);
             }
         }
+        m_cms = null;
+        m_entry = null;
     }
-
 }
