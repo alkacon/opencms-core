@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsAdminArticleNew.java,v $
- * Date   : $Date: 2000/03/16 13:42:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/16 21:26:51 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:09 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/16 21:26:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNewsConstants, I_CmsConstants {
@@ -255,18 +255,19 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
      */
     private void createNewsFile(A_CmsObject cms, String newsFileName, String author, String date, String headline, 
                                 String shorttext, String text, String extlink) throws CmsException {
+        String fullFilename = C_NEWS_FOLDER_CONTENT + newsFileName;
         CmsNewsTemplateFile newsTempDoc = new CmsNewsTemplateFile();
-        newsTempDoc.createNewFile(cms, C_NEWS_FOLDER_CONTENT + newsFileName, "plain");
+        newsTempDoc.createNewFile(cms, fullFilename, "plain");
               
         newsTempDoc.setNewsAuthor(author);
         newsTempDoc.setNewsDate(date);
         newsTempDoc.setNewsHeadline(headline);
         newsTempDoc.setNewsShortText(shorttext);
         newsTempDoc.setNewsText(text);
-        newsTempDoc.setNewsExternalLink(extlink);
-               
+        newsTempDoc.setNewsExternalLink(extlink);               
         newsTempDoc.write();
-        cms.unlockResource(C_NEWS_FOLDER_CONTENT + newsFileName);
+        cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
+        cms.unlockResource(fullFilename);
     }
    
     /**
@@ -277,9 +278,19 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
      * @exception CmsException
      */
     private void createPageFile(A_CmsObject cms, String newsFileName) throws CmsException {
-        CmsXmlControlFile pageFile = new CmsXmlControlFile();
+        
+        // Create the news folder
         cms.createFolder(C_NEWS_FOLDER_PAGE, newsFileName);
-        pageFile.createNewFile(cms, C_NEWS_FOLDER_PAGE + newsFileName + "/index.html", "page");
+               
+        /*String fullFolderName = C_NEWS_FOLDER_PAGE + newsFileName + "/";
+        cms.lockResource(fullFolderName);
+        cms.chmod(fullFolderName, C_ACCESS_DEFAULT_FLAGS); 
+        cms.unlockResource(fullFolderName);*/
+    
+        // Create an index file in this folder
+        String fullFilename = C_NEWS_FOLDER_PAGE + newsFileName + "/index.html";        
+        CmsXmlControlFile pageFile = new CmsXmlControlFile();
+        pageFile.createNewFile(cms, fullFilename, "page");
         pageFile.setTemplateClass("com.opencms.template.CmsXmlTemplate");
         pageFile.setMasterTemplate("/content/templates/mfNewsTeaser");
         pageFile.setElementClass("body", "com.opencms.examples.news.CmsNewsTemplate");
@@ -287,6 +298,7 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
         pageFile.setParameter("body", "newsfolder", C_NEWS_FOLDER_CONTENT);
         pageFile.setParameter("body", "read", newsFileName);
         pageFile.write();
-        cms.unlockResource(C_NEWS_FOLDER_PAGE + newsFileName + "/index.html");
+        cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
+        cms.unlockResource(fullFilename);
     }
 }
