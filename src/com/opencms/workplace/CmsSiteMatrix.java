@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/09/22 16:07:45 $
+ * Date   : $Date: 2000/09/22 16:58:10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,13 +43,13 @@ import javax.servlet.http.*;
  */
 public class CmsSiteMatrix extends com.opencms.template.CmsXmlTemplate {
 /**
- * Creates a matrix from the categories and sites in the system.
+ * Creates a matrix from the categories and sites in the system. This is quite dirty which is why this method is private.
  * Creation date: (09/22/00 13:32:01)
- * @return Object[][]
+ * @return the dirty result, only to be used internally in this class.
  * @param categories the result of CmsObject.getAllCategories()
  * @param sites the result of CmsObject.getSiteMatrixInfo()
  */
-private static Object[][] createMatrix(Vector categories, Vector sites)
+private static Object[] createMatrix(Vector categories, Vector sites)
 {
 	/* Reminder of how a site hashtable was created
 	a.put("siteid", new Integer(res.getInt("SITE_ID")));
@@ -62,36 +62,42 @@ private static Object[][] createMatrix(Vector categories, Vector sites)
 	Hashtable site = null;
 	Hashtable category_map = new Hashtable();
 	Hashtable country_map = new Hashtable();
+	Vector country_names = new Vector();
 	String country_key = null;
-	int category_place, country_place, country_count;
+	int category_place = 0, country_place = 0, country_count = 0;
 
 	// Map categories to rows in the matrix
 	for (int i = 0; i < categories.size(); i++)
-		category_map.put(new Integer(((CmsCategory) categories.elementAt(i)).getId()), new Integer(i + 1));
+		category_map.put(new Integer(((CmsCategory) categories.elementAt(i)).getId()), new Integer(i));
 
-	// Map countries and languages to columns in the matrix and create the matrix
+	// Map countries and languages to columns in the matrix and find out the width of the matrix
 	country_count = 0;
-	Object matrix[][] = new Object[categories.size() + 1][country_map.size()];
 	for (int i = 0; i < sites.size(); i++)
 	{
 		site = (Hashtable) sites.elementAt(i);
 		country_key = site.get("countryid").toString() + "x" + site.get("langid").toString();
-		if (country_map.containsKey(country_key))
-		{
-			country_place = ((Integer) country_map.get(country_key)).intValue();
-		}
-		else
+		if (!country_map.containsKey(country_key))
 		{
 			country_place = country_count++;
-			matrix[0][country_place] = (String)site.get("countryname") + "/" + (String)site.get("langname");
 			country_map.put(country_key, new Integer(country_place));
+			country_names.addElement((String)site.get("countryname") + "/" + (String)site.get("langname"));
 		}
+	}
 
+	// Create and fill out the matrix
+	Hashtable matrix[][] = new Hashtable[categories.size()][country_names.size()];
+	for (int i = 0; i < sites.size(); i++)
+	{
+		site = (Hashtable) sites.elementAt(i);
+		country_key = site.get("countryid").toString() + "x" + site.get("langid").toString();
 		category_place = ((Integer) category_map.get((Integer) site.get("categoryid"))).intValue();
+		country_place = ((Integer) country_map.get(country_key)).intValue();
 		matrix[category_place][country_place] = site;
 	}
 
-	return matrix;
+	// Collect the resulting data and return them
+	Object result[] = { country_names, matrix };
+	return result;
 }
 /**
  * Gets the content of a defined section in a given template file and its subtemplates
