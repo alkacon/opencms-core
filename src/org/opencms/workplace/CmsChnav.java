@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/04/28 22:29:50 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/06 10:46:43 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -275,9 +276,9 @@ public class CmsChnav extends CmsDialog {
      * @return the HTML for a navigation position select box
      */
     public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsWorkplaceMessages messages) {
-        ArrayList navList = new ArrayList();
-        ArrayList options = new ArrayList();
-        ArrayList values = new ArrayList();
+        List navList = new ArrayList();
+        List options = new ArrayList();
+        List values = new ArrayList();
         
         // get current file navigation element
         CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(cms, filename);
