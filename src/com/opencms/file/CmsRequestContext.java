@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/08/21 11:32:46 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/08/29 17:26:13 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.48 $ $Date: 2002/08/21 11:32:46 $
+ * @version $Revision: 1.49 $ $Date: 2002/08/29 17:26:13 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -161,7 +161,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public CmsFolder currentFolder() throws CmsException {
         // truncate the filename from the pathinformation
-        String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
+        String folderName = getFolderUri();
         return (m_rb.readFolder(currentUser(), currentProject(), getSiteRoot(folderName), ""));
     }
     /**
@@ -198,6 +198,15 @@ public class CmsRequestContext implements I_CmsConstants {
         uri=uri.substring(uri.lastIndexOf("/")+1);
         return uri;
     }
+   /**
+    * Gets the name of the parent folder of the requested file
+    *
+    * @return the requested filename.
+    */
+    public String getFolderUri() {
+        String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
+        return folderName;
+    }    
     /**
      * Gets the current request, if availaible.
      *
