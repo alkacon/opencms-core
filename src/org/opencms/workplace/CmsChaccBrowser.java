@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2003/07/02 13:40:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/07 16:44:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for building the groups and users popup window.<p> 
@@ -48,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -62,6 +64,17 @@ public class CmsChaccBrowser extends CmsDialog {
     public CmsChaccBrowser(CmsJspActionElement jsp) {
         super(jsp);
     }
+    
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsChaccBrowser(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        this(new CmsJspActionElement(context, req, res));
+    }        
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)

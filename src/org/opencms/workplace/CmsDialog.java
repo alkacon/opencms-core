@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/07 14:27:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/07 16:44:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -532,31 +532,39 @@ public class CmsDialog extends CmsWorkplace {
      * Builds the html for the button row under the dialog content area, including buttons.<p>
      * 
      * @param buttons array of constants of which buttons to include in the row
+     * @param attributes array of Strings for additional button attributes
      * @return the html for the button row under the dialog content area, including buttons
      */
-    public String dialogButtonRow(int[] buttons) {
+    public String dialogButtonRow(int[] buttons, String[] attributes) {
         StringBuffer result = new StringBuffer(256);
         result.append(dialogButtonRow(HTML_START));
         for (int i=0; i<buttons.length; i++)  {
+            String attribute = attributes[i];
             switch (buttons[i]) {
                 case BUTTON_OK:
                     result.append("<input name=\"ok\" type=\"submit\" value=\"");
                     result.append(key("button.ok"));
-                    result.append("\" class=\"dialogbutton\">\n");
+                    result.append("\" class=\"dialogbutton\"");
+                    result.append(writeAttribute(attribute));
+                    result.append(">\n");
                     break;
                 case BUTTON_CANCEL:
                     result.append("<input name=\"cancel\" type=\"button\" value=\"");
                     result.append(key("button.cancel"));
                     result.append("\" ");
                     result.append(buttonActionCancel());
-                    result.append(" class=\"dialogbutton\">\n");
+                    result.append(" class=\"dialogbutton\"");
+                    result.append(writeAttribute(attribute));
+                    result.append(">\n");
                     break;
                 case BUTTON_CLOSE:
                     result.append("<input name=\"close\" type=\"button\" value=\"");
                     result.append(key("button.close"));
                     result.append("\" ");
                     result.append(buttonActionClose());
-                    result.append(" class=\"dialogbutton\">\n");
+                    result.append(" class=\"dialogbutton\"");
+                    result.append(writeAttribute(attribute));
+                    result.append(">\n");
                     break;
                 default:
                     // not a valid button code, just insert a warning in the HTML
@@ -576,7 +584,18 @@ public class CmsDialog extends CmsWorkplace {
      * @return the button row 
      */
     public String dialogButtonRowOkCancel() {
-        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL});
+        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
+    }
+    
+    /**
+     * Builds a button row with an "ok" and a "cancel" button.<p>
+     * 
+     * @param okAttributes additional attributes for the "ok" button
+     * @param cancelAttributes additional attributes for the "cancel" button
+     * @return the button row 
+     */
+    public String dialogButtonRowOkCancel(String okAttributes, String cancelAttributes) {
+        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
     }
 
     /**
@@ -585,7 +604,7 @@ public class CmsDialog extends CmsWorkplace {
      * @return the button row 
      */
     public String dialogButtonRowCancel() {
-        return dialogButtonRow(new int[] {BUTTON_CANCEL});
+        return dialogButtonRow(new int[] {BUTTON_CANCEL}, new String[1]);
     }
 
     /**
@@ -594,7 +613,17 @@ public class CmsDialog extends CmsWorkplace {
      * @return the button row 
      */
     public String dialogButtonRowOk() {
-        return dialogButtonRow(new int[] {BUTTON_OK});
+        return dialogButtonRow(new int[] {BUTTON_OK}, new String[1]);
+    }
+    
+    /**
+     * Builds a button row with a single "ok" button.<p>
+     * 
+     * @param okAttribute additional attributes for the "ok" button
+     * @return the button row 
+     */
+    public String dialogButtonRowOk(String okAttribute) {
+        return dialogButtonRow(new int[] {BUTTON_OK}, new String[] {okAttribute});
     }
     
     /**
@@ -603,7 +632,17 @@ public class CmsDialog extends CmsWorkplace {
      * @return the button row 
      */    
     public String dialogButtonRowClose() {
-        return dialogButtonRow(new int[] {BUTTON_CLOSE});
+        return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[1]);
+    }
+    
+    /**
+     * Builds a button row with a single "close" button.<p>
+     * 
+     * @param closeAttribute additional attributes for the "close" button
+     * @return the button row 
+     */    
+    public String dialogButtonRowClose(String closeAttribute) {
+        return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[] {closeAttribute});
     }
         
     /**
@@ -658,6 +697,20 @@ public class CmsDialog extends CmsWorkplace {
             return "<div class=\"dialogrow\">";
         } else {
             return "</div>\n";
+        }
+    }
+    
+    /**
+     * Checks the String parameter and returns it if its not null or empty.<p>
+     * 
+     * @param attribute the attribute String 
+     * @return the attribute if the String is not empty
+     */
+    private String writeAttribute(String attribute) {
+        if (attribute != null && !"".equals(attribute)) {
+            return " "+attribute;
+        } else {
+            return ""; 
         }
     }
     

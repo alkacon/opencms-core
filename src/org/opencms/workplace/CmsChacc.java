@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/07 14:30:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/07 16:44:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -690,7 +690,7 @@ public class CmsChacc extends CmsDialog {
             retValue.append("<tr>\n");
             retValue.append("\t<td>"+buildSelect("name=\"type\"", options, optionValues, -1)+"</td>\n");
             retValue.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");            
-            retValue.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\""+key("button.search")+"\" onClick=\"javascript:openDialogWin('chaccbrowseusergroup.html','UserGroup');\"></td>\n");
+            retValue.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\""+key("button.search")+"\" onClick=\"javascript:openDialogWin('chaccbrowser.html','UserGroup');\"></td>\n");
             retValue.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\""+key("input.add")+"\"></td>\n");
             retValue.append("</tr>\n");
             retValue.append("</form>\n");
