@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/14 13:18:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2001/11/20 07:34:28 $
+ * Version: $Revision: 1.13 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -26,6 +26,7 @@ package com.opencms.defaults.master.genericsql;
 
 import java.sql.*;
 import java.util.*;
+import java.io.*;
 import java.io.IOException;
 import java.lang.reflect.*;
 import com.opencms.core.CmsException;
@@ -1170,7 +1171,6 @@ public class CmsDbAccess {
         } finally {
             sqlClose(con, stmnt, null);
         }
-
         // delete unneeded media
         stmnt = null;
         con = null;
@@ -1265,7 +1265,8 @@ public class CmsDbAccess {
         stmnt.setString(i++, media.getTitle());
         stmnt.setString(i++, media.getName());
         stmnt.setString(i++, media.getDescription());
-        stmnt.setBytes(i++, media.getMedia());
+        stmnt.setBinaryStream(i++, new ByteArrayInputStream(media.getMedia()), media.getMedia().length);
+        //stmnt.setBytes(i++, media.getMedia());
         return i;
     }
 
