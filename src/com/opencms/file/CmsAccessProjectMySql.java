@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessProjectMySql.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/04/27 15:27:48 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/04/19 10:15:59 $
+ * @version $Revision: 1.23 $ $Date: 2000/04/27 15:27:48 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -301,6 +301,8 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 		throws CmsException {
 		 try {
 			 
+			 Timestamp createTime = new Timestamp(new java.util.Date().getTime());
+			 
 			 // create the statement
 			 PreparedStatement statementCreateProject = 
 				m_con.prepareStatement(C_PROJECT_CREATE);
@@ -319,14 +321,14 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 statementCreateProject.setString(6,name);
 			 statementCreateProject.setString(7,description);
 			 statementCreateProject.setInt(8,flags);
-			 statementCreateProject.setTimestamp(9,new Timestamp(new java.util.Date().getTime()));
+			 statementCreateProject.setTimestamp(9,createTime);
 			 statementCreateProject.executeUpdate();
 			 
 			 // now read the created project
 			 PreparedStatement statementReadProject = 
 				m_con.prepareStatement(C_PROJECT_READ2);
 			 statementReadProject.setString(1,name);
-			 statementReadProject.setTimestamp(2,new Timestamp(new java.util.Date().getTime()));
+			 statementReadProject.setTimestamp(2,createTime);
 			 ResultSet result = statementReadProject.executeQuery();
 			 
 			 result.next();			
