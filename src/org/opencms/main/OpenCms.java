@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/03 08:28:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/05 16:05:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public final class OpenCms {
     
@@ -260,6 +260,15 @@ public final class OpenCms {
     public static CmsStaticExportManager getStaticExportManager() {
         return OpenCmsCore.getInstance().getStaticExportManager();
     }
+    
+    /**
+     * Returns the OpenCms Thread store.<p>
+     * 
+     * @return the OpenCms Thread store
+     */
+    public static CmsThreadStore getThreadStore() {
+        return OpenCmsCore.getInstance().getThreadStore();
+    }    
 
     /**
      * Returns the value for the default user access flags.<p>

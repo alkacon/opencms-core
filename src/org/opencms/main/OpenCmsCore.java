@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/04 15:10:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/05 16:05:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -196,6 +196,9 @@ public class OpenCmsCore {
     /** The cron table to use with the scheduler */
     private CmsCronTable m_table;
     
+    /** The Thread store */
+    private CmsThreadStore m_threadStore;
+    
     /** Flag to indicate if basic or form based authentication is used */
     private boolean m_useBasicAuthentication;
 
@@ -210,7 +213,7 @@ public class OpenCmsCore {
 
     /** The version number of this OpenCms installation */
     private String m_versionNumber;
-    
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
@@ -873,6 +876,15 @@ public class OpenCmsCore {
     }
 
     /**
+     * Returns the OpenCms Thread store.<p>
+     * 
+     * @return the OpenCms Thread store
+     */
+    protected CmsThreadStore getThreadStore() {
+        return m_threadStore;
+    }
+
+    /**
      * Returns the value for the default user access flags.<p>
      * 
      * @return the value for the default user access flags
@@ -1031,6 +1043,9 @@ public class OpenCmsCore {
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
+        
+        // initialize the Thread store
+        m_threadStore = new CmsThreadStore();
         
         // initialize the link manager
         m_linkManager = new CmsLinkManager();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.498 $
+ * Date   : $Date: 2003/09/05 16:06:09 $
+ * Version: $Revision: 1.499 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.1.10 Salusa Secundus - September xx, 2003
+! Added CmsThreadStore for workplace report Threads
 ! Links to special folders are shown as labled in the explorer
 * More bug fixed for special VFS scenarios
 - Rewrote report packages and worker threads 

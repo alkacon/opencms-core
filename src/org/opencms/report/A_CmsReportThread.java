@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2003/09/05 12:22:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/05 16:05:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.report;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.flex.util.CmsUUID;
 
 /** 
@@ -38,10 +40,13 @@ import com.opencms.flex.util.CmsUUID;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0
  */
 public abstract class A_CmsReportThread extends Thread {
+    
+    /** Indicates if the Thread was already checked by the grim reaper */
+    public boolean m_doomed;
     
     /** The id of this report */
     private CmsUUID m_id;
@@ -55,9 +60,12 @@ public abstract class A_CmsReportThread extends Thread {
      * @param name the name of the Thread
      */
     public A_CmsReportThread(String name) {
-        super();
+        super(OpenCms.getThreadStore().getThreadGroup(), name);
+        setDaemon(false);
         m_id = new CmsUUID();
+        m_doomed = false;
         setName(name + " [" + m_id + "]");
+        OpenCms.getThreadStore().addThread(this);
     }
     
     /**
@@ -107,6 +115,29 @@ public abstract class A_CmsReportThread extends Thread {
      * @return the part of the report that is ready for output
      */
     public abstract String getReportUpdate();
+    
+    /**
+     * Returns true if this thread is already "doomed" to be deleted.<p>
+     * 
+     * A OpenCms deamon Thread (the "Grim Reaper") will collect all 
+     * doomed Threads, i.e. threads that are not longer active for some
+     * time.<p>
+     * 
+     * @return true if this thread is already "doomed" to be deleted
+     */
+    public boolean isDoomed() {
+        if (isAlive()) {
+            // as long as the Thread is still active it is never doomed
+            return false;
+        }
+        if (m_doomed) {
+            // not longer active, and already doomed, so rest in peace...
+            return true;
+        }
+        // condemn the Thread to be collected by the grim reaper next time  
+        m_doomed = true;
+        return false;
+    }
 
     /**
      * Sets the report where the output of this Thread is written to.<p>

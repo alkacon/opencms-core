@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/09/05 16:05:23 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,15 +30,15 @@
 package com.opencms.workplace;
 
 import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.CmsLinkHrefManagementThread;
+import org.opencms.threads.CmsPublishThread;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
-import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.*;
-
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2003/09/05 12:22:25 $
+ * @version $Revision: 1.35 $ $Date: 2003/09/05 16:05:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -113,7 +113,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
             // linkcheck is ready. Now we can start the publishing
             //int projectId = ((Integer)session.getValue(C_PROJECT_ID_FOR_PUBLISH)).intValue();
             session.removeValue(C_PROJECT_ID_FOR_PUBLISH);
-            A_CmsReportThread doPublish = new CmsProjectPublishThread(cms);
+            A_CmsReportThread doPublish = new CmsPublishThread(cms);
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
             xmlTemplateDocument.setData("actionParameter", "showPublishResult");
