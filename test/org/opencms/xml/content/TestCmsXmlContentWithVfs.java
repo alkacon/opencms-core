@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/08 10:17:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/08 17:29:34 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
@@ -66,7 +67,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -112,6 +113,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));        
         suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -128,6 +130,49 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         return wrapper;
     }
+    
+    /**
+     * Test if the resource bundle in the schema definition is properly initialized.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testResourceBundle() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing using different resource bundles in content handler for XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContentDefinition definition;
+        
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-3.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_3, resolver);
+
+        I_CmsXmlContentHandler contentHandler;
+        
+        contentHandler = definition.getContentHandler();
+        assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
+        assertNull(contentHandler.getMessages(Locale.ENGLISH));
+        
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_8, resolver);
+        
+        contentHandler = definition.getContentHandler();
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+        
+        CmsMessages messages = contentHandler.getMessages(Locale.ENGLISH);
+        assertNotNull(messages);
+        assertEquals("The following errors occured when validating the form:", messages.key("editor.xmlcontent.validation.error.title"));
+        assertEquals("Invalid value \"", messages.key("editor.xmlcontent.validation.error.1"));                
+    }
+
 
     /**
      * Test accessing elements in nested schemas.<p>

@@ -27,6 +27,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<resourcebundle name="org.opencms.workplace.workplace" />
 			<mappings>
 				<mapping element="String" mapto="property:Title" />
 			</mappings>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/06 13:20:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/08 17:29:34 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -52,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -83,6 +84,20 @@ public interface I_CmsXmlContentHandler {
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
      */
     String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale);
+
+    /**
+     * Returns the {@link CmsMessages} that are used to resolve localized keys 
+     * for the given locale in this content handler.<p>
+     * 
+     * If no localized messages are configured for this content handler,
+     * this method returns <code>null</code>.<p>
+     * 
+     * @param locale the locale to get the messages for
+     * 
+     * @return the {@link CmsMessages} that are used to resolve localized keys 
+     * for the given locale in this content handler
+     */
+    CmsMessages getMessages(Locale locale);
 
     /**
      * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 

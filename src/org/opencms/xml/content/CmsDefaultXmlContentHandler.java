@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/08 13:17:34 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/12/08 17:29:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
@@ -60,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -73,6 +74,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "message" appinfo attribute name. */
     public static final String APPINFO_ATTR_MESSAGE = "message";
+
+    /** Constant for the "name" appinfo attribute name. */
+    public static final String APPINFO_ATTR_NAME = "name";
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
@@ -113,6 +117,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
 
+    /** Constant for the "resourcebundle" appinfo element name. */
+    public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
+
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
@@ -127,6 +134,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The widgets used for the elements (as defined in the annotations). */
     protected Map m_elementWidgets;
+
+    /** The resource bundle name to be used for localization of this content handler. */
+    protected String m_messageBundleName;
 
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
@@ -184,6 +194,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getMessages(java.util.Locale)
+     */
+    public CmsMessages getMessages(Locale locale) {
+
+        if (m_messageBundleName == null) {
+            // no message bundle was initialized
+            return null;
+        }
+
+        return new CmsMessages(m_messageBundleName, locale);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
@@ -235,6 +258,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 initDefaultValues(element, contentDefinition);
             } else if (nodeName.equals(APPINFO_PREVIEW)) {
                 initPreview(element, contentDefinition);
+            } else if (nodeName.equals(APPINFO_RESOURCEBUNDLE)) {
+                initResourceBundle(element, contentDefinition);
             }
         }
     }
@@ -267,7 +292,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // TODO: this implememtation does not handle multiple mappings to a key,
         // e.g. it may be possible for several nested schema to map somehting to the "Title" property
         // in the current implementation the result (i.e. which mappings "wins") is undefined
-        
+
         if (!value.isSimpleType()) {
             // no mappings for a nested schema are possible
             // note that the sub-elemenets of the nested schema ARE mapped by the node visitor,
@@ -481,7 +506,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         boolean matchResult,
         boolean isWarning) {
 
-        
         String message = null;
         if (isWarning) {
             message = (String)m_validationWarningMessages.get(value.getElementName());
@@ -504,7 +528,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             result.append(valueStr);
             result.append("${editor.xmlcontent.validation.error.2}");
         }
-        
+
         result.append('[');
         if (!matchResult) {
             result.append('!');
@@ -637,6 +661,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Initializes the resource bundle to use for localized messages in this content handler.<p>
+     * 
+     * @param root the "resourcebundle" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the validation rules belong to
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initResourceBundle(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        String name = root.attributeValue(APPINFO_ATTR_NAME);
+        if (name == null) {
+            throw new CmsXmlException("Missing resource bundle name for element "
+                + root.getName()
+                + " in content definition "
+                + contentDefinition.getSchemaLocation());
+        }
+        m_messageBundleName = name;
+    }
+
+    /**
      * Initializes the validation rules this content handler.<p>
      * 
      * OpenCms always performs XML schema validation for all XML contents. However,
@@ -663,6 +707,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     .equals(type));
             }
         }
+    }
+
+    /**
+     * Returns the localized resource string for a given message key according to the configured resource bundle
+     * of this content handler.<p>
+     * 
+     * If the key was not found in the configuredd bundle, or no bundle is configured for this 
+     * content handler, the return value is
+     * <code>"??? " + keyName + " ???"</code>.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @param locale the locale to get the key from
+     * 
+     * @return the resource string for the given key 
+     */
+    protected String key(String keyName, Locale locale) {
+
+        CmsMessages messages = getMessages(locale);
+        if (messages != null) {
+            return messages.key(keyName);
+        }
+        return CmsMessages.formatUnknownKey(keyName);
     }
 
     /**
@@ -755,5 +821,4 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         return errorHandler;
     }
-    
 }
