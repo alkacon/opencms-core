@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/04/02 10:25:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/04/07 07:41:36 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 package org.opencms.workplace.editor;
 
-import org.opencms.file.CmsProperty;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -59,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.3.0
  */
@@ -155,7 +154,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         TreeMap templates = null;
         try {
             // read the current template
-            currentTemplate = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+            currentTemplate = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue();
             // get all available templates
             templates = CmsNewResourceXmlPage.getTemplates(getCms());
         } catch (CmsException e) {
@@ -169,7 +168,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             String name = currentTemplate;
             try { 
                 // read the title of this template
-                name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
+                name = getCms().readPropertyObject(name, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
             } catch (CmsException exc) {
                 // ignore this exception - the title for this template was not readable
             }

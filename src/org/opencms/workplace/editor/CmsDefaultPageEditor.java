@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/04/07 07:40:28 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 5.1.12
  */
@@ -623,7 +623,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
    public String getUriTemplate() {
        String result = "";
        try {
-           result = getCms().readProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true, "");
+           result = getCms().readPropertyObject(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue("");
        } catch (CmsException e) {
            OpenCms.getLog(this).warn("Template property could not be read", e);
        }
@@ -641,7 +641,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             String currentTemplate = getUriTemplate();
             if (! "".equals(currentTemplate)) {
                 // read the stylesheet from the template file
-                result = getCms().readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE, false, "");
+                result = getCms().readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue("");
             }
         } catch (CmsException e) {
             OpenCms.getLog(this).warn("Template property for style sheet could not be read");
