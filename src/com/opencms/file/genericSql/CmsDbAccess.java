@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/13 10:22:57 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2000/06/13 12:17:36 $
+ * Version: $Revision: 1.63 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.62 $ $Date: 2000/06/13 10:22:57 $ * 
+ * @version $Revision: 1.63 $ $Date: 2000/06/13 12:17:36 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2983,6 +2983,73 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
         return file;
        }
+
+	/**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param resourceId The Id of the resource.
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public CmsFile readFileHeader(int resourceId)
+         throws CmsException {
+         
+         CmsFile file=null;
+         ResultSet res =null;
+         PreparedStatement statement = null;  
+         try {
+               statement=m_pool.getPreparedStatement(C_RESOURCES_READBYID_KEY);
+               // read file data from database
+               statement.setInt(1, resourceId);
+               res = statement.executeQuery();
+               // create new file
+               if(res.next()) {
+                        file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           new byte[0],
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+                          res.close();                 
+                         // check if this resource is marked as deleted
+                        if (file.getState() == C_STATE_DELETED) {
+                            throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
+                        }
+               } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+resourceId,CmsException.C_NOT_FOUND);  
+               }
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } catch (CmsException ex) {
+            throw ex;       
+         } catch( Exception exc ) {
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_READBYID_KEY, statement);
+			}
+		  }
+
+        return file;
+       }
+	 
 	 
 	
     /**
@@ -4071,6 +4138,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
         m_pool.initPreparedStatement(C_FILES_UPDATE_KEY,C_FILES_UPDATE);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
+        m_pool.initPreparedStatement(C_RESOURCES_READBYID_KEY,C_RESOURCES_READBYID);
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
         m_pool.initPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY,C_RESOURCES_GET_SUBFOLDER);
         m_pool.initPreparedStatement(C_RESOURCES_DELETE_KEY,C_RESOURCES_DELETE);
