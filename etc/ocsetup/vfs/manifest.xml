@@ -183,20 +183,6 @@
             </properties>
         </file>
         <file>
-            <destination>externallinks</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>95</access>
-            <properties>
-                <property>
-                    <name>export</name>
-                    <type>0</type>
-                    <value><![CDATA[true]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <destination>moduledemos</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -799,42 +785,6 @@
         <file>
             <source>pics/system/bt_exit_push.gif</source>
             <destination>pics/system/bt_exit_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_extlinkgallery_off.gif</source>
-            <destination>pics/system/bt_extlinkgallery_off.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_extlinkgallery_on.gif</source>
-            <destination>pics/system/bt_extlinkgallery_on.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_extlinkgallery_push.gif</source>
-            <destination>pics/system/bt_extlinkgallery_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_extlinkgallery_in.gif</source>
-            <destination>pics/system/bt_extlinkgallery_in.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -2300,24 +2250,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_extlinkgallery.gif</source>
-            <destination>pics/system/ic_extlinkgallery.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_extlinkgallery_in.gif</source>
-            <destination>pics/system/ic_extlinkgallery_in.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_file_binary.gif</source>
             <destination>pics/system/ic_file_binary.gif</destination>
             <type>image</type>
@@ -2491,15 +2423,6 @@
         <file>
             <source>pics/system/ic_import_in.gif</source>
             <destination>pics/system/ic_import_in.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_linkcheckviewer.gif</source>
-            <destination>pics/system/ic_linkcheckviewer.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -3736,33 +3659,6 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/action/linkbrowser.html</source>
-            <destination>system/workplace/action/linkbrowser.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/action/linkctrl.html</source>
-            <destination>system/workplace/action/linkctrl.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/action/linklist.html</source>
-            <destination>system/workplace/action/linklist.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
             <source>system/workplace/action/lock.html</source>
             <destination>system/workplace/action/lock.html</destination>
             <type>XMLTemplate</type>
@@ -4113,15 +4009,6 @@
         <file>
             <source>system/workplace/action/unlock.html</source>
             <destination>system/workplace/action/unlock.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/action/urlcheckform.html</source>
-            <destination>system/workplace/action/urlcheckform.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
@@ -4716,183 +4603,6 @@
         <file>
             <source>system/workplace/administration/elementcache/index.html</source>
             <destination>system/workplace/administration/elementcache/index.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <destination>system/workplace/administration/externallinkgallery</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>visiblemethod</name>
-                    <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsAdminPicGalleries.isProjectManager]]></value>
-                </property>
-                <property>
-                    <name>activemethod</name>
-                    <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsAdminPicGalleries.isNotOnlineProject]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[icon.extlinkgallery]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[ic_extlinkgallery]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[25.0]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_content_extlinkgalleries</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_content_extlinkgalleries</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new.html</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_content_link_new</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_content_link_new</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_content_link_new.html</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_content_link_new.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1.html</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2.html</source>
-            <destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/externallinkgallery/index.html</source>
-            <destination>system/workplace/administration/externallinkgallery/index.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>4</type>
-                    <value><![CDATA[]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/administration/linkcheckviewer</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>visiblemethod</name>
-                    <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[icon.linkcheckviewer]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[ic_linkcheckviewer]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[25.5]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>system/workplace/administration/linkcheckviewer/index</source>
-            <destination>system/workplace/administration/linkcheckviewer/index</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/administration/linkcheckviewer/index.html</source>
-            <destination>system/workplace/administration/linkcheckviewer/index.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
@@ -10701,15 +10411,6 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/templates/explorer_files_externallink</source>
-            <destination>system/workplace/templates/explorer_files_externallink</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>system/workplace/templates/explorer_files_new</source>
             <destination>system/workplace/templates/explorer_files_new</destination>
             <type>plain</type>
@@ -10934,33 +10635,6 @@
         <file>
             <source>system/workplace/templates/labelTemplate</source>
             <destination>system/workplace/templates/labelTemplate</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/linkbrowser</source>
-            <destination>system/workplace/templates/linkbrowser</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/linkctrl</source>
-            <destination>system/workplace/templates/linkctrl</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/linklist</source>
-            <destination>system/workplace/templates/linklist</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
@@ -11381,15 +11055,6 @@
         <file>
             <source>system/workplace/templates/unlock</source>
             <destination>system/workplace/templates/unlock</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/urlcheckform</source>
-            <destination>system/workplace/templates/urlcheckform</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
