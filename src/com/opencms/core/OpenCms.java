@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.129 $
+* Date   : $Date: 2003/07/06 13:44:34 $
+* Version: $Revision: 1.130 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.129 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.130 $ $Date: 2003/07/06 13:44:34 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -636,7 +636,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     
             // set context once and for all
             String context = req.getContextPath() + req.getServletPath();
-            if (! context.endsWith("/")) context += "/";
+            if (context.endsWith("/")) context = context.substring(0, context.lastIndexOf('/'));
             A_OpenCms.setOpenCmsContext(context);
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
             

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/06 13:44:27 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.39 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/06 13:44:27 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -388,13 +388,16 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         if ((value != null) && (value.startsWith("/ROOT"))) {
             value = value.substring("/ROOT".length());
         }        
+        if (value == null) value = "";
 		m_openCmsContext = value;
 	}   
     
     /**
-     * Returns the OpenCms request context.<p>
+     * Returns the OpenCms request context, e.g. /opencms/opencms.<p>
      * 
-     * @return String the OpenCms request context
+     * The context will always start with a "/" and never have a trailing "/".<p>
+     * 
+     * @return String the OpenCms request context, e.g. /opencms/opencms
      */
     public static String getOpenCmsContext() {
     	if (m_openCmsContext == null) {

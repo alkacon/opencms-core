@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/06/12 16:32:26 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/06 13:45:48 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2003/06/12 16:32:26 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/06 13:45:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -221,8 +221,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData(C_PARA_FILE, file);
         xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);
         xmlTemplateDocument.setData("editorframe", editorframe);
-        xmlTemplateDocument.setData("OpenCmsContext", 
-            A_OpenCms.getOpenCmsContext().substring(0, A_OpenCms.getOpenCmsContext().length()-1));
+        xmlTemplateDocument.setData("OpenCmsContext", A_OpenCms.getOpenCmsContext());
         // Announcement of path and file name in the header of the browser.
         if(checkit==true){
             xmlTemplateDocument.setData("fileName", (String) editFile.getName());

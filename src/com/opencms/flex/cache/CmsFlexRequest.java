@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/06 13:44:58 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -297,15 +297,15 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         
         // Now check if this is a opencms resource and if so remove the context / servlet path
         String uri = url.getPath();
-        String context = getContextPath() + getServletPath();
-        if (uri.startsWith(context)) {
-            uri = uri.substring(context.length());
+        if (uri.startsWith(A_OpenCms.getOpenCmsContext())) {
+            uri = uri.substring(A_OpenCms.getOpenCmsContext().length());
         }
         if (url.getQuery() != null) uri += "?" + url.getQuery();                    
         
         if (DEBUG) System.err.println(getClass().getName() + " result=" + uri);                
         return uri;
     }     
+
             
     /**
      * Return the value of the specified request parameter, if any; otherwise,

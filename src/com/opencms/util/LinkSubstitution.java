@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/06/25 13:51:03 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/06 13:45:39 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -155,8 +155,7 @@ public class LinkSubstitution {
             // configure the converter
             converter.setConverterConfString(m_converterConfiguration);
             URL url = new URL(webappUrl + fileName);
-            String servletPrefix = A_OpenCms.getOpenCmsContext();
-            converter.setServletPrefix(servletPrefix.substring(0, servletPrefix.lastIndexOf("/")), null);
+            converter.setServletPrefix(A_OpenCms.getOpenCmsContext(), null);
             converter.setOriginalUrl(url);
             // convert html code
             body = converter.convertHTML(body);
