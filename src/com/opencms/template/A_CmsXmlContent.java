@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/07/10 15:44:15 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/07/20 12:58:12 $
+* Version: $Revision: 1.46 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.45 $ $Date: 2001/07/10 15:44:15 $
+ * @version $Revision: 1.46 $ $Date: 2001/07/20 12:58:12 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -170,9 +170,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param parameter Additional parameter passed to the method.
      * @param callingObject Reference to the object containing the called method.
      * @param userObj Customizable user object that will be passed through to the user method.
+     * @param resolveMethods If true the methodtags will be resolved even if they have own CacheDirectives.
      * @exception CmsException
      */
-    protected Object callUserMethod(String methodName, String parameter, Object callingObject, Object userObj) throws CmsException {
+    protected Object callUserMethod(String methodName, String parameter, Object callingObject,
+                                Object userObj, boolean resolveMethods) throws CmsException {
         Object[] params = new Object[] {
             m_cms, parameter, this, userObj
         };
@@ -186,7 +188,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         // check if the method has cachedirectives, if so we just return null
         // this way the methode tag stays in the Element and can be handled like
         // an normal element. We do this only if elementCache is active.
-         if(m_cms.getRequestContext().isElementCacheEnabled()){
+         if(m_cms.getRequestContext().isElementCacheEnabled() && !resolveMethods){
             try{
                 if(callingObject.getClass().getMethod("getMethodCacheDirectives", new Class[] {
                                         CmsObject.class, String.class}).invoke(callingObject,
@@ -557,8 +559,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @exception CmsException
      */
     protected String getProcessedDataValue(String tag) throws CmsException {
-        Element data = getProcessedData(tag);
-        return getTagValue(data);
+        return getProcessedDataValue(tag, null, null, null);
     }
 
     /**
@@ -571,8 +572,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @exception CmsException
      */
     protected String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
-        Element data = getProcessedData(tag, callingObject);
-        return getTagValue(data);
+        return getProcessedDataValue(tag, callingObject, null, null);
     }
 
     /**
@@ -589,8 +589,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @exception CmsException
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
-        Element data = getProcessedData(tag, callingObject, userObj);
-        return getTagValue(data);
+        return getProcessedDataValue(tag, callingObject, userObj, null);
     }
 
     /**
@@ -609,7 +608,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @exception CmsException
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
+        // we cant cache the methods here, so we use the other way
+        registerTag("METHOD", A_CmsXmlContent.class, "handleMethodTagForSure", C_REGISTER_MAIN_RUN);
         Element data = getProcessedData(tag, callingObject, userObj, stream);
+        registerTag("METHOD", A_CmsXmlContent.class, "handleMethodTag", C_REGISTER_MAIN_RUN);
         return getTagValue(data);
     }
 
@@ -850,7 +852,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         String method = n.getAttribute("name");
         Object result = null;
         try {
-            result = callUserMethod(method, tagcontent, callingObject, userObj);
+            result = callUserMethod(method, tagcontent, callingObject, userObj, false);
         }
         catch(Throwable e1) {
             if(e1 instanceof CmsException) {
@@ -858,6 +860,39 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             }
             else {
                 throwException("handleMethodTag() received an exception from callUserMethod() while calling \"" + method + "\" requested by class " + callingObject.getClass().getName() + ": " + e1);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Handling of the "METHOD name=..." tags.
+     * In contrast to the method handleMethodTag this method resolves
+     * every method even if it has it own CacheDirectives. It is used only for
+     * getProcessedDataValue.
+     * Name attribute and value of the element are read and the user method
+     * 'name' is invoked with the element value as parameter.
+     *
+     * @param n XML element containing the <code>&lt;METHOD&gt;</code> tag.
+     * @param callingObject Reference to the object requesting the node processing.
+     * @param userObj Customizable user object that will be passed through to handling and user methods.
+     * @return Object returned by the user method
+     * @exception CmsException
+     */
+    private Object handleMethodTagForSure(Element n, Object callingObject, Object userObj) throws CmsException {
+        processNode(n, m_mainProcessTags, null, callingObject, userObj);
+        String tagcontent = getTagValue(n);
+        String method = n.getAttribute("name");
+        Object result = null;
+        try {
+            result = callUserMethod(method, tagcontent, callingObject, userObj, true);
+        }
+        catch(Throwable e1) {
+            if(e1 instanceof CmsException) {
+                throw (CmsException)e1;
+            }
+            else {
+                throwException("handleMethodTagForSure() received an exception from callUserMethod() while calling \"" + method + "\" requested by class " + callingObject.getClass().getName() + ": " + e1);
             }
         }
         return result;
