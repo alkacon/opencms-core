@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/11/03 15:28:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/11/08 11:48:34 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/11/03 15:28:46 $
+ * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/11/08 11:48:34 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -73,7 +73,12 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 								String sender, String languageKey,  
 								String iconActiveMethod, String iconVisibleMethod ) throws CmsException {
 	
-	    // call the method for activation decision
+		String iconPicPath = (String)picsUrl(cms, "", null, null);
+		if (sender.startsWith("/system/modules")){
+			// change the iconPicPath if the point is from a module
+			iconPicPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + sender.substring(0, sender.indexOf("administration/")) +"pics/";
+		}
+		// call the method for activation decision
 		boolean activate=true;
 		
 		if(iconActiveMethod != null && ! "".equals(iconActiveMethod))
@@ -150,10 +155,10 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 						
 		if (visible){
 			if(activate) {
-				templateDocument.setData("picture",(String)picsUrl(cms, "", null, null) + picName + ".gif");
+				templateDocument.setData("picture", iconPicPath + picName + ".gif");
 				return templateDocument.getProcessedDataValue("defaulticon");
 			} else {
-				templateDocument.setData("picture",(String)picsUrl(cms, "", null, null) + picName + "_in.gif");
+				templateDocument.setData("picture", iconPicPath + picName + "_in.gif");
 				return templateDocument.getProcessedDataValue("deactivatedicon");
 			}
 		} else {
@@ -180,7 +185,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		CmsXmlLanguageFile lang = templateDocument.getLanguageFile();   
-//		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
 		templateDocument.setData("emptyPic", (String)picsUrl(cms,"empty.gif",null,null));
 		CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms); 
