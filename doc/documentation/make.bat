@@ -12,7 +12,7 @@ pdflatex OpenCmsDoc
 makeindex OpenCmsDoc
 pdflatex OpenCmsDoc
 
-del *.aux,*.idx,*.log,*.dvi,*.toc,*.ilg,*.ind
+del *.aux,*.idx,*.log,*.dvi,*.toc,*.ilg,*.ind,*.out
 move OpenCmsDoc.pdf ..\..\..\zip
 goto end
 
@@ -22,7 +22,7 @@ pdflatex UserDoc
 makeindex UserDoc
 pdflatex UserDoc
 
-del *.aux,*.idx,*.log,*.dvi,*.toc,*.ilg,*.ind
+del *.aux,*.idx,*.log,*.dvi,*.toc,*.ilg,*.ind,*.out
 move UserDoc.pdf ..\..\..\zip
 goto end
 
