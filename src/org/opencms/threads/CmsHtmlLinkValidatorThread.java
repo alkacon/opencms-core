@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2004/01/21 10:34:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/23 10:56:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,26 +31,45 @@
 
 package org.opencms.threads;
 
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-
-import com.opencms.file.CmsObject;
 
 /**
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/01/21 10:34:05 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/23 10:56:01 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
-
+    
+    private CmsResource m_directPublishResource = null;
+    private boolean m_directPublishSiblings = false;
+    
     /**
-     * Creates a thread...<p>
+     * Creates a thread which checks all offline resources of the current project and starts it.<p>
      * 
      * @param cms the current OpenCms context object
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms) {
         super(cms, "OpenCms: validating HTML links in all unpublished resources of project " + cms.getRequestContext().currentProject().getName());
+        initHtmlReport();
+        start();
+    }
+    
+    /**
+     * Creates a thread which checks the list of offline resources of the current project and starts it.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     */
+    public CmsHtmlLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings) {
+        super(cms, "OpenCms: validating HTML links in all unpublished resources of project " + cms.getRequestContext().currentProject().getName());
+        m_directPublishResource = directPublishResource;
+        m_directPublishSiblings = directPublishSiblings;
         initHtmlReport();
         start();
     }
@@ -67,7 +86,13 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      */
     public void run() {
         try {
-            getCms().validateHtmlLinks(getReport());
+            if (m_directPublishResource == null) {
+                // validate all offline resources
+                getCms().validateHtmlLinks(getReport());
+            } else {
+                // validate the given list of resources
+                getCms().validateHtmlLinks(m_directPublishResource, m_directPublishSiblings, getReport());
+            }
         } catch (Exception e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {

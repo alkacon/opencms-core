@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/22 15:23:30 $
-* Version: $Revision: 1.444 $
+* Date   : $Date: 2004/01/23 10:56:01 $
+* Version: $Revision: 1.445 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.444 $
+ * @version $Revision: 1.445 $
  */
 public class CmsObject {
 
@@ -2840,60 +2840,6 @@ public class CmsObject {
             m_context.currentProject().setType(oldProjectType);
             OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", resource)));
         }
-        
-        /*
-        int oldProjectId = m_context.currentProject().getId();
-        int retValue = -1;
-        
-        CmsResource res = readFileHeader(resourcename, true);
-        if (res.isFolder()) res = readFolder(resourcename, true);
-        
-        CmsLock lock = getLock(resourcename);
-        
-        if (!lock.isNullLock()) {
-            throw new CmsSecurityException("[CmsObject] cannot publish locked resource", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-        }
-        if (res.getState() == I_CmsConstants.C_STATE_NEW) {
-            try {
-                m_driverManager.readFolder(m_context, res.getParentId(), false);
-            } catch (CmsException ex) {
-                throw new CmsException("[CmsObject] cannot read parent folder in online project", CmsException.C_NOT_FOUND);
-            }
-        }
-        if (oldProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            // check access to project
-            if (isAdmin() || isManagerOfProject()) {
-                String projectName = justPrepare ? "Check direct publish" : "Direct publish";
-                int newProjectId = m_driverManager.createDirectPublishProject(
-                    m_context, projectName, 
-                    "", 
-                    OpenCms.getDefaultUsers().getGroupUsers(), 
-                    OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
-                    I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
-                ).getId();
-                retValue = newProjectId;
-                getRequestContext().setCurrentProject(newProjectId);
-                I_CmsResourceType rt = getResourceType(res.getType());
-                // copy the resource to the project
-                rt.copyResourceToProject(this, resourcename);
-                // set the project_id of the resource to the current project
-                rt.changeLockedInProject(this, newProjectId, resourcename);
-                if (!justPrepare) {
-                    // publish the temporary project
-                    publishProject(report);
-                }
-                getRequestContext().setCurrentProject(oldProjectId);
-            } else {
-                throw new CmsSecurityException("[CmsObject] cannot publish resource in current project", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
-            }
-        } else {
-            throw new CmsSecurityException("[CmsObject] cannot publish resource in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
-        }
-        //this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
-        OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", res)));
-        
-        return retValue;
-        */
     }
 
     /**
@@ -4484,7 +4430,30 @@ public class CmsObject {
      * @throws Exception if something goes wrong
      */
     public void validateHtmlLinks(I_CmsReport report) throws Exception {
-        m_driverManager.validateHtmlLinks(this, report);
+        validateHtmlLinks(null, false, report);
+    }
+    
+    /**
+     * Validates the HTML links (hrefs and images) in the unpublished plain or XML page
+     * which will be directly published in the current project.<p>
+     * 
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param report an instance of I_CmsReport to print messages
+     * @throws Exception if something goes wrong
+     */
+    public void validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        int oldProjectType = m_context.currentProject().getType();       
+        try {
+            if (directPublishResource != null) {
+                m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
+            }
+            m_driverManager.validateHtmlLinks(this, directPublishResource, directPublishSiblings, report);
+        } catch (CmsException e) {
+            throw e;
+        } finally {
+            m_context.currentProject().setType(oldProjectType);
+        }       
     }
 
 }

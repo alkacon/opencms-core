@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.307 $
+ * Date   : $Date: 2004/01/23 10:56:01 $
+ * Version: $Revision: 1.308 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.307 $ $Date: 2004/01/22 11:50:01 $
+ * @version $Revision: 1.308 $ $Date: 2004/01/23 10:56:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8946,15 +8946,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in all unpublished plain files and XML pages
-     * of the current project.<p>
+     * Validates the HTML links (hrefs and images) in the unpublished plain or XML page
+     * which will be directly published in the current project.<p>
      * 
      * @param cms the current user's Cms object
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
      * @param report an instance of I_CmsReport to print messages
      * @throws Exception if something goes wrong
      */
-    public void validateHtmlLinks(CmsObject cms, I_CmsReport report) throws Exception {
-        List offlineFiles = filterOfflineFiles(cms.getRequestContext(), null, false, report);
+    public void validateHtmlLinks(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        List offlineFiles = filterOfflineFiles(cms.getRequestContext(), directPublishResource, directPublishSiblings, report);
         getHtmlLinkValidator().validateResources(cms, offlineFiles, report);                        
     }
 
