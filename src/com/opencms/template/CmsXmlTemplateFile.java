@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/05/12 07:43:56 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/05/30 12:05:33 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/05/12 07:43:56 $
+ * @version $Revision: 1.20 $ $Date: 2000/05/30 12:05:33 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -187,9 +187,21 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         return getNamesFromNodeList(nl, "TEMPLATE", true);
     }
 
+    public void renameSection(String oldName, String newName) throws CmsException {
+        if(! hasData("template." + newName)) {
+            System.err.println("datablock TEMPLATE." + newName + " not found. creating.");
+            Element newData = (Element)getData("template." + oldName).cloneNode(true);
+            newData.setAttribute("name", newName);
+            setData("template." + newName, newData);
+            removeData("template." + oldName);
+        } else {
+            throw new CmsException("Section already exists: " + newName, CmsException.C_BAD_NAME);
+        }
+    }
+    
     public int createNewSection(String sectionName) {
-        String tempName = sectionName;
-        int loop = 0;
+        int loop = 1;
+        String tempName = sectionName + loop;
         while(hasData("template." + tempName)) {
             tempName = sectionName + (++loop);        
         }        
@@ -294,6 +306,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
         String datablockName = this.getTemplateDatablockName(templateSelector);
+        if(datablockName == null && (templateSelector.toLowerCase().equals("script"))) {
+            return "";
+        }    
         return getProcessedDataValue(datablockName, callingObject, parameters);
     }        
 
@@ -440,6 +455,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                                    
             result.append("\n</BODY>\n</HTML>");        
             xmlString = result.toString();
+        } else {
+            // We are in text mode.
+            // Check, if there is any content in this body.
+            // Otherwise, set empty CDATA blocks.
+            if(xmlString.trim().equals("")) {
+                xmlString = "<![CDATA[\n]]>";
+            }
         }
 
         return xmlString;
@@ -628,7 +650,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "choosing default template.");
             }
         }
-        if(templateDatablockName == null) {
+        if(templateDatablockName == null && (!"script".equals(templateSelector))) {
             if(hasData("TEMPLATE")) {
                 templateDatablockName = "TEMPLATE";
             } else if(hasData("TEMPLATE.default")) {

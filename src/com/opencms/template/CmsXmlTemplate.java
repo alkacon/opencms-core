@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/23 12:51:14 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/05/30 12:05:33 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2000/05/23 12:51:14 $
+ * @version $Revision: 1.37 $ $Date: 2000/05/30 12:05:33 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -198,11 +198,10 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @exception CmsException 
      */
     protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-             
-       
-        
+                     
         String result = null;
         // Try to process the template file
+        
         try {
             result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector);
         } catch(Throwable e) {
@@ -921,14 +920,24 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      */    
     protected String getTemplateFileName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
        
-                
+        String result = null;     
+        
         if(parameters.containsKey(elementName + "._TEMPLATE_")) {
-            return (String)parameters.get(elementName + "._TEMPLATE_");
+            result = (String)parameters.get(elementName + "._TEMPLATE_");
         } else {
-            return doc.getSubtemplateFilename(elementName);
+            try {
+                result = doc.getSubtemplateFilename(elementName);
+            } catch(Exception e) {
+                // Fallback to "body" element
+                if(parameters.containsKey("body._TEMPLATE_")) {
+                    result = (String)parameters.get("body._TEMPLATE_");
+                }
+            }
         }
+        System.err.println("returning template file name for Element " + elementName + " in File " + doc + ": " + result);
+        return result;            
     }               
-
+    
     /**
      * Find the corresponding template class to be loaded.
      * this should be defined in the template file of the parent
@@ -941,12 +950,21 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      */    
     protected String getTemplateClassName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
      
+        String result = null;     
         
         if(parameters.containsKey(elementName + "._CLASS_")) {
-            return (String)parameters.get(elementName + "._CLASS_");
+            result = (String)parameters.get(elementName + "._CLASS_");
         } else {
-            return doc.getSubtemplateClass(elementName);
+            try {
+                result = doc.getSubtemplateClass(elementName);
+            } catch(Exception e) {
+                // Fallback to "body" element
+                if(parameters.containsKey("body._CLASS_")) {
+                    result = (String)parameters.get("body._CLASS_");
+                }
+            }
         }
+        return result;            
     }
 
     /**

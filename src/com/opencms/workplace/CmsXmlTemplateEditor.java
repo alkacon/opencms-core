@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/05/30 12:05:52 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.27 $ $Date: 2000/05/30 12:05:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -113,7 +113,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
         String style = (String)session.getValue("te_stylesheet");
                 
-        boolean existsContentParam = (content!=null && (!"".equals(content)));
+        //boolean existsContentParam = (content!=null && (!"".equals(content)));
+        boolean existsContentParam = content!=null;
+
         boolean existsFileParam = (file!=null && (!"".equals(file)));
         boolean saveRequested = ((action != null) && (C_EDIT_ACTION_SAVE.equals(action) || C_EDIT_ACTION_SAVEEXIT.equals(action)));
         boolean exitRequested = ((action != null) && (C_EDIT_ACTION_EXIT.equals(action) || C_EDIT_ACTION_SAVEEXIT.equals(action)));
@@ -178,6 +180,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
             if(editor == null || "".equals(editor)) {
                 editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT[browserId]];    
+                session.putValue("te_pageeditor", editor);
                 parameters.put("editor", editor);
             }
             
@@ -222,7 +225,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 body = (String)allBodys.elementAt(0);
             }
 
-            bodytitle = bodyTemplateFile.getSectionTitle(body);
+            // bodytitle = bodyTemplateFile.getSectionTitle(body);
+            bodytitle = body.equals("(default)")?"":body;
             
             temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
             temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
@@ -269,17 +273,52 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     
             if(bodytitlechangeRequested) {
                 // The user entered a new title for the current body
-                bodyTemplateFile.setSectionTitle(oldBody, bodytitle);
+                //bodyTemplateFile.setSectionTitle(oldBody, bodytitle);
+                if((!oldBody.equals("(default)")) && (!oldBody.equals("script"))) {
+                    if(bodytitle.toLowerCase().equals("script")) {
+                        bodytitle = "script";
+                    }
+                    try { 
+                        bodyTemplateFile.renameSection(oldBody, bodytitle);
+                        oldBody = bodytitle;
+                        if(!bodychangeRequested) {
+                            body = bodytitle;
+                        }
+                    } catch(Exception e) {
+                        bodytitle = oldBodytitle;                       
+                    }
+                    if(bodytitle.equals("script")) {
+                        session.putValue("te_pageeditor", editor);
+                        editor = C_SELECTBOX_EDITORVIEWS[1];
+                        parameters.put("editor", editor);
+                    }
+                } else {
+                    bodytitle = oldBodytitle;
+                }
             }
     
             if(bodychangeRequested) {
                 temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 //temporaryControlFile.write();
-                bodytitle = bodyTemplateFile.getSectionTitle(body);
+                ////bodytitle = bodyTemplateFile.getSectionTitle(body);
+                bodytitle = body.equals("(default)")?"":body;
+                if(body.equals("script")) {
+                    // User wants to edit javascript code
+                    // Select text editor
+                    session.putValue("te_pageeditor", editor);
+                    editor = C_SELECTBOX_EDITORVIEWS[1];
+                    parameters.put("editor", editor);
+                } else if(oldBody.equals("script")) {
+                    // User wants to switch back from javascript mode
+                    // Select old editor
+                    editor = (String)session.getValue("te_pageeditor");
+                    parameters.put("editor", editor);
+                }
             }
                  
             if(newbodyRequested) {
                 body = C_BODY_ELEMENT + bodyTemplateFile.createNewSection(C_BODY_ELEMENT);
+                bodytitle = body;
                 temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
                 //temporaryControlFile.write();
@@ -292,19 +331,21 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 
             // TODO: Set correct error page here
             //try {
-            bodyTemplateFile.setEditedTemplateContent(content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]));
+            if((! exitRequested) || saveRequested) {
+                bodyTemplateFile.setEditedTemplateContent(content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]));
+            }             
             /*} catch(CmsException e) {
-                if(e.getType() == e.C_XML_PARSING_ERROR) {
-                    CmsXmlWpTemplateFile errorTemplate = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, "parseerror");
-					errorTemplate.setData("details", Utils.getStackTrace(e));
-                    return startProcessing(cms, errorTemplate, elementName, parameters, "parseerror");
-                }
-                else throw e;
+            if(e.getType() == e.C_XML_PARSING_ERROR) {
+            CmsXmlWpTemplateFile errorTemplate = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, "parseerror");
+            	errorTemplate.setData("details", Utils.getStackTrace(e));
+                return startProcessing(cms, errorTemplate, elementName, parameters, "parseerror");
+            }
+            else throw e;
             }*/
             
             bodyTemplateFile.write(); 
             temporaryControlFile.write();
-        }    
+        } 
 
         // If the user requested a preview then send a redirect
         // to the temporary page file.
@@ -351,7 +392,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Load the body!                                        
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);        
-
         content = encoder.escape(content);
         parameters.put(C_PARA_CONTENT, content);
         
@@ -384,6 +424,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         xmlTemplateDocument.setData("editor", editor);
+        xmlTemplateDocument.setData("jsfile", editor.equals(C_SELECTBOX_EDITORVIEWS[2])?C_SELECTBOX_EDITORVIEWS[1]:editor);
         xmlTemplateDocument.setData("bodyfile", bodyElementFilename);
         xmlTemplateDocument.setData("bodyclass", bodyElementClassName);
         xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));                
@@ -514,8 +555,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 	     	browserId = 1;
 	   	}
         int loop=1;
+        int allowedEditors = C_SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
+        if(((String)parameters.get("body")).equals("script")) {
+            allowedEditors = allowedEditors & 510;
+        }
         for(int i=0; i<names2.size(); i++) {            
-            if((C_SELECTBOX_EDITORVIEWS_ALLOWED[browserId] & loop) > 0) {
+            if((allowedEditors & loop) > 0) {
                 values.addElement(values2.elementAt(i));
                 names.addElement(names2.elementAt(i));
             }
