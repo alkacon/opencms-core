@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.15 Gom Jabbar   - xx September 2001
+* When an exception occurs while changing the owner, group or access flags of the files in a folder
+  keep on changing the next file and write the error message into log file.
+
 OpenCms 4.5.14 Gom Jabbar   - 05 September 2001
 ! A simple broadcast message service is availabla for Administrators.
 * Temporary projects are now created with the right type and will be deleted after publish.
