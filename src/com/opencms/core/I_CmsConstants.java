@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/01/14 13:46:51 $
+ * @version $Revision: 1.19 $ $Date: 2000/01/21 16:23:33 $
  */
 public interface I_CmsConstants
 {
@@ -349,7 +349,6 @@ public interface I_CmsConstants
 	  * The name of the mimetypes-property.
 	  */
 	 static final String C_PROPERTY_MIMETYPES = "MIMETYPES";
-     
      
 	 /**
 	  * The name of the resourcetype-property.
