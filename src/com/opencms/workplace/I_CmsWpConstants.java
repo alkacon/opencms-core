@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/11/08 21:55:39 $
-* Version: $Revision: 1.117 $
+* Date   : $Date: 2002/12/04 14:44:01 $
+* Version: $Revision: 1.118 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.117 $ $Date: 2002/11/08 21:55:39 $
+ * @version $Revision: 1.118 $ $Date: 2002/12/04 14:44:01 $
  */
 
 public interface I_CmsWpConstants {
@@ -85,6 +85,9 @@ public interface I_CmsWpConstants {
 
     /** Path to scripts */
     public static final String C_VFS_PATH_SCRIPTS = C_VFS_NEW_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/";
+
+    /** Path to online help pages */
+    public static final String C_VFS_PATH_HELP = "/system/workplace/help/";
 
     /** Directory name of content templates folder */
     public static final String C_VFS_DIR_TEMPLATES = "templates/";

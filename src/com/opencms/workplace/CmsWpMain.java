@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2002/11/29 14:40:40 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/12/04 14:43:45 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2002/11/29 14:40:40 $
+ * @version $Revision: 1.44 $ $Date: 2002/12/04 14:43:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -137,13 +137,17 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			xmlTemplateDocument.setData("LOCALE", "" + userLanguage);
 
 			try {
-				cms.readFolder(C_VFS_PATH_LOCALES + userLanguage);
+				cms.readFolder(C_VFS_PATH_HELP + userLanguage);
 				// the localized help- folder exists
 				xmlTemplateDocument.setData("HELP", xmlTemplateDocument.getProcessedDataValue("HELP_ENABLED", this));
 			}
 			catch (CmsException e) {
 				// the localized help- folder does not exist
-				xmlTemplateDocument.setData("HELP", xmlTemplateDocument.getProcessedDataValue("HELP_DISABLED", this));
+                try {
+				    xmlTemplateDocument.setData("HELP", xmlTemplateDocument.getProcessedDataValue("HELP_DISABLED", this));
+                } catch (Exception ex) {
+                    // probably the "head" template is old, ignore this error so the workplace can still be used
+                } 
 			}
 		}
 
