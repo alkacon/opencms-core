@@ -7,8 +7,7 @@
 <script language=JavaScript>
 <!--
 top.help_url='Administration/projektverwaltung/ProjaktuellDetails.html';
-window.top.body.admin_head.location.href=']]><method name="getServletPath"/><![CDATA[system/workplace/administration/project/currentprojects/administration_head_4.html';
-document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/action/explorer_files.html?mode=projectview";
+]]><PROCESS>loadheader</PROCESS><![CDATA[
 //-->
 </script>
 
@@ -23,4 +22,14 @@ document.location.href="]]><method name="getServletPath"/><![CDATA[system/workpl
 </html>
 ]]>
 </TEMPLATE>
+
+<LOADHEADER>
+<![CDATA[window.top.body.admin_head.location.href=']]><method name="getServletPath"/><![CDATA[system/workplace/administration/project/currentprojects/administration_head_4.html';
+document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/action/explorer_files.html?mode=projectview";]]>
+</LOADHEADER>
+
+<NOTLOADHEADER>
+<![CDATA[document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/action/explorer_files.html?mode=projectview";]]>
+</NOTLOADHEADER>
+
 </WORKPLACE>
