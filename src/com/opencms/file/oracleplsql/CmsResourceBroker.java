@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/28 14:37:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/11/29 17:03:10 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.9 $ $Date: 2000/11/28 14:37:30 $
+ * @version $Revision: 1.10 $ $Date: 2000/11/29 17:03:10 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -67,20 +67,6 @@ public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsR
 	return (dbAccess.accessCreate(currentUser, currentProject, resource));
 }
 /**
- * Checks, if the group may access this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * @param flags The flags to check.
- * 
- * @return wether the user has access, or not.
- */
-protected boolean accessGroup(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessGroup(currentUser, currentProject, resource, flags));
-}
-/**
  * Checks, if the user may lock this resource.
  * 
  * @param currentUser The user who requested this method.
@@ -92,34 +78,6 @@ protected boolean accessGroup(CmsUser currentUser, CmsProject currentProject, Cm
 public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	return (dbAccess.accessLock(currentUser, currentProject, resource));
-}
-/**
- * Checks, if the other may access this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * @param flags The flags to check.
- * 
- * @return wether the user has access, or not.
- */
-protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessOther(currentUser, currentProject, resource, flags));
-}
-/**
- * Checks, if the owner may access this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * @param flags The flags to check.
- * 
- * @return wether the user has access, or not.
- */
-protected boolean accessOwner(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessOwner(currentUser, currentProject, resource, flags));
 }
 // Methods working with projects
 

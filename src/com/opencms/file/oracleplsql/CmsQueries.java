@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/11/08 13:46:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/11/29 17:03:10 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -74,20 +74,14 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 	// statements for access
 	public Integer C_PLSQL_ACCESS_ACCESSCREATE_KEY = new Integer(10020);
 	public String C_PLSQL_ACCESS_ACCESSCREATE = "{? = call opencmsAccess.accessCreate(?,?,?)}";	
-	public Integer C_PLSQL_ACCESS_ACCESSLOCK_KEY = new Integer(10021);
-	public String C_PLSQL_ACCESS_ACCESSLOCK = "{? = call opencmsAccess.accessLock(?,?,?)}";		
-	public Integer C_PLSQL_ACCESS_ACCESSPROJECT_KEY = new Integer(10022);
+	public Integer C_PLSQL_ACCESS_ACCESSPROJECT_KEY = new Integer(10021);
 	public String C_PLSQL_ACCESS_ACCESSPROJECT = "{? = call opencmsAccess.accessProject(?,?)}";
-	public Integer C_PLSQL_ACCESS_ACCESSREAD_KEY = new Integer(10023);
+	public Integer C_PLSQL_ACCESS_ACCESSREAD_KEY = new Integer(10022);
 	public String C_PLSQL_ACCESS_ACCESSREAD = "{? = call opencmsAccess.accessRead(?,?,?)}";
-	public Integer C_PLSQL_ACCESS_ACCESSWRITE_KEY = new Integer(10024);
+	public Integer C_PLSQL_ACCESS_ACCESSWRITE_KEY = new Integer(10023);
 	public String C_PLSQL_ACCESS_ACCESSWRITE = "{? = call opencmsAccess.accessWrite(?,?,?)}";
-	public Integer C_PLSQL_ACCESS_ACCESSOWNER_KEY = new Integer(10025);
-	public String C_PLSQL_ACCESS_ACCESSOWNER = "{? = call opencmsAccess.accessOwner(?,?,?,?)}";		
-	public Integer C_PLSQL_ACCESS_ACCESSOTHER_KEY = new Integer(10026);
-	public String C_PLSQL_ACCESS_ACCESSOTHER = "{? = call opencmsAccess.accessOther(?,?,?,?)}";
-	public Integer C_PLSQL_ACCESS_ACCESSGROUP_KEY = new Integer(10027);
-	public String C_PLSQL_ACCESS_ACCESSGROUP = "{? = call opencmsAccess.accessGroup(?,?,?,?)}";		
+	public Integer C_PLSQL_ACCESS_ACCESSLOCK_KEY = new Integer(10024);
+	public String C_PLSQL_ACCESS_ACCESSLOCK = "{? = call opencmsAccess.accessLock(?,?,?)}";		
 
 	// statements for groups
 	public Integer C_PLSQL_GROUPS_USERINGROUP_KEY = new Integer(10030);

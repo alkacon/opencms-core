@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/24 13:49:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/11/29 17:03:10 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.8 $ $Date: 2000/11/24 13:49:49 $ * 
+ * @version $Revision: 1.9 $ $Date: 2000/11/29 17:03:10 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -103,45 +103,6 @@ public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsR
 		}
 	}
 }
-/**
- * Checks, if the group may access this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * @param flags The flags to check.
- * 
- * @return wether the user has access, or not.
- */
-public boolean accessGroup(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException {
-	//System.out.println("PL/SQL: accessGroup");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSGROUP_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.setInt(5, flags);
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSGROUP_KEY, statement);
-		}
-	}
-}
 /*
 * Checks, if the user may lock this resource.
  * 
@@ -176,84 +137,6 @@ public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsRes
 	} finally {
 		if (statement != null) {
 			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSLOCK_KEY, statement);
-		}
-	}
-}
-/**
- * Checks, if the other may access this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * @param flags The flags to check.
- * 
- * @return wether the user has access, or not.
- */
-public boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException {
-	//System.out.println("PL/SQL: accessOther");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSOTHER_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.setInt(5, flags);
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSOTHER_KEY, statement);
-		}
-	}
-}
-/**
- * Checks, if the owner may access this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * @param flags The flags to check.
- * 
- * @return wether the user has access, or not.
- */
-public boolean accessOwner(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException {
-	//System.out.println("PL/SQL: accessOwner");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSOWNER_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.setInt(5, flags);
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSOWNER_KEY, statement);
 		}
 	}
 }
@@ -1185,12 +1068,6 @@ protected void initStatements() throws CmsException {
 	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSREAD_KEY, 1, Types.INTEGER);
 	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSWRITE_KEY, cq.C_PLSQL_ACCESS_ACCESSWRITE);
 	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSWRITE_KEY, 1, Types.INTEGER);
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSOWNER_KEY, cq.C_PLSQL_ACCESS_ACCESSOWNER);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSOWNER_KEY, 1, Types.INTEGER);			
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSOTHER_KEY, cq.C_PLSQL_ACCESS_ACCESSOTHER);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSOTHER_KEY, 1, Types.INTEGER);
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSGROUP_KEY, cq.C_PLSQL_ACCESS_ACCESSGROUP);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSGROUP_KEY, 1, Types.INTEGER);		
 
 	// init statements for groups
 	pool.initCallableStatement(cq.C_PLSQL_GROUPS_USERINGROUP_KEY, cq.C_PLSQL_GROUPS_USERINGROUP);
