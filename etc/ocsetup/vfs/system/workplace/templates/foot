@@ -9,7 +9,11 @@
 </head>
 
 <body background="../pics/bg_grau.gif"  bgproperties=fixed>
-<form>
+<form 
+	name="form1"
+	id="form1"
+	method=get>
+	<!-- action="http://localhost/open/cms/system/workplace/action/foot.html" -->
 
 <table cellspacing=0 cellpadding=0 border=0>
 	<tr>
@@ -17,11 +21,7 @@
 		<td class=dialogtxt nowrap><p class=einzug>]]><METHOD name="getInformation">currentUser</METHOD><![CDATA[</p></td>
 		<td class=formular nowrap><p class=tab>]]><LABEL value="label.group"/><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt nowrap valign=top>
-			<select class=textfeld name="group" width=150 style="width:150px" onchange="javascript:alert('Auswahl noch nicht verfügbar')">
-			<option>Administrators
-			<option>HTML Programmers
-			<option>Screen Designers
-			<option>Editors</select>
+			]]><SELECT class="textfeld" name="group" width="150" onchange="javascript:document.all.form1.submit()"/><![CDATA[
 		</td>
 		<td class=formular nowrap><img="../pics/empty.gif" border=0 height=30 width=2></td>
 	</tr>
