@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/14 12:44:12 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2000/06/14 14:20:45 $
+ * Version: $Revision: 1.86 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.85 $ $Date: 2000/06/14 12:44:12 $ 
+ * @version $Revision: 1.86 $ $Date: 2000/06/14 14:20:45 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1241,6 +1241,20 @@ public class CmsObject implements I_CmsConstants {
 	public Vector getUsers() 
 		throws CmsException { 
 		return( c_rb.getUsers(m_context.currentUser(), m_context.currentProject()) );
+	}
+
+	/**
+	 * Returns all users of the type in the Cms.
+	 * 
+	 * @param type The type of the users.
+	 * 
+	 * @return all users of the type in the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Vector getUsers(int type) 
+		throws CmsException { 
+		return( c_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type));
 	}
 
 	/**

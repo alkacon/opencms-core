@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/14 12:44:13 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2000/06/14 14:20:45 $
+ * Version: $Revision: 1.84 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.83 $ $Date: 2000/06/14 12:44:13 $
+ * @version $Revision: 1.84 $ $Date: 2000/06/14 14:20:45 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -1276,6 +1276,21 @@ public interface I_CmsResourceBroker {
 									String username, String groupname)
 		throws CmsException;
 
+	/**
+	 * Returns all users from a given type<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param type The type of the users.
+	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type)
+        throws CmsException;
+	
 	/**
 	 * Returns all users<P/>
 	 * 

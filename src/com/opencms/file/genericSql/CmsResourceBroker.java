@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/14 14:08:31 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/06/14 14:20:46 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2000/06/14 14:08:31 $
+ * @version $Revision: 1.52 $ $Date: 2000/06/14 14:20:46 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2207,6 +2207,29 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
 				CmsException.C_NO_ACCESS);
             }
+		}
+    }
+
+	/**
+	 * Returns all users from a given type<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param type The type of the users. 
+	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type)
+        throws CmsException {
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getUsers(type);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
+				CmsException.C_NO_ACCESS);
 		}
     }
 
