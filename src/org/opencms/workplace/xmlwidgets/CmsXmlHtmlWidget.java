@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlHtmlWidget.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/02/23 14:53:28 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
@@ -87,7 +87,8 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
         
-        return "\tinitHtmlArea();";
+        // the timeout setting prevents IE from jumping to the last html area widget
+        return "\tinitHtmlArea();\n\tsetTimeout(\"window.blur();window.scrollTo(0,0);\", 50);\n";
     }
     
     /**
