@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/10/14 12:07:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/10/20 08:55:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -58,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -140,21 +141,35 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException {   
+    throws ServletException, IOException {
+
+        // check if we can send a 304 "Not Modified" header
+        if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            // never use 304 when the file has somehow changed (can only be true in an offline project)      
+            if (req.getDateHeader("If-Modified-Since") == file.getDateLastModified()) {
+                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+        }
+           
         // set content length header
         res.setContentLength(file.getContents().length);
         // set date last modified header
         res.setDateHeader("Last-Modified", file.getDateLastModified());
+        // set expire and chache headers        
         int expireTime;
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            // allow proxy caching of 10 minutes  
-            expireTime = 600;        
+            // allow proxy caching of 1 day
+            // TODO: Allow this value to be configured somehow  
+            expireTime = 86400;        
         } else {
-            // allow proxy caching of 10 secounds only (required for PDF preview in offline project)
+            // allow proxy caching of 10 seconds only (required for PDF preview in offline project)
             expireTime = 10;
         }
         res.setHeader("Cache-Control", "max-age=" + expireTime); // HTTP 1.1
-        res.setDateHeader("Expires", System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0          
+        res.setDateHeader("Expires", System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0
+        
+        // now send the file to the client          
         service(cms, file, req, res);        
     }
         
