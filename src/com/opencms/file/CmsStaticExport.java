@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/03/05 12:55:35 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/03/14 11:22:04 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.20 $ $Date: 2002/03/05 12:55:35 $
+ * @version $Revision: 1.21 $ $Date: 2002/03/14 11:22:04 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -162,6 +162,10 @@ public class CmsStaticExport implements I_CmsConstants{
                     exportLink(aktLink, exportLinks);
                 }
                 setChangedLinkVector(exportLinks);
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                            "[CmsStaticExport] all done.");
+                }
             }catch(NullPointerException e){
                 // no original request
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -329,9 +333,6 @@ public class CmsStaticExport implements I_CmsConstants{
      */
     private void exportLink(String link, Vector allLinks) throws CmsException{
 
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] exporting "+link);
-        }
         String deleteFileOnError = null;
         OutputStream outStream = null;
         CmsExportLink dbLink = new CmsExportLink(link, System.currentTimeMillis(), null);
