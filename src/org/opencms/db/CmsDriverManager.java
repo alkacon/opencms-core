@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/09/20 12:39:00 $
- * Version: $Revision: 1.420 $
+ * Date   : $Date: 2004/10/14 08:19:36 $
+ * Version: $Revision: 1.421 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -75,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.420 $ $Date: 2004/09/20 12:39:00 $
+ * @version $Revision: 1.421 $ $Date: 2004/10/14 08:19:36 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -262,10 +261,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The lock manager. */
     private CmsLockManager m_lockManager = OpenCms.getLockManager();
-
-    /** The class used for password validation. */
-    private I_CmsPasswordValidation m_passwordValidationClass;
-        
+    
     /** Cache for permission checks. */
     private Map m_permissionCache;
     
@@ -3896,16 +3892,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Method to encrypt the passwords.<p>
-     *
-     * @param value the value to encrypt
-     * @return the encrypted value
-     */
-    public String digest(String value) {
-        return m_userDriver.encryptPassword(value);
-    }
-
-    /**
      * Ends a task from the Cms.<p>
      *
      * All users are granted.
@@ -7119,19 +7105,36 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @throws CmsSecurityException if the password is not valid
      */
     public void validatePassword(String password) throws CmsSecurityException {
-        if (m_passwordValidationClass == null) {
-            synchronized (this) {
-                String className = OpenCms.getPasswordValidatingClass();
-                try {
-                    m_passwordValidationClass = (I_CmsPasswordValidation)Class.forName(className).getConstructor(new Class[] {}).newInstance(new Class[] {});
-                } catch (Exception e) {
-                    throw new RuntimeException("Error generating password validation class instance");
-                }
-            }
-        }
-        m_passwordValidationClass.validatePassword(password);
+        
+        OpenCms.getPasswordHandler().validatePassword(password);
     }
 
+    /**
+     * Encrypts the given password with the default encryption method/encoding.<p>
+     * 
+     * @param password the password to encrypt
+     * @return the encrypted password
+     * @throws CmsException if something goes wrong
+     */
+    public String digest(String password) throws CmsException {
+
+        return OpenCms.getPasswordHandler().digest(password);
+    }  
+    
+    /**
+     * Creates a password digest with the defined encryption method/encodings.<p>
+     * 
+     * @param password password the password to encrypt
+     * @param digestType the algorithm used for encryption (i.e. MD5, SHA ...)
+     * @param inputEncoding the encoding used when converting the password to bytes (i.e. UTF-8)
+     * @return the encrypted password
+     * @throws CmsException if something goes wrong
+     */
+    public String digest(String password, String digestType, String inputEncoding) throws CmsException {
+
+        return OpenCms.getPasswordHandler().digest(password, digestType, inputEncoding);
+    }
+    
     /**
      * Checks if the provided file name is a valid file name, that is contains only
      * valid characters.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/09/20 12:39:00 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/10/14 08:21:39 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1989,8 +1989,9 @@ public class CmsObject {
      *
      * @param value The value to encrypt.
      * @return The encrypted value.
+     * @throws CmsException if something goes wrong
      */
-    public String digest(String value) {
+    public String digest(String value) throws CmsException {
         return m_driverManager.digest(value);
     }
         

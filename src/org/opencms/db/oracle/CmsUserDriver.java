@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/10/14 08:21:08 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.29 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.30 $ $Date: 2004/10/14 08:21:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -71,7 +71,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-            stmt.setString(3, encryptPassword(password));
+            stmt.setString(3, m_driverManager.digest(password));
             stmt.setString(4, m_sqlManager.validateEmpty(description));
             stmt.setString(5, m_sqlManager.validateEmpty(firstname));
             stmt.setString(6, m_sqlManager.validateEmpty(lastname));

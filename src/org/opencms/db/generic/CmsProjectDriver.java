@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/09/01 15:10:26 $
- * Version: $Revision: 1.188 $
+ * Date   : $Date: 2004/10/14 08:20:10 $
+ * Version: $Revision: 1.189 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.188 $ $Date: 2004/09/01 15:10:26 $
+ * @version $Revision: 1.189 $ $Date: 2004/10/14 08:20:10 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -363,16 +363,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // add the users
         String guestUser = OpenCms.getDefaultUsers().getUserGuest();
-        CmsUser guest = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(guestUser), guestUser, m_driverManager.getUserDriver().encryptPassword(""), "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+        CmsUser guest = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(guestUser), guestUser, m_driverManager.digest(""), "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
-        CmsUser admin = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(adminUser), adminUser, m_driverManager.getUserDriver().encryptPassword("admin"), "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+        CmsUser admin = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(adminUser), adminUser, m_driverManager.digest("admin"), "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
         m_driverManager.getUserDriver().createUserInGroup(guest.getId(), guests.getId(), null);
         m_driverManager.getUserDriver().createUserInGroup(admin.getId(), administrators.getId(), null);
         // add the export user (if it is not set to guest or admin)
         if (!OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserAdmin()) 
                 && !OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserGuest())) {
             String exportUser = OpenCms.getDefaultUsers().getUserExport();
-            CmsUser export = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.getUserDriver().encryptPassword((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+            CmsUser export = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.digest((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
             m_driverManager.getUserDriver().createUserInGroup(export.getId(), guests.getId(), null);
         }
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
