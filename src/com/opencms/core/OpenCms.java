@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/02/04 16:30:17 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2002/02/05 10:49:58 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.78 $ $Date: 2002/02/04 16:30:17 $
+ * @version $Revision: 1.79 $ $Date: 2002/02/05 10:49:58 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -354,7 +354,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 createDynamicLinkRules();
             }else{
                 // no static export. We need online and offline rules to stay in OpenCms.
-                c_linkRulesOffline = new String[]{"s#^#/"+ CmsBase.getWebAppName() +"/opencms#"};
+                // we generate them with the url_prefix_http so the user can still configure
+                // the servletpath.
+                c_linkRulesOffline = new String[]{"s#^#" + c_staticUrlPrefix[1] + "#"};
                 c_linkRulesOnline = c_linkRulesOffline;
             }
         }catch(Exception e){
