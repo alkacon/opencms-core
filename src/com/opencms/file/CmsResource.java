@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/16 14:30:03 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/07/16 16:34:49 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.63 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/16 16:34:49 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -760,6 +760,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         output.append(getLength());
         output.append(" : state=");
         output.append(getState());
+        output.append(" : Date created=");
+        output.append(new java.util.Date(getDateCreated()));
+        output.append(" : User created=");
+        output.append(getUserCreated());
+        output.append(" : Date lastmodified=");
+        output.append(new java.util.Date(getDateLastModified()));
+        output.append(" : User lastmodified=");
+        output.append(getUserLastModified());
         return output.toString();
     }  
       

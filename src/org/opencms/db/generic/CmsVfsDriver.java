@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/16 13:45:49 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/16 16:34:49 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2003/07/16 13:45:49 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/16 16:34:49 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -89,7 +89,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @param resourcename The name of the resource to change
      * @throws CmsException if an error occurs
      */
-    public void changeLockedInProject(int newProjectId, CmsUUID structureId) throws CmsException {
+    public void changeLockedInProject(int newProjectId, CmsUUID resourceId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
     
@@ -97,7 +97,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UPDATE_PROJECTID");
             stmt.setInt(1, newProjectId);
-            stmt.setString(2, structureId.toString());
+            stmt.setString(2, resourceId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {           
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -240,7 +240,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         String resourceName = res.getString(m_sqlManager.get("C_RESOURCES_RESOURCE_NAME"));
         int resourceFlags = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_FLAGS"));
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
-        int state = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
+        int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
+        int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
         CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
         String launcherClass = m_driverManager.getResourceType(resourceType).getLauncherClass();
@@ -265,7 +266,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject = projectId;
         }        
 
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* userCreated, CmsUUID.getNullUUID(), */ resProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, resourceState, lockedBy, launcherType, launcherClass, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -281,7 +282,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         int resourceType = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_FLAGS"));
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
-        int state = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
+        int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
+        int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
         CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
@@ -300,7 +302,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject = projectId;
         } 
 
-        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* userCreated, CmsUUID.getNullUUID(), */ resProjectId, 0, state, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject);
+        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, resourceState, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject);
     }
 
     /**
@@ -2975,10 +2977,18 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         Connection conn = null;
         try {
             conn = m_sqlManager.getConnection(res.getProjectId());
-            stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_STATE");
+            stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_RESOURCE_STATE");
+            stmt.setInt(1, res.getState());
+            stmt.setString(2, res.getResourceId().toString());
+            stmt.executeUpdate();
+            
+            m_sqlManager.closeAll(null, stmt, null);
+            
+            stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_STRUCTURE_STATE");
             stmt.setInt(1, res.getState());
             stmt.setString(2, res.getId().toString());
             stmt.executeUpdate();
+                        
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {

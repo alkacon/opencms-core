@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/16 16:25:27 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2003/07/16 16:34:49 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.57 $ $Date: 2003/07/16 16:25:27 $
+ * @version $Revision: 1.58 $ $Date: 2003/07/16 16:34:49 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -746,7 +746,7 @@ public class CmsDriverManager extends Object {
         List path = readPath(context, resourcename, true);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
 
-        m_vfsDriver.changeLockedInProject(projectId, resource.getId());
+        m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());
         //clearResourceCache(resourcename, new CmsProject(projectId, 0), context.currentUser());
         clearResourceCache();
     }
@@ -2003,7 +2003,7 @@ public class CmsDriverManager extends Object {
             // remove the access control entries
             m_userDriver.removeAllAccessControlEntries(context.currentProject(), offlineFile.getResourceAceId());
         } else {
-            m_vfsDriver.deleteFile(context.currentProject(), offlineFile.getId());
+            m_vfsDriver.deleteFile(context.currentProject(), offlineFile.getResourceId());
             // delete the access control entries
             deleteAllAccessControlEntries(context, offlineFile);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/16 10:11:23 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/16 16:34:49 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2003/07/16 10:11:23 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/16 16:34:49 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -213,12 +213,19 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     }
 
     /**
-     * Sets the user id of the user who changed this file.<p>
+     * Sets the user id of the user who changed the content in this file.<p>
      *
      * @param resourceLastModifiedByUserId the user id of the user who changed the resource
      */
-    void setUserLastModified(CmsUUID resourceLastModifiedByUserId) {
+    void setContentUserLastModified(CmsUUID resourceLastModifiedByUserId) {
         m_lastModifiedByUser = resourceLastModifiedByUserId;
+    }
+    
+    /**
+     * Gets the user id of the user who changed the content in this file.<p>
+     */
+    public CmsUUID getContentUserLastModified() {
+        return m_lastModifiedByUser;    
     }
     
     /**
@@ -228,21 +235,28 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @return the user id of the user who made the last change<p>
      */
     public CmsUUID getUserLastModified() {
-        if (super.getDateLastModified() > this.m_dateLastModified)
+        if (super.getDateLastModified() > this.getContentDateLastModified())
             return super.getUserLastModified();
         else
-            return this.m_lastModifiedByUser;    
+            return this.getContentUserLastModified();    
     }
 
     /**
-    * Sets the date of the last modification of this resource.<p>
+    * Sets the date of the last modification of the content of this resource.<p>
     * 
     * @param time the date to set
      */
-    public void setDateLastModified(long time) {
+    public void setContentDateLastModified(long time) {
        m_dateLastModified = time;
     }
-        
+    
+    /**
+     * Returns the date of the last change of the content of this resource.<p>
+     */
+    public long getContentDateLastModified() {
+       return m_dateLastModified; 
+    }
+    
     /**
      * Returns the date of the last modification of this resource.<p>
      * Note: This is the latest date of either the date of the last change of the structure or the resource record.
@@ -250,7 +264,18 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @return the date of the last modification of this resource
      */
      public long getDateLastModified() {
-         return (super.getDateLastModified() > this.m_dateLastModified) ? super.getDateLastModified() : this.m_dateLastModified;
+         return (super.getDateLastModified() > this.getContentDateLastModified()) ? super.getDateLastModified() : this.getContentDateLastModified();
      }
-    
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer output = new StringBuffer(super.toString());
+        output.append(" : Content date lastmodified=");
+        output.append(new java.util.Date(getContentDateLastModified()));
+        output.append(" : Content user lastmodified=");
+        output.append(getContentUserLastModified());
+        return output.toString();        
+    }    
 }

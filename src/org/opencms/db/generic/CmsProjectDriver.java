@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/07/16 16:34:49 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.25 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/16 16:34:49 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1312,12 +1312,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         offlineFolders = null;
 
         // now read all FILES in offlineProject
-
         offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId(), false, true);
         
         i = offlineFiles.iterator();
         while (i.hasNext()) {
-            currentFile = (CmsFile) i.next();
+            currentFile = (CmsFile) i.next();              
             currentResourceName = m_driverManager.readPath(context, currentFile, true);
             
             publishCurrentResource = false;
