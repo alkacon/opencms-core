@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/05/10 15:59:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/15 16:08:38 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.14 $ $Date: 2000/05/10 15:59:51 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/15 16:08:38 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -721,7 +721,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param userObj Hashtable with parameters.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNav(A_CmsObject cms, A_CmsXmlContent doc,Object userObject, Vector resources)
+	protected String buildNav(A_CmsObject cms, A_CmsXmlContent doc,Object userObject, Vector resources)
 		throws CmsException {
 		
 		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
@@ -798,7 +798,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNavTree(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int depth)
+	protected String buildNavTree(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int depth)
 		throws CmsException {
 		
 		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
@@ -874,7 +874,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param userObj Hashtable with parameters.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNavRedirected(A_CmsObject cms, A_CmsXmlContent doc, Object userObject, Vector resources)
+	protected String buildNavRedirected(A_CmsObject cms, A_CmsXmlContent doc, Object userObject, Vector resources)
 		throws CmsException {
 		
 		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
@@ -968,7 +968,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNavFold(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath)
+	protected String buildNavFold(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath)
 		throws CmsException {
 		
 		String cmsfolder=(String)(((Hashtable)userObject).get("cmsfolder"));
@@ -1047,7 +1047,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param level The level of folder.
 	 * @return String that contains the path of folder determind by level.
 	 */	
-	private String extractFolder(A_CmsObject cms, int level)
+	protected String extractFolder(A_CmsObject cms, int level)
 		throws CmsException {
 					
 		String currentFolder="/";		
@@ -1080,7 +1080,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param navPos an array of position of navbar.
 	 * @return The maximum number of navbars in navigation.
 	 */	
-	private int extractNav(A_CmsObject cms, Vector resources, String[] navLink, String[] navText, float[] navPos)
+	protected int extractNav(A_CmsObject cms, Vector resources, String[] navLink, String[] navText, float[] navPos)
 		throws CmsException {
 		
 		String requestedUri = cms.getRequestContext().getUri();
