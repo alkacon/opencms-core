@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/02/03 09:38:38 $
+ * @version $Revision: 1.21 $ $Date: 2000/02/03 11:04:13 $
  */
 public interface I_CmsWpConstants {
 
@@ -187,7 +187,11 @@ public interface I_CmsWpConstants {
     /**  Length of the input field  */
     public static final String C_INPUT_LENGTH = "length";    
 
+    /**  Value of the input field  */
+    public static final String C_INPUT_VALUE = "value";    
     
+    /**  Method of the input field  */
+    public static final String C_INPUT_METHOD = "method";    
     
     // Parameters for error boxes and error pages
     
@@ -218,6 +222,9 @@ public interface I_CmsWpConstants {
     /** Name of the select box */
     public static final String C_SELECTBOX_NAME = "name";
     
+    /** Size of the select box */
+    public static final String C_SELECTBOX_SIZE = "size";
+	
     /** Stylesheet class string of the select box */
     public static final String C_SELECTBOX_CLASS = "class";
 
@@ -307,5 +314,24 @@ public interface I_CmsWpConstants {
     /** Flag for displaying the locked column */
     public static final int C_FILELIST_LOCKED = 256;
     
-    
+	/** Parameter of projectnew */    
+	public static final String C_PROJECTNEW_NAME = "NAME";
+
+	/** Parameter of projectnew */    
+	public static final String C_PROJECTNEW_GROUP = "GROUP";
+
+	/** Parameter of projectnew */    
+	public static final String C_PROJECTNEW_DESCRIPTION = "DESCRIPTION";
+
+	/** Parameter of projectnew */    
+	public static final String C_PROJECTNEW_MANAGERGROUP = "MANAGERGROUP";
+
+	/** Parameter of projectnew */    
+	public static final String C_PROJECTNEW_FOLDER = "selectallfolders";
+
+	/** Templateselector of projectnew */    
+	public static final String C_PROJECTNEW_ERROR = "error";
+
+	/** Templateselector of projectnew */    
+	public static final String C_PROJECTNEW_DONE = "done";
 }

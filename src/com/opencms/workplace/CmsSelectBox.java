@@ -15,7 +15,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/02 10:30:08 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/03 11:04:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -54,12 +54,17 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         String selectMethod = n.getAttribute(C_SELECTBOX_METHOD);
         String selectWidth = n.getAttribute(C_SELECTBOX_WIDTH);
         String selectOnchange = n.getAttribute(C_SELECTBOX_ONCHANGE);
+        String selectSize = n.getAttribute(C_SELECTBOX_SIZE);
+
+		if( (selectSize == null) || (selectSize.length() == 0) ) {
+			selectSize = "1";
+		}
         
         // Get input definition file
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
         
         // get the processed selectbox start.
-        result.append(inputdef.getSelectBoxStart(selectClass, selectName, selectWidth, selectOnchange));
+        result.append(inputdef.getSelectBoxStart(selectClass, selectName, selectWidth, selectOnchange, selectSize));
         
         // call the method for generating listbox elements
         Method groupsMethod = null;

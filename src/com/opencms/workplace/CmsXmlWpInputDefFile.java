@@ -13,7 +13,7 @@ import java.util.*;
  *  Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/28 11:44:03 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/03 11:04:13 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -71,15 +71,17 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * @param name The name of this input field.
      * @param size The size of this input field
      * @param length The input length of this input field.
+     * @param value The value of this input field.
      * @return Processed input field.
      * @exception CmsException
      */
-    public String getInput(String styleClass, String name, String size, String length)
+    public String getInput(String styleClass, String name, String size, String length, String value)
         throws CmsException {
         setData(C_INPUT_CLASS, styleClass);
         setData(C_INPUT_NAME, name);
         setData(C_INPUT_SIZE, size);
         setData(C_INPUT_LENGTH, length);
+        setData(C_INPUT_VALUE, value);
         return getProcessedDataValue(C_TAG_INPUTFIELD);                
      }  
 
@@ -102,7 +104,7 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      }  
 
 
-    public String getSelectBoxStart(String classname, String name, String width, String onchange) throws CmsException {
+    public String getSelectBoxStart(String classname, String name, String width, String onchange, String size) throws CmsException {
         if(classname == null || "".equals(classname)) {
             setData(C_SELECTBOX_CLASS, "");
         } else {
@@ -112,6 +114,7 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
         setData(C_SELECTBOX_NAME, name);
         setData(C_SELECTBOX_WIDTH, width);
         setData(C_SELECTBOX_ONCHANGE, onchange);
+        setData(C_SELECTBOX_SIZE, size);
         return getProcessedDataValue(C_TAG_SELECTBOX_START);
     }
 

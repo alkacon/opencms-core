@@ -8,14 +8,14 @@ import com.opencms.template.*;
 import com.opencms.file.*;
 
 import java.util.*;
-
+import java.lang.reflect.*;
 
 /**
  * Class for building workplace input fields. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/02 10:30:08 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/03 11:04:13 $
  */
 public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -43,10 +43,42 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
         String name=n.getAttribute(C_INPUT_NAME);
         String size=n.getAttribute(C_INPUT_SIZE);
         String length=n.getAttribute(C_INPUT_LENGTH);
-
+        String value=n.getAttribute(C_INPUT_VALUE);
+        String method=n.getAttribute(C_INPUT_METHOD);
+		
+		if( (method != null) && (method.length() != 0) ) {
+			// call the method for generating value
+			Method valueMethod = null;
+			try {
+			    valueMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class});
+			    value = (String)valueMethod.invoke(callingObject, new Object[] {cms, lang});
+			} catch(NoSuchMethodException exc) {
+			    // The requested method was not found.
+			    throwException("Could not find method " + method + " in calling class " + callingObject.getClass().getName() + " for generating input value content.", CmsException.C_NOT_FOUND);
+			} catch(InvocationTargetException targetEx) {
+			    // the method could be invoked, but throwed a exception
+			    // itself. Get this exception and throw it again.              
+			    Throwable e = targetEx.getTargetException();
+			    if(!(e instanceof CmsException)) {
+			        // Only print an error if this is NO CmsException
+			        e.printStackTrace();
+			        throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+			    } else {
+			        // This is a CmsException
+			        // Error printing should be done previously.
+			        throw (CmsException)e;
+			    }
+			} catch(Exception exc2) {
+			    throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+			}
+		}
+		
+		if(value==null) {
+			value = "";
+		}
         
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
-        String result = inputdef.getInput(styleClass,name,size,length);
+        String result = inputdef.getInput(styleClass,name,size,length,value);
 
         return result; 
     }                    
