@@ -67,7 +67,7 @@ function show_help()
 				<td class=dialogtxt>
 					<input type="text" name="folder" class="textfeld" size=31>	
 				</td>
-				<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=MOVE&variable=folder&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>			
+<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>    
 			</tr>
 			<!-- End dropdown-->
 			<tr> 
@@ -118,6 +118,13 @@ function show_help()
 	return '2_2_2_2_4_3.html';
 }
 
+
+
+function SubmitIfCR(form, key){
+  if (key == 13 || key == 65293) {
+    location.href='move.html?&newfolder='+document.MOVE.folder.value+'&flags='+document.MOVE.RIGHT.checked;
+  }
+}
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -171,9 +178,9 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 					]]><SELECT class="textfeld" name="folder" width="150" method="getFolder" /><![CDATA[
 				</td>-->
 				<td class=dialogtxt>
-					<input type="text" name="folder" class="textfeld" size=31>	
+					<input onKeyUp="SubmitIfCR(this.form,event.which);" type="text" name="folder" class="textfeld" size=31>	
 				</td>
-				<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=MOVE&variable=folder', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>			
+<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>    
 			</tr>
 			<!-- End dropdown-->
 			<tr> 
