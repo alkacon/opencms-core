@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/09/04 15:44:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,10 @@
 package com.opencms.flex.cache;
 
 import java.util.HashMap;
+import com.opencms.flex.util.*;
 import com.opencms.file.CmsObject;
 
-/** 
+/**
  * This class implements the FlexCache.<p>
  *
  * The data structure used is a two-level hashtable.
@@ -42,19 +43,19 @@ import com.opencms.file.CmsObject;
  * caching behaviour of the entries.
  * The first hash-level is calculated from the resource name, i.e. the
  * name of the resource as it is referred to in the VFS of OpenCms.
- * A suffix [online] or [offline] is appended to te resource name 
+ * A suffix [online] or [offline] is appended to te resource name
  * to distinguish between the online and offline projects of OpenCms.
  * The second hash-level is calculated from the cache-key of the resource,
  * which also is a String representing the specifc variation of the cached entry.<p>
  *
- * Entries in the first level of the cache are of type CmsFlexCacheVariation, 
- * which is a sub-class of CmsFlexCache. 
- * This class is a simple data type that contains of a Map of CmsFlexCacheEntries, 
+ * Entries in the first level of the cache are of type CmsFlexCacheVariation,
+ * which is a sub-class of CmsFlexCache.
+ * This class is a simple data type that contains of a Map of CmsFlexCacheEntries,
  * with variations - Strings as keys.<p>
  *
  * Here's a short summary of used terms:
  * <ul>
- * <li><b>key:</b> 
+ * <li><b>key:</b>
  * A combination of a resource name and a variation.
  * The data structure used is CmsFlexCacheKey.
  * <li><b>resource:</b>
@@ -66,27 +67,29 @@ import com.opencms.file.CmsObject;
  * For every entry a key is saved which contains the resource name and the variation.
  * </ul>
  *
- * <b>TODO:</b> 
+ * <b>TODO:</b>
  * Implement cache aging, so that old entries are
- * removed if cache size grows to big. 
- * Alternative: Swap to disk if memory runs short, should be more efficient still 
+ * removed if cache size grows to big.
+ * Alternative: Swap to disk if memory runs short, should be more efficient still
  * then asking the database and re-calculating again.<br>
- * <b>TODO:</b> 
+ * <b>TODO:</b>
  * Currenty the whole cache is flushed if something is published.
- * Implement partial cache flushing, i.e. remove only changed elements at publish 
+ * Implement partial cache flushing, i.e. remove only changed elements at publish
  * or change event (in case of offline resources).<br>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
+ * @see com.opencms.flex.util.FlexLruCache
+ * @see com.opencms.flex.util.I_FlexLruObject
  */
 public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
     
     /** Initial Cache size, this should be a prime number of best results in the hash algorithms */
     public static final int C_INITIAL_CAPACITY_CACHE = 509;
     // Alternatives: 127 257 509 1021 2039 4099 8191
-    // TODO: Check is this should be a constructor variable, 
+    // TODO: Check is this should be a constructor variable,
     // maybe related to the number of resources in the site.
     
     /** Initial size for variation lists */
@@ -98,7 +101,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
     
     /** Suffix to append to online cache entries */
     public static String C_CACHE_OFFLINESUFFIX = " [offline]";
-        
+    
     /** Hashmap to store the Entries for fast lookup */
     private java.util.Map m_resourceMap;
     
@@ -113,17 +116,18 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
     
     /** Debug switch */
     private int DEBUG = 0;
-  
-    /** Static ins to trigger clearcache events */
+    
+    /** Static ints to trigger clearcache events */
     public static final int C_CLEAR_ALL = 0;
-    public static final int C_CLEAR_ENTRIES = 1;    
-    public static final int C_CLEAR_ONLINE_ALL = 2;    
-    public static final int C_CLEAR_ONLINE_ENTRIES = 3;  
-    public static final int C_CLEAR_OFFLINE_ALL = 4;    
-    public static final int C_CLEAR_OFFLINE_ENTRIES = 5;  
-
-
-        
+    public static final int C_CLEAR_ENTRIES = 1;
+    public static final int C_CLEAR_ONLINE_ALL = 2;
+    public static final int C_CLEAR_ONLINE_ENTRIES = 3;
+    public static final int C_CLEAR_OFFLINE_ALL = 4;
+    public static final int C_CLEAR_OFFLINE_ENTRIES = 5;
+    
+    private FlexLruCache m_CacheEntryLruCache;
+    
+    
     /**
      * Constructor for class CmsFlexCache.<p>
      *
@@ -133,17 +137,20 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * This is because you need some of the FlexCache data structures
      * for JSP inclusion buffering.
      *
-     * @param enabled Indicates if the cache is enabled or not
-     * @param cacheOffline Indicates if offline resources should be cached or not
+     * @param openCms the OpenCms instance
      */
-    public CmsFlexCache(boolean enabled, boolean cacheOffline) {
-        // TODO: Implement cache - aging & cleanup
-        m_enabled = enabled;
-        m_cacheOffline = cacheOffline;
+    public CmsFlexCache( com.opencms.core.A_OpenCms openCms ) {
+        source.org.apache.java.util.Configurations openCmsProperties = openCms.getConfiguration();
+        m_enabled = openCmsProperties.getBoolean("flex.cache.enabled", true);
+        m_cacheOffline = openCmsProperties.getBoolean("flex.cache.offline", true);
+        
+        this.m_CacheEntryLruCache = new FlexLruCache( openCms );
+        
         if (m_enabled) {
             clear();
             com.opencms.core.A_OpenCms.addCmsEventListener(this);
         }
+        
         if (DEBUG > 0) System.err.println("FlexCache: Initializing with parameters enabled=" + m_enabled + " cacheOffline=" + m_cacheOffline);
     }
     
@@ -152,7 +159,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * caching entries) or not.
      *
      * @return true if the cache is enabled, false if not
-     */    
+     */
     public boolean isEnabled() {
         return m_enabled;
     }
@@ -161,7 +168,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * Indicates if offline project resources are cached.
      *
      * @return true if offline projects are cached, false if not
-     */    
+     */
     public boolean cacheOffline() {
         return m_cacheOffline;
     }
@@ -173,11 +180,11 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * to perform this operation.
      *
      * @param cms The CmsObject used for user authorization
-     */    
+     */
     private void clear(CmsObject cms) {
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
-        if (DEBUG > 0) System.err.println("FlexCache: Clearing complete cache");        
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing complete cache");
         clear();
     }
     
@@ -189,15 +196,19 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * to perform this operation.
      *
      * @param cms The CmsObject used for user authorization
-     */    
+     */
     private synchronized void clearEntries(CmsObject cms) {
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
-        if (DEBUG > 0) System.err.println("FlexCache: Clearing all entries");        
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing all entries");
         java.util.Iterator i = m_resourceMap.keySet().iterator();
         while (i.hasNext()) {
-             CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_resourceMap.get(i.next());
-             v.map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));             
+            CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_resourceMap.get(i.next());
+            java.util.Iterator allEntries = v.map.values().iterator();
+            while (allEntries.hasNext()) {
+                this.getLruCache().remove( (I_FlexLruObject)allEntries.next() );
+            }
+            v.map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
         }
         m_size = 0;
     }
@@ -210,13 +221,13 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * to perform this operation.
      *
      * @param cms The CmsObject used for user authorization
-     */        
+     */
     private void clearOffline(CmsObject cms) {
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
-        if (DEBUG > 0) System.err.println("FlexCache: Clearing offline keys & entries");        
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing offline keys & entries");
         clearOneHalf(C_CACHE_OFFLINESUFFIX, false);
-    }    
+    }
     
     /**
      * Clears all entries from offline projects in the cache.
@@ -227,14 +238,14 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * to perform this operation.
      *
      * @param cms The CmsObject used for user authorization
-     */        
+     */
     private void clearOfflineEntries(CmsObject cms) {
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
-        if (DEBUG > 0) System.err.println("FlexCache: Clearing offline entries");        
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing offline entries");
         clearOneHalf(C_CACHE_OFFLINESUFFIX, true);
-    }    
-        
+    }
+    
     /**
      * Clears all entries and all keys from the online project in the cache.
      * Cached resources from the offline projects are not touched.<p>
@@ -243,11 +254,11 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * to perform this operation.
      *
      * @param cms The CmsObject used for user authorization
-     */     
+     */
     private void clearOnline(CmsObject cms) {
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
-        if (DEBUG > 0) System.err.println("FlexCache: Clearing online keys & entries");        
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing online keys & entries");
         clearOneHalf(C_CACHE_ONLINESUFFIX, false);
     }
     
@@ -264,17 +275,17 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
     private void clearOnlineEntries(CmsObject cms) {
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
-        if (DEBUG > 0) System.err.println("FlexCache: Clearing online entries");        
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing online entries");
         clearOneHalf(C_CACHE_ONLINESUFFIX, true);
     }
     
     /**
      * This method purges the JSP repository dirs,
-     * ie. it deletes all JSP files that OpenCms has written to the 
+     * ie. it deletes all JSP files that OpenCms has written to the
      * real FS.
      * Obviously this method must be used with caution.
-     * Purpose of this method is to allow 
-     * a complete purge of all JSP pages on a remote machine after 
+     * Purpose of this method is to allow
+     * a complete purge of all JSP pages on a remote machine after
      * a major update of JSP templates was made.
      *
      * @param cms The CmsObject used for user authorization
@@ -291,9 +302,9 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
             for (int i = 0; i<files.length; i++) {
                 java.io.File f = files[i];
                 if (f.canWrite()) {
-                    f.delete(); 
+                    f.delete();
                 } else if (DEBUG > 0) {
-                    System.err.println("FlexCache.purgeJspRepository() could not delete file = " + f);                    
+                    System.err.println("FlexCache.purgeJspRepository() could not delete file = " + f);
                 }
             }
         } else if (DEBUG > 0) {
@@ -306,13 +317,13 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
         if (DEBUG > 1) System.err.println("FlexCache.purgeJspRepository() trying to purge OFFLINE repository: " + d);
         if (d.canRead() && d.isDirectory()) {
             java.io.File files[] = d.listFiles();
-            if (DEBUG > 0) System.err.println("FlexCache.purgeJspRepository() Files in OFFLINE repository = " + files.length);            
+            if (DEBUG > 0) System.err.println("FlexCache.purgeJspRepository() Files in OFFLINE repository = " + files.length);
             for (int i = 0; i<files.length; i++) {
                 java.io.File f = files[i];
                 if (f.canWrite()) {
                     f.delete();
                 } else if (DEBUG > 0) {
-                    System.err.println("FlexCache.purgeJspRepository() could not delete file = " + f);                    
+                    System.err.println("FlexCache.purgeJspRepository() could not delete file = " + f);
                 }
             }
         } else if (DEBUG > 0) {
@@ -325,7 +336,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
         log("JSP repository purged - purgeJspRepository() called");
     }
     
-    /** 
+    /**
      * Returns a set of all cached resource names.
      * Usefull if you want to show a list of all cached resources,
      * like on the FlexCache administration page.<p>
@@ -335,7 +346,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      *
      * @param cms The CmsObject used for user authorization
      * @return The set of cached resource names (which are of type String)
-     */    
+     */
     public java.util.Set getCachedResources(CmsObject cms) {
         if (! isEnabled()) return null;
         if (! isAdmin(cms)) return null;
@@ -353,10 +364,10 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      *
      * @param key The resource name for which to look up the variations for
      * @param cms The CmsObject used for user authorization
-     * @return A set of cached variations (which are of type String)   
-     */    
+     * @return A set of cached variations (which are of type String)
+     */
     public java.util.Set getCachedVariations(String key, CmsObject cms) {
-        if (! isEnabled()) return null;        
+        if (! isEnabled()) return null;
         if (! isAdmin(cms)) return null;
         Object o = m_resourceMap.get(key);
         if (o != null) {
@@ -367,7 +378,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
     }
     
     /**
-     * Returns the CmsFlexCacheKey data structre for a given
+     * Returns the CmsFlexCacheKey data structure for a given
      * key (i.e. resource name).
      * Usefull if you want to show the cache key for a resources,
      * like on the FlexCache administration page.<p>
@@ -378,50 +389,50 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * @param key The resource name for which to look up the variation for
      * @param cms The CmsObject used for user authorization
      * @return The CmsFlexCacheKey data structure found for the resource
-     */    
+     */
     public CmsFlexCacheKey getCachedKey(String key, CmsObject cms) {
-        if (! isEnabled()) return null;        
+        if (! isEnabled()) return null;
         if (! isAdmin(cms)) return null;
         Object o = m_resourceMap.get(key);
         if (o != null) {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
             return v.key;
         }
-        return null;        
+        return null;
     }
     
-    /** 
+    /**
      * Returns the total number of entries in the cache.
-     * 
+     *
      * @return The number of entries in the cache
-     */    
+     */
     public int size() {
-        return m_size;
+        return this.m_CacheEntryLruCache.getSize();
     }
     
     /**
      * Returns the total number of cached resource keys.
      *
-     * @return The number of resource keys in the cache 
+     * @return The number of resource keys in the cache
      */
     public int keySize() {
-        if (! isEnabled()) return 0;        
+        if (! isEnabled()) return 0;
         return m_resourceMap.size();
-    }    
+    }
     
-    /** 
+    /**
      * This method checks if a given key
      * is already contained in the cache.
      *
      * @return true if key is in the cache, false otherwise
-     * @param key The key to look for 
-     */    
+     * @param key The key to look for
+     */
     boolean containsKey(CmsFlexCacheKey key) {
-        if (! isEnabled()) return false;        
-        return (get(key) != null);       
+        if (! isEnabled()) return false;
+        return (get(key) != null);
     }
     
-    /** 
+    /**
      * Implements the CmsEvent interface.
      * The FlexCache uses the events to clear itself in case a project is published.<p>
      *
@@ -432,7 +443,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      */
     public void cmsEvent(com.opencms.flex.CmsEvent event) {
         if (! isEnabled()) return;
-
+        
         switch (event.getType()) {
             case com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case com.opencms.flex.I_CmsEventListener.EVENT_CLEAR_CACHES:
@@ -451,7 +462,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
                 try {
                     it = (Integer)m.get("action");
                 } catch (Exception e) {}
-                if (it == null) break; 
+                if (it == null) break;
                 int i = it.intValue();
                 switch (i) {
                     case C_CLEAR_ALL:
@@ -459,34 +470,34 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
                         break;
                     case C_CLEAR_ENTRIES:
                         clearEntries(event.getCmsObject());
-                        break;                                              
-                    case C_CLEAR_ONLINE_ALL: 
+                        break;
+                    case C_CLEAR_ONLINE_ALL:
                         clearOnline(event.getCmsObject());
-                        break;                          
+                        break;
                     case C_CLEAR_ONLINE_ENTRIES:
                         clearOnlineEntries(event.getCmsObject());
                         break;
-                    case C_CLEAR_OFFLINE_ALL:  
+                    case C_CLEAR_OFFLINE_ALL:
                         clearOffline(event.getCmsObject());
-                        break;                          
-                    case C_CLEAR_OFFLINE_ENTRIES:  
+                        break;
+                    case C_CLEAR_OFFLINE_ENTRIES:
                         clearOfflineEntries(event.getCmsObject());
                         break;
                 }
         }
     }
     
-    /** 
+    /**
      * Lookup a specific entry in the cache.
      * In case a found entry has a timeout set, it will be checked upon lookup.
-     * In case the timeout of the entry has been reached, it will be removed from 
+     * In case the timeout of the entry has been reached, it will be removed from
      * the cache (and null will be returend in this case).
      *
      * @param key The key to look for in the cache
      * @return The entry found for the key, or null if key is not in the cache
-     */    
+     */
     CmsFlexCacheEntry get(CmsFlexCacheKey key) {
-        if (! isEnabled()) return null;        
+        if (! isEnabled()) return null;
         if (DEBUG > 0) System.err.println("FlexCache: Trying to get entry for resource " + key.Resource);
         Object o = m_resourceMap.get(key.Resource);
         if (o != null) {
@@ -515,8 +526,9 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
                 if (DEBUG > 1) System.err.println("FlexCache: Checking timeout for resource " + key.Resource);
                 if (e.getTimeout() < key.m_timeout) {
                     if (DEBUG > 1) System.err.println("FlexCache: Resource has reached timeout, removing from cache!");
-                    v.map.remove(variation);
-                    this.decSize();
+                    //v.map.remove(variation);
+                    //this.decSize();
+                    this.m_CacheEntryLruCache.remove( (I_FlexLruObject)e );
                     return null;
                 }
                 if (DEBUG > 1) System.err.println("FlexCache: Resource timeout not reached!");
@@ -533,9 +545,9 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      *
      * @param resource The resource name for which to look up the key for
      * @return The CmsFlexCacheKey data structure found for the resource
-     */ 
+     */
     CmsFlexCacheKey getKey(String resource) {
-        if (! isEnabled()) return null;        
+        if (! isEnabled()) return null;
         Object o = m_resourceMap.get(resource);
         if (o != null) {
             if (DEBUG > 1) System.err.println("FlexCache: Found pre-calculated key for resource " + resource);
@@ -544,7 +556,7 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
             if (DEBUG > 1) System.err.println("FlexCache: Did not find pre-calculated key for resource " + resource);
             return null;
         }
-    }        
+    }
     
     /**
      * Adds a key with a new, empty variation map to the cache.
@@ -552,32 +564,32 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
      * @param key The key to add to the cache.
      */
     void putKey(CmsFlexCacheKey key) {
-        if (! isEnabled()) return;        
+        if (! isEnabled()) return;
         Object o = m_resourceMap.get(key.Resource);
         if (o == null) {
-            // No variation map for this resource yet, so create one            
+            // No variation map for this resource yet, so create one
             m_resourceMap.put(key.Resource, new CmsFlexCacheVariation(key));
             if (DEBUG > 1) System.err.println("FlexCache: Added pre-calculated key for resource " + key.Resource);
-        } 
+        }
         // If != null the key is already in the cache, so we just do nothing
     }
     
-    /** 
+    /**
      * This method adds new entries to the cache.<p>
      *
      * The key describes the conditions under which the value can be cached.
      * Usually the key belongs to the response.
      * The variation describes the conditions under which the
-     * etry was created. This is usually calculated from the request.
+     * entry was created. This is usually calculated from the request.
      * If the variation is != null, the entry is cachable.
      *
      * @param key The key for the new value entry. Usually calculated from the response.
      * @param entry The CmsFlexCacheEntry to store in the cache.
      * @param variation The pre-calculated variation for the entry.
      * @return true if the value was added to the cache, false otherwise.
-     */    
+     */
     boolean put(CmsFlexCacheKey key, CmsFlexCacheEntry entry, String variation) {
-        if (! isEnabled()) return false;        
+        if (! isEnabled()) return false;
         if (DEBUG > 1) System.err.println("FlexCache: Trying to add entry for resource " + key.Resource);
         if (variation != null) {
             // This is a cachable result
@@ -591,81 +603,99 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
             // Result is not cachable
             if (DEBUG > 1) System.err.println("FlexCache: Nothing added because resource is not cachable for this request!");
             return false;
-        }        
-    }        
+        }
+    }
     
-    /** 
+    /**
      * Removes an entry from the cache.
      *
      * @param key The key which describes the entry to remove from the cache
-     */    
+     */
     void remove(CmsFlexCacheKey key) {
-        if (! isEnabled()) return;        
+        if (! isEnabled()) return;
         Object o = m_resourceMap.get(key.Resource);
         if (o != null) {
-            Object old = ((HashMap)o).remove(key.Variation);
-            if (old != null) decSize();
-        };      
+            //Object old = ((HashMap)o).remove(key.Variation);
+            Object old = ((HashMap)o).get(key.Variation);
+            if (old != null) {
+                this.getLruCache().remove( (I_FlexLruObject)old );
+            }
+        };
     }
     
-    /** 
+    /**
      * Checks if the cache is empty or if at last one element is contained.
      *
-     * @return true if the cache is empty, false otherwise 
-     */    
+     * @return true if the cache is empty, false otherwise
+     */
     boolean isEmpty() {
-        if (! isEnabled()) return true;        
+        if (! isEnabled()) return true;
         return m_resourceMap.isEmpty();
     }
     
-    /** 
-     * Emptys the cache completly.
-     */    
+    /**
+     * Emptys the cache completely.
+     */
     private synchronized void clear() {
         if (! isEnabled()) return;
         m_resourceMap = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_CACHE));
         m_size = 0;
-        log("Complete cache cleared - clear() called" );        
+        this.getLruCache().clear();
+        log("Complete cache cleared - clear() called" );
     }
     
-    /** 
+    /**
      * Save a value to the cache.
-     * 
+     *
      * @param key The key under shich the value is saved.
      * @param value The value to save in the cache.
-     */    
-    private void put(CmsFlexCacheKey key, CmsFlexCacheEntry value) {
+     */
+    private void put( CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry ) {
         Object o = m_resourceMap.get(key.Resource);
-        if (key.m_timeout > 0) value.setTimeout(key.m_timeout * 60000);
+        if (key.m_timeout > 0) theCacheEntry.setTimeout(key.m_timeout * 60000);
         if (o != null) {
-            // We already have a variation map for this resource 
+            // We already have a variation map for this resource
             java.util.Map m = ((CmsFlexCacheVariation)o).map;
-            if (! m.containsKey(key.Variation)) incSize();
-            m.put(key.Variation, value);
+            theCacheEntry.setVariationData( key.Variation, m );
+            if (! m.containsKey(key.Variation)) {
+                //incSize();
+                this.getLruCache().add( (I_FlexLruObject)theCacheEntry );
+            }
+            else {
+                this.getLruCache().touch( (I_FlexLruObject)theCacheEntry );
+            }
+            m.put(key.Variation, theCacheEntry);
         } else {
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation list = new CmsFlexCacheVariation(key);
-            list.map.put(key.Variation, value);
+            list.map.put(key.Variation, theCacheEntry);
             m_resourceMap.put(key.Resource, list);
-            incSize();
+            //incSize();
+            theCacheEntry.setVariationData( key.Variation, list.map );
+            this.m_CacheEntryLruCache.add( (I_FlexLruObject)theCacheEntry );
         }
+        
         if (DEBUG > 0) System.err.println("FlexCache: Entry "  + m_size + " added for resource " + key.Resource + " with variation " + key.Variation);
-        if (DEBUG > 2) System.err.println("FlexCache: Entry added was:\n" + value);
+        if (DEBUG > 2) System.err.println("FlexCache: Entry added was:\n" + theCacheEntry.toString() );
     }
     
-    /** 
+    /**
      * This assures increasing the size is done synchronized.
      */
+    /*
     private synchronized void incSize() {
         m_size++;
     }
-    
-    /** 
-     * This assures decreasing the size is done synchronized 
      */
+    
+    /**
+     * This assures decreasing the size is done synchronized
+     */
+    /*
     private synchronized void decSize() {
         m_size--;
     }
+     */
     
     /**
      * Internal method to determine if a user has Administration permissions.
@@ -681,10 +711,10 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
     }
     
     /**
-     * Internal method to perform cache clearance. 
-     * It clears "one half" of the cache, i.e. either 
-     * the online or the offline parts. 
-     * Another parameter is used to indicate if only 
+     * Internal method to perform cache clearance.
+     * It clears "one half" of the cache, i.e. either
+     * the online or the offline parts.
+     * Another parameter is used to indicate if only
      * the entries or keys and entries are to be cleared.
      */
     private synchronized void clearOneHalf(String suffix, boolean entriesOnly) {
@@ -692,53 +722,49 @@ public class CmsFlexCache implements com.opencms.flex.I_CmsEventListener {
         java.util.Iterator i = keys.iterator();
         while (i.hasNext()) {
             String s = (String)i.next();
-            if (s.endsWith(suffix)) {                
+            if (s.endsWith(suffix)) {
                 CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_resourceMap.get(s);
                 if (entriesOnly) {
                     // Clear only entry
                     m_size -= v.map.size();
+                    java.util.Iterator allEntries = v.map.values().iterator();
+                    while (allEntries.hasNext()) {
+                        this.getLruCache().remove( (I_FlexLruObject)allEntries.next() );
+                    }
                     v.map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
                 } else {
                     // Clear key and entry
                     m_size -= v.map.size();
+                    java.util.Iterator allEntries = v.map.values().iterator();
+                    while (allEntries.hasNext()) {
+                        this.getLruCache().remove( (I_FlexLruObject)allEntries.next() );
+                    }
                     v.map = null;
                     v.key = null;
-                    m_resourceMap.remove(s);  
+                    m_resourceMap.remove(s);
                 }
             }
-        }    
+        }
         log("Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called" );
     }
     
     /**
-     * Internal "quick and dirty" data structure to poupate the cache with.
-     */
-    private class CmsFlexCacheVariation {
-        
-        /** The key belonging to the resource */
-        public CmsFlexCacheKey key;
-        /** Maps variations to CmsFlexCacheEntries */
-        public java.util.Map map;
-        
-        /**
-         * Generates a new instance of CmsFlexCacheVariation
-         *
-         * @param k The (resource) key to contruct this variation list for
-         */        
-        public CmsFlexCacheVariation(CmsFlexCacheKey k) {
-            key = k;
-            map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
-        }
-    }
-            
-    /**     
      * Logs a message to the OpenCms log in the channel "flex_cache".
      *
      * @param message The string to write in the log file
-     */    
+     */
     private void log(String message) {
         if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
             com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_CACHE, "[CmsFlexCache] " + message);
         }
-    }    
+    }
+    
+    /**
+     * Returns the LRU cache where the CacheEntries are cached.
+     *
+     * @return the LRU cache where the CacheEntries are cached
+     */
+    public FlexLruCache getLruCache() {
+        return this.m_CacheEntryLruCache;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/09/04 15:44:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package com.opencms.flex.cache;
 
+import java.util.*;
+import com.opencms.flex.util.I_FlexLruObject;
+
 /**
  * A CmsFlexCacheEntry describes a cached resource.
  * It is basically a list of pre-generated output,
@@ -49,9 +52,9 @@ package com.opencms.flex.cache;
  * that his entry will become invalid and should thus be cleared from the cache.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class CmsFlexCacheEntry {
+public class CmsFlexCacheEntry implements I_FlexLruObject {
     
     /** Initial size for lists */
     public static final int C_INITIAL_CAPACITY_LISTS = 7;
@@ -73,7 +76,28 @@ public class CmsFlexCacheEntry {
     private long m_timeout = -1;
     
     /** Indicates if this cache entry is completed */
-    private boolean m_completed = false;        
+    private boolean m_completed = false;      
+    
+    /** The CacheEntry's size in kBytes */
+    private int m_ByteSize;
+    
+    /** Pointer to the next cache entry in the LRU cache */
+    private I_FlexLruObject m_Next;
+    
+    /** Pointer to the previous cache entry in the LRU cache. */
+    private I_FlexLruObject m_Previous;
+    
+    /** The variation map where this cache entry is stored. */
+    private Map m_VariationMap;
+    
+    /** The key under which this cache entry is stored in the variation map. */
+    private String m_VariationKey;
+    
+    /** Static counter to give each entry a unique ID. */
+    private static int ID_COUNTER = 0;
+    
+    /** The internal ID of this cache entry. */
+    private int ID;
     
     /** 
      * Constructor for class CmsFlexCacheEntry.
@@ -84,6 +108,12 @@ public class CmsFlexCacheEntry {
         m_elements = new java.util.ArrayList(C_INITIAL_CAPACITY_LISTS);
         m_redirectTarget = null;
         m_headers = null;
+        m_ByteSize = 0;
+        
+        this.setNextLruObject( null );
+        this.setPreviousLruObject( null );
+        
+        this.ID = CmsFlexCacheEntry.ID_COUNTER++;
     }
     
     /** 
@@ -97,6 +127,7 @@ public class CmsFlexCacheEntry {
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(bytes);
+            m_ByteSize += bytes.length;
         }
     }
     
@@ -110,6 +141,7 @@ public class CmsFlexCacheEntry {
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(resource);
+            m_ByteSize += resource.getBytes().length;
         }
     }
     
@@ -121,6 +153,11 @@ public class CmsFlexCacheEntry {
     public void addHeaders(java.util.Map headers) {
         if (m_completed) return;
         m_headers = headers;
+        
+        Iterator allHeaders = m_headers.keySet().iterator();
+        while (allHeaders.hasNext()) {
+            this.m_ByteSize += ((String)allHeaders.next()).getBytes().length;
+        }
     }
     
     /** 
@@ -137,6 +174,7 @@ public class CmsFlexCacheEntry {
     public void setRedirect(String target) {
         if (m_completed) return;
         m_redirectTarget = target;
+        this.m_ByteSize = target.getBytes().length;
         // If we have a redirect we don't need any other output or headers
         m_elements = null;
         m_headers = null;
@@ -256,7 +294,7 @@ public class CmsFlexCacheEntry {
     public String toString() {
         String str = null;
         if (m_redirectTarget == null) {
-            str = "CmsFlexCacheEntry [" + m_elements.size() + " Elements]\n";
+            str = "CmsFlexCacheEntry [" + m_elements.size() + " Elements/" + this.getLruCacheCosts() + " bytes]\n";
             java.util.Iterator i = m_elements.iterator();
             int count = 0;
             while (i.hasNext()) {
@@ -273,4 +311,91 @@ public class CmsFlexCacheEntry {
         }
         return str;
     }   
+    
+    /**
+     * Stores a backward reference to the map and key where this cache entry is stored.
+     */
+    public void setVariationData( String theVariationKey, Map theVariationMap ) {
+        this.m_VariationKey = theVariationKey;
+        this.m_VariationMap = theVariationMap;
+    }
+    
+    // implementation of the com.opencms.flex.util.I_FlexLruObject interface methods
+    
+    /** 
+     * Set the next object in the double linked list of all cached objects. 
+     */
+    public void setNextLruObject( I_FlexLruObject theNextEntry ) {
+        this.m_Next = theNextEntry;
+    }
+    
+    /** 
+     * Get the next object in the double linked list of all cached objects. 
+     */
+    public I_FlexLruObject getNextLruObject() {
+        return this.m_Next;
+    }
+    
+    /** 
+     * Set the previous object in the double linked list of all cached objects. 
+     */
+    public void setPreviousLruObject( I_FlexLruObject thePreviousEntry ) {
+        this.m_Previous = thePreviousEntry;
+    }
+    
+    /** 
+     * Get the previous object in the double linked list of all cached objects. 
+     */
+    public I_FlexLruObject getPreviousLruObject() {
+        return this.m_Previous;
+    }  
+    
+    /** 
+     * This method is invoked after the object was added to the cache. 
+     */
+    public void addToLruCache() {
+        // do nothing here...
+        if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to FlexLruCache" );
+    }
+    
+    /** 
+     * This method is invoked after the object was removed to the cache. 
+     */
+    public void removeFromLruCache() {
+        if (m_VariationMap!=null && this.m_VariationKey!=null) {
+            this.m_VariationMap.remove( this.m_VariationKey );
+            if (DEBUG>0) System.err.println( "Removed cache entry with ID: " + this.ID + " from FlexLruCache" );
+        }
+    }
+    
+    /** 
+     * Returns the byte size as the cache costs of this object. 
+     */
+    public int getLruCacheCosts() {
+        return m_ByteSize;
+    }
+    
+    // methods to clean-up/finalize the object instance
+    
+    protected void finalize() throws java.lang.Throwable {
+        if (DEBUG>0) System.err.println( "Finalizing cache entry with ID: " + this.ID );
+        
+        this.clear();
+        
+        this.m_elements = null;
+        this.m_headers = null;
+        
+        this.m_VariationKey = null;
+        this.m_VariationMap = null;        
+        
+        this.setNextLruObject( null );
+        this.setPreviousLruObject( null );
+        
+        this.m_ByteSize = 0;        
+    }
+    
+    public void clear() {
+        m_elements.clear();
+        m_headers.clear();
+    }
 }
