@@ -322,6 +322,9 @@ function closeAllWindows(){
 											<td colspan="6">&nbsp;</td>
 										</tr>
 										<tr>
+											<td height="50" class="formular">]]><LABEL value="label.ebcolor" /><![CDATA[</td>
+										</tr>
+										<tr>
 											<td class="dialogtxt" width="140" height="30">
 		]]><LABEL value="label.ebtemplatecolor" /><![CDATA[
 											</td>
