@@ -1240,6 +1240,24 @@
 			<properties/>
 		</file>
 		<file>
+            <source>action/treewindow.html</source>
+            <destination>system/workplace/action/treewindow.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/treewindowcopy.html</source>
+            <destination>system/workplace/action/treewindowcopy.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+		<file>
 			<source>action/unlock.html</source>
 			<destination>system/workplace/action/unlock.html</destination>
 			<type>XMLTemplate</type>
