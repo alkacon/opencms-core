@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2004/10/14 08:25:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/10 16:35:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,9 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsDefaultPasswordHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.test.OpenCmsTestCase;
@@ -67,7 +69,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         suite.setName(TestCmsImportExport.class.getName());
                 
         suite.addTest(new TestCmsImportExport("testUserImport"));
-               
+        suite.addTest(new TestCmsImportExport("testImportResourceTranslator"));
+        
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
@@ -87,9 +90,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      * The password digests are hex-128 (legacy) encoded, and
      * should be converted to base-64. 
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public void testUserImport() throws Throwable {
+    public void testUserImport() throws Exception {
         
         CmsObject cms = getCmsObject();
         I_CmsPasswordHandler passwordHandler = new CmsDefaultPasswordHandler();
@@ -116,5 +119,20 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // check the test2 user
         user = cms.readUser("test2");
         assertEquals(user.getPassword(), passwordHandler.digest("test2", "MD5", "UTF-8"));
+    }
+    
+    /**
+     * Tests the resource translation during import.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportResourceTranslator() throws Exception {
+        
+        CmsObject cms = getCmsObject();        
+        cms.getRequestContext().setSiteRoot("/sites/default");
+        
+        String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
+        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());        
+                
     }
 }
