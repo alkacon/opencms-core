@@ -703,6 +703,7 @@
 			<admin>Administration</admin>
 			<explorer>Explorer</explorer>
 			<tasks>Aufgaben</tasks>
+			<oldexplorer>Ex plorer</oldexplorer>
 		</select>
 		
 		<task>

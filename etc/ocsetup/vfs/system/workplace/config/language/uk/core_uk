@@ -699,6 +699,7 @@
 			<admin>Administration</admin>
 			<explorer>Explorer</explorer>
 			<tasks>Tasks</tasks>
+			<oldexplorer>Old Explorer</oldexplorer>
 		</select>
 		
 		<task>

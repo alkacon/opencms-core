@@ -83,6 +83,152 @@
 			<access>79</access>
 			<properties/>
 		</file>
+        <file>
+            <destination>system/workplace/restypes</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[The resource types]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/binary</source>
+            <destination>system/workplace/restypes/binary</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/folder</source>
+            <destination>system/workplace/restypes/folder</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>restypes/image</source>
+            <destination>system/workplace/restypes/image</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>restypes/link</source>
+            <destination>system/workplace/restypes/link</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/newspage</source>
+            <destination>system/workplace/restypes/newspage</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/page</source>
+            <destination>system/workplace/restypes/page</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/pdfpage</source>
+            <destination>system/workplace/restypes/pdfpage</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/plain</source>
+            <destination>system/workplace/restypes/plain</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>restypes/script</source>
+            <destination>system/workplace/restypes/script</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>restypes/XMLTemplate</source>
+            <destination>system/workplace/restypes/XMLTemplate</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
 		<file>
 			<destination>system/xmlmodules</destination>
 			<type>folder</type>
@@ -698,13 +844,37 @@
 		</file>
 		<file>
 			<source>action/index.html</source>
-			<destination>system/workplace/action/index.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
+            <destination>system/workplace/action/index.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>action/explorer_new.html</source>
+            <destination>system/workplace/action/explorer_new.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/new_explorer_files.html</source>
+            <destination>system/workplace/action/new_explorer_files.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
 		<file>
 			<source>action/lock.html</source>
 			<destination>system/workplace/action/lock.html</destination>
@@ -7390,6 +7560,24 @@
 			<access>79</access>
 			<properties/>
 		</file>
+        <file>
+            <source>templates/explorer_new</source>
+            <destination>system/workplace/templates/explorer_new</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/new_explorer_files</source>
+            <destination>system/workplace/templates/new_explorer_files</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
 		<file>
 			<source>templates/explorerFilelistTemplate</source>
 			<destination>system/workplace/templates/explorerFilelistTemplate</destination>
@@ -8154,6 +8342,39 @@
 			<access>79</access>
 			<properties/>
 		</file>
+        <file>
+            <source>templates/js/explorer.js</source>
+            <destination>system/workplace/templates/js/explorer.js</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>templates/js/explorer_resource</source>
+            <destination>system/workplace/templates/js/explorer_resource</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/js/explorer_resource.js</source>
+            <destination>system/workplace/templates/js/explorer_resource.js</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
 		<file>
 			<source>templates/js/opencms.js</source>
 			<destination>system/workplace/templates/js/opencms.js</destination>

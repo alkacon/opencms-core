@@ -1,5 +1,51 @@
-<?xml version="1.0"?>
-<PAGE>
-	<CLASS>com.opencms.workplace.CmsWpMain</CLASS>
-	<MASTERTEMPLATE>/system/workplace/templates/workplace</MASTERTEMPLATE>
-</PAGE>
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<!-- Beginn Styles und Scripte -->
+
+<script LANGUAGE='JavaScript' TYPE='text/javascript' SRC='../templates/js/explorer.js'></script>
+<script LANGUAGE='JavaScript' TYPE='text/javascript' SRC='../templates/js/explorer_resource.js'></script>
+
+<script Language="Javascript">
+
+    vr = new vars_resources();
+    vi = new vars_index();
+    brcfg = new browser_cfg();
+    tree = new expltree();
+    
+    g_history=new Array();
+    var g_histLoc;
+    var g_isShowing = false;
+    
+    whichBrowser();
+    initialize_resources(); 
+    addTreeIcons();
+    initHist();
+
+    document.open();
+    document.writeln("<title>"+vr.titleString+" "+vr.userName+"</title>");
+    document.close();
+
+</script>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<!-- Ende Styles und Scripte -->
+</head>
+
+<!-- Beginn Aufbau der Frames des gesamten Systems -->
+<frameset rows="40,*,32" border=0 frameborder=0 framespacing=0>
+	<frame name="head" id=head src="head.html" marginwidth=1 marginheight=3 leftmargin=1 topmargin=3 noresize scrolling=no>
+	<frame name="body" id=body src="about:blank" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 noresize scrolling=no>
+	<frame name="foot" id=foot src="foot.html" marginwidth=1 marginheight=5 leftmargin=1 topmargin=0 noresize scrolling=no>
+</frameset>
+<!-- Ende Aufbau der Frames des gesamten Systems -->
+
+<!-- Beginn Aufbau Inhalt für Browser ohne Frameversion -->
+<body>
+<p>Leider unterstützt Ihr Browser keine Frames.
+<p>Wir achten stets darauf, daß in diesem Produkt die neueste Technik verwendet wird.
+<p>Bitte laden Sie sich die aktuelle Version von
+<a href="www.netscape.com">Netscape</a> oder
+<a href="www.microsoft.com">MS Internet Explorer</a> runter.
+</body>
+<!-- Beginn Aufbau Inhalt für Browser ohne Frameversion -->
+
+</html> 

@@ -3,7 +3,7 @@
     <system>
         <view>
             <name>select.explorer</name>
-            <url>/system/workplace/action/explorer.html</url>
+            <url>/system/workplace/action/explorer_new.html</url>
         </view>
         <view>
             <name>select.admin</name>
@@ -12,7 +12,12 @@
         <view>
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
-        </view>  <!--  Enable this view only for spaceage        <view>
+        </view>
+        <view>
+            <name>select.oldexplorer</name>
+            <url>/system/workplace/action/explorer.html</url>
+        </view>		
+		<!--  Enable this view only for spaceage        <view>
             <name>select.news</name>
             <url>/system/workplace/action/news_admin.html</url>        </view>
         -->        <smtpserver>my.smtp.server</smtpserver>
