@@ -26,7 +26,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:27 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 16:16:45 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -118,6 +118,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         Enumeration urlParameterNames = req.getParameterNames();
         while(urlParameterNames.hasMoreElements()) {
             String pname = (String)urlParameterNames.nextElement();
+                   
             if((! "datafor".equals(pname)) && (! "_clearcache".equals(pname))) {
                 newParameters.put(datafor + pname, req.getParameter(pname));
             }

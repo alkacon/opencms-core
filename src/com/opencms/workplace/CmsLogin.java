@@ -5,13 +5,15 @@ import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
 
+import javax.servlet.http.*;
+
 import java.util.*;
 
 /**
  * Definition of the CmsLogin.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/26 09:15:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/26 16:16:45 $
  */
 public class CmsLogin extends CmsXmlTemplate {
         
@@ -53,14 +55,37 @@ public class CmsLogin extends CmsXmlTemplate {
 
     
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsEditor] getting content of element " + elementName);
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsEditor] template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsEditor] selected template section is: " + ((templateSelector==null)?"<root>":templateSelector));
+        String result = null;     
+       String user=null;
+        
+        // get user name and password
+        String name=(String)parameters.get("NAME");
+        String password=(String)parameters.get("PASSWORD");
+        
+        // try to read this user
+        if ((name != null) && (password != null)){
+            try {
+                user=cms.loginUser(name,password);
+            } catch (CmsException e) {
+                if (e.getType()==CmsException.C_NO_ACCESS) {
+                    user=null;                    
+                } else {
+                    throw e;
+                }   
+            }   
+            // check if a user was found.
+            if (user!= null) {
+                // get a session for this user so that he is authentificated at the
+                // end of this request
+                HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + user);
+                }
+            }
         }
-
-        String result = null;        
-
+        
+        
+        
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile();       
         String fullFileName = CmsXmlWpTemplateFile.lookupAbsoluteFilename(cms, templateFile, xmlTemplateDocument);
         CmsFile file = cms.readFile(fullFileName);
