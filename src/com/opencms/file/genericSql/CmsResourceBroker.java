@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/17 06:33:28 $
-* Version: $Revision: 1.274 $
+* Date   : $Date: 2001/09/21 06:26:29 $
+* Version: $Revision: 1.275 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.274 $ $Date: 2001/09/17 06:33:28 $
+ * @version $Revision: 1.275 $ $Date: 2001/09/21 06:26:29 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2775,6 +2775,19 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         projects.removeElement(onlineProject(currentUser, currentProject));
         // return the vector of projects
         return(projects);
+     }
+
+    /**
+     * Returns a Vector with all projects from history
+     *
+     * @return Vector with all projects from history.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public Vector getAllBackupProjects() throws CmsException{
+        Vector projects = new Vector();
+        projects = m_dbAccess.getAllBackupProjects();
+        return projects;
      }
 
     /**
