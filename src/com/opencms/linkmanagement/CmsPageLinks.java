@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/CmsPageLinks.java,v $
-* Date   : $Date: 2003/09/15 10:51:15 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/09/29 08:32:38 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,6 @@ public class CmsPageLinks {
     /**
      * Constructor.
      * @param resourceId The database id of the resource
-     * @param linkTargets A Vector (of resourcenames, Strings) with the targets of the links
      */
     public CmsPageLinks(CmsUUID resourceId) {
         this(resourceId, null);
@@ -78,49 +77,64 @@ public class CmsPageLinks {
      */
     public CmsPageLinks(CmsUUID resourceId, Vector linkTargets) {
         m_resourceId = resourceId;
-        if(linkTargets == null){
+        if (linkTargets == null) {
             m_linkDestinations = new Vector();
-        }else{
+        } else {
             m_linkDestinations = linkTargets;
         }
     }
 
     /**
-     * adds a single target to the page.
+     * Adds a single target to the page.
+     * 
+     * @param target the target to add
      */
-    public void addLinkTarget(String target){
+    public void addLinkTarget(String target) {
         m_linkDestinations.add(target);
     }
 
     /**
-     * returns the id of this.
+     * Returns the id of this.
+     * 
+     * @return the id of this
      */
-    public CmsUUID getResourceId(){
+    public CmsUUID getResourceId() {
         return m_resourceId;
     }
 
     /**
-     * returns the resourcename
+     * Returns the resourcename.
+     * 
+     * @return the resourcename
      */
-    public String getResourceName(){
+    public String getResourceName() {
         return m_resourceName;
     }
 
     /**
-     * retuns the Vector with the link targets.
+     * Retuns the Vector with the link targets.
+     * 
+     * @return the Vector with the link targets
      */
-    public Vector getLinkTargets(){
+    public Vector getLinkTargets() {
         return m_linkDestinations;
     }
 
-    public void setOnline(boolean isOnline){
+    /**
+     * Sets the value for online.<p>
+     * 
+     * @param isOnline the value for online
+     */
+    public void setOnline(boolean isOnline) {
         m_online = isOnline;
     }
 
     /**
-     * sets the resourcename
+     * Sets the resourcename.<p>
+     * 
+     * @param name the name to set
      */
-    public void setResourceName(String name){
+    public void setResourceName(String name) {
         m_resourceName = name;
     }
 
@@ -130,18 +144,18 @@ public class CmsPageLinks {
      *
      * @return string-representation for this object.
      */
-      public String toString() {
-        StringBuffer output=new StringBuffer();
+    public String toString() {
+        StringBuffer output = new StringBuffer();
         output.append("[Resource Id]:");
         output.append(m_resourceId);
         output.append(" [Online]:");
         output.append(m_online);
-        if(m_resourceName != null){
+        if (m_resourceName != null) {
             output.append(" [Resource Name]:");
             output.append(m_resourceName);
         }
         output.append(" [LinkTargets]:");
         output.append(m_linkDestinations.toString());
         return output.toString();
-      }
+    }
 }

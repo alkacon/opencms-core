@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/09/29 08:32:38 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+
+import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlControlFile;
@@ -49,7 +51,10 @@ import java.util.Vector;
  */
 
 public class LinkChecker {
-
+    
+    /**
+     * Constructor.<p> 
+     */
     public LinkChecker() {
     }
 
@@ -60,14 +65,15 @@ public class LinkChecker {
      * @param cms The CmsObject.
      * @param page The name(getAbsolutePath) of the page
      * @return The compleate CmsPageLinks object for this page.
+     * @throws CmsException if something goes wrong
      */
-    public CmsPageLinks extractLinks(CmsObject cms, String page) throws CmsException{
+    public CmsPageLinks extractLinks(CmsObject cms, String page) throws CmsException {
 
         // first lets get the prefix of the page name (we need it later)
         CmsResource resource = cms.readFileHeader(page);
         String rootName = cms.getRequestContext().getSiteRoot();
         //String rootName = cms.getRootName(page);
-        
+
         // get the pages content
         String bodyFileName = null;
         String bodyClassName = null;
@@ -88,35 +94,35 @@ public class LinkChecker {
                 bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_XML_BODY_ELEMENT);
             }
             if (bodyFileName != null) {
-                CmsXmlTemplate bodyClassObject = (CmsXmlTemplate) CmsTemplateClassManager.getClassInstance(bodyClassName);
+                CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(bodyClassName);
                 bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms, bodyFileName, I_CmsConstants.C_XML_BODY_ELEMENT, null, null);
             }
         }
-        
+
         Vector result = bodyTemplateFile.getAllLinkTagValues();
         // we have to cleanup the result. Relative links will be inserted as absolute links
         // and we cut the parameters.
         Vector cleanResult = new Vector(result.size());
-        for(int i=0; i<result.size(); i++){
+        for (int i = 0; i < result.size(); i++) {
             String work = (String)result.elementAt(i);
             // first the parameters
             int paraStart = work.indexOf("?");
-            if(paraStart >= 0){
+            if (paraStart >= 0) {
                 work = work.substring(0, paraStart);
             }
             // dont forget the anker links
             int ankerStart = work.indexOf("#");
-            if(ankerStart >= 0){
+            if (ankerStart >= 0) {
                 work = work.substring(0, ankerStart);
             }
             // here is something for the future: if link starts with /// it is the full name of the resource
-            if(work.startsWith("///")){
+            if (work.startsWith("///")) {
                 work = work.substring(2);
-            }else{
+            } else {
                 // now for relative links
                 work = CmsLinkManager.getAbsoluteUri(work, page);
                 // now we need the site prefix (lets take it from the page itself)
-                work = rootName +work;
+                work = rootName + work;
             }
             cleanResult.add(work);
         }
@@ -127,19 +133,23 @@ public class LinkChecker {
      * This Method checks if the online project has broken links when the project with
      * the projectId is published (if projectId = onlineProjectId it simply checks the
      * online project).
+     * 
+     * The report is filled with a CmsPageLinks object for each page containing broken links
+     *          this CmsPageLinks object contains all links on the page withouth a valid target.
      *
      * @param cms The CmsObject.
      * @param projectId The id of the project to be published.
      * @param report A cmsReport object for logging while the method is still running.
-     *
-     * The report is filled with a CmsPageLinks object for each page containing broken links
-     *          this CmsPageLinks object contains all links on the page withouth a valid target.
+     * @throws CmsException if something goes wrong
      */
     public void checkProject(CmsObject cms, int projectId, I_CmsReport report) throws CmsException {
-        
+
+        if (OpenCms.getLog(this).isErrorEnabled()) {
+            OpenCms.getLog(this).error("cms=" + cms + " projectId=" + projectId + " report=" + report);
+        }
         // TODO the link management is disabled and has to be rebuilt on a link<->UUID basis instead of link<->resourcename
         return;
-        
+
         /*
         CmsResource currentResource = null;
         int i = 0;
@@ -175,5 +185,5 @@ public class LinkChecker {
         }
         */
     }
-    
+
 }
