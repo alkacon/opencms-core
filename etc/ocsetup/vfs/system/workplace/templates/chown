@@ -44,6 +44,8 @@ function show_help()
 			
 			<tr>
 				<td class=dialogtxt colspan=2>
+					]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
+					]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>	
 					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
 					]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
 				</td>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/09 13:40:50 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.4 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/09 13:40:50 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -139,12 +139,19 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
             } 
         }
 
- 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-        xmlTemplateDocument.setXmlData("OWNER",cms.readOwner(file).getName());
+        // set the required datablocks
+        String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+        if (title==null) {
+            title="";
+        }
+        A_CmsUser owner=cms.readOwner(file);
+        xmlTemplateDocument.setXmlData("TITLE",title);
+        xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+        xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
         xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
 		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
-        
+   
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);   
     }
@@ -273,4 +280,24 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		  hXml.setElementTemplate("body", bodypath);
 		  hXml.write();
 	  }
+      
+      /**
+     * Gets a formated file state string.
+     * @param cms The CmsObject.
+     * @param file The CmsResource.
+     * @param lang The content definition language file.
+     * @return Formated state string.
+     */
+     private String getState(A_CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
+         throws CmsException {
+         StringBuffer output=new StringBuffer();
+         
+         if (file.inProject(cms.getRequestContext().currentProject())) {
+            int state=file.getState();
+            output.append(lang.getLanguageValue("explorer.state"+state));
+         } else {
+            output.append(lang.getLanguageValue("explorer.statenip"));
+         }
+         return output.toString();
+     }
 }
