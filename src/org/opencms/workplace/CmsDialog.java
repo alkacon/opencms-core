@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/20 13:03:08 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -69,6 +69,7 @@ public class CmsDialog extends CmsWorkplace {
     public static final int BUTTON_CANCEL = 1;
     public static final int BUTTON_CLOSE = 2;
     public static final int BUTTON_ADVANCED = 3;
+    public static final int BUTTON_SET = 4;
     
     public static final String DIALOG_CONFIRMED = "confirmed";
     public static final String DIALOG_WAIT = "wait";
@@ -460,15 +461,23 @@ public class CmsDialog extends CmsWorkplace {
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(512);
             // null title is ok, we always want the title headline
-            result.append("<div class=\"dialoghead\" unselectable=\"on\">");
-            result.append(title);
-            result.append("</div>");
+            result.append(dialogHead(title));
             result.append("<div class=\"dialogcontent\" unselectable=\"on\">\n");
             result.append("<!-- dialogcontent start -->\n");
             return result.toString();
         } else {
             return "<!-- dialogcontent end -->\n</div>";
         }
+    }
+    
+    /**
+     * Builds the title of the dialog window.<p>
+     * 
+     * @param title the title String for the dialog window
+     * @return the HTML title String for the dialog window
+     */
+    public String dialogHead(String title) {
+        return "<div class=\"dialoghead\" unselectable=\"on\">" + title + "</div>";
     }
     
     /**
@@ -638,6 +647,13 @@ public class CmsDialog extends CmsWorkplace {
                     result.append(curAttributes);
                     result.append(">\n");
                     break;
+                case BUTTON_SET:
+                    result.append("<input name=\"set\" type=\"button\" value=\"");
+                    result.append(key("button.submit")+"\"");
+                    result.append(" class=\"dialogbutton\"");
+                    result.append(curAttributes);
+                    result.append(">\n");
+                    break;
                 default:
                     // not a valid button code, just insert a warning in the HTML
                     result.append("<!-- invalid button code: ");
@@ -680,6 +696,18 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String dialogButtonRowOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
         return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {okAttributes, cancelAttributes, advancedAttributes});
+    }
+    
+    /**
+     * Builds a button row with a "set", an "ok", and a "cancel" button.<p>
+     * 
+     * @param setAttributes additional attributes for the "set" button
+     * @param okAttributes additional attributes for the "ok" button
+     * @param cancelAttributes additional attributes for the "cancel" button
+     * @return the button row 
+     */
+    public String dialogButtonRowSetOkCancel(String setAttributes, String okAttributes, String cancelAttributes) {
+        return dialogButtonRow(new int[] {BUTTON_SET, BUTTON_OK, BUTTON_CANCEL}, new String[] {setAttributes, okAttributes, cancelAttributes});
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/11/10 16:55:31 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/11/20 13:03:07 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1
  */
@@ -381,15 +381,33 @@ public abstract class CmsWorkplace {
      * @param options the options 
      * @param values the option values, if null the select will have no value attributes
      * @param selected the index of the pre-selected option, if -1 no option is pre-selected
-     * @return a String representing a html select box
+     * @return a formatted html String representing a html select box
      */
     public String buildSelect(String parameters, List options, List values, int selected) {
+        return buildSelect(parameters, options, values, selected, true);
+    }
+    
+    /**
+     * Generates a html select box out of the provided values.<p>
+     * 
+     * @param parameters a string that will be inserted into the initial select tag,
+     *      if null no parameters will be inserted
+     * @param options the options 
+     * @param values the option values, if null the select will have no value attributes
+     * @param selected the index of the pre-selected option, if -1 no option is pre-selected
+     * @param useLineFeed if true, adds some formatting "\n" to the output String
+     * @return a String representing a html select box
+     */
+    public String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
         StringBuffer result = new StringBuffer(1024);
         result.append("<select ");
         if (parameters != null) {
             result.append(parameters);
         }
-        result.append(">\n");
+        result.append(">");
+        if (useLineFeed) {
+            result.append("\n");
+        }
         int length = options.size();
         String value = null;
         for (int i=0; i<length; i++) {
@@ -408,7 +426,10 @@ public abstract class CmsWorkplace {
                 }
                 result.append(">");  
                 result.append(options.get(i));
-                result.append("</option>\n");
+                result.append("</option>");
+                if (useLineFeed) {
+                    result.append("\n");
+                }
             } else {
                 result.append("<option value=\"");
                 result.append(value);
@@ -418,10 +439,16 @@ public abstract class CmsWorkplace {
                 }
                 result.append(">");                
                 result.append(options.get(i));
-                result.append("</option>\n");                
+                result.append("</option>");
+                if (useLineFeed) {
+                    result.append("\n");
+                }
             }       
         }        
-        result.append("</select>\n");                
+        result.append("</select>");
+        if (useLineFeed) {
+            result.append("\n");
+        }
         return result.toString();
     }
     
@@ -800,7 +827,7 @@ public abstract class CmsWorkplace {
      * 
      * @return the values of all parameter methods of this workplace class instance
      */
-    private Map paramValues() {
+    protected Map paramValues() {
         List methods = paramGetMethods();
         Map map = new HashMap(methods.size());
         Iterator i = methods.iterator();
