@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/05/28 16:46:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.db.generic.CmsProjectDriver;
 import com.opencms.db.generic.CmsUserDriver;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsLruHashMap;
@@ -66,13 +65,13 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.5 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.6 $ $Date: 2003/05/28 16:46:34 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
     protected I_CmsVfsDriver m_vfsDriver;
     protected I_CmsUserDriver m_userDriver;
-    protected CmsProjectDriver m_projectDriver;
+    protected I_CmsProjectDriver m_projectDriver;
     protected I_CmsWorkflowDriver m_workflowDriver;
     protected I_CmsBackupDriver m_backupDriver;
 
@@ -166,7 +165,7 @@ public class CmsDriverManager implements I_CmsConstants {
                 
         I_CmsVfsDriver vfsDriver = null;
         CmsUserDriver userDriver = null;
-        CmsProjectDriver projectDriver = null;
+        I_CmsProjectDriver projectDriver = null;
         I_CmsWorkflowDriver workflowDriver = null;
         I_CmsBackupDriver backupDriver = null;
         
@@ -291,7 +290,7 @@ public class CmsDriverManager implements I_CmsConstants {
             }
             
             // try to create a instance
-            projectDriver = (CmsProjectDriver)driverClass.newInstance();
+            projectDriver = (I_CmsProjectDriver)driverClass.newInstance();
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
             }
@@ -3866,7 +3865,8 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject, CmsObject cms)
         throws CmsException {
         return m_registry.clone(cms);
-     }
+     }     
+     
 /**
  * Returns a Vector with the subresources for a folder.<br>
  *
@@ -4421,7 +4421,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-	public void init(Configurations config, I_CmsVfsDriver vfsDriver, I_CmsUserDriver userDriver, CmsProjectDriver projectDriver, I_CmsWorkflowDriver workflowDriver, I_CmsBackupDriver backupDriver) throws CmsException, Exception {
+	public void init(Configurations config, I_CmsVfsDriver vfsDriver, I_CmsUserDriver userDriver, I_CmsProjectDriver projectDriver, I_CmsWorkflowDriver workflowDriver, I_CmsBackupDriver backupDriver) throws CmsException, Exception {
 
         // store the limited workplace port
         m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
@@ -9002,7 +9002,7 @@ protected void validName(String name, boolean blank) throws CmsException {
     /**
      * @return CmsProjectDriver
      */
-    public final CmsProjectDriver getProjectDriver() {
+    public final I_CmsProjectDriver getProjectDriver() {
         return m_projectDriver;
     }
 

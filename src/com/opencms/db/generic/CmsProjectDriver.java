@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/28 16:46:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.db.*;
 import com.opencms.db.CmsDriverManager;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsUUID;
@@ -67,10 +68,10 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.4 $ $Date: 2003/05/23 16:26:47 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/28 16:46:34 $
  * @since 5.1.2
  */
-public class CmsProjectDriver extends Object {
+public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
     /**
      * Constant to get property from configurations.
