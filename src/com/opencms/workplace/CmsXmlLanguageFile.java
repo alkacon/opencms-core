@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/02/22 11:17:31 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/02/28 13:25:43 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/02/22 11:17:31 $
+ * @version $Revision: 1.44 $ $Date: 2003/02/28 13:25:43 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -248,6 +248,12 @@ public class CmsXmlLanguageFile {
             }
         }
         
+        if (keyName.startsWith("help.")) {
+            // online help might not have been installed or missing help key, return default page
+            return "index.html";
+        }
+        
+        // key was not found
         if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found at all (this is bad)");
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
