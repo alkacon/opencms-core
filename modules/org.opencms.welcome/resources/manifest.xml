@@ -54,7 +54,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_6.0b1.html]]></value>
+					<value><![CDATA[notes_6.0b2.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
