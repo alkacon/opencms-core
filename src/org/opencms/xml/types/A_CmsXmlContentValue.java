@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -270,7 +270,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
         return m_locale;
     }
-
+    
     /**
      * Returns the maximum occurences of this type.<p>
      *
@@ -346,6 +346,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public void setDefault(String defaultValue) {
 
         m_defaultValue = defaultValue;
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
+     */
+    public boolean validateValue(String value) {
+
+        return true;
     }
 
     /**

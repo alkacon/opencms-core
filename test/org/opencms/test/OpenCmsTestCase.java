@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/29 15:50:18 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.3.5
  */
@@ -2314,6 +2314,7 @@ public class OpenCmsTestCase extends TestCase {
     protected void echo(String message) {
 
         try {
+            System.out.println();
             m_shell.printPrompt();
             System.out.println(message);
         } catch (Throwable t) {

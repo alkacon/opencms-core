@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,16 +47,13 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsVfsFile";
-
-    /** The schema definition String is located in a text for easier editing. */
-    private static String m_schemaDefinition;
 
     /** The String value of the element node. */
     private String m_stringValue;
@@ -121,11 +118,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public String getSchemaDefinition() {
 
-        // the schema definition is located in a separate file for easier editing
-        if (m_schemaDefinition == null) {
-            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsFileValue.xsd");
-        }
-        return m_schemaDefinition;
+        return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";
     }
 
     /**

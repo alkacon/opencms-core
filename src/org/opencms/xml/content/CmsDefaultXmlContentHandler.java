@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -335,6 +335,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             errorHandler = new CmsXmlContentErrorHandler();
         }
 
+        if (! value.isSimpleType()) {
+            // no vaildation for a nested schema is possible
+            // note that the sub-elemenets of the nested schema ARE validated by the node visitor,
+            // it's just the nested schema value itself that does not support validation
+            return errorHandler;
+        }
+        
         // validate the error rules
         errorHandler = validateValue(cms, value, errorHandler, m_validationErrorRules, false);
         // validate the warning rules
@@ -640,9 +647,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         Map rules,
         boolean isWarning) {
 
+        String valueStr;
+        try {
+            valueStr = value.getStringValue(cms);
+        } catch (Exception e) {
+            // if the value can not be accessed it's useless to continue
+            errorHandler.addError(value, e.getMessage());
+            return errorHandler;
+        }
+        
         String regex = (String)rules.get(value.getElementName());
         if (regex == null) {
-            return errorHandler;
+            // no customized rule, check default XML schema validation rules
+            return validateValue(cms, value, valueStr, errorHandler, isWarning);
         }
 
         boolean matchResult = true;
@@ -650,16 +667,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // negate the pattern
             matchResult = false;
             regex = regex.substring(1);
-        }
-
-        String valueStr;
-        try {
-            valueStr = value.getStringValue(cms);
-        } catch (Exception e) {
-            // if the value can not be accessed it's useless to continue
-            errorHandler.addError(value, e.getMessage());
-            // return true to avoid adding the error twice
-            return errorHandler;
         }
 
         // use the custom validation pattern
@@ -670,7 +677,44 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 errorHandler.addWarning(value, message);
             } else {
                 errorHandler.addError(value, message);
+                // if an error was found, the default XML schema validation is not applied
+                return errorHandler;
             }
+        }
+
+        // no error found, check default XML schema validation rules
+        return validateValue(cms, value, valueStr, errorHandler, isWarning);
+    }
+    
+    /**
+     * Checks the default XML schema vaildation rules.<p>
+     * 
+     * These rules should only be tested if this is not a test for warnings.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param value the value to validate
+     * @param valueStr the string value of the given value
+     * @param errorHandler the error handler to use in case errors or warnings are detected
+     * @param isWarning if true, this validation should be stored as a warning, otherwise as an error
+     * 
+     * @return the updated error handler
+     */
+    protected CmsXmlContentErrorHandler validateValue(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        String valueStr,
+        CmsXmlContentErrorHandler errorHandler,
+        boolean isWarning) {
+
+        if (isWarning) {
+            // default schema validation only applies to errors
+            return errorHandler;
+        }
+
+        if (!value.validateValue(valueStr)) {
+            // value is not valid, add an error to the handler
+            String message = getValidationMessage(cms, value, value.getTypeName(), valueStr, true, false);
+            errorHandler.addError(value, message);
         }
 
         return errorHandler;

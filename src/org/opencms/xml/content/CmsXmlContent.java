@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -262,7 +262,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
 
-        return newValue;
+        // return the value instance that was stored in the bookmarks 
+        // just returning "newValue" isn't enough since this instance is NOT stored in the bookmarks
+        return (I_CmsXmlContentValue)getBookmark(getBookmarkName(newValue.getPath(), locale));
     }
 
     /**
@@ -380,10 +382,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     protected Element getLocaleNode(Locale locale) {
 
-        if (!m_locales.contains(locale)) {
-            throw new RuntimeException("No initialized locale " + locale + " available in XML document");
-        }
-
         String localeStr = locale.toString();
         Iterator i = m_document.getRootElement().elements().iterator();
         while (i.hasNext()) {
@@ -394,8 +392,8 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             }
         }
 
-        // language element was not found (should not happen since we throw a RuntimeException in this case)
-        return null;
+        // language element was not found
+        throw new RuntimeException("No initialized locale " + locale + " available in XML document");
     }
 
     /**

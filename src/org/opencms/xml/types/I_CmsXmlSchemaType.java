@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -181,6 +181,22 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @return the schema type name
      */
     String getTypeName();
+
+    /**
+     * Checks if a given value is valid according to the validation rule (regular expression) used for validation
+     * of this schema type in the XML schema.<p>
+     * 
+     * To have a more refined validation according to the special requirements of the
+     * content type, use custom validation rules in the appinfo which are
+     * processed with {@link org.opencms.xml.content.I_CmsXmlContentHandler#validateValue(CmsObject, I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)}.<p>
+     * 
+     * @param value the value to validate
+     * 
+     * @return the validation rule (regular expression) used for this schema type in the XML schema
+     * 
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#validateValue(CmsObject, I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
+     */
+    boolean validateValue(String value);
 
     /**
      * Returns <code>true</code> if this is a simple type, or <code>false</code>

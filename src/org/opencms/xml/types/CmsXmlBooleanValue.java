@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.dom4j.Element;
 
@@ -44,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
@@ -52,6 +53,12 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsBoolean";
 
+    /** The validation rule used for this schema type. */
+    public static final String C_TYPE_RULE = "true|false|1|0";
+
+    /** Pre-compiled regular expression pattern for this rule. */
+    private static final Pattern m_pattern = Pattern.compile(C_TYPE_RULE);
+    
     /** The boolean value of the element node. */
     private boolean m_boolean;
 
@@ -74,7 +81,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     public CmsXmlBooleanValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
         super(document, element, locale, type);
-        m_boolean = Boolean.valueOf(m_stringValue).booleanValue();
+        m_boolean = getBooleanValue(m_stringValue);
     }
 
     /**
@@ -106,9 +113,26 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
             result = ((CmsXmlBooleanValue)value).getBooleanValue();
         } else {
             // get the boolean value from the String value
-            result = Boolean.valueOf(value.getStringValue(cms)).booleanValue();
+            result = getBooleanValue(value.getStringValue(cms));
         }
         return result;
+    }
+
+    /**
+     * Special boolean value generation method since XML schema allows for 
+     * "1" as possible value for <code>true</code>, while Java only allows "true". 
+     * 
+     * @param value the String to get the boolean value for
+     * 
+     * @return the boolean value of the String according to the XML schema rules
+     */
+    private static boolean getBooleanValue(String value) {
+
+        if ("1".equals(value)) {
+            // XML schema allows for "1" as value for "true"
+            return true;
+        }
+        return Boolean.valueOf(value).booleanValue();
     }
 
     /**
@@ -162,5 +186,13 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlBooleanValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
+     */
+    public boolean validateValue(String value) {
+
+        return m_pattern.matcher(value).matches();
     }
 }

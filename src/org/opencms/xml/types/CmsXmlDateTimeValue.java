@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.xml.types;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.dom4j.Element;
 
@@ -42,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
@@ -50,6 +51,12 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsDateTime";
 
+    /** The validation rule used for this schema type. */
+    public static final String C_TYPE_RULE = "\\p{Digit}+";
+
+    /** Pre-compiled regular expression pattern for this rule. */
+    private static final Pattern m_pattern = Pattern.compile(C_TYPE_RULE);
+    
     /** The long value (timestamp). */
     private long m_dateTime;
 
@@ -142,5 +149,13 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlDateTimeValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
+     */
+    public boolean validateValue(String value) {
+
+        return m_pattern.matcher(value).matches();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/05 15:35:58 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -70,6 +70,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String C_SCHEMA_SYSTEM_ID_5 = "http://www.opencms.org/test5.xsd";
     private static final String C_SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
     private static final String C_SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
+    private static final String C_SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -102,6 +103,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testGuiWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -804,6 +806,150 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(3, errorHandler.getWarnings().size());
     }
 
+    /**
+     * Extended test for the validation of the value elements.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testValidationExtended() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Estended test for the validation of values in the XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.C_UTF8_ENCODING);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);    
+        
+        CmsXmlContentValueSequence sequence;
+        I_CmsXmlContentValue value;
+        
+        sequence = xmlcontent.getValueSequence("String", Locale.ENGLISH);
+        value = sequence.addValue(cms, 0);
+        value.setStringValue(cms, "This is a String that contains an error and a warning!");
+
+        // validate the XML structure (no error caused here)
+        xmlcontent.validateXmlStructure(resolver);   
+        
+        CmsXmlContentErrorHandler errorHandler;
+        
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertTrue(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        assertEquals(1, errorHandler.getWarnings().size());
+        
+        value.setStringValue(cms, "This is a nice String");
+        errorHandler = xmlcontent.validate(cms);
+        assertFalse(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());
+        
+        sequence = xmlcontent.getValueSequence("DateTime", Locale.ENGLISH);
+        value = sequence.addValue(cms, 0);
+        value.setStringValue(cms, "invalid!");
+        
+        boolean error = true;
+        try {
+            xmlcontent.validateXmlStructure(resolver); 
+        } catch (Exception e) {
+            error = false;
+        }
+        if (error) {
+            fail("Invalid value was possible for DateTime");
+        }
+        
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        
+        value.setStringValue(cms, String.valueOf(System.currentTimeMillis()));
+        xmlcontent.validateXmlStructure(resolver); 
+        errorHandler = xmlcontent.validate(cms);
+        assertFalse(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());       
+        
+        sequence = xmlcontent.getValueSequence("Color", Locale.ENGLISH);
+        value = sequence.addValue(cms, 0);
+        value.setStringValue(cms, "invalid!");
+        
+        error = true;
+        try {
+            xmlcontent.validateXmlStructure(resolver); 
+        } catch (Exception e) {
+            error = false;
+        }
+        if (error) {
+            fail("Invalid value was possible for Color");
+        }
+        
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        
+        value.setStringValue(cms, "#fff");
+        xmlcontent.validateXmlStructure(resolver); 
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        
+        value.setStringValue(cms, "#ffffff");
+        xmlcontent.validateXmlStructure(resolver); 
+        errorHandler = xmlcontent.validate(cms);
+        assertFalse(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());       
+                
+        sequence = xmlcontent.getValueSequence("Locale", Locale.ENGLISH);
+        value = sequence.addValue(cms, 0);
+        value.setStringValue(cms, "invalid!");
+        
+        error = true;
+        try {
+            xmlcontent.validateXmlStructure(resolver); 
+        } catch (Exception e) {
+            error = false;
+        }
+        if (error) {
+            fail("Invalid value was possible for Locale");
+        }
+        
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        
+        value.setStringValue(cms, Locale.GERMANY.toString());
+        xmlcontent.validateXmlStructure(resolver); 
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        
+        value.setStringValue(cms, Locale.GERMAN.toString());
+        xmlcontent.validateXmlStructure(resolver); 
+        errorHandler = xmlcontent.validate(cms);
+        assertFalse(errorHandler.hasErrors());
+        assertFalse(errorHandler.hasWarnings());   
+        
+        // output the current document
+        System.out.println(xmlcontent.toString());
+    }
+    
     /**
      * Test the index of the value elements.<p>
      * 
