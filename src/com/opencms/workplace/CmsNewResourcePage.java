@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/03/28 13:26:07 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/03/28 14:33:16 $
+* Version: $Revision: 1.36 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2001/03/28 13:26:07 $
+ * @version $Revision: 1.36 $ $Date: 2001/03/28 14:33:16 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -229,8 +229,12 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     CmsFile file = cms.createFile(currentFilelist, newFile, content, "page");
                     cms.lockResource(file.getAbsolutePath());
                     cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_TITLE, title);
-                    cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_KEYWORDS, keywords);
-                    cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_DESCRIPTION, description);
+                    if( keywords != null && !keywords.equals("") ) {
+                        cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_KEYWORDS, keywords);
+                    }
+                    if( description != null && !description.equals("") ) {
+                        cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_DESCRIPTION, description);
+                    }
 
                     // now create the page content file
                     contentFile = cms.createFile(C_CONTENTBODYPATH + currentFilelist.substring(1,
