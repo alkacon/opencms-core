@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/08 14:35:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/08 16:30:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/08 16:30:29 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -218,4 +218,14 @@ public interface I_CmsBackupDriver {
      */
     void deleteBackups(List existingBackups) throws CmsException;
 
+	/**
+	 * Internal method to write the backup content.<p>
+	 *  
+	 * @param backupId			the backup id
+	 * @param fileId			the id of the file
+	 * @param fileContent		the content of the file
+	 * @param versionId			the revision
+	 * @throws CmsException		if something goes wrong
+	 */
+	void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException;
 }

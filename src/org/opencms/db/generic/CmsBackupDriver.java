@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/08 15:55:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/08 16:28:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/07/08 15:55:28 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/08 16:28:56 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -573,23 +573,22 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             conn = m_sqlManager.getConnectionForBackup();           
             
             if (resource.getType() != I_CmsConstants.C_TYPE_FOLDER) {
-                // write the file content                
-                content = ((CmsFile)resource).getContents();
-                
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_WRITE_BACKUP");           
-                stmt.setString(1, resource.getFileId().toString());
+				// write the file content
+				content = ((CmsFile)resource).getContents();
+				writeBackupFileContent(backupPkId,resource.getFileId(),content,versionId);
+                                
+                //stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_WRITE_BACKUP");           
+                //stmt.setString(1, resource.getFileId().toString());
 
-                if (content.length < 2000) {
-                    stmt.setBytes(2, content);
-                } else {
-                    stmt.setBinaryStream(2, new ByteArrayInputStream(content), content.length);
-                }
+                //if (content.length < 2000) {
+                //    stmt.setBytes(2, content);
+                //} else {
+                //    stmt.setBinaryStream(2, new ByteArrayInputStream(content), content.length);
+                //}
             
-                stmt.setInt(3, versionId);
-                stmt.setString(4, backupPkId.toString());
-                stmt.executeUpdate();   
-                
-                m_sqlManager.closeAll(null, stmt, null);             
+                //stmt.setInt(3, versionId);
+                //stmt.setString(4, backupId.toString());
+                //stmt.executeUpdate();                
             }
 
             // write the resource
@@ -719,28 +718,57 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         CmsBackupResource currentResource = null;
         int count = existingBackups.size() - getMaxResourceVersionCount();
 
-        try {
-            conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCE");
+		try {
+			conn = m_sqlManager.getConnectionForBackup();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCE");
 
-            for (int i = 0; i < count; i++) {
-                currentResource = (CmsBackupResource) existingBackups.get(i);
-                stmt.setString(1, currentResource.getId().toString());
-                stmt.setInt(2, currentResource.getVersionId());
-                stmt.addBatch();
-            }
+			for (int i = 0; i < count; i++) {
+				currentResource = (CmsBackupResource) existingBackups.get(i);
+				stmt.setString(1, currentResource.getId().toString());
+				stmt.setInt(2, currentResource.getVersionId());
+				stmt.addBatch();
+			}
 
-            if (count > 0) {
-                stmt.executeBatch();
-            }
+			if (count > 0) {
+				stmt.executeBatch();
+			}
 
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+		} catch (Exception ex) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+	}
 
+	/**
+	 * @see org.opencms.db.I_CmsBackupDriver#writeBackupFileContent(com.opencms.flex.util.CmsUUID, com.opencms.flex.util.CmsUUID, byte[], int)
+	 */
+	public void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = m_sqlManager.getConnectionForBackup();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_WRITE_BACKUP");
+
+			stmt.setString(1, fileId.toString());
+
+			if (fileContent.length < 2000) {
+				stmt.setBytes(2, fileContent);
+			} else {
+				stmt.setBinaryStream(2, new ByteArrayInputStream(fileContent), fileContent.length);
+			}
+            
+			stmt.setInt(3, versionId);
+			stmt.setString(4, backupId.toString());
+
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+	}
 }
