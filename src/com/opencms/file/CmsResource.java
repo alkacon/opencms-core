@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/07/18 16:15:28 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.66 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.67 $ $Date: 2003/07/18 16:15:28 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -710,7 +710,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @param resourceCreatedByUserId user id
      */
-    void setUserCreated(CmsUUID resourceCreatedByUserId) {
+    public void setUserCreated(CmsUUID resourceCreatedByUserId) {
         m_createdByUser = resourceCreatedByUserId;
     }
     /**
@@ -718,7 +718,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param resourceLastModifiedByUserId the user id of the user who changed the resource
      */
-    void setUserLastModified(CmsUUID resourceLastModifiedByUserId) {
+    public void setUserLastModified(CmsUUID resourceLastModifiedByUserId) {
         m_lastModifiedByUser = resourceLastModifiedByUserId;
     }
     

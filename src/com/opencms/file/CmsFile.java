@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/16 16:34:49 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/18 16:15:28 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2003/07/16 16:34:49 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/18 16:15:28 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -45,16 +45,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      */
     private byte[] m_fileContent;
     
-    /*
-     * The date of the last change.
-     */
-    private long m_dateLastModified;
-    
-    /*
-     * The user who did the last change 
-     */
-    private CmsUUID m_lastModifiedByUser;
-
    /**
     * Constructor, creates a new CmsFile object.<p>
     *
@@ -128,10 +118,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     
         // set content and size.
         m_fileContent = fileContent;
-        
-        // set date and user of last modification
-        m_dateLastModified = dateLastModified;
-        m_lastModifiedByUser = lastModifiedByUser;
     }
  
     /**
@@ -159,16 +145,13 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             new String(this.getLauncherClassname()),
             this.getDateCreated(),
             this.getUserCreated(),
-            super.getDateLastModified(),    // set to resource data
-            super.getUserLastModified(),    // set to resource data
+            this.getDateLastModified(),
+            this.getUserLastModified(),
             newContent,
             this.getLength(),
             this.getLockedInProject(),
             this.getVfsLinkType());
             
-        clone.setDateLastModified(this.m_dateLastModified);
-        clone.setUserLastModified(this.m_lastModifiedByUser);
-        
         return clone;
     }
     
@@ -210,72 +193,5 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         if (m_fileContent.length >0) {
             m_size=m_fileContent.length;
         }
-    }
-
-    /**
-     * Sets the user id of the user who changed the content in this file.<p>
-     *
-     * @param resourceLastModifiedByUserId the user id of the user who changed the resource
-     */
-    void setContentUserLastModified(CmsUUID resourceLastModifiedByUserId) {
-        m_lastModifiedByUser = resourceLastModifiedByUserId;
-    }
-    
-    /**
-     * Gets the user id of the user who changed the content in this file.<p>
-     */
-    public CmsUUID getContentUserLastModified() {
-        return m_lastModifiedByUser;    
-    }
-    
-    /**
-     * Returns the user id of the user who made the last change on this resource.<p>
-     * Note: This is the user who did the latest change on the structure or the resource record.
-     *
-     * @return the user id of the user who made the last change<p>
-     */
-    public CmsUUID getUserLastModified() {
-        if (super.getDateLastModified() > this.getContentDateLastModified())
-            return super.getUserLastModified();
-        else
-            return this.getContentUserLastModified();    
-    }
-
-    /**
-    * Sets the date of the last modification of the content of this resource.<p>
-    * 
-    * @param time the date to set
-     */
-    public void setContentDateLastModified(long time) {
-       m_dateLastModified = time;
-    }
-    
-    /**
-     * Returns the date of the last change of the content of this resource.<p>
-     */
-    public long getContentDateLastModified() {
-       return m_dateLastModified; 
-    }
-    
-    /**
-     * Returns the date of the last modification of this resource.<p>
-     * Note: This is the latest date of either the date of the last change of the structure or the resource record.
-     *
-     * @return the date of the last modification of this resource
-     */
-     public long getDateLastModified() {
-         return (super.getDateLastModified() > this.getContentDateLastModified()) ? super.getDateLastModified() : this.getContentDateLastModified();
-     }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        StringBuffer output = new StringBuffer(super.toString());
-        output.append(" : Content date lastmodified=");
-        output.append(new java.util.Date(getContentDateLastModified()));
-        output.append(" : Content user lastmodified=");
-        output.append(getContentUserLastModified());
-        return output.toString();        
-    }    
+    }  
 }

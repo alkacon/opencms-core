@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/18 14:11:18 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/07/18 16:15:28 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.28 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.29 $ $Date: 2003/07/18 16:15:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -766,9 +766,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         //CmsUUID offlineDefaultId = setupDefaultFolder.getId();
         
 		// create the access control entries
-        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
         m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
 
         // create the folder for the virtual file system for the offline project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/18 14:11:18 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/07/18 16:15:29 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.65 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.66 $ $Date: 2003/07/18 16:15:29 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -91,6 +91,8 @@ public class CmsDriverManager extends Object {
     public static final int C_UPDATE_RESOURCE_STATE = 1;
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
     public static final int C_UPDATE_ALL = 3; 
+    public static final int C_UPDATE_RESOURCE = 4;
+    public static final int C_UPDATE_STRUCTURE = 5;
     
     protected Map m_accessCache = null;
     protected Map m_accessControlListCache = null;
@@ -842,96 +844,6 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Changes the group for this resource<br>
-     *
-     * Only the group of a resource in an offline project can be changed. The state
-     * of the resource is set to CHANGED (1).
-     * If the content of this resource is not exisiting in the offline project already,
-     * it is read from the online project and written into the offline project.
-     * The user may change this, if he is admin of the resource. <br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user is owner of the resource or is admin</li>
-     * <li>the resource is locked by the callingUser</li>
-     * </ul>
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param filename The complete path to the resource.
-     * @param newGroup The name of the new group for this resource.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public void chgrp(CmsRequestContext context, String filename, String newGroup) throws CmsException {
-
-        // NOTE: for the moment do nothing
-        // throw new CmsException("chgrp implementation removed");
-    }
-
-    /**
-     * Changes the flags for this resource.<br>
-     *
-     * Only the flags of a resource in an offline project can be changed. The state
-     * of the resource is set to CHANGED (1).
-     * If the content of this resource is not exisiting in the offline project already,
-     * it is read from the online project and written into the offline project.
-     * The user may change the flags, if he is admin of the resource <br>.
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can write the resource</li>
-     * <li>the resource is locked by the callingUser</li>
-     * </ul>
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param filename The complete path to the resource.
-     * @param flags The new accessflags for the resource.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public void chmod(CmsRequestContext context, String filename, int flags) throws CmsException {
-
-        // NOTE: for the moment do nothing
-        // throw new CmsException("chmod implementation removed");
-    }
-
-    /**
-     * Changes the owner for this resource.<br>
-     *
-     * Only the owner of a resource in an offline project can be changed. The state
-     * of the resource is set to CHANGED (1).
-     * If the content of this resource is not exisiting in the offline project already,
-     * it is read from the online project and written into the offline project.
-     * The user may change this, if he is admin of the resource. <br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user is owner of the resource or the user is admin</li>
-     * <li>the resource is locked by the callingUser</li>
-     * </ul>
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param filename The complete path to the resource.
-     * @param newOwner The name of the new owner for this resource.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public void chown(CmsRequestContext context, String filename, String newOwner) throws CmsException {
-
-        // NOTE: for the moment, do nothing
-        // throw new CmsException ("chown implementation removed");
-    }
-
-    /**
      * Changes the state for this resource<BR/>
      *
      * The user may change this, if he is admin of the resource.
@@ -1118,6 +1030,8 @@ public class CmsDriverManager extends Object {
         while (acEntries.hasNext()) {
             writeAccessControlEntry(context, dest, (CmsAccessControlEntry) acEntries.next());
         }
+        
+        touchResource(context, dest, System.currentTimeMillis());
     }
 
     /**
@@ -1890,6 +1804,8 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         m_userDriver.deleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
+        
+        touchResource(context, resource, System.currentTimeMillis());
         clearAccessControlListCache();
     }
 
@@ -7143,6 +7059,8 @@ public class CmsDriverManager extends Object {
 
         m_userDriver.removeAccessControlEntry(context.currentProject(), resource.getResourceAceId(), principal);
         clearAccessControlListCache();
+        
+        touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**
@@ -7598,6 +7516,7 @@ public class CmsDriverManager extends Object {
      * @param timestamp timestamp the new timestamp of the changed resource
      */
     public void touch(CmsRequestContext context, String resourceName, long timestamp) throws CmsException {
+    /*
         CmsResource resource = null;
         boolean isFolder = false;
 
@@ -7628,8 +7547,55 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
 
         fileSystemChanged(isFolder);
+    */
+        CmsResource res = readFileHeader(context, resourceName);
+        touchResource(context, res, timestamp);
     }
 
+    /**
+     * Access the driver underneath to change the timestamp of a resource.
+     * 
+     * @param context.currentUser() the currentuser who requested this method
+     * @param context.currentProject() the current project of the user 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    private void touchResource(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
+        
+        // NOTE: this is the new way to update the state !
+        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+            res.setState(I_CmsConstants.C_STATE_CHANGED);
+                
+        res.setDateLastModified(timestamp);
+        res.setUserLastModified(context.currentUser().getId());
+        m_vfsDriver.updateResourcestate(res, C_UPDATE_RESOURCE);
+        
+        clearResourceCache();
+        fileSystemChanged(res.isFolder());
+    }
+    
+    /**
+     * Access the driver underneath to change the timestamp of a resource.
+     * 
+     * @param context.currentUser() the currentuser who requested this method
+     * @param context.currentProject() the current project of the user 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
+        
+        // NOTE: this is the new way to update the state !
+        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+            res.setState(I_CmsConstants.C_STATE_CHANGED);
+                
+        res.setDateLastModified(timestamp);
+        res.setUserLastModified(context.currentUser().getId());
+        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
+        
+        clearResourceCache();
+        fileSystemChanged(res.isFolder());        
+    }
+    
     /**
      * Removes the deleted mark for all access control entries of a given resource
      * 
@@ -7650,6 +7616,7 @@ public class CmsDriverManager extends Object {
 
         m_userDriver.undeleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
         clearAccessControlListCache();
+        touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**
@@ -8050,6 +8017,7 @@ public class CmsDriverManager extends Object {
         }
 
         clearAccessControlListCache();
+        touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**
@@ -8073,6 +8041,7 @@ public class CmsDriverManager extends Object {
 
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
+        touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**
