@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/08 18:18:50 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/10 14:11:28 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1007,8 +1007,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         } catch(Exception exc2) {
             throwException("User method " + methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
-        if(! (result instanceof String || result instanceof Integer 
-                || result instanceof NodeList || result instanceof byte[])) {
+        if((result != null) && (! (result instanceof String || result instanceof Integer 
+                || result instanceof NodeList || result instanceof byte[]))) {
             throwException("User method " + methodName + " in class " + callingObject.getClass().getName() 
                     + " returned an unsupported Object: " + result.getClass().getName(), CmsException.C_XML_PROCESS_ERROR);
         }
