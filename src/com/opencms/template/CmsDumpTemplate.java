@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/23 10:07:46 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/23 10:07:46 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -153,18 +153,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @return key that can be used for caching
      */
     public Object getKey(CmsObject cms, String templateFile, Hashtable parameter, String templateSelector) {
-
-        //return templateFile.getAbsolutePath();
-
-        //Vector v = new Vector();
         CmsRequestContext reqContext = cms.getRequestContext();
-
-        //v.addElement(reqContext.currentProject().getName());
-
-        //v.addElement(templateFile);
-
-        //return v;
-        return "" + reqContext.currentProject().getId() + ":" + templateFile;
+        return "" + reqContext.currentProject().getId() + ":" + reqContext.addSiteRoot(templateFile);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/07/17 16:33:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/23 10:07:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexCacheKey {
     
@@ -122,7 +122,7 @@ public class CmsFlexCacheKey {
         m_variation = "never";
         
         // Get the top-level file name / uri
-        m_uri = cms.getRequestContext().getUri();
+        m_uri = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         // Fetch user from the current cms
         m_user = cms.getRequestContext().currentUser().getId();        
         // Fetch group. Must have unique names, so the String is ok

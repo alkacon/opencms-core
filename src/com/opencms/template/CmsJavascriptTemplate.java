@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/23 10:07:46 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -91,14 +91,8 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      * @return key that can be used for caching
      */
     public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
-
-        //Vector v = new Vector();
         CmsRequestContext reqContext = cms.getRequestContext();
-
-        //v.addElement(reqContext.currentProject().getName());
-        //v.addElement(templateFile);
-        //return v;
-        return "" + reqContext.currentProject().getId() + ":" + templateFile;
+        return "" + reqContext.currentProject().getId() + ":" + reqContext.addSiteRoot(templateFile);
     }
 
     /**

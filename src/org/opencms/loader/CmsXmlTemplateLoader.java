@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/23 10:07:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -383,9 +383,12 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             if (index != -1) {
                 elementreplace = true;
                 cmsUri = null;
-                replaceDef = new CmsElementDefinition(replace.substring(0, index),
+                String elementName = replace.substring(0, index);
+                String replaceUri = replace.substring(index+1);               
+                replaceDef = new CmsElementDefinition(elementName,
                                         I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS,
-                                        replace.substring(index+1), null, new Hashtable());
+                                        replaceUri, null, new Hashtable());
+                newParameters.put(C_ELEMENT_REPLACE + "_VFS_" + elementName, cms.getRequestContext().addSiteRoot(replaceUri));
             }
         }
 

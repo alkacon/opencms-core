@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.117 $
+* Date   : $Date: 2003/07/23 10:07:46 $
+* Version: $Revision: 1.118 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.117 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.118 $ $Date: 2003/07/23 10:07:46 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -363,17 +363,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return key that can be used for caching
      */
     public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
-
-        //Vector v = new Vector();
         CmsRequestContext reqContext = cms.getRequestContext();
-
-        //v.addElement(reqContext.currentProject().getName());
-        //v.addElement(reqContext.getUri());
-        //v.addElement(templateFile);
-        //v.addElement(parameters);
-        //v.addElement(templateSelector);
-        //return v;
-        String result = "" + reqContext.currentProject().getId() + ":" + reqContext.currentUser().getName() + reqContext.getUri() + templateFile;
+        String result = "" + reqContext.currentProject().getId() + ":" + reqContext.currentUser().getName() + reqContext.getUri() + reqContext.addSiteRoot(templateFile);
         Enumeration keys = parameters.keys();
         while(keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
