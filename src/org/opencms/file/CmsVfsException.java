@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2004/06/25 16:33:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/03 10:17:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
  * Used to signal VFS related issues, for example during file access.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.4
  */
 public class CmsVfsException extends CmsException {
@@ -48,9 +48,15 @@ public class CmsVfsException extends CmsException {
     /** List of property must not contain equal properties. */
     public static final int C_VFS_INVALID_PROPERTY_LIST = 301;
     
+    /** Undo changes on a new resource is impossible. */
+    public static final int C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE = 302;
+    
     /** Resource not found. */
     public static final int C_VFS_RESOURCE_NOT_FOUND = C_NOT_FOUND;
 
+    /** Resource already exists. */
+    public static final int C_VFS_RESOURCE_ALREADY_EXISTS = C_FILE_EXISTS;
+    
     /**
      * Default constructor for a CmsSecurityException.<p>
      */
@@ -125,6 +131,10 @@ public class CmsVfsException extends CmsException {
                 return "Folders in the VFS don't support siblings!";
             case C_VFS_INVALID_PROPERTY_LIST:                
                 return "Invalid multiple occurence of equal properties in property list!";
+            case C_VFS_RESOURCE_ALREADY_EXISTS:
+                return "Resource already exists!";
+            case C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE:
+                return "Undo changes is not possible on a new resource!";
             default:
                 return super.getErrorDescription(type);
         }

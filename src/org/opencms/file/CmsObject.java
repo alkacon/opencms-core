@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/07/01 16:30:24 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/07/03 10:16:51 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 public class CmsObject {
 
@@ -576,12 +576,6 @@ public class CmsObject {
      */
     public void undeleteResource(String resourcename) throws CmsException {
 
-        int warning = 0;
-        // TODO: This is NOT the same operation as "undo changes"!
-        // For example a move operation, original resource is deleted 
-        // and new resource is created. Then user modifies the new resource,
-        // and later does "undelete" on deleted resource - changes would be 
-        // lost that have been made on all other siblings!
         undoChanges(resourcename, true);
     }
 
@@ -684,7 +678,7 @@ public class CmsObject {
      */
     public void changeLock(String resourcename) throws CmsException {
         
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(
             resource.getTypeId()
         ).changeLock(
@@ -1176,6 +1170,23 @@ public class CmsObject {
         
         return m_driverManager.readProjectView(m_context, projectId, state);
     }
+    
+    /**
+     * Checks if the specified resource is inside the current project.<p>
+     * 
+     * The project "view" is determined by a set of path prefixes. 
+     * If the resource starts with any one of this prefixes, it is considered to 
+     * be "inside" the project.<p>
+     * 
+     * @param resourcename the specified resource name (full path)
+     * 
+     * @return true, if the specified resource is inside the current project
+     */
+    public boolean isInsideCurrentProject(String resourcename) {
+        
+        return m_driverManager.isInsideCurrentProject(m_context, addSiteRoot(resourcename));
+    }      
+
     
     //-----------------------------------------------------------------------------------
     // Permission related methods:
@@ -3339,16 +3350,6 @@ public class CmsObject {
         return getPublishList(null, false, report);
     }        
     
-    /**
-     * Proves if a specified resource is inside the current project.<p>
-     * 
-     * @param resource the specified resource
-     * @return true, if the resource name of the specified resource matches any of the current project's resources
-     */
-    public boolean isInsideCurrentProject(CmsResource resource) {
-        return m_driverManager.isInsideCurrentProject(m_context, resource);
-    }      
-
     /**
      * Checks if the user has management access to the project.
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/02 13:29:57 $
- * Version: $Revision: 1.393 $
+ * Date   : $Date: 2004/07/03 10:16:27 $
+ * Version: $Revision: 1.394 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.393 $ $Date: 2004/07/02 13:29:57 $
+ * @version $Revision: 1.394 $ $Date: 2004/07/03 10:16:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -233,7 +233,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /** Indicates a resource was filtered during permission check. */
     public static final int PERM_FILTERED = 2;   
     
-    /** Indicates a resource was not locked for a write / control operation */
+    /** Indicates a resource was not locked for a write / control operation. */
     public static final int PERM_NOTLOCKED = 3;
     
     /** Indicates allowed permissions. */
@@ -242,9 +242,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /** Indicates denied permissions. */
     private static final Integer PERM_DENIED_INTEGER = new Integer(PERM_DENIED); 
     
-    /** Indicates a resource was not locked */
-    private static final Integer PERM_NOTLOCKED_INTEGER = new Integer(PERM_NOTLOCKED); 
-        
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
 
@@ -554,14 +551,28 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             String parentFolderName;
             String createdResourceName = resourcename;
             
-            if (currentResource != null) {            
-                // the resource already exists
-                if (! resource.isFolder() && useLostAndFound && (! currentResource.getResourceId().equals(resource.getResourceId()))) {
-                    // new resource must be created in "lost and found"                
-                    createdResourceName = moveToLostAndFound(context, resourcename, false);
-                    // current resource must remain unchanged, new will be created in "lost and found"
-                    currentResource = null;
-                }            
+            if (currentResource != null) {
+                if (currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                    if (! currentResource.isFolder()) {
+                        // if a non-folder resource was deleted it's treated like a new resource
+                        currentResource = null;
+                    }
+                } else {
+                    if (! importCase) {
+                        // direct "overwrite" of a resource is possible only during import, 
+                        // or if the resource has been deleted
+                        throw new CmsVfsException("Resource '" + context.removeSiteRoot(resourcename) + "' already exists", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
+                    }
+                    // the resource already exists
+                    if (! resource.isFolder() 
+                    && useLostAndFound 
+                    && (! currentResource.getResourceId().equals(resource.getResourceId()))) {
+                        // new resource must be created in "lost and found"                
+                        createdResourceName = moveToLostAndFound(context, resourcename, false);
+                        // current resource must remain unchanged, new will be created in "lost and found"
+                        currentResource = null;
+                    }       
+                }
             }
                         
             // need to provide the parent folder id for resource creation
@@ -574,7 +585,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, false, CmsResourceFilter.IGNORE_EXPIRATION);
             } else {
                 // resource already exists - check existing resource              
-                checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, !importCase, CmsResourceFilter.IGNORE_EXPIRATION);
+                checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, !importCase, CmsResourceFilter.ALL);
             }
             
             // extract the name (without path)
@@ -1625,7 +1636,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         && (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
             
             // copy the resource to the project only if the resource is not already in the project
-            if (! isInsideCurrentProject(context, resource)) {
+            if (! isInsideCurrentProject(context, resource.getRootPath())) {
                 // check if there are already any subfolders of this resource
                 if (resource.isFolder()) {
                     List projectResources = m_projectDriver.readProjectResources(context.currentProject());
@@ -1668,6 +1679,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // check if the user has write access
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
 
+        if (resource.getState() == I_CmsConstants.C_STATE_NEW) {
+            // undo changes is impossible on a new resource
+            throw new CmsVfsException("Undo changes is not possible on new resource '"
+                + context.removeSiteRoot(resource.getRootPath())
+                + "'", CmsVfsException.C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE);
+        }
+        
         // we need this for later use
         CmsProject onlineProject = readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
 
@@ -1677,10 +1695,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // read the resource from the online project
             CmsFolder onlineFolder = readFolderInProject(I_CmsConstants.C_PROJECT_ONLINE_ID, resource.getRootPath());
             
-            //we must ensure that the resource contains it full resource name as this is required for the 
-            // property operations
-            readPath(context, onlineFolder, CmsResourceFilter.ALL);
-
             CmsFolder restoredFolder = new CmsFolder(
                 resource.getStructureId(), 
                 resource.getResourceId(), 
@@ -1701,83 +1715,88 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
             restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
-            // write the folder without setting state = changed
+            
+            // set the root path
+            restoredFolder.setRootPath(resource.getRootPath());
+            
+            // write the folder
             m_vfsDriver.writeResource(
                 context.currentProject(), 
                 restoredFolder, 
                 C_NOTHING_CHANGED);
-            // restore the properties in the offline project
-            readPath(context, restoredFolder, CmsResourceFilter.ALL);
+            
+            // restore the properties form the online project
             m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFolder, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             List propertyInfos = m_vfsDriver.readPropertyObjects(onlineProject, onlineFolder);
             m_vfsDriver.writePropertyObjects(context.currentProject(), restoredFolder, propertyInfos);
-            
+
+            // restore the access control entries form the online project
+            m_userDriver.removeAccessControlEntries(context.currentProject(), resource.getResourceId());
+            ListIterator aceList = m_userDriver.readAccessControlEntries(onlineProject, resource.getResourceId(), false).listIterator();
+            while (aceList.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
+                m_userDriver.createAccessControlEntry(context.currentProject(), resource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+            }            
         } else {
 
             // read the file from the online project
             CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resource.getStructureId(), CmsResourceFilter.ALL);
-            //(context, resourceName);
-            readPath(context, onlineFile, CmsResourceFilter.ALL);
-
-            // get flags of the deleted file
-            int flags = onlineFile.getFlags();
-            if (resource.isLabeled()) {
-                // set the flag for labeled links on the restored file
-                flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-            }
 
             CmsFile restoredFile = new CmsFile(
-                resource.getStructureId(), 
-                resource.getResourceId(), 
+                onlineFile.getStructureId(), 
+                onlineFile.getResourceId(), 
                 resource.getParentStructureId(), 
-                resource.getContentId(), 
+                onlineFile.getContentId(), 
                 resource.getName(), 
                 onlineFile.getTypeId(), 
-                flags, 
+                onlineFile.getFlags(),
                 context.currentProject().getId(), 
                 I_CmsConstants.C_STATE_UNCHANGED, 
                 onlineFile.getLoaderId(), 
                 onlineFile.getDateCreated(), 
-                onlineFile.getUserCreated(), 
+                onlineFile.getUserCreated(),
                 onlineFile.getDateLastModified(), 
                 onlineFile.getUserLastModified(), 
                 onlineFile.getDateReleased(), 
                 onlineFile.getDateExpired(), 
-                resource.getSiblingCount(), 
+                0, 
                 onlineFile.getLength(), 
                 onlineFile.getContents());
-
+            
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
+            
+            // set the root path
+            restoredFile.setRootPath(resource.getRootPath());
+            
+            // collect the properties
+            List properties = m_vfsDriver.readPropertyObjects(onlineProject, onlineFile);   
 
-            // write-acces  was granted - write the file without setting state = changed
-            m_vfsDriver.writeResource(context.currentProject(), restoredFile, C_NOTHING_CHANGED);
+            // implementation notes: 
+            // undo changes can become complex e.g. if a resource was deleted, and then 
+            // another resource was copied over the deleted file as a sibling
+            // therefore we must "clean" delete the offline resource, and then create 
+            // an new resource with the create method
+            // note that this does NOT apply to folders, since a folder cannot be replaced
+            // like a resource anyway
+            deleteResource(context, resource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            CmsResource res = createResource(context, restoredFile.getRootPath(), restoredFile, restoredFile.getContents(), properties, false);
 
-            m_vfsDriver.writeContent(
-                context.currentProject(), 
-                restoredFile.getContentId(), 
-                restoredFile.getContents(), 
-                false);
+            // copy the access control entries form the online project
+            ListIterator aceList = m_userDriver.readAccessControlEntries(onlineProject, onlineFile.getResourceId(), false).listIterator();
+            while (aceList.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
+                m_userDriver.createAccessControlEntry(context.currentProject(), res.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+            }
 
-            // restore the properties in the offline project
-            readPath(context, restoredFile, CmsResourceFilter.ALL);
-            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFile, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-            List propertyInfos = m_vfsDriver.readPropertyObjects(onlineProject, onlineFile);
-            m_vfsDriver.writePropertyObjects(context.currentProject(), restoredFile, propertyInfos);
-        }
-
-        m_userDriver.removeAccessControlEntries(context.currentProject(), resource.getResourceId());
-        // copy the access control entries
-        ListIterator aceList = m_userDriver.readAccessControlEntries(onlineProject, resource.getResourceId(), false).listIterator();
-        while (aceList.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-            m_userDriver.createAccessControlEntry(context.currentProject(), resource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+            // rest the state to unchanged 
+            res.setState(I_CmsConstants.C_STATE_UNCHANGED);
+            m_vfsDriver.writeResourceState(context.currentProject(), res, C_UPDATE_ALL);
         }
 
         // update the cache
         clearResourceCache();
-
         m_propertyCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
@@ -2610,6 +2629,32 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Collections.sort(result);
 
         return result;
+    }    
+    
+    /**
+     * Checks if the specified resource is inside the current project.<p>
+     * 
+     * The project "view" is determined by a set of path prefixes. 
+     * If the resource starts with any one of this prefixes, it is considered to 
+     * be "inside" the project.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the specified resource name (full path)
+     * 
+     * @return true, if the specified resource is inside the current project
+     */
+    public boolean isInsideCurrentProject(CmsRequestContext context, String resourcename) {
+        List projectResources = null;
+
+        try {
+            projectResources = readProjectResources(context.currentProject());
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
+            }
+            return false;
+        }
+        return CmsProject.isInsideProject(projectResources, resourcename);
     }    
     
     //-----------------------------------------------------------------------------------
@@ -4950,28 +4995,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public boolean isAdmin(CmsRequestContext context) throws CmsException {
         return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators());
-    }
-    
-    /**
-     * Proves if a specified resource is inside the current project.<p>
-     * 
-     * @param context the current request context
-     * @param resource the specified resource
-     * @return true, if the resource name of the specified resource matches any of the current project's resources
-     */
-    public boolean isInsideCurrentProject(CmsRequestContext context, CmsResource resource) {
-        List projectResources = null;
-
-        try {
-            projectResources = readProjectResources(context.currentProject());
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
-            }
-
-            return false;
-        }
-        return CmsProject.isInsideProject(projectResources, resource);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/03 10:17:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -328,6 +329,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // done here since copy is ok without lock, but delete is not
         driverManager.checkPermissions(cms.getRequestContext(), resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.IGNORE_EXPIRATION);
         
+        // check if the resource to move is new or existing
+        boolean isNew = resource.getState() == I_CmsConstants.C_STATE_NEW;
+        
         copyResource(
             cms, 
             driverManager, 
@@ -345,8 +349,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsResource destinationResource = driverManager.readResource(
             cms.getRequestContext(), 
             cms.getRequestContext().addSiteRoot(destination), 
-            CmsResourceFilter.ALL);        
-        driverManager.changeLock(cms.getRequestContext(), destinationResource);
+            CmsResourceFilter.ALL);  
+        if (isNew) {
+            // if the source was new, destination must get a new lock
+            driverManager.lockResource(cms.getRequestContext(), destinationResource, CmsLock.C_MODE_COMMON);
+        } else {
+            // if source existed, destination must "steal" the lock 
+            driverManager.changeLock(cms.getRequestContext(), destinationResource);
+        }
     }
 
     /**
