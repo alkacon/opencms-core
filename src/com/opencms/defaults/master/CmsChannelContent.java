@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2002/02/07 13:50:59 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/02/21 08:23:03 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.8 $
- * $Date: 2002/02/07 13:50:59 $
+ * $Revision: 1.9 $
+ * $Date: 2002/02/21 08:23:03 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -896,8 +896,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     private static void getAllResources(CmsObject cms, String rootFolder, Vector allFolders) throws CmsException {
         // get folders of this rootFolder
         Vector subFolders = new Vector();
-        subFolders = cms.getSubFolders(rootFolder, true);
-
+        subFolders = cms.getResourcesInFolder(rootFolder);
         //copy the values into the allFolders Vector
         for(int i = 0;i < subFolders.size();i++) {
             CmsResource curFolder = (CmsResource)subFolders.elementAt(i);
