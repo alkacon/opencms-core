@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsConnection.java,v $
- * Date   : $Date: 2001/01/31 16:46:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/02/06 12:42:38 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -38,12 +38,17 @@ import source.org.apache.java.util.*;
  *
  * @author a.schouten
  */
-public class CmsConnection implements java.sql.Connection {
+public class CmsConnection implements Connection {
+
+        /**
+         * Constant: key for simnple statements
+         */
+        private static final String C_SIMPLE_STATEMENT_KEY = "SIMPLE_STATEMENT";
 
 	/**
 	 * The original connection to the db
 	 */
-	private java.sql.Connection m_originalConnection;
+	private Connection m_originalConnection;
 
 	/**
 	 * The hook to the pool
@@ -60,14 +65,29 @@ public class CmsConnection implements java.sql.Connection {
 	 */
 	private long m_lastUsed;
 
+        /**
+         * A pool with all created different statements during the lifetime of
+         * this connection.
+         */
+         private Hashtable m_statementPool = new Hashtable();
+
 	/**
 	 * Constructs a new connection.
 	 */
-	CmsConnection(java.sql.Connection originalConnection, CmsPool pool) {
-		m_originalConnection = originalConnection;
-		m_pool = pool;
-		m_lastUsed = System.currentTimeMillis();
-		m_isClosed = false;
+	CmsConnection(Connection originalConnection, CmsPool pool) {
+          this(originalConnection, pool, new Hashtable());
+	}
+
+	/**
+	 * Constructs a new connection.
+	 */
+	CmsConnection(Connection originalConnection, CmsPool pool, Hashtable statementPool) {
+          m_originalConnection = originalConnection;
+          m_pool = pool;
+          // create an empty statement
+          m_lastUsed = System.currentTimeMillis();
+          m_statementPool = statementPool;
+          m_isClosed = false;
 	}
 
 	/**
@@ -76,38 +96,8 @@ public class CmsConnection implements java.sql.Connection {
 	 */
 	private void checkIsClosed() throws SQLException {
 		if(m_isClosed) {
-			throw new SQLException("Connection was closed already.");
+			throw new SQLException("Connection was already closed.");
 		}
-	}
-
-	public Statement createStatement() throws SQLException {
-		checkIsClosed();
-		return m_originalConnection.createStatement();
-	}
-
-	public Statement createStatement(int a, int b) throws SQLException {
-		checkIsClosed();
-		return m_originalConnection.createStatement(a, b);
-	}
-
-	public PreparedStatement prepareStatement(String sql) throws SQLException {
-		checkIsClosed();
-		return m_originalConnection.prepareStatement(sql);
-	}
-
-	public PreparedStatement prepareStatement(String sql, int a, int b) throws SQLException {
-		checkIsClosed();
-		return m_originalConnection.prepareStatement(sql, a, b);
-	}
-
-	public CallableStatement prepareCall(String sql) throws SQLException {
-		checkIsClosed();
-		return m_originalConnection.prepareCall(sql);
-	}
-
-	public CallableStatement prepareCall(String sql, int a, int b) throws SQLException {
-		checkIsClosed();
-		return m_originalConnection.prepareCall(sql, a, b);
 	}
 
 	public String nativeSQL(String sql) throws SQLException {
@@ -190,6 +180,92 @@ public class CmsConnection implements java.sql.Connection {
 		return m_originalConnection.getTypeMap();
 	}
 
+        /**
+         * Creates a new CmsStatement from the pool.
+         */
+       	public Statement createStatement() throws SQLException {
+          checkIsClosed();
+          String key = C_SIMPLE_STATEMENT_KEY;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsStatement(m_originalConnection.createStatement(), this));
+          }
+          // return the simple statement
+          return (Statement) m_statementPool.get(key);
+	}
+
+        /**
+         * Creates a new CmsStatement from the pool.
+         */
+	public Statement createStatement(int resultSetType, int resultSetConcurrency)
+                throws SQLException {
+          checkIsClosed();
+          String key = C_SIMPLE_STATEMENT_KEY + ":" + resultSetType + ":" + resultSetConcurrency;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsStatement(m_originalConnection.createStatement(resultSetType,
+              resultSetConcurrency ), this));
+          }
+          // return the simple statement
+          return (Statement) m_statementPool.get(key);
+	}
+
+        /**
+         * Creates a new CmsPreparedStatement from the pool.
+         */
+	public PreparedStatement prepareStatement(String sql) throws SQLException {
+          checkIsClosed();
+          String key = sql;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsPreparedStatement(m_originalConnection.prepareStatement(sql), this));
+          }
+          return (PreparedStatement) m_statementPool.get(key);
+	}
+
+        /**
+         * Creates a new CmsPreparedStatement from the pool.
+         */
+	public PreparedStatement prepareStatement(String sql, int a, int b) throws SQLException {
+          checkIsClosed();
+          String key = sql + ":" + a + ":" + b;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsPreparedStatement(m_originalConnection.prepareStatement(sql, a, b), this));
+          }
+          return (PreparedStatement) m_statementPool.get(key);
+	}
+
+        /**
+         * Creates a new CmsPreparedStatement from the pool.
+         */
+	public CallableStatement prepareCall(String sql) throws SQLException {
+          String key = sql;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsCallableStatement(m_originalConnection.prepareCall(sql), this));
+          }
+          return (CallableStatement) m_statementPool.get(key);
+	}
+
+        /**
+         * Creates a new CmsPreparedStatement from the pool.
+         */
+	public CallableStatement prepareCall(String sql, int a, int b) throws SQLException {
+          String key = sql + ":" + a + ":" + b;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsCallableStatement(m_originalConnection.prepareCall(sql, a, b), this));
+          }
+          return (CallableStatement) m_statementPool.get(key);
+	}
+
 	/**
 	 * Finds out, if this connection was closed.
 	 */
@@ -207,7 +283,7 @@ public class CmsConnection implements java.sql.Connection {
 		m_isClosed = true;
 
 		// put the connection back to the pool
-		m_pool.putConnection(new CmsConnection(m_originalConnection, m_pool));
+		m_pool.putConnection(new CmsConnection(m_originalConnection, m_pool, m_statementPool));
 	}
 
 	/**
@@ -223,11 +299,18 @@ public class CmsConnection implements java.sql.Connection {
 	 * Try to close this connection without putting it back to the pool.
 	 */
 	void closeOriginalConnection() {
-		try {
-			m_originalConnection.close();
-		} catch(SQLException exc) {
-			// todo: insert logging here
-		}
+          // close all statements
+          Enumeration keys = m_statementPool.keys();
+          while(keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            CmsStatement statement = (CmsStatement)m_statementPool.get(key);
+            statement.closeOriginalStatement();
+          }
+          try {
+            m_originalConnection.close();
+          } catch(SQLException exc) {
+            // todo: insert logging here
+          }
 	}
 
 	/**
