@@ -277,8 +277,8 @@ ${opencms.inputlib.dbcp}
                 <exclude name="${excludes}" />
             </fileset>
         </copy>     
-        <copy file="webapp/WEB-INF/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
-        <copy file="webapp/WEB-INF/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>       
+        <copy file="${opencms.input.warfiles}/WEB-INF/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
+        <copy file="${opencms.input.warfiles}/WEB-INF/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>       
     </target>     
     
     
