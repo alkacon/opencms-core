@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/Attic/CmsShellTest.java,v $
- * Date   : $Date: 2004/05/25 09:43:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/25 11:26:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
@@ -41,7 +42,7 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -83,10 +84,16 @@ public class CmsShellTest extends OpenCmsTestCase {
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         cms.loginUser("Admin", "admin");
         
+        // get the name of the folder for the backup configuration files
+        File configBackupDir = OpenCmsCore.getInstance().getConfigurationManager().getBackupFolder();
+        
         // exit the shell
         shell.exit();
         
         // remove the database
-        removeDatabase();                        
+        removeDatabase();
+        
+        // remove the backup configuration files
+        CmsStaticExportManager.purgeDirectory(configBackupDir);
     }
 }
