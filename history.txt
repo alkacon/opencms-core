@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/11/11 13:33:44 $
- * Version: $Revision: 1.472.2.4 $
+ * Date   : $Date: 2004/01/08 08:54:38 $
+ * Version: $Revision: 1.472.2.5 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2003  The OpenCms Group
+ * Copyright (C) 2003 - 2004 Alkacon Software
  */
 
 History of changes for the OpenCms project.
@@ -19,14 +19,14 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms (next 5.0 update version)
+OpenCms 5.0.1 - January 09, 2004
 ! Added "delete" option to image and download galleries to delete resources directly in the gallery views
 * Fixed issue #28: Property definitions are now read from the correct table (online/offline)
 * Applied fix to issue #15 contributed by ulrich.rueth@gmx.de
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
 - Refactored JSP integration to be more standards compliant
 
-OpenCms 5.0.0
+OpenCms 5.0.0 - May 05, 2003
 ! Added "import.immutable.resources" setting to opencms.properties, all resources
   listed there will be igored during an import if they already exist
 ! The size of the file upload can now be limited with the opencms.properties setting "workplace.file.maxuploadsize"
