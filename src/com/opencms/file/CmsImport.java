@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/11/10 00:42:04 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2002/11/18 09:34:45 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.58 $ $Date: 2002/11/10 00:42:04 $
+ * @version $Revision: 1.59 $ $Date: 2002/11/18 09:34:45 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -892,18 +892,21 @@ private boolean inExcludeList(Vector excludeList, String path) {
      */
     private String scanFrameTemplate(String content) {
         // no Meta-Tag present, insert it!
-        if (content.toLowerCase().indexOf("http-equiv=\"content-type\"")==-1) {
+        if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
             content = replaceString(content,"</head>","<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
+            m_modified = true;
         }
         // Meta-Tag present
         else {
-            String fileStart = content.substring(0,content.toLowerCase().indexOf("charset=")+8);
-            String editContent = content.substring(content.toLowerCase().indexOf("charset="));
-            editContent = editContent.substring(editContent.indexOf("\""));
-            String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
-            content = fileStart + newEncoding + editContent;
+        	if(content.toLowerCase().indexOf("charset=]]><method name=\"getencoding\"/>") == -1){
+            	String fileStart = content.substring(0,content.toLowerCase().indexOf("charset=")+8);
+            	String editContent = content.substring(content.toLowerCase().indexOf("charset="));
+            	editContent = editContent.substring(editContent.indexOf("\""));
+            	String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
+            	content = fileStart + newEncoding + editContent;
+        		m_modified = true;
+        	}
         }
-        m_modified = true;
         return content;
     }
     
