@@ -64,7 +64,7 @@
 	<td class="maxwidth">
 		<table class="maxwidth" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<%= wp.button("javascript:create();", null, "wizard", "input.upload", 0) %>
+			<%= wp.button("javascript:create();", null, "wizard", "title.new", 0) %>
 			<%= wp.buttonBarSpacer(5) %>
 			<td class="maxwidth"><input type="text" style="width: 98%" name="<%= wp.PARAM_SEARCHWORD %>" id="<%= wp.PARAM_SEARCHWORD %>" value="<%= wp.getParamSearchWord() %>"></td>			
 			<%= wp.button("javascript:displayGallery();", null, "search", "input.search", 0) %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryLinks.java,v $
- * Date   : $Date: 2004/11/26 17:35:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/29 09:09:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.2
  */
@@ -132,14 +132,7 @@ public class CmsGalleryLinks extends CmsGallery {
                     html.append(key("target"));
                     html.append("</b>&nbsp;</td>");
                     html.append("<td>\r\n");
-                    html.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\">");
-                    html.append("<option value=\"_self\">");
-                    html.append(key("input.linktargetself"));
-                    html.append("</option>\r\n");
-                    html.append("<option value=\"_blank\">");
-                    html.append(key("input.linktargetblank"));
-                    html.append("</option>\r\n");
-                    html.append("</select>");
+                    html.append(buildLinkTargetSelectBox());
                     html.append("</td>");
                     html.append(buttonBar(HTML_END));
                     html.append(buttonBarHorizontalLine()); 

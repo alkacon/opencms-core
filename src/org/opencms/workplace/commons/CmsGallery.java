@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/11/26 17:35:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/29 09:09:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Extend this class for every gallery type (e.g. image gallery) to build.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.2
  */
@@ -385,9 +385,6 @@ public abstract class CmsGallery extends CmsDialog {
         
         if (CmsStringUtil.isEmpty(m_paramGalleryPath)) {
             // set gallery path of the first gallery for the first time
-//            List galleries = getGalleries();
-//            CmsResource firstGallery = (CmsResource)galleries.get(0);
-//            m_paramGalleryPath = getCms().getSitePath(firstGallery);    
             m_paramGalleryPath = "";
         }
         
@@ -505,6 +502,29 @@ public abstract class CmsGallery extends CmsDialog {
             }
         }
         return galleries;
+    }
+    
+    /**
+     * Builds a String representing the HTML for the target select box.<p>
+     * 
+     * @return a String representing the HTML for the target select box
+     */
+    protected String buildLinkTargetSelectBox() {
+        
+        StringBuffer select = new StringBuffer();
+        select.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\">");
+        select.append("<option value=\"_self\">");
+        select.append(key("input.linktargetself"));
+        select.append("</option>\r\n");
+        select.append("<option value=\"_blank\">");
+        select.append(key("input.linktargetblank"));
+        select.append("</option>\r\n");
+        select.append("<option value=\"_top\">");
+        select.append(key("input.linktargettop"));
+        select.append("</option>\r\n");                    
+        select.append("</select>");
+        
+        return select.toString();
     }
     
     /**

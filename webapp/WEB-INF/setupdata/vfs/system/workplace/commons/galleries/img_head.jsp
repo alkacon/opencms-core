@@ -22,7 +22,7 @@
 		if (mainForm.gallerypath.options != null) {
 			mainForm.submit();
 		} else {
-			alert("<%=wp.key("picnogallery")%>");
+			alert("<%=wp.key("error.reason.picnogallery")%>");
 			top.window.close();			
 		}
 	}
@@ -33,8 +33,6 @@
 		if (listForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value == "") {
 			var mainForm = document.forms["main"];
 			listForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value = mainForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value;
-			//listForm.elements["<%= wp.PARAM_PAGE %>"].value = mainForm.elements["<%= wp.PARAM_PAGE %>"].value;
-			//listForm.elements["<%= wp.PARAM_SEARCHWORD %>"].value = mainForm.elements["<%= wp.PARAM_SEARCHWORD %>"].value;
 			listForm.submit();
 		}
 	}
@@ -65,7 +63,7 @@
 	<td class="maxwidth">
 		<table class="maxwidth" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<%= wp.button("javascript:upload();", null, "wizard", "input.upload", 0) %>
+			<%= wp.button("javascript:upload();", null, "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getKey(), 0) %>
 			<%= wp.buttonBarSpacer(5) %>
 			<td class="maxwidth"><input type="text" style="width: 98%" name="<%= wp.PARAM_SEARCHWORD %>" id="<%= wp.PARAM_SEARCHWORD %>" value="<%= wp.getParamSearchWord() %>"></td>			
 			<%= wp.button("javascript:displayGallery();", null, "search", "input.search", 0) %>
