@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/10/25 10:28:26 $
-* Version: $Revision: 1.198 $
+* Date   : $Date: 2001/10/26 13:51:07 $
+* Version: $Revision: 1.199 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.198 $ $Date: 2001/10/25 10:28:26 $
+ * @version $Revision: 1.199 $ $Date: 2001/10/26 13:51:07 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3446,13 +3446,22 @@ protected void doChangeLockedInProject(int projectId, String resourcename) throw
 }
 
 /**
- * Returns the name of the current site root, e.g. /site_a/vfs
+ * Returns the name of the current site root, e.g. /default/vfs
  *
  * @param resourcename The name of the resource
  * @return String The resourcename including its site root
  */
 public String getSiteRoot(String resourcename){
     return getRequestContext().getSiteRoot(resourcename);
+}
+
+/**
+ * Returns the name of the current site, e.g. /default
+ *
+ * @return String The site name
+ */
+public String getSiteName(){
+    return getRequestContext().getSiteName();
 }
 
 /**

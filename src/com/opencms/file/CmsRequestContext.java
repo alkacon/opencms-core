@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2001/10/16 13:54:48 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/10/26 13:51:08 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.41 $ $Date: 2001/10/16 13:54:48 $
+ * @version $Revision: 1.42 $ $Date: 2001/10/26 13:51:08 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -377,13 +377,28 @@ public class CmsRequestContext implements I_CmsConstants {
     }
 
     /**
-     * Returns the name of the current site root, e.g. /site_a/vfs
+     * Returns the name of the current site root, e.g. /default/vfs
      *
      * @param resourcename
      * @return String The resourcename with its site root
      */
     public String getSiteRoot(String resourcename){
-        return m_siteRoot+resourcename;
+        if(resourcename.startsWith("///")){
+            return resourcename;
+        } else if (resourcename.startsWith("//")){
+            return C_DEFAULT_SITE+resourcename;
+        } else {
+            return m_siteRoot+resourcename;
+        }
+    }
+
+    /**
+     * Returns the name of the current site, e.g. /default
+     *
+     * @return String The site name
+     */
+    public String getSiteName(){
+        return C_DEFAULT_SITE;
     }
 
     /**
