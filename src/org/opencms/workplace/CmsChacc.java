@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/11 10:49:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -734,6 +734,7 @@ public class CmsChacc extends CmsDialog {
         
         // only display form if the current user has the "control" right
         if (getEditable()) { 
+            retValue.append(dialogSpacer());
             retValue.append(dialogBlockStart(key("dialog.permission.headline.add")));
 
             // get all possible entry types

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/11 10:49:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -180,15 +180,9 @@ public class CmsTouch extends CmsDialog {
      */
     public String buildCheckRecursive() {
         StringBuffer retValue = new StringBuffer(256);
-        boolean showCheckBox = false;
-    
-        // determine if current resource is a folder
-        if (CmsResource.isFolder(getParamFile())) {
-            showCheckBox = true;
-        }
         
         // show the checkbox only for folders
-        if (showCheckBox) {
+        if (CmsResource.isFolder(getParamFile())) {
             retValue.append("<tr>\n\t<td colspan=\"2\" style=\"white-space: nowrap;\" unselectable=\"on\">");
             retValue.append("<input type=\"checkbox\" name=\""+PARAM_RECURSIVE+"\" value=\"true\">&nbsp;"+key("input.changesubresources"));
             retValue.append("</td>\n</tr>\n");

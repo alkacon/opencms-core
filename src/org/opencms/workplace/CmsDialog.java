@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/11 10:49:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -449,12 +449,15 @@ public class CmsDialog extends CmsWorkplace {
                 errorStyles = " dialogerror textbold";
             }
             retValue.append("<!-- 3D block start -->\n");
-            retValue.append("<div class=\"dialogblockborder\" unselectable=\"on\">\n");
-            retValue.append("<div class=\"dialogblock"+errorStyles+"\" unselectable=\"on\">\n");
             if (headline != null && !"".equals(headline)) {
+                retValue.append("<div class=\"dialogblockborder dialogblockborderheadline\" unselectable=\"on\">\n");
+                retValue.append("<div class=\"dialogblock"+errorStyles+"\" unselectable=\"on\">\n");
                 retValue.append("<span class=\"dialogblockhead"+errorStyles+"\" unselectable=\"on\">");
                 retValue.append(headline);
                 retValue.append("</span>\n");
+            } else {
+                retValue.append("<div class=\"dialogblockborder\" unselectable=\"on\">\n");
+                retValue.append("<div class=\"dialogblock"+errorStyles+"\" unselectable=\"on\">\n");
             }
             return retValue.toString();
         } else {
@@ -540,25 +543,27 @@ public class CmsDialog extends CmsWorkplace {
         result.append(dialogButtonRow(HTML_START));
         for (int i=0; i<buttons.length; i++)  {
             String attribute = attributes[i];
+            String curAttributes = writeAttribute(attribute);
             switch (buttons[i]) {
                 case BUTTON_OK:
                     result.append("<input name=\"ok\" type=\"submit\" value=\"");
                     result.append(key("button.ok"));
                     result.append("\" class=\"dialogbutton\"");
-                    result.append(writeAttribute(attribute));
+                    result.append(curAttributes);
                     result.append(">\n");
                     break;
                 case BUTTON_CANCEL:
                     result.append("<input name=\"cancel\" type=\"button\" value=\"");
-                    result.append(key("button.cancel"));
-                    result.append("\" ");
-                    result.append(buttonActionCancel());
+                    result.append(key("button.cancel")+"\"");
+                    if ("".equals(curAttributes)) {
+                        result.append(" ");
+                        result.append(buttonActionCancel());
+                    }
                     result.append(" class=\"dialogbutton\"");
-                    result.append(writeAttribute(attribute));
+                    result.append(curAttributes);
                     result.append(">\n");
                     break;
                 case BUTTON_CLOSE:
-                    String curAttributes = writeAttribute(attribute);
                     result.append("<input name=\"close\" type=\"button\" value=\"");
                     result.append(key("button.close")+"\"");
                     if ("".equals(curAttributes)) {
@@ -669,6 +674,15 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String dialogSeparator() {
         return "<div class=\"dialogseparator\" unselectable=\"on\"></div>";
+    }
+    
+    /**
+     * Builds a space between two elements in the dialog content area.<p>
+     * 
+     * @return a space element
+     */
+    public String dialogSpacer() {
+        return "<div class=\"dialogspacer\" unselectable=\"on\">&nbsp;</div>";
     }
     
     /**
