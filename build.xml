@@ -165,4 +165,8 @@
 
     <target name="tomcat.cleandist" depends="clean,tomcat.clean,tomcat.dist"/>
 
+    <target name="cvs.update">
+        <cvs command="update"/>
+    </target>
+
 </project>

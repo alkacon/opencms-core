@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2001/07/11 11:48:52 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2001/07/18 06:18:08 $
+* Version: $Revision: 1.67 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.66 $ $Date: 2001/07/11 11:48:52 $
+ * @version $Revision: 1.67 $ $Date: 2001/07/18 06:18:08 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -81,25 +81,8 @@ public class CmsShell implements I_CmsConstants {
     static boolean m_exitCalled = false;
 
     /**
-     * Insert the method's description here.
-     * Creation date: (10/05/00 %r)
-     * @author:
+     * Creates a new CmsShell-Object.
      */
-    public CmsShell(String args[]) {
-        try {
-            Configurations conf = new Configurations(new ExtendedProperties(args[0]));
-            m_openCms = new OpenCms(conf);
-            m_cms = new CmsObject();
-            this.shellCommands = new CmsShellCommands(m_openCms, m_cms);
-
-            //log in default user.
-            m_logMemory = conf.getBoolean("log.memory", false);
-            m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-        }
-        catch(Exception exc) {
-            printException(exc);
-        }
-    }
     public CmsShell() {
         try {
             String propsPath = CmsBase.getPropertiesPath(true);
@@ -109,8 +92,8 @@ public class CmsShell implements I_CmsConstants {
             m_cms = new CmsObject();
             this.shellCommands = new CmsShellCommands(m_openCms, m_cms);
 
-            //log in default user.
             m_logMemory = conf.getBoolean("log.memory", false);
+            //log in default user.
             m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
         }
         catch(Exception exc) {
@@ -199,22 +182,6 @@ public class CmsShell implements I_CmsConstants {
     }
 
     /**
-     * The main entry point for the commandline interface to the opencms.
-     *
-     * @param args Array of parameters passed to the application
-     * via the command line.
-     */
-    public static void main(String[] args) {
-        System.out.println("This class is not runnable any more since OpenCms 4.3.xx");
-        System.out.println("If you are using JAR files, please run");
-        System.out.println("   java -jar opencmsboot.jar");
-        System.out.println("instead.");
-        System.out.println("If you are using unpacked classes (e.g. during development),");
-        System.out.println("please use");
-        System.out.println("   java -jar opencmsboot.jar");
-    }
-
-    /**
      * Prints a exception with the stacktrace.
      *
      * @param exc The exception to print.
@@ -283,12 +250,5 @@ public class CmsShell implements I_CmsConstants {
             System.out.print(("[" + total + "/" + free + "/" + (total - free) + "]"));
         }
         System.out.print("> ");
-    }
-
-    /**
-     * Gives the usage-information to the user.
-     */
-    private static void usage() {
-        System.out.println("Usage: java com.opencms.core.CmsShell properties-file");
     }
 }
