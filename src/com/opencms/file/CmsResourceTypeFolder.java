@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/10/12 15:51:56 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/10/16 09:05:29 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -432,7 +432,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector allSubFiles   = new Vector();
         // first valid the destination name
         validResourcename(destination);
-
+A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG,"rt.copyResource: "+source+" to "+destination);
         getAllResources(cms, source, allSubFiles, allSubFolders);
         if (!destination.endsWith("/")){
             destination = destination +"/";
@@ -566,7 +566,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
     /**
-    * Uneletes a resource.
+    * Undeletes a resource.
     *
     * @param folder the complete path of the folder.
     *
@@ -835,6 +835,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
         // first undo changes of the folder
         cms.doUndoChanges(resource);
+        // undo changes in the corresponding folder in /content/bodys
+        cms.doUndoChanges(C_CONTENTBODYPATH  + resource.substring(1));
         // now undo changes of the subfolders
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
