@@ -58,22 +58,22 @@ function setUser(objSel, bereich)
    aRolle['undef'] = new Array();
    
 
-	aRolle['it'][0] = new RolleEntry('User bestimmen ...','');
+	aRolle['it'][0] = new RolleEntry('Bitte Benutzer wählen ...','');
 	aRolle['it'][1] = new RolleEntry('a.kadzior','');
 	aRolle['it'][2] = new RolleEntry('a.lucas','');
 	aRolle['it'][3] = new RolleEntry('a.schouten','');
 	aRolle['it'][4] = new RolleEntry('m.schleich','');
  
-	aRolle['html'][0] = new RolleEntry('User bestimmen ...','');
+	aRolle['html'][0] = new RolleEntry('Bitte Benutzer wählen ...','');
 	aRolle['html'][1] = new RolleEntry('s.fleskes','');
 	aRolle['html'][2] = new RolleEntry('j.stoppenbach','');
 	aRolle['html'][3] = new RolleEntry('m.schleich','');
 
-	aRolle['graf'][0] = new RolleEntry('User bestimmen ...','');
+	aRolle['graf'][0] = new RolleEntry('Bitte Benutzer wählen ...','');
 	aRolle['graf'][1] = new RolleEntry('m.hahn','');
 	aRolle['graf'][2] = new RolleEntry('m.seilz','');
 	
-	aRolle['undef'][0] = new RolleEntry('User bestimmen ...','');
+	aRolle['undef'][0] = new RolleEntry('Bitte Benutzer wählen ...','');
 	aRolle['undef'][1] = new RolleEntry('a.kadzior','');
 	aRolle['undef'][2] = new RolleEntry('a.lucas','');
 	aRolle['undef'][3] = new RolleEntry('a.schouten','');

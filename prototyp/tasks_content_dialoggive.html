@@ -18,6 +18,11 @@ function show_help()
 <!-- Beginn Style -->
 <link rel=stylesheet type="text/css" href="css/format.css">
 <!-- Ende Style -->
+<!-- Beginn externe Scripte wegen Datumsprüfung-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<!-- um 2te Combobox zu füllen -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_task.js"></SCRIPT>
+<!-- Script wegen Datumsprüfung-->
 
 </head>
 
@@ -33,42 +38,41 @@ function show_help()
 <tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
 
 	<!-- Beginn Überschrift blau-->
-	<tr><td colspan=4 class=head>Weiterleiten</td></tr>
+	<tr><td colspan=3 class=head>Weiterleiten</td></tr>
 	<!-- Ende Überschrift blau-->
 	
 	<!-- Beginn Leerzele-->
-	<tr><td colspan=4 class=leerzeile>&nbsp;</td></tr>
+	<tr><td colspan=3 class=formular><img src="pics/ic_taskdoku_forward.gif" border=0 width=16 height=16></td></tr>
 	<!-- Ende Leerzeile-->
 	
 	<!-- Beginn Inhalt -->
 	<tr>
-		<td class=formular nowrap>Aufgabe f&uuml;r:</td>
+		<td class=formular>Aufgabe für:</td>
 		<td class=dialogtxt>
-			<select name="TEAM" width = 150 style="WIDTH: 150px" >
-				<option value="IT" selected>IT
-				<option value="HTML">HTML
-				<option value="GRAFIK">GRAFIK
+			<select name="TEAM" width=150 style="width:150px" onchange="if(this.selectedIndex)setUser(document.NEWTASK.USER, this.options[this.selectedIndex].value);">
+				<option>Bitte Rolle wählen ...			
+				<option value="it">IT
+				<option selected value="html">HTML
+				<option value="graf">Grafik
+				<option value="undef">alle Rollen
 			</select>
-                                 
 		</td>
-		<td class=dialogtxt colspan=2 align=left>
-			<select name="USER" width = 150 style="WIDTH: 150px" >
-				<option value="d.duck" selected>d.duck
-				<option value="g.gans">g.gans
-				<option value="c.schmied">c.schmied
-			</select>
-                                 
+		<td class=dialogtxt>
+			<SCRIPT LANGUAGE="JavaScript">
+				writeUser();
+				if(document.NEWTASK.TEAM.selectedIndex > 0)setUser(document.NEWTASK.USER, document.NEWTASK.TEAM.options[document.NEWTASK.TEAM.selectedIndex].value);
+			</SCRIPT>
 		</td>
 	</tr>
 	
 	<!-- Ende Inhalt -->
 	
 	<!-- Beginn Leerzele-->
-	<tr><td colspan=4 class=leerzeile>&nbsp;</td></tr>
+	<tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
 	<!-- Ende Leerzeile-->
 
 	<!-- Beginn Buttonleiste Zurück inaktiv-->
-	<tr><td colspan=4 class=formular>
+	<tr><td colspan=3 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=50%><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="window.history.back();"></td>

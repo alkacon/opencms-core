@@ -54,7 +54,7 @@ function fillDate()
 	<!-- Ende Überschrift blau-->
 	
 	<!-- Beginn Leerzele-->
-	<tr><td colspan=5 class=leerzeile>&nbsp;</td></tr>
+	<tr><td colspan=5 class=formular><img src="pics/ic_taskdoku_recycle.gif" border=0 width=16 height=16 align=left></td></tr>
 	<!-- Ende Leerzeile-->
 	
 	<!-- Beginn Inhalt -->
@@ -66,10 +66,10 @@ function fillDate()
 				<option value="it">IT
 				<option selected value="html">HTML
 				<option value="graf">Grafik
-				<option value="undef">alle
+				<option value="undef">alle Rollen
 			</select>
 		</td>
-		<td class=dialogtxt colspan=2 align=left>
+		<td class=dialogtxt colspan=2>
 			<SCRIPT LANGUAGE="JavaScript">
 				writeUser();
 				if(document.NEWTASK.TEAM.selectedIndex > 0)setUser(document.NEWTASK.USER, document.NEWTASK.TEAM.options[document.NEWTASK.TEAM.selectedIndex].value);
@@ -84,7 +84,7 @@ function fillDate()
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=5>
-		<TEXTAREA rows=6 cols=60 class="textarea" id=DESCRIPTION name=DESCRIPTION>
+		<TEXTAREA rows=6 cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION>
 Ausführliche Aufgabenbeschreibung
 			</TEXTAREA>
 		</td>
@@ -137,7 +137,7 @@ Ausführliche Aufgabenbeschreibung
 	<tr><td colspan=5 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
-				<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="ok=checkDate(DATE.value);if(ok)window.history.back();"></td>
+				<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="ok=checkDate(DATE.value);if(ok) document.location.href='tasks_content_viewaktivated.html'"></td>
 				<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="window.history.back();"></td>
 			</tr>
 			</table>

@@ -21,42 +21,31 @@ function show_help()
 
 </head>
 
-<body bgcolor="#ffffff" background="pics/bg_weiss.gif" onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif" topmargin=2 onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
 
-<!-- Tabelle um vertikal und horizontal zu zentrieren-->
-<table width=100% height=100% border=0 cellspacing=3 cellpadding=0>
-<tr><td align=center>
+<center>
 <form id=TASKVIEW name=TASKVIEW>
 
 <!-- Tabellenaufbau Dokumentation Aufgabe-->
-<table cellspacing=1 cellpadding=3 border=0 width=500px>
-	
-	<!-- Beginn Leerzele-->
-	<tr>
-		<td class=taskviewleerzeile width=33%>&nbsp;</td>
-		<td class=taskviewleerzeile width=34%>&nbsp;</td>
-		<td class=taskviewleerzeile width=33%>&nbsp;</td>
-	</tr>
-	<!-- Ende Leerzeile-->
-
+<table width=90% cellspacing=1 cellpadding=4 border=0>
 	<!-- Beginn Überschrift Task-->
 	<tr><td colspan=3 class=taskviewheadnew>&Uuml;berarbeitung des Bereiches Kontakt</td></tr>
 	<!-- Ende Überschrift -->
 	
 	<!-- Beginn Inhalt -->
 	<tr>
-		<td class=taskviewbold width=33% nowrap>Projekt:</td>
-		<td class=taskviewtxt>Relaunch Sozial</td>
-		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="R&uuml;ckfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
+		<td class=taskviewbold width=190 nowrap>Projekt:</td>
+		<td class=taskviewtxt width=190 nowrap>Relaunch Sozial</td>
+		<td class=taskviewtxt width=100% align=right><INPUT class=taskviewbutton width = 100 type="button" value="R&uuml;ckfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Aufgabensteller:</td>
-		<td class=taskviewtxt>a.spee</td>
+		<td class=taskviewtxt>Andreas Spee (a.spee)</td>
 		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="Annehmen" id=TAKE name=TAKE onClick="location='tasks_content_dialogaccept.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Bearbeiter:</td>
-		<td class=taskviewtxt>m.schleich</td>
+		<td class=taskviewtxt>Michaela Schleich (m.schleich)</td>
 		<td class=taskviewtxt nowrap>&nbsp;</td>
 	</tr>
 	<tr>
@@ -72,14 +61,13 @@ function show_help()
 	<tr>
 		<td class=taskviewbold>&nbsp;</td>
 		<td class=taskviewtxt>&nbsp;</td>
-		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Abhaken" id=OK name=OK></td>
+		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold>&nbsp;</td>
 		<td class=taskviewtxt>&nbsp;</td>
-		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
-	</tr>
-	
+		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Abhaken" id=OK name=OK></td>
+	</tr>	
 	<!-- Ende Inhalt -->
 	
 	<tr><td colspan=3 class=taskviewheadnew>&nbsp</td></tr>
@@ -116,11 +104,11 @@ function show_help()
 </tr>
 <tr>
 	<td><img src="pics/ic_taskdoku_start.gif" border=0 width=16 height=16></td>
-	<td colspan=2>Aufgabe angelegt!</td>
+	<td class=wizardbold colspan=2>Aufgabe angelegt</td>
 </tr>
 <tr>
 	<td valign=top>&nbsp;</td>
-	<td colspan=2>Aufgabenbeschreibung Blindtext Blindtext Blindtext
+	<td colspan=2>Blindtext Blindtext Blindtext
 		Blindtext BlindtextBlindtext Blindtext Blindtext Blindtext BlindtextBlindtextBlindtext
 		BlindtextBlindtextBlindtext Blindtext
 	</td>
@@ -129,9 +117,7 @@ function show_help()
 </table>
 <!--Ende Doku -->
 </FORM>
-</tr>
-</td></table>
-<center><a href="tasks_content_usecases.html">[Alle Symbole und deren Bedeutung = Use Cases]</a></center>
+<a href="tasks_content_usecases.html">[Alle Symbole und deren Bedeutung = Use Cases]</a></center>
 <!-- Ende Zentrierung -->
 </body>
 </html>

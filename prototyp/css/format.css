@@ -180,6 +180,16 @@ INPUT.textfeld
     HEIGHT: 20px;
     WIDTH: 150px
 }
+INPUT.textfeld1
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 200px
+}
 INPUT.textfeld2
 {
     BACKGROUND-COLOR: white;

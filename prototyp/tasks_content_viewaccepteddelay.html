@@ -21,43 +21,31 @@ function show_help()
 
 </head>
 
-<body bgcolor="#ffffff" background="pics/bg_weiss.gif" onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif" topmargin=2 onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
 
-<!-- Tabelle um vertikal und horizontal zu zentrieren-->
-<!-- Tabelle um vertikal und horizontal zu zentrieren-->
-<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-<tr><td align=center>
+<center>
 <form id=TASKVIEW name=TASKVIEW>
 
 <!-- Tabellenaufbau Dokumentation Aufgabe-->
-<table cellspacing=1 cellpadding=3 border=0 width=500px>
-	
-	<!-- Beginn Leerzele-->
-	<tr>
-		<td class=taskviewleerzeile width=33%>&nbsp;</td>
-		<td class=taskviewleerzeile width=34%>&nbsp;</td>
-		<td class=taskviewleerzeile width=33%>&nbsp;</td>
-	</tr>
-	<!-- Ende Leerzeile-->
-
+<table width=90% cellspacing=1 cellpadding=4 border=0>
 	<!-- Beginn Überschrift Task-->
 	<tr><td colspan=3 class=taskviewheadalert>Routine für Datumprüfung</td></tr>
 	<!-- Ende Überschrift-->
 	
 	<!-- Beginn Inhalt -->
 	<tr>
-		<td class=taskviewbold width=33% nowrap>Projekt:</td>
-		<td class=taskviewtxtred>Relaunch Sozial</td>
+		<td class=taskviewbold width=190 nowrap>Projekt:</td>
+		<td class=taskviewtxtred width=190 nowrap>Relaunch Sozial</td>
 		<td class=taskviewtxt align=right><INPUT class=button width=100 type="button" value="Rückfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Aufgabensteller:</td>
-		<td class=taskviewtxtred>a.spee</td>
+		<td class=taskviewtxtred>Andreas Spee (a.spee)</td>
 		<td class=taskviewtxt align=right><INPUT  class=button width=100 type="button" value="Weiterleiten" id=TAKE name=TAKE onClick="location='tasks_content_dialoggive.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Bearbeiter:</td>
-		<td class=taskviewtxtred>m.schleich</td>
+		<td class=taskviewtxtred>Michaela Schleich (m.schleich)</td>
 		<td class=taskviewtxt>&nbsp;</td>
 	</tr>
 	<tr>
@@ -68,17 +56,18 @@ function show_help()
 	<tr>
 		<td class=taskviewbold nowrap>Priorität:</td>
 		<td class=taskviewtxtred><img src="pics/ic_task_priohigh.gif" border=0 width=16 height=16>&nbsp;hoch</td>
-		<td class=taskviewtxt align=right>&nbsp;</td>
+		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width=100 type="button" value="Priorität" id=PRIO name=PRIO onClick="location='tasks_content_dialogprio.html';"></td>
+	</tr>
+	<tr>
+		<td class=taskviewbold nowrap>&nbsp;</td>
+		<td class=taskviewtxtred>&nbsp;</td>
+		<td class=taskviewtxt align=right><INPUT class=button width=100 type="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold>&nbsp;</td>
 		<td class=taskviewtxtred>&nbsp;</td>
 		<td class=taskviewtxt align=right><INPUT class=button width=100 type="button" value="Abhaken" id=OK name=OK onClick="location='tasks_content_dialogok.html';"></td>
 	</tr>
-	<tr>
-		<td class=taskviewbold nowrap>&nbsp;</td>
-		<td class=taskviewtxtred>&nbsp;</td>
-		<td class=taskviewtxt align=right><INPUT class=button width=100 type="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td></tr>
 	<!-- Ende Inhalt -->
 	
 	<tr><td colspan=3 class=taskviewheadalert>&nbsp;</td></tr>
@@ -113,11 +102,11 @@ function show_help()
 <!--Beginn automatischer Eintrag -->
 <tr>
 	<td valign=top>&nbsp;</td>
-	<td colspan=2>04.01.2000 17:15 / m.schleich</td>
+	<td colspan=2>04.01.2000 17:15 / Michaela Schleich (m.schleich)</td>
 </tr>
 <tr>
 	<td valign=top><img src="pics/ic_taskdoku_request.gif" border=0 width=16 height=16></td>
-	<td colspan=2>Rückfrage an a.spee</td>
+	<td class="wizardbold" colspan=2>Rückfrage an a.spee</td>
 </tr>
 <tr>
 	<td valign=top>&nbsp;</td>
@@ -141,12 +130,17 @@ function show_help()
 <!--Beginn automatischer Eintrag -->
 <tr>
 	<td valign=top>&nbsp;</td>
-	<td colspan=2>20.12.1999 14:15 / m.schleich</td>
+	<td colspan=2>20.12.1999 14:15 / Michaela Schleich (m.schleich)</td>
 </tr>
 <tr>
 	<td valign=top><img src="pics/ic_taskdoku_comment.gif" border=0 width=16 height=16></td>
+	<td class="wizardbold" colspan=2>Kommentar</td>
+</tr>
+<tr>
+	<td valign=top>&nbsp;</td>
 	<td colspan=2>Probleme mit meinem Rechner, könnte zu Verzögernungen kommen,
 	 da ich auf entsprechende Software warte.</td></tr>
+</tr>
 <!--Ende Eintrag -->
 
 <!--Beginn Trennlinie -->
@@ -165,11 +159,11 @@ function show_help()
 <!--Beginn automatischer Eintrag -->
 <tr>
 	<td valign=top>&nbsp;</td>
-	<td colspan=2>15.01.2000 10:15 / m.schleich</td>
+	<td colspan=2>15.01.2000 10:15 / Michaela Schleich (m.schleich)</td>
 </tr>
 <tr>
 	<td valign=top><img src="pics/ic_taskdoku_accepted.gif" border=0 width=16 height=16></td>
-	<td colspan=2>Aufgabe angenommen!</td>
+	<td class="wizardbold" colspan=2>Aufgabe angenommen</td>
 </tr>
 <!--Ende Eintrag -->
 
@@ -189,15 +183,15 @@ function show_help()
 <!--Beginn automatischer Eintrag -->
 <tr>
 	<td valign=top>&nbsp;</td>
-	<td colspan=2>12.12.1999 13:15 / a.spee</td>
+	<td colspan=2>12.12.1999 13:15 / Andreas Spee (a.spee)</td>
 </tr>
 <tr>
 	<td valign=top><img src="pics/ic_taskdoku_start.gif" border=0 width=16 height=16></td>
-	<td colspan=2>Aufgabe angelegt!</td>
+	<td class="wizardbold" colspan=2>Aufgabe angelegt</td>
 </tr>
 <tr>
 	<td valign=top>&nbsp;</td>
-	<td colspan=2>Aufgabenbeschreibung Blindtext Blindtext Blindtext
+	<td colspan=2>Blindtext Blindtext Blindtext
 		Blindtext BlindtextBlindtext Blindtext Blindtext Blindtext BlindtextBlindtextBlindtext
 		BlindtextBlindtextBlindtext Blindtext
 	</td>
