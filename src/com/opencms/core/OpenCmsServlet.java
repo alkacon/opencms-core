@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/05/25 09:37:47 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/06/02 13:37:58 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.37 $ $Date: 2000/05/25 09:37:47 $  
+* @version $Revision: 1.38 $ $Date: 2000/06/02 13:37:58 $  
 * 
 * */
 
@@ -153,10 +153,21 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         
         // Initialize the logging
         A_OpenCms.initializeServletLogging(m_configurations);
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
+		}
+		
 
 		// get the connect information for the property db from the configuration
         propertyDriver=(String)m_configurations.getString(C_PROPERTY_DRIVER);
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] " + C_PROPERTY_DRIVER + " = " + propertyDriver);
+		}
         propertyConnect=(String)m_configurations.getString(C_PROPERTY_CONNECT);
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] " + C_PROPERTY_CONNECT + " = " + propertyConnect);
+		}
 
         
         // initialize the redirect information
@@ -168,6 +179,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
             m_redirect.addElement(redirect);
             m_redirectlocation.addElement(redirectlocation);
             count++;
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
+			}
         }                                                                                                      
 	
        
