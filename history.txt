@@ -8,19 +8,21 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.1.57 Arakis - not jet released
+OpenCms 4.1.57 Arakis - 13 February 2001
 
-- ATTENTION! On a win32 System with jdk1.3 you have to unzipp the .jar and .zip files containing the classes.
+- ATTENTION! On a win32 System with jdk1.3 you have to unzipp the .jar and .zip 
+  files containing the classes. This is because of a bug in jdk1.3 (see report on
+  javasoft-homepage: http://developer.java.sun.com/developer/bugParade/bugs/4369396.html )
 ! Finished the opencms-pool. Now old and outtimed connections will be closed properly.
-* changed the CmsClassloader: the parent classloader of a loaded class is always the 
+* Changed the CmsClassloader: the parent classloader of a loaded class is always the 
   CmsClassloader. This way we are able to load classes in the virtual file system.
-* changed CmsHistory and the template history: more information in the history overview.
+* Changed CmsHistory and the template history: more information in the history overview.
   The date of the last modification now shows this date of the resource in the right project
   (not the current). For that there is a new method readFileHeaderForHistory which returns
   the resource in the project without checking accessRead.
-* removed bug in CmsSyncFolder: there were problems (could not found the resource) if a new project 
+* Removed bug in CmsSyncFolder: there were problems (could not found the resource) if a new project 
   was created.
-* removed bug in CmsIdGenerator: the IDs are now serial.
+* Removed bug in CmsIdGenerator: the IDs are now serial.
 
 OpenCms 4.1.56 Arakis - 06 February 2001
 
