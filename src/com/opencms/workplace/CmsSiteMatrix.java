@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/10/02 13:53:54 $
+ * Date   : $Date: 2000/10/02 14:09:00 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,63 +42,6 @@ import javax.servlet.http.*;
  * @author: Finn Nielsen
  */
 public class CmsSiteMatrix extends com.opencms.template.CmsXmlTemplate {
-/**
- * Creates a matrix from the categories and sites in the system. This is quite dirty which is why this method is private.
- * Creation date: (09/22/00 13:32:01)
- * @return the dirty result, only to be used internally in this class.
- * @param categories the result of CmsObject.getAllCategories()
- * @param sites the result of CmsObject.getSiteMatrixInfo()
- */
-private static Object[] createMatrix(Vector categories, Vector sites)
-{
-	/* Reminder of how a site hashtable was created
-	a.put("siteid", new Integer(res.getInt("SITE_ID")));
-	a.put("categoryid", new Integer(res.getInt("CATEGORY_ID")));
-	a.put("langid", new Integer(res.getInt("LANGUAGE_ID")));
-	a.put("countryid", new Integer(res.getInt("COUNTRY_ID")));
-	a.put("langname", res.getString("LANG_NAME"));
-	a.put("countryname", res.getString("COUNTRY_NAME"));
-	*/
-	Hashtable site = null;
-	Hashtable category_map = new Hashtable();
-	Hashtable country_map = new Hashtable();
-	Vector country_names = new Vector();
-	String country_key = null;
-	int category_place = 0, country_place = 0, country_count = 0;
-
-	// Map categories to rows in the matrix
-	for (int i = 0; i < categories.size(); i++)
-		category_map.put(new Integer(((CmsCategory) categories.elementAt(i)).getId()), new Integer(i));
-
-	// Map countries and languages to columns in the matrix and find out the width of the matrix
-	country_count = 0;
-	for (int i = 0; i < sites.size(); i++)
-	{
-		site = (Hashtable) sites.elementAt(i);
-		country_key = site.get("countryid").toString() + "x" + site.get("langid").toString();
-		if (!country_map.containsKey(country_key))
-		{
-			country_place = country_count++;
-			country_map.put(country_key, new Integer(country_place));
-			country_names.addElement((String)site.get("countryname") + "/" + (String)site.get("langname"));
-		}
-	}
-
-	// Create and fill out the matrix
-	Hashtable matrix[][] = new Hashtable[categories.size()][country_names.size()];
-	for (int i = 0; i < sites.size(); i++)
-	{
-		site = (Hashtable) sites.elementAt(i);
-		country_key = site.get("countryid").toString() + "x" + site.get("langid").toString();
-		category_place = ((Integer) category_map.get((Integer) site.get("categoryid"))).intValue();
-		country_place = ((Integer) country_map.get(country_key)).intValue();
-		matrix[category_place][country_place] = site;
-	}
-
-	// Collect the resulting data and return them
-	Object result[] = { country_names, matrix };
-	return result;
-}
 /**
  * Gets the content of a defined section in a given template file and its subtemplates
  * with the given parameters. 
@@ -210,39 +153,5 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector)
 {
 	return false;
-}
-/**
- * Insert the method's description here.
- * Creation date: (09/25/00 10:49:18)
- * @param cms com.opencms.file.CmsObject
- */
-public static void printSiteMatrix(CmsObject cms) throws CmsException
-{
-	Vector sitelist = cms.getSiteMatrixInfo();
-	Vector categories = cms.getAllCategories();
-	Object[] matrixinfo = createMatrix(categories, sitelist);
-	Vector country_names = (Vector) matrixinfo[0];
-	Hashtable[][] matrix = (Hashtable[][]) matrixinfo[1];
-	StringBuffer line = null;
-
-	//
-	line = new StringBuffer("      ");
-	for (int i = 0; i < country_names.size(); i++)
-	{
-		line.append(((String) country_names.elementAt(i)) + " |");
-	}
-	System.out.println(line.toString());
-
-	//
-	for (int i = 0; i < categories.size(); i++)
-	{
-		line = new StringBuffer();
-		line.append(((CmsCategory) categories.elementAt(i)).getName() + " |");
-		for (int j = 0; j < country_names.size(); j++)
-		{
-			line.append((matrix[i][j] != null) ? " * |" : "   |");
-		}
-		System.out.println(line.toString());
-	}
 }
 }
