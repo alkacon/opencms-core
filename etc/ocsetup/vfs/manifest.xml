@@ -2898,7 +2898,7 @@
         <file>
             <source>system/workplace/action/explorerShowResource.html</source>
             <destination>system/workplace/action/explorerShowResource.html</destination>
-            <type>plain</type>
+            <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
             <access>15</access>
