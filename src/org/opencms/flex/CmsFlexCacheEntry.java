@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/06/06 09:13:22 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/06 10:34:49 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -326,12 +326,12 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             // check if this cache entry is a "leaf" (i.e. no further includes)            
             boolean hasNoSubElements = ((m_elements != null) && (m_elements.size() == 1));            
             // write output to stream and process all included elements
-            Iterator i = m_elements.iterator();
-            while (i.hasNext()) {
-                Object o = i.next();
+            for (int i=0; i<m_elements.size(); i++) {
+                Object o = m_elements.get(i);
                 if (o instanceof String) {                    
                     // handle cached parameters
-                    Map map = (Map)i.next();                    
+                    i++;
+                    Map map = (Map)m_elements.get(i);                    
                     Map oldMap = null;
                     if (map.size() > 0) {
                         oldMap = req.getParameterMap();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/06/06 09:13:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/06 10:34:49 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
@@ -50,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexController {
     
@@ -465,9 +464,8 @@ public class CmsFlexController {
      * Puts the response in a suspended state.<p>  
      */
     public void suspendFlexResponse() {
-        Iterator i = m_flexResponseList.iterator();
-        while (i.hasNext()) {
-            CmsFlexResponse res = (CmsFlexResponse)i.next();
+        for (int i=0; i<m_flexResponseList.size(); i++) {
+            CmsFlexResponse res = (CmsFlexResponse)m_flexResponseList.get(i);
             res.setSuspended(true);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/05/24 17:06:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/06 10:35:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,10 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.file.CmsResourceFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ import java.util.List;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -136,7 +135,7 @@ public class CmsJspNavBuilder {
      *
      * @return a sorted (ascending to nav position) ArrayList of navigation elements.
      */    
-    public ArrayList getNavigationForFolder() {
+    public List getNavigationForFolder() {
         return getNavigationForFolder(m_cms, m_requestUriFolder);
     }
     
@@ -147,7 +146,7 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * @return A sorted (ascending to nav position) ArrayList of navigation elements.
      */    
-    public ArrayList getNavigationForFolder(String folder) {
+    public List getNavigationForFolder(String folder) {
         return getNavigationForFolder(m_cms, folder);
     }
         
@@ -159,31 +158,26 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */    
-    public static ArrayList getNavigationForFolder(CmsObject cms, String folder) {
+    public static List getNavigationForFolder(CmsObject cms, String folder) {
         folder = CmsResource.getFolderPath(folder);
-        ArrayList list = new ArrayList();
-        List v = null, dir = null;
-        try {
-            // v = cms.getResourcesInFolder(folder);        
-            v = cms.getFilesInFolder(folder);
-            dir = cms.getSubFolders(folder);
-        } catch (Exception e) {
-            return new ArrayList(0);
-        }        
-        v.addAll(dir);
+        List result = new ArrayList();
         
-        Iterator i = v.iterator();
-        while (i.hasNext()) {
-            CmsResource r = (CmsResource)i.next();
-            if (r.getState() != I_CmsConstants.C_STATE_DELETED) {
-                CmsJspNavElement element = getNavigationForResource(cms, cms.readAbsolutePath(r));
-                if ((element != null) && element.isInNavigation()) {
-                    list.add(element);
-                }
-            }            
+        List resources;
+        try {       
+            resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        } catch (Exception e) {            
+            return Collections.EMPTY_LIST;
+        }        
+        
+        for (int i=0; i<resources.size(); i++) {
+            CmsResource r = (CmsResource)resources.get(i);
+            CmsJspNavElement element = getNavigationForResource(cms, cms.readAbsolutePath(r));
+            if ((element != null) && element.isInNavigation()) {
+                result.add(element);
+            }
         }
-        Collections.sort(list);
-        return list;
+        Collections.sort(result);
+        return result;
     }
     
     /** 
@@ -197,7 +191,7 @@ public class CmsJspNavBuilder {
      * levels down from root folder 
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
-    public ArrayList getNavigationForFolder(int level) {
+    public List getNavigationForFolder(int level) {
         return getNavigationForFolder(m_cms, m_requestUriFolder, level);
     }    
 
@@ -213,7 +207,7 @@ public class CmsJspNavBuilder {
      * levels down from root folder 
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
-    public ArrayList getNavigationForFolder(String folder, int level) {
+    public List getNavigationForFolder(String folder, int level) {
         return getNavigationForFolder(m_cms, folder, level);
     }    
     
@@ -230,7 +224,7 @@ public class CmsJspNavBuilder {
      * levels down from root folder 
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
-    public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level) {
+    public static List getNavigationForFolder(CmsObject cms, String folder, int level) {
         folder = CmsResource.getFolderPath(folder);
         // If level is one just use root folder
         if (level == 0) {
@@ -242,7 +236,7 @@ public class CmsJspNavBuilder {
             return getNavigationForFolder(cms, navfolder);
         }
         // Nothing found, return empty list
-        return new ArrayList(0);
+        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -253,7 +247,7 @@ public class CmsJspNavBuilder {
      * @return a sorted list of nav elements with the nav tree level property set 
      * @see #getNavigationTreeForFolder(CmsObject, String, int, int)
      */    
-    public ArrayList getNavigationTreeForFolder(int startlevel, int endlevel) {
+    public List getNavigationTreeForFolder(int startlevel, int endlevel) {
         return getNavigationTreeForFolder(m_cms, m_requestUriFolder, startlevel, endlevel);
     }
 
@@ -266,7 +260,7 @@ public class CmsJspNavBuilder {
      * @return a sorted list of nav elements with the nav tree level property set 
      * @see #getNavigationTreeForFolder(CmsObject, String, int, int) 
      */
-    public ArrayList getNavigationTreeForFolder(String folder, int startlevel, int endlevel) {
+    public List getNavigationTreeForFolder(String folder, int startlevel, int endlevel) {
         return getNavigationTreeForFolder(m_cms, folder, startlevel, endlevel);
     }
 
@@ -284,11 +278,11 @@ public class CmsJspNavBuilder {
      * @param endlevel the end level
      * @return a sorted list of nav elements with the nav tree level property set 
      */
-    public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
+    public static List getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
         folder = CmsResource.getFolderPath(folder);
         // Make sure start and end level make sense
         if (endlevel < startlevel) {
-            return new ArrayList(0);
+            return Collections.EMPTY_LIST;
         }
         int currentlevel = CmsResource.getPathLevel(folder);
         if (currentlevel < endlevel) {
@@ -298,20 +292,18 @@ public class CmsJspNavBuilder {
             return getNavigationForFolder(cms, CmsResource.getPathPart(folder, startlevel), startlevel);
         }
      
-        ArrayList result = new ArrayList(0);
-        Iterator it = null;
+        ArrayList result = new ArrayList();
         float parentcount = 0;
         
         for (int i=startlevel; i<=endlevel; i++) {
             String currentfolder = CmsResource.getPathPart(folder, i);            
-            ArrayList entries = getNavigationForFolder(cms, currentfolder);            
+            List entries = getNavigationForFolder(cms, currentfolder);            
             // Check for parent folder
-            if (parentcount > 0) {                
-                it = entries.iterator();          
-                while (it.hasNext()) {
-                    CmsJspNavElement e = (CmsJspNavElement)it.next();
+            if (parentcount > 0) {       
+                for (int it=0; it<entries.size(); i++) {
+                    CmsJspNavElement e = (CmsJspNavElement)entries.get(it);
                     e.setNavPosition(e.getNavPosition() + parentcount);
-                }                  
+                }
             }
             // Add new entries to result
             result.addAll(entries);
@@ -319,17 +311,16 @@ public class CmsJspNavBuilder {
             // Finally spread the values of the nav items so that there is enough room for further items.
             float pos = 0;
             int count = 0;            
-            it = result.iterator();
             String nextfolder = CmsResource.getPathPart(folder, i+1);
             parentcount = 0;
-            while (it.hasNext()) {
+            for (int it=0; it<result.size(); it++) {
                 pos = 10000 * (++count);
-                CmsJspNavElement e = (CmsJspNavElement)it.next();
+                CmsJspNavElement e = (CmsJspNavElement)result.get(it);
                 e.setNavPosition(pos);
                 if (e.getResourceName().startsWith(nextfolder)) {
                     parentcount = pos;
                 }
-            }            
+            }
             if (parentcount == 0) {
                 parentcount = pos;
             }
@@ -343,7 +334,7 @@ public class CmsJspNavBuilder {
      * @return ArrayList sorted list of navigation elements
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
-    public ArrayList getNavigationBreadCrumb() {
+    public List getNavigationBreadCrumb() {
         return getNavigationBreadCrumb(m_requestUriFolder, 0, -1, true);
     }
     
@@ -355,7 +346,7 @@ public class CmsJspNavBuilder {
      * @return ArrayList sorted list of navigation elements
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
-    public ArrayList getNavigationBreadCrumb(int startlevel, int endlevel) {
+    public List getNavigationBreadCrumb(int startlevel, int endlevel) {
         return getNavigationBreadCrumb(m_requestUriFolder, startlevel, endlevel, true);
     }
     
@@ -367,7 +358,7 @@ public class CmsJspNavBuilder {
      * @return ArrayList sorted list of navigation elements
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
-    public ArrayList getNavigationBreadCrumb(int startlevel, boolean currentFolder) {
+    public List getNavigationBreadCrumb(int startlevel, boolean currentFolder) {
         return getNavigationBreadCrumb(m_requestUriFolder, startlevel, -1, currentFolder);
     }
     
@@ -387,8 +378,8 @@ public class CmsJspNavBuilder {
      * @param currentFolder include the selected folder in navigation or not
      * @return ArrayList sorted list of navigation elements
      */
-    public ArrayList getNavigationBreadCrumb(String folder, int startlevel, int endlevel, boolean currentFolder) {
-        ArrayList result = new ArrayList(0);
+    public List getNavigationBreadCrumb(String folder, int startlevel, int endlevel, boolean currentFolder) {
+        ArrayList result = new ArrayList();
                
         int level =  CmsResource.getPathLevel(folder);
         // decrease folder level if current folder is not displayed
@@ -432,7 +423,7 @@ public class CmsJspNavBuilder {
      * @param endLevel the end level of the navigation.
      * @return ArrayList of CmsJspNavElement, in depth first order.
      */
-    public static ArrayList getSiteNavigation(CmsObject cms, String folder, int endLevel) {
+    public static List getSiteNavigation(CmsObject cms, String folder, int endLevel) {
         // check if a specific end level was given, if not, build the complete navigation
         boolean noLimit = false;
         if (endLevel < 0) {
@@ -440,16 +431,15 @@ public class CmsJspNavBuilder {
         }
         ArrayList list = new ArrayList();
         // get the navigation for this folder
-        ArrayList curnav = getNavigationForFolder(cms, folder); 
-        Iterator i = curnav.iterator();
+        List curnav = getNavigationForFolder(cms, folder); 
         // loop through all nav entrys
-        while (i.hasNext()) {
-            CmsJspNavElement ne = (CmsJspNavElement)i.next();
+        for (int i=0; i<curnav.size(); i++) {
+            CmsJspNavElement ne = (CmsJspNavElement)curnav.get(i);
             // add the naventry to the result list
             list.add(ne);
             // check if naventry is a folder and below the max level -> if so, get the navigation from this folder as well
             if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
-                ArrayList subnav = getSiteNavigation(cms, ne.getResourceName(), endLevel);
+                List subnav = getSiteNavigation(cms, ne.getResourceName(), endLevel);
                 // copy the result of the subfolder to the result list
                 list.addAll(subnav);
             }        
@@ -467,7 +457,7 @@ public class CmsJspNavBuilder {
      * @param endLevel the end level of the navigation.
      * @return ArrayList of CmsJspNavElement, in depth first order.
      */
-    public ArrayList getSiteNavigation(String folder, int endLevel) {
+    public List getSiteNavigation(String folder, int endLevel) {
         return getSiteNavigation(m_cms, folder, endLevel);    
     }
     
@@ -478,7 +468,7 @@ public class CmsJspNavBuilder {
      * 
      * @return ArrayList of CmsJspNavElement, in depth first order.
      */
-    public ArrayList getSiteNavigation() {
+    public List getSiteNavigation() {
         return getSiteNavigation(m_cms, "/", -1);
     }
     
@@ -492,7 +482,7 @@ public class CmsJspNavBuilder {
      * @param subChannel the sub channel
      * @return an unsorted list of CmsResources
      */
-    public ArrayList getChannelSubFolders(String parentChannel, String subChannel) {
+    public List getChannelSubFolders(String parentChannel, String subChannel) {
         return getChannelSubFolders(m_cms, parentChannel, subChannel);
     }    
     
@@ -506,7 +496,7 @@ public class CmsJspNavBuilder {
      * @param subChannel the sub channel
      * @return an unsorted list of CmsResources
      */
-    public static ArrayList getChannelSubFolders(CmsObject cms, String parentChannel, String subChannel) {
+    public static List getChannelSubFolders(CmsObject cms, String parentChannel, String subChannel) {
         String channel = null;
         if (subChannel == null) {
             subChannel = "";
@@ -531,7 +521,7 @@ public class CmsJspNavBuilder {
      * @param channel the channel to look for subfolders in
      * @return an unsorted list of CmsResources
      */    
-    public ArrayList getChannelSubFolders(String channel) {
+    public List getChannelSubFolders(String channel) {
         return getChannelSubFolders(m_cms, channel);
     }
 
@@ -543,7 +533,7 @@ public class CmsJspNavBuilder {
      * @param channel the channel to look for subfolders in
      * @return an unsorted list of CmsResources
      */    
-    public static ArrayList getChannelSubFolders(CmsObject cms, String channel) {
+    public static List getChannelSubFolders(CmsObject cms, String channel) {
         if (! channel.startsWith("/")) {
             channel = "/" + channel;
         }
@@ -578,7 +568,7 @@ public class CmsJspNavBuilder {
      * @param subChannel the sub channel
      * @return a sorted list of CmsResources
      */    
-    public ArrayList getChannelSubFoldersSortTitleAsc(String channel, String subChannel) {
+    public List getChannelSubFoldersSortTitleAsc(String channel, String subChannel) {
         return getChannelSubFoldersSortTitleAsc(m_cms, channel, subChannel);
     }    
     
@@ -592,21 +582,19 @@ public class CmsJspNavBuilder {
      * @param subChannel the sub channel
      * @return a sorted list of CmsResources
      */
-    public static ArrayList getChannelSubFoldersSortTitleAsc(CmsObject cms, String channel, String subChannel) {
-        ArrayList subChannels = getChannelSubFolders(cms, channel, subChannel);
+    public static List getChannelSubFoldersSortTitleAsc(CmsObject cms, String channel, String subChannel) {
+        List subChannels = getChannelSubFolders(cms, channel, subChannel);
         // Create an ArrayList out of the Vector        
-        java.util.ArrayList tmpList = new java.util.ArrayList(subChannels.size());
-        Iterator i = subChannels.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+        ArrayList tmpList = new java.util.ArrayList(subChannels.size());
+        for (int i=0; i<subChannels.size(); i++) {
+            CmsResource res = (CmsResource)subChannels.get(i);
             ResourceTitleContainer container = new ResourceTitleContainer(cms, res);
             tmpList.add(container);
         }
         Collections.sort(tmpList);
         java.util.ArrayList list = new java.util.ArrayList(subChannels.size());
-        i = tmpList.iterator();
-        while (i.hasNext()) {
-            ResourceTitleContainer container = (ResourceTitleContainer)i.next();
+        for (int i=0; i<tmpList.size(); i++) {
+            ResourceTitleContainer container = (ResourceTitleContainer)tmpList.get(i);
             list.add(container.m_res);
         }             
         return list;

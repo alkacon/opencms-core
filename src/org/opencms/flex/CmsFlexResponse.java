@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/04/10 13:22:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/06 10:34:49 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -54,7 +57,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -285,17 +288,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     public static void processHeaders(Map headers, HttpServletResponse res) {
         if (headers != null) {
-            java.util.Iterator i = headers.keySet().iterator();
+            Iterator i = headers.keySet().iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
                 ArrayList l = (ArrayList)headers.get(key);  
-                java.util.ListIterator j = l.listIterator(); 
-                while (j.hasNext()) {
-                    if ((j.nextIndex() == 0) && (((String)l.get(0)).startsWith(C_SETHEADER)))  {
-                        String s = (String)j.next();
+                for (int j=0; j<l.size(); j++) {
+                    if ((j == 0) && (((String)l.get(0)).startsWith(C_SETHEADER)))  {
+                        String s = (String)l.get(0);
                         res.setHeader(key, s.substring(C_SETHEADER.length()));
                     } else {
-                        res.addHeader(key, (String)j.next());
+                        res.addHeader(key, (String)l.get(j));
                     }
                 }
             }        
@@ -308,8 +310,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
     public void addDateHeader(String name, long date) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
-        addHeader(name, format.format(new java.util.Date(date)));
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+        addHeader(name, format.format(new Date(date)));
     }
 
     /**
@@ -534,8 +536,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
     public void setDateHeader(String name, long date) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
-        setHeader(name, format.format(new java.util.Date(date)));
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+        setHeader(name, format.format(new Date(date)));
     }
     
     /**
@@ -889,10 +891,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             int last = 0;
             int size = 0;
             int count = 0;
-            // Work through result and split this with include list calls
-            java.util.Iterator i = m_includeList.iterator();
-            java.util.Iterator j = m_includeListParameters.iterator();
-            while (i.hasNext() && (pos<max)) {
+            
+            // Work through result and split this with include list calls            
+            int i=0;
+            int j=0;            
+            while (i < m_includeList.size() && (pos<max)) {
                 // Look for the first C_FLEX_CACHE_DELIMITER char
                 while ((pos<max) && (result[pos] != C_FLEX_CACHE_DELIMITER)) {
                     pos++;
@@ -912,7 +915,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                     }
                     last = ++pos;
                     // Add an include call to the cache entry
-                    m_cachedEntry.add((String)i.next(), (java.util.HashMap)j.next());
+                    m_cachedEntry.add((String)m_includeList.get(i++), (Map)m_includeListParameters.get(j++));
                 }
             } 
             // Is there something behind the last include call?
@@ -925,7 +928,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 piece = null;
             }           
             result = null;
-            if (! i.hasNext()) {
+            if (i >= m_includeList.size()) {
                 // Delete the include list if all include calls are handled
                 m_includeList = null;
                 m_includeListParameters = null;
@@ -958,22 +961,21 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * @throws IOException in case something goes wrong writing to the responses output stream
      */
     private void writeCachedResultToStream(HttpServletResponse res) throws IOException {        
-        java.util.List elements = m_cachedEntry.elements();
+        List elements = m_cachedEntry.elements();
         int count = 0;
         if (elements != null) {
-            java.util.Iterator i = elements.iterator();
-            while (i.hasNext()) {
-                Object o = i.next();                
+            for (int i=0; i<elements.size(); i++) {
+                Object o = elements.get(i);               
                 if (o instanceof byte[]) {
                     res.getOutputStream().write((byte[])o);
                 } else {
                     if ((m_includeResults != null) && (m_includeResults.size() > count)) {
-                        // Make sure that we don't run behind end of list (should never happen, though)
+                        // make sure that we don't run behind end of list (should never happen, though)
                         res.getOutputStream().write((byte[])m_includeResults.get(count));
                         count++;
                     }
-                    // Skip next entry, which is the parameter list for this incluce call
-                    o = i.next();
+                    // skip next entry, which is the parameter list for this incluce call
+                    i++;
                 }
             }
         }
