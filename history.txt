@@ -23,6 +23,7 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 * Bugfix when publishing deleted resources directly
 * Bugfix in mastermodule, now the creationdate will not be set to the publishingdate during
   publishing.
+* The default navigation now uses the linksubstitution, so it works with the static export.
 - Description and Keywords metatags added to empty template.
 - Removed v-flag for /moduldemos/.
 - Added opencms.property for file.encoding used to encode encrypted passwords. This helps for
