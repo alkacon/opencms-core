@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/22 10:32:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/11/27 10:48:01 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/11/22 10:32:01 $
+ * @version $Revision: 1.23 $ $Date: 2000/11/27 10:48:01 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -254,6 +254,12 @@ public void createModule(String modulename, String niceModulename, String descri
 	if (moduleExists(modulename)) {
 		throw new CmsException("Module exists already " + modulename, CmsException.C_REGISTRY_ERROR);
 	}
+
+	// check if the user is allowed to perform this action
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'createModule'", CmsException.C_REGISTRY_ERROR);
+	}
+
 
 	// create the new module in the registry
 
@@ -474,7 +480,11 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
  * 
  * @param String the name of the module.
  */
-public void deleteModuleView(String modulename) {
+public void deleteModuleView(String modulename) throws CmsException {
+	// check if the user is allowed to perform this action
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'deleteModuleView'", CmsException.C_REGISTRY_ERROR);
+	}
 	try {
 		Element module = getModuleElement(modulename);
 		Element view = (Element) (module.getElementsByTagName("view").item(0));

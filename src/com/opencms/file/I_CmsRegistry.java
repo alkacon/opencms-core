@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/03 15:24:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/11/27 10:48:01 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/11/03 15:24:48 $
+ * @version $Revision: 1.19 $ $Date: 2000/11/27 10:48:01 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -108,7 +108,7 @@ public void deleteModule(String module, Vector exclusion) throws CmsException;
  * 
  * @param String the name of the module.
  */
-public void deleteModuleView(String modulename);
+public void deleteModuleView(String modulename) throws CmsException;
 /**
  * This method exports a module to the filesystem.
  *
