@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/02/11 17:54:21 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.31 $ $Date: 2003/02/11 17:54:21 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -76,7 +76,10 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 
     /** The version number of this OpenCms installation */
     private static String c_versionNumber = null;
-        
+    
+    /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */   
+	private static String m_openCmsContext = null;
+	 
     /**
      * Destructor, should be called when the the class instance is shut down.
      */
@@ -349,5 +352,26 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         c_versionNumber =
             props.getProperty("version.number", "??") + " " +
             props.getProperty("version.name", "??");
+    }
+    
+    /**
+     * Sets the OpenCms request context.<p>
+     * 
+     * @param value the OpenCms request context
+     */
+	protected static void setOpenCmsContext(String value) {
+		m_openCmsContext = value;
+	}   
+    
+    /**
+     * Returns the OpenCms request context.<p>
+     * 
+     * @return String the OpenCms request context
+     */
+    public static String getOpenCmsContext() {
+    	if (m_openCmsContext == null) {
+    		throw new RuntimeException ("OpenCmsContext not initialised!");
+    	}
+    	return m_openCmsContext;
     }        
 }
