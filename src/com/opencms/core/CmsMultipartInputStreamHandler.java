@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/16 09:51:41 $
+* Version: $Revision: 1.9.6.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,13 +83,27 @@ class CmsMultipartInputStreamHandler {
         }
     }
 
-    /** Reads the next line of input.  Returns null to indicate the end
-     * of stream.
+    /** 
+     * Reads the next line of input.  Returns null to indicate the end
+     * of stream. Uses the iso-8859-1 encoding.
      *
      * @return Line of input.
      * @exception IOException Throws IOException if any error with the input stream occurs.
      */
     public String readLine() throws IOException {
+		return readLine("ISO-8859-1");
+    }
+    
+    /** 
+     * Reads the next line of input.  Returns null to indicate the end
+     * of stream.
+     *
+     * @param encoding The encoding for the String constructor.
+     * 
+     * @return Line of input.
+     * @exception IOException Throws IOException if any error with the input stream occurs.
+     */
+    public String readLine(String encoding) throws IOException {
         StringBuffer sbuf = new StringBuffer();
         int result;
         String line;
@@ -100,7 +114,7 @@ class CmsMultipartInputStreamHandler {
             // this.readLine() does +=
             result = this.readLine(buf, 0, buf.length);
             if(result != -1) {
-                sbuf.append(new String(buf, 0, result, "ISO-8859-1"));
+                sbuf.append(new String(buf, 0, result, encoding));
             }
         }while(result == buf.length);
         if(sbuf.length() == 0) {

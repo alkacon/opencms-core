@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/01/08 11:06:25 $
-* Version: $Revision: 1.27.4.1 $
+* Date   : $Date: 2003/01/16 09:51:41 $
+* Version: $Revision: 1.27.4.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.27.4.1 $ $Date: 2003/01/08 11:06:25 $
+ * @version $Revision: 1.27.4.2 $ $Date: 2003/01/16 09:51:41 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -151,9 +151,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");
-        if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
-            readRequest();
-        } else {
+		if(req.getContentLength() > -1){
             //Gridnine AB Aug 6, 2002
             // Set request content encoding.
             String encoding = req.getCharacterEncoding();
@@ -173,7 +171,10 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
                 req.setCharacterEncoding(encoding);
             }
             A_OpenCms.log(C_OPENCMS_DEBUG, "request character encoding - " + req.getCharacterEncoding());
-        }
+		}
+        if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
+            readRequest();
+		}
         if(m_req.getPathInfo().indexOf("?") != -1) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
@@ -626,7 +627,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     private String readParameter(CmsMultipartInputStreamHandler in, String boundary) throws IOException {
         StringBuffer sbuf = new StringBuffer();
         String line;
-        while((line = in.readLine()) != null) {
+        while((line = in.readLine(m_req.getCharacterEncoding())) != null) {
             if(line.startsWith(boundary)) {
                 break;
             }
