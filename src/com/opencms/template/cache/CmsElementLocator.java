@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/01/30 09:59:07 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -314,8 +314,14 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                                 String cacheDirectivesKey = tocy.nextToken();
                                 CmsElementDescriptor desc  = new CmsElementDescriptor(classname, templatename);
                                 A_CmsElement currentElement = (A_CmsElement)m_elements.get(desc);
-                                removeVariantFromDependencies(variantKey, currentElement.getVariant(cacheDirectivesKey));
-                                currentElement.removeVariant(cacheDirectivesKey);
+                                if(currentElement != null){
+                                    removeVariantFromDependencies(variantKey, currentElement.getVariant(cacheDirectivesKey));
+                                    currentElement.removeVariant(cacheDirectivesKey);
+                                }
+else{
+    System.err.println("<<<<<<<<<<< cleanupDependencies >>>>>>>>>>>>");
+    System.err.println("variant:"+desc);
+}
                             }
                         }
                     }
