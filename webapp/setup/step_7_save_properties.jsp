@@ -44,7 +44,7 @@ OpenCms Setup Wizard - Settings
 <%= Bean.getHtmlPart("C_BLOCK_START", "OpenCms settings") %>
 <table border="0" cellpadding="4" cellspacing="0">
 	<tr>
-		<td>Enter your server's ethernet address</td>
+		<td>Enter your server's ethernet (MAC) address</td>
 		<td>
 			<input type="text" name="ethernetAddress" value="<%= Bean.getEthernetAddress() %>" style="width: 150px;">
 			
@@ -110,7 +110,9 @@ To initialize this algorithm, the ethernet address of the server is required.
 However, Java has no way of accessing this information from the server hardware 
 because of the sandbox security model.<br>&nbsp;<br>
 You can leave this field empty, and a random ethernet address will be generated for your OpenCms server.
-This means there is a <i>very, very, very slight</i> chance that someone else in the universe might create some duplicate keys.
+This means there is a <i>very, very, very slight</i> chance that someone else in the universe might create some duplicate keys.<br>&nbsp;<br>
+<b>Please note:</b> The ethernet (MAC) address is NOT the IP address of the server.
+A vaild MAC ethernet address looks like this: <code>4f:a1:f1:c2:36:bf</code>.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "3") %>

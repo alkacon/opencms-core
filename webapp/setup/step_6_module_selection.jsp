@@ -232,8 +232,8 @@ OpenCms Setup Wizard - Module selection
 	
 <%= Bean.getHtmlPart("C_BLOCK_START", "Modules available for installation") %>
 
-	<div style="width:100%; height: 300px; overflow: auto;">
-	<table border="0" cellpadding="2">
+	<div style="width:96%; height: 300px; overflow: auto;">
+    <table border="0" cellpadding="2" cellspacing="0">
 <%
 	String descriptions = "";
 	for (int i=0; i<moduleNames.size(); i++) {
