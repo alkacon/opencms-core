@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/02 10:38:13 $
- * Version: $Revision: 1.187 $
+ * Date   : $Date: 2001/02/09 12:32:03 $
+ * Version: $Revision: 1.188 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.187 $ $Date: 2001/02/02 10:38:13 $ *
+ * @version $Revision: 1.188 $ $Date: 2001/02/09 12:32:03 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3397,7 +3397,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 				break;
 			}
 		case C_TASKS_NEW: {
-				result = result + m_cq.C_TASK_PERCENTAGE + "=0 AND " + m_cq.C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
+				result = result + m_cq.C_TASK_PERCENTAGE + "='0' AND " + m_cq.C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
 				break;
 			}
 		default:{}
