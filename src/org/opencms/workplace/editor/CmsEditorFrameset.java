@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/12/08 16:35:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/12/10 10:35:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,11 @@ import com.opencms.file.CmsResourceTypePlain;
 import com.opencms.file.CmsResourceTypeXMLTemplate;
 import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -123,6 +126,28 @@ public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
             }
             
         }
+    }
+    
+    /**
+     * Returns all present request parameters as String.<p>
+     * 
+     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
+     * 
+     * @return all present request parameters as String
+     */
+    public String getParamsAsRequest() {
+        StringBuffer retValue = new StringBuffer(512);
+        HttpServletRequest request = getJsp().getRequest();
+        Enumeration paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String paramName = (String)paramNames.nextElement();
+            String paramValue = request.getParameter(paramName);
+            retValue.append(paramName + "=" + Encoder.encode(paramValue));
+            if (paramNames.hasMoreElements()) {
+                retValue.append("&");
+            }
+        }
+        return retValue.toString();
     }
     
     /**

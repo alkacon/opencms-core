@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/08 16:35:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/12/10 10:35:01 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
@@ -134,9 +134,13 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
                     // ignore this exception
                 }
             }
-            // set the initial body language & name
-            initBodyElementLanguage();
-            initBodyElementName();
+            // set the initial body language & name if not given in request parameters
+            if (getParamBodylanguage() == null) {
+                initBodyElementLanguage();
+            }
+            if (getParamBodyname() == null) {
+                initBodyElementName();
+            }
             // initialize the editor content
             initContent();
             // set template and page title  

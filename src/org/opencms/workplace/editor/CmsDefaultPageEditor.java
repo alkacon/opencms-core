@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/12/08 11:37:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/12/10 10:35:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -483,6 +483,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // delete the temporary file        
         deleteTempFile();
         if ("true".equals(getParamDirectedit())) {
+            // unlock the resource
+            try {
+                getCms().unlockResource(getParamResource(), false);
+            } catch (CmsException e) {
+                // ignore this exception
+            }
             // redirect to the edited resource
             getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
         } else {
