@@ -16,7 +16,7 @@ PACKAGE userErrors IS
   C_LOCKED NUMBER := -20013;
   C_FILESYSTEM_ERROR NUMBER := -20014;
   C_INTERNAL_FILE NUMBER := -20015;
-  C_MANDATORY_PROPERTY NUMBER := -20016;
+  --C_MANDATORY_PROPERTY NUMBER := -20016;
   C_SERVICE_UNAVAILABLE NUMBER := -20017;
 
   C_XML_UNKNOWN_DATA NUMBER := -20018;
@@ -54,7 +54,7 @@ PACKAGE userErrors IS
   ERROR_20013 VARCHAR2(200) := 'Locked Resource ';
   ERROR_20014 VARCHAR2(200) := 'Filesystem exception ';
   ERROR_20015 VARCHAR2(200) := 'Internal use only ';
-  ERROR_20016 VARCHAR2(200) := 'File-property is mandatory ';
+  --ERROR_20016 VARCHAR2(200) := 'File-property is mandatory ';
   ERROR_20017 VARCHAR2(200) := 'Service unavailable ';
   ERROR_20018 VARCHAR2(200) := 'Unknown XML datablock ';
   ERROR_20019 VARCHAR2(200) := 'Corrupt internal structure ';

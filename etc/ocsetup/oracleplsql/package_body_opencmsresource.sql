@@ -26,8 +26,9 @@ PACKAGE BODY opencmsresource IS
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
-    OPEN pResource FOR 'select * from '||vTableName||' where project_id = '||pProjectId||
-                         ' and resource_name like '''||pFolderName||'%'' and locked_by = '||pUserId;
+    OPEN pResource FOR 'select '||vTableName||'.*, '||vTableName||'.project_id locked_in_project from '||
+                        vTableName||' where project_id = '||pProjectId||
+                        ' and resource_name like '''||pFolderName||'%'' and locked_by = '||pUserId;
     bResourceList := '';
   END;
 --------------------------------------------------------------------------------------------------------------
@@ -142,7 +143,8 @@ PACKAGE BODY opencmsresource IS
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
-    OPEN pResource FOR 'select * from '||vTableName||' where project_id='||pProjectId||
+    OPEN pResource FOR 'select '||vTableName||'.*, '||vTableName||'.project_id locked_in_project from '||
+                       vTableName||' where project_id='||pProjectId||
                        ' and resource_name like '''||pFolderName||'%'' and locked_by='||opencmsConstants.C_UNKNOWN_ID;
     bResourceList := '';
   END unlockResource;
@@ -345,21 +347,21 @@ PACKAGE BODY opencmsresource IS
   BEGIN
     -- read the resource from offline project or the online project, the first resource is used
     IF pProjectID = pOnlineProjectId THEN
-  	  OPEN curResource FOR select r.*, f.file_content
-  	                       from cms_online_resources r, cms_online_files f
-                           where r.resource_name = pFileName
-                           and r.file_id = f.file_id(+);
+  	  	OPEN curResource FOR select r.*, f.file_content
+  	                         from cms_online_resources r, cms_online_files f
+                             where r.resource_name = pFileName
+                             and r.file_id = f.file_id(+);
     ELSE
-      OPEN curResource FOR select resource_id, parent_id, r.resource_name, resource_type, resource_flags,
-                                  user_id, group_id, p.project_id, f.file_id, access_flags, state, locked_by, launcher_type,
-                                  launcher_classname, date_created, date_lastmodified,
-                                  resource_size, resource_lastmodified_by, f.file_content
-                           from cms_resources r, cms_files f, cms_projectresources p
-                           where r.file_id=f.file_id
-                           and r.resource_name=pFileName
-                           and r.resource_name like concat(p.resource_name,'%')
-                           and p.project_id in (pProjectID, pOnlineProjectId)
-                           order by p.project_id desc;
+        OPEN curResource FOR select resource_id, parent_id, r.resource_name, resource_type, resource_flags,
+                             user_id, group_id, p.project_id, f.file_id, access_flags, state, locked_by, launcher_type,
+                             launcher_classname, date_created, date_lastmodified,
+                             resource_size, resource_lastmodified_by, f.file_content
+                             from cms_resources r, cms_files f, cms_projectresources p
+                             where r.file_id=f.file_id
+                             and r.resource_name=pFileName
+                             and r.resource_name like concat(p.resource_name,'%')
+                             and p.project_id in (pProjectID, pOnlineProjectId)
+                             order by p.project_id desc;
     END IF;
     RETURN curResource;
   END readFileNoAccess;
@@ -834,7 +836,7 @@ PACKAGE BODY opencmsresource IS
 	IF recFolder.resource_id IS NOT NULL THEN
 	  IF opencmsAccess.accessCreate(pUserId, pProjectId, recFolder.resource_id) = 1 THEN
 	    -- write-access was granted - copy the file and the metainfos
-	    curFile := readFile(pUserId, pProjectId, vOnlineProjectId, pSource);
+	    curFile := readFileNoAccess(pUserId, pProjectId, vOnlineProjectId, pSource);
         FETCH curFile INTO recFile;
         CLOSE curFile;
         IF recFile.resource_id IS NOT NULL THEN
@@ -1112,7 +1114,7 @@ PACKAGE BODY opencmsresource IS
     	vGroupName := '';
       WHEN OTHERS THEN
         RAISE;
-    END;    
+    END;
     vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
     insert into cms_backup_resources
            (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, user_name,
@@ -1120,9 +1122,9 @@ PACKAGE BODY opencmsresource IS
             launcher_classname, date_created, date_lastmodified, resource_size,
             resource_lastmodified_by, resource_lastmodified_by_name, version_id)
     values (vNewResourceId, -1, pFolder.resource_name, pFolder.resource_type, pFolder.resource_flags,
-            pFolder.user_id, vOwnerName, pFolder.group_id, vGroupName, pProjectId, pFolder.file_id, 
-            pFolder.access_flags, pFolder.state, pFolder.launcher_type, pFolder.launcher_classname, 
-            pPublishDate, pFolder.date_lastmodified, pFolder.resource_size, pFolder.resource_lastmodified_by, 
+            pFolder.user_id, vOwnerName, pFolder.group_id, vGroupName, pProjectId, pFolder.file_id,
+            pFolder.access_flags, pFolder.state, pFolder.launcher_type, pFolder.launcher_classname,
+            pPublishDate, pFolder.date_lastmodified, pFolder.resource_size, pFolder.resource_lastmodified_by,
             vLastModifiedByName, pVersionId);
     OPEN curProperties(pFolder.resource_id);
     LOOP
@@ -1184,7 +1186,7 @@ PACKAGE BODY opencmsresource IS
     	vGroupName := '';
       WHEN OTHERS THEN
         RAISE;
-    END;  
+    END;
     vNewFileId := getNextId('CMS_BACKUP_FILES');
     insert into cms_backup_files (file_id, file_content) values(vNewFileId, pFile.file_content);
     vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
@@ -1196,7 +1198,7 @@ PACKAGE BODY opencmsresource IS
     values (vNewResourceId, -1, pFile.resource_name, pFile.resource_type, pFile.resource_flags,
             pFile.user_id, vOwnerName, pFile.group_id, vGroupName, pProjectId, vNewFileId, pFile.access_flags,
             pFile.state, pFile.launcher_type, pFile.launcher_classname, pPublishDate,
-            pFile.date_lastmodified, pFile.resource_size, pFile.resource_lastmodified_by, 
+            pFile.date_lastmodified, pFile.resource_size, pFile.resource_lastmodified_by,
             vLastModifiedByName, pVersionId);
     OPEN curProperties(pFile.resource_id);
     LOOP

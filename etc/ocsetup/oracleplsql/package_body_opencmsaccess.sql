@@ -154,7 +154,8 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     BEGIN
-      select max(p.project_id), max(r.resource_name) into vResProject, vResPath
+      select max(p.project_id), max(r.resource_name)
+             into vResProject, vResPath
              from cms_resources r, cms_projectresources p
              where resource_id = pResourceID
              and r.resource_name like concat(p.resource_name, '%')
@@ -301,6 +302,7 @@ PACKAGE BODY opencmsAccess IS
     vNextPath cms_resources.resource_name%TYPE;
     vLockedBy NUMBER;
     vOnlineProject NUMBER;
+    vLockedInProject NUMBER;
   BEGIN
     -- project = online-project => false
     vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
@@ -312,8 +314,8 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     BEGIN
-      select a.project_id, b.resource_name, b.locked_by
-             into vResProjectID, vNextPath, vLockedBy
+      select a.project_id, b.resource_name, b.locked_by, b.project_id
+             into vResProjectID, vNextPath, vLockedBy, vLockedInProject
              from (select max(p.project_id) project_id
                    from cms_resources r, cms_projectresources p
                    where resource_id = pResourceID
@@ -331,6 +333,11 @@ PACKAGE BODY opencmsAccess IS
     -- not locked by user => false
     IF vLockedBy != pUserId THEN
       RETURN 0;
+    ELSE
+      -- not locked in current project => false
+      IF vLockedInProject != pProjectId THEN
+      	RETURN 0;
+      END IF;
     END IF;
     -- resource.projectID != project_id => false
     IF vResProjectID != pProjectId THEN
@@ -372,7 +379,7 @@ PACKAGE BODY opencmsAccess IS
           EXIT;
         END IF;
       END LOOP;
-    END IF;  
+    END IF;
     RETURN 1;
   END accessWrite;
 ---------------------------------------------------------------------------------------------------
@@ -451,7 +458,7 @@ PACKAGE BODY opencmsAccess IS
     END IF;
     RETURN 0;
   EXCEPTION
-    WHEN NO_DATA_FOUND THEN 
+    WHEN NO_DATA_FOUND THEN
       RETURN 0;
   END accessGroup;
 ---------------------------------------------------------------------------------------------------

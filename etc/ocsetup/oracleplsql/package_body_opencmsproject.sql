@@ -144,6 +144,7 @@ PACKAGE BODY OpenCmsProject IS
                   cms_resources.resource_lastmodified_by
                   from cms_resources, cms_projectresources
                   where cms_projectresources.project_id= cProjectId
+                  and cms_resources.project_id = cProjectId
                   and cms_resources.resource_type = opencmsConstants.C_TYPE_FOLDER
                   and cms_resources.resource_name like concat(cms_projectresources.resource_name,'%')
                   and cms_resources.state != opencmsConstants.C_STATE_UNCHANGED
@@ -161,6 +162,7 @@ PACKAGE BODY OpenCmsProject IS
                   cms_resources.resource_lastmodified_by, cms_files.file_content
                   from cms_resources, cms_projectresources, cms_files
                   where cms_projectresources.project_id = cProjectId
+                  and cms_resources.project_id = cProjectId
                   and cms_resources.resource_name like concat(cms_projectresources.resource_name, '%')
                   and cms_resources.file_id = cms_files.file_id (+)
                   and cms_resources.resource_type != opencmsConstants.C_TYPE_FOLDER
@@ -579,7 +581,7 @@ PACKAGE BODY OpenCmsProject IS
         CLOSE curNewFile;
       END IF;
       RAISE;
-  END publishProject;  
+  END publishProject;
 -----------------------------------------------------------------------------------------
 -- makes a backup of the published project for history
 -----------------------------------------------------------------------------------------
@@ -595,12 +597,12 @@ PACKAGE BODY OpenCmsProject IS
         vUserName := '';
     END;
     insert into cms_backup_projects
-      (version_id, project_id, project_name, project_publishdate, project_published_by, 
-       project_published_by_name, user_id, user_name, group_id, group_name, managergroup_id, 
+      (version_id, project_id, project_name, project_publishdate, project_published_by,
+       project_published_by_name, user_id, user_name, group_id, group_name, managergroup_id,
        managergroup_name, project_description, project_createdate, project_type, task_id)
-    select pVersionId, project_id, project_name, pPublishDate, pUserId, 
-           vUserName, p.user_id, u.user_name||' '||u.user_firstname||' '||u.user_lastname, 
-           p.group_id, g.group_name, managergroup_id, mg.group_name, project_description, 
+    select pVersionId, project_id, project_name, pPublishDate, pUserId,
+           vUserName, p.user_id, u.user_name||' '||u.user_firstname||' '||u.user_lastname,
+           p.group_id, g.group_name, managergroup_id, mg.group_name, project_description,
            project_createdate, project_type, task_id
            from cms_projects p, cms_users u, cms_groups g, cms_groups mg
            where project_id = pProjectId
