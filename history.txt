@@ -1,16 +1,34 @@
+/*
+ * File   : $Source $
+ * Date   : $Date $
+ * Version: $Revision $
+ *
+ * This file is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002  The OpenCms Group
+ */
+
 History of changes for the OpenCms project.
 
 Changes are chronologically ordered from top (most recent) to bottom (least recent).
 For more information about the OpenCms project, see the OpenCms website at http://www.opencms.org.
 
-Legend: 
+Legend:
 ! New Feature
 * Bug fixed
 - General comment
 
+OpenCms 5.0 (next version)
+! JSP now support nested includes with XMLTemplates
+! Exception handling in JSP now directly points to the problem (even if it is in an included element)
+* The <stylesheet> tag in XMLTemplates (for display in WYSIWYG) can now start with a "/"
+* The locale "uk" has been renamed to "en" (rename your module directories accordingly)
+* Removed usage of deprecated methods where possible
+
 OpenCms 5.0 beta 1 Kaitain - 23 August 2002
 - This is the first public beta of the new 5.0 OpenCms version
-- The 5.0 beta 1 version is the official merge of the JSP supporting 
+- The 5.0 beta 1 version is the official merge of the JSP supporting
   FLEX branch with the main development (Ecaz) branch
 - All features of the 4.7.x Ecaz versions (see below) are bundled in this relase.
 ! JSPs can now be a sub - element in an XMLTemplate
@@ -20,8 +38,8 @@ OpenCms 5.0 beta 1 Kaitain - 23 August 2002
 ! The "Link" dialog in the WYSIWYG editor has been improved.
 * general bugfixes
 * The WYSIWYG editors "Style Selection" works with international browsers now.
-- The Oracle PL/SQL code has been removed and is no longer supported. 
-  Instead, there is a new oraclesql-resourcebroker that supports Oracle BLOBs. 
+- The Oracle PL/SQL code has been removed and is no longer supported.
+  Instead, there is a new oraclesql-resourcebroker that supports Oracle BLOBs.
   In opencms.properties this new resourcebroker is already used for the oracleOci-part.
 
 OpenCms 4.7.14 Ecaz - 06 August 2002
@@ -49,17 +67,17 @@ OpenCms 4.7.10 Ecaz - 09 July 2002
   a generated email to the owner of the broken link.
 ! The behaviour of the history function can be managed now. The history can be enabled/disabled.
   Versions older than the given number of weeks can be deleted directly or by the scheduler.
-- For the new history feature the backup tables for the filecontents and properties have been changed 
-  (added version_id). When a project is published and the backup is inserted the version_id of these 
+- For the new history feature the backup tables for the filecontents and properties have been changed
+  (added version_id). When a project is published and the backup is inserted the version_id of these
   tables is filled in, too.
   If you use the new history feature for deleting versions on an updated installation all entries in these
   two tables that contain no version_id might be deleted.
 
 OpenCms 4.7.9 Ecaz - 14 June 2002
-! added a new way to check a new entered password. 
+! added a new way to check a new entered password.
 
 OpenCms 4.7.7 Ecaz - 14 June 2002
-! First version of JUnit testing classes, not fully functional 
+! First version of JUnit testing classes, not fully functional
 * Fixed bug in direct publish. When publishing a not changed folder with changed resources
   the template class throwed an exception.
 
@@ -83,7 +101,7 @@ OpenCms 4.6.1 Ecaz - 08 May 2002
 ! The WYSIWYG-Editor now supports modification of previously created tables.
   In Edit-Mode the border of a table is shown even if the table border is set to 0.
   Now you can use the editors capability to show details (like paragraphs) of the opened document.
-  The setting of internal and external links has been revised. Now you can set anchor links, add 
+  The setting of internal and external links has been revised. Now you can set anchor links, add
   style definitions, etc. Special characters can be added within the WYSIWYG-editor.
 ! Added a search form for searching resources in the virtual filesystem. A resource can be searched
   by a property or by a part of its resourcename.
@@ -92,9 +110,9 @@ OpenCms 4.6.1 Ecaz - 08 May 2002
 * Fixed bug in link launcher for static export: exporting linkfiles with link to an external url contain
   html-code that opens the external url.
 * The templateselector in the parameters is now updated if the workplace class changes it.
-- Added some resource types that should be exported when the default is set to dynamic. 
+- Added some resource types that should be exported when the default is set to dynamic.
 - Added pic and download folder to the static export if default is set to dynamic.
-- The length of the fields for the users address and email were changed in the database table CMS_USERS 
+- The length of the fields for the users address and email were changed in the database table CMS_USERS
   and in the form for changing the user data. The street and email can now contain 100 characters.
 
 OpenCms 4.7.5 Ecaz - 12 April 2002
@@ -116,9 +134,9 @@ OpenCms 4.7.4 Ecaz - 10 April 2002
   If the property is not set no test will be performed.
   pool.mysql.testQuery = select count(*) from CMS_USERS
 ! New way to configure the static export. The default value for the resource property
-  'export' can be switched from true to dynamic setting the staticexport.default.export 
-  value in the opencms.propertys from true to dynamic. 
-* Fixed bug when creating pages: when changing the navigation checkbox the value for 
+  'export' can be switched from true to dynamic setting the staticexport.default.export
+  value in the opencms.propertys from true to dynamic.
+* Fixed bug when creating pages: when changing the navigation checkbox the value for
   default body must be set to the previously selected value.
 - Now the image list generates image urls without any server information. E.g:
   old urls: http://www.myserver.com:8080/opencms/opencms/pics/mygallery/mypic.gif
@@ -141,10 +159,10 @@ OpenCms 4.7.2 Ecaz - 25 March 2002
 ! new values for the property 'export'. https_enabled and dynamic_https_enabled say that
   the link to such a resource from a https page wont switch to http. Used to show pics
   on a https page.
-* Fixed bug in channellist when a channel is marked as deleted: now all the channels are displayed 
+* Fixed bug in channellist when a channel is marked as deleted: now all the channels are displayed
   except the channels inside a deleted folder
 * Fixed bugs in Oracle-PL/SQL-procedures: when publishing a project all the actions for publishing
-  a resource are done immediately (e.g. deleting the resource and changing the state). 
+  a resource are done immediately (e.g. deleting the resource and changing the state).
   For returning the cursors whith the list of changed resources pl/slq-tables are used.
 - Copied the web-app_2_3.dtd for distribution with OpenCms. Tomcat with no network
   access should start without getting the web-app_2_3.dtd from network.
@@ -161,7 +179,7 @@ OpenCms 4.7.0 Ecaz - 14 March 2002
   the workplace is only available in the local net segment.
   Default = -1 (no limit).
 - Change in Task Emails: Now in all subjects the initator or receiver appears. This is for
-  Mails to all members of a role. A role member can see if the task is directly for him 
+  Mails to all members of a role. A role member can see if the task is directly for him
   without have a look into the taskmanagement in OpenCms.
 
 OpenCms 4.6.0 Tleilax - 07 March 2002
@@ -183,10 +201,10 @@ OpenCms 4.5.36 Chusuk - 05 March 2002
 
 OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2002
 ! Export and Import of channels and moduledata
-* When static export was disabled the servletpath was not configurable. Now it can be 
+* When static export was disabled the servletpath was not configurable. Now it can be
   changed using the url_prefix_http variable in the opencms.properties.
 * bugfix 2234: new news are exported now.
-* Now opencms detects cycles in groups with parent groups 
+* Now opencms detects cycles in groups with parent groups
   (eg. group A, parent B; group B, parent A). This was done in the generic resourcebroker.
   It has to be tested for the oracle pl/sql broker.
 * it is now possible to use relative links in link tags.
@@ -194,10 +212,10 @@ OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2002
 - Removed old Usermanual. The usermanual is now part of the complete OpenCms documentation.
 
 OpenCms 4.5.34 Chusuk - 05 February 2002
-! The copy method of the mastermodule now returns the id of the new content definition. 
+! The copy method of the mastermodule now returns the id of the new content definition.
   The dataset can be cloned.
 ! Modules may have a new Method witch is called after publishing.
-* Static export throwed a NullPointerexception while setup. 
+* Static export throwed a NullPointerexception while setup.
 * The exportpoint handling creates missing parent-directories.
 * The backup of resources does not fail if the owner or the group of the resource was already deleted
 * Changed the init method of CmsRequestContext. If the current project is absent ínit will switch to
@@ -219,7 +237,7 @@ OpenCms 4.5.33 Chusuk - 30 January 2002
 
 OpenCms 4.5.32 Chusuk - 18 January 2002
 ! The digest-method for encrypting passwords is now available in the CmsObject.
-! Static export. Only changed or new files are exported. 
+! Static export. Only changed or new files are exported.
 * when the property export is set to https, the 404 error is thrown only in the online project
   and it works for folders too.
 * Bugfix in subressource-cache. Now the subressource-cache is user dependend.
@@ -233,7 +251,7 @@ OpenCms 4.5.32 Chusuk - 18 January 2002
 
 OpenCms 4.5.31 Chusuk - 09 January 2002
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
-  ATTENTION: The workplace has currently some problems displaying german umlauts. We will fix 
+  ATTENTION: The workplace has currently some problems displaying german umlauts. We will fix
   that in the next release.
 ! New property exportname used for the static export. While exporting the name is replaced
   by the value of this property if existent.
@@ -241,9 +259,9 @@ OpenCms 4.5.31 Chusuk - 09 January 2002
   not exported and the exported resources link to them to the OpenCms system. For the https the Protocol
   is changed to https and back.
 ! Added administration item to view the actual tail of the opencms logfile.
-! New features for content definitions of the mastermodule: changing permissions (owner, group, access flags) 
+! New features for content definitions of the mastermodule: changing permissions (owner, group, access flags)
   and copy a content definition
-* Bugfix in form "create new page". Now the selected default body will be copied by switching navigation 
+* Bugfix in form "create new page". Now the selected default body will be copied by switching navigation
   from on to off.
 * In emails for taskaction the port of the webserver was added to the generated URL.
 * Bugfix when creating a page with the same name of a deleted file
@@ -264,7 +282,7 @@ OpenCms 4.5.31 Chusuk - 09 January 2002
 OpenCms 4.5si.30 Chusuk - 14 December 2001
 * bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.
 - Changed the configuration of the static export. It now enabled and configured by default.
-  You can browse the exported ressource by pointing your browser to: 
+  You can browse the exported ressource by pointing your browser to:
   http://localhost:8080/opencms/export/index.html.
   The configuration is more handy, you can configure with ${WEB_APP_NAME} instead of opencms, so
   you can rename your webapplication without changing the opencms.properties.
@@ -305,7 +323,7 @@ OpenCms 4.5si.24 Chusuk - 23 November 2001
 * Bugfixing mastermodule.
 
 OpenCms 4.5.23 Chusuk - 22 November 2001
-! Added Tidy library to Opencms. 
+! Added Tidy library to Opencms.
 ! The html editor can handle link tags now.
 * Bugfixing mastermodule.
 * Bugfixing generic backoffice.
@@ -320,7 +338,7 @@ OpenCms 4.5.21 Chusuk - 19 November 2001
 ! Added generic handling of media in the backoffice.
 
 OpenCms 4.5.20 Chusuk - 15 November 2001
-! Added AdditionalChangeDate for timed contentdefinitions. 
+! Added AdditionalChangeDate for timed contentdefinitions.
 ! Initial checkin of CmsCronScheduler to launch jobs "cronlike".
 * Worked at the static export.
 * Bugfixing mastermodule.
@@ -343,7 +361,7 @@ OpenCms 4.5.17 Chusuk - 09 November 2001
 ! Webusers can be added with an additional group by everybody.
 * Initialized "m_versionId" in "CmsMasterDataSet"
 - The password of a user can be changed by everybody who knows the username and the old password.
-- Added some methods to the generic CmsDbAccess so it is easier to select the correct pool 
+- Added some methods to the generic CmsDbAccess so it is easier to select the correct pool
   and statement for online or offline projects.
 - Added some fileds to the mastermodule.
 
@@ -352,7 +370,7 @@ OpenCms 4.5.16 Chusuk - 06 November 2001
 
 OpenCms 4.5.15 Chusuk - 05 November 2001
 ! Added generic master for modules in projectcycle.
-! It is now easier to add a new page resource type that gets its templates 
+! It is now easier to add a new page resource type that gets its templates
   in a different way.
 ! All resources get a siteroot (/default/vfs). When filling the defaults
   the resources /default/ (for the site), /default/vfs (for resources in the virtual filesystem)
@@ -398,13 +416,13 @@ OpenCms 4.5.14 Gom Jabbar - 05 September 2001
 
 OpenCms 4.5.13 Gom Jabbar - 28 September 2001
 ! Now webusers can be read from the CmsObject and the Shell with and without password..
-  
+
 OpenCms 4.5.12 Gom Jabbar - 28 September 2001
 ! Now groups can be added to webusers, too. If the user can not be read as user for OpenCms, he is read
   as Webuser.
 
 OpenCms 4.4.4 Gom Jabbar - 27 September 2001
-* Bugfix in PL/SQL-packages 
+* Bugfix in PL/SQL-packages
 
 OpenCms 4.5.11 Gom Jabbar - 24 September 2001
 ! Now there is a history of published projects in the project backoffice. The number of displayed
@@ -418,14 +436,14 @@ OpenCms 4.5.11 Gom Jabbar - 24 September 2001
   must be removed. For the administrator all icons are visible.
 ! The texteditor for pages can be opened directly from the context menu. The menu item for editing the
   control page has been moved down.
-* When a project is published the version id for the history must be read from the backup-projects 
+* When a project is published the version id for the history must be read from the backup-projects
   and backup-resources. After that (before the resources are published) the project is stored for the history.
 - When the database is exported excluding the system the folders /system/, /pics/system/ amd /moduledemos/
   are excluded.
 - When a project is deleted the waiting page is shown with the blue growing picture.
 - A new project includes /content/elements/ if the extendedNavigation-flag is set.
 - Changes for compatibility with Tomcat 4.0
-  
+
 OpenCms 4.4.3   Gom Jabbar - 13 September 2001
 - new major release created
 
@@ -435,7 +453,7 @@ OpenCms 4.5.10  Gom Jabbar - 13 September 2001
 * removed changes for temporary files of editor.
 
 OpenCms 4.5.9  Gom Jabbar - 13 September 2001
-! The filelist was very slow for folder with many entrys. Now if there are more than 
+! The filelist was very slow for folder with many entrys. Now if there are more than
   50 entrys the list is divided in pages of 50 entrys. In the explorer head there is
   a new select box to switch the pages.
 * Bugfix 1735: when creating a resource the subfolders lockstate is checked now
@@ -457,13 +475,13 @@ OpenCms 4.4.2  Gom Jabbar - 07 September 2001
 * Bugfix 1548: For editing a page file the temporary file is created in a special
   temporary file project. This project can be created with the method createTempfileProject().
   The projectid of the temp file project is stored in the registry.xml (<tempfileproject>).
-- Switched off the feature of automatic class reload after updating class-files. This 
+- Switched off the feature of automatic class reload after updating class-files. This
   feature caused trouble with the new project-mechanism.
 - Changed last button of dialog "New Ressource Of Other Type" from "next" to "finish".
 
 OpenCms 4.5.6  Gom Jabbar - 06 September 2001
 * After an redirect (redirect-rules configurated in opencms.properites) a ressource
-  should not be delivered by OpenCms. 
+  should not be delivered by OpenCms.
 * Now only the visible Templates are selectable in the HTML-Editor.
 * Corrected the key-generation for the access-cache.
 * Corrected the way a thread gets the session. It should not get it via the request contex.
@@ -472,36 +490,36 @@ OpenCms 4.5.6  Gom Jabbar - 06 September 2001
 
 OpenCms 4.5.5  Gom Jabbar - 03 September 2001
 ! Now a ressource can have a group-id that was already deleted.
-! Now the stylesheet-tag is used again for displaying stylesheets in the 
+! Now the stylesheet-tag is used again for displaying stylesheets in the
   HTML-Editor control.
-! When creating a new page in the templateselectbox only templates with the 
+! When creating a new page in the templateselectbox only templates with the
   v-flag are shown.
-* The way opencms dealed elements when the template was not given was not 
+* The way opencms dealed elements when the template was not given was not
   correct.
 * When an element throwed an Exception the Exceptiontext is printed in addition
   to [elementname]???
-* Import folder now looks the folder only if the properties or the access stuff 
+* Import folder now looks the folder only if the properties or the access stuff
   is different to an already existing folder.
-* Create Folder in extended navigation works again, it was not possible to 
+* Create Folder in extended navigation works again, it was not possible to
   insert an logo via the picgallerywindow.
 
 OpenCms 4.5.4  Gom Jabbar - 19 August 2001
-* Added missing element._TEMPLATE_, element._TEMPLATECLASS_, and 
+* Added missing element._TEMPLATE_, element._TEMPLATECLASS_, and
   element._TEMPLATESELECTOR_ - parameters.
 
 OpenCms 4.4.1  Gom Jabbar - 17 August 2001
-! Added mimetype-properties. So now you can easy edit the mimetypes in 
+! Added mimetype-properties. So now you can easy edit the mimetypes in
   TOMCAT_HOME/web-apps/opencms/WEB-INF/occlasses/mimtypes.properties.
 * Added the name of the element to the parameters with the key  _ELEMENT_.
 * Added the parameters of the element-definition to the cache-directive -key.
-* A new created page with default flag internal set results now in an 
+* A new created page with default flag internal set results now in an
   body-file with set internal, too.
-* Images that are filled in via drag and drop in the HTML-Control have no 
+* Images that are filled in via drag and drop in the HTML-Control have no
   java-script "onClick" event any more.
 - Added element-informations to the parameters.
 - Added redirect-informations to opencms.properties
-- Added a warning about the file.encoding. The warning will be printed 
-  if you are not using the prefered properties. You may get in trouble 
+- Added a warning about the file.encoding. The warning will be printed
+  if you are not using the prefered properties. You may get in trouble
   with user-password if you change the encoding later on.
 
 OpenCms 4.5.3  Gom Jabbar   - 10 August 2001
@@ -515,8 +533,8 @@ OpenCms 4.5.1  Gom Jabbar   - 07 August 2001
 * if no templatename is given the name of the bodyTemplate is used in the elementdefinition
 
 OpenCms 4.5.0  Gom Jabbar   - 07 August 2001
-* if elementcache aktiv and workplace classes are used for a 
-  page file, the elementdefinitions wasnt found. 
+* if elementcache aktiv and workplace classes are used for a
+  page file, the elementdefinitions wasnt found.
 
 OpenCms 4.4.0  Gom Jabbar   - 03 August 2001
 - Added credits.html
@@ -538,7 +556,7 @@ OpenCms 4.3.40 Bela Tegeuse - 02 August 2001
 OpenCms 4.3.39 Bela Tegeuse - 02 August 2001
 * Fixed bug: when deleting folders all subfolders must be deleted too, starting with the last
   folder in the foldertree
-* Fixed bug when synchronize resources: do not throw an exception if the resource is already 
+* Fixed bug when synchronize resources: do not throw an exception if the resource is already
   locked because that's ok
 - Switched the license to LGPL.
 - Changed the logic in setup-wizard for checking the supported servlet-engines.
@@ -564,7 +582,7 @@ OpenCms 4.3.35 Bela Tegeuse - 30 July 2001
 * Fixed bug in the project view: show only the resources that were changed in the project,
   do this with new method readProjectView
 - Switched project-resent-files to new filelist.
-- Import: if a folder is already there the properties, owner, group and access are updated if necessary. 
+- Import: if a folder is already there the properties, owner, group and access are updated if necessary.
 - Enabled the element-cache as a default.
 - Disabled the contextmenus in project-overview and gallery-overviews.
 
@@ -638,14 +656,14 @@ OpenCms 4.3.28 Bela Tegeuse - 19 July 2001
 - Reorganisation for tomcat-support.
 
 OpenCms 4.3.27 Bela Tegeuse - 18 July 2001
-* Bug in import module fixed: added the root folder in the system projects for module 
+* Bug in import module fixed: added the root folder in the system projects for module
   import and delete.
 * Bug's in online-help solved.
 - Reorganisation for tomcat-support.
 
 OpenCms 4.3.26 Bela Tegeuse - 17 July 2001
 * Bug in admin module (lost of the parameters) fixed.
-! New features on the workplace: resources can be undeleted, changes can be 
+! New features on the workplace: resources can be undeleted, changes can be
   undone by copying the resource from the online project, a single resource can be published.
 - When creating a project only /pics/, /download/ and the folders in /content/bodys/ are added
   automatically.
@@ -653,7 +671,7 @@ OpenCms 4.3.26 Bela Tegeuse - 17 July 2001
 
 OpenCms 4.3.25 Bela Tegeuse - 16 July 2001
 ! changed the structure in the content folder. Added a new resourcetype compatibleplain
-  for imported templates that dosent stick to the new rules for templates. The new restype 
+  for imported templates that dosent stick to the new rules for templates. The new restype
   is the same as plain but cant be changed.
 - Update of OpenCms setup-wizard.
 - Reorganisation for tomcat-support.
@@ -663,19 +681,19 @@ OpenCms 4.3.24 Bela Tegeuse - 11 July 2001
 - Reorganisation for tomcat-support.
 
 OpenCms 4.3.23 Bela Tegeuse - 9 July 2001
-! New features for resources (only on the shell): resources can be undeleted, changes can be 
-  undone by copying the resource from the online project, a version of a resource can be 
+! New features for resources (only on the shell): resources can be undeleted, changes can be
+  undone by copying the resource from the online project, a version of a resource can be
   restored from the history, a single resource can be published, single resources can be copied
   to an existing project. A history for published projects is stored in backup tables.
-- The datastructure has been changed for the history, the projects. There is no type for 
-  propertydefinitions any longer. 
+- The datastructure has been changed for the history, the projects. There is no type for
+  propertydefinitions any longer.
 
 OpenCms 4.3.22 Bela Tegeuse - 3 July 2001
 ! The resource types are stored in the registry.xml now. Actions on resources are depending
   on the resourcetype, so there is a special class for each resource type that handles the
   actions. You have to get the new registry.xml and the new cmssetup.txt.
 ! The launchernames are stored in the registry.xml
-! The element cache can now cache methods like elements. 
+! The element cache can now cache methods like elements.
 * Bugfixing in PL/SQL-Procedures for access
 * Bug fixed in online-help. The index is now displayed correct.
 * Bug fixed in sending emails from OpenCms.
@@ -688,11 +706,11 @@ OpenCms 4.3.21 Bela Tegeuse - 28 June 2001
 
 OpenCms 4.3.20 Bela Tegeuse - 25 June 2001
 ! Advanced Projectmechanism
-  Now the resources for online, offline and backup are stored in several tables. 
+  Now the resources for online, offline and backup are stored in several tables.
   The offline resources exist only once. Each project that is created is only a view
   on the offline resources. After a project was published it is still accessible, except
   it was created as a temporary project.
-  The online resources and backup resources can be created in several databases. 
+  The online resources and backup resources can be created in several databases.
   So there are new entries in the opencms.properties for the connections to online
   and backup databases. The history can be enabled or disabled by the flag history.enabled
   in opencms.properties.
@@ -722,7 +740,7 @@ OpenCms 4.3.13 Bela Tegeuse - 22 May 2001
 
 OpenCms 4.3.12 Bela Tegeuse - 17 May 2001
 ! Added db2 sql setup script. Thanks to Uwe Heldt.
-! Timeout for the new element cache. 
+! Timeout for the new element cache.
 - Logging can be generally disabled by setting C_PREPROCESSOR_IS_LOGGING to false.
 - Removed all System.err.println() - debug messages.
 - Removed all excpetion.printStackTrace() - debug messages.
@@ -758,7 +776,7 @@ OpenCms 4.3.7 Bela Tegeuse - 19 April 2001
 - Documentation of navigation rewritten.
 
 OpenCms 4.3.6 Bela Tegeuse - 11 April 2001
-* Corrected a bug getting sessions in threads. Null-Pointer exceptions should 
+* Corrected a bug getting sessions in threads. Null-Pointer exceptions should
   not occure anymore.
 
 OpenCms 4.3.5 Bela Tegeuse - 09 April 2001
@@ -779,7 +797,7 @@ OpenCms 4.3.2 Bela Tegeuse - 29 March 2001
 
 ! Zip-files can now be extracted when uploading a file.
 * Bugfix in zip-Import
-! new option for displaying contexmenues: a '3' in the first place of the 
+! new option for displaying contexmenues: a '3' in the first place of the
   rulestring means the entry is displayed only in the Onlineproject
 
 OpenCms 4.3.1 Bela Tegeuse - 26 March 2001
@@ -793,7 +811,7 @@ OpenCms 4.2 Giedi Prime - 05 March 2001
 
 OpenCms 4.1.62 Arakis - 23 February 2001
 
-* Bug in import module fixed. Now in all cases a proper project will be set up 
+* Bug in import module fixed. Now in all cases a proper project will be set up
   for the module import.
 
 OpenCms 4.1.61 Arakis - 22 February 2001
@@ -816,17 +834,17 @@ OpenCms 4.1.58 Arakis - 21 February 2001
 
 OpenCms 4.1.57 Arakis - 13 February 2001
 
-- ATTENTION! On a win32 System with jdk1.3 you have to unzipp the .jar and .zip 
+- ATTENTION! On a win32 System with jdk1.3 you have to unzipp the .jar and .zip
   files containing the classes. This is because of a bug in jdk1.3 (see report on
   javasoft-homepage: http://developer.java.sun.com/developer/bugParade/bugs/4369396.html )
 ! Finished the opencms-pool. Now old and outtimed connections will be closed properly.
-* Changed the CmsClassloader: the parent classloader of a loaded class is always the 
+* Changed the CmsClassloader: the parent classloader of a loaded class is always the
   CmsClassloader. This way we are able to load classes in the virtual file system.
 * Changed CmsHistory and the template history: more information in the history overview.
   The date of the last modification now shows this date of the resource in the right project
   (not the current). For that there is a new method readFileHeaderForHistory which returns
   the resource in the project without checking accessRead.
-* Removed bug in CmsSyncFolder: there were problems (could not found the resource) if a new project 
+* Removed bug in CmsSyncFolder: there were problems (could not found the resource) if a new project
   was created.
 * Removed bug in CmsIdGenerator: the IDs are now serial.
 
@@ -839,7 +857,7 @@ OpenCms 4.1.56 Arakis - 06 February 2001
   of cacheability (still rudimentary, will be improved).
 ! JSDK 2.2 support added.
 ! Added feature to synchronize the files in the virtual and the server filesystem.
-  The button for synchronizing in the workplace header is disabled until the entries 
+  The button for synchronizing in the workplace header is disabled until the entries
   for synchronisation in registry.xml are enabled
 - Removed obsolete CmsMultipartRequest
 * new Resources cant be created if they exist in onlineproject.
@@ -864,7 +882,7 @@ OpenCms 4.1.54 Arakis - 29 January 2001
 - ATTENTION! This version don't supports the PL/SQL resource broker. It is
   for testing the new database pool usage in the core. If you want to use oracle
   and PL/SQL please switch to OpenCms 4.1.53!
-! Added new database pool. This pool is more generic and can be accessed 
+! Added new database pool. This pool is more generic and can be accessed
   via java.sql.Drivermanager
 * general bugfixing
 
@@ -894,13 +912,13 @@ OpenCms 4.1.49 Arakis - 09 January 2001
 
 OpenCms 4.1.48 Arakis - 04 January 2001
 
-* Removed a bug in the mysql and generic driver. 
+* Removed a bug in the mysql and generic driver.
   Now the projecthandling is correct again.
 * Fixed some window focus problems in HTML edit control.
 
 OpenCms 4.1.47 Arakis - 03 January 2001
 
-* If the browser sends no user-agent the CmsXmlTemplate don't answers with a 
+* If the browser sends no user-agent the CmsXmlTemplate don't answers with a
   "Service not available".
 * Bugfixing new explorer.
 * Corrected spelling-errors.
@@ -913,7 +931,7 @@ OpenCms 4.1.46 Arakis - 19 December 2000
 OpenCms 4.1.45 Arakis - 14 December 2000
 
 * Bugfixing new explorer.
-* Export of deleted ressources don't causes an exception any more. Deleted resource are now 
+* Export of deleted ressources don't causes an exception any more. Deleted resource are now
   simply ignored.
 * Corrected the import. Empty poperty-values are now imported correct.
 * Corrected the modulexport. The exported manifest.xml has now the correct content.
@@ -960,7 +978,7 @@ OpenCms 4.1.39 Arakis - 21 November 2000
 
 OpenCms 4.1.38 Arakis - 17 November 2000
 
-! Added methods getFolderTree() and getSubResources(). 
+! Added methods getFolderTree() and getSubResources().
   They are needed for the new explorer.
 * Corrected a bug in  the editor. Now you can select a headline.
 * Added security-check to publish project functionality.
@@ -968,7 +986,7 @@ OpenCms 4.1.38 Arakis - 17 November 2000
 * Corrected an error in security-check for unlockProject().
 * Corrected an error in the plsql-part for publishing projects.
 * Changed the databasesetup: Groupnames have to be unique now.
-- Changed the fillDefaults-Method: The group "Projektmanager" 
+- Changed the fillDefaults-Method: The group "Projektmanager"
   is now subgroup of the group "Users".
 - Resolved a problem with browser caches. The browser is not allowed any more
   to cache ressources in offline-projects.
@@ -1016,7 +1034,7 @@ OpenCms 4.1.32 Arakis - 28 July 2000
 * Corrected some bugs on the workplace.
 * Texteditor for Netscape fixed.
 * Corrected some bugs for moving, renaming and copying resources.
-- The resource-broker instance is now stored in OpenCms instead of CmsObject. 
+- The resource-broker instance is now stored in OpenCms instead of CmsObject.
 
 OpenCms 4.0.29 Giedi Prime: Rabban - 02 June 2000
 
@@ -1038,20 +1056,20 @@ OpenCms 4.0.29 Giedi Prime: Rabban - 02 June 2000
 - Added some well formed error-messages to the workplace.
 
 OpenCms 4.0a28 Giedi Prime: Rabban - 19 May 2000
- 
+
 ! Added new import/export which uses a zip-file for storing data.
-! Use fastSetXmlData for setting xml tags in file list. Performance improvement 
+! Use fastSetXmlData for setting xml tags in file list. Performance improvement
   of about 15 percent with long file lists.
 ! New resource type 'link'. Links to other files in the filesystem possible.
 * Corrected an access-check error for publishing projects.
-* If a owner or group of a resource was deleted the filelist throwed an exception. 
+* If a owner or group of a resource was deleted the filelist throwed an exception.
   Now dummy-user and group objects will be used.
 * Tasks revised, only tasks for valid projects will be shown now.
-- Exception that are thrown while generating emails to notify tasks are now caught 
+- Exception that are thrown while generating emails to notify tasks are now caught
   and logged.
- 
 
- 
+
+
 OpenCms 4.0a27 Giedi Prime: Rabban - 05 May 2000
 
 ! New locking mechanism for folders: All lock operations are also applied on the subresources of
@@ -1162,7 +1180,7 @@ OpenCms 4.0a21 Giedi Prime: Rabban - 10 March 2000
 * Bugfix in import module: Empty Metainformation can be imported now.
 * CmsMultipartRequest is downgraded to JSDK 2.0 for compatibility reasons.
 * Compiling problems with JDK now fixed.
- 
+
 OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 
 ! Added example templates and pages to the database which demonstrate the use of templates and subtemplates.
@@ -1171,7 +1189,7 @@ OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
   now show a more user - friendly message.
 ! Multiple log messages have been added to the startup phase of the system, to help indentify problems
   with the installation.
-* Fixed bug in displaying new files in filelist. 
+* Fixed bug in displaying new files in filelist.
   A new file in a project now appears blue, not red.
 * Locking / Unlocking of files does not change file state anymore.
 * Fixed bug in writing Metainformations back into MetaInformationCache.
