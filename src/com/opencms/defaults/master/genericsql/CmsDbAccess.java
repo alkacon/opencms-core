@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/20 07:34:28 $
- * Version: $Revision: 1.13 $
+ * Author : $Author: m.dernen $
+ * Date   : $Date: 2001/11/23 17:23:55 $
+ * Version: $Revision: 1.14 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -568,8 +568,8 @@ public class CmsDbAccess {
         String queryFilename = className.substring(0, className.lastIndexOf('.'));
         queryFilename = queryFilename.replace('.','/') + "/query.properties";
         // gets the superclass and calls this method recursively
-        Class superClass = getClass().getSuperclass();
-        if((!superClass.equals(currentClass)) && (superClass != java.lang.Object.class)) {
+        Class superClass = currentClass.getSuperclass();
+        if(superClass != java.lang.Object.class) {
             loadQueries(superClass);
         }
         try {
