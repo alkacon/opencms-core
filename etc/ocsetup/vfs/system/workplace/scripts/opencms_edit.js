@@ -54,19 +54,7 @@ var PRINT=15;
 
 // Indicates if the text of the editor window is already set
 var textSetted = false;
-
-
-var windowWidth=null;
-var windowHeight=null;
-
-
-// function for calculating the right dimensions of a HTML textarea
-function getDimensions() {
-    windowWidth = innerWidth - 15;
-    windowHeight = innerHeight - space;
-    windowWidth = Math.round(windowWidth/8.3);
-    windowHeight = Math.round(windowHeight/18.8);
-}
+var isLedit = false;
 
 // loads the file content into the editor
 function setText()
@@ -77,24 +65,29 @@ function setText()
     // Workaround: focus() the text editor here and set the text
     // using the onFocus event of the editor.
 
-    if(document.forms.EDITOR.edit1)document.forms.EDITOR.edit1.focus();
+    if(document.forms.EDITOR.edit1) document.forms.EDITOR.edit1.focus();
 }
 
 // load the file content into the editor. this is called by the onFocus event of the edit control
 function setTextDelayed()
 {
-    if(! textSetted) {
-        document.EDITOR.edit1.Text = decodeURIComponent(text);
-        document.EDITOR.edit1.value = decodeURIComponent(text);
-        document.EDITOR.edit1.ClearModify(2);
-        textSetted = true;
-    }
+	var classid = "" + document.EDITOR.edit1.classid;
+	isLedit = (classid.indexOf("EB3A74C0") >= 0);
+	if(! textSetted) {
+		if (isLedit) {
+			document.EDITOR.edit1.Text = decodeURIComponent(text);
+			document.EDITOR.edit1.ClearModify(2);
+		} else {
+        	document.EDITOR.edit1.value = decodeURIComponent(text);
+		}
+		textSetted = true;
+	}
 }
 
 
 function doSubmit()
 {
-    if(IE) {
+    if(isLedit) {
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.Text);
     } else {
         // We have to do a blur on the textarea here. otherwise netscape may have problems with reading the value

@@ -37,11 +37,8 @@
 
 <!-- Inhalt -->
 	<tr>
-		<td class="texteditor" height="100%" width="100%"><OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02"
-		width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
-			<PARAM NAME="_Version" VALUE="131083">
-			<PARAM NAME="_ExtentX" VALUE="22887">
-			<PARAM NAME="_ExtentY" VALUE="7223">
+		<td class="texteditor" height="100%" width="100%">
+		<OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02" width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
 			<PARAM NAME="_StockProps" VALUE="125">
 			<PARAM NAME="Text" VALUE="Loading .....">
 			<PARAM NAME="ForeColor" VALUE="0">
@@ -94,7 +91,9 @@
 			<PARAM NAME="ZeroSubstitute" VALUE="0">
 		</OBJECT>
 		<script language="javascript">
+		<!--
 			if(document.edit1 != true) document.location=document.location+"&noactivex=true";
+		// -->
 		</script>
 		</td>
 	</tr>
@@ -123,14 +122,15 @@
 		</table></td>
 	</tr>
 	<tr>
-		<td valign="top" class="texteditor"width="100%">
-		<!-- write the text area -->
-		<script>
-		    iRows = Math.round((window.innerHeight - tbsize)/15) - 1;
-			str = '<textarea wrap="off" name="edit1" onfocus="setTextDelayed();" rows="' + iRows + '" style="width:100%; font-family:Fixedsys, monospace"></textarea>';
-			document.write(str);
-		</script>
-		</td>
+	<td valign="top" class="texteditor" height="100%" width="100%">
+	<!-- write the text area -->
+	<script language="JavaScript">
+	<!--      
+		str = '<textarea wrap="off" name="edit1" onfocus="setTextDelayed();" style="width:100%; height:100%; font-family:Fixedsys, monospace"></textarea>';
+		document.write(str);
+	//-->
+	</script>
+	</td>
 	</tr>
 ]]>
 </TEMPLATE>
