@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/09 21:38:10 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/10/11 10:09:22 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.52 $ $Date: 2000/10/09 21:38:10 $
+ * @version $Revision: 1.53 $ $Date: 2000/10/11 10:09:22 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -59,7 +59,7 @@ public class CmsShell implements I_CmsConstants {
 
 	private CmsShellCommands shellCommands;
 	
-	/**
+/**
  * Insert the method's description here.
  * Creation date: (10/05/00 %r)
  * @author: 
@@ -72,24 +72,17 @@ public CmsShell(String args[])
 		m_openCms = new OpenCms(conf);
 		m_cms = new CmsObject();
 		this.shellCommands = new CmsShellCommands(args, m_openCms, m_cms);
-		if (CmsConstants.USE_MULTISITE)
-		{
-			//debug messages.
-			System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
-			System.out.println("CmsShell 2 now running");
+		//debug messages.
+		System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
+		System.out.println("CmsShell 2 now running");
 
-			//log in default user.
-			m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-			if (args.length >= 2)
-			{
-				CmsSite site = m_cms.getSite(args[1]);
-				System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
-				m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
-			}
-		}
-		else
+		//log in default user.
+		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+		if (args.length >= 2)
 		{
-			m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+			CmsSite site = m_cms.getSite(args[1]);
+			System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
+			m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
 		}
 	}
 	catch (Exception exc)
@@ -184,8 +177,8 @@ public static void main(String[] args)
 	try
 	{
 		//expect a multisite on the commandline or not.
-		int nargs = ((CmsConstants.USE_MULTISITE) ? 2 : 1);
-		if (args.length < nargs)
+		//int nargs = ((CmsConstants.USE_MULTISITE) ? 2 : 1);
+		if (args.length < 2)
 		{
 			// print out usage-information.
 			CmsShell.usage();
@@ -201,6 +194,7 @@ public static void main(String[] args)
 			shell.commands();
 		}
 	}
+	/*
 	catch (ArrayIndexOutOfBoundsException e)
 	{
 		int nargs = ((CmsConstants.USE_MULTISITE) ? 2 : 1);
@@ -208,7 +202,7 @@ public static void main(String[] args)
 			CmsShell.usage();
 		else
 			e.printStackTrace();
-	}
+	}*/
 	catch (Exception exc)
 	{
 		exc.printStackTrace();
@@ -253,10 +247,12 @@ private void printPrompt()
 {
 	System.out.print("{" + m_cms.getRequestContext().currentUser().getName() + "@" + m_cms.getRequestContext().currentProject().getName() + "}> ");
 }
-	/**
-	 * Gives the usage-information to the user.
-	 */
-	private static void usage() {
-		System.out.println("Usage: java com.opencms.core.CmsShell properties-file" + (CmsConstants.USE_MULTISITE?" site":""));
-	}
+/**
+ * Gives the usage-information to the user.
+ */
+private static void usage()
+{
+	//System.out.println("Usage: java com.opencms.core.CmsShell properties-file" + (CmsConstants.USE_MULTISITE ? " site" : ""));
+	System.out.println("Usage: java com.opencms.core.CmsShell properties-file site");
+}
 }

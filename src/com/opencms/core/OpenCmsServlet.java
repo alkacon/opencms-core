@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/09/25 16:05:11 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/10/11 10:09:22 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.58 $ $Date: 2000/09/25 16:05:11 $  
+* @version $Revision: 1.59 $ $Date: 2000/10/11 10:09:22 $  
 * 
 * */
 
@@ -441,10 +441,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 
 		try {
 			 //determine wether to use multisite functionality or not.
-			 if (CmsConstants.USE_MULTISITE)
+			 //if (CmsConstants.USE_MULTISITE)
 			 	  cms=initMultisite(cmsReq,cmsRes);
-			 else
-			 	  cms=initUser(cmsReq,cmsRes);
+			 //else
+			 //	  cms=initUser(cmsReq,cmsRes);
 			 	  
 		   checkRelocation(cms);
 		   CmsFile file=m_opencms.initResource(cms); 
@@ -483,10 +483,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		try {
 		
 			//determine wether to use multisite functionality or not.
-			if (CmsConstants.USE_MULTISITE)
+			//if (CmsConstants.USE_MULTISITE)
 			  cms=initMultisite(cmsReq,cmsRes);
-			else
-			  cms=initUser(cmsReq,cmsRes);
+			//else
+			 // cms=initUser(cmsReq,cmsRes);
 			 	  
 			checkRelocation(cms);
 			CmsFile file=m_opencms.initResource(cms); 

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/10/10 12:47:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/10/11 10:09:22 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.6 $ $Date: 2000/10/10 12:47:13 $
+ * @version $Revision: 1.7 $ $Date: 2000/10/11 10:09:22 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -64,8 +64,8 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 	Configurations conf = new Configurations(new ExtendedProperties(args[0]));
 	m_openCms = openCms;
 	m_cms = cms;
-	if (CmsConstants.USE_MULTISITE)
-	{
+//	if (CmsConstants.USE_MULTISITE)
+//	{
 		//debug messages.
 		System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
 
@@ -74,11 +74,11 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 		CmsSite site = m_cms.getSite(args[1]);
 		System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
 		m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
-	}
+/*	}
 	else
 	{
 		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-	}
+	}*/
 	// print the version-string
 	version();
 	copyright();
