@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.249 $
+* Date   : $Date: 2003/07/22 17:13:33 $
+* Version: $Revision: 1.250 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.249 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.250 $ $Date: 2003/07/22 17:13:33 $
  */
 public interface I_CmsConstants {
 
@@ -1415,5 +1415,22 @@ public interface I_CmsConstants {
 
     /** default class for templates */
     String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
+    
+    /** 
+     * Signals that VFS links pointing to this resource should not be 
+     * deleted and will remain unchanged at all.
+     */
+    int C_DELETE_OPTION_IGNORE_VFS_LINKS = 0;
+    
+    /** 
+     * Signals that VFS links pointing to this resource should not be deleted. 
+     * An existing soft link of this resource will be converted into a new hard link. 
+     */
+    int C_DELETE_OPTION_PRESERVE_VFS_LINKS = 1;    
+        
+    /** 
+     * Signals that VFS links pointing to this resource should be deleted.
+     */
+    int C_DELETE_OPTION_DELETE_VFS_LINKS = 2;    
 
 }

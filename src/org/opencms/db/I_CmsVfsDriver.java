@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/22 17:13:34 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/22 17:13:34 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -145,7 +145,7 @@ public interface I_CmsVfsDriver {
     void deleteAllProjectResources(int projectId) throws CmsException;
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
     void deleteAllProperties(int projectId, CmsUUID resourceId) throws CmsException;
-    void deleteFile(CmsProject project, CmsUUID resourceId) throws CmsException;
+    void deleteFile(CmsProject project, CmsResource resource) throws CmsException;
     void deleteFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
     void deleteProjectResource(int projectId, String resourceName) throws CmsException;
     void deleteProjectResources(CmsProject project) throws CmsException;
@@ -171,7 +171,9 @@ public interface I_CmsVfsDriver {
      * @return a List with the fileheaders
      * @throws CmsException if something goes wrong
      */
-    List getVfsLinksForResource(CmsProject currentProject, CmsResource resource) throws CmsException;
+    List getAllVfsLinks(CmsProject currentProject, CmsResource resource) throws CmsException;
+    
+    List getAllVfsSoftLinks(CmsProject currentProject, CmsResource resource) throws CmsException;
     
     void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException;
     Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException;
@@ -430,4 +432,6 @@ public interface I_CmsVfsDriver {
      */
     List readLockedFileHeaders() throws CmsException;
         
+    void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException;
+     
 }

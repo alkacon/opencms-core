@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2003/07/22 17:13:33 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.97 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.98 $ $Date: 2003/07/22 17:13:33 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -607,7 +607,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void deleteFile(String filename) {
         try {
-            m_cms.deleteResource(filename);
+            m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -620,7 +620,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void deleteFolder(String foldername) {
         try {
-            m_cms.deleteResource(foldername);
+            m_cms.deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -633,7 +633,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void deleteResource(String filename) {
         try {
-            m_cms.deleteResource(filename);
+            m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/22 13:01:23 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db;
 
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
+import org.opencms.lock.CmsLockException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -43,6 +44,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.core.exceptions.CmsResourceNotFoundException;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.CmsUUID;
@@ -72,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.81 $ $Date: 2003/07/22 13:01:23 $
+ * @version $Revision: 1.82 $ $Date: 2003/07/22 17:13:33 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1734,7 +1736,8 @@ public class CmsDriverManager extends Object {
                 parentFolder.getId(),
                 CmsUUID.getNullUUID(),
                 resourceName,
-                targetResource.getType(),
+                /*targetResource.getType(),*/
+                CmsResourceTypePointer.C_RESOURCE_TYPE_ID,
                 targetResource.getFlags(),
                 /* context.currentUser().getId(), */
                 /* context.currentUser().getDefaultGroupId(), */
@@ -1881,43 +1884,91 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void deleteFile(CmsRequestContext context, String filename) throws CmsException {
+    public void deleteFile(CmsRequestContext context, String filename, int deleteOption) throws CmsException {
+        List resources = (List) new ArrayList();
+        CmsResource currentResource = null;
+        CmsLock currentLock = null;
+        CmsResource resource = null;
+        Iterator i = null;
+        boolean existsOnline = false;
 
-        CmsResource onlineFile = null;
-        CmsResource offlineFile = null;
+        // TODO set the flag deleteOption in all calling methods correct
 
-        try {
-            List onlinePath = readPathInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, filename, false);
-            onlineFile = (CmsResource) onlinePath.get(onlinePath.size() - 1);
-        } catch (CmsException exc) {
-            onlineFile = null;
+        // read the resource to delete/remove
+        resource = readFileHeader(context, filename, false);
+
+        if (resource.isHardLink() && deleteOption == I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS) {
+            // try to find soft links pointing to this resource
+            List vfsSoftLinks = getAllVfsSoftLinks(context, filename);
+            
+            if (vfsSoftLinks.size()>0) {
+                // the first soft link that is found will be the new hard link
+                CmsResource softlink = (CmsResource) vfsSoftLinks.get(0);
+                // switch the link type            
+                m_vfsDriver.switchLinkType(context.currentUser(), context.currentProject(), softlink, resource);
+                // clear the cache
+                clearResourceCache();
+                // re-read the resource coz it's link type is now changed
+                resource = readFileHeader(context, filename, false);
+            }
+        } else if (resource.isHardLink() && deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
+            // add all VFS links pointing to this resource to the list of resources that get deleted/removed            
+            resources.addAll(getAllVfsSoftLinks(context, filename));
+
+            // ensure that each VFS link pointing to the resource is unlocked or locked by the current user
+            i = resources.iterator();
+            while (i.hasNext()) {
+                currentResource = (CmsResource) i.next();
+                currentLock = getLock(context, currentResource);
+
+                if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
+                    // the resource is locked by another user...
+                    int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
+                    throw new CmsLockException("The VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked!", exceptionType);
+                }
+            }
         }
 
-        List offlinePath = readPath(context, filename, false);
-        offlineFile = (CmsResource) offlinePath.get(offlinePath.size() - 1);
+        // add the resource itself to the list of all resources that get deleted/removed
+        resources.add(resource);
 
-        // check if the user has write access to the file
-        checkPermissions(context, offlineFile, I_CmsConstants.C_WRITE_ACCESS);
+        // delete/remove all collected resources...
+        i = resources.iterator();
+        while (i.hasNext()) {
+            currentResource = (CmsResource) i.next();
 
-        // write-access was granted - delete the file and the metainfos
-        if (onlineFile == null) {
-            // the onlinefile dosent exist => remove the file
-            deleteAllProperties(context, filename);
-            m_vfsDriver.removeFile(context.currentProject(), offlineFile);
-            // remove the access control entries
-            m_userDriver.removeAllAccessControlEntries(context.currentProject(), offlineFile.getResourceAceId());
-        } else {
-            m_vfsDriver.deleteFile(context.currentProject(), offlineFile.getResourceId());
-            // delete the access control entries
-            deleteAllAccessControlEntries(context, offlineFile);
+            // check if the user has write access to the resource
+            checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS);
+
+            try {
+                // try to read the corresponding online resource to decide if the resource should be either removed or deleted
+                readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
+                existsOnline = true;
+            } catch (CmsException exc) {
+                existsOnline = false;
+            }
+
+            if (!existsOnline) {
+                // the resource doesnt exist online => remove the file
+                m_vfsDriver.removeFile(context.currentProject(), currentResource);
+                // remove the properties                
+                deleteAllProperties(context, currentResource.getFullResourceName());
+                // remove the access control entries
+                m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
+            } else {
+                // the resource exists online => delete the file
+                m_vfsDriver.deleteFile(context.currentProject(), currentResource);
+                // delete the access control entries
+                deleteAllAccessControlEntries(context, currentResource);
+            }
+
+            m_lockDispatcher.removeResource(currentResource.getFullResourceName());
         }
 
         // update the cache
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();
-        
-        m_lockDispatcher.removeResource(filename);
 
         // inform about the file-system-change
         fileSystemChanged(false);
@@ -2483,7 +2534,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Fetches all VFS links pointing to a given resource name.
+     * Gets all hard and soft links pointing to a specified resource.<p>
      * 
      * @param theUser the current user
      * @param context.currentProject() the current project
@@ -2491,14 +2542,32 @@ public class CmsDriverManager extends Object {
      * @return an ArrayList with the resource names of the fetched VFS links
      * @throws CmsException
      */
-    public List fetchVfsLinksForResource(CmsRequestContext context, String resourcename) throws CmsException {        
+    public List getAllVfsLinks(CmsRequestContext context, String resourcename) throws CmsException {        
         if (resourcename == null || "".equals(resourcename)) {
             return (List) new ArrayList(0);
         }
         
         CmsResource resource = readFileHeader(context, resourcename);
-        return m_vfsDriver.getVfsLinksForResource(context.currentProject(), resource);
+        return m_vfsDriver.getAllVfsLinks(context.currentProject(), resource);
     }
+    
+    /**
+     * Gets all soft links pointing to a specified resource, excluding the
+     * resource itself if it is a soft link and its hard link.<p>
+     * 
+     * @param context
+     * @param resourcename
+     * @return
+     * @throws CmsException
+     */
+    public List getAllVfsSoftLinks(CmsRequestContext context, String resourcename) throws CmsException {        
+        if (resourcename == null || "".equals(resourcename)) {
+            return (List) new ArrayList(0);
+        }
+        
+        CmsResource resource = readFileHeader(context, resourcename);
+        return m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
+    }    
 
     /**
      * This method is called, when a resource was changed. Currently it counts the
@@ -4583,7 +4652,7 @@ public class CmsDriverManager extends Object {
 
         if (source.isFile()) { 
             copyFile(context, sourceName, destinationName, true);
-            deleteFile(context, sourceName);
+            deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } else {
             copyFolder(context, sourceName, destinationName, true);
             deleteFolder(context, sourceName);
@@ -5317,7 +5386,7 @@ public class CmsDriverManager extends Object {
             return readFolderInProject(context, projectId, filename);
         }
 
-        List path = readPath(context, filename, includeDeleted);
+        List path = readPathInProject(context, projectId, filename, includeDeleted);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
         int[] pathProjectId = m_vfsDriver.getProjectsForPath(projectId, filename);
 
@@ -5327,7 +5396,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return null;
+        throw new CmsResourceNotFoundException("File " + filename + " is not part of project with ID " + projectId);
     }
 
     /**
@@ -5533,7 +5602,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return null;
+        throw new CmsResourceNotFoundException("Folder " + foldername + " is not part of project with ID " + projectId);
     }
 
     /**
@@ -5998,16 +6067,6 @@ public class CmsDriverManager extends Object {
         String cacheKey = null;
         // the parent resource of the current resource
         CmsResource lastParent = null;
-        
-        /*
-        // true if a upper folder in the path was locked
-        boolean visitedLockedFolder = false;
-        // the project ID of an upper locked folder
-        int lockedInProject = projectId;
-        // the user ID of an upper locked folder
-        CmsUUID lockedByUserId = CmsUUID.getNullUUID();
-        */
-
 
         tokens = new StringTokenizer(path, I_CmsConstants.C_FOLDER_SEPARATOR);
 
@@ -6038,15 +6097,6 @@ public class CmsDriverManager extends Object {
             return pathList;
         }
 
-        /*
-        // save the current lock state
-        if (currentResource.isLocked()) {
-            visitedLockedFolder = true;
-            lockedInProject = currentResource.getLockedInProject();
-            lockedByUserId = currentResource.isLockedBy();
-        }
-        */
-
         currentResourceName = tokens.nextToken();
 
         // read the folder resources in the path /a/b/c/
@@ -6061,20 +6111,6 @@ public class CmsDriverManager extends Object {
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
-            /*
-            // update/save the lock state
-            if (visitedLockedFolder) {
-                currentResource.setLocked(lockedByUserId);
-                currentResource.setLockedInProject(lockedInProject);
-                currentResource.setProjectId(lockedInProject);
-                m_resourceCache.put(cacheKey, currentResource);
-            } else if (currentResource.isLocked()) {
-                visitedLockedFolder = true;
-                lockedInProject = currentResource.getLockedInProject();
-                lockedByUserId = currentResource.isLockedBy();
-            }
-            */
-
             pathList.add(i, currentResource);
             lastParent = currentResource;
 
@@ -6088,7 +6124,7 @@ public class CmsDriverManager extends Object {
             if (tokens.hasMoreTokens()) {
                 // this will only be false if a resource in the 
                 // top level root folder (e.g. "/index.html") was requested
-            currentResourceName = tokens.nextToken();
+                currentResourceName = tokens.nextToken();
             }
             currentPath += currentResourceName;
 
@@ -6099,16 +6135,6 @@ public class CmsDriverManager extends Object {
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
             }
-
-            /*
-            // update/save the lock state
-            if (visitedLockedFolder && !currentResource.isLocked()) {
-                currentResource.setLocked(lockedByUserId);
-                currentResource.setLockedInProject(lockedInProject);
-                currentResource.setProjectId(lockedInProject);
-                m_resourceCache.put(cacheKey, currentResource);
-            }
-            */
 
             pathList.add(i, currentResource);
         }

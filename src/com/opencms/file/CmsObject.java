@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/22 13:01:23 $
-* Version: $Revision: 1.347 $
+* Date   : $Date: 2003/07/22 17:13:33 $
+* Version: $Revision: 1.348 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.347 $
+ * @version $Revision: 1.348 $
  */
 public class CmsObject extends Object {
 
@@ -940,7 +940,7 @@ public class CmsObject extends Object {
      * @deprecated Use deleteResource instead.
      */
     public void deleteFile(String filename) throws CmsException {
-        deleteResource(filename);
+        deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
     }
 
     /**
@@ -957,7 +957,7 @@ public class CmsObject extends Object {
      * @deprecated Use deleteResource instead.
      */
     public void deleteFolder(String foldername) throws CmsException {
-        deleteResource(foldername);
+        deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
     }
 
     /**
@@ -1020,16 +1020,19 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Deletes a resource.
-     *
-     * @param filename the complete path of the file.
-     *
-     * @throws CmsException if the file couldn't be deleted, or if the user
-     * has not the appropriate rights to delete the file.
+     * Deletes a resource.<p>
+     * 
+     * @param filename the filename of the resource exlucing the site root
+     * @param deleteOption signals how VFS links pointing to this resource should be handled 
+     * @throws CmsException if the user has insufficient acces right to delete the resource
+     * @see com.opencms.core.I_CmsConstants#C_DELETE_OPTION_DELETE_VFS_LINKS
+     * @see com.opencms.core.I_CmsConstants#C_DELETE_OPTION_IGNORE_VFS_LINKS
+     * @see com.opencms.core.I_CmsConstants#C_DELETE_OPTION_PRESERVE_VFS_LINKS
      */
-    public void deleteResource(String filename) throws CmsException {
-        getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename);
+    public void deleteResource(String filename, int deleteOption) throws CmsException {
+        getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename, deleteOption);
     }
+    
     /**
      * Deletes a user from the Cms.
      * <p>
@@ -1270,8 +1273,8 @@ public class CmsObject extends Object {
      * @throws CmsException if the file couldn't be deleted, or if the user
      * has not the appropriate rights to delete the file.
      */
-    protected void doDeleteFile(String filename) throws CmsException {
-        m_driverManager.deleteFile(m_context, addSiteRoot(filename));
+    protected void doDeleteFile(String filename, int deleteOption) throws CmsException {
+        m_driverManager.deleteFile(m_context, addSiteRoot(filename), deleteOption);
     }
 
     /**
@@ -1604,15 +1607,27 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Fetches the resource names of all VFS links pointing to a given resource as an ArrayList.
+     * Gets all hard and soft links pointing to a specified resource.<p>
      * 
-     * @param theResourceName the name of the resource for which all VFS links are fetched
-     * @return an ArrayList with the resources names of all links pointint to the specified resource
-     * @throws CmsException
+     * @param resourcename the name of the resource
+     * @return a List with CmsResources
+     * @throws CmsException if something goes wrong
      */
-    public List fetchVfsLinksForResource(String resourcename) throws CmsException {       
-        return m_driverManager.fetchVfsLinksForResource( m_context, addSiteRoot(resourcename) );
+    public List getAllVfsLinks(String resourcename) throws CmsException {       
+        return m_driverManager.getAllVfsLinks( m_context, addSiteRoot(resourcename) );
     }
+    
+    /**
+     * Gets all soft links pointing to a specified resource, excluding the
+     * resource itself if it is a soft link and its hard link.<p>
+     * 
+     * @param resourcename the name of the resource
+     * @return a List with CmsResources
+     * @throws CmsException if something goes wrong
+     */
+    public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
+        return m_driverManager.getAllVfsSoftLinks( m_context, addSiteRoot(resourcename) );
+    }    
 
     /**
      * Fires a CmsEvent
@@ -2506,102 +2521,6 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Joins all links with their targets for the current project.
-     * 
-     * @return an ArrayList with the resources identified as broken links
-     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
-     * @throws CmsException
-     */
-    public ArrayList joinLinksToTargets() throws CmsException {
-        return this.joinLinksToTargets(m_context.currentProject());
-    }
-
-    /**
-     * Joins all links with their targets for a given project.
-     * 
-     * @param theProject the CmsProject for which the links should be joined with their targets
-     * @return an ArrayList with the resources identified as broken links
-     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
-     * @throws CmsException
-     */
-    public ArrayList joinLinksToTargets(CmsProject theProject) throws CmsException {
-        return this.joinLinksToTargets(theProject, new CmsShellReport());
-    }
-
-    /**
-     * Joins all VFS links with their target resources for a given project, 
-     * printing the output to the given report.
-     * 
-     * @param theProject the CmsProject for which the links should be joined with their targets
-     * @param theReport the report to print the output
-     * @return an ArrayList with the resources identified as broken links
-     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
-     * @throws CmsException
-     */
-    public ArrayList joinLinksToTargets(CmsProject theProject, I_CmsReport theReport) throws CmsException {
-        return this.joinLinksToTargets(m_context.currentUser(), theProject, theReport);
-    }
-
-    /**
-     * Joins all VFS links with their target resources for a given project, 
-     * printing the output to the given report.
-     * 
-     * @param theUser the current user
-     * @param theProject the CmsProject for which the links should be joined with their targets
-     * @param theReport the report to print the output
-     * @return an ArrayList with the resources identified as broken links
-     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
-     * @throws CmsException
-     */
-    public ArrayList joinLinksToTargets(CmsUser theUser, CmsProject theProject, I_CmsReport theReport) throws CmsException {
-        // TODO: the following code requires a change of the database schema first!
-        /*
-        theReport.println(theReport.key("report.link_check_vfs_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID && this.getOnlineElementCache() != null) {
-            // clear the online element cache
-            this.clearElementCache();
-        }
-        
-        // clear the driver manager cache
-        this.clearcache();
-        
-        ArrayList brokenLinks = m_driverManager.joinLinksToTargets(this, theUser, theProject, theReport);        
-        theReport.println(theReport.key("report.link_check_vfs_end"), I_CmsReport.C_FORMAT_HEADLINE);
-        
-        return brokenLinks;
-        */
-
-        return new ArrayList(0);
-    }
-
-    /**
-     * Joins all VFS links with their target resources for the current project, 
-     * printing the output to the specified report.
-     * 
-     * @param theReport the report to print the output
-     * @return an ArrayList with the resources identified as broken links
-     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
-     * @throws CmsException
-     */
-    public ArrayList joinLinksToTargets(I_CmsReport theReport) throws CmsException {
-        return this.joinLinksToTargets(m_context.currentProject(), theReport);
-    }
-
-    /**
-     * Save the ID of the target resource for a VFS link.
-     * The target ID is saved in the RESOURCE_FLAGS table attribute.
-     * 
-     * @param theLinkResourceName the resource name of the VFS link
-     * @param theTargetResourceName the name of the link's target resource
-     * @throws CmsException
-     */
-    public void linkResourceToTarget(String theLinkResourceName, String theTargetResourceName) throws CmsException {
-        // TODO: the following code requires a change of the database schema first!
-        //m_driverManager.linkResourceToTarget( m_context.currentProject(), this.getSiteRoot(theLinkResourceName), this.getSiteRoot(theTargetResourceName) );
-    }
-
-    /**
      * Returns the user, who has locked a given resource.
      * <br>
      * A user can lock a resource, so he is the only one who can write this
@@ -2880,9 +2799,6 @@ public class CmsObject extends Object {
                 m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
             }
         }
-
-        CmsProject onlineProject = this.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-        this.joinLinksToTargets(onlineProject, report);
 
         this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, m_context.currentProject());
     }
@@ -3975,9 +3891,6 @@ public class CmsObject extends Object {
         }
 
         getResourceType(readFileHeader(resName, true).getType()).replaceResource(this, resName, resProps, content, type);
-
-        // clean-up the link management
-        joinLinksToTargets(new CmsShellReport());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/22 13:01:23 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2003/07/22 13:01:23 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/22 17:13:33 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1016,7 +1016,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public void deleteFile(CmsProject project, CmsUUID resourceId) throws CmsException {
+    public void deleteFile(CmsProject project, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -1026,7 +1026,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             stmt.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
             stmt.setString(2, CmsUUID.getNullUUID().toString());
-            stmt.setString(3, resourceId.toString());
+            stmt.setString(3, resource.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1332,7 +1332,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#getVfsLinksForResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
-    public List getVfsLinksForResource(CmsProject currentProject, CmsResource resource) throws CmsException {
+    public List getAllVfsLinks(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -1341,10 +1341,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_VFS_LINKS");
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_ALL_VFS_LINKS");
             stmt.setString(1, resource.getResourceId().toString());
-            stmt.setInt(2, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
-            stmt.setInt(3, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
+            stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -1359,6 +1358,38 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         return vfsLinks;
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#getAllSoftVfsLinks(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     */
+    public List getAllVfsSoftLinks(CmsProject currentProject, CmsResource resource) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        CmsResource currentResource = null;
+        List vfsLinks = (List) new ArrayList();
+
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_SOFT_VFS_LINKS");
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setString(2, resource.getId().toString());
+            stmt.setInt(3, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+            stmt.setInt(4, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                currentResource = createCmsFileFromResultSet(res, currentProject.getId(), false);
+                vfsLinks.add(currentResource);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return vfsLinks;
+    }    
     
     protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
@@ -3698,6 +3729,46 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
 
         return lockedFileHeaders;
+    }
+    
+    public void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        int state = -1;
+
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+
+            if (softLink != null) {
+                state = softLink.getState() == I_CmsConstants.C_STATE_UNCHANGED ? I_CmsConstants.C_STATE_CHANGED : softLink.getState();
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_CHANGE_LINK_TYPE");
+                stmt.setInt(1, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+                stmt.setInt(2, state);
+                stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                stmt.setString(4, currentUser.getId().toString());
+                stmt.setString(5, softLink.getId().toString());
+                stmt.executeUpdate();
+            }
+
+            if (hardLink != null) {
+                m_sqlManager.closeAll(null, stmt, null);
+                
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_CHANGE_LINK_TYPE");
+                state = hardLink.getState() == I_CmsConstants.C_STATE_UNCHANGED ? I_CmsConstants.C_STATE_CHANGED : hardLink.getState();
+                stmt.setInt(1, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+                stmt.setInt(2, state);
+                stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                stmt.setString(4, currentUser.getId().toString());
+                stmt.setString(5, hardLink.getId().toString());
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception exc) {
+            throw new CmsException("switchLinkType" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
     }
     
 }

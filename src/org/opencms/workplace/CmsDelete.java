@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,10 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.lock.CmsLockException;
+
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -48,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -58,7 +61,8 @@ public class CmsDelete extends CmsDialog {
     public static final int ACTION_DELETE = 100;
     
     public static final String DIALOG_TYPE = "delete";
-
+    
+    private String m_deleteVfsLinks;
     
     /**
      * Public constructor with JSP action element.<p>
@@ -118,12 +122,19 @@ public class CmsDelete extends CmsDialog {
             }    
         } catch (CmsException e) {
             // prepare common message part
-            String message = "<p>\n" 
-                + key("title.delete") + ": " + getParamFile() + "\n</p>\n";                 
-            // error during deletion, show error dialog
+
+            String message = "<p>\n" + key("title.delete") + ": " + getParamFile() + "\n</p>\n";                 
+            
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(message + key("error.message." + getParamDialogtype()));
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            
+            if (e instanceof CmsLockException) {
+                setParamReasonSuggestion(e.getMessage());
+            } else {
+                setParamReasonSuggestion(getErrorSuggestionDefault());
+            }
+
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR); 
         }
     }
     
@@ -133,7 +144,8 @@ public class CmsDelete extends CmsDialog {
      * @return true, if the resource was deleted, otherwise false
      * @throws CmsException if deletion is not successful
      */
-    private boolean performDeleteOperation() throws CmsException {     
+    private boolean performDeleteOperation() throws CmsException {
+        int deleteOption = -1;     
         
         // on folder copy display "please wait" screen, not for simple file copy
         CmsResource sourceRes = getCms().readFileHeader(getParamFile());
@@ -141,20 +153,45 @@ public class CmsDelete extends CmsDialog {
             // return false, this will trigger the "please wait" screen
             return false;
         }
+        
+        if (sourceRes.isHardLink()) {
+            deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS;
+        } else {
+            deleteOption = I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS;
+        }
          
         // delete the resource
-        getCms().deleteResource(getParamFile());
+        getCms().deleteResource(getParamFile(), deleteOption);
+        
         return true;
     }
     
     /**
      * Checks if VFS links are pointing to this resource.
      * 
-     * @return true if a one or more VFS links are pointing to this resource
+     * @return true if one or more VFS links are pointing to this resource
      * @throws CmsException if something goes wrong
      */
     public boolean hasVfsLinks() throws CmsException {
-        return getCms().fetchVfsLinksForResource(getParamFile()).size() > 0;
+        return getCms().getAllVfsSoftLinks(getParamFile()).size() > 0;
+    }
+    
+    /**
+     * Sets the value of the boolean option to delete VFS links.<p>
+     * 
+     * @param value the value of the boolean option to delete VFS links
+     */
+    public void setParamDeleteVfsLinks(String value) {
+        m_deleteVfsLinks = value;
+    }
+    
+    /**
+     * Returns the value of the boolean option to delete VFS links.<p>
+     * 
+     * @return the value of the boolean option to delete VFS links as a lower case string
+     */
+    public String getParamDeleteVfsLinks() {
+        return m_deleteVfsLinks;
     }
     
 }

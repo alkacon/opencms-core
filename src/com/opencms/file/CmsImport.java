@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/22 13:01:23 $
-* Version: $Revision: 1.119 $
+* Date   : $Date: 2003/07/22 17:13:33 $
+* Version: $Revision: 1.120 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.119 $ $Date: 2003/07/22 13:01:23 $
+ * @version $Revision: 1.120 $ $Date: 2003/07/22 17:13:33 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -1321,7 +1321,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     m_cms.unlockResource(resname, false);
                     // finally delete the old body file, it is not needed anymore
                     m_cms.lockResource(bodyname);
-                    m_cms.deleteResource(bodyname);
+                    m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 }
 
@@ -1370,7 +1370,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
                     m_report.print(m_report.key("report.delfolder") + " " + resname, I_CmsReport.C_FORMAT_NOTE);
                     m_cms.lockResource(resname);
-                    m_cms.deleteResource(resname);
+                    m_cms.deleteResource(resname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                     counter++;
                 }

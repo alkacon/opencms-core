@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/22 13:01:23 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/07/22 17:13:33 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -267,7 +267,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void deleteResource(CmsObject cms, String folder) throws CmsException {
+    public void deleteResource(CmsObject cms, String folder, int deleteOption) throws CmsException {
 
         Vector allSubFolders = new Vector();
         Vector allSubFiles = new Vector();
@@ -277,7 +277,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
                 try {
-                    cms.deleteResource(cms.readAbsolutePath(curFile));
+                    cms.deleteResource(cms.readAbsolutePath(curFile), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                 } catch (CmsException e) {
                     if (e.getType() != CmsException.C_RESOURCE_DELETED) {
                         throw e;
@@ -301,7 +301,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
             try {
                 cms.readFolder(bodyFolder);
-                cms.deleteResource(bodyFolder);
+                cms.deleteResource(bodyFolder, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             } catch (CmsException ex) {
                 // no folder is there, so do nothing
             }
@@ -442,7 +442,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
         // cms.doMoveResource(source, destination);
         this.copyResource(cms, source, destination, true, true);
-        this.deleteResource(cms,source);
+        this.deleteResource(cms,source, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
     }
 
     /**
@@ -454,7 +454,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         // rename the folder itself
         // cms.doRenameResource(oldname, newname);
         this.copyResource(cms, oldname, newname, true, true);
-        this.deleteResource(cms, oldname);
+        this.deleteResource(cms, oldname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
 
         if (C_BODY_MIRROR) {
             oldname = oldname.substring(1);
@@ -463,7 +463,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // rename the corresponding body folder
             // cms.doRenameResource(bodyPath, newname);
             this.copyResource(cms, bodyPath, newname, true, true);
-            this.deleteResource(cms, bodyPath);
+            this.deleteResource(cms, bodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         }
     }
 

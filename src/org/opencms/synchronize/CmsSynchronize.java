@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/21 08:17:42 $
- * Version: $Revision: 1.1 $
- * Date   : $Date: 2003/07/21 08:17:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/22 17:13:34 $
+ * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/22 17:13:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/07/21 08:17:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/22 17:13:34 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -619,7 +619,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         try {
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);
-            m_cms.deleteResource(resourcename);
+            m_cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             // Remove it from the sync list
             m_syncList.remove(translate(resourcename));
 

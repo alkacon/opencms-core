@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/22 13:01:23 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -280,15 +280,15 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void deleteResource(CmsObject cms, String resourcename) throws CmsException {
+    public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
         CmsFile file = cms.readFile(resourcename);
-        cms.doDeleteFile(resourcename);
+        cms.doDeleteFile(resourcename, deleteOption);
         // linkmanagement: delete the links on the page
         cms.deleteLinkEntrys(file.getResourceId());
         String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             try {
-                cms.doDeleteFile(bodyPath);
+                cms.doDeleteFile(bodyPath, deleteOption);
             } catch (CmsException e) {
                 if (e.getType() != CmsException.C_NOT_FOUND) {
                     throw e;
@@ -339,13 +339,13 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         String bodyPath = checkBodyPath(cms, file);
         // cms.doMoveResource(resourcename, destination);
         this.copyResource(cms, resourcename, destination, true, true);
-        this.deleteResource(cms,resourcename);
+        this.deleteResource(cms,resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         if (bodyPath != null) {
             String hbodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
             // cms.doMoveResource(bodyPath, hbodyPath);
             this.copyResource(cms, bodyPath, hbodyPath, true, true);
-            this.deleteResource(cms,resourcename);
+            this.deleteResource(cms,resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             changeContent(cms, destination, hbodyPath);
         }
 
@@ -376,13 +376,13 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // rename the file itself
         // cms.doRenameResource(resourcename, newname);
         this.copyResource(cms, resourcename, newname, true, true);
-        this.deleteResource(cms, resourcename);
+        this.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
 
         // unless somebody edited the body path by hand, rename the file in the body path additionally
         if (defaultBodyPath.equals(currentBodyPath)) {
             // cms.doRenameResource(currentBodyPath, newname);
             this.copyResource(cms, currentBodyPath, newname, true, true);
-            this.deleteResource(cms, currentBodyPath);
+            this.deleteResource(cms, currentBodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             lastSlashIndex = currentBodyPath.lastIndexOf("/") + 1;
             defaultBodyPath = currentBodyPath.substring(0, lastSlashIndex) + newname;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -137,7 +137,7 @@ public interface I_CmsResourceType {
      * @param resourcename the name of the resource to apply this operation to
      * @throws CmsException if something goes wrong
      */
-    void deleteResource(CmsObject cms, String resourcename) throws CmsException;
+    void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException;
 
     /**
      * Undeletes a resource.<p>

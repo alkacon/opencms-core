@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/22 08:40:45 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/07/22 17:13:33 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.80 $ $Date: 2003/07/22 08:40:45 $
+ * @version $Revision: 1.81 $ $Date: 2003/07/22 17:13:33 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -577,7 +577,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                     // lock the resource
                     m_cms.lockResource(currentResource, true);
                     // delete the resource
-                    m_cms.deleteResource(currentResource);
+                    m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     // update the report
                     report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                     report.println(currentResource);
@@ -617,7 +617,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                             m_cms.deleteEmptyFolder(currentResource);
                         } else {
                             // this is a file
-                            m_cms.deleteResource(currentResource);
+                            m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                         }
                         // update the report
                         report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);

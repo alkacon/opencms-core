@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package com.opencms.file;
 import org.opencms.loader.CmsPointerLoader;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -141,8 +142,8 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void deleteResource(CmsObject cms, String resourcename) throws CmsException {
-        super.deleteResource(cms, resourcename);
+    public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
+        super.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/22 11:29:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/07/22 11:29:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/22 17:13:33 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -73,8 +73,8 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     /** The shared lock dispatcher instance */
     private static CmsLockDispatcher sharedInstance;
 
-    /** A map holding all locked resources */
-    private Map m_lockedResources;
+    /** A map holding the CmsLocks of the resources */
+    private Map m_locks;
 
     /**
      * Default constructor.<p>
@@ -84,7 +84,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     private CmsLockDispatcher() {
         super();
 
-        m_lockedResources = Collections.synchronizedMap(new HashMap());
+        m_locks = Collections.synchronizedMap(new HashMap());
 
         // add this class as an event listener to the Cms
         A_OpenCms.addCmsEventListener(this);
@@ -114,7 +114,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      */
     public CmsLock addResource(String resourcename, CmsUUID userId, int projectId, int hierachy) {
         CmsLock newLock = new CmsLock(resourcename, userId, projectId, hierachy);
-        m_lockedResources.put(resourcename, newLock);
+        m_locks.put(resourcename, newLock);
 
         return newLock;
     }
@@ -151,19 +151,19 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // resource cannot be locked in the online project
             lock = CmsLock.getNullLock();
-        } else if (m_lockedResources.containsKey(resourcename)) {
+        } else if (m_locks.containsKey(resourcename)) {
             // try to find an existing lock for the resource
-            lock = (CmsLock) m_lockedResources.get(resourcename);
+            lock = (CmsLock) m_locks.get(resourcename);
         } else {
             // check if a parent folder is locked 
-            i = m_lockedResources.keySet().iterator();
+            i = m_locks.keySet().iterator();
 
             while (i.hasNext()) {
                 lockedPath = (String) i.next();
 
                 if (resourcename.startsWith(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                     // create a new indirect lock if a locked parent folder was found
-                    parentLock = (CmsLock) m_lockedResources.get(lockedPath);
+                    parentLock = (CmsLock) m_locks.get(lockedPath);
                     lock = addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_HIERARCHY_INDIRECT_LOCKED);
                     break;
                 }
@@ -189,7 +189,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         String currentPath = null;
         int count = 0;
 
-        m_lockedResources.clear();
+        m_locks.clear();
 
         try {
             lockedResources = cms.readLockedFileHeaders();
@@ -239,11 +239,11 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         String lockedPath = null;
         Iterator i = null;
 
-        m_lockedResources.remove(resourcename);
+        m_locks.remove(resourcename);
 
         if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             // remove also all locked sub resources in case of a folder
-            i = m_lockedResources.keySet().iterator();
+            i = m_locks.keySet().iterator();
             while (i.hasNext()) {
                 lockedPath = (String) i.next();
 
@@ -274,10 +274,10 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             return directLockedSubResources;
         }
 
-        i = m_lockedResources.keySet().iterator();
+        i = m_locks.keySet().iterator();
         while (i.hasNext()) {
             lockedPath = (String) i.next();
-            lock = (CmsLock) m_lockedResources.get(lockedPath);
+            lock = (CmsLock) m_locks.get(lockedPath);
 
             if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                 if (lock.getHierarchy() == CmsLock.C_HIERARCHY_DIRECT_LOCKED) {
@@ -295,11 +295,11 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param projectId the ID of the project where the resources have been locked
      */
     public void removeResourcesInProject(int projectId) {
-        Iterator i = m_lockedResources.keySet().iterator();
+        Iterator i = m_locks.keySet().iterator();
         CmsLock currentLock = null;
 
         while (i.hasNext()) {
-            currentLock = (CmsLock) m_lockedResources.get(i.next());
+            currentLock = (CmsLock) m_locks.get(i.next());
 
             if (currentLock.getProjectId() == projectId) {
                 // iterators are fail-fast!
@@ -315,7 +315,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      */
     public String toString() {
         // bring the list of locked resources into a human readable order first
-        List lockedResources = (List) new ArrayList(m_lockedResources.keySet());
+        List lockedResources = (List) new ArrayList(m_locks.keySet());
         Collections.sort(lockedResources);
         Iterator i = lockedResources.iterator();
         StringBuffer buf = new StringBuffer();
@@ -326,7 +326,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
 
         while (i.hasNext()) {
             lockedPath = (String) i.next();
-            currentLock = (CmsLock) m_lockedResources.get(lockedPath);
+            currentLock = (CmsLock) m_locks.get(lockedPath);
             buf.append(currentLock.getResourceName());
             buf.append(":");
             buf.append(currentLock.getHierarchy());

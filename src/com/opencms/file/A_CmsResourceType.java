@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/22 13:01:23 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/22 17:13:33 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -93,7 +93,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException {
         // cms.doMoveResource(resourcename, destination);
         cms.copyResource(resourcename, destination, true, true);
-        cms.deleteResource(resourcename);
+        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
     }
 
     /**
@@ -102,14 +102,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void renameResource(CmsObject cms, String resourcename, String destination) throws CmsException {
         // cms.doRenameResource(resourcename, destination);
         cms.copyResource(resourcename, destination, true, true);
-        cms.deleteResource(resourcename);
+        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void deleteResource(CmsObject cms, String resourcename) throws CmsException {
-        cms.doDeleteFile(resourcename);
+    public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
+        cms.doDeleteFile(resourcename, deleteOption);
     }
 
     /**
