@@ -2,8 +2,8 @@ package com.opencms.examples.news;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/11/27 12:57:47 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import com.opencms.util.*;
+import com.opencms.workplace.*;
 
 import java.util.*;
 
@@ -60,7 +61,7 @@ import javax.servlet.http.*;
  *             with the newer classes.  
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.15 $ $Date: 2000/11/27 12:57:47 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {

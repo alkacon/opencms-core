@@ -2,8 +2,8 @@ package com.opencms.examples.news;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsContentFile.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/11/27 12:57:47 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import org.xml.sax.*;
  *             with the newer classes.  
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.8 $ $Date: 2000/11/27 12:57:47 $
  */
  public class CmsNewsContentFile extends A_CmsXmlContent implements I_CmsNewsConstants, I_CmsXmlContent {
 
@@ -339,4 +339,4 @@ import org.xml.sax.*;
 			setData(C_NEWS_XML_TEXT, newDatablock);        
 		}            
 	}
-}  
+}
