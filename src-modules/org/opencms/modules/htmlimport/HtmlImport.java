@@ -151,26 +151,30 @@ public class HtmlImport {
                            
         // store all member variables
         m_cms = cms;
-        m_inputDir=inputDir;
-        
+        m_inputDir = inputDir.trim();
+
         // cut of a trailing '/' or '\'
         if (m_inputDir.endsWith("/") || m_inputDir.endsWith("\\")) {
-            m_inputDir = m_inputDir.substring(0,m_inputDir.length()-1);
+            m_inputDir = m_inputDir.substring(0, m_inputDir.length() - 1);
         }
-        m_destinationDir = destinationDir;     
-        m_imageGallery = C_IMAGEGALLERIES + imageGallery+"/";
-        m_linkGallery = C_LINKGALLERIES + linkGallery+"/";
-        m_downloadGallery = C_DOWNLOADGALLERIES + downloadGallery+"/";
-        m_template = template;    
-        m_encoding=encoding;
-     
-        
+
+        m_destinationDir = destinationDir.trim();
+        if (!m_destinationDir.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            m_destinationDir += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
+
+        m_imageGallery = C_IMAGEGALLERIES + imageGallery.trim() + "/";
+        m_linkGallery = C_LINKGALLERIES + linkGallery.trim() + "/";
+        m_downloadGallery = C_DOWNLOADGALLERIES + downloadGallery.trim() + "/";
+        m_template = template;
+        m_encoding = encoding;
+
         // create all other required member objects
-        m_fileIndex = new HashMap();          
+        m_fileIndex = new HashMap();
         m_externalLinks = new HashSet();
         m_imageInfo = new HashMap();
         m_extensions = cms.readFileExtensions();
-        m_htmlConverter = new HtmlConverter(this, xmlMode);            
+        m_htmlConverter = new HtmlConverter(this, xmlMode);
         m_baseUrl = null;
         try {
             m_baseUrl = new URL("file://");
@@ -804,6 +808,7 @@ public class HtmlImport {
             parsedHtml=substitute(parsedHtml, "{subst}", "&#");
             
         } catch (Exception e) {
+            e.printStackTrace(System.err);
             throw new CmsException(e.getMessage());
         }
         return parsedHtml;
@@ -868,24 +873,24 @@ public class HtmlImport {
      * @param link link to the reafl filesystem
      * @return string containing absulute link into the OpenCms VFS
      */
-    public String translateLink(String link) {        
-        String translatedLink;
-        translatedLink=(String)m_fileIndex.get(link.replace('\\', '/'));
-        if (translatedLink==null) {
-            
+    public String translateLink(String link) {
+        String translatedLink = null;
+        translatedLink = (String) m_fileIndex.get(link.replace('\\', '/'));
+        
+        if (translatedLink == null) {
             // its an anchor link, so copy use it
-            if (link.startsWith("#")) {    
-                translatedLink=link;
-               
-            } else {
-                // create a 'faked' link into the VFS. Original link was directing to a missing
-                // page, so let the link so to the same page inside of OpenCms.
-                String relativeFSName = link.substring(m_inputDir.length()+1);
-                translatedLink=m_destinationDir+relativeFSName;             
-              
+            if (link.startsWith("#")) {
+                translatedLink = link;
+
+            } else if (link.length() >= m_inputDir.length() + 1) {
+                // create a 'faked' link into the VFS. Original link was
+                // directing to a missing page, so let the link so to the
+                // same page inside of OpenCms.
+                String relativeFSName = link.substring(m_inputDir.length() + 1);
+                translatedLink = m_destinationDir + relativeFSName;
             }
-                    
         }
+
         return translatedLink;
     }
 

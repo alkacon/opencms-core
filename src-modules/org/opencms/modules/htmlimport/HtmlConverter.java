@@ -31,6 +31,7 @@
 
 package org.opencms.modules.htmlimport;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsStringSubstitution;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -128,7 +129,11 @@ public class HtmlConverter {
         m_tidy.setTidyMark(false);
         m_tidy.setShowWarnings(false);
         m_tidy.setQuiet(true);
-        m_tidy.setXmlTags(xmlMode);
+        
+        if (xmlMode) {
+            m_tidy.setXmlTags(xmlMode);
+            m_tidy.setXmlSpace(true);
+        }
 
         initialiseTags();
         m_htmlImport = htmlImport;
@@ -179,7 +184,10 @@ public class HtmlConverter {
         //outString = this.cleanOutput(outString);
 
         try {
-            output.write(new String(m_tempString));
+            String content = m_tempString.toString(); 
+            content = CmsStringSubstitution.substitute(content, "<br></br>", "<br>");
+            content = CmsStringSubstitution.substitutePerl(content, "</a>(\\w+)", "</a> $1", "g");
+            output.write(content);
             output.close();
         } catch (IOException e) {
             System.err.println("Conversion error: " + e.toString());
@@ -398,17 +406,24 @@ public class HtmlConverter {
                                 anchor = value.substring(value.indexOf("#"), value.length());
                             }
                             // get the new link into the VFS
-                            value = m_htmlImport.getAbsoluteUri(value, m_filename.substring(0, m_filename.lastIndexOf("/") + 1));
-                            value = m_htmlImport.translateLink(value);
-                            // now add the required link tags. only do this if
-                            // its not an anchor
-                            // link on the same page
-                            if (!value.startsWith("#")) {
-                                // add an anchor link if there was one in the
-                                // oringinal
-                                if (anchor.length() > 0) {
-                                    value += anchor;
+                            String internalUri = m_htmlImport.getAbsoluteUri(value, m_filename.substring(0, m_filename.lastIndexOf("/") + 1));
+                            internalUri = m_htmlImport.translateLink(internalUri);
+                            
+                            if (internalUri != null) {
+                                // now add the required link tags. only do this
+                                // if its not an anchor link on the same page
+                                if (!value.startsWith("#")) {
+                                    // add an anchor link if there was one in the oringinal
+                                    if (anchor.length() > 0) {
+                                        internalUri += anchor;
+                                    }
+                                    value = "]]><LINK><![CDATA[" + internalUri + "]]></LINK><![CDATA[";
                                 }
+                            } else {
+                                // as it is is not possible to translate the relative link with the
+                                // given destination directory into into a valid VFS path,
+                                // the URI is left as is here
+                                System.err.println("Warning: href to '" + value + "' outside the input directory found in " + m_filename);
                                 value = "]]><LINK><![CDATA[" + value + "]]></LINK><![CDATA[";
                             }
                         }
