@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/13 17:44:21 $
- * Version: $Revision: 1.424 $
+ * Date   : $Date: 2002/12/13 17:47:01 $
+ * Version: $Revision: 1.425 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,9 @@ OpenCms 5.0 (next release)
 * Fixed template selection issue when creating a new page
 * Fixed issue with response.setContentType() in JSP pages
 - WYSIWYG editor now tries to preserve the HTML source formatting
+- WYSIWYS editor now uses the "script save" variation of the control,
+  so it sould not longer be neccessary to change IE security settings for this editor
+  Note: it is still required for the LEdit text editor
 - Changed behaviour for deleted files that reside in a folder that is locked:
   Now the file is also shifted to the current project where the lock is applied,
   old behaviour was to stay in the project where it was deleted in
