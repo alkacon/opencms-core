@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/01 16:44:53 $
- * Version: $Revision: 1.187 $
+ * Date   : $Date: 2003/09/02 12:38:13 $
+ * Version: $Revision: 1.188 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.187 $ $Date: 2003/09/01 16:44:53 $
+ * @version $Revision: 1.188 $ $Date: 2003/09/02 12:38:13 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1090,10 +1090,9 @@ public class CmsDriverManager extends Object {
             return;
         }
 
-
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-        
+
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1102,38 +1101,34 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
-
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink = true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount()>1) {
-                    copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount() > 1) {
+                    copyAsLink = true;
                 }
             }
         }
 
-
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
-        if (!isAdmin(context) 
-            && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID
-                || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) { 
+        if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        
+
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         newResourceProps = readProperties(context, source, null, false);
-        
+
         // create a copy of the source file in the destination parent folder      
         if (copyAsLink) {
             newResource = createVfsLink(context, destination, source, newResourceProps, false);
@@ -1150,21 +1145,26 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-                        
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
-            
-            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
-        
-        if (lockCopy) {
+
+            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
+
+            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
+
+            if (lockCopy) {
                 lockResource(context, destination);
-        }
+            }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", newResource)));
+
+        List modifiedResources = (List) new ArrayList();
+        modifiedResources.add(sourceFile);
+        modifiedResources.add(newResource);
+        modifiedResources.add(destinationFolder);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+
     }
 
     /**
@@ -1249,7 +1249,12 @@ public class CmsDriverManager extends Object {
         m_resourceListCache.clear();
         m_accessCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", newResource)));
+        List modifiedResources = (List) new ArrayList();
+        modifiedResources.add(sourceFolder);
+        modifiedResources.add(newResource);
+        modifiedResources.add(destinationFolder);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+        
     }
 
     /**
@@ -4425,29 +4430,29 @@ public class CmsDriverManager extends Object {
         CmsLock exclusiveLock = null;
 
         if (oldLock.isNullLock()) {
-            throw new CmsLockException( "Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
+            throw new CmsLockException("Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
         }
 
-            // stealing a lock: checking permissions will throw an exception coz the
-            // resource is still locked for the other user. thus, the resource is unlocked
-            // before the permissions of the new user are checked. if the new user 
-            // has insufficient permissions, the previous lock is restored.
+        // stealing a lock: checking permissions will throw an exception coz the
+        // resource is still locked for the other user. thus, the resource is unlocked
+        // before the permissions of the new user are checked. if the new user 
+        // has insufficient permissions, the previous lock is restored.
 
-            // save the lock of the resource's exclusive locked sibling
-            exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
-            // save the lock of the resource itself
-            oldLock = getLock(context, resourcename);
+        // save the lock of the resource's exclusive locked sibling
+        exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
+        // save the lock of the resource itself
+        oldLock = getLock(context, resourcename);
 
         // remove the lock
-        m_lockDispatcher.removeResource(this, context, resourcename, true);  
+        m_lockDispatcher.removeResource(this, context, resourcename, true);
 
         try {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
         } catch (CmsSecurityException e) {
-                // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
-                // a new user with insufficient permissions on the resource
-                m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
+            // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
+            // a new user with insufficient permissions on the resource
+            m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
 
             throw e;
         }
@@ -4460,6 +4465,8 @@ public class CmsDriverManager extends Object {
         m_lockDispatcher.addResource(this, context, resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId());
 
         clearResourceCache();
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -4645,7 +4652,12 @@ public class CmsDriverManager extends Object {
         // lock the new resource
         lockResource(context,destinationName);
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", source)));
+        /*
+        List modifiedResources = (List) new ArrayList();
+        modifiedResources.add(source);
+        modifiedResources.add(destination);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+        */
     }
     
     
@@ -7138,23 +7150,23 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void renameResource(CmsRequestContext context, String oldname, String newname) throws CmsException {
-        
-        String destination = oldname.substring(0, oldname.lastIndexOf("/")+1);
+        String destination = oldname.substring(0, oldname.lastIndexOf("/") + 1);
         this.moveResource(context, oldname, destination + newname);
+
         /*
         // read the old file
         CmsResource resource = readFileHeader(context, oldname);
-
+        
         // checks, if the newname is valid, if not it throws a exception
         validFilename(newname);
-
+        
         // check if the user has write access to the file
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-
+        
         m_vfsDriver.renameResource(context.currentUser(), context.currentProject(), resource, newname);
         clearResourceCache();
         */
-        }
+    }
 
     /**
      * Replaces the content and properties of an existing resource.<p>
@@ -7718,8 +7730,8 @@ public class CmsDriverManager extends Object {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
         clearResourceCache();
         
-        CmsResource resource = readFileHeader(context, resourcename);
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        //CmsResource resource = readFileHeader(context, resourcename);
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
         return oldLock;
     }
