@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/05/03 10:21:33 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.20 $ $Date: 2000/05/02 10:03:34 $
+  * @version $Revision: 1.21 $ $Date: 2000/05/03 10:21:33 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -130,7 +130,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
             // check if the resource is a file or a folder
             if (file.isFile()) {            
                 // its a file, so delete it
-                deleteFile(cms,file,false);
+                deleteFile(cms,file);
                 
                 session.removeValue(C_PARA_DELETE);  
                 session.removeValue(C_PARA_FILE);
@@ -154,14 +154,14 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                
                 // unlock the folder, otherwise the subflders and files could not be
                 // deleted.
-                cms.unlockResource(filename);
+                //cms.unlockResource(filename);
              
                 // now delete all files in the subfolders
                 for (int i=0;i<allFiles.size();i++) {
                     CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
                     if (newfile.getState() != C_STATE_DELETED) {
-                        cms.lockResource(newfile.getAbsolutePath());
-                        deleteFile(cms,newfile,true);
+                        //cms.lockResource(newfile.getAbsolutePath());
+                        deleteFile(cms,newfile);
                     }
                 }    
         
@@ -169,14 +169,18 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 for (int i=0;i<allFolders.size();i++) {
                     CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
                     if (folder.getState() != C_STATE_DELETED) {
-                        cms.lockResource(folder.getAbsolutePath());
+                        //cms.lockResource(folder.getAbsolutePath());
                         cms.deleteFolder(folder.getAbsolutePath());
                     }
                 }
          
                 // finally delete the selected folder
-                cms.lockResource(filename);
+                //cms.lockResource(filename);
                 cms.deleteFolder(filename);
+                try {
+                    cms.deleteFolder(C_CONTENTBODYPATH+filename.substring(1));
+                } catch (CmsException e) {
+                }
                 
                 session.removeValue(C_PARA_DELETE);  
                 session.removeValue(C_PARA_FILE);
@@ -256,10 +260,9 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * If the file is a news file, the content and folder will be deleted, too.
      * @param cms The CmsObject.
      * @param file The file to be deleted.
-     * @param lock Flag showing if the resource has to locked.
      * @exception Throws CmsException if something goes wrong.
      */
-    private void deleteFile (A_CmsObject cms, A_CmsResource file,boolean lock) 
+    private void deleteFile (A_CmsObject cms, A_CmsResource file) 
         throws CmsException {
         
         boolean hDelete = true;
@@ -273,12 +276,11 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				if (hbodyPath.equals(bodyPath)){
                    // this method was called during the process of deleting a folder,
                    // so lock the content file
-                   if (lock) {
-                        cms.lockResource(hbodyPath);
-                    }
-				    cms.deleteFile(hbodyPath);
-               				}
+      
+         		    cms.deleteFile(hbodyPath);
+               	   }
     		}catch (CmsException e){
+       
 	    	    //TODO: ErrorHandling
 		    }
         //

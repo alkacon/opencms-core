@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/05/03 10:21:33 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.19 $ $Date: 2000/05/02 10:03:34 $
+ * @version $Revision: 1.20 $ $Date: 2000/05/03 10:21:33 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -160,10 +160,8 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     
                     String parent=file.getParent();
                     try {     
-                    
-                        // first creatre the new folder
-                        cms.unlockResource(file.getAbsolutePath());
-                        cms.copyFolder(filename,parent+newFile+"/");
+                       // first creatre the new folder
+                       cms.copyFolder(filename,parent+newFile+"/");
                                     
                         // then copy all folders
                         for (int i=0;i<allFolders.size();i++) {                            
@@ -179,10 +177,9 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             CmsFile newfile=(CmsFile)allFiles.elementAt(i);
                             if (newfile.getState() != C_STATE_DELETED) {
                                 String newname=parent+newFile+"/"+newfile.getAbsolutePath().substring(file.getAbsolutePath().length());                                                                       
-                                cms.lockResource(newfile.getAbsolutePath());
-                                // cms.moveFile(newfile.getAbsolutePath(),newname);
-                                moveFile(cms,newfile,newname,"true",true);          
-                                cms.unlockResource(newname);
+                      
+                                moveFile(cms,newfile,newname,"true");          
+
                             }
                         }
                         
@@ -190,15 +187,24 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         for (int i=0;i<allFolders.size();i++) {
                             CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
                             if (folder.getState() != C_STATE_DELETED) {
-                                cms.lockResource(folder.getAbsolutePath());
+                       
                                 cms.deleteFolder(folder.getAbsolutePath());
                             }
                         }
                         
                         // as the last step, delete the original folder
-                         cms.lockResource(filename);
-                         cms.deleteFolder(filename);        
-                         cms.lockResource(parent+newFile+"/");
+             
+
+                         cms.deleteFolder(filename);  
+                         try {
+                            cms.deleteFolder(C_CONTENTBODYPATH+filename.substring(1));
+                         } catch (CmsException e) {
+                         }
+               
+                         try {
+                            cms.lockResource(C_CONTENTBODYPATH+(parent+newFile+"/").substring(1));
+                         } catch (CmsException e) {
+                         }
                         
                     } catch (CmsException ex) {
                         // something went wrong, so remove all session parameters
@@ -405,20 +411,17 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
       * @param cms The CmsObject.
       * @param file The file to be moved.
       * @param newFolder The folder the file has to be moved to.
-      * @param lock Flag showing if the resource has to locked.
       * @param flags Flags that indicate if the access flags have to be set to the default values.
       */
-     private void moveFile(A_CmsObject cms, CmsFile file, String newFolder, String flags,
-                           boolean lock) 
+     private void moveFile(A_CmsObject cms, CmsFile file, String newFolder, String flags)
+                       
         throws CmsException {
          if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 		    String bodyPath = getBodyPath(cms, file);
     	    int help = C_CONTENTBODYPATH.lastIndexOf("/");
 			String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
 			if (hbodyPath.equals(bodyPath)){
-                if (lock) {
-                    cms.lockResource((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath());
-                }
+         
                 String parent=newFolder.substring(0,newFolder.lastIndexOf("/")+1);
 				checkFolders(cms,parent);
 				cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder);
@@ -439,10 +442,9 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				 
 				 	cms.writeFile(newfile);
                 }
-                if (lock) {
-                    cms.unlockResource((C_CONTENTBODYPATH.substring(0,help))+newFolder);
-                }
-            changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+             //changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+			
+            changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder);
 			}
 				
 		}

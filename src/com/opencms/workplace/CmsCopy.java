@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/05/02 16:12:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/05/03 10:21:33 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.24 $ $Date: 2000/05/02 16:12:10 $
+ * @version $Revision: 1.25 $ $Date: 2000/05/03 10:21:33 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -214,6 +214,14 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);
                         }
                     }    
+                   
+                    // finally lock everything
+                    cms.lockResource(newFolder+newFile+"/");
+                    try {
+                        cms.lockResource(C_CONTENTBODYPATH+(newFolder+newFile+"/").substring(1));
+                    } catch (CmsException e) {
+                    }
+                    
                 	// everything is done, so remove all session parameters		
                     session.removeValue(C_PARA_FILE);
                     session.removeValue(C_PARA_NAME);
@@ -490,7 +498,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
             }         
             cms.chmod(filename,accessFlags.intValue());
         }
-        cms.unlockResource(filename);                    
+        //cms.unlockResource(filename);                    
     }
     
     
@@ -528,7 +536,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			} else {
 			    // unlock the template file, to prevent access errors, because
 				// new template file will automatically be locked to the user
-				cms.unlockResource(file.getAbsolutePath());
+				//cms.unlockResource(file.getAbsolutePath());
 		    }
 		}
 	    CmsFile newfile=cms.readFile(newFolder,newFile);    
