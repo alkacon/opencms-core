@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2004/04/02 14:35:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.file;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsPropertydefinition implements Cloneable, Comparable {
 
@@ -49,20 +49,20 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
     /** The name of this property definition */
     private String m_name = null;
 
-    /** The resource type for this property definition */
-    private int m_resourceType;
+    /** The mapping type for this property definition */
+    private int m_mappingType;
 
     /**
      * Creates a new CmsPropertydefinition.<p>
      *
      * @param id the id of the property definition
      * @param name the name of the property definition
-     * @param resourcetype the type of the resource for this property definition
+     * @param mappingtype the type of the resource for this property definition
      */
-    public CmsPropertydefinition(int id, String name, int resourcetype) {
+    public CmsPropertydefinition(int id, String name, int mappingtype) {
         m_id = id;
         m_name = name;
-        m_resourceType = resourcetype;
+        m_mappingType = mappingtype;
 
     }
     
@@ -72,7 +72,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @return a clone of this instance
      */   
     public Object clone() {
-        return new CmsPropertydefinition(m_id, m_name, m_resourceType);
+        return new CmsPropertydefinition(m_id, m_name, m_mappingType);
     }
     
     /**
@@ -120,7 +120,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @return the resource type of this property definition
      */
     public int getType() {
-        return m_resourceType;
+        return m_mappingType;
     }
     
     /**

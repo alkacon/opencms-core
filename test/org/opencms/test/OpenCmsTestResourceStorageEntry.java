@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/06/04 09:06:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,13 @@
  
 package org.opencms.test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
@@ -46,7 +49,7 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class OpenCmsTestResourceStorageEntry {
     
@@ -163,7 +166,15 @@ public class OpenCmsTestResourceStorageEntry {
         } else {
             m_contents = null;
         }
-        m_properties = cms.readPropertyObjects(resourceName, false);
+        
+        m_properties = new ArrayList();         
+        List properties =  cms.readPropertyObjects(resourceName, false);    
+        Iterator i = properties.iterator();   
+        while (i.hasNext()) {
+            CmsProperty prop = (CmsProperty)i.next();
+            m_properties.add(prop.clone());
+        }
+        
         m_accessControlList = cms.getAccessControlList(resourceName);
         m_accessControlEntries = cms.getAccessControlEntries(resourceName);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/07 15:49:15 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class CmsObject {
 
@@ -649,16 +649,15 @@ public class CmsObject {
     }
 
     /**
-     * Creates the property-definition for a resource type.
+     * Creates a property-definition.<p>
      *
      * @param name the name of the property-definition to overwrite
-     * @param resourcetype the name of the resource-type for the property-definition
      * @return the new property definition
      * 
      * @throws CmsException if operation was not successful.
      */
-    public CmsPropertydefinition createPropertydefinition(String name, int resourcetype) throws CmsException {
-        return (m_driverManager.createPropertydefinition(m_context, name, resourcetype));
+    public CmsPropertydefinition createPropertydefinition(String name) throws CmsException {
+        return (m_driverManager.createPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
     }
 
     /**
@@ -902,15 +901,14 @@ public class CmsObject {
     }
 
     /**
-     * Deletes the property-definition for a resource type.<p>
+     * Deletes the property-definition for a resource.<p>
      *
      * @param name the name of the property-definition to delete
-     * @param resourcetype the name of the resource-type for the property-definition.
      *
      * @throws CmsException if something goes wrong
      */
-    public void deletePropertydefinition(String name, int resourcetype) throws CmsException {
-        m_driverManager.deletePropertydefinition(m_context, name, resourcetype);
+    public void deletePropertydefinition(String name) throws CmsException {
+        m_driverManager.deletePropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
     }
 
     /**
@@ -2505,29 +2503,15 @@ public class CmsObject {
     }
 
     /**
-     * Reads all property definitions for the given resource type by id.<p>
+     * Reads all property definitions.<p>
      *
-     * @param resourceType the resource type to read the property-definitions for.<p>
      *
-     * @return a Vector with the property defenitions for the resource type (may be empty)
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readAllPropertydefinitions(int resourceType) throws CmsException {
-        return m_driverManager.readAllPropertydefinitions(m_context, resourceType);
-    }
-
-    /**
-     * Reads all property definitions for the given resource type by name.<p>
-     *
-     * @param resourceType the resource type to read the property-definitions for.<p>
-     *
-     * @return a Vector with the property defenitions for the resource type (may be empty)
+     * @return a List with the property defenitions (may be empty)
      *
      * @throws CmsException if something goes wrong
      */
-    public Vector readAllPropertydefinitions(String resourceType) throws CmsException {
-        return m_driverManager.readAllPropertydefinitions(m_context, resourceType);
+    public List readAllPropertydefinitions() throws CmsException {
+        return m_driverManager.readAllPropertydefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
     }
 
     /**
@@ -2998,16 +2982,15 @@ public class CmsObject {
     }
 
     /**
-     * Reads the property-definition for the resource type.
+     * Reads the property-definition for a resource.<p>
      *
      * @param name the name of the property-definition to read.
-     * @param resourcetype the name of the resource type for the property-definition.
      * @return the property-definition.
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsPropertydefinition readPropertydefinition(String name, int resourcetype) throws CmsException {
-        return (m_driverManager.readPropertydefinition(m_context, name, resourcetype));
+    public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
+        return (m_driverManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
     }
 
     /**

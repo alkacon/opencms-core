@@ -4749,7 +4749,7 @@
             <properties/>
             <accesscontrol/>
         </file>
-        <file>
+        <!-- <file>
             <destination>system/workplace/administration/properties</destination>
             <type>folder</type>
             <uuidresource>203df5f2-c0f9-11d7-8d80-80884c2772a5</uuidresource>
@@ -4810,7 +4810,7 @@
             <flags>0</flags>
             <properties/>
             <accesscontrol/>
-        </file>
+        </file> -->
 		<file>
 			<destination>system/workplace/administration/reinitworkplace</destination>
 			<type>folder</type>

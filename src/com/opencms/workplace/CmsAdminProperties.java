@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/06/09 15:53:29 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.34 $ $Date: 2004/06/09 15:53:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -117,7 +117,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
             }
             else {
                 try {
-                    cms.createPropertydefinition(name, cms.getResourceTypeId(resTypeName));
+                    cms.createPropertydefinition(name);
                     templateSelector = "";
                 }
                 catch(CmsException e) {
@@ -137,7 +137,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
                 if("true".equals(parameters.get("sure"))) {
 
                     // the user is sure to delete the property definition
-                    cms.deletePropertydefinition(propDefName, cms.getResourceTypeId(resTypeName));
+                    cms.deletePropertydefinition(propDefName);
                     templateSelector = "";
                 }
                 else {
@@ -205,15 +205,16 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
             I_CmsResourceType resType) throws CmsException {
         StringBuffer output = new StringBuffer();
         CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
-        Vector properties = cms.readAllPropertydefinitions(resType.getResourceTypeName());
+        List properties = cms.readAllPropertydefinitions();
         templateFile.setData(C_TAG_RESTYPE, resType.getResourceTypeName());
 
         templateFile.setData(C_TAG_RESTYPE + "_esc",
                 CmsEncoder.escapeWBlanks(resType.getResourceTypeName(),
                 cms.getRequestContext().getEncoding()));
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
-        for(int z = 0;z < properties.size();z++) {
-            CmsPropertydefinition propdef = (CmsPropertydefinition)properties.elementAt(z);
+        Iterator i = properties.iterator();
+        while (i.hasNext()) {
+            CmsPropertydefinition propdef = (CmsPropertydefinition)i.next();
             templateFile.setData("PROPERTY_NAME", propdef.getName());
             templateFile.setData("PROPERTY_NAME_ESC", CmsEncoder.escapeWBlanks(propdef.getName(),
                 cms.getRequestContext().getEncoding()));

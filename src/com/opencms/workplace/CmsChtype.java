@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/05/26 09:37:58 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2004/05/26 09:37:58 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/09 15:53:29 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -134,7 +134,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
                 } catch (CmsException e) {
                     // Propertydefinition does not exist, try to create it
                     if (e.getType() == CmsException.C_NOT_FOUND) {
-                        cms.createPropertydefinition(curKey, cms.readFileHeader(filename).getType());
+                        cms.createPropertydefinition(curKey);
                         cms.writeProperty(filename, curKey, curValue);
                     } else {
                         throw e;

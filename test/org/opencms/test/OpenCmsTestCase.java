@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/07 15:51:30 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -76,7 +77,7 @@ import org.opencms.util.CmsUUID;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.3.5
  */
@@ -87,6 +88,9 @@ public class OpenCmsTestCase extends TestCase {
     
     /** DB product used for the tests */
     public static final String C_DB_PRODUCT = "mysql";
+    
+    /** The internal storages */
+    public static HashMap m_resourceStorages;
 
     /** The path to the default setup data files */
     private static String m_setupDataPath;
@@ -96,118 +100,6 @@ public class OpenCmsTestCase extends TestCase {
     
     /** The path to the additional test data files */
     private static String m_testDataPath;
-        
-    /** The current resource storage */
-    public OpenCmsTestResourceStorage m_currentResourceStrorage;
-    
-    /** The internal storages */
-    public static HashMap m_resourceStorages;
-    
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */    
-    public OpenCmsTestCase(String arg0) {
-        super(arg0);
-        if (m_resourceStorages == null) {
-            m_resourceStorages = new HashMap();
-        }       
-    }
-    
-    
-    /**
-     * Removes the initialized OpenCms database and all 
-     * temporary files created during the test run.<p>
-     */
-    public static void removeOpenCms() {
-        
-        // output a message
-        m_shell.printPrompt(); 
-        System.out.println("----- Test cases finished -----");        
-
-        // exit the shell
-        m_shell.exit();
-        
-        // remove the database
-        removeDatabase();
-
-        // get the name of the folder for the backup configuration files
-        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
-        
-        // remove the backup configuration files
-        CmsStaticExportManager.purgeDirectory(configBackupDir);        
-    }
-    
-    /**
-     * Sets up a complete OpenCms instance, creating the usual projects,
-     * and importing a default database.<p>
-     * 
-     * @param importFolder the folder to import in the "real" FS
-     * @param targetFolder the target folder of the import in the VFS
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
-     */
-    public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
-        // create a new database first
-        setupDatabase();
-        
-        // kill any old shell that might have remained from a previous test 
-        if (m_shell != null) {
-            try {
-                m_shell.exit();
-                m_shell = null;
-            } catch (Throwable t) {
-                // ignore
-            }
-        }
-        
-        // create a shell instance
-        m_shell = new CmsShell(
-            getTestDataPath() + "WEB-INF" + File.separator,
-            "${user}@${project}>", 
-            null);
-        
-        // open the test script 
-        File script;
-        FileInputStream stream = null;
-        CmsObject cms = null;
-        
-        try {
-            // start the shell with the base script
-            script = new File(getTestDataPath() + "scripts/script_base.txt");
-            stream = new FileInputStream(script);
-            m_shell.start(stream);
-            
-            // add the default folders by script
-            script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
-            stream = new FileInputStream(script);        
-            m_shell.start(stream); 
-            
-            // log in the Admin user and switch to the setup project
-            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-            cms.loginUser("Admin", "admin");
-            cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
-            
-            // import the "simpletest" files
-            importResources(cms, importFolder, targetFolder);                 
-            
-            // publish the current project by script
-            script = new File(getTestDataPath() + "scripts/script_publish.txt");
-            stream = new FileInputStream(script);        
-            m_shell.start(stream);      
-            
-            // switch to the "Offline" project
-            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-            cms.getRequestContext().setSiteRoot("/sites/default/");               
-            
-            // output a message 
-            System.out.println("----- Starting test cases -----");
-        } catch (Throwable t) {
-            fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));
-        }
-        // return the initialized cms context Object
-        return cms;
-    }
     
     /**
      * Check the setup DB for errors that might have occured.<p>
@@ -224,6 +116,35 @@ public class OpenCmsTestCase extends TestCase {
             fail((String)setupDb.getErrors().get(0));
         }                
     }
+    
+    
+    
+    /**
+     * Compares two lists of CmsProperty objects and creates a list of all properties which are
+     * not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of properies to exclude in the test or null
+     * @return string of non matching properties
+     * @throws CmsException if something goes wrong
+     */
+    private static String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            List storedProperties = storedResource.getProperties();
+            List properties = cms.readPropertyObjects(resourceName, false);
+            List unmatchedProperties;
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
+            if (unmatchedProperties.size() >0) {
+                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
+            }
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
+            if (unmatchedProperties.size() >0) {
+                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
+            } 
+            return noMatches;
+    }    
     
     /**
      * Tests database creation.<p>
@@ -424,6 +345,30 @@ public class OpenCmsTestCase extends TestCase {
         checkErrors(setupDb);
     }    
     
+    
+    /**
+     * Removes the initialized OpenCms database and all 
+     * temporary files created during the test run.<p>
+     */
+    public static void removeOpenCms() {
+        
+        // output a message
+        m_shell.printPrompt(); 
+        System.out.println("----- Test cases finished -----");        
+
+        // exit the shell
+        m_shell.exit();
+        
+        // remove the database
+        removeDatabase();
+
+        // get the name of the folder for the backup configuration files
+        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
+        
+        // remove the backup configuration files
+        CmsStaticExportManager.purgeDirectory(configBackupDir);        
+    }
+    
     /**
      * Creates a new OpenCms test database including the tables.<p>
      * 
@@ -442,159 +387,90 @@ public class OpenCmsTestCase extends TestCase {
         checkErrors(setupDb);
     }
     
-    
-    
     /**
-     * Compares two lists of CmsProperty objects and creates a list of all properties which are
-     * not included in a seperate exclude list.
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource the properties belong to
-     * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of properies to exclude in the test or null
-     * @return string of non matching properties
-     * @throws CmsException if something goes wrong
+     * Sets up a complete OpenCms instance, creating the usual projects,
+     * and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
-    private static String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
-        throws CmsException {
-            String noMatches = "";
-            List storedProperties = storedResource.getProperties();
-            List properties = cms.readPropertyObjects(resourceName, false);
-            List unmatchedProperties;
-            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
-            if (unmatchedProperties.size() >0) {
-                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
-            }
-            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
-            if (unmatchedProperties.size() >0) {
-                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
-            } 
-            return noMatches;
-    }    
-    
-    
-    /**
-     * Compares two access lists and creates a list of permission sets which are
-     * not matching and are not included in a seperate exclude list.
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource the properties belong to
-     * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of permission sets to exclude in the test or null
-     * @return string of non matching access list entries
-     * @throws CmsException if something goes wrong
-     */
-    private  String compareAccessLists(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
-        throws CmsException {
-            String noMatches = "";
-            CmsAccessControlList resList = cms.getAccessControlList(resourceName);
-            CmsAccessControlList storedList = storedResource.getAccessControlList();
-            List unmatchedList;
-            unmatchedList = compareList(resList, storedList, excludeList);
-            if (unmatchedList.size() > 0) {
-                noMatches += "[ACL differences "+unmatchedList.toString()+"]";   
-            }    
-            unmatchedList = compareList(storedList, resList, excludeList);
-            if (unmatchedList.size() > 0) {
-                noMatches += "[ACL differences "+unmatchedList.toString()+"]";   
-            }  
-            return noMatches;
-    } 
-    
-    /**
-     * Compares two vectors of access entries and creates a list of all access control entries which are
-     * not matching and are not included in a seperate exclude list.
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource the properties belong to
-     * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of ccess entries to exclude in the test or null   
-     * @return string of non matching access entries
-     * @throws CmsException if something goes wrong
-     */
-    private String compareAccessEntries(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
-        throws CmsException {
-            String noMatches = "";
-            Vector resAce = cms.getAccessControlEntries(resourceName);
-            Vector storedAce = storedResource.getAccessControlEntries();
-            List unmatchedAce;
-            unmatchedAce = compareAce(resAce, storedAce, excludeList);
-            if (unmatchedAce.size() > 0) {
-                noMatches += "[ACE missing "+unmatchedAce.toString()+"]";   
-            }    
-            unmatchedAce = compareAce(storedAce, resAce, excludeList);
-            if (unmatchedAce.size() > 0) {
-                noMatches += "[ACE missing "+unmatchedAce.toString()+"]";   
-            }  
-            return noMatches;
-    } 
-    
-    /**
-     * Compares two lists of permission sets.<p>
-     * @param source the source list to compare
-     * @param target  the destination list to compare
-     * @param exclude the exclude list
-     * @return list of non matching permission sets
-     */
-    private List compareList(CmsAccessControlList source, CmsAccessControlList target, List exclude) {
-        HashMap result = new HashMap();
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
+        // create a new database first
+        setupDatabase();
         
-        HashMap destinationMap = target.getPermissionMap(); 
-        HashMap sourceMap = source.getPermissionMap(); 
-        
-        Iterator i = sourceMap.keySet().iterator();
-        while (i.hasNext()) {
-            CmsUUID key = (CmsUUID)i.next();
-            CmsPermissionSet value = (CmsPermissionSet)sourceMap.get(key);
-            if (destinationMap.containsKey(key)) {
-                CmsPermissionSet destValue =   (CmsPermissionSet)destinationMap.get(key);  
-                if (!destValue.equals(value)) {
-                    result.put(key, key+" " + value + " <-> " + destValue);   
-                }
-            } else {
-                result.put(key, "missing "+key);
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
             }
         }
         
-        // finally match the result list with the exclude list
-        if (exclude != null) {
-            Iterator l = exclude.iterator();
-            while (l.hasNext()) {
-                CmsUUID excludeUUID = (CmsUUID) l.next();   
-                if (result.containsKey(excludeUUID)) {
-                    result.remove(excludeUUID);
-                }
-            }
-        }         
-        return new ArrayList(result.values()); 
+        // create a shell instance
+        m_shell = new CmsShell(
+            getTestDataPath() + "WEB-INF" + File.separator,
+            "${user}@${project}>", 
+            null);
+        
+        // open the test script 
+        File script;
+        FileInputStream stream = null;
+        CmsObject cms = null;
+        
+        try {
+            // start the shell with the base script
+            script = new File(getTestDataPath() + "scripts/script_base.txt");
+            stream = new FileInputStream(script);
+            m_shell.start(stream);
+            
+            // add the default folders by script
+            script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
+            stream = new FileInputStream(script);        
+            m_shell.start(stream); 
+            
+            // log in the Admin user and switch to the setup project
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            cms.loginUser("Admin", "admin");
+            cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
+            
+            // import the "simpletest" files
+            importResources(cms, importFolder, targetFolder);                 
+            
+            // publish the current project by script
+            script = new File(getTestDataPath() + "scripts/script_publish.txt");
+            stream = new FileInputStream(script);        
+            m_shell.start(stream);      
+            
+            // switch to the "Offline" project
+            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+            cms.getRequestContext().setSiteRoot("/sites/default/");               
+            
+            // output a message 
+            System.out.println("----- Starting test cases -----");
+        } catch (Throwable t) {
+            fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));
+        }
+        // return the initialized cms context Object
+        return cms;
     }
-    
+        
+    /** The current resource storage */
+    public OpenCmsTestResourceStorage m_currentResourceStrorage;
     
     /**
-     * Compares two vectors of access control entires.<p>
-     * @param source the source vector to compare
-     * @param target  the destination vector to compare
-     * @param exclude the exclude list
-     * @return list of non matching access control entires 
-     */
-    private List compareAce(Vector source, Vector target, List exclude) {
-        List result = new ArrayList();
-        Iterator i = source.iterator();
-        while (i.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();            
-            if (!target.contains(ace)) {
-                result.add(ace);
-            }
-        }
-        // finally match the result list with the exclude list
-        if (exclude != null) {
-            Iterator l = exclude.iterator();
-            while (l.hasNext()) {
-                CmsAccessControlEntry excludeAce = (CmsAccessControlEntry) l.next();   
-                if (result.contains(excludeAce)) {
-                    result.remove(excludeAce);
-                }
-            }
-        }      
-        return result;
-    }   
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */    
+    public OpenCmsTestCase(String arg0) {
+        super(arg0);
+        if (m_resourceStorages == null) {
+            m_resourceStorages = new HashMap();
+        }       
+    }
     
     /**
      * Compares an access control entry of a resource with a given access control entry.<p>
@@ -749,33 +625,6 @@ public class OpenCmsTestCase extends TestCase {
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
         }
-    }
-    
-    
-    /**
-     * Creates a map of all parent resources of a OpenCms resource.<p>
-     * The resource UUID is used as key, the full resource path is used as the value.
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to get the parent map from
-     * @return HashMap of parent resources
-     */
-    private Map getParents(CmsObject cms, String resourceName) {
-        HashMap parents = new HashMap();
-        List parentResources = new ArrayList();
-        try {
-            // get all parent folders of the current file
-            parentResources = cms.readPath(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            // ignore
-        }
-        Iterator k = parentResources.iterator();
-        while (k.hasNext()) {
-            // add the current folder to the map
-            CmsResource curRes = (CmsResource)k.next();
-            parents.put(curRes.getResourceId(), curRes.getRootPath());
-        }  
-        return parents;
     }
     
     
@@ -1178,6 +1027,7 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
+  
     
      /**
      * Compares the current properties of a resource with the stored values and a given, changed property.<p>
@@ -1270,6 +1120,48 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     } 
+   
+    /**
+     * Tests if a properetydefintion does exist.<p>
+     * 
+     * @param cms the CmsObject
+     * @param propertyDefinition the propertsdefinition
+     */
+    public void assertPropertydefinitionExist(CmsObject cms,  CmsPropertydefinition propertyDefinition) {
+        try {
+            CmsPropertydefinition prop = cms.readPropertydefinition(propertyDefinition.getName());
+            if (prop != null) {
+                if ((prop.getType() != propertyDefinition.getType()) && (!prop.getName().equals(propertyDefinition.getName()))) {
+                    fail("propertsdefinitions do not match: " + prop + " <-> " + propertyDefinition);
+                }                
+            } else {
+                fail("cannot read propertydefitnion" + propertyDefinition);  
+            }
+        } catch (CmsException e) {
+            fail("cannot read propertydefitnion" + propertyDefinition + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+
+    /**
+    * Tests the list the propertydefinitions are identical to a given list except one exlclude propertydefintion.<p>
+    * 
+    * @param cms the CmsObject
+    * @param propertyDefintions the list of propertydefintions 
+    * @param exclude the exclude propertydefinition
+    */
+   public void assertPropertydefinitions(CmsObject cms,  List propertyDefintions, CmsPropertydefinition exclude) {
+       try {
+           String noMatches = "";
+           List allPropertydefintions = cms.readAllPropertydefinitions();
+           noMatches += comparePropertydefintions(propertyDefintions, allPropertydefintions, exclude);
+           noMatches += comparePropertydefintions(allPropertydefintions, propertyDefintions, exclude);
+           if (noMatches.length()>0) {
+               fail("missig propertydefintions: "+noMatches);
+           }
+       } catch (CmsException e) {
+           fail("cannot read propertydefitnions "+CmsException.getStackTraceAsString(e));     
+       }
+   }
     
     
     /**
@@ -1545,6 +1437,154 @@ public class OpenCmsTestCase extends TestCase {
         }
     }
     
+    /**
+     * Compares two vectors of access entries and creates a list of all access control entries which are
+     * not matching and are not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of ccess entries to exclude in the test or null   
+     * @return string of non matching access entries
+     * @throws CmsException if something goes wrong
+     */
+    private String compareAccessEntries(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            Vector resAce = cms.getAccessControlEntries(resourceName);
+            Vector storedAce = storedResource.getAccessControlEntries();
+            List unmatchedAce;
+            unmatchedAce = compareAce(resAce, storedAce, excludeList);
+            if (unmatchedAce.size() > 0) {
+                noMatches += "[ACE missing "+unmatchedAce.toString()+"]";   
+            }    
+            unmatchedAce = compareAce(storedAce, resAce, excludeList);
+            if (unmatchedAce.size() > 0) {
+                noMatches += "[ACE missing "+unmatchedAce.toString()+"]";   
+            }  
+            return noMatches;
+    } 
+    
+    
+    /**
+     * Compares two access lists and creates a list of permission sets which are
+     * not matching and are not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of permission sets to exclude in the test or null
+     * @return string of non matching access list entries
+     * @throws CmsException if something goes wrong
+     */
+    private  String compareAccessLists(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            CmsAccessControlList resList = cms.getAccessControlList(resourceName);
+            CmsAccessControlList storedList = storedResource.getAccessControlList();
+            List unmatchedList;
+            unmatchedList = compareList(resList, storedList, excludeList);
+            if (unmatchedList.size() > 0) {
+                noMatches += "[ACL differences "+unmatchedList.toString()+"]";   
+            }    
+            unmatchedList = compareList(storedList, resList, excludeList);
+            if (unmatchedList.size() > 0) {
+                noMatches += "[ACL differences "+unmatchedList.toString()+"]";   
+            }  
+            return noMatches;
+    } 
+    
+    
+    /**
+     * Compares two vectors of access control entires.<p>
+     * @param source the source vector to compare
+     * @param target  the destination vector to compare
+     * @param exclude the exclude list
+     * @return list of non matching access control entires 
+     */
+    private List compareAce(Vector source, Vector target, List exclude) {
+        List result = new ArrayList();
+        Iterator i = source.iterator();
+        while (i.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();            
+            if (!target.contains(ace)) {
+                result.add(ace);
+            }
+        }
+        // finally match the result list with the exclude list
+        if (exclude != null) {
+            Iterator l = exclude.iterator();
+            while (l.hasNext()) {
+                CmsAccessControlEntry excludeAce = (CmsAccessControlEntry) l.next();   
+                if (result.contains(excludeAce)) {
+                    result.remove(excludeAce);
+                }
+            }
+        }      
+        return result;
+    }   
+    
+    /**
+     * Compares two lists of permission sets.<p>
+     * @param source the source list to compare
+     * @param target  the destination list to compare
+     * @param exclude the exclude list
+     * @return list of non matching permission sets
+     */
+    private List compareList(CmsAccessControlList source, CmsAccessControlList target, List exclude) {
+        HashMap result = new HashMap();
+        
+        HashMap destinationMap = target.getPermissionMap(); 
+        HashMap sourceMap = source.getPermissionMap(); 
+        
+        Iterator i = sourceMap.keySet().iterator();
+        while (i.hasNext()) {
+            CmsUUID key = (CmsUUID)i.next();
+            CmsPermissionSet value = (CmsPermissionSet)sourceMap.get(key);
+            if (destinationMap.containsKey(key)) {
+                CmsPermissionSet destValue =   (CmsPermissionSet)destinationMap.get(key);  
+                if (!destValue.equals(value)) {
+                    result.put(key, key+" " + value + " <-> " + destValue);   
+                }
+            } else {
+                result.put(key, "missing "+key);
+            }
+        }
+        
+        // finally match the result list with the exclude list
+        if (exclude != null) {
+            Iterator l = exclude.iterator();
+            while (l.hasNext()) {
+                CmsUUID excludeUUID = (CmsUUID) l.next();   
+                if (result.containsKey(excludeUUID)) {
+                    result.remove(excludeUUID);
+                }
+            }
+        }         
+        return new ArrayList(result.values()); 
+    }
+    
+   
+    /**
+     * Compares two lists of propertydefintions excluding an exclude propertydefintion. 
+     * @param source the source list of propertydefintions
+     * @param target the target list of propertydefintions
+     * @param exclude the exclude propertydefintion
+     * @return String of missing propertydefinitions
+     */
+    private String comparePropertydefintions(List source, List target, CmsPropertydefinition exclude) {
+
+        String noMatches = "";
+        Iterator i = source.iterator();
+        while (i.hasNext()) {
+            CmsPropertydefinition prop = (CmsPropertydefinition)i.next();
+            if ((!target.contains(prop)) 
+                && (!prop.getName().equals(exclude.getName()))
+                && (prop.getType() != exclude.getType())) {
+                    noMatches += "[" + prop + "]";
+            }
+        }
+        return noMatches;
+    }
+    
     
     /**
      * Creates a new storage object.<p>
@@ -1553,6 +1593,67 @@ public class OpenCmsTestCase extends TestCase {
     public void createStorage(String name) {
         OpenCmsTestResourceStorage storage = new OpenCmsTestResourceStorage(name);
         m_resourceStorages.put(name, storage);
+    }
+    
+    /**
+     * Writes a message to the current output stream.<p>
+     * 
+     * @param message the message to write
+     */
+    protected void echo(String message) {
+        m_shell.printPrompt();
+        System.out.println(message);
+    }   
+    
+    /**
+     * Returns an initialized CmsObject with admin user permissions,
+     * running in the "/sites/default" site root.<p>
+     * 
+     * @return an initialized CmsObject with admin user permissions
+     * @throws CmsException in case of OpenCms access errors
+     */
+    protected CmsObject getCmsObject() throws CmsException {
+                
+        // log in the Admin user and switch to the setup project
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        cms.loginUser("Admin", "admin");
+        // switch to the "Offline" project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+        
+        // init the storage
+        createStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
+        switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
+        
+        // return the initialized cms context Object
+        return cms;        
+    }
+    
+    
+    /**
+     * Creates a map of all parent resources of a OpenCms resource.<p>
+     * The resource UUID is used as key, the full resource path is used as the value.
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to get the parent map from
+     * @return HashMap of parent resources
+     */
+    private Map getParents(CmsObject cms, String resourceName) {
+        HashMap parents = new HashMap();
+        List parentResources = new ArrayList();
+        try {
+            // get all parent folders of the current file
+            parentResources = cms.readPath(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsException e) {
+            // ignore
+        }
+        Iterator k = parentResources.iterator();
+        while (k.hasNext()) {
+            // add the current folder to the map
+            CmsResource curRes = (CmsResource)k.next();
+            parents.put(curRes.getResourceId(), curRes.getRootPath());
+        }  
+        return parents;
     }
     
     /**
@@ -1577,6 +1678,18 @@ public class OpenCmsTestCase extends TestCase {
      */
     public List getSubtree(CmsObject cms, String resourceName) throws CmsException {
         return cms.getResourcesInTimeRange(resourceName, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
+    }
+    
+    /**
+     * Removes and deletes a storage object.<p>
+     * @param name the name of the storage
+     */
+    protected void removeStorage(String name) {
+        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
+        if (storage != null) {
+            m_resourceStorages.remove(name);
+            storage = null;
+        } 
     }
     
     /**
@@ -1638,51 +1751,5 @@ public class OpenCmsTestCase extends TestCase {
             throw new CmsException("Resource storage "+name+" not found", CmsException.C_UNKNOWN_EXCEPTION);
         }
         
-    }
-    
-    /**
-     * Writes a message to the current output stream.<p>
-     * 
-     * @param message the message to write
-     */
-    protected void echo(String message) {
-        m_shell.printPrompt();
-        System.out.println(message);
-    }   
-    
-    /**
-     * Returns an initialized CmsObject with admin user permissions,
-     * running in the "/sites/default" site root.<p>
-     * 
-     * @return an initialized CmsObject with admin user permissions
-     * @throws CmsException in case of OpenCms access errors
-     */
-    protected CmsObject getCmsObject() throws CmsException {
-                
-        // log in the Admin user and switch to the setup project
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        cms.loginUser("Admin", "admin");
-        // switch to the "Offline" project
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.getRequestContext().setSiteRoot("/sites/default/");
-        
-        // init the storage
-        createStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-        switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-        
-        // return the initialized cms context Object
-        return cms;        
-    }
-    
-    /**
-     * Removes and deletes a storage object.<p>
-     * @param name the name of the storage
-     */
-    protected void removeStorage(String name) {
-        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
-        if (storage != null) {
-            m_resourceStorages.remove(name);
-            storage = null;
-        } 
     }
 }

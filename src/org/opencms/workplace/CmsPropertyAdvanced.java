@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/05/24 17:02:00 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeXmlPage;
-import org.opencms.file.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -51,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
-import java.util.Vector;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -310,18 +309,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public void setParamDialogmode(String value) {
         m_paramDialogMode = value;
     }
-    
-    /**
-     * Returns all possible properties for the current resource type.<p>
-     * 
-     * @return all property definitions for te resource type
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getPropertyDefinitions() throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
-        I_CmsResourceType type = getCms().getResourceType(res.getType());
-        return getCms().readAllPropertydefinitions(type.getResourceTypeName());           
-    }          
+       
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
@@ -440,20 +428,23 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     public String buildActivePropertiesList() {
         StringBuffer retValue = new StringBuffer(256);
-        Vector propertyDef = new Vector();
+        List propertyDef = new ArrayList();
         try {
             // get all property definitions
-            propertyDef = getPropertyDefinitions();
+            propertyDef = getCms().readAllPropertydefinitions();
         } catch (CmsException e) {
             // ignore this exception
         }
         
-        for (int i = 0; i < propertyDef.size(); i++) {
-            CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
+        Iterator j = propertyDef.iterator();
+        int i=0;
+        while (j.hasNext()) {
+            CmsPropertydefinition curProperty = (CmsPropertydefinition)j.next();
             retValue.append(CmsEncoder.escapeXml(curProperty.getName()));
             if ((i+1) < propertyDef.size()) {
                 retValue.append("<br>");            
             }
+            i++;
         }
         
         return retValue.toString();
@@ -480,9 +471,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         }
         
         // get all properties for the resource
-        Vector propertyDef = new Vector();
+        List propertyDef = new ArrayList();
         try {
-            propertyDef = getPropertyDefinitions();
+            propertyDef = getCms().readAllPropertydefinitions();
         } catch (CmsException e) {
             // ignore
         }
@@ -515,8 +506,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
             
             // show all possible properties for the resource
-            for (int i = 0; i < propertyDef.size(); i++) {
-                CmsPropertydefinition currentPropertyDef = (CmsPropertydefinition)propertyDef.elementAt(i);
+            Iterator i = propertyDef.iterator();
+            while (i.hasNext()) {
+                CmsPropertydefinition currentPropertyDef = (CmsPropertydefinition)i.next();
                 String propName = CmsEncoder.escapeXml(currentPropertyDef.getName());
                 String propValue = "";
                 String valueStructure = "";
@@ -819,10 +811,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (useTempfileProject) {
                 switchToTempProject();
             }
-            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             String newProperty = getParamNewproperty();
             if (newProperty != null && !"".equals(newProperty.trim())) {
-                getCms().createPropertydefinition(newProperty, res.getType());
+                getCms().createPropertydefinition(newProperty);
                 return true;
             } else {
                 throw new CmsException("You entered an invalid property name", CmsException.C_BAD_NAME); 
@@ -863,7 +854,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @throws CmsException if editing is not successful
      */
     private boolean performEditOperation(HttpServletRequest request) throws CmsException {
-        Vector propertyDef = getPropertyDefinitions();
+        List propertyDef = getCms().readAllPropertydefinitions();
         boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
         try {
             if (useTempfileProject) {
@@ -874,8 +865,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             List propertiesToWrite = new ArrayList();
             
             // check all property definitions of the resource for new values
-            for (int i=0; i<propertyDef.size(); i++) {
-                CmsPropertydefinition curPropDef = (CmsPropertydefinition)propertyDef.elementAt(i);
+            Iterator i = propertyDef.iterator();
+            while (i.hasNext()) {
+                CmsPropertydefinition curPropDef = (CmsPropertydefinition)i.next();
                 String propName = CmsEncoder.escapeXml(curPropDef.getName());
                 String valueStructure = null;
                 String valueResource = null;                

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/08 15:13:05 $
- * Version: $Revision: 1.377 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.378 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.377 $ $Date: 2004/06/08 15:13:05 $
+ * @version $Revision: 1.378 $ $Date: 2004/06/09 15:53:29 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1928,11 +1928,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param context the current request context
      * @param name the name of the propertydefinition to overwrite
-     * @param resourcetype the name of the resource-type for the propertydefinition
+     * @param mappingtype the mapping type of the propertydefinition. Currently only the mapping type C_PROPERYDEFINITION_RESOURCE is supported
      * @return the created propertydefinition
      * @throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
+    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, int mappingtype) throws CmsException {
         CmsPropertydefinition propertyDefinition = null;
         
         if (isAdmin(context)) {
@@ -1940,24 +1940,23 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             validFilename(name);
             
             try {
-                propertyDefinition = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
+                propertyDefinition = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), mappingtype);
             } catch (CmsException e) {
-                propertyDefinition = m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype);
+                propertyDefinition = m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), mappingtype);
             }    
             
             try {
-                m_vfsDriver.readPropertyDefinition(name, I_CmsConstants.C_PROJECT_ONLINE_ID, resourcetype);
+                m_vfsDriver.readPropertyDefinition(name, I_CmsConstants.C_PROJECT_ONLINE_ID, mappingtype);
             } catch (CmsException e) {
-                m_vfsDriver.createPropertyDefinition(name, I_CmsConstants.C_PROJECT_ONLINE_ID, resourcetype);
+                m_vfsDriver.createPropertyDefinition(name, I_CmsConstants.C_PROJECT_ONLINE_ID, mappingtype);
             } 
             
             try {
-                m_backupDriver.readBackupPropertyDefinition(name, resourcetype);
+                m_backupDriver.readBackupPropertyDefinition(name, mappingtype);
             } catch (CmsException e) {
-                 m_backupDriver.createBackupPropertyDefinition(name, resourcetype);
+                 m_backupDriver.createBackupPropertyDefinition(name, mappingtype);
             }            
-            
-            //propertyDefinition = m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype));
+                        
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createPropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
@@ -2572,18 +2571,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param context the current request context
      * @param name the name of the propertydefinition to read
-     * @param resourcetype the name of the resource type for which the propertydefinition is valid
+     * @param mappingtype the name of the resource type for which the propertydefinition is valid
      *
      * @throws CmsException if something goes wrong
      */
-    public void deletePropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
+    public void deletePropertydefinition(CmsRequestContext context, String name, int mappingtype) throws CmsException {
         CmsPropertydefinition propertyDefinition = null;
         
         // check the security
         if (isAdmin(context)) {
             try {
                 // first read and then delete the metadefinition.            
-                propertyDefinition = readPropertydefinition(context, name, resourcetype);
+                propertyDefinition = readPropertydefinition(context, name, mappingtype);
                 m_vfsDriver.deletePropertyDefinition(propertyDefinition);
             } finally {
                 
@@ -5020,49 +5019,21 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Reads all property definitions of a given resourcetype.<p>
-     * 
+     * Reads all propertydefinitions for the given mapping type.<p>
+     *
+     * All users are granted.
+     *
      * @param context the current request context
-     * @param resourceType the resource type to read all property defnitions from
-     * @return vector of property defintions
-     * @throws CmsException if operation was not succesful
+     * @param mappingtype the mapping type to read the propertydefinitions for
+     * @return propertydefinitions a Vector with propertydefefinitions for the mapping type. The Vector is maybe empty.
+     * @throws CmsException if something goes wrong
      */
-    private Vector readAllPropertydefinitions(CmsRequestContext context, I_CmsResourceType resourceType) throws CmsException {
-
-        Vector returnValue = m_vfsDriver.readPropertyDefinitions(context.currentProject().getId(), resourceType);
+    public List readAllPropertydefinitions(CmsRequestContext context, int mappingtype) throws CmsException {
+        List returnValue = m_vfsDriver.readPropertyDefinitions(context.currentProject().getId(), mappingtype);
         Collections.sort(returnValue);
         return returnValue;
     }
 
-    /**
-     * Reads all propertydefinitions for the given resource type.<p>
-     *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @param resourceType te resource type to read the propertydefinitions for
-     * @return propertydefinitions a Vector with propertydefefinitions for the resource type. The Vector is maybe empty.
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readAllPropertydefinitions(CmsRequestContext context, int resourceType) throws CmsException {
-        I_CmsResourceType resType = getResourceType(resourceType);
-        return readAllPropertydefinitions(context, resType);
-    }
-
-    /**
-     * Reads all propertydefinitions for the given resource type.<p>
-     *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @param resourcetype the name of the resource type to read the propertydefinitions for
-     * @return propertydefinitions a Vector with propertydefefinitions for the resource type. The Vector is maybe empty.
-     * @throws CmsException if something goes wrong.
-     */
-    public Vector readAllPropertydefinitions(CmsRequestContext context, String resourcetype) throws CmsException {
-        I_CmsResourceType resType = getResourceType(resourcetype);
-        return readAllPropertydefinitions(context, resType);
-    }
 
     /**
      * Reads all sub-resources (including deleted resources) of a specified folder 
@@ -6193,13 +6164,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param context the current request context
      * @param name the name of the propertydefinition to read
-     * @param resourcetype the name of the resource type for which the propertydefinition is valid.
+     * @param mappingtype the mapping type of this propery definition
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
      * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
+    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int mappingtype) throws CmsException {
         
-        return m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
+        return m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), mappingtype);
     }
 
     /**

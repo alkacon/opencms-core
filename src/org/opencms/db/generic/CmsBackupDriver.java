@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/06/01 15:19:15 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -72,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.92 $ $Date: 2004/06/01 15:19:15 $
+ * @version $Revision: 1.93 $ $Date: 2004/06/09 15:53:29 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -146,7 +147,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(java.lang.String, int)
      */
-    public CmsPropertydefinition createBackupPropertyDefinition(String name, int resourcetype) throws CmsException {
+    public CmsPropertydefinition createBackupPropertyDefinition(String name, int mappingtype) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -156,15 +157,15 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
             stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF_BACKUP")));
             stmt.setString(2, name);
-            stmt.setInt(3, resourcetype);
+            stmt.setInt(3, mappingtype);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "PropertyDefinition="+name+"; ResourceType="+resourcetype, CmsException.C_SQL_ERROR, exc, true);
+            throw m_sqlManager.getCmsException(this, "PropertyDefinition="+name+"; ResourceType="+mappingtype, CmsException.C_SQL_ERROR, exc, true);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return readBackupPropertyDefinition(name, resourcetype);
+        return readBackupPropertyDefinition(name, mappingtype);
     }
 
     /**
@@ -790,7 +791,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_BACKUP");
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
-            stmt.setInt(3, resource.getType());
+            stmt.setInt(3, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
             stmt.setInt(4, resource.getTagId());
             res = stmt.executeQuery();
             
@@ -847,7 +848,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupPropertyDefinition(java.lang.String, int)
      */
-    public CmsPropertydefinition readBackupPropertyDefinition(String name, int type) throws CmsException {
+    public CmsPropertydefinition readBackupPropertyDefinition(String name, int mappingtype) throws CmsException {
         CmsPropertydefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -857,11 +858,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_READ_BACKUP");
             stmt.setString(1, name);
-            stmt.setInt(2, type);
+            stmt.setInt(2, mappingtype);
             res = stmt.executeQuery();
 
             if (res.next()) {
-                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_RESOURCE_TYPE")));
+                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".readBackupPropertyDefinition] " + name, CmsException.C_NOT_FOUND);
             }
@@ -1001,7 +1002,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             while (dummy.hasNext()) {
                 property = (CmsProperty) dummy.next();
                 key = property.getKey();
-                propdef = readBackupPropertyDefinition(key, resource.getType());
+                propdef = readBackupPropertyDefinition(key, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
 
                 if (propdef == null) {
                     throw new CmsException("[" + this.getClass().getName() + "] " + key, CmsException.C_NOT_FOUND);

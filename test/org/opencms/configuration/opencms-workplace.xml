@@ -379,15 +379,15 @@
 					<show-title>true</show-title>
 					<show-type>true</show-type>
 					<show-datelastmodified>true</show-datelastmodified>
-					<show-datecreated>true</show-datecreated>
+					<show-datecreated>false</show-datecreated>
 					<show-lockedby>false</show-lockedby>
-					<show-permissions>true</show-permissions>
+					<show-permissions>false</show-permissions>
 					<show-size>true</show-size>
 					<show-state>false</show-state>
-					<show-userlastmodified>true</show-userlastmodified>
-					<show-usercreated>true</show-usercreated>
-					<show-datereleased>true</show-datereleased>
-					<show-dateexpired>true</show-dateexpired>
+					<show-userlastmodified>false</show-userlastmodified>
+					<show-usercreated>false</show-usercreated>
+					<show-datereleased>false</show-datereleased>
+					<show-dateexpired>false</show-dateexpired>
 				</explorer-displayoptions>										
 			</explorer-preferences>
 			<dialogs-preferences>

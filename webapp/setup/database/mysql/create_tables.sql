@@ -87,21 +87,21 @@ create table CMS_BACKUP_PROJECTRESOURCES (TAG_ID INT NOT NULL,
 
 create table CMS_OFFLINE_PROPERTYDEF     (PROPERTYDEF_ID INT NOT NULL, 
                                          PROPERTYDEF_NAME VARCHAR(128) BINARY NOT NULL,
-                                         RESOURCE_TYPE INT NOT NULL,
+                                         PROPERTYDEF_MAPPING_TYPE INT NOT NULL,
                                          primary key(PROPERTYDEF_ID), 
-                                         unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
+                                         unique(PROPERTYDEF_NAME, PROPERTYDEF_MAPPING_TYPE));
 
 create table CMS_ONLINE_PROPERTYDEF      (PROPERTYDEF_ID INT NOT NULL, 
                                          PROPERTYDEF_NAME VARCHAR(128) BINARY NOT NULL,
-                                         RESOURCE_TYPE INT NOT NULL,
+                                         PROPERTYDEF_MAPPING_TYPE INT NOT NULL,
                                          primary key(PROPERTYDEF_ID), 
-                                         unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
+                                         unique(PROPERTYDEF_NAME, PROPERTYDEF_MAPPING_TYPE));
                                         
 create table CMS_BACKUP_PROPERTYDEF      (PROPERTYDEF_ID INT NOT NULL, 
                                          PROPERTYDEF_NAME VARCHAR(128) BINARY NOT NULL,
-                                         RESOURCE_TYPE INT NOT NULL,
+                                         PROPERTYDEF_MAPPING_TYPE INT NOT NULL,
                                          primary key(PROPERTYDEF_ID), 
-                                         unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
+                                         unique(PROPERTYDEF_NAME, PROPERTYDEF_MAPPING_TYPE));
 
 create table CMS_OFFLINE_PROPERTIES     (PROPERTY_ID INT NOT NULL,
                                          PROPERTYDEF_ID INT NOT NULL,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/07 15:46:56 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.78 $ $Date: 2004/06/07 15:46:56 $
+ * @version $Revision: 1.79 $ $Date: 2004/06/09 15:53:29 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -150,11 +150,11 @@ public interface I_CmsVfsDriver {
      *
      * @param name the name of the propertydefinitions to overwrite
      * @param projectId the project in which the propertydefinition is created
-     * @param resourcetype the resource-type for the propertydefinitions
+     * @param mappingtype the mapping-type for the propertydefinitions
      * @return the new propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createPropertyDefinition(String name, int projectId, int resourcetype) throws CmsException;
+    CmsPropertydefinition createPropertyDefinition(String name, int projectId, int mappingtype) throws CmsException;
 
     /**
      * Creates a CmsResource instance from a JDBC ResultSet.<p>
@@ -356,21 +356,21 @@ public interface I_CmsVfsDriver {
      *
      * @param name the name of the propertydefinition to read
      * @param projectId the id of the project
-     * @param type the resource type for which the propertydefinition is valid
+     * @param mappingtype the mapping type of the propertydefinition
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readPropertyDefinition(String name, int projectId, int type) throws CmsException;
+    CmsPropertydefinition readPropertyDefinition(String name, int projectId, int mappingtype) throws CmsException;
 
     /**
-     * Reads all property definitions for the specified resource type.<p>
+     * Reads all property definitions for the specified mapping type.<p>
      *
      * @param projectId the id of the project
-     * @param resourcetype the resource type to read the propertydefinitions for
-     * @return propertydefinitions a Vector with propertydefefinitions for the resource type (The Vector can be empty)
+     * @param mappingtype the mapping type to read the propertydefinitions for
+     * @return propertydefinitions a list with propertydefefinitions for the mapping type (The list can be empty)
      * @throws CmsException if something goes wrong
      */
-    Vector readPropertyDefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
+    List readPropertyDefinitions(int projectId, int mappingtype) throws CmsException;
     
     /**
      * Reads a property object from the database specified by it's key name mapped to a resource.<p>

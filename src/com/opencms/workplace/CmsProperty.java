@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2004/06/09 15:53:29 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,14 @@
 
 package com.opencms.workplace;
 
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
@@ -39,19 +47,12 @@ import org.opencms.main.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
-
 /**
  * Template class for displaying the property screens of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.53 $ $Date: 2004/06/09 15:53:29 $
  */
 public class CmsProperty extends CmsWorkplaceDefault {
 
@@ -74,14 +75,12 @@ public class CmsProperty extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
-            CmsResource file = cms.readFileHeader(filename);
-            I_CmsResourceType type = cms.getResourceType(file.getType());
 
             // get all propertydefinitions for this type
-            Vector propertydef = cms.readAllPropertydefinitions(type.getResourceTypeName());
-            Enumeration enu = propertydef.elements();
-            while(enu.hasMoreElements()) {
-                CmsPropertydefinition prop = (CmsPropertydefinition)enu.nextElement();
+            List propertydef = cms.readAllPropertydefinitions();
+            Iterator i = propertydef.iterator();
+            while(i.hasNext()) {
+                CmsPropertydefinition prop = (CmsPropertydefinition)i.next();
                 names.addElement(prop.getName());
                 values.addElement(prop.getName());
             }
@@ -246,7 +245,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
 
                     // try to add the property
                     try {
-                        cms.createPropertydefinition(newValue, file.getType());
+                        cms.createPropertydefinition(newValue);
                         template = "ownlocked";
                     }
                     catch(CmsException e) {
@@ -337,17 +336,14 @@ public class CmsProperty extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
-            CmsResource file = cms.readFileHeader(filename);
-            I_CmsResourceType type = cms.getResourceType(file.getType());
-
-            // get all existing properties of this file
+             // get all existing properties of this file
             Map properties = cms.readProperties(filename);
 
             // get all propertydefinitions for this type
-            Vector propertydef = cms.readAllPropertydefinitions(type.getResourceTypeName());
-            Enumeration enu = propertydef.elements();
-            while(enu.hasMoreElements()) {
-                CmsPropertydefinition prop = (CmsPropertydefinition)enu.nextElement();
+            List propertydef = cms.readAllPropertydefinitions();
+            Iterator i = propertydef.iterator();
+            while(i.hasNext()) {
+                CmsPropertydefinition prop = (CmsPropertydefinition)i.next();
                 String propertyvalue = (String)properties.get(prop.getName());
                 if(propertyvalue == null) {
                     names.addElement(CmsEncoder.escapeXml(prop.getName()));

@@ -14,68 +14,21 @@ createTempfileProject
 setCurrentProject "_setupProject"
 
 # Initialize the default property definitions
-createPropertydefinition folder Title
-createPropertydefinition folder Description
-createPropertydefinition folder Keywords
-createPropertydefinition folder NavText
-createPropertydefinition folder NavPos
-createPropertydefinition folder ChannelId
-createPropertydefinition folder export
-createPropertydefinition folder exportname
-createPropertydefinition folder relativeroot
-createPropertydefinition folder default-file
-createPropertydefinition folder content-encoding
-createPropertydefinition folder internal
-createPropertydefinition plain Title
-createPropertydefinition plain Description
-createPropertydefinition plain Keywords
-createPropertydefinition plain NavText
-createPropertydefinition plain NavPos
-createPropertydefinition plain export
-createPropertydefinition plain exportname
-createPropertydefinition plain content-encoding
-createPropertydefinition plain internal
-createPropertydefinition jsp Title
-createPropertydefinition jsp Description
-createPropertydefinition jsp Keywords
-createPropertydefinition jsp NavText
-createPropertydefinition jsp NavPos
-createPropertydefinition jsp export
-createPropertydefinition jsp cache
-createPropertydefinition jsp stream
-createPropertydefinition jsp content-encoding
-createPropertydefinition jsp internal
-createPropertydefinition xmlpage Title
-createPropertydefinition xmlpage Description
-createPropertydefinition xmlpage Keywords
-createPropertydefinition xmlpage NavText
-createPropertydefinition xmlpage NavPos
-createPropertydefinition xmlpage export
-createPropertydefinition xmlpage template
-createPropertydefinition xmlpage exportname
-createPropertydefinition xmlpage content-encoding
-createPropertydefinition xmlpage internal
-createPropertydefinition pointer Title
-createPropertydefinition pointer Description
-createPropertydefinition pointer Keywords
-createPropertydefinition pointer NavText
-createPropertydefinition pointer NavPos
-createPropertydefinition pointer export
-createPropertydefinition pointer exportname
-createPropertydefinition pointer content-encoding
-createPropertydefinition pointer internal
-createPropertydefinition XMLTemplate Title
-createPropertydefinition XMLTemplate Description
-createPropertydefinition XMLTemplate Keywords
-createPropertydefinition XMLTemplate internal
-createPropertydefinition binary Title
-createPropertydefinition binary Description
-createPropertydefinition binary Keywords
-createPropertydefinition binary internal
-createPropertydefinition image Title
-createPropertydefinition image Description
-createPropertydefinition image Keywords
-createPropertydefinition image internal
+createPropertydefinition Title
+createPropertydefinition Description
+createPropertydefinition Keywords
+createPropertydefinition NavText
+createPropertydefinition NavPos
+createPropertydefinition export
+createPropertydefinition exportname
+createPropertydefinition default-file
+createPropertydefinition content-encoding
+createPropertydefinition internal
+createPropertydefinition cache
+createPropertydefinition stream
+createPropertydefinition template
+createPropertydefinition template-elements
+createPropertydefinition locale
 
 # Initialize the default file extensions
 addFileExtension binary doc

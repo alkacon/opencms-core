@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/07 15:51:04 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -676,23 +676,22 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         // check if the template property exists. If not, create it.
         try {
-            m_cms.readPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+            m_cms.readPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
         } catch (CmsException e) {
             // the template propertydefintion does not exist. So create it.
-            m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+            m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
         }
         // copy all propertydefinitions of the old page to the new page
-        //Vector definitions = m_cms.readAllPropertydefinitions(C_RESOURCE_TYPE_PAGE_ID);
-        Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        List definitions = m_cms.readAllPropertydefinitions();
 
         Iterator j = definitions.iterator();
         while (j.hasNext()) {
             CmsPropertydefinition definition = (CmsPropertydefinition)j.next();
             // check if this propertydef already exits
             try {
-                m_cms.readPropertydefinition(definition.getName(), CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+                m_cms.readPropertydefinition(definition.getName());
             } catch (Exception e) {
-                m_cms.createPropertydefinition(definition.getName(), CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+                m_cms.createPropertydefinition(definition.getName());
             }
         }
 

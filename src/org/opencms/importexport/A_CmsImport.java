@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -286,7 +286,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     
                     if (!checkedProperties.contains(property)) {
                         // check the current property and create it, if necessary
-                        checkPropertyDefinition(property.getKey(), CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
+                        checkPropertyDefinition(property.getKey());
                         checkedProperties.add(property);                        
                     }
                 }
@@ -303,16 +303,15 @@ public abstract class A_CmsImport implements I_CmsImport {
      * The property defintion gets created if it is missing.<p>
      *
      * @param key the key of the property
-     * @param resourceType the type of the resource
      * @throws CmsException if something goes wrong
      */
-    private void checkPropertyDefinition(String key, int resourceType) throws CmsException {
+    private void checkPropertyDefinition(String key) throws CmsException {
         try {
             // try to read the property definition
-            m_cms.readPropertydefinition(key, resourceType);
+            m_cms.readPropertydefinition(key);
         } catch (CmsException exc) {
             // create missing property definitions
-            m_cms.createPropertydefinition(key, resourceType);
+            m_cms.createPropertydefinition(key);
         }
     }
 
@@ -415,7 +414,8 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         if (propertyKey != null && propertyValue != null && !"".equals(propertyKey)) {
             // TODO I can't remember at the moment this piece of code is still required or not
-            checkPropertyDefinition(propertyKey, resType);
+            int warning = 0;
+            checkPropertyDefinition(propertyKey);
             properties.put(propertyKey, propertyValue);
         }
 
@@ -449,8 +449,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                 // it is an individual/structure value
                 property.setStructureValue(value);
             }
-            
-            checkPropertyDefinition(key, resType);
+
+            checkPropertyDefinition(key);
         }
 
         return new ArrayList(properties.values());

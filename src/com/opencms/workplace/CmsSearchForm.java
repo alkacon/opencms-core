@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/06/09 15:53:29 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.10 $ $Date: 2004/06/09 15:53:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -190,22 +190,24 @@ public class CmsSearchForm extends CmsWorkplaceDefault {
     public Integer getPropertyDefs(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
             Hashtable parameters) throws CmsException {
         Integer retValue = new Integer(0);
-System.err.println("getPropertyDefs");
+
         String resourcetype = (String)parameters.get("restype");
         String selectedDef = (String)parameters.get("propkey");
         names.add("---");
         values.add("");
-System.err.println("read propertydefs for resourcetype");
+
         if((resourcetype != null) && (!"".equals(resourcetype.trim()))){
-            Vector propdefs = cms.readAllPropertydefinitions(resourcetype);
-System.err.println("propertydefs size: "+propdefs.size());
-            for(int i=0; i<propdefs.size(); i++){
-System.err.println("add propertydef: "+((CmsPropertydefinition)propdefs.elementAt(i)).getName());
-                names.add(((CmsPropertydefinition)propdefs.elementAt(i)).getName());
-                values.add(((CmsPropertydefinition)propdefs.elementAt(i)).getName());
-                if((((CmsPropertydefinition)propdefs.elementAt(i)).getName()).equals(selectedDef)){
+            List propdefs = cms.readAllPropertydefinitions();
+
+            int i = 0;
+            Iterator j = propdefs.iterator();
+            while (j.hasNext()) {
+                names.add(((CmsPropertydefinition)j.next()).getName());
+                values.add(((CmsPropertydefinition)j.next()).getName());
+                if((((CmsPropertydefinition)j.next()).getName()).equals(selectedDef)){
                     retValue = new Integer(i+1);
                 }
+                i++;
             }
         }
         return retValue;
@@ -221,9 +223,10 @@ System.err.println("add propertydef: "+((CmsPropertydefinition)propdefs.elementA
         template.setData("check","");
         typeOptions.append(template.getProcessedDataValue("selectoption",this));
         if((restype != null) && (!"".equals(restype.trim()))){
-            Vector propdefs = cms.readAllPropertydefinitions(Integer.parseInt(restype));
-            for(int i=0; i<propdefs.size(); i++){
-                String propdef = ((CmsPropertydefinition)propdefs.elementAt(i)).getName();
+            List propdefs = cms.readAllPropertydefinitions();
+            Iterator i = propdefs.iterator();
+            while (i.hasNext()) {
+                String propdef = ((CmsPropertydefinition)i.next()).getName();
                 template.setData("name",propdef);
                 template.setData("value",propdef);
                 if(propdef.equals(selDef!=null?selDef:"")){

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/07 15:48:38 $
- * Version: $Revision: 1.183 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.184 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.183 $ $Date: 2004/06/07 15:48:38 $
+ * @version $Revision: 1.184 $ $Date: 2004/06/09 15:53:29 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -528,7 +528,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createPropertyDefinition(java.lang.String, int, int)
      */
-    public CmsPropertydefinition createPropertyDefinition(String name, int projectId, int resourcetype) throws CmsException {
+    public CmsPropertydefinition createPropertyDefinition(String name, int projectId, int mappingtype) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -539,7 +539,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_CREATE");
             stmt.setInt(1, m_sqlManager.nextId(projectId, m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
             stmt.setString(2, name);
-            stmt.setInt(3, resourcetype);
+            stmt.setInt(3, mappingtype);
             stmt.executeUpdate();         
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -547,7 +547,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return readPropertyDefinition(name, projectId, resourcetype);
+        return readPropertyDefinition(name, projectId, mappingtype);
     }
 
     /**
@@ -1484,7 +1484,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinition(java.lang.String, int, int)
      */
-    public CmsPropertydefinition readPropertyDefinition(String name, int projectId, int type) throws CmsException {
+    public CmsPropertydefinition readPropertyDefinition(String name, int projectId, int mappingtype) throws CmsException {
         CmsPropertydefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1495,12 +1495,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_READ");
 
             stmt.setString(1, name);
-            stmt.setInt(2, type);
+            stmt.setInt(2, mappingtype);
             res = stmt.executeQuery();
 
             // if resultset exists - return it
             if (res.next()) {
-                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_RESOURCE_TYPE")));
+                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
             } else {
                 res.close();
                 res = null;
@@ -1517,10 +1517,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(int, org.opencms.file.I_CmsResourceType)
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(int, int)
      */
-    public Vector readPropertyDefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException {
-        Vector metadefs = new Vector();
+    public List readPropertyDefinitions(int projectId, int mappingtype) throws CmsException {
+        ArrayList propertyDefinitions = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1528,18 +1528,18 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_READALL");
-            stmt.setInt(1, resourcetype.getResourceType());
+            stmt.setInt(1, mappingtype);
             
             res = stmt.executeQuery();
             while (res.next()) {
-                metadefs.addElement(new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_RESOURCE_TYPE"))));
+                propertyDefinitions.add(new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE"))));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
-        return (metadefs);
+        return propertyDefinitions;
     }
 
     /**
@@ -2363,7 +2363,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_READ");
 
             stmt.setString(1, key);
-            stmt.setInt(2, resource.getType());
+            stmt.setInt(2, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
             stmt.setString(3, resource.getStructureId().toString());
             stmt.setString(4, resource.getResourceId().toString());
             res = stmt.executeQuery();
@@ -2423,7 +2423,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_READALL");
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
-            stmt.setInt(3, resource.getType());
+            stmt.setInt(3, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -2490,7 +2490,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             // read the property definition
-            propertyDefinition = readPropertyDefinition(property.getKey(), project.getId(), resource.getType());
+            propertyDefinition = readPropertyDefinition(property.getKey(), project.getId(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
         } catch (CmsException e) {
             propertyDefinition = null;
         }
@@ -2498,11 +2498,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         if (propertyDefinition == null) {
             if (property.autoCreatePropertyDefinition()) {
                 // create a missing property definition optionally
-                propertyDefinition = createPropertyDefinition(property.getKey(), project.getId(), resource.getType());
+                propertyDefinition = createPropertyDefinition(property.getKey(), project.getId(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
                 if (project.getId() >= 0) {
                     try {
                         // create the property definition implicitly in the backup tables
-                        m_driverManager.getBackupDriver().createBackupPropertyDefinition(property.getKey(), resource.getType());
+                        m_driverManager.getBackupDriver().createBackupPropertyDefinition(property.getKey(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
                     } catch (Exception e) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("[" + this.getClass().getName() + "] " + e.toString());

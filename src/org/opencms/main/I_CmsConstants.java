@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/07 12:44:05 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public interface I_CmsConstants {
 
@@ -94,6 +94,9 @@ public interface I_CmsConstants {
 
     /** prefix for temporary files */
     String C_TEMP_PREFIX = "~";
+    
+    /** The propertydefinitiontype for resources */
+    int C_PROPERYDEFINITION_RESOURCE = 1;
 
     /** Property for the resource title */
     String C_PROPERTY_TITLE = "Title";

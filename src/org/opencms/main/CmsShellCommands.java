@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/07 15:49:36 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/06/09 15:53:29 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -241,13 +241,12 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Creates a property definition for the given  resource type.<p>
      *
      * @param name the name of the property definition to create
-     * @param resourcetype the name of the resource type for the property definition
      * @return the created property definition
      * @throws Exception if something goes wrong
-     * @see CmsObject#createPropertydefinition(String, int)
+     * @see CmsObject#createPropertydefinition(String)
      */
-    public CmsPropertydefinition createPropertydefinition(String resourcetype, String name) throws Exception {
-        return m_cms.createPropertydefinition(name, m_cms.getResourceTypeId(resourcetype));
+    public CmsPropertydefinition createPropertydefinition(String name) throws Exception {
+        return m_cms.createPropertydefinition(name);
     }
 
     /**
@@ -264,15 +263,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
     
     /**
-     * Delete a property definition for a resource type.<p>
+     * Delete a property definition for a resource.<p>
      *
      * @param name the name of the property definition to delete
-     * @param resourcetype the name of the resource type where the property definition should be deleted
      * @throws Exception if something goes wrong
-     * @see CmsObject#deletePropertydefinition(String, int)
+     * @see CmsObject#deletePropertydefinition(String)
      */
-    public void deletepropertydefinition(String name, String resourcetype) throws Exception {
-        m_cms.deletePropertydefinition(name, m_cms.getResourceTypeId(resourcetype));
+    public void deletepropertydefinition(String name) throws Exception {
+        m_cms.deletePropertydefinition(name);
     }
 
     /**
