@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/09/25 15:43:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/09/27 14:09:34 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/09/25 15:43:40 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/09/27 14:09:34 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -246,7 +246,8 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 				cms.getRequestContext().getResponse().sendCmsRedirect( sendBy + "index.html?initial=true");
 			} catch (Exception e) {
 				throw new CmsException("Redirect fails :"+ ((CmsFile)iconVector2.elementAt(0)).getAbsolutePath(),CmsException.C_UNKNOWN_EXCEPTION,e);
-			}               
+			} 
+			return null; 
 		}
 		return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
 	}
