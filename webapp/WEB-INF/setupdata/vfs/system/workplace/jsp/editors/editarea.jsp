@@ -1,5 +1,5 @@
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
-<%@ page import="
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ page import="
 	org.opencms.workplace.*,
 	com.opencms.flex.jsp.*,
 	com.opencms.*,
@@ -16,12 +16,6 @@ String editTarget = (String)request.getAttribute("__editTarget");
 String editBody = (String)request.getAttribute("__editBody");
 String editLink = cms.link("/system/workplace/jsp/editors/editor.html");
 
-editLink += "?resource=" + editTarget
-+ "&directedit=true"
-+ "&bodylanguage=en"
-+ "&bodyname=" + editBody
-+ "&backlink=" + uri;
-
 String editId = "editarea";
 
 if (editTarget != null) {
@@ -30,26 +24,34 @@ if (editTarget != null) {
 if (editBody != null) {
     editId += "_" + editBody;
 }
-%>
+%><%--
 
-<cms:template element="start_editarea_enabled">
+--%><cms:template element="start_editarea_enabled">
 <!-- EDIT BLOCK START -->
-<table width="100%" border="0" cellpadding="0" cellspacing="0"> 
-<tr><td id="<%=editId%>" class="editarea_norm">
-<div class="editbutton" onmouseover="activate('<%=editId%>');" onmouseout="deactivate('<%=editId%>');">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<form name="<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
+<input type="hidden" name="resource" value="<%= editTarget %>">
+<input type="hidden" name="directedit" value="true">
+<input type="hidden" name="bodylanguage" value="en">
+<input type="hidden" name="bodyname" value="<%= editBody %>">
+<input type="hidden" name="backlink" value="<%= uri %>">
+<tr><td id="<%= editId %>" class="editarea_norm">
+<div class="editbutton" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="2" cellspacing="0">
-<tr><%=wp.button(editLink, null, "directedit", "editor.frontend.button.edit", 1)%></tr>
+
+<tr><%=wp.button("javascript:document.forms['" + editId + "'].submit();", null, "directedit", "editor.frontend.button.edit", 1)%></tr>
+</form>
 </table>
 </div>
-</cms:template>
+</cms:template><%--
 
-<cms:template element="end_editarea_enabled">
+--%><cms:template element="end_editarea_enabled">
 </td></tr>
 </table>
 <!-- EDIT BLOCK END -->
-</cms:template>
+</cms:template><%--
 
-<cms:template element="start_editarea_disabled">
+--%><cms:template element="start_editarea_disabled">
 <!-- EDIT BLOCK START -->
 <table width="100%" border="0" cellpadding="0" cellspacing="0"> 
 <tr><td id="<%=editId%>" class="editarea_norm">
@@ -58,23 +60,23 @@ if (editBody != null) {
 <tr><%=wp.button(null, null, "directedit", "editor.frontend.button.locked", 1)%></tr>
 </table>
 </div>
-</cms:template>
+</cms:template><%--
 
-<cms:template element="end_editarea_disabled">
+--%><cms:template element="end_editarea_disabled">
 </td></tr>
 </table>
 <!-- EDIT BLOCK END -->
-</cms:template>
+</cms:template><%--
 
-<cms:template element="start_editarea_inactive">
+--%><cms:template element="start_editarea_inactive">
 <!-- EDIT BLOCK START -->
-</cms:template>
+</cms:template><%--
 
-<cms:template element="end_editarea_inactive">
+--%><cms:template element="end_editarea_inactive">
 <!-- EDIT BLOCK END -->
-</cms:template>
+</cms:template><%--
 
-<cms:template element="editarea_includes">
+--%><cms:template element="editarea_includes">
 <style type="text/css">
 <!--
 /* Button - Link (href) style */
@@ -121,7 +123,6 @@ span.over {
     border-bottom: 1px solid #777777;
     border-right: 1px solid #777777;
 }
-
 /* Button - Push style */
 span.push {
     display: block;
@@ -157,6 +158,11 @@ span.disabled {
     position: absolute;
     background-color: #c0c0c0;
     filter:progid:DXImageTransform.Microsoft.Alpha(opacity=85, finishopacity=85, style=1);
+}
+/* form element without margin and padding */
+form.nomargin {
+	padding: 0;
+	margin: 0;
 }
 //-->
 </style>
