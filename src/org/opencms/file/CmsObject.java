@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/17 07:08:50 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/08/18 11:43:22 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  */
 public class CmsObject {
 
@@ -2315,26 +2315,8 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
-        return (m_driverManager.createGroup(m_context, name, description, flags, parent));
+        return m_driverManager.createGroup(m_context, name, description, flags, parent);
     }
-
-    /**
-     * Adds a new group to the Cms.<p>
-     * 
-     * <b>Security:</b>
-     * Only members of the group administrators are allowed to add a new group.
-     * 
-     * @param id the id of the group
-     * @param name the name of the new group
-     * @param description the description of the new group
-     * @param flags the flags for the new group
-     * @param parent the parent group
-     * @return a <code>CmsGroup</code> object representing the newly created group.
-     * @throws CmsException if something goes wrong
-     */
-    public CmsGroup createGroup(String id, String name, String description, int flags, String parent) throws CmsException {
-        return m_driverManager.createGroup(m_context, id, name, description, flags, parent);
-    }    
     
     /**
      * Changes the type of the user.<p>

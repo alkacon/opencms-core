@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/17 16:07:57 $
- * Version: $Revision: 1.408 $
+ * Date   : $Date: 2004/08/18 11:43:01 $
+ * Version: $Revision: 1.409 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.408 $ $Date: 2004/08/17 16:07:57 $
+ * @version $Revision: 1.409 $ $Date: 2004/08/18 11:43:01 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3257,8 +3257,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Add a new group to the Cms.<p>
      *
-     * Only the admin can do this.
-     * Only users, which are in the group "administrators" are granted.
+     * Only the admin can do this.<p>
      *
      * @param context the current request context
      * @param name the name of the new group
@@ -3271,26 +3270,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent) throws CmsException {
 
         return createGroup(context, new CmsUUID(), name, description, flags, parent);
-    }
-
-    /**
-     * Add a new group to the Cms.<p>
-     *
-     * Only the admin can do this.
-     * Only users, which are in the group "administrators" are granted.
-     *
-     * @param context the current request context
-     * @param id the id of the new group
-     * @param name the name of the new group
-     * @param description the description for the new group
-     * @param flags the flags for the new group
-     * @param parent the name of the parent group (or null)
-     * @return new created group
-     * @throws CmsException if operation was not successfull
-     */
-    public CmsGroup createGroup(CmsRequestContext context, String id, String name, String description, int flags, String parent) throws CmsException {
-
-        return createGroup(context, new CmsUUID(id), name, description, flags, parent);
     }
 
     /**
