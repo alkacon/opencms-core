@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/02/21 12:56:30 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/04/04 12:19:14 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,6 +35,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
+import com.opencms.boot.*;
 import com.opencms.file.*;
 import com.opencms.util.*;
 
@@ -62,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2001/02/21 12:56:30 $
+ * @version $Revision: 1.6 $ $Date: 2001/04/04 12:19:14 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -615,10 +616,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
         // Collect the configurations
         try {
-            m_configurations = new Configurations(new ExtendedProperties(config.getInitParameter("properties")));
+            m_configurations = new Configurations(new ExtendedProperties(CmsBase.getPropertiesPath(true)));
         }
         catch(Exception e) {
-            throw new ServletException(e.getMessage() + ".  Properties file is: " + config.getInitParameter("properties"));
+            throw new ServletException(e.getMessage() + ".  Properties file is: " + CmsBase.getBasePath() + "opencms.properties");
         }
 
         // Initialize the logging
@@ -690,12 +691,14 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }catch(CmsException e){
              throw new ServletException(e.getMessage());
         }
+        CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
         if(reg != null) {
             repositoriesFromRegistry = reg.getRepositories();
             for(int i = 0;i < repositoriesFromRegistry.length;i++) {
                 try {
                     cms.readFileHeader(repositoriesFromRegistry[i]);
-                    repositories.addElement(repositoriesFromRegistry[i]);
+                    //repositories.addElement(repositoriesFromRegistry[i]);
+                    loader.addRepository(repositoriesFromRegistry[i], CmsClassLoader.C_REPOSITORY_VIRTUAL_FS);
                 }
                 catch(CmsException e) {
                 // this repository was not found, do do not add it to the repository list
@@ -705,8 +708,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
         // give the guest-loggedin cms-object and the repositories to the classloader
         // CmsClassLoader loader = new CmsClassLoader();
-        CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
-        loader.init(cms, repositories);
+        //CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
+        //loader.init(cms, repositories);
+        loader.init(cms);
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader... DONE");
         }

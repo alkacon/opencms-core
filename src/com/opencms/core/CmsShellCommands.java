@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/03/01 13:42:50 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/04/04 12:19:14 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.29 $ $Date: 2001/03/01 13:42:50 $
+ * @version $Revision: 1.30 $ $Date: 2001/04/04 12:19:14 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -60,7 +60,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * Creation date: (10/05/00 %r)
      * @author:
      */
-    public CmsShellCommands(String[] args, A_OpenCms openCms, CmsObject cms) throws Exception {
+    public CmsShellCommands(A_OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
         m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
@@ -2955,21 +2955,21 @@ public class CmsShellCommands implements I_CmsConstants {
         }
     }
 
-	/**
-	* Synchronize cms-resources on virtual filesystem with the server filesystem.
-	*
-	* @param resourceName the name (absolute Path) of the resource that should be synchronized.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void syncFolder(String resourceName){
-		// synchronize the resources
-		try {
-			m_cms.syncFolder(resourceName);
-		} catch (Exception exc) {
-			CmsShell.printException(exc);
-		}
-	}
+    /**
+    * Synchronize cms-resources on virtual filesystem with the server filesystem.
+    *
+    * @param resourceName the name (absolute Path) of the resource that should be synchronized.
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void syncFolder(String resourceName){
+        // synchronize the resources
+        try {
+            m_cms.syncFolder(resourceName);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
 
     /**
      * Unlocks all resources of a project.

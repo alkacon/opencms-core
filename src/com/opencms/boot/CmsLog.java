@@ -1,11 +1,11 @@
 
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsLog.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.3 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
+* Date   : $Date: 2001/04/04 12:17:54 $
+* Version: $Revision: 1.1 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,21 +13,21 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-package com.opencms.core;
+package com.opencms.boot;
 
 import source.org.apache.java.io.Logger;
 import source.org.apache.java.io.LogWriter;
@@ -38,18 +38,18 @@ import java.io.*;
  * This class enables the OpenCms logging feature.
  * Different logging channels are supported and can be
  * (de)activated by the log settings in the proerty file.
- * 
+ *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2001/01/24 09:41:40 $
+ * @version $Revision: 1.1 $ $Date: 2001/04/04 12:17:54 $
  */
 public class CmsLog implements Logger {
-    
+
     /** The internal m_Logger */
     private LogWriter m_Logger = null;
-    
+
     /** Shows if this log is m_Active or not */
     private boolean m_Active = false;
-    
+
     /** The main constructor */
     public CmsLog(String identifier, Configurations confs) {
         m_Logger = null;
@@ -61,7 +61,7 @@ public class CmsLog implements Logger {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Writes any pending messages into the log media.
      */
@@ -70,7 +70,7 @@ public class CmsLog implements Logger {
             m_Logger.flush();
         }
     }
-    
+
     /**
      * Check if this log is active.
      * @return <code>true</code> the log is active, <code>false</code> otherwise.
@@ -78,7 +78,7 @@ public class CmsLog implements Logger {
     public boolean isActive() {
         return (m_Logger != null) ? m_Logger.active : false;
     }
-    
+
     /**
      * Tells if the given channel is active.
      * @param channel the channel to test.
@@ -87,7 +87,7 @@ public class CmsLog implements Logger {
     public boolean isActive(String channel) {
         return (m_Logger != null) ? m_Logger.isActive(channel) : false;
     }
-    
+
     /**
      * Prints the log message on the right channel.
      * <p>
@@ -105,7 +105,7 @@ public class CmsLog implements Logger {
             m_Logger.log(channel, message);
         }
     }
-    
+
     /**
      * Prints the error message and stack trace if channel enabled.
      * @param t the error thrown.

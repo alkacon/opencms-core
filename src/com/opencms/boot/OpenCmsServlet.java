@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
-* Date   : $Date: 2001/02/20 16:51:12 $
-* Version: $Revision: 1.78 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/OpenCmsServlet.java,v $
+* Date   : $Date: 2001/04/04 12:17:54 $
+* Version: $Revision: 1.1 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -26,11 +26,12 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-package com.opencms.core;
+package com.opencms.boot;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.*;
+import java.util.Vector;
 
 /**
  * Title:
@@ -61,8 +62,24 @@ public class OpenCmsServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         m_config = config;
         String classname = "com.opencms.core.OpenCmsHttpServlet";
+
+        String base = config.getInitParameter("opencms.home");
+            System.err.println("BASE: " + config.getServletContext().getRealPath("/"));
+            System.err.println("BASE2: " + System.getProperty("user.dir"));
+        if(base == null || "".equals(base)) {
+            System.err.println("No OpenCms home folder given. Trying to guess...");
+            base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
+            if(base == null || "".equals(base)) {
+                throw new ServletException("OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.");
+            }
+        }
+
+        base = CmsBase.setBasePath(base);
+
         try {
             m_loader = new CmsClassLoader();
+            // Search for jar files in the oclib folder.
+            CmsMain.collectRepositories(base, m_loader);
             Class c = m_loader.loadClass(classname);
             // Now we have to look for the constructor
             m_servlet = (HttpServlet)c.newInstance();
@@ -93,6 +110,13 @@ public class OpenCmsServlet extends HttpServlet {
      */
     public void destroy() {
         m_servlet.destroy();
+    }
+
+    /**
+     * Gives the usage-information to the user.
+     */
+    private static void usage() {
+        System.err.println("Usage: java com.opencms.core.OpenCmsServlet properties-file");
     }
 
 }

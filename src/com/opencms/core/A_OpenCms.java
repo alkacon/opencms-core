@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/02/01 21:41:43 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/04/04 12:19:13 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -30,8 +30,9 @@ package com.opencms.core;
 
 import java.io.*;
 import java.util.*;
+import com.opencms.boot.*;
 import com.opencms.file.*;
-import com.opencms.launcher.*;
+//import com.opencms.launcher.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
@@ -47,16 +48,18 @@ import source.org.apache.java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2001/02/01 21:41:43 $
+ * @version $Revision: 1.14 $ $Date: 2001/04/04 12:19:13 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
+    //private static String basePath = null;
+
     /** Reference to the system log */
-    private static CmsLog c_cmsLog = null;
+    //private static CmsLog c_cmsLog = null;
 
     /** Indicates if the system log is initialized */
-    protected static boolean c_servletLogging = false;
+    //protected static boolean c_servletLogging = false;
 
     /**
      * Destructor, called when the the servlet is shut down.
@@ -68,8 +71,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param configurations the configurations needed at initialization.
      */
     public static void initializeServletLogging(Configurations config) {
-        c_cmsLog = new CmsLog("log", config);
-        c_servletLogging = true;
+        CmsBase.initializeServletLogging(config);
     }
 
     /**
@@ -100,12 +102,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
      */
     public static boolean isLogging() {
-        if(c_servletLogging) {
-            return c_cmsLog.isActive();
-        }
-        else {
-            return true;
-        }
+        return CmsBase.isLogging();
     }
 
     /**
@@ -117,12 +114,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @message The message to be logged,
      */
     public static void log(String channel, String message) {
-        if(c_servletLogging) {
-            c_cmsLog.log(channel, message);
-        }
-        else {
-            System.err.println(message);
-        }
+        CmsBase.log(channel, message);
     }
 
     /**
@@ -166,4 +158,11 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @return data the sessionData.
      */
     abstract void storeSession(String sessionId, Hashtable sessionData) throws CmsException;
+
+    /*public static void setBasePath(String s) {
+        basePath = s;
+    }
+    public static String getBasePath() {
+        return basePath;
+    }*/
 }
