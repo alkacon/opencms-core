@@ -7,8 +7,8 @@
 <tablerowend><![CDATA[</tr>]]></tablerowend>
 <url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[" target="admin_head">]]></url>
 
-<lockuser><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lock.gif" alt="" border=0 width=16 height=16></td>]]></lockuser>
-<lock><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lockuser.gif" alt="" border=0 width=16 height=16></td>]]></lock>
+<lockuser><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_lockuser.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.lockedby"/><![CDATA[ ]]><PROCESS>isLockedBy</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></lockuser>
+<lock><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.lockedby"/><![CDATA[ ]]><PROCESS>isLockedBy</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></lock>
 <nolock><![CDATA[<td></td>]]></nolock>
 <focus>; window.document.swl.filterparameter.focus()</focus>
 <setfocus></setfocus>
@@ -18,7 +18,7 @@
 <td class=menu nowrap width=32px valign=top>
 	<a href="javascript:document.location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[';parent.frames[1].location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new'"  
 		onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
-		 <img align=top src="/pics/system/bt_new_off.gif" name="bt_new" border=0 width=32 heigth=32> 
+		 <img align=top src="/pics/system/bt_new_off.gif" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32> 
 	</a>
 </td>
 ]]></wand>
@@ -133,19 +133,19 @@ start();
 	<contextentry name="explorer.context.delete" href="javascript:location.href=editUrl+'?iddelete='+kontextparam;"/>
 </contextmenue>
 
-<contextmenue name="backofficelockuser"> 
+<contextmenue name="backofficelock"> 
 	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
 	<contextdisabled name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 		
-<contextmenue name="backofficelock"> 
+<contextmenue name="backofficelockuser"> 
 	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
 	<contextentry name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-	</contextmenue>
+	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+</contextmenue>
 
 <contextmenue name="backofficenolock"> 
 	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
@@ -601,7 +601,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
         </td>
 		<td nowrap valign="center">
                 <input type=hidden name="setaction" value="filterchange"/> ]]>
-        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" size="1" onchange="document.swl.submit()"/><![CDATA[
+        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="auto" size="1" onchange="document.swl.submit()"/><![CDATA[
                
         </td>
     </form>]]>
@@ -614,7 +614,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 		</td>
 		<td nowrap valign="center">
                 <input type=hidden name="setaction" value="filterchange"> ]]>
-        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="100" size="1" onchange="self.document.swl.submit()" /><![CDATA[
+        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="auto" size="1" onchange="self.document.swl.submit()" /><![CDATA[
                
         </td>
         <td nowrap valign="center">        
@@ -622,14 +622,13 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 		</td>
 		<td nowrap valign="center">
    				<input type=hidden name="setaction" value="setaction">
-                <input type=text name="filterparameter" id="filterparameter" size="5" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
+                <input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
 		</td>
 		<td>	
 				&nbsp;&nbsp
 				<a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
-				<img align="center" name="ic_admin_enter" src="/pics/system/ic_admin_enter_off.gif" border=0 width=32 heigth=32>
+				<img align="center" name="ic_admin_enter" src="/pics/system/ic_admin_enter_off.gif" alt="]]><LABEL value="button.reload"/><![CDATA[" border=0 width=32 heigth=32>
 				</a>
-            	<!-- <input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" /> -->
                   
         </td>
         </form>]]>
