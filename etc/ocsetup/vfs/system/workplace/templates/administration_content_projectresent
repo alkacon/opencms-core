@@ -29,7 +29,7 @@ function show_help()
 
 </head>
 
-<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html';">
+<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html'; start();">
 
 <!-- Beginn Kontent Neue Aufgaben für mich-->
 <table cellspacing=1 cellpadding=1 border=0 width="1082">

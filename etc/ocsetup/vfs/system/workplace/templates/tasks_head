@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<html>
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<!-- End Style -->
+
+<!-- Beginn JavaScript -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<!-- Beginn JavaScript -->
+<script language="JavaScript">
+function setItem()
+{
+	window.top.head.selectedTask=document.form1.filter.selectedIndex;
+}
+
+function updateSelection()
+{
+	if(document.form1.filter.options[document.form1.filter.selectedIndex].value!='-')
+	{
+		//window.top.head.document.lastVisited=window.top.body.tasks_body.location.href;
+		window.top.body.tasks_body.location.href=document.form1.filter.options[document.form1.filter.selectedIndex].value;
+		window.top.head.lastVisited=document.form1.filter.options[document.form1.filter.selectedIndex].value;
+		setItem();
+	}
+}
+
+function getItem() {
+	//if(window.top.head.document.selectedTask)
+		document.form1.filter.selectedIndex = window.top.head.selectedTask;	
+}
+
+<!-- URL for pictures -->
+var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+
+<!-- URL for help file -->
+var help="]]><METHOD name="helpUrl"/><![CDATA[";
+
+</script>
+</head>
+
+<!-- Beginn Navigation Task -->
+<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  onLoad="getItem();" bgproperties=fixed  bgproperties=fixed>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<form action="" method=post id=form1 name=form1>
+	<tr valign=center>
+		<td class=menu valign=middle><a href="#"><img src="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="" border=0 width=32 heigth=32></a></td>
+		<td class=menubold><p class=einzug>Filter:&nbsp;&nbsp;&nbsp;</p></td>
+		<td class=menu>
+			<p class=einzug>
+			<select name="filter" width=210 style="width:210px" onchange="updateSelection();">
+				<option value="tasks_content_nafm.html" selected>Neue Aufgaben für mich 
+				<option value="tasks_content_nafr.html">Neue Aufgaben für meine Rollen 
+				<option value="tasks_content_ana.html">Alle neuen Aufgaben
+				<option value="-">------------------------------------------------
+				<option value="tasks_content_maa.html">Meine aktiven Aufgaben 
+				<option value="tasks_content_aamr.html">Aktive Aufgaben für meine Rollen 
+				<option value="tasks_content_aaa.html">Alle aktiven Aufgaben
+				<option value="-">------------------------------------------------
+				<option value="tasks_content_vmea.html">Von mir erledigte Aufgaben 
+				<option value="tasks_content_eavmr.html">Erledigte Aufgaben von meinen Rollen 
+				<option value="tasks_content_aea.html">Alle erledigten Aufgaben
+				<option value="-">------------------------------------------------
+				<option value="tasks_content_vmgna.html">Von mir gestellten neue Aufgaben
+				<option value="tasks_content_vmgaa.html">Von mir gestellte aktive Aufgaben
+				<option value="tasks_content_vmgea.html">Von mir gestellte erledigte Aufgaben 
+			</select>
+			</p>
+		</td>
+		<td class=menu><p class=einzug><input type="checkbox" name=ALL id=ALL></td>
+		<td class=menubold><p class=einzug>alle Projekte anzeigen</td>
+		<td class=menu><p class=einzug>&nbsp;</td>
+		<td class=menu>]]><BUTTON href="javascript:updateFrame('body.tasks_body', 'tasks_content_new.html');" name="bt_task" action="" alt="newtask"/><![CDATA[</td>
+	</tr>
+</form>
+</table>
+</body>
+<!-- Ende Navigation Task -->
+
+</html>
+
+
+]]>
+</TEMPLATE>
+</WORKPLACE>

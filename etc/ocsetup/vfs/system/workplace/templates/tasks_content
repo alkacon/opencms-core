@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '4_2_1.html';
+}
+//-->
+</script>
+
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<!-- Ende Style -->
+
+</head>
+
+<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed>
+
+<!-- Beginn Kontent Neue Aufgaben für mich-->
+<table cellspacing=1 cellpadding=1 border=0 width="732">
+	<!-- Beginn Kopf Kontent Aufgaben-->
+	<tr bgcolor="#c0c0c0">
+		<td valign=bottom width=32 colspan=2 nowrap>&nbsp;</td>
+		<td valign=bottom width=200 nowrap><p class=einzug>Aufgabe</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Für Benutzer</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Für Rolle</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Aufgabensteller</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Fällig am</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Gestellt am</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Projekt</p></td>
+	</tr>
+
+	<tr>
+		<td nowrap><img src="pics/ic_task_new.gif" border=0 width=16 height=16 alt="Neue Aufgabe"></td>
+		<td nowrap><img src="pics/ic_task_priohigh.gif" border=0 width=16 height=16 alt="Hohe Priorität"></td>
+		<td nowrap><p class=einzug><a href="tasks_content_viewnew.html" class=task>Überarbeitung des Bereiches Kontakt</a></td>
+		<td nowrap><p class=einzug>m.schleich</td>
+		<td nowrap><p class=einzug>IT</td>
+		<td nowrap><p class=einzug>a.spee</td>
+		<td nowrap><p class=einzug>21.02.2000</td>
+		<td nowrap><p class=einzug>12.01.2000</p></td>
+		<td nowrap><p class=einzug>Relaunch Sozial</p></td>
+	</tr>
+	<tr>
+		<td nowrap><img src="pics/ic_task_new.gif" border=0 width=16 height=16 alt="Neue Aufgabe"></td>
+		<td nowrap></td>
+		<td nowrap><p class=einzug><a href="tasks_content_viewnew.html" class=task>Docloader für EBK</a></td>
+		<td nowrap><p class=einzug>m.schleich</td>
+		<td nowrap><p class=einzug>IT</td>
+		<td nowrap><p class=einzug>a.spee</td>
+		<td nowrap><p class=einzug>18.03.2000</td>
+		<td nowrap><p class=einzug>12.01.2000</p></td>
+		<td nowrap><p class=einzug>Relaunch Sozial</p></td>
+	</tr>
+	<tr>
+		<td nowrap><img src="pics/ic_task_new.gif" border=0 width=16 height=16 alt="Neue Aufgabe"></a></td>
+		<td nowrap><img src="pics/ic_task_priolow.gif" border=0 width=16 height=16 alt="Niedrige Priorität"></td>
+		<td nowrap><p class=einzug><a href="tasks_content_viewnew.html" class=task>File Export</a></td>
+		<td nowrap><p class=einzug>m.schleich</td>
+		<td nowrap><p class=einzug>IT</td>
+		<td nowrap><p class=einzug>a.spee</td>
+		<td nowrap><p class=einzug>05.03.2000</td>
+		<td nowrap><p class=einzug>12.01.2000</p></td>
+		<td nowrap><p class=einzug>Relaunch Sozial</p></td>
+	</tr>
+	
+</table>
+<!-- Ende Inhalt Aufgaben Projektbezogen -->
+
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+</WORKPLACE>

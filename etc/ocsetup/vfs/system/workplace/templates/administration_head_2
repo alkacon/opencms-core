@@ -23,7 +23,6 @@
 	<tr valign=center>
 		<td class=menu>
 		]]><BUTTON href="javascript:if(admincontenturl=='administration_content_top.html'){window.top.body.admin_head.location.href='administration_head.html';}" name="bt_back" action="window.top.body.admin_content.location.href=admincontenturl;" alt="back"/><![CDATA[
-		<!--<a href="javascript:if(admincontenturl=='administration_content_top.html'){window.top.body.admin_head.location.href='administration_head.html';}" onclick="window.top.body.admin_content.location.href=admincontenturl;"  onMouseDown="ChPush('bt_back')" onMouseUp="ChOn('bt_back')" onMouseOver="ChOn('bt_back')" onMouseOut="ChOff('bt_back')"><img src="pics/bt_back_off.gif" name="bt_back" alt="Zurück" border=0 width=32 heigth=32></a></td>-->
 	</tr>
 </table>
 </body>

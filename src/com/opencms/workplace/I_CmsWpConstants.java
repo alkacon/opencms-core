@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2000/02/14 16:01:02 $
+ * @version $Revision: 1.35 $ $Date: 2000/02/14 19:01:23 $
  */
 public interface I_CmsWpConstants {
 
@@ -461,4 +461,16 @@ public interface I_CmsWpConstants {
 
 	/** Templateselector of projectnew */    
 	public static final String C_PROJECTNEW_DONE = "done";
+	
+	/**	Taskparameter */
+	public static final String C_TASKPARA_ACCEPTATION = "acceptation";
+
+	/**	Taskparameter */
+	public static final String C_TASKPARA_ALL = "all";
+
+	/**	Taskparameter */
+	public static final String C_TASKPARA_COMPLETION = "completion";
+
+	/**	Taskparameter */
+	public static final String C_TASKPARA_DELIVERY = "delivery";
 }

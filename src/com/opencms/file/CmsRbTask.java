@@ -10,9 +10,10 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.3 $ $Date: 2000/02/09 19:11:28 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/14 19:01:23 $
  */
  class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
+	 
 	 /**
 	  * The project access object which is required to access the
 	  * project database.

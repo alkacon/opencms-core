@@ -5,8 +5,8 @@
 // author:	unkonow
 // company:	mindfact interaktive medien ag
 // date:	?
-// update:	14.01.2000
-// update author: m.schleich
+// update:	03.02.2000
+// update author: m.schreiber
 // ===============================================
 
 // Object for an Arry Entry
@@ -26,7 +26,9 @@ function writeUser()
 	 SelHtml += '<OPTION VALUE=""></OPTION>';
       }
       SelHtml += '</SELECT>';
+	  document.open();
       document.write(SelHtml);
+	  document.close();
    }
 
 function setUser(objSel, bereich)
@@ -44,38 +46,6 @@ function setUser(objSel, bereich)
 				objSel.options[i].value = '';
 	    	}
          }
+		 objSel.selectedIndex = 0;		//reset selected User to default entry
 }
   
-   // arrays for Rolle
-   
-   var aRolle = new Array();
-   aRolle['it'] = new Array();
-   aRolle['html'] = new Array();
-   aRolle['graf'] = new Array();
-   
-
-	aRolle['it'][0] = new RolleEntry('User bestimmen ...','');
-	aRolle['it'][1] = new RolleEntry('a.kadzior','');
-	aRolle['it'][2] = new RolleEntry('a.lucas','');
-	aRolle['it'][3] = new RolleEntry('a.schouten','');
-	aRolle['it'][4] = new RolleEntry('m.schleich','');
- 
-	aRolle['html'][0] = new RolleEntry('User bestimmen ...','');
-	aRolle['html'][1] = new RolleEntry('s.fleskes','');
-	aRolle['html'][2] = new RolleEntry('j.stoppenbach','');
-	aRolle['html'][3] = new RolleEntry('m.schleich','');
-
-	aRolle['graf'][0] = new RolleEntry('User bestimmen ...','');
-	aRolle['graf'][1] = new RolleEntry('m.hahn','');
-	aRolle['graf'][2] = new RolleEntry('m.seilz','');
-	
-
-    var iMaxOpts = 0;
-    for(var bereiche in aRolle)
-    {
-		if( iMaxOpts< aRolle[bereiche].length)
- 		{
- 	   		iMaxOpts = aRolle[bereiche].length;
- 		}
-    }
-

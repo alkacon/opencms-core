@@ -15,9 +15,16 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/14 14:19:06 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/14 19:01:23 $
  */
 public class Encoder { 
+	
+  /**
+   * Constructor
+   */
+  public void Encoder()
+  {
+  }
 
   /**
    * Encodes a textstring that is compatible with the JavaScript escape function

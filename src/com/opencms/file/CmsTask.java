@@ -9,7 +9,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.5 $ $Date: 2000/02/09 19:11:28 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/14 19:01:23 $
  */
 public class CmsTask extends A_CmsTask implements I_CmsConstants {
 
@@ -163,7 +163,7 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	 * 
 	 * @return the id of this task.
 	 */
-	int getId() {
+	public int getId() {
 		return m_Id; 
 	}
 	

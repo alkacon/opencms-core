@@ -2,7 +2,11 @@
 // global variables und functions
 // m.schleich 03.01.2000
 //------------------------------------------
+
 var admincontenturl="administration_content_top.html";
+
+var selectedTask=0;
+var lastVisited="tasks_content_nafm.html";
 
 // Formularfelder (Textfelder) auf Inhalt überprüfen
 function check_textfeld(formular, feld)
@@ -15,6 +19,11 @@ if(document[formular][feld].value=="")
 	}
 return true;
 }
+// get date
+	aktDat = new Date;
+	aktTag= aktDat.getDate();
+	aktMonat= aktDat.getMonth()+1;
+	aktJahr= aktDat.getFullYear();
 
 //------------------------------------------------------------------------------------
 // special functions

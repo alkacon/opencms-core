@@ -7,7 +7,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.6 $ $Date: 2000/01/28 18:46:41 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/14 19:01:23 $
  */
 public abstract class A_CmsTask
 {
@@ -16,7 +16,7 @@ public abstract class A_CmsTask
 	 * 
 	 * @return the id of this task.
 	 */
-	abstract int getId();
+	abstract public int getId();
 	
 	/**
 	 * Returns the name of this task.

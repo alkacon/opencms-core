@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2000/02/14 14:05:05 $ 
+ * @version $Revision: 1.40 $ $Date: 2000/02/14 19:01:23 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1218,7 +1218,51 @@ public abstract class A_CmsObject {
 	 * @return the number of file-system-changes.
 	 */
 	abstract public long getFileSystemChanges();
-	
+
+	 /**
+	  * Creates a new task.
+	  * 
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 abstract public A_CmsTask createTask(String agentName, String roleName, 
+										  String taskname, String taskcomment, 
+										  long timeout, int priority)
+		 throws CmsException;
+
+	 /**
+	  * Set a Parameter for a task.
+	  * 
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * @param parvalue Value if the parameter.
+	  * 
+	  * @return The id of the inserted parameter or 0 if the parameter already exists for this task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void setTaskPar(int taskid, String parname, String parvalue)
+		 throws CmsException;
+
+	 /**
+	  * Get a parameter value for a task.
+	  * 
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public String getTaskPar(int taskid, String parname)
+		 throws CmsException;
 	
 	// database import, export stuff
 	/**

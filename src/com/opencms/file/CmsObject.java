@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2000/02/14 14:05:05 $ 
+ * @version $Revision: 1.40 $ $Date: 2000/02/14 19:01:23 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1523,7 +1523,61 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return( c_rb.getFileSystemChanges(m_context.currentUser(), 
 										  m_context.currentProject()) );
 	 }
+
+	 /**
+	  * Creates a new task.
+	  * 
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
 	 
+	 public A_CmsTask createTask(String agentName, String roleName, 
+								 String taskname, String taskcomment, 
+								 long timeout, int priority)
+		 throws CmsException {
+		 return( c_rb.createTask(m_context.currentUser(), m_context.currentProject(),
+								 agentName, roleName, taskname, taskcomment, 
+								 timeout, priority) );
+	 }
+
+	 /**
+	  * Set a Parameter for a task.
+	  * 
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * @param parvalue Value if the parameter.
+	  * 
+	  * @return The id of the inserted parameter or 0 if the parameter already exists for this task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setTaskPar(int taskid, String parname, String parvalue)
+		 throws CmsException {
+		 c_rb.setTaskPar(m_context.currentUser(), m_context.currentProject(),
+						 taskid, parname, parvalue);
+	 }
+
+	 /**
+	  * Get a parameter value for a task.
+	  * 
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public String getTaskPar(int taskid, String parname)
+		 throws CmsException {
+		 return( c_rb.getTaskPar(m_context.currentUser(), m_context.currentProject(),
+								 taskid, parname) );
+	 }
 	 
 	 // database import, export stuff
 	
@@ -1578,5 +1632,5 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		
 		return admin;
 	}
-	 
+
 }
