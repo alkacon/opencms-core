@@ -29,17 +29,17 @@ if (editBody != null) {
 --%><cms:template element="start_editarea_enabled">
 <!-- EDIT BLOCK START -->
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
-<form name="<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
+<form name="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
 <input type="hidden" name="bodylanguage" value="en">
 <input type="hidden" name="bodyname" value="<%= editBody %>">
 <input type="hidden" name="backlink" value="<%= uri %>">
+<input type="hidden" name="edittimestamp" value="<%= System.currentTimeMillis() %>">
 <tr><td id="<%= editId %>" class="editarea_norm">
 <div class="editbutton" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="2" cellspacing="0">
-
-<tr><%=wp.button("javascript:document.forms['" + editId + "'].submit();", null, "directedit", "editor.frontend.button.edit", 1)%></tr>
+<tr><%=wp.button("javascript:document.forms['form_" + editId + "'].submit();", null, "directedit", "editor.frontend.button.edit", 1)%></tr>
 </form>
 </table>
 </div>

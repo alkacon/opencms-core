@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/01/16 15:43:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/01/20 17:15:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -99,12 +99,14 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action: an error occured */
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
     
+    private String m_paramBackLink;
     private String m_paramEditormode;
     private String m_paramDirectedit;
     private String m_paramTempFile;
     private String m_paramContent;
     private String m_paramNoActiveX;
     private String m_paramEditAsText;
+    private String m_paramEditTimeStamp;
        
     /** Helper variable to store the clients browser type */
     private String m_browserType = null;
@@ -120,6 +122,27 @@ public abstract class CmsEditor extends CmsDialog {
     public CmsEditor(CmsJspActionElement jsp) {
         super(jsp);
     }
+    
+    /**
+     * Returns the back link when closing the editor.<p>
+     * 
+     * @return the back link
+     */
+    public final String getParamBacklink() {
+        if (m_paramBackLink == null) {
+            m_paramBackLink = "";
+        }
+        return m_paramBackLink;
+    }
+    
+    /**
+     * Sets the back link when closing the editor.<p>
+     * 
+     * @param backLink the back link
+     */
+    public final void setParamBacklink(String backLink) {
+        m_paramBackLink = backLink;
+    } 
     
     /**
      * Returns the edit as text parameter.<p>
@@ -232,6 +255,27 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public final void setParamNoactivex(String noActiveX) {
         m_paramNoActiveX = noActiveX;
+    }
+    
+    /**
+     * Returns the time stamp parameter.<p>
+     * 
+     * @return the time stamp parameter
+     */
+    public final String getParamEdittimestamp() {
+        if (m_paramEditTimeStamp == null) {
+            m_paramEditTimeStamp = "";
+        }
+        return m_paramEditTimeStamp;
+    }
+    
+    /**
+     * Sets the edit time stamp parameter.<p>
+     * 
+     * @param editTimeStamp the current time in milliseconds
+     */
+    public final void setParamEdittimestamp(String editTimeStamp) {
+        m_paramEditTimeStamp = editTimeStamp;
     }
     
     /**

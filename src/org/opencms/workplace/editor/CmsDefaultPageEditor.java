@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/20 11:10:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/01/20 17:15:26 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1.12
  */
@@ -73,7 +73,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     private String m_paramBodyname;
     private String m_paramOldbodylanguage;
     private String m_paramOldbodyname; 
-    private String m_paramBackLink;
 
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method */
     protected CmsXmlPage m_page;
@@ -160,28 +159,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     */
    public final void setParamOldbodyname(String oldBodyName) {
        m_paramOldbodyname = oldBodyName;
-   }
-    
-    /**
-     * Returns the back link when closing the editor.<p>
-     * 
-     * @return the back link
-     */
-    public final String getParamBacklink() {
-        if (m_paramBackLink == null) {
-            m_paramBackLink = "";
-        }
-        return m_paramBackLink;
-    }
-    
-    /**
-     * Sets the back link when closing the editor.<p>
-     * 
-     * @param backLink the back link
-     */
-    public final void setParamBacklink(String backLink) {
-        m_paramBackLink = backLink;
-    }  
+   } 
     
     /**
      * Escapes the content and title parameters to display them in the editor form.<p>
@@ -510,6 +488,33 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
+     * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
+     * 
+     * @throws IOException if a redirection fails
+     * @throws JspException if including a JSP fails
+     */
+    protected void actionClose() throws IOException, JspException {
+        if ("true".equals(getParamDirectedit())) {
+            // editor is in direct edit mode
+            if (!"".equals(getParamBacklink())) {
+                // set link to the specified back link target
+                setParamOkLink(getParamBacklink());
+            } else {
+                // set link to the edited resource
+                setParamOkLink(getParamResource());
+            }
+            // set the okfunctions parameter to load the common close dialog jsp (to disable history back jump)
+            setParamOkFunctions("var x=null;");
+            // save initialized instance of this class in request attribute for included sub-elements
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            closeDialog();
+        } else {
+            // redirect to the workplace explorer view 
+            getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
+        }
+    }
+    
+    /**
      * Performs a configurable action performed by the editor.<p>
      * 
      * The default action is: save resource, clear temporary files and publish the resource directly.<p>
@@ -537,24 +542,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void actionExit() throws IOException, JspException {
         // clear temporary file and unlock resource, if in directedit mode
         actionClear(false);
-        if ("true".equals(getParamDirectedit())) {
-            // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
-                // set link to the specified back link target
-                setParamOkLink(getParamBacklink());
-            } else {
-                // set link to the edited resource
-                setParamOkLink(getParamResource());
-            }
-            // set the okfunctions parameter to load the common close dialog jsp (to disable history back jump)
-            setParamOkFunctions("var x=null;");
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            closeDialog();
-        } else {
-            // redirect to the workplace explorer view 
-            getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
-        }
+        // close the editor
+        actionClose();
     }
     
     /**
