@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/13 23:32:05 $
- * Version: $Revision: 1.379 $
+ * Date   : $Date: 2004/06/14 11:22:42 $
+ * Version: $Revision: 1.380 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.379 $ $Date: 2004/06/13 23:32:05 $
+ * @version $Revision: 1.380 $ $Date: 2004/06/14 11:22:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -963,6 +963,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 throw new CmsResourceNotFoundException("[" + this.getClass().getName() + "] not found " + resource.getName());
             case 1:
                 throw new CmsSecurityException("[" + this.getClass().getName() + "] denied access to resource " + resource.getName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            case 0:
+                return;        
             default:
                 throw new CmsException("[" + this.getClass().getName() + "] invalid permission switch used");
                 
