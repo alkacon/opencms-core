@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2003/07/16 16:25:27 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.94 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.95 $ $Date: 2003/07/16 16:25:27 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -1335,7 +1335,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void getResourcesWithProperty(String propertyDefinition, String propertyValue, String resourceType) {
         try {
-            Vector resources = m_cms.getResourcesWithProperty(propertyDefinition, propertyValue, m_cms.getResourceTypeId(resourceType));
+            Vector resources = m_cms.getResourcesWithPropertyDefintion(propertyDefinition, propertyValue, m_cms.getResourceTypeId(resourceType));
             for(int i = 0;i < resources.size();i++) {
                 System.out.println((CmsResource)resources.elementAt(i));
             }

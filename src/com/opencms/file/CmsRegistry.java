@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/07/16 16:25:27 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.76 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.77 $ $Date: 2003/07/16 16:25:27 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -122,21 +122,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     /**
      * Declaration of an empty module in the registry.
      */
-    private static final String[] C_EMPTY_MODULE = { 
-        "<module><type>", 
-        "</type><name>", 
-        "</name><nicename>", 
-        "</nicename><version>", 
-        "</version><description><![CDATA[ ", 
-        "]]></description><author>", 
-        "</author><email/><creationdate>", 
-        "</creationdate>",
-        "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" 
-    };
+    private static final String[] C_EMPTY_MODULE = { "<module><type>", "</type><name>", "</name><nicename>", "</nicename><version>", "</version><description><![CDATA[ ", "]]></description><author>", "</author><email/><creationdate>", "</creationdate>", "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
 
     /** XML to create an export point */
-    private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
-    
+    private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>" };
+
     /** Debug flag, set to 9 for maximum vebosity */
     private static final int DEBUG = 0;
 
@@ -161,7 +151,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             m_digest = null;
         }
     }
-    
+
     /**
      * Creates a new CmsRegistry. The regFileName is the path to the registry-file in
      * the server filesystem.
@@ -196,7 +186,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * there are no conficts (i.e. the dependencies are fullfilled)
      */
     private Vector checkDependencies(Element module, boolean replaceMode) throws CmsException {
-        
+
         float newVersion = -1;
         String versionString = module.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
         try {
@@ -204,16 +194,16 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         } catch (NumberFormatException e) {}
 
         Vector retValue = new Vector();
-        
-        if (replaceMode) { 
+
+        if (replaceMode) {
             // replace mode, just ensure new version number is larger then the old number
             // TODO: check dependencies of all other installed modules for "maxversion"
             String name = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
             // get the version of the module to replace
-            float currentVersion = getModuleVersion(name);  
+            float currentVersion = getModuleVersion(name);
             if (currentVersion > newVersion) {
                 retValue.addElement("For module replacement, the new version (" + newVersion + ") must be higher or equal to the current version " + currentVersion);
-            }                     
+            }
         } else {
             // not replace mode, check if the listed dependencies are o.k.
             try {
@@ -221,16 +211,12 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 NodeList deps = dependencies.getElementsByTagName("dependency");
                 for (int i = 0; i < deps.getLength(); i++) {
                     String name = ((Element)deps.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                    float minVersion =
-                        Float.parseFloat(
-                            ((Element)deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
-                    float maxVersion =
-                        Float.parseFloat(
-                            ((Element)deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
-        
+                    float minVersion = Float.parseFloat(((Element)deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
+                    float maxVersion = Float.parseFloat(((Element)deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
+
                     // get the version of the needed repository
                     float currentVersion = getModuleVersion(name);
-        
+
                     if (currentVersion == -1) {
                         retValue.addElement("The required module " + name + " doesn't exist");
                     } else if (currentVersion < minVersion) {
@@ -246,7 +232,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
 
         return retValue;
     }
-    
+
     /**
      *  Checks if the type of the value is correct.
      *  @param type the type that the value should have..
@@ -255,40 +241,40 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     private boolean checkType(String type, String value) {
         type = type.toLowerCase();
         try {
-            if("string".equals(type) ) {
-                if( value != null) {
+            if ("string".equals(type)) {
+                if (value != null) {
                     return true;
                 } else {
                     return false;
                 }
-            } else if("int".equals(type) || "integer".equals(type)) {
+            } else if ("int".equals(type) || "integer".equals(type)) {
                 Integer.parseInt(value);
                 return true;
-            } else if("float".equals(type)) {
+            } else if ("float".equals(type)) {
                 Float.valueOf(value);
                 return true;
-            } else if("boolean".equals(type)) {
+            } else if ("boolean".equals(type)) {
                 Boolean.valueOf(value);
                 return true;
-            } else if("long".equals(type)) {
+            } else if ("long".equals(type)) {
                 Long.valueOf(value);
                 return true;
-            } else if("double".equals(type)) {
+            } else if ("double".equals(type)) {
                 Double.valueOf(value);
                 return true;
-            } else if("byte".equals(type)) {
+            } else if ("byte".equals(type)) {
                 Byte.valueOf(value);
                 return true;
             } else {
                 // the type dosen't exist
                 return false;
             }
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             // the type of the value was wrong
             return false;
         }
     }
-    
+
     /**
      * Clones the registry.<p>
      *
@@ -313,9 +299,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * @throws CmsException if the user has no right to create a new module
      */
     public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, float version) throws CmsException {
-            createModule(modulename, niceModulename, description, author, type, exportPoints, m_dateFormat.format(new Date(createDate)), version);
+        createModule(modulename, niceModulename, description, author, type, exportPoints, m_dateFormat.format(new Date(createDate)), version);
     }
-    
+
     /**
      * This method creates a new module in the repository.
      *
@@ -329,16 +315,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(
-        String modulename,
-        String niceModulename,
-        String description,
-        String author,
-        String type,
-        Map exportPoints,
-        String createDate,
-        float version)
-        throws CmsException {
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, float version) throws CmsException {
 
         // find out if the module exists already
         if (moduleExists(modulename)) {
@@ -382,8 +359,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             // use default system encoding
             doc = parse(moduleString.toString().getBytes());
         }
-        m_xmlReg.getElementsByTagName("modules").item(0).appendChild(
-            getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
+        m_xmlReg.getElementsByTagName("modules").item(0).appendChild(getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
         saveRegistry();
     }
 
@@ -393,8 +369,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Vector deleteCheckDependencies(String modulename, boolean replaceMode) throws CmsException {
 
         Vector result = new Vector();
-        if (replaceMode) return result;
-        
+        if (replaceMode)
+            return result;
+
         Enumeration names = getModuleNames();
         Vector modules;
         Vector minVersions;
@@ -428,20 +405,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
 
         // Module type SIMPLE? Just do nothing here, as SIMPLE modules do not support file conflicts
-        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) return;
+        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE))
+            return;
 
         // the files and checksums for this module
         Vector moduleFiles = new Vector();
         Vector moduleChecksums = new Vector();
         // the files and checksums for all other modules
         Vector otherFiles = new Vector();
-        Vector otherChecksums = new Vector();        
-        
+        Vector otherChecksums = new Vector();
+
         getModuleFiles(modulename, moduleFiles, moduleChecksums);
-    
+
         Enumeration modules = getModuleNames();
         while (modules.hasMoreElements()) {
-            String module = (String) modules.nextElement();
+            String module = (String)modules.nextElement();
             // get the files only for modules that are not for the current module.
             if (!module.equals(modulename)) {
                 // get the files
@@ -450,20 +428,20 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         for (int i = 0; i < moduleFiles.size(); i++) {
             // get the current file and checksum
-            String currentFile = (String) moduleFiles.elementAt(i);
-            String currentChecksum = (String) moduleChecksums.elementAt(i);
+            String currentFile = (String)moduleFiles.elementAt(i);
+            String currentChecksum = (String)moduleChecksums.elementAt(i);
             CmsFile file = null;
-    
+
             try {
-                String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
-                if(!resourcesForProject.contains(resource)) {
+                String resource = currentFile.substring(0, currentFile.indexOf("/", 1) + 1);
+                if (!resourcesForProject.contains(resource)) {
                     // add the resource, if it dosen't already exist
                     resourcesForProject.addElement(resource);
                 }
-            } catch(StringIndexOutOfBoundsException exc) {
+            } catch (StringIndexOutOfBoundsException exc) {
                 // this is a resource in root-folder: ignore the excpetion
             }
-    
+
             // is it a file - then check all the possibilities
             if (!currentFile.endsWith("/")) {
                 // exists the file in the cms?
@@ -473,31 +451,22 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                     // the file dosen't exist - mark it as deleted
                     missingFiles.addElement(currentFile);
                 }
-    
+
                 // is the file in use of another module?
                 if (otherFiles.contains(currentFile)) {
                     // yes - mark it as in use
                     filesInUse.addElement(currentFile);
                 }
-    
+
                 // was the file changed?
                 if (file != null) {
                     // create the current digest-content for the file
                     // encoding project:
                     String digestContent;
                     try {
-                        digestContent =
-                            com.opencms.util.Encoder.escape(
-                                new String(
-                                    m_digest.digest(file.getContents()),
-                                    m_cms.getRequestContext().getEncoding()),
-                                m_cms.getRequestContext().getEncoding());
+                        digestContent = com.opencms.util.Encoder.escape(new String(m_digest.digest(file.getContents()), m_cms.getRequestContext().getEncoding()), m_cms.getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException e) {
-                        digestContent =
-                            com.opencms.util.Encoder.escape(
-                                new String(
-                                    m_digest.digest(file.getContents())),
-                                m_cms.getRequestContext().getEncoding());
+                        digestContent = com.opencms.util.Encoder.escape(new String(m_digest.digest(file.getContents())), m_cms.getRequestContext().getEncoding());
                     }
                     if (!currentChecksum.equals(digestContent)) {
                         // the file was changed, the checksums are different
@@ -506,175 +475,176 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 }
             }
         }
-        
-        Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));        
+
+        Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));
         int fileCount = files.size();
-        
-        for(int i=0;i<fileCount;i++) {
+
+        for (int i = 0; i < fileCount; i++) {
             String currentFile = (String)files.elementAt(i);
 
-            if(!moduleFiles.contains(currentFile)) {
+            if (!moduleFiles.contains(currentFile)) {
                 // is the file in use of another module?
                 if (!otherFiles.contains(currentFile)) {
-                filesWithProperty.addElement(currentFile);
+                    filesWithProperty.addElement(currentFile);
 
                     try {
-                        String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
+                        String resource = currentFile.substring(0, currentFile.indexOf("/", 1) + 1);
 
-                        if(!resourcesForProject.contains(resource)) {
+                        if (!resourcesForProject.contains(resource)) {
                             // add the resource, if it dosen't already exist
                             resourcesForProject.addElement(resource);
                         }
-                    } 
-                    catch(StringIndexOutOfBoundsException exc) {
+                    } catch (StringIndexOutOfBoundsException exc) {
                         // this is a resource in root-folder: ignore the excpetion
                     }
                 }
             }
-        }           
+        }
     }
-    
+
     /**
      * @see com.opencms.file.I_CmsRegistry#deleteModule(String, Vector, boolean, I_CmsReport)
      */
     public synchronized void deleteModule(String module, Vector exclusion, boolean replaceMode, I_CmsReport report) throws CmsException {
-    
-        if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
-    
+
+        if (DEBUG > 2)
+            System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
+
         // check if the module exists
         if (!moduleExists(module)) {
-            throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("Module '" + module + "' does not exist", CmsException.C_REGISTRY_ERROR);
         }
-    
+
         // check if the user is allowed to perform this action
         if (!hasAccess()) {
             throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
         }
-    
+
         // check, if deletion is allowed
         Vector deps = deleteCheckDependencies(module, replaceMode);
         if (deps.size() != 0) {
             // there are dependencies - throw exception
-            throw new CmsException(
-                "There are dependencies for the module " + module + ": deletion is not allowed.",
-                CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("There are dependencies for the module " + module + ": deletion is not allowed.", CmsException.C_REGISTRY_ERROR);
         }
 
         // try to invoke the event-method for delete on this calss.
         Class eventClass = getModuleMaintenanceEventClass(module);
-    
+
         try {
-            Class declaration[] = {CmsObject.class};
-            Object arguments[] = {m_cms};
+            Class declaration[] = { CmsObject.class };
+            Object arguments[] = { m_cms };
             Method eventMethod = eventClass.getMethod(C_DELETE_EVENT_METHOD_NAME, declaration);
             eventMethod.invoke(null, arguments);
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             // ignore the exception.
         }
-    
+
         if (this.getModuleType(module).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             // SIMPLE module: Just delete all the folders of the module
-                
+
             // check if additional resources outside the system/modules/{exportName} folder were 
             // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
             // just delete these resources plus the "standard" module paths under system/modules
-                    
-            String additionalResources = this.getModuleParameterString( module, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+
+            String additionalResources = this.getModuleParameterString(module, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
             Vector resources = new Vector();
-                                
-            if (additionalResources!=null && !additionalResources.equals("")) {                            
+
+            if (additionalResources != null && !additionalResources.equals("")) {
                 // add each additonal folder/resource
                 StringTokenizer additionalResourceTokens = null;
-                additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
-                                       
+                additionalResourceTokens = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
+
                 while (additionalResourceTokens.hasMoreTokens()) {
                     String currentResource = additionalResourceTokens.nextToken().trim();
-                    
-                    if (! "-".equals(currentResource)) {
+
+                    if (!"-".equals(currentResource)) {
                         if (DEBUG > 0) {
                             System.err.println("Adding resource: " + currentResource);
-                        }                            
-                        resources.add( currentResource );
+                        }
+                        resources.add(currentResource);
                     }
-                }                       
-            }          
-            
+                }
+            }
+
             resources.add(I_CmsWpConstants.C_VFS_PATH_MODULES + module + "/");
             // move through all resource-names and try to delete them
             for (int i = resources.size() - 1; i >= 0; i--) {
                 String currentResource = null;
                 try {
                     currentResource = (String)resources.elementAt(i);
-                    if (DEBUG > 1) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);                
+                    if (DEBUG > 1)
+                        System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);
                     // lock the resource
                     m_cms.lockResource(currentResource, true);
-                     // delete the resource
+                    // delete the resource
                     m_cms.deleteResource(currentResource);
                     // update the report
                     report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                     report.println(currentResource);
                 } catch (CmsException exc) {
                     // ignore the exception and delete the next resource
-                    if (DEBUG > 0) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Exception " + exc + " deleting resource " + currentResource);
+                    if (DEBUG > 0)
+                        System.err.println("[" + this.getClass().getName() + ".deleteModule()] Exception " + exc + " deleting resource " + currentResource);
                     report.println(exc);
                 }
-            }              
-     
+            }
+
         } else {
             // TRADITIONAL module: Check file dependencies
-    
+
             // get the files, that are belonging to the module.
             Vector resourceNames = new Vector();
             Vector missingFiles = new Vector();
             Vector wrongChecksum = new Vector();
             Vector filesInUse = new Vector();
             Vector resourceCodes = new Vector();
-        
+
             // get files by property
 
-			deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
+            deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
 
-			// get files by registry
-			getModuleFiles(module, resourceNames, resourceCodes);
+            // get files by registry
+            getModuleFiles(module, resourceNames, resourceCodes);
 
-			// move through all resource-names and try to delete them
-			for (int i = resourceNames.size() - 1; i >= 0; i--) {
-				try {
-					String currentResource = (String) resourceNames.elementAt(i);
-					if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
-						m_cms.lockResource(currentResource, true);
-						if (currentResource.endsWith("/")) {
-							// this is a folder
-							m_cms.deleteEmptyFolder(currentResource);
-						} else {
-							// this is a file
-							m_cms.deleteResource(currentResource);
-						}
-						// update the report
-						report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
-						report.println(currentResource);
-					}
-				} catch (CmsException exc) {
-					// ignore the exception and delete the next resource.
-					report.println(exc);
-				}
-			}
+            // move through all resource-names and try to delete them
+            for (int i = resourceNames.size() - 1; i >= 0; i--) {
+                try {
+                    String currentResource = (String)resourceNames.elementAt(i);
+                    if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
+                        m_cms.lockResource(currentResource, true);
+                        if (currentResource.endsWith("/")) {
+                            // this is a folder
+                            m_cms.deleteEmptyFolder(currentResource);
+                        } else {
+                            // this is a file
+                            m_cms.deleteResource(currentResource);
+                        }
+                        // update the report
+                        report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
+                        report.println(currentResource);
+                    }
+                } catch (CmsException exc) {
+                    // ignore the exception and delete the next resource.
+                    report.println(exc);
+                }
+            }
         }
-    
+
         // delete all entries for the module in the registry
         Element moduleElement = getModuleElement(module);
         moduleElement.getParentNode().removeChild(moduleElement);
         saveRegistry();
-    
+
         try {
             init(false);
         } catch (Exception exc) {
             throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
         }
-        
-        if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Finished for module " + module);    
+
+        if (DEBUG > 2)
+            System.err.println("[" + this.getClass().getName() + ".deleteModule()] Finished for module " + module);
     }
-    
+
     /**
      * Deletes the view for a module.
      *
@@ -688,9 +658,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         try {
             Element module = getModuleElement(modulename);
             Element view = (Element) (module.getElementsByTagName("view").item(0));
-    
+
             // delete all subnodes
-            while(view.hasChildNodes()) {
+            while (view.hasChildNodes()) {
                 view.removeChild(view.getFirstChild());
             }
             saveRegistry();
@@ -718,16 +688,16 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         Element module = getModuleElement(moduleName);
         Element moduleCopy = (Element)module.cloneNode(true);
         NodeList list = moduleCopy.getChildNodes();
-        for (int i=(list.getLength()-1); i>=0; i--) {
+        for (int i = (list.getLength() - 1); i >= 0; i--) {
             Element e = (Element)list.item(i);
             if ("uploaddate".equals(e.getNodeName()) || "uploadedby".equals(e.getNodeName())) {
                 moduleCopy.removeChild(e);
             }
-        }                      
+        }
         // export the module using the standard export        
         new CmsExport(m_cms, fileName, resources, false, false, moduleCopy, false, 0, report);
     }
-    
+
     /**
      * Gets a description of this content type.
      * For OpenCms internal use only.<p>
@@ -737,7 +707,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getContentDescription() {
         return "Registry";
     }
-    
+
     /**
      * This method returns the author of the module.
      *
@@ -808,9 +778,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
             NodeList deps = dependencies.getElementsByTagName("dependency");
             for (int i = 0; i < deps.getLength(); i++) {
-                modules.addElement(((Element) deps.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
-                minVersions.addElement(((Element) deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
-                maxVersions.addElement(((Element) deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
+                modules.addElement(((Element)deps.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
+                minVersions.addElement(((Element)deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
+                maxVersions.addElement(((Element)deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
             }
         } catch (Exception exc) {
             // ignore the exception - reg is not welformed
@@ -827,7 +797,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getModuleDescription(String module) {
         return getModuleData(module, "description");
     }
-    
+
     /**
      * Gets the url to the documentation of the module.
      *
@@ -837,7 +807,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getModuleDocumentPath(String modulename) {
         return getModuleData(modulename, "documentation");
     }
-    
+
     /**
      *  Private method to get the Element representing a module.
      *
@@ -884,10 +854,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Element files = (Element) (module.getElementsByTagName("files").item(0));
             NodeList file = files.getElementsByTagName("file");
             for (int i = 0; i < file.getLength(); i++) {
-                retNames.addElement(
-                    ((Element)file.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
-                retCodes.addElement(
-                    ((Element)file.item(i)).getElementsByTagName("checksum").item(0).getFirstChild().getNodeValue());
+                retNames.addElement(((Element)file.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
+                retCodes.addElement(((Element)file.item(i)).getElementsByTagName("checksum").item(0).getFirstChild().getNodeValue());
             }
         } catch (Exception exc) {
             // ignore the exception - reg is not welformed
@@ -903,21 +871,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public Class getModuleMaintenanceEventClass(String modulname) {
         try {
-    
+
             Vector repositories = new Vector();
             String[] reposNoVector = getRepositories();
             for (int i = 0; i < reposNoVector.length; i++) {
                 repositories.addElement(reposNoVector[i]);
             }
             ClassLoader loader = this.getClass().getClassLoader();
-    
+
             return loader.loadClass(getModuleData(modulname, "maintenance_class"));
-    
+
         } catch (Exception exc) {
             return null;
         }
     }
-    
+
     /**
      * Returns the name of the class, that receives all maintenance-events for the module.
      *
@@ -927,7 +895,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getModuleMaintenanceEventName(String modulname) {
         return getModuleData(modulname, "maintenance_class");
     }
-    
+
     /**
      * Returns the names of all available modules.
      *
@@ -936,7 +904,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Enumeration getModuleNames() {
         return m_modules.keys();
     }
-    
+
     /**
      * Returns the nice name of the module.
      *
@@ -946,7 +914,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getModuleNiceName(String module) {
         return getModuleData(module, "nicename");
     }
-    
+
     /**
      * Gets a parameter for a module.
      *
@@ -1011,7 +979,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue) {
         return new Boolean(getModuleParameterBoolean(modulname, parameter, defaultValue.booleanValue()));
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1027,7 +995,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             return defaultValue;
         }
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1039,7 +1007,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public byte getModuleParameterByte(String modulname, String parameter) {
         return Byte.parseByte(getModuleParameter(modulname, parameter));
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1051,7 +1019,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue) {
         return Byte.parseByte(getModuleParameter(modulname, parameter, Byte.toString(defaultValue)));
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1063,7 +1031,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Byte getModuleParameterByte(String modulname, String parameter, Byte defaultValue) {
         return new Byte(getModuleParameterByte(modulname, parameter, defaultValue.byteValue()));
     }
-    
+
     /**
      * Returns a description for parameter in a module.
      *
@@ -1081,7 +1049,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         return retValue;
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1092,7 +1060,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public double getModuleParameterDouble(String modulname, String parameter) {
         return Double.valueOf(getModuleParameter(modulname, parameter)).doubleValue();
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1104,7 +1072,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public double getModuleParameterDouble(String modulname, String parameter, double defaultValue) {
         return Double.valueOf(getModuleParameter(modulname, parameter, Double.toString(defaultValue))).doubleValue();
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1131,12 +1099,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Element parameters = (Element) (module.getElementsByTagName("parameters").item(0));
             NodeList para = parameters.getElementsByTagName("para");
             for (int i = 0; i < para.getLength(); i++) {
-                if (((Element)para.item(i))
-                    .getElementsByTagName("name")
-                    .item(0)
-                    .getFirstChild()
-                    .getNodeValue()
-                    .equals(parameter)) {
+                if (((Element)para.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue().equals(parameter)) {
                     // this is the element for the parameter.
                     retValue = (Element)para.item(i);
                     // stop searching - parameter was found
@@ -1160,7 +1123,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public float getModuleParameterFloat(String modulname, String parameter) {
         return Float.valueOf(getModuleParameter(modulname, parameter)).floatValue();
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1172,7 +1135,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public float getModuleParameterFloat(String modulname, String parameter, float defaultValue) {
         return Float.valueOf(getModuleParameter(modulname, parameter, Float.toString(defaultValue))).floatValue();
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1184,7 +1147,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Float getModuleParameterFloat(String modulname, String parameter, Float defaultValue) {
         return new Float(getModuleParameterFloat(modulname, parameter, defaultValue.floatValue()));
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1195,7 +1158,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public int getModuleParameterInteger(String modulname, String parameter) {
         return Integer.parseInt(getModuleParameter(modulname, parameter));
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1218,7 +1181,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Integer getModuleParameterInteger(String modulname, String parameter, Integer defaultValue) {
         return new Integer(getModuleParameterInteger(modulname, parameter, defaultValue.intValue()));
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1230,7 +1193,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public long getModuleParameterLong(String modulname, String parameter) {
         return Long.valueOf(getModuleParameter(modulname, parameter)).longValue();
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1242,7 +1205,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public long getModuleParameterLong(String modulname, String parameter, long defaultValue) {
         return Long.valueOf(getModuleParameter(modulname, parameter, Long.toString(defaultValue))).longValue();
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1254,7 +1217,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Long getModuleParameterLong(String modulname, String parameter, Long defaultValue) {
         return new Long(getModuleParameterLong(modulname, parameter, defaultValue.longValue()));
     }
-    
+
     /**
      * Gets all parameter-names for a module.
      *
@@ -1287,7 +1250,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getModuleParameterString(String modulname, String parameter) {
         return getModuleParameter(modulname, parameter);
     }
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -1299,7 +1262,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getModuleParameterString(String modulname, String parameter, String defaultValue) {
         return getModuleParameter(modulname, parameter, defaultValue);
     }
-    
+
     /**
      * This method returns the type of a parameter in a module.
      *
@@ -1317,7 +1280,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         return retValue;
     }
-    
+
     /**
      * Returns all repositories for a module.
      *
@@ -1339,7 +1302,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         return retValue;
     }
-    
+
     /**
      * Returns the upload-date for the module.
      *
@@ -1353,14 +1316,14 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Element moduleElement = getModuleElement(modulname);
             NodeList allUploadDates = moduleElement.getElementsByTagName("uploaddate");
             String value = allUploadDates.item((allUploadDates.getLength() - 1)).getFirstChild().getNodeValue();
-    
+
             retValue = m_dateFormat.parse(value).getTime();
         } catch (Exception exc) {
             // ignore the exception - reg is not welformed
         }
         return retValue;
     }
-    
+
     /**
      * Returns the user-name of the user who had uploaded the module.
      *
@@ -1392,7 +1355,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         return retValue;
     }
-    
+
     /**
      * Returns the name of the view, that is implemented by the module.
      *
@@ -1410,7 +1373,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         return retValue;
     }
-    
+
     /**
      * Returns the url to the view-url for the module within the system.
      *
@@ -1440,8 +1403,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             NodeList classList = m_xmlReg.getElementsByTagName("lifecycleclass");
             for (int x = 0; x < classList.getLength(); x++) {
                 try {
-                    String name =
-                        ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                    String name = ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
                     classes.addElement(name);
                 } catch (Exception exc) {
                     // ignore the exception and try the next view-pair.
@@ -1495,12 +1457,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                         methodValue = "";
                     }
                     if (methodValue.equals(requiredMethod)) {
-                        String name =
-                            ((Element)classList.item(x))
-                                .getElementsByTagName("name")
-                                .item(0)
-                                .getFirstChild()
-                                .getNodeValue();
+                        String name = ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
                         if ((name != null) && (!"".equals(name)))
                             classes.addElement(name);
                     }
@@ -1529,12 +1486,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 NodeList classList = ((Element)m_modules.get(nicename)).getElementsByTagName("publishclass");
                 if (classList.getLength() > 0) {
                     try {
-                        String classname =
-                            ((Element)classList.item(0))
-                                .getElementsByTagName("name")
-                                .item(0)
-                                .getFirstChild()
-                                .getNodeValue();
+                        String classname = ((Element)classList.item(0)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
                         if (classname != null && !"".equalsIgnoreCase(classname)) {
                             classes.put(nicename, classname);
                         }
@@ -1557,16 +1509,16 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * @return Hashtable The exportpoints and the paths.
      */
     public Hashtable getExportpoints() {
-        if((m_exportpoints == null) || (m_exportpoints.size() == 0)){
+        if ((m_exportpoints == null) || (m_exportpoints.size() == 0)) {
             m_exportpoints = new Hashtable();
             try {
                 NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
                 for (int x = 0; x < exportpointsList.getLength(); x++) {
                     try {
-                        String curExportpoint = ((Element) exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
-                        String curPath = ((Element) exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
+                        String curExportpoint = ((Element)exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
+                        String curPath = ((Element)exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
                         m_exportpoints.put(curExportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(curPath));
-                    } catch(Exception exc) {
+                    } catch (Exception exc) {
                         exc.printStackTrace();
                         // ignore the exception and try the next view-pair.
                     }
@@ -1576,7 +1528,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 // no return-values
             }
         }
-    
+
         return m_exportpoints;
     }
 
@@ -1623,15 +1575,39 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         }
         return result;
     }
-    
+
     /**
      * @see com.opencms.file.I_CmsRegistry#getResourceLoaders()
      */
     public List getResourceLoaders() {
+        return getSystemSubNodes("resourceloader");
+    }
+
+    /**
+     * @see com.opencms.file.I_CmsRegistry#getSynchronizeModifications()
+     */
+    public List getSynchronizeModifications() {
+        return getSystemSubNodesClasses("synchronizemodifications");
+    }
+
+    /**
+     * @see com.opencms.file.I_CmsRegistry#getCheckResource()
+     */
+    public List getCheckResource() {
+        return getSystemSubNodesClasses("checkresource");
+    }
+
+    /**
+     * Returns a list of all node values below a given system node.<p>
+     * 
+     * @param node the system node to get all values below.
+     * @return list of Strings
+     */
+    private List getSystemSubNodes(String node) {
         List result = new ArrayList();
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
-            NodeList resTypes = systemElement.getElementsByTagName("resourceloader").item(0).getChildNodes();
+            NodeList resTypes = systemElement.getElementsByTagName(node).item(0).getChildNodes();
             for (int x = 0; x < resTypes.getLength(); x++) {
                 try {
                     String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
@@ -1646,7 +1622,31 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             System.err.println(e);
         }
         return result;
-    } 
+    }
+
+    /**
+     * Returns a list of all node values classes below a given system node.<p>
+     * 
+     * @param node the system node to get all values below.
+     * @return list of class instances
+     */
+    private List getSystemSubNodesClasses(String node) {
+        List result = new ArrayList();
+        // get all class names form the registry
+        Iterator i = getSystemSubNodes(node).iterator();
+        while (i.hasNext()) {
+            String classname = (String)i.next();
+            try {
+                result.add(Class.forName(classname).newInstance());
+                if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                    A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification init : " + classname + " instanciated");
+            } catch (Exception e1) {
+                if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                    A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification init : non-critical error " + e1.toString());
+            }
+        }
+        return result;
+    }
 
     /**
      * Returns a value for a system-key.
@@ -1708,10 +1708,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             NodeList viewList = m_xmlReg.getElementsByTagName("view");
             for (int x = 0; x < viewList.getLength(); x++) {
                 try {
-                    String name =
-                        ((Element)viewList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                    String url =
-                        ((Element)viewList.item(x)).getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
+                    String name = ((Element)viewList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                    String url = ((Element)viewList.item(x)).getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
                     views.addElement(name);
                     urls.addElement(url);
                 } catch (Exception exc) {
@@ -1732,7 +1730,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public String getXmlDocumentTagName() {
         return "registry";
     }
-    
+
     /**
      * Returns true if the user has write-access to the registry. Otherwise false.
      * @return true if access is granted, else false.
@@ -1755,7 +1753,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         Element newModule = getModuleElementFromImport(moduleZip);
         return checkDependencies(newModule, replaceMode);
     }
-    
+
     /**
      *  Checks for files that already exist in the system but should be replaced by the module.
      *
@@ -1764,11 +1762,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public Vector importGetConflictingFileNames(String moduleZip) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException(
-                "No access to perform the action 'getConflictingFileNames'",
-                CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
         }
-    
+
         CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", new CmsShellReport());
         return cmsImport.getConflictingFilenames();
     }
@@ -1788,21 +1784,22 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public Map importGetModuleInfo(String moduleZip) {
         // read module node from import
         Element newModule = getModuleElementFromImport(moduleZip);
-        
+
         // get module name
         String moduleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-        
+
         // get module type
-        String moduleType = null; 
+        String moduleType = null;
         NodeList list = newModule.getChildNodes();
-        for (int i=0; i<list.getLength(); i++) {
+        for (int i = 0; i < list.getLength(); i++) {
             Element e = (Element)list.item(i);
             if ("type".equals(e.getNodeName())) {
                 moduleType = e.getFirstChild().getNodeValue();
                 break;
             }
-        }  
-        if (moduleType == null) moduleType = C_MODULE_TYPE_TRADITIONAL;
+        }
+        if (moduleType == null)
+            moduleType = C_MODULE_TYPE_TRADITIONAL;
 
         // fill return value map 
         HashMap map = new HashMap();
@@ -1811,7 +1808,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
 
         return map;
     }
-    
+
     /**
      *  Returns all files that are needed to create a project for the module-import.
      *
@@ -1820,11 +1817,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public Vector importGetResourcesForProject(String moduleZip) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException(
-                "No access to perform the action 'importGetResourcesForProject'",
-                CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("No access to perform the action 'importGetResourcesForProject'", CmsException.C_REGISTRY_ERROR);
         }
-    
+
         CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", new CmsShellReport());
         return cmsImport.getResourcesForProject();
     }
@@ -1837,41 +1832,39 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public synchronized void importModule(String moduleZip, Vector exclusion, I_CmsReport report) throws CmsException {
         // check if the user is allowed to import a module.
-    
+
         if (!hasAccess()) {
             throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
         }
         Element newModule = getModuleElementFromImport(moduleZip);
         String newModuleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
         String newModuleVersion = newModule.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
-    
+
         // does the module already exist?
         if (moduleExists(newModuleName)) {
             throw new CmsException("The module " + newModuleName + " exists already", CmsException.C_REGISTRY_ERROR);
         }
         Vector dependencies = checkDependencies(newModule, false);
-    
+
         // are there any dependencies not fulfilled?
         if (dependencies.size() != 0) {
             throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
         }
-    
+
         Vector resourceNames = new Vector();
         Vector resourceCodes = new Vector();
-    
+
         String propertyName = null;
         String propertyValue = null;
-    
+
         // check for module type SIMPLE or TRADITIONAL
         boolean isSimpleModule = false;
         try {
-            isSimpleModule =
-                CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(
-                    newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
+            isSimpleModule = CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
         } catch (Exception e) {
             // value of "isSimpleModule" will be false, so traditional module is the default         
         }
-        
+
         if (isSimpleModule) {
             // add all 5.0 default directories to the exclusion list
             // otherwise all of these folders would be locked during import, which is usually not 
@@ -1890,39 +1883,38 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_HTML);
             exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD);
             exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS);
-        } else {    
+        } else {
             // traditional module requires weird "module" property             
             // get list of unwanted properties
-            List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
-            if ((deleteProperties != null) && (deleteProperties.contains("module")))  {
+            List deleteProperties = (List)A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+            if ((deleteProperties != null) && (deleteProperties.contains("module"))) {
                 propertyName = propertyValue = null;
             } else {
                 propertyName = "module";
                 propertyValue = newModuleName + "_" + newModuleVersion;
             }
         }
-            
+
         CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", report);
         cmsImport.importResources(exclusion, resourceNames, resourceCodes, propertyName, propertyValue);
-    
+
         // import the module data into the registry
         Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
         // set the import-date
         Node uploadDate = newModule.getOwnerDocument().createElement("uploaddate");
-    
+
         uploadDate.appendChild(newModule.getOwnerDocument().createTextNode(m_dateFormat.format(new java.util.Date())));
         newModule.appendChild(uploadDate);
-    
+
         // set the import-user
         Node uploadBy = newModule.getOwnerDocument().createElement("uploadedby");
-        uploadBy.appendChild(
-            newModule.getOwnerDocument().createTextNode(m_cms.getRequestContext().currentUser().getName()));
+        uploadBy.appendChild(newModule.getOwnerDocument().createTextNode(m_cms.getRequestContext().currentUser().getName()));
         newModule.appendChild(uploadBy);
-    
+
         if (!isSimpleModule) {
             // set the files
             Node files = newModule.getOwnerDocument().createElement("files");
-    
+
             // store the resources-names that are depending to the module
             for (int i = 0; i < resourceNames.size(); i++) {
                 Node file = newModule.getOwnerDocument().createElement("file");
@@ -1933,31 +1925,27 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 file.appendChild(checksum);
                 name.appendChild(newModule.getOwnerDocument().createTextNode((String)resourceNames.elementAt(i)));
                 // Encoding project:
-                checksum.appendChild(
-                    newModule.getOwnerDocument().createTextNode(
-                        com.opencms.util.Encoder.escape(
-                            (String)resourceCodes.elementAt(i),
-                            m_cms.getRequestContext().getEncoding())));
+                checksum.appendChild(newModule.getOwnerDocument().createTextNode(com.opencms.util.Encoder.escape((String)resourceCodes.elementAt(i), m_cms.getRequestContext().getEncoding())));
             }
-    
+
             // append the files to the module-entry
             newModule.appendChild(files);
         }
-    
+
         // append the module data to the registry
         Node newNode = getXmlParser().importNode(m_xmlReg, newModule);
         regModules.appendChild(newNode);
         saveRegistry();
-    
+
         try {
             init(false);
         } catch (Exception exc) {
             throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
         }
-    
+
         // try to invoke the event-method for upload on this calss.
         Class eventClass = getModuleMaintenanceEventClass(newModuleName);
-    
+
         try {
             Class declaration[] = { CmsObject.class };
             Object arguments[] = { m_cms };
@@ -1989,7 +1977,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             m_modules.put(moduleName, module);
         }
     }
-    
+
     /**
      * Checks if the module exists already in the repository.
      *
@@ -1999,7 +1987,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public boolean moduleExists(String modulename) {
         return m_modules.containsKey(modulename);
     }
-    
+
     /**
      *  Saves the registry and stores it to the registry-file.
      */
@@ -2013,7 +2001,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             init(false);
             if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsRegistry] Saved the registry");
-                            
+
         } catch (Exception exc) {
             throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
         }
@@ -2028,7 +2016,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleAuthor(String modulename, String author) throws CmsException {
         setModuleData(modulename, "author", author);
     }
-    
+
     /**
      * This method sets the email of author of the module.
      *
@@ -2038,7 +2026,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleAuthorEmail(String modulename, String email) throws CmsException {
         setModuleData(modulename, "email", email);
     }
-    
+
     /**
      * Sets the create date of the module.
      *
@@ -2048,7 +2036,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleCreateDate(String modulname, long createdate) throws CmsException {
         setModuleData(modulname, "creationdate", m_dateFormat.format(new Date(createdate)));
     }
-    
+
     /**
      * Sets the create date of the module.
      *
@@ -2058,7 +2046,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleCreateDate(String modulname, String createdate) throws CmsException {
         setModuleData(modulname, "creationdate", createdate);
     }
-    
+
     /**
      * Private method to set module data like author.
      *
@@ -2080,7 +2068,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             // ignore the exception - registry is not wellformed
         }
     }
-    
+
     /**
      * Sets the module dependencies for the module.
      *
@@ -2089,22 +2077,19 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
      * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
      */
-    public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions)
-        throws CmsException {
+    public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException(
-                "No access to perform the action 'setModuleDependencies'",
-                CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("No access to perform the action 'setModuleDependencies'", CmsException.C_REGISTRY_ERROR);
         }
         try {
             Element module = getModuleElement(modulename);
             Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
-    
+
             // delete all subnodes
             while (dependencies.hasChildNodes()) {
                 dependencies.removeChild(dependencies.getFirstChild());
             }
-    
+
             // create the new dependencies
             for (int i = 0; i < modules.size(); i++) {
                 Element dependency = m_xmlReg.createElement("dependency");
@@ -2119,7 +2104,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 dependency.appendChild(min);
                 dependency.appendChild(max);
             }
-    
+
             // save the registry
             saveRegistry();
         } catch (Exception exc) {
@@ -2136,7 +2121,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleDescription(String module, String description) throws CmsException {
         setModuleData(module, "description", description);
     }
-    
+
     /**
      * Sets the url to the documentation of the module.
      *
@@ -2146,7 +2131,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleDocumentPath(String modulename, String url) throws CmsException {
         setModuleData(modulename, "documentation", url);
     }
-    
+
     /**
      * Sets the classname, that receives all maintenance-events for the module.
      *
@@ -2194,7 +2179,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleNiceName(String module, String nicename) throws CmsException {
         setModuleData(module, "nicename", nicename);
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2205,7 +2190,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, byte value) throws CmsException {
         setModuleParameter(modulename, parameter, value + "");
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2216,7 +2201,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, double value) throws CmsException {
         setModuleParameter(modulename, parameter, value + "");
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2227,7 +2212,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, float value) throws CmsException {
         setModuleParameter(modulename, parameter, value + "");
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2238,7 +2223,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, int value) throws CmsException {
         setModuleParameter(modulename, parameter, value + "");
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2249,7 +2234,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, long value) throws CmsException {
         setModuleParameter(modulename, parameter, value + "");
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2260,7 +2245,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, Boolean value) throws CmsException {
         setModuleParameter(modulename, parameter, value.toString());
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2271,7 +2256,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, Byte value) throws CmsException {
         setModuleParameter(modulename, parameter, value.toString());
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2282,7 +2267,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, Double value) throws CmsException {
         setModuleParameter(modulename, parameter, value.toString());
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2293,7 +2278,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, Float value) throws CmsException {
         setModuleParameter(modulename, parameter, value.toString());
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2304,7 +2289,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, Integer value) throws CmsException {
         setModuleParameter(modulename, parameter, value.toString());
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2315,7 +2300,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, Long value) throws CmsException {
         setModuleParameter(modulename, parameter, value.toString());
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2325,20 +2310,18 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public void setModuleParameter(String modulename, String parameter, String value) throws CmsException {
         // check if the user is allowed to set parameters
-    
+
         if (!hasAccess()) {
             throw new CmsException("No access to perform the action 'setModuleParameter'", CmsException.C_REGISTRY_ERROR);
         }
         try {
             Element param = getModuleParameterElement(modulename, parameter);
             if (!checkType(getModuleParameterType(modulename, parameter), value)) {
-                throw new CmsException(
-                    "wrong number format for " + parameter + " -> " + value,
-                    CmsException.C_REGISTRY_ERROR);
+                throw new CmsException("wrong number format for " + parameter + " -> " + value, CmsException.C_REGISTRY_ERROR);
             }
             param.getElementsByTagName("value").item(0).getFirstChild().setNodeValue(value);
             saveRegistry();
-    
+
             // try to invoke the event-method for setting parameters on this class.
             Class eventClass = getModuleMaintenanceEventClass(modulename);
             try {
@@ -2349,17 +2332,14 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             } catch (Exception exc) {
                 // ignore the exception.
             }
-    
+
         } catch (CmsException exc) {
             throw exc;
         } catch (Exception exc) {
-            throw new CmsException(
-                "couldn't set parameter " + parameter + " for module " + modulename + " to vale " + value,
-                CmsException.C_REGISTRY_ERROR,
-                exc);
+            throw new CmsException("couldn't set parameter " + parameter + " for module " + modulename + " to vale " + value, CmsException.C_REGISTRY_ERROR, exc);
         }
     }
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -2370,7 +2350,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException {
         setModuleParameter(modulename, parameter, value + "");
     }
-    
+
     /**
      * Sets the module dependencies for the module.
      *
@@ -2380,12 +2360,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * @param types Vector with parametertypes (string, float,...)
      * @param values Vector with defaultvalues for parameters
      */
-    public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values)
-        throws CmsException {
+    public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException(
-                "No access to perform the action 'setModuleParameterdef'",
-                CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("No access to perform the action 'setModuleParameterdef'", CmsException.C_REGISTRY_ERROR);
         }
         try {
             Element module = getModuleElement(modulename);
@@ -2394,7 +2371,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             while (params.hasChildNodes()) {
                 params.removeChild(params.getFirstChild());
             }
-    
+
             // create the new parameters
             for (int i = 0; i < names.size(); i++) {
                 Element para = m_xmlReg.createElement("para");
@@ -2412,10 +2389,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 para.appendChild(type);
                 para.appendChild(value);
             }
-    
+
             // save the registry
             saveRegistry();
-    
+
             // try to invoke the event-method for setting parameters on this class.
             Class eventClass = getModuleMaintenanceEventClass(modulename);
             try {
@@ -2439,26 +2416,24 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public void setModuleRepositories(String modulename, String[] repositories) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException(
-                "No access to perform the action 'setModuleRepositories'",
-                CmsException.C_REGISTRY_ERROR);
+            throw new CmsException("No access to perform the action 'setModuleRepositories'", CmsException.C_REGISTRY_ERROR);
         }
         try {
             Element module = getModuleElement(modulename);
             Element repository = (Element) (module.getElementsByTagName("repository").item(0));
-    
+
             // delete all subnodes
             while (repository.hasChildNodes()) {
                 repository.removeChild(repository.getFirstChild());
             }
-    
+
             // create the new repository
             for (int i = 0; i < repositories.length; i++) {
                 Element path = m_xmlReg.createElement("path");
                 path.appendChild(m_xmlReg.createTextNode(repositories[i]));
                 repository.appendChild(path);
             }
-    
+
             // save the registry
             saveRegistry();
         } catch (Exception exc) {
@@ -2572,7 +2547,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             // ignore the exception - registry is not wellformed
         }
     }
-    
+
     /**
      * Creates or replaces a textvalue for a parent node.
      * @param Node to set the textvalue.
@@ -2594,58 +2569,56 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * Returns the value of the "type" node of a module subtree in the registry.
      * @return the value of the "type" node of a module
      */
-    public String getModuleType( String theModulename ) {
+    public String getModuleType(String theModulename) {
         String moduleType = null;
-        
-        try {           
-            if ((moduleType=this.getModuleData(theModulename,"type"))==null) {
+
+        try {
+            if ((moduleType = this.getModuleData(theModulename, "type")) == null) {
                 // the default type is "traditional"
-                moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;                
+                moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // the default type is "traditional"
             moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
         }
-        
+
         return moduleType;
     }
-    
+
     /**
      * Sets the type for a given module.<p>
      * 
      * @param theModuleName the name of the module
      * @param theModuleType the new type of the module
      */
-    public void setModuleType( String theModulename, String theModuleType ) {
-        if (theModuleType==null || theModuleType.equals("")) {
+    public void setModuleType(String theModulename, String theModuleType) {
+        if (theModuleType == null || theModuleType.equals("")) {
             theModuleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-        }        
+        }
         try {
             // for backward compatibility issues: check if the module has already
             // a type node or not, add a type node in this case...            
-            Element moduleElement = getModuleElement( theModulename );
-            NodeList list = moduleElement.getChildNodes();            
+            Element moduleElement = getModuleElement(theModulename);
+            NodeList list = moduleElement.getChildNodes();
             Node typeNode = null;
-            for (int i=0; i<list.getLength(); i++) {
-                Element e = (Element) list.item(i);
+            for (int i = 0; i < list.getLength(); i++) {
+                Element e = (Element)list.item(i);
                 if ("type".equals(e.getNodeName())) {
-                    typeNode = (Node) e;
+                    typeNode = (Node)e;
                     i = list.getLength();
                 }
-            }  
-                        
-            if (typeNode==null) {
-                Element newTypeNode = m_xmlReg.createElement( "type" );
+            }
+
+            if (typeNode == null) {
+                Element newTypeNode = m_xmlReg.createElement("type");
                 Node firstNode = moduleElement.getFirstChild();
-                moduleElement.insertBefore(newTypeNode, firstNode);         
-            }      
-            
+                moduleElement.insertBefore(newTypeNode, firstNode);
+            }
+
             // now it is save to set the value of the module type node                    
-            this.setModuleData( theModulename, "type", theModuleType );
-        }
-        catch (CmsException e) {
+            this.setModuleData(theModulename, "type", theModuleType);
+        } catch (CmsException e) {
             // we don't have valid permissions for this operation
         }
-    }    
+    }
 }

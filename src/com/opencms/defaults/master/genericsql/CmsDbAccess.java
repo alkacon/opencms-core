@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/16 16:25:27 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -485,7 +485,7 @@ public class CmsDbAccess {
                 cms.setContextToCos();
                 Vector resources = new Vector();
                 try {
-                    resources = cms.getResourcesWithProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId+"", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId+"", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 } catch(CmsException exc) {
                     // ignore the exception - switch to next channel
                 }
@@ -874,7 +874,7 @@ public class CmsDbAccess {
                     // read the resource by property "channelid"
                     Vector resources = new Vector();
                     try {
-                        resources = cms.getResourcesWithProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId+"", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                        resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId+"", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     } catch(CmsException exc) {
                         // ignore the exception - read the next one
                     }

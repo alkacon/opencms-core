@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsSynchonizeModification.java,v $
- * Date   : $Date: 2003/07/16 13:01:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/16 16:25:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,13 @@ import java.io.File;
  * in the OpenCms
  * registry.xml at the following nodes: <br>
  * 
- * <syncmodification><br>
- * <classx>[your_complete_classname_incl._packages]</classx><br>
- * </syncmodification><br><br>
+ * <synchronizemodifications><br>
+ * <class>[your_complete_classname_incl._packages]</class><br>
+ * </synchronizemodifications><br><br>
  * 
- * Where the "x" in "classx" is a number (1,2,3,...)
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsSynchonizeModification {
 

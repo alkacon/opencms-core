@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/16 14:30:03 $
-* Version: $Revision: 1.135 $
+* Date   : $Date: 2003/07/16 16:25:27 $
+* Version: $Revision: 1.136 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,14 @@
 
 package com.opencms.core;
 
-import org.opencms.db.CmsDriverManager;
-import org.opencms.loader.CmsJspLoader;
-
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.exceptions.CmsCheckResourceException;
+import org.opencms.db.CmsDriverManager;
+import org.opencms.loader.CmsJspLoader;
+
 import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.flex.util.CmsResourceTranslator;
@@ -82,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.135 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.136 $ $Date: 2003/07/16 16:25:27 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -572,8 +573,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
         }
         
+       
         // initialize 1 instance per class listed in the checkresource node
         try{
+                       
+            
             Hashtable checkresourceNode = getRegistry().getSystemValues( "checkresource" );
             if (checkresourceNode!=null) {
                 for (int i=1;i<=checkresourceNode.size();i++) {
@@ -672,6 +676,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             
     
             // initialize 1 instance per class listed in the startup node
+                        
             try{
                 Hashtable startupNode = getRegistry().getSystemValues( "startup" );
                 if (startupNode!=null) {
@@ -795,18 +800,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 
                 try {
                     // Try to read the requested resource name as a folder
-                    cms.readFolder(resourceName);
+                    CmsFolder folder = cms.readFolder(resourceName);
                     // If above call did not throw an exception the folder
                     // was sucessfully read, so lets go on check for default 
                     // pages in the folder now
-
-                    // Ensure folder name ends with a "/"                    
-                    if (! resourceName.endsWith("/")) resourceName += "/";
+                    
                     // Check if C_PROPERTY_DEFAULT_FILE is set on folder
-                    String defaultFileName = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+                    String defaultFileName = cms.readProperty(CmsFolder.getPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
                     if (defaultFileName != null) {
                         // Property was set, so look up this file first
-                        String tmpResourceName = resourceName + defaultFileName;
+                        String tmpResourceName = CmsFolder.getPath(cms.readAbsolutePath(folder))+ defaultFileName;
+                        
                         try {
                             file = cms.readFile(tmpResourceName);
                             // No exception? So we have found the default file                         
@@ -821,7 +825,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
                     if (file == null) {
                         // No luck with the property, so check default files specified in opencms.properties (if required)         
                         for (int i=0; i<m_defaultFilenames.length; i++) {
-                            String tmpResourceName = resourceName + m_defaultFilenames[i];
+                            String tmpResourceName = CmsFolder.getPath(cms.readAbsolutePath(folder)) + m_defaultFilenames[i];
                             try {
                                 file = cms.readFile(tmpResourceName);
                                 // No exception? So we have found the default file                         

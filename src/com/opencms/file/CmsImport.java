@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/16 13:36:30 $
-* Version: $Revision: 1.110 $
+* Date   : $Date: 2003/07/16 16:25:27 $
+* Version: $Revision: 1.111 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,13 +75,13 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.110 $ $Date: 2003/07/16 13:36:30 $
+ * @version $Revision: 1.111 $ $Date: 2003/07/16 16:25:27 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
     /** The algorithm for the message digest */
     public static final String C_IMPORT_DIGEST = "MD5";
-    
+
     /** The cms contect to do the operations on the VFS/COS with */
     protected CmsObject m_cms;
 
@@ -117,7 +117,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
     /** The path to the bodies in OpenCms 4.x */
     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
-    
+
     /** The path to the bodies in OpenCms 5.x */
     private static final String C_VFS_PATH_BODIES = "system/bodies/";
 
@@ -147,7 +147,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
     /** folder storage for page file and body coversion */
     private List m_folderStorage = new LinkedList();
-
 
     /** Debug flag to show debug output */
     private static final int DEBUG = 0;
@@ -552,13 +551,12 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         String fullname = null;
         CmsResource res = null;
 
-
         try {
             if (m_importingChannelData) {
                 // try to read an existing channel to get the channel id
                 String channelId = null;
                 try {
-                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (! destination.endsWith(C_FOLDER_SEPARATOR))) {
+                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(C_FOLDER_SEPARATOR))) {
                         destination += C_FOLDER_SEPARATOR;
                     }
                     CmsResource channel = m_cms.readFileHeader(C_ROOT + destination);
@@ -603,19 +601,19 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // if the import is older than version 3, some additional conversions must be made
             if (m_importVersion < 3) {
                 if ("page".equals(type)) {
-                    
+
                     // if the imported resource is a page, store its path inside the VFS for later
                     // integration with its body
                     m_pageStorage.add(destination);
                 } else if ("folder".equals(type)) {
                     // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
                     // must be remove since we do not use body files anymore.
-                    if (destination.startsWith(C_VFS_PATH_BODIES)) {                    
+                    if (destination.startsWith(C_VFS_PATH_BODIES)) {
                         m_folderStorage.add(destination);
-                        
+
                     }
                 }
-                    
+
             }
 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
@@ -853,16 +851,16 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // version is below version 3
             if (m_importVersion < 3) {
                 // only do the conversions if the new resourcetype (CmsResourceTypeNewPage.) is available 
-                CmsResource newpage=null;
+                CmsResource newpage = null;
                 try {
-                    newpage=m_cms.readFileHeader("/system/workplace/restypes/"+CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
+                    newpage = m_cms.readFileHeader("/system/workplace/restypes/" + CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
                 } catch (CmsException e1) {
-                // do nothing, 
+                    // do nothing, 
                 }
-                if (newpage!=null) {
+                if (newpage != null) {
                     mergePageFiles();
                     removeFolders();
-                } 
+                }
             }
 
         } catch (Exception exc) {
@@ -873,7 +871,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_cms.setContextToVfs();
         }
     }
-
 
     /**
      * Merges the page control files and their corresponding bodies into a single files.<p>
@@ -886,26 +883,24 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         // check if the template property exists. If not, create it.
         try {
-            m_cms.readPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY , CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.readPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         } catch (CmsException e) {
             // the template propertydefintion does not exist. So create it.
-            m_cms.createPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY , CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.createPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         }
         // copy all propertydefinitions of the old page to the new page
-        Vector definitions= m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+        Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
 
-        Iterator j=definitions.iterator();   
-        while (j.hasNext()) {           
-            CmsPropertydefinition definition=(CmsPropertydefinition)j.next();
-            System.err.println("creating..."+definition);  
+        Iterator j = definitions.iterator();
+        while (j.hasNext()) {
+            CmsPropertydefinition definition = (CmsPropertydefinition)j.next();
             // check if this propertydef already exits
             try {
                 m_cms.readPropertydefinition(definition.getName(), CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
-            } catch (Exception e) {                    
+            } catch (Exception e) {
                 m_cms.createPropertydefinition(definition.getName(), CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
             }
-            System.err.println("done");  
-        }        
+        }
 
         // iterate through the list of all page controlfiles found during the import process
         int size = m_pageStorage.size();
@@ -921,9 +916,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 resname = "/" + resname;
             }
             m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
-            m_report.print(m_report.key("report.merge")+" "+ resname, I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(m_report.key("report.merge") + " " + resname, I_CmsReport.C_FORMAT_NOTE);
 
-          
             // get the header file
             CmsFile pagefile = m_cms.readFile(resname);
             // now parse the content of the headerfile to identify the master template used by this
@@ -931,8 +925,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             InputStream in = new ByteArrayInputStream(pagefile.getContents());
             Document contentXml;
             CmsFile bodyfile;
-            
-            try {               
+
+            try {
                 String mastertemplate = "";
                 String bodyname = "";
                 // create DOM document
@@ -949,49 +943,48 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // this node contains the name of the body file.
                 NodeList bodyNode = contentXml.getElementsByTagName("TEMPLATE");
                 // there is only one <masterTemplate> allowed
-                if (bodyNode.getLength() == 1) {               
+                if (bodyNode.getLength() == 1) {
                     // get the name of the mastertemplate
                     bodyname = bodyNode.item(0).getFirstChild().getNodeValue();
                     // lock the resource, so that it can be manipulated
                     m_cms.lockResource(resname);
                     // get all properties                   
-                    Map properties=m_cms.readProperties(resname);
+                    Map properties = m_cms.readProperties(resname);
                     // now get the content of the bodyfile and insert it into the control file                   
                     bodyfile = m_cms.readFile(bodyname);
                     pagefile.setContents(bodyfile.getContents());
                     //new set the type to new page                               
                     pagefile.setType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
                     // write all changes                     
-                    m_cms.writeFile(pagefile);                
+                    m_cms.writeFile(pagefile);
                     // add the template property to the controlfile
-                    m_cms.writeProperty(resname, C_XML_CONTROL_TEMPLATE_PROPERTY , mastertemplate);                    
-                    m_cms.writeProperties(resname, properties);                                           
+                    m_cms.writeProperty(resname, C_XML_CONTROL_TEMPLATE_PROPERTY, mastertemplate);
+                    m_cms.writeProperties(resname, properties);
                     // don, ulock the resource                   
-                    m_cms.unlockResource(resname, false);               
+                    m_cms.unlockResource(resname, false);
                     // finally delete the old body file, it is not needed anymore
-                    m_cms.lockResource(bodyname);                    
+                    m_cms.lockResource(bodyname);
                     m_cms.deleteResource(bodyname);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                    
+                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 }
 
-            } catch (Exception e) {                          
+            } catch (Exception e) {
                 throw new CmsException(e.toString());
             } finally {
                 // free mem
-                pagefile=null;
-                in=null;
-                contentXml=null;
-                bodyfile=null;           
+                pagefile = null;
+                in = null;
+                contentXml = null;
+                bodyfile = null;
             }
-            
+
             counter++;
-           
+
         }
         // free mem
-        m_pageStorage=null;
+        m_pageStorage = null;
 
     }
-
 
     /**
      * Deletes the folder structure which has been creating while importing the body files..<p>
@@ -1002,29 +995,29 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      */
     private void removeFolders() throws CmsException {
         int size = m_folderStorage.size();
-        
+
         m_report.println(m_report.key("report.delfolder_start"), I_CmsReport.C_FORMAT_HEADLINE);
         // iterate though all collected folders. Iteration must start at the end of the list,
         // as folders habe to be deleted in the reverse order.
         ListIterator i = m_folderStorage.listIterator(size);
         int counter = 1;
         while (i.hasPrevious()) {
-            String resname = (String)i.previous();      
-            resname="/"+resname+"/";           
+            String resname = (String)i.previous();
+            resname = "/" + resname + "/";
             // now check if the folder is really empty. Only delete empty folders
-            List files=m_cms.getFilesInFolder(resname, false);
-   
-            if (files.size()==0) {
-                List folders=m_cms.getSubFolders(resname, false);                                     
-                if (folders.size()==0) {                                     
+            List files = m_cms.getFilesInFolder(resname, false);
+
+            if (files.size() == 0) {
+                List folders = m_cms.getSubFolders(resname, false);
+                if (folders.size() == 0) {
                     m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
-                    m_report.print(m_report.key("report.delfolder")+" "+ resname, I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("report.delfolder") + " " + resname, I_CmsReport.C_FORMAT_NOTE);
                     m_cms.lockResource(resname);
                     m_cms.deleteResource(resname);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                     counter++;
                 }
-            }           
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2003/07/16 16:25:27 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.56 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.57 $ $Date: 2003/07/16 16:25:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -339,7 +339,7 @@ public class CmsDriverManager extends Object {
         driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
         A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
         CmsIdGenerator.setDefaultPool(driverPoolUrl);
-        
+
         // return the configured driver manager
         return driverManager;
     }
@@ -3622,7 +3622,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public Vector getResourcesWithProperty(CmsRequestContext context, String propertyDefinition) throws CmsException {
+    public Vector getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition) throws CmsException {
         return m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition);
     }
 
@@ -3665,7 +3665,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public Vector getResourcesWithProperty(CmsRequestContext context, String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
+    public Vector getResourcesWithPropertyDefintion(CmsRequestContext context, String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
         return m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition, propertyValue, resourceType);
     }
 
@@ -4003,7 +4003,7 @@ public class CmsDriverManager extends Object {
         Enumeration e = allResources.elements();
         String lastcheck = "#"; // just a char that is not valid in a filename
         while (e.hasMoreElements()) {
-            CmsResource res = (CmsResource)e.nextElement();
+            CmsResource res = (CmsResource) e.nextElement();
             if (! context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
                 if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                     visibleResources.addElement(res);
@@ -6295,7 +6295,6 @@ public class CmsDriverManager extends Object {
         // the user ID of an upper locked folder
         CmsUUID lockedByUserId = CmsUUID.getNullUUID();
         */
-
 
         tokens = new StringTokenizer(path, I_CmsConstants.C_FOLDER_SEPARATOR);
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/16 16:25:27 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.46 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/16 16:25:27 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -319,7 +319,7 @@ public class CmsStaticExport implements I_CmsConstants{
             // get the resources with the property exportname
             Vector resWithProp = null;
             if(!"false_ssl".equalsIgnoreCase(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())){
-                resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORTNAME);
+                resWithProp = m_cms.getResourcesWithPropertyDefinition(C_PROPERTY_EXPORTNAME);
                 // generate the dynamic rules for the nice exportnames
                 if(resWithProp != null && resWithProp.size() != 0){
                     m_dynamicExportNameRules = new Vector();
@@ -347,7 +347,7 @@ public class CmsStaticExport implements I_CmsConstants{
         // now the rules for linking between static and dynamic pages
         try{
             // get the resources with the property "export"
-            Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORT);
+            Vector resWithProp = m_cms.getResourcesWithPropertyDefinition(C_PROPERTY_EXPORT);
             // generate the rules
             if(resWithProp != null && resWithProp.size() != 0){
                 m_dynamicExportRulesExtern = new Vector();

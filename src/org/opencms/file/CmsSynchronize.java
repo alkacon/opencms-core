@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.12 $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/16 16:25:27 $
+ * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/16 16:25:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -62,7 +61,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/16 16:25:27 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -135,7 +134,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         // has to be generatetd. 
         // This has only made once.
         if (m_synchronizeModifications == null) {
-            m_synchronizeModifications = createSyncModificationImplentations();
+            m_synchronizeModifications = cms.getRegistry().getSynchronizeModifications();
         }
 
         m_synchronizePath = m_cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PATH);
@@ -519,6 +518,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                         try {
                             ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
+                            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                                A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class : exportTo FS " + res.getFullResourceName() + ":" + e.toString());
                             break;
                         }
                     }
@@ -571,6 +572,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 try {
                     ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
                 } catch (CmsSynchronizeException e) {
+                    if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                        A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class : updateFrom FS " + res.getFullResourceName() + ":" + e.toString());
                     break;
                 }
             }
@@ -753,39 +756,6 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
-     * Creates a list of class instances implmenting the I_CmsSyncModification 
-     * interface.<p>
-     * 
-     * Those classes are can be used to modify the resources during the sync 
-     * process.
-     * @return list of classes implmenting the I_CmsSyncModification interface
-     */
-    private List createSyncModificationImplentations() {
-        List interfaceList = new ArrayList();
-        // initialize 1 instance per class listed in the syncmodification node
-        try {
-            Hashtable syncmodificationNode = m_cms.getRegistry().getSystemValues("syncmodification");
-            if (syncmodificationNode != null) {
-                for (int i = 1; i <= syncmodificationNode.size(); i++) {
-                    String currentClass = (String)syncmodificationNode.get("class" + i);
-                    try {
-                        interfaceList.add(Class.forName(currentClass).newInstance());
-                        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                            A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class init : " + currentClass + " instanciated");
-                    } catch (Exception e1) {
-                        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                            A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class init : non-critical error " + e1.toString());
-                    }
-                }
-            }
-        } catch (Exception e2) {
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification  init : non-critical error " + e2.toString());
-        }
-        return interfaceList;
-    }
-
-    /**
      * Gets the corresponding file to a resource in the VFS. <p>
      * 
      * @param res path to the resource inside the VFS
@@ -830,6 +800,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             try {
                 translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
+                if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                    A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class : external translation " + name + ":" + e.toString());
                 break;
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/07/16 16:25:27 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,8 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2003/07/15 18:42:07 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.42 $ $Date: 2003/07/16 16:25:27 $
  */
 public interface I_CmsRegistry extends Cloneable {
 
@@ -73,16 +74,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(
-        String modulename,
-        String niceModulename,
-        String description,
-        String author,
-        String type,
-        Map exportPoints,
-        long createDate,
-        float version)
-        throws CmsException;
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, float version) throws CmsException;
 
     /**
      * This method creates a new module in the repository.
@@ -97,17 +89,8 @@ public interface I_CmsRegistry extends Cloneable {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(
-        String modulename,
-        String niceModulename,
-        String description,
-        String author,
-        String type,
-        Map exportPoints,
-        String createDate,
-        float version)
-        throws CmsException;
-    
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, float version) throws CmsException;
+
     /**
      * Checks which modules depend on this module.<p>
      * 
@@ -118,7 +101,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return a Vector with modulenames that depends on the overgiven module.
      */
     public Vector deleteCheckDependencies(String modulename, boolean replaceMode) throws CmsException;
-    
+
     /**
      * This method checks for conflicting files before the deletion of a module.
      * It uses several Vectors to return the different conflicting files.
@@ -130,15 +113,8 @@ public interface I_CmsRegistry extends Cloneable {
      * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
      * @param resourcesForProject a return value. The files that should be copied to a project to delete.
      */
-    public void deleteGetConflictingFileNames(
-        String modulename,
-        Vector filesWithProperty,
-        Vector missingFiles,
-        Vector wrongChecksum,
-        Vector filesInUse,
-        Vector resourcesForProject)
-        throws CmsException;
-        
+    public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException;
+
     /**
      * Deletes a module.<p>
      * 
@@ -152,14 +128,14 @@ public interface I_CmsRegistry extends Cloneable {
      * @throws CmsException in case of an error during deletion
      */
     public void deleteModule(String module, Vector exclusion, boolean replaceMode, I_CmsReport report) throws CmsException;
-    
+
     /**
      * Deletes the view for a module.
      *
      * @param String the name of the module.
      */
     public void deleteModuleView(String modulename) throws CmsException;
-    
+
     /**
      * This method exports a module to the filesystem.
      *
@@ -167,9 +143,8 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String[] an array of resources to be exported.
      * @param fileName the name of the file to write the export to.
      */
-    public void exportModule(String moduleName, String[] resources, String fileName, I_CmsReport report)
-        throws CmsException;
-        
+    public void exportModule(String moduleName, String[] resources, String fileName, I_CmsReport report) throws CmsException;
+
     /**
      * This method returns the author of the module.
      *
@@ -177,7 +152,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the author of the module.
      */
     public String getModuleAuthor(String modulename);
-    
+
     /**
      * This method returns the email of author of the module.
      *
@@ -185,7 +160,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the email of author of the module.
      */
     public String getModuleAuthorEmail(String modulename);
-    
+
     /**
      * Gets the create date of the module.
      *
@@ -193,7 +168,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return long the create date of the module.
      */
     public long getModuleCreateDate(String modulname);
-    
+
     /**
      * Returns the module dependencies for the module.
      *
@@ -204,7 +179,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return int the amount of dependencies for the module will be returned.
      */
     public int getModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions);
-    
+
     /**
      * Returns the description of the module.
      *
@@ -212,7 +187,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the description of the module.
      */
     public String getModuleDescription(String module);
-    
+
     /**
      * Gets the url to the documentation of the module.
      *
@@ -220,7 +195,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the url to the documentation of the module.
      */
     public String getModuleDocumentPath(String modulename);
-    
+
     /**
      * Returns all filenames and hashcodes belonging to the module.
      *
@@ -230,7 +205,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return the amount of entrys.
      */
     public int getModuleFiles(String modulename, Vector retNames, Vector retCodes);
-    
+
     /**
      * Returns the class, that receives all maintenance-events for the module.
      *
@@ -238,7 +213,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.Class that receives all maintenance-events for the module.
      */
     public Class getModuleMaintenanceEventClass(String modulname);
-    
+
     /**
      * Returns the name of the class, that receives all maintenance-events for the module.
      *
@@ -246,14 +221,14 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.Class that receives all maintenance-events for the module.
      */
     public String getModuleMaintenanceEventName(String modulname);
-    
+
     /**
      * Returns the names of all available modules.
      *
      * @return String[] the names of all available modules.
      */
     public Enumeration getModuleNames();
-    
+
     /**
      * Gets the nice name of the module.
      *
@@ -261,7 +236,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return String the nice name of the module.
      */
     public String getModuleNiceName(String module);
-    
+
     /**
      * Gets a parameter for a module.
      *
@@ -270,7 +245,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return value java.lang.String the value to set for the parameter.
      */
     public String getModuleParameter(String modulename, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -279,7 +254,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public boolean getModuleParameterBoolean(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -289,7 +264,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public Boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -299,7 +274,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public boolean getModuleParameterBoolean(String modulname, String parameter, boolean defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -309,7 +284,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     byte getModuleParameterByte(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -319,7 +294,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -329,7 +304,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public Byte getModuleParameterByte(String modulname, String parameter, Byte defaultValue);
-    
+
     /**
      * Returns a description for parameter in a module.
      *
@@ -338,7 +313,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return String the description for the parameter in the module.
      */
     public String getModuleParameterDescription(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -347,7 +322,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public double getModuleParameterDouble(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -357,7 +332,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public double getModuleParameterDouble(String modulname, String parameter, double defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -367,7 +342,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public Double getModuleParameterDouble(String modulname, String parameter, Double defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -377,7 +352,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public float getModuleParameterFloat(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -387,7 +362,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public float getModuleParameterFloat(String modulname, String parameter, float defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -397,7 +372,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public Float getModuleParameterFloat(String modulname, String parameter, Float defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -406,7 +381,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public int getModuleParameterInteger(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -416,7 +391,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public int getModuleParameterInteger(String modulname, String parameter, int defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -426,7 +401,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public Integer getModuleParameterInteger(String modulname, String parameter, Integer defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -436,7 +411,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public long getModuleParameterLong(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -446,7 +421,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public long getModuleParameterLong(String modulname, String parameter, long defaultValue);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -463,7 +438,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return value String[] the names of the parameters for a module.
      */
     public String[] getModuleParameterNames(String modulename);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -472,7 +447,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public String getModuleParameterString(String modulname, String parameter);
-    
+
     /**
      * Returns a parameter for a module.
      *
@@ -482,7 +457,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return boolean the value for the parameter in the module.
      */
     public String getModuleParameterString(String modulname, String parameter, String defaultValue);
-    
+
     /**
      * This method returns the type of a parameter in a module.
      *
@@ -491,7 +466,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return the type of the parameter.
      */
     public String getModuleParameterType(String modulename, String parameter);
-    
+
     /**
      * Returns all repositories for a module.
      *
@@ -499,7 +474,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String[] the reprositories of a module.
      */
     public String[] getModuleRepositories(String modulename);
-    
+
     /**
      * Returns the upload-date for the module.
      *
@@ -507,7 +482,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the upload-date for the module.
      */
     public long getModuleUploadDate(String modulename);
-    
+
     /**
      * Returns the user-name of the user who had uploaded the module.
      *
@@ -515,8 +490,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the user-name of the user who had uploaded the module.
      */
     public String getModuleUploadedBy(String module);
-    
-    
+
     /**
      * This method returns the version of the module.
      *
@@ -524,7 +498,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the version of the module.
      */
     public float getModuleVersion(String modulename);
-    
+
     /**
      * Returns the name of the view, that is implemented by the module.
      *
@@ -532,7 +506,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the name of the view, that is implemented by the module.
      */
     public String getModuleViewName(String modulename);
-    
+
     /**
      * Returns the url to the view-url for the module within the system.
      *
@@ -540,7 +514,6 @@ public interface I_CmsRegistry extends Cloneable {
      * @return java.lang.String the view-url to the module.
      */
     public String getModuleViewUrl(String modulename);
-    
 
     /**
      * Returns all lifecycle classes for all modules.
@@ -549,7 +522,6 @@ public interface I_CmsRegistry extends Cloneable {
      * @return int the amount of classes.
      */
     public int getModuleLifeCycle(Vector classes);
-    
 
     /**
      * Returns the name of the class, that contains the publish method of the module.
@@ -601,6 +573,20 @@ public interface I_CmsRegistry extends Cloneable {
     public List getResourceLoaders();
 
     /**
+     * Returns a list of all configured synchronize modification classes.<p>
+     *
+     * @return a list of all configured synchronize modification classes
+     */
+    public List getSynchronizeModifications();
+
+    /**
+     * Returns a list of all configured check resource classes.<p>
+     *
+     * @return a list of all configured check resource classes
+     */
+    public List getCheckResource();
+
+    /**
      * Returns a value for a system-key.
      * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
      * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com.
@@ -643,7 +629,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return a Vector with dependencies that are not fullfilled.
      */
     public Vector importCheckDependencies(String moduleZip, boolean replaceMode) throws CmsException;
-    
+
     /**
      *  Checks for files that already exist in the system but should be replaced by the module.
      *
@@ -651,15 +637,15 @@ public interface I_CmsRegistry extends Cloneable {
      *  @return The complete paths to the resources that have conflicts.
      */
     public Vector importGetConflictingFileNames(String moduleZip) throws CmsException;
-    
+
     /**
      *  Returns the name of the module to be imported.
      *
      *  @param moduleZip the name of the zip-file to import from.
      *  @return The name of the module to be imported.
      */
-    public Map importGetModuleInfo(String moduleZip);   
-    
+    public Map importGetModuleInfo(String moduleZip);
+
     /**
      *  Returns all files that are needed to create a project for the module-import.
      *
@@ -667,7 +653,7 @@ public interface I_CmsRegistry extends Cloneable {
      *  @return The complete paths for resources that should be in the import-project.
      */
     public Vector importGetResourcesForProject(String moduleZip) throws CmsException;
-    
+
     /**
      *  Imports a module. This method is synchronized, so only one module can be imported at on time.
      *
@@ -675,7 +661,7 @@ public interface I_CmsRegistry extends Cloneable {
      *  @param exclusion a Vector with resource-names that should be excluded from this import.
      */
     public void importModule(String moduleZip, Vector exclusion, I_CmsReport report) throws CmsException;
-    
+
     /**
      * Checks if the module exists already in the repository.
      *
@@ -683,7 +669,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @return true if the module exists, else false.
      */
     public boolean moduleExists(String modulename);
-    
+
     /**
      * This method sets the author of the module.
      *
@@ -691,7 +677,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String the name of the author.
      */
     public void setModuleAuthor(String modulename, String author) throws CmsException;
-    
+
     /**
      * This method sets the email of author of the module.
      *
@@ -699,7 +685,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String the email of author of the module.
      */
     public void setModuleAuthorEmail(String modulename, String email) throws CmsException;
-    
+
     /**
      * Sets the create date of the module.
      *
@@ -707,7 +693,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param long the create date of the module.
      */
     public void setModuleCreateDate(String modulname, long createdate) throws CmsException;
-    
+
     /**
      * Sets the create date of the module.
      *
@@ -715,7 +701,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String the create date of the module. Format: mm.dd.yyyy
      */
     public void setModuleCreateDate(String modulname, String createdate) throws CmsException;
-    
+
     /**
      * Sets the module dependencies for the module.
      *
@@ -724,9 +710,8 @@ public interface I_CmsRegistry extends Cloneable {
      * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
      * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
      */
-    public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions)
-        throws CmsException;
-        
+    public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) throws CmsException;
+
     /**
      * Sets the description of the module.
      *
@@ -734,7 +719,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String the description of the module.
      */
     public void setModuleDescription(String module, String description) throws CmsException;
-    
+
     /**
      * Sets the url to the documentation of the module.
      *
@@ -742,7 +727,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param java.lang.String the url to the documentation of the module.
      */
     public void setModuleDocumentPath(String modulename, String url) throws CmsException;
-    
+
     /**
      * Sets the classname, that receives all maintenance-events for the module.
      *
@@ -750,7 +735,6 @@ public interface I_CmsRegistry extends Cloneable {
      * @param java.lang.Class that receives all maintenance-events for the module.
      */
     public void setModuleMaintenanceEventClass(String modulname, String classname) throws CmsException;
-    
 
     /**
      * Sets the classname, that contains the publish method of the module.
@@ -767,7 +751,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String the nice name of the module.
      */
     public void setModuleNiceName(String module, String nicename) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -776,7 +760,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, byte value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -785,7 +769,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, double value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -794,7 +778,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, float value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -803,7 +787,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, int value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -812,7 +796,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, long value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -821,7 +805,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, Boolean value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -830,7 +814,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, Byte value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -839,7 +823,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, Double value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -848,7 +832,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, Float value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -857,7 +841,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, Integer value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -866,7 +850,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, Long value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -875,7 +859,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param value java.lang.String the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, String value) throws CmsException;
-    
+
     /**
      * Sets a parameter for a module.
      *
@@ -884,7 +868,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param the value to set for the parameter.
      */
     public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException;
-    
+
     /**
      * Sets the module dependencies for the module.
      *
@@ -894,14 +878,8 @@ public interface I_CmsRegistry extends Cloneable {
      * @param types Vector with parametertypes (string, float,...)
      * @param values Vector with defaultvalues for parameters
      */
-    public void setModuleParameterdef(
-        String modulename,
-        Vector names,
-        Vector descriptions,
-        Vector types,
-        Vector values)
-        throws CmsException;
-        
+    public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) throws CmsException;
+
     /**
      * Sets all repositories for a module.
      *
@@ -909,7 +887,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param String[] the reprositories of a module.
      */
     public void setModuleRepositories(String modulename, String[] repositories) throws CmsException;
-    
+
     /**
      * This method sets the version of the module.
      *
@@ -917,7 +895,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param version the version of the module.
      */
     public void setModuleVersion(String modulename, String version) throws CmsException;
-    
+
     /**
      * Sets a view for a module
      *
