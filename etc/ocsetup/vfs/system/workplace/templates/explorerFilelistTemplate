@@ -62,4 +62,5 @@
 	<COLUMN_GROUP_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>GROUP_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_GROUP_VALUE>
 	<COLUMN_ACCESS_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>ACCESS_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_ACCESS_VALUE>
 	<COLUMN_LOCKED_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>LOCKED_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_LOCKED_VALUE>
+
 </WORKPLACE>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/02/16 09:15:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,14 +39,14 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/16 09:15:18 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/19 10:15:27 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
      /**
      * The file access object which is required to access the file database.
      */
-    private I_CmsAccessFile m_accessFile;
+     I_CmsAccessFile m_accessFile;
     
      /**
      * Constructor, creates a new File Resource Broker.

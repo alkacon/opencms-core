@@ -1,0 +1,226 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroupCache.java,v $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.1 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+package com.opencms.file;
+
+import java.util.*;
+import javax.servlet.http.*;
+
+import com.opencms.core.*;
+
+/**
+ * This class describes a resource broker for user and groups in the Cms.<BR/>
+ * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
+ * is for security-reasons, to check if this current user has the rights to call the
+ * method.<BR/>
+ * 
+ * This class has package visibility for security reasons.
+ * 
+ * @author Michael Emmerich
+ * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ */
+ class CmsRbUserGroupCache extends CmsRbUserGroup {
+
+
+     /** The usercache */
+     private CmsCache m_usercache=null;
+     
+     /** The groupcache */
+     private CmsCache m_groupcache=null;
+    
+     /** The usercache */
+     private CmsCache m_groupsofusercache=null;
+     
+     /** The groupcache */
+     private CmsCache m_usersofgroupcache=null;
+     
+     /** The cache size */
+     private final static int C_USERCACHE=2000;
+
+     /** The cache size */
+     private final static int C_GROUPCACHE=2000;
+
+     /** The cache size */
+     private final static int C_GROUPSOFUSERCACHE=2000;
+
+     /** The cache size */
+     private final static int C_USERSOFGROUPCACHE=2000;
+     
+     
+     /**
+     * Constructor, creates a new Cms User & Group Resource Broker.
+     * 
+     * @param accessUserGroup The user/group access object.
+     */
+    public CmsRbUserGroupCache(I_CmsAccessUserGroup accessUserGroup)
+    {
+        super(accessUserGroup);
+        m_accessUserGroup=accessUserGroup;
+        m_usercache=new CmsCache(C_USERCACHE);
+        m_groupcache=new CmsCache(C_GROUPCACHE);
+        m_groupsofusercache=new CmsCache(C_GROUPSOFUSERCACHE);
+        m_usersofgroupcache=new CmsCache(C_USERSOFGROUPCACHE);
+    }
+    
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param username The name of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public A_CmsUser readUser(String username)
+         throws CmsException {
+         A_CmsUser user=null;
+         
+         user=(A_CmsUser)m_usercache.get(username);
+         if (user == null) {
+               user=m_accessUserGroup.readUser(username);
+               m_usercache.put(user.getName(),user);
+               m_usercache.put(new Integer(user.getId()),user);
+         }                  
+         return user;
+     }
+	
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param userid The Id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser readUser(int userid)
+		throws CmsException {
+         A_CmsUser user=null;
+         user=(A_CmsUser)m_usercache.get(new Integer(userid));
+         if (user == null) {
+               user=m_accessUserGroup.readUser(userid);
+               m_usercache.put(user.getName(),user);
+               m_usercache.put(new Integer(user.getId()),user);
+         }                          
+         return user;
+     }
+    
+     /**
+	 * Returns a group object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param groupname The name of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	 public A_CmsGroup readGroup(String groupname)
+         throws CmsException {
+         
+         A_CmsGroup group = null;
+         group=(A_CmsGroup)m_groupcache.get(groupname);
+         if (group == null) {
+               group=m_accessUserGroup.readGroup(groupname);
+               m_groupcache.put(group.getName(),group);
+               m_groupcache.put(new Integer(group.getId()),group);
+         }      
+       return group;
+      }
+
+       
+	/**
+	 * Returns a group object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param groupId The Id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	public A_CmsGroup readGroup(int groupId)
+		 throws CmsException {
+         
+         A_CmsGroup group = null;
+         group=(A_CmsGroup)m_groupcache.get(new Integer(groupId));
+         if (group == null) {
+               group=m_accessUserGroup.readGroup(groupId);
+               m_groupcache.put(group.getName(),group);
+               m_groupcache.put(new Integer(group.getId()),group);
+         }      
+       
+         return group;
+      }
+    
+    
+	/**
+	 * Returns a list of groups of a user.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param username The name of the user.
+	 * @return Vector of groups
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector getGroupsOfUser(String username)
+         throws CmsException {
+         Vector allGroups;
+         A_CmsGroup subGroup;
+         A_CmsGroup group;
+         allGroups=(Vector)m_groupsofusercache.get(username);       
+         if (allGroups == null) {
+            // get all groups of the user
+            Vector groups=m_accessUserGroup.getGroupsOfUser(username);
+            allGroups=groups;
+            // now get all childs of the groups
+            Enumeration enu = groups.elements();
+            while (enu.hasMoreElements()) {
+                 group=(A_CmsGroup)enu.nextElement();
+                subGroup=getParent(group.getName());
+			    while(subGroup != null) {
+				    // is the subGroup already in the vector?
+				    if(!allGroups.contains(subGroup)) {
+					    // no! add it
+					    allGroups.addElement(subGroup);
+				    }
+				    // read next sub group
+				    subGroup = getParent(subGroup.getName());
+			    }   
+            }
+            m_groupsofusercache.put(username,allGroups);
+         }
+         return allGroups;
+       }
+    
+ }

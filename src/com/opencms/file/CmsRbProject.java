@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProject.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/19 10:15:27 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -46,7 +46,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
      * The project access object which is required to access the
      * project database.
      */
-    private I_CmsAccessProject m_accessProject;
+     I_CmsAccessProject m_accessProject;
     
     /**
      * Constructor, creates a new Cms Project Resource Broker.

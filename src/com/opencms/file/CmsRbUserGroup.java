@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroup.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.19 $ $Date: 2000/02/19 10:15:27 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -50,7 +50,7 @@ import com.opencms.core.*;
      * The user/group access object which is required to access the
      * user and group databases.
      */
-    private I_CmsAccessUserGroup m_accessUserGroup;
+     I_CmsAccessUserGroup m_accessUserGroup;
     
      /**
      * Constructor, creates a new Cms User & Group Resource Broker.

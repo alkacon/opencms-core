@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/17 19:32:37 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/02/17 19:32:37 $
+ * @version $Revision: 1.21 $ $Date: 2000/02/19 10:15:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -213,6 +213,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                             Object callingObject, Hashtable parameters, 
                                             CmsXmlLanguageFile lang) throws CmsException {
        
+        long timer=System.currentTimeMillis();
+        System.err.println("Startung new filelist");
+        System.err.println("");
+        
         String method= n.getAttribute(C_FILELIST_METHOD);
         String template=n.getAttribute(C_FILELIST_TEMPLATE);
         
@@ -245,7 +249,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         } catch(Exception exc2) {
             throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
-       return getFilelist(cms,filelist,filelistTemplate,lang,parameters,callingObject,
+        return getFilelist(timer,cms,filelist,filelistTemplate,lang,parameters,callingObject,
                           configFile);
     }          
     
@@ -260,7 +264,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @param config The config file.
       * @return HTML-Code of the file list. 
       */
-     private Object getFilelist(A_CmsObject cms, Vector list,
+     private Object getFilelist(long timer,A_CmsObject cms, Vector list,
                                 A_CmsXmlContent doc, CmsXmlLanguageFile lang,
                                 Hashtable parameters,Object callingObject,
                                 CmsXmlWpConfigFile config) 
@@ -304,7 +308,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             // go through all folders and files
             enum=list.elements();
             while (enum.hasMoreElements()) {
-                
+                long starttime=System.currentTimeMillis();
                 res=(CmsResource)enum.nextElement();
                 if (res.isFolder()) {
                     folder=(CmsFolder)res; 
@@ -373,8 +377,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
                 } else {        
                     file=(CmsFile)res; 
+                    System.err.println("Starting filelist "+res.getName());      
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));                   
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Style");
                     // set the icon
                             
                     template.setXmlData(C_CONTEXT_LINK,res.getAbsolutePath());
@@ -384,20 +390,22 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     A_CmsResourceType type=cms.getResourceType(file.getType());
                     String icon=getIcon(cms,type,config);
                     template.setXmlData(C_ICON_VALUE,config.getWpPictureUrl()+icon);
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Icon");
                     // set the link, but only if the resource is not deleted
                     if (res.getState()!=C_STATE_DELETED) {
                         template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  
                     } else {
                          template.setXmlData(C_LINK_VALUE,"#");
                     }
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Link");
                     // set the lock icon if nescessary
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),callingObject));                      
-                    // set the filename
-                    //template.setXmlData(C_NAME_VALUE,template.getProcessedXmlDataValue("COLUMN_NAME_VALUE_FILE",this));   
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Lock");
+                     // set the filename
                     template.setXmlData(C_NAME_VALUE,file.getName());     
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,file),this));     
-                   
-                    // set the file title
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Filename");
+                     // set the file title
                     title="";
                     try {
                         title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
@@ -407,40 +415,54 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                         title="";
                     }
                     template.setXmlData(C_TITLE_VALUE,title);   
-                    // set the file type 
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Title");
+                     // set the file type 
                     type=cms.getResourceType(file.getType());
                     String typename=type.getResourceName();
                     typename=lang.getDataValue("fileicon."+typename);
                     template.setXmlData(C_TYPE_VALUE,typename);   
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Time");
                     // get the file date
                     long time=file.getDateLastModified();
-                    template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
-                    // get the file size
+                    template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Date");
+                     // get the file size
                     template.setXmlData(C_SIZE_VALUE,new Integer(file.getLength()).toString());   
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Size");
                     // get the file state
-                    template.setXmlData(C_STATE_VALUE,getState(cms,file,lang));  
+                    template.setXmlData(C_STATE_VALUE,getState(cms,file,lang));
+                    System.err.println((System.currentTimeMillis()-timer)+" Set State");
                     // get the owner of the file
                     A_CmsUser owner = cms.readOwner(file);
                     template.setXmlData(C_OWNER_VALUE,owner.getName());
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Owner");
                     // get the group of the file
                     A_CmsGroup group = cms.readGroup(file);
                     template.setXmlData(C_GROUP_VALUE,group.getName());
-                    // get the access flags
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Group");
+                     // get the access flags
                     int access=file.getAccessFlags();
                     template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
-                    // get the locked by
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Flags");
+                     // get the locked by
                     int lockedby = file.isLockedBy();
                     if (lockedby == C_UNKNOWN_ID) {
                         template.setXmlData(C_LOCKED_VALUE,"");
                     } else {
                         template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(file).getName());
                     }
+                    System.err.println((System.currentTimeMillis()-timer)+" Set Lockedby");
                     // as a last step, check which colums must be displayed and add the file
                     // to the output.
                     template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
+                    System.err.println((System.currentTimeMillis()-timer)+" Checkoutput");
                     output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
+                    System.err.println((System.currentTimeMillis()-timer)+" Create Output");
+                    System.err.println("Time for generating "+res.getName()+":"+(System.currentTimeMillis()-starttime));
+      
                 }
             }
+            System.err.println("Time used to build filelist: "+((System.currentTimeMillis()-timer)));
          return output.toString();
      }            
     

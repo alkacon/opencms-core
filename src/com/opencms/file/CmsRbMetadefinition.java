@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbMetadefinition.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/19 10:15:27 $
  */
 public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	
@@ -46,7 +46,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
      * The metadefinition access object which is required to access the
      * meta database.
      */
-    private I_CmsAccessMetadefinition m_accessMetadefinition;
+     I_CmsAccessMetadefinition m_accessMetadefinition;
     
     /**
      * Constructor, creates a new Cms Project Resource Broker.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/16 18:57:40 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.19 $ $Date: 2000/02/16 18:57:40 $  
+* @version $Revision: 1.20 $ $Date: 2000/02/19 10:15:27 $  
 * 
 */
 
@@ -171,15 +171,17 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 	public void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {	
         
+        long timer=System.currentTimeMillis();
+        
         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
-       
-       try {
-            CmsObject cms=initUser(cmsReq,cmsRes);
-            CmsFile file=m_opencms.initResource(cms); 
-            m_opencms.setResponse(cms,file);
-            m_opencms.showResource(cms,file);
-            updateUser(cms,cmsReq,cmsRes);
+
+        try {
+           CmsObject cms=initUser(cmsReq,cmsRes);
+           CmsFile file=m_opencms.initResource(cms); 
+           m_opencms.setResponse(cms,file);
+           m_opencms.showResource(cms,file);
+           updateUser(cms,cmsReq,cmsRes);
         } catch (CmsException e) {
             errorHandling(req,res,e);
         } 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/18 14:22:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/19 10:15:27 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/18 14:22:41 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/19 10:15:27 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -350,7 +350,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             for (int i=0;i<=max+1;i++) {
                 String name=(String)storage.get(new Integer(i).toString());
                 if (name!= null) {
-                    System.err.println(i+":"+name);
+               
                     names.addElement(name);
                     values.addElement(new Integer(i).toString());
                 }
@@ -409,7 +409,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 // check if there is a navpos for this file/folder
                 if (navpos!= null) {
                     int pos=new Integer(navpos).intValue();
-                     System.err.println("pos "+pos);
                     if (pos > max) {
                         max=pos;
                     }
