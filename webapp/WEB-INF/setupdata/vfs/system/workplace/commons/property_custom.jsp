@@ -56,6 +56,14 @@ default:
 <script type="text/javascript">
 <!--
 
+function resizeWindow() {
+	var wantedHeight = document.body.offsetHeight + 20;
+	if (wantedHeight > screen.availHeight) {
+		wantedHeight = screen.availHeight;
+	}
+	window.resizeTo(document.body.offsetWidth + 10, wantedHeight);
+}
+
 function toggleDelete(propName) {
 	var sepIndex = propName.indexOf("---");
 	if (sepIndex != -1) {
@@ -211,7 +219,12 @@ function doSet() {
 <script type="text/javascript">
 <!--
 toggleNav();
-//-->
+<%
+if ("true".equals(wp.getParamIsPopup())) {
+	%>resizeWindow();
+<%
+} 
+%>//-->
 </script>
 <% } %>
 

@@ -71,7 +71,13 @@ if ("true".equals(refreshOpener)) {
 }
 %>
 
-window.resizeTo(400, 170+(27*<%= wp.computeElements().size() %>));
+function resizeWindow() {
+	var wantedHeight = document.body.offsetHeight + 20;
+	if (wantedHeight > screen.availHeight) {
+		wantedHeight = screen.availHeight;
+	}
+	window.resizeTo(document.body.offsetWidth + 10, wantedHeight);
+}
 
 //-->
 </script>
@@ -95,6 +101,16 @@ window.resizeTo(400, 170+(27*<%= wp.computeElements().size() %>));
 
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
+<%
+if ("true".equals(wp.getParamIsPopup())) {
+	%><script type="text/javascript">
+<!--
+resizeWindow();
+//-->
+</script>
+<%
+} 
+%>
 <%= wp.htmlEnd() %>
 <%
 } 

@@ -114,9 +114,17 @@ default:
 
 wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 	
-%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+%><%= wp.htmlStart("help.explorer.contextmenu.properties", wp.getParamTitle()) %>
 <script type="text/javascript">
 <!--
+
+function resizeWindow() {
+	var wantedHeight = document.body.offsetHeight + 20;
+	if (wantedHeight > screen.availHeight) {
+		wantedHeight = screen.availHeight;
+	}
+	window.resizeTo(document.body.offsetWidth + 10, wantedHeight);
+}
 
 // global members needed for delayed setting of field values when clicking a checkbox
 m_field = null;
@@ -231,7 +239,16 @@ function doSet() {
 </form>
 
 <%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
+<%
+if ("true".equals(wp.getParamIsPopup())) {
+	%><script type="text/javascript">
+<!--
+resizeWindow();
+//-->
+</script>
+<%
+} 
+%><%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%
 } 
