@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/11/20 13:03:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/21 16:21:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -74,6 +74,8 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * Returns the URI of the editor which will be used for the selected resource.<p>
      * 
+     * The returned URI depends on the selected resource type, the used browser and the users preferences.<p>
+     * 
      * @return URI of the editor which will be used for the selected resource
      */
     public String getEditorUri() {
@@ -83,14 +85,27 @@ public class CmsEditorFrameset extends CmsEditor {
                 // resource a of type "new page", show the dhtml control
                 return C_PATH_EDITORS + "msdhtml/editor.html";
             } else {
-                // resource is text or xml style, return ledit editor
-                return C_PATH_EDITORS + "ledit/editor.html";
+                // resource is text or xml style, return ledit editor or simple text editor
+                if (BROWSER_IE.equals(getBrowserType())) {
+                    return C_PATH_EDITORS + "ledit/editor.html";
+                } else {
+                    return C_PATH_EDITORS + "simple/editor.html";
+                }
             }
         } catch (CmsException e) {
             // do nothing here
         }
-        // return default (ledit) editor
-        return C_PATH_EDITORS + "ledit/editor.html";
+        // return default (text) editor
+        if (BROWSER_IE.equals(getBrowserType())) {
+            return C_PATH_EDITORS + "ledit/editor.html";
+        } else {
+            return C_PATH_EDITORS + "simple/editor.html";
+        }
     }
+    
+    /**
+     * @see org.opencms.workplace.editor.CmsEditor#actionSave()
+     */
+    public void actionSave() { }
     
 }

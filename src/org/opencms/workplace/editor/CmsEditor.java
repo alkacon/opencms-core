@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/11/20 13:03:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/21 16:21:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.workplace.CmsHelperMastertemplates;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,17 +50,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Provides methods for building the file editors of OpenCms.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsEditor extends CmsDialog {
     
     public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
+    
+    public static final String BROWSER_IE = "IE";
+    public static final String BROWSER_NS = "NS";
     
     public static final String EDITOR_SAVE = "save";
     public static final String EDITOR_EXIT = "exit";
@@ -68,6 +74,7 @@ public abstract class CmsEditor extends CmsDialog {
     public static final String EDITOR_CHANGE_BODY = "changebody";
     public static final String EDITOR_SHOW = "show";
     public static final String EDITOR_PREVIEW = "preview";
+    public static final String EDITOR_NEW_BODY = "newbody";
     
     public static final int ACTION_SAVE = 121;
     public static final int ACTION_EXIT = 122;
@@ -76,6 +83,7 @@ public abstract class CmsEditor extends CmsDialog {
     public static final int ACTION_CHANGE_BODY = 125;
     public static final int ACTION_SHOW = 126;
     public static final int ACTION_PREVIEW = 127;
+    public static final int ACTION_NEW_BODY = 128;
     
     private String m_paramEditormode;
     private String m_paramBodyelement;
@@ -84,6 +92,12 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramPageTemplate;
     private String m_paramTempFile;
     private String m_paramContent;
+    
+    /** Helper variable to store the html content for the template selector.<p> */
+    private String m_selectTemplates = null;
+    
+    /** Helper variable to store the clients browser type.<p> */
+    private String m_browserType = null;
     
     /**
      * Public constructor.<p>
@@ -236,8 +250,15 @@ public abstract class CmsEditor extends CmsDialog {
         }
         // set current project to tempfileproject
         getCms().getRequestContext().setCurrentProject(tempProject);
-        CmsFile tempFile = getCms().readFile(getParamTempfile());
-        Map properties = getCms().readProperties(getParamTempfile());
+        CmsFile tempFile = null;
+        Map properties = null;
+        try {
+            tempFile = getCms().readFile(getParamTempfile());
+            properties = getCms().readProperties(getParamTempfile());
+        } catch (CmsException e) {
+            getCms().getRequestContext().setCurrentProject(curProject);
+            throw e;
+        }
         // set current project
         getCms().getRequestContext().setCurrentProject(curProject);
         CmsFile orgFile = getCms().readFile(getParamResource());
@@ -265,18 +286,13 @@ public abstract class CmsEditor extends CmsDialog {
         CmsResource file = getCms().readFileHeader(getParamResource());
         // get the current project id
         int curProject = getSettings().getProject();
-        // get the temporary file project id
-        int tempProject = 0;
-        try {
-            tempProject = Integer.parseInt(getCms().getRegistry().getSystemValue("tempfileproject"));
-        } catch (Exception e) {
-            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
-        }
         
+        // Create the filename of the temporary file
         String temporaryFilename = CmsResource.getFolderPath(getCms().readAbsolutePath(file)) + I_CmsConstants.C_TEMP_PREFIX + file.getName();
         boolean ok = true;
         
-        getCms().getRequestContext().setCurrentProject(tempProject);
+        // switch to the temporary file project
+        int tempProject = switchToTempProject();
         
         try {
             getCms().copyResource(getCms().readAbsolutePath(file), temporaryFilename, false, true, I_CmsConstants.C_COPY_AS_NEW);
@@ -290,30 +306,29 @@ public abstract class CmsEditor extends CmsDialog {
                     ok = false;
                 }
             } else {
+                getCms().getRequestContext().setCurrentProject(curProject);
                 throw e;
             }
         }
 
         String extendedTempFile = temporaryFilename;
-
         int loop = 0;
+        
         while (!ok) {
+            // default temporary file could not be created, try other file names
             ok = true;
             extendedTempFile = temporaryFilename + loop;
     
             try {
                 getCms().copyResource(getCms().readAbsolutePath(file), extendedTempFile);
-                // cms.chmod(extendedTempFile, 91);
             } catch (CmsException e) {
                 if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
                     getCms().getRequestContext().setCurrentProject(curProject);
-                    // This was not a file-exists-exception.
-                    // Very bad. We should not continue here since we may run
-                    // into an endless looooooooooooooooooooooooooooooooooop.
+                    // This was not a "file exists" exception. Very bad.
+                    // We should not continue here since we may run into an endless loop.
                     throw e;
                 }
-
-                // temp file could not be created
+                // temp file could not be created, try again
                 loop++;
                 ok = false;
             }
@@ -324,6 +339,44 @@ public abstract class CmsEditor extends CmsDialog {
         temporaryFilename = extendedTempFile;
 
         return temporaryFilename;
+    }
+    
+    /**
+     * Returns the browser type currently used by the client.<p>
+     * 
+     * @return the brwoser type
+     */
+    public String getBrowserType() {
+        if (m_browserType == null) {
+            HttpServletRequest orgReq = (HttpServletRequest)getCms().getRequestContext().getRequest().getOriginalRequest();
+            String browser = orgReq.getHeader("user-agent");
+            if (browser.indexOf("MSIE") > -1) {
+                m_browserType = BROWSER_IE;
+            } else {
+                m_browserType = BROWSER_NS;
+            }
+        }
+        return m_browserType; 
+    }
+    
+    /**
+     * Helper class to change the current project to the temporary file project.<p>
+     * 
+     * Keep in mind to store the id of the old project to switch back.<p>
+     * 
+     * @return the id of the tempfileproject
+     * @throws CmsException if getting the tempfileproject id fails
+     */
+    protected int switchToTempProject() throws CmsException {
+        // get the temporary file project id
+        int tempProject = 0;
+        try {
+            tempProject = Integer.parseInt(getCms().getRegistry().getSystemValue("tempfileproject"));
+        } catch (Exception e) {
+            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
+        }
+        getCms().getRequestContext().setCurrentProject(tempProject);
+        return tempProject;
     }
     
     /**
@@ -397,30 +450,35 @@ public abstract class CmsEditor extends CmsDialog {
      * @return the html for the page template select box
      */
     public String buildSelectTemplates(String attributes) {
-        Vector names = new Vector();
-        Vector values = new Vector();
-        Integer selectedValue = new Integer(-1);
-        try {
-            selectedValue = CmsHelperMastertemplates.getTemplates(getCms(), names, values, getParamPagetemplate(), -1);
-        } catch (CmsException e) {
-            // ignore this exception
-        }
-        if (selectedValue.intValue() == -1) {
-            // no template found -> use the given one
-            // first clean the vectors
-            names.removeAllElements();
-            values.removeAllElements();
-            // now add the current template
-            String name = getParamPagetemplate();
-            try { // to read the title of this template
-                name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
-            } catch (CmsException exc) {
-                // ignore this exception - the title for this template was not readable
+        if (m_selectTemplates == null) {
+            // member variable is null, so generate the html
+            Vector names = new Vector();
+            Vector values = new Vector();
+            Integer selectedValue = new Integer(-1);
+            try {
+                selectedValue = CmsHelperMastertemplates.getTemplates(getCms(), names, values, getParamPagetemplate(), -1);
+            } catch (CmsException e) {
+                // ignore this exception
             }
-            names.add(name);
-            values.add(getParamPagetemplate());
+            if (selectedValue.intValue() == -1) {
+                // no template found -> use the given one
+                // first clean the vectors
+                names.removeAllElements();
+                values.removeAllElements();
+                // now add the current template
+                String name = getParamPagetemplate();
+                try { 
+                    // read the title of this template
+                    name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
+                } catch (CmsException exc) {
+                    // ignore this exception - the title for this template was not readable
+                }
+                names.add(name);
+                values.add(getParamPagetemplate());
+            }
+            m_selectTemplates = buildSelect(attributes, names, values, selectedValue.intValue(), false);
         }
-        return buildSelect(attributes, names, values, selectedValue.intValue(), false);
+        return m_selectTemplates;
     }
     
     /**
@@ -432,33 +490,65 @@ public abstract class CmsEditor extends CmsDialog {
    
     /**
      * Performs the change template action.<p>
+     * 
+     * @throws CmsException if changing the template fails
      */
-    public void actionChangeTemplate() {
+    public void actionChangeTemplate() throws CmsException {
+        // get the current project id
+        int curProject = getSettings().getProject();
+        // switch to the temporary file project
+        switchToTempProject();
         
+        // write the changed template property to the temporary file
+        getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());
+        
+        // switch back to the current users project
+        getCms().getRequestContext().setCurrentProject(curProject);        
     }
     
     /**
      * Performs the exit editor action and deletes the temporary file.<p>
+     * 
+     * @throws CmsException if temporary file project couldn't be obtained
+     * @throws IOException if redirect to workplace fails
      */
-    public void actionExit() {
-        // the "exit editor" action
+    public void actionExit() throws CmsException, IOException {
+        // get the current project id
+        int curProject = getSettings().getProject();
+        // switch to the temporary file project
+        switchToTempProject();
+        try {
+            // delete the temporary file
+            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+        
+        // switch back to the current project
+        getCms().getRequestContext().setCurrentProject(curProject);
+        
+        // now redirect to the workplace explorer view
+        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
+        
     }
     
+    /**
+     * Performs the preview page action in a new browser window.<p>
+     */
     public void actionPreview() {
-        // TODO: save temporary file...
+        // TODO: save content to temporary file...
         try {
             getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile());
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             // do nothing...
         }
     }
     
     /**
      * Performs the save content action.<p>
+     * 
+     * @throws CmsException if saving the modified content fails
      */
-    public void actionSave() {
-        
-    }
+    public abstract void actionSave() throws CmsException; 
 
 }
