@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/11/02 14:29:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2001/01/04 14:05:03 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/11/02 14:29:09 $
+ * @version $Revision: 1.24 $ $Date: 2001/01/04 14:05:03 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 	/**
@@ -157,9 +157,9 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 	 * @see com.opencms.file.CmsRegistry#getSystemValue
 	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
 	 */
-	public String getDefaultMailSender() throws CmsException {
+	/*public String getDefaultMailSender() throws CmsException {
 		return getDataValue("mail.defaultsender");
-	}
+	}*/
 	/**
 	 * Gets the path at which the folders with the download galleries are
 	 * @return Path for download galleries.
@@ -191,9 +191,9 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 	 * @see com.opencms.file.CmsRegistry#getSystemValue
 	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
 	 */
-	public String getMailServer() throws CmsException {
+	/*public String getMailServer() throws CmsException {
 		return getDataValue("mail.server");
-	}
+	}*/
     /**
 	 * Gets the path at which the folders with the picture galleries are
 	 * @return Path for picture galleries.
