@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/02/20 16:25:06 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/02/21 12:56:30 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -62,10 +62,15 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2001/02/20 16:25:06 $
+ * @version $Revision: 1.5 $ $Date: 2001/02/21 12:56:30 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
+
+    /**
+     * Debug-switch
+     */
+    static final boolean C_DEBUG = false;
 
     /**
      * The name of the redirect entry in the configuration file.
@@ -436,10 +441,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
 
         // start time of this request
-        long reqStartTime = System.currentTimeMillis();
-
-        // amount of total requests in the system
-        m_currentRequestAmount++;
+        if(C_DEBUG) {
+            long reqStartTime = System.currentTimeMillis();
+        }
         if(req.getRequestURI().indexOf("system/workplace/action/login.html") > 0) {
             HttpSession session = req.getSession(false);
             if(session != null) {
@@ -467,14 +471,14 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
 
         // create debug informations
-        m_currentRequestAmount--;
-        long delta = System.currentTimeMillis() - reqStartTime;
-        long total = Runtime.getRuntime().totalMemory() / 1024;
-        long free = Runtime.getRuntime().freeMemory() / 1024;
-        //System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
-        //System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
-        //System.err.print("threads:" + Thread.activeCount() + " ");
-        //System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
+        if(C_DEBUG) {
+            long total = Runtime.getRuntime().totalMemory() / 1024;
+            long free = Runtime.getRuntime().freeMemory() / 1024;
+            System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size());
+            System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
+            System.err.print("threads:" + Thread.activeCount() + " ");
+            System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
+        }
     }
 
     /**
@@ -491,10 +495,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
 
         // start time of this request
-        long reqStartTime = System.currentTimeMillis();
-
-        // amount of total requests in the system
-        m_currentRequestAmount++;
+        if(C_DEBUG) {
+            long reqStartTime = System.currentTimeMillis();
+        }
 
         //Check for content type "form/multipart" and decode it
         String type = req.getHeader("content-type");
@@ -524,14 +527,14 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
 
         // create debug informations
-        m_currentRequestAmount--;
-        long delta = System.currentTimeMillis() - reqStartTime;
-        long total = Runtime.getRuntime().totalMemory() / 1024;
-        long free = Runtime.getRuntime().freeMemory() / 1024;
-        //System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
-        //System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
-        //System.err.print("threads:" + Thread.activeCount() + " ");
-        //System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
+        if(C_DEBUG) {
+            long total = Runtime.getRuntime().totalMemory() / 1024;
+            long free = Runtime.getRuntime().freeMemory() / 1024;
+            System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size());
+            System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
+            System.err.print("threads:" + Thread.activeCount() + " ");
+            System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
+        }
     }
 
     /**
