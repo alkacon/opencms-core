@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/04/05 09:21:18 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/06 15:56:41 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/04/05 09:21:18 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/06 15:56:41 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -397,6 +397,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
          int accessflags=res.getAccessFlags();
          
          if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||
+			  (cms.getRequestContext().isAdmin()) ||
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0) ||
               (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
               access=true;
