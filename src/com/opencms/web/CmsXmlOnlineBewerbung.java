@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
- * Date   : $Date: 2000/02/20 18:56:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/20 19:20:16 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,8 +45,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/02/20 18:56:09 $
+ * @author $Author: r.gutfleisch $
+ * @version $Name:  $ $Revision: 1.10 $ $Date: 2000/02/20 19:20:16 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -1022,7 +1022,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			int tasktyperef = cms.getTaskType("StartApplication");
 			int followingtasktyperef = cms.getTaskType("CheckApplication");
 			
-			String projname = recjob;
+			String projname = "Bewerbung als " + recjob;
 			String taskname = "Bewerbung von " + recname;
 			
 			project = cms.createProject(projname, projtyperef, null, timeout, 0);
@@ -1045,7 +1045,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				  }
 			  }					
 		}		
-		return "http://toshi/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
+		return "http://toshi/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
 	}
 	
 	private int getLastInsertId(Connection con)

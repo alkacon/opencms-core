@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessTask.java,v $
- * Date   : $Date: 2000/02/20 19:04:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/20 19:19:48 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.10 $ $Date: 2000/02/20 19:04:12 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/20 19:19:48 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -382,9 +382,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			task.setInitiatorUser(ownerId);
 			task.setStartTime(new java.sql.Timestamp(System.currentTimeMillis()));
 			task.setMilestone(0);
-			System.err.println("createtask1");
 			task = this.writeTask(task);
-			System.err.println("createtask2");
 		} catch( SQLException exc ) {
 			System.err.println(exc.getMessage());
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
