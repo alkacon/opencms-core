@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessUserInfoMySql.java,v $
- * Date   : $Date: 2000/02/20 19:22:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/03/13 15:42:23 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/20 19:22:52 $
+ * @version $Revision: 1.16 $ $Date: 2000/03/13 15:42:23 $
  */
  class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo, I_CmsConstants {
 
@@ -200,15 +200,10 @@ import com.opencms.util.*;
  
             if(res.next()) {
                 value = res.getBytes(C_USER_INFO);
-				if(value != null) {
-					 // now deserialize the object
-					ByteArrayInputStream bin= new ByteArrayInputStream(value);
-					ObjectInputStream oin = new ObjectInputStream(bin);
-					info=(Hashtable)oin.readObject();
-				} else {
-					// bytearray dosent exist - create a defaulthashtable
-					info = defaultHashtable();
-				}
+				 // now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				info=(Hashtable)oin.readObject();
 				user.setAdditionalInfo(info);
 				user.setFirstname(res.getString(C_USER_FIRSTNAME));
 				user.setLastname(res.getString(C_USER_LASTNAME));
@@ -307,15 +302,4 @@ import com.opencms.util.*;
          	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
-	
-	/**
-	 * Creates a default hashtable.
-	 */
-	private Hashtable defaultHashtable() {
-		// HACK: this is a very dirty hack!
-		Hashtable retValue = new Hashtable();
-		retValue.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID, 
-							 new Integer(105));
-		return retValue;
-	}
 }
