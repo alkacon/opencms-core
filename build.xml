@@ -46,7 +46,7 @@
     <property name="opencms.inputlib.beanutils"   		location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.8.jar" /> 
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.5.2.jar" />
-    <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.2.jar" />
+    <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.4.jar" />
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1-beta-4.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.41.jar" />
     <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.4.3.jar" />
