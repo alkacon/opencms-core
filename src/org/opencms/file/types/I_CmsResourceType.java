@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/08/11 16:55:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/09/20 05:38:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -266,7 +266,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param driverManager the initialized OpenCms driver manager
      * @param source the resource to create a sibling for
      * @param destination the name of the sibling to create with complete path
-     * @param properties additional properties of the sibling
+     * @param properties the individual properties for the new sibling
      * 
      * @throws CmsException if something goes wrong
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2004/09/20 05:39:39 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.140 $
+ * @version $Revision: 1.141 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1795,10 +1795,10 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns an initialized CmsObject with "Guest" user permissions.<p>
+     * Returns an initialized CmsObject with the given users permissions.<p>
      * 
-     * In case the password is null, or the user is the Guest user,
-     * no password check is done and the Guest user is initialized.<p>
+     * In case the password is <code>null</code>, or the user is the <code>Guest</code> user,
+     * no password check is done and the <code>Guest</code> user is initialized.<p>
      * 
      * @param req the current request
      * @param res the current response
@@ -1828,11 +1828,11 @@ public final class OpenCmsCore {
         CmsObject cms = initCmsObject(req, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
         // login the user if different from Guest
         if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
-            cms.loginUser(user, password, I_CmsConstants.C_IP_LOCALHOST);
+            cms.loginUser(user, password, I_CmsConstants.C_IP_LOCALHOST);            
         }
         return cms;
     }
-
+    
     /**
      * Inits a CmsObject with the given users information.<p>
      * 
@@ -1888,7 +1888,7 @@ public final class OpenCmsCore {
             } else {
                 resourceName = currentSite.concat(requestedResource);
             }  
-            i18nInfo = m_localeManager.getI18nInfo(req, user, project, resourceName);        
+            i18nInfo = m_localeManager.getI18nInfo(req, user, project, resourceName);
         } else {
             // locale manager not initialized, this will be true _only_ during system startup
             // the values set does not matter, no locale information form VFS is used on system startup

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/09/17 14:29:58 $
- * Version: $Revision: 1.418 $
+ * Date   : $Date: 2004/09/20 05:36:58 $
+ * Version: $Revision: 1.419 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.418 $ $Date: 2004/09/17 14:29:58 $
+ * @version $Revision: 1.419 $ $Date: 2004/09/20 05:36:58 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -739,7 +739,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param context the current request context
      * @param source the resource to create a sibling for
      * @param destination the name of the sibling to create with complete path
-     * @param properties additional properties of the sibling
+     * @param properties the individual properties for the new sibling
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -3356,6 +3356,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
+//            // try to read a project with this name - if one exists throw an error
+//            // ISSUE: Default project like "DeleteModule" might "stick" after an error, this would cause issues 
+//            //        when trying to delete the next module since the project name already exists.            
+//            boolean projectExists = true;
+//            try {
+//                readProject(name);
+//            } catch (CmsException e) {
+//                projectExists = false;
+//            }
+//            if (projectExists) {
+//                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_FILE_EXISTS);
+//            }
             // read the needed groups from the cms
             CmsGroup group = readGroup(groupname);
             CmsGroup managergroup = readGroup(managergroupname);
@@ -6047,7 +6059,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads a project from the Cms.<p>
+     * Reads a project from the Cms given the projects name.<p>
      *
      * @param id the id of the project
      * @return the project read from the cms
@@ -6067,6 +6079,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads a project from the Cms.<p>
      *
+     * Important: Since a project name can be used multiple times, this is NOT the most efficient 
+     * way to read the project. This is only a convenience for front end developing.
+     * Reading a project by name will return the first project with that name. 
+     * All core classes must use the id version {@link #readProject(int)} to ensure the right project is read.<p>
+     * 
      * @param name the name of the project
      * @return the project read from the cms
      * @throws CmsException if something goes wrong.

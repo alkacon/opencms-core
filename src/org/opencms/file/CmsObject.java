@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/09/07 09:30:45 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/09/20 05:37:20 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -680,7 +680,7 @@ public class CmsObject {
      * 
      * @param source the name of the resource to create a sibling for with complete path
      * @param destination the name of the sibling to create with complete path
-     * @param properties additional properties of the sibling
+     * @param properties the individual properties for the new sibling
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3096,8 +3096,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException {
-        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
-        return (newProject);
+        return m_driverManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
     }
 
     /**
@@ -3112,8 +3111,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
-        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
-        return (newProject);
+        return m_driverManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
 
     /**
