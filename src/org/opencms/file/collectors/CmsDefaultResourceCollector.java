@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/03/11 15:41:53 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,14 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.file.collectors;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.PrintfFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,87 +52,10 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
-
-    /**
-     * Data structure for the collctor, parsed form the collector parameters.<p>
-     */
-    protected class CmsCollectorData {
-
-        /** The display count. */
-        private int m_count;
-
-        /** The file name. */
-        private String m_fileName;
-
-        /** The file type. */
-        private int m_type;
-
-        /**
-         * Creates a new collector data set.<p>
-         * 
-         * @param data the data to parse
-         */
-        public CmsCollectorData(String data) {
-
-            if (data == null) {
-                throw new IllegalArgumentException(
-                    "Collector requires a parameter in the form '/sites/default/myfolder/file_${number}.html|11|4'");
-            }
-
-            int pos1 = data.indexOf('|');
-            if (pos1 == -1) {
-                throw new IllegalArgumentException("Malformed collector parameter '" + data + "'");
-            }
-
-            int pos2 = data.indexOf('|', pos1 + 1);
-            if (pos2 == -1) {
-                pos2 = data.length();
-                m_count = 0;
-            } else {
-                m_count = Integer.valueOf(data.substring(pos2 + 1)).intValue();
-            }
-
-            m_fileName = data.substring(0, pos1);
-            m_type = Integer.valueOf(data.substring(pos1 + 1, pos2)).intValue();
-        }
-
-        /**
-         * Returns the count.<p>
-         *
-         * @return the count
-         */
-        public int getCount() {
-
-            return m_count;
-        }
-
-        /**
-         * Returns the file name.<p>
-         *
-         * @return the file name
-         */
-        public String getFileName() {
-
-            return m_fileName;
-        }
-
-        /**
-         * Returns the type.<p>
-         *
-         * @return the type
-         */
-        public int getType() {
-
-            return m_type;
-        }
-    }
-
-    /** Format for create parameter. */
-    private static final PrintfFormat C_FORMAT_NUMBER = new PrintfFormat("%0.4d");
 
     /** Static array of the collectors implemented by this class. */
     private static final String[] m_collectorNames = {
@@ -148,7 +72,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     private static final List m_collectors = Collections.unmodifiableList(Arrays.asList(m_collectorNames));
 
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#getCollectorNames()
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
     public List getCollectorNames() {
 
@@ -156,7 +80,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException {
 
@@ -189,7 +113,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsException {
 
@@ -222,7 +146,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public List getResults(CmsObject cms, String collectorName, String param) throws CmsException {
 
@@ -342,29 +266,11 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         return shrinkToFit(result, data.getCount());
     }
-    
-    /**
-     * Shrinks a List to fit a maximum size.<p>
-     * 
-     * @param result a List
-     * @param maxSize the maximum size of the List
-     * 
-     * @return the shrinked list
-     */
-    protected List shrinkToFit(List result, int maxSize) {
-        
-        if ((maxSize > 0) && (result.size() > maxSize)) {
-            // cut off all items > count
-            result = result.subList(0, maxSize);
-        }
-        
-        return result;
-    }
 
     /**
      * Returns all resources in the folder pointed to by the parameter.<p>
      * 
-     * @param cms the current CmsObject
+     * @param cms the current OpenCms user context
      * @param param the folder name to use
      * @param tree if true, look in folder and all child folders, if false, look only in given folder
      * 
@@ -384,45 +290,6 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         Collections.reverse(result);
 
         return shrinkToFit(result, data.getCount());
-    }
-
-    /**
-     * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
-     * 
-     * @param cms the current CmsObject
-     * @param param the folder name to use
-     * 
-     * @return the link to create a new XML content item in the folder
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected String getCreateInFolder(CmsObject cms, String param) throws CmsException {
-
-        CmsCollectorData data = new CmsCollectorData(param);
-
-        String foldername = CmsResource.getFolderPath(data.getFileName());
-
-        // must check ALL resources in folder because name dosen't care for type
-        List resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
-
-        // now create a list of all resources that just contains the file names
-        List result = new ArrayList(resources.size());
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource resource = (CmsResource)resources.get(i);
-            result.add(resource.getRootPath());
-        }
-
-        String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
-        String checkName;
-        String number;
-
-        int j = 0;
-        do {
-            number = C_FORMAT_NUMBER.sprintf(++j);
-            checkName = CmsStringUtil.substitute(fileName, "${number}", number);
-        } while (result.contains(checkName));
-
-        return cms.getRequestContext().removeSiteRoot(checkName);
     }
 
     /**

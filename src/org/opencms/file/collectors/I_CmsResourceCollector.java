@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/I_CmsResourceCollector.java,v $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,8 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.file.collectors;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
 import java.util.List;
@@ -40,7 +41,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.5.2
  */
 public interface I_CmsResourceCollector extends Comparable {
@@ -104,7 +105,7 @@ public interface I_CmsResourceCollector extends Comparable {
     int getOrder();
 
     /** 
-     * Returns a list of {@link CmsResource} Objects that are 
+     * Returns a list of {@link org.opencms.file.CmsResource} Objects that are 
      * gathered in the VFS using the named collector.<p>
      * 
      * @param cms the current CmsObject 

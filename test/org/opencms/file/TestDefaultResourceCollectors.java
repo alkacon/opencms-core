@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDefaultResourceCollectors.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.file;
 
+import org.opencms.file.collectors.CmsDefaultResourceCollector;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
@@ -66,7 +68,7 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
-        suite.setName(TestResourceOperations.class.getName());
+        suite.setName(TestDefaultResourceCollectors.class.getName());
 
         suite.addTest(new TestDefaultResourceCollectors("testCollectSingleFile"));
         suite.addTest(new TestDefaultResourceCollectors("testCollectAllInFolder"));
@@ -136,11 +138,12 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
      */
     public void testCollectAllInFolder() throws Throwable {
         
-        CmsObject cms = getCmsObject();     
+        CmsObject cms = getCmsObject();
+        int resTypeIdPlain = CmsResourceTypePlain.getStaticTypeId(); 
         echo("Testing allInFolder resource collector");
         
         I_CmsResourceCollector collector = new CmsDefaultResourceCollector();
-        List resources = collector.getResults(cms, "allInFolder", "/folder1/|3");
+        List resources = collector.getResults(cms, "allInFolder", "/folder1/|" + resTypeIdPlain);
         
         CmsResource res;
         
@@ -160,7 +163,8 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
      */
     public void testCollectAllInFolderDateReleasedDesc() throws Throwable {
         
-        CmsObject cms = getCmsObject();     
+        CmsObject cms = getCmsObject();
+        int resTypeIdPlain = CmsResourceTypePlain.getStaticTypeId(); 
         echo("Testing allInFolderDateReleasedDesc resource collector");
         
         I_CmsResourceCollector collector = new CmsDefaultResourceCollector();
@@ -174,7 +178,7 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
         cms.touch("/folder1/file1", t1, t1, t1+3*day, false);
         cms.touch("/folder1/file2", t2, t2, t2+3*day, false);
         
-        resources = collector.getResults(cms, "allInFolderDateReleasedDesc", "/folder1/|3");
+        resources = collector.getResults(cms, "allInFolderDateReleasedDesc", "/folder1/|" + resTypeIdPlain);
         
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/file2", res.getRootPath());
@@ -185,7 +189,7 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
         cms.touch("/folder1/file1", t2, t2, t2+3*day, false);
         cms.touch("/folder1/file2", t1, t1, t1+3*day, false);
         
-        resources = collector.getResults(cms, "allInFolderDateReleasedDesc", "/folder1/|3");
+        resources = collector.getResults(cms, "allInFolderDateReleasedDesc", "/folder1/|" + resTypeIdPlain);
         
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/file1", res.getRootPath());

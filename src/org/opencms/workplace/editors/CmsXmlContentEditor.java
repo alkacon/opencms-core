@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/02/24 14:38:00 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.editors;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.I_CmsResourceCollector;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -75,7 +75,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {

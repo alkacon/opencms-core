@@ -56,7 +56,8 @@
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>					
 			</resourcetypes>
 			<collectors>
-				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />
+				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
+				<collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
 			</collectors>		
 		</resources>
 		<defaultfiles>

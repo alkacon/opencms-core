@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlSelectorWidget.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.3
  */
 public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
@@ -124,7 +124,7 @@ public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
             
             // check if current option is selected
             String fieldValue = value.getStringValue(cms);
-            if ((CmsStringUtil.isEmpty(fieldValue) && isPreselected) || val.equals(fieldValue)) {
+            if (((CmsStringUtil.isEmpty(fieldValue) || defaultValue.equals(fieldValue)) && isPreselected) || val.equals(fieldValue)) {
                 selected = " selected=\"selected\"";
             }
             

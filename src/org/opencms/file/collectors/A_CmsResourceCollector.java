@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,17 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.file;
+package org.opencms.file.collectors;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.PrintfFormat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides some helpful base implementations for resource collector classes.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.5.2
  */
 public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
+    
+    /** Format for file create parameter. */
+    private static final PrintfFormat C_FORMAT_NUMBER = new PrintfFormat("%0.4d");
 
     /** The collector order of this collector. */
     protected int m_order;
@@ -56,7 +69,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     }
     
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#getOrder()
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getOrder()
      */
     public int getOrder() {
     
@@ -64,7 +77,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#setOrder(int)
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#setOrder(int)
      */
     public void setOrder(int order) {
 
@@ -112,5 +125,62 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     public int hashCode() {
         
         return m_hashcode;
-    }    
+    }
+    
+    /**
+     * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param param the folder name to use
+     * 
+     * @return the link to create a new XML content item in the folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected String getCreateInFolder(CmsObject cms, String param) throws CmsException {
+
+        CmsCollectorData data = new CmsCollectorData(param);
+
+        String foldername = CmsResource.getFolderPath(data.getFileName());
+
+        // must check ALL resources in folder because name dosen't care for type
+        List resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
+
+        // now create a list of all resources that just contains the file names
+        List result = new ArrayList(resources.size());
+        for (int i = 0; i < resources.size(); i++) {
+            CmsResource resource = (CmsResource)resources.get(i);
+            result.add(resource.getRootPath());
+        }
+
+        String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
+        String checkName;
+        String number;
+
+        int j = 0;
+        do {
+            number = C_FORMAT_NUMBER.sprintf(++j);
+            checkName = CmsStringUtil.substitute(fileName, "${number}", number);
+        } while (result.contains(checkName));
+
+        return cms.getRequestContext().removeSiteRoot(checkName);
+    }
+    
+    /**
+     * Shrinks a List to fit a maximum size.<p>
+     * 
+     * @param result a List
+     * @param maxSize the maximum size of the List
+     * 
+     * @return the shrinked list
+     */
+    protected List shrinkToFit(List result, int maxSize) {
+        
+        if ((maxSize > 0) && (result.size() > maxSize)) {
+            // cut off all items > count
+            result = result.subList(0, maxSize);
+        }
+        
+        return result;
+    }
 }

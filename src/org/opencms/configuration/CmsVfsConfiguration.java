@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/03/18 16:50:38 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.configuration;
 
-import org.opencms.file.I_CmsResourceCollector;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsResourceLoader;
