@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsIcon.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/21 21:13:22 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,10 +42,15 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/21 21:13:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
+	
+	/**
+	 * This hashtable caches once generated icons.
+	 */
+	private Hashtable m_iconcache = new Hashtable();
             
     /**
      * Handling of the special workplace <CODE>&lt;ICON&gt;</CODE> tags.
@@ -68,30 +73,39 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read button parameters
         String iconName = n.getAttribute(C_ICON_NAME);
-        String iconLabel = n.getAttribute(C_ICON_LABEL);
-        String iconAction = n.getAttribute(C_ICON_ACTION);
-        String iconHref = n.getAttribute(C_ICON_HREF);
-        String iconTarget = n.getAttribute(C_ICON_TARGET);
-        if(iconHref == null || "".equals(iconHref)) {
-            iconHref = "";
-        }
-        
-        // Get button definition and language values
-        CmsXmlWpTemplateFile icondef = getIconDefinitions(cms);
-        StringBuffer iconLabelBuffer = new StringBuffer(
-			lang.getLanguageValue(C_LANG_ICON + "." + iconLabel) );
 		
-		// Insert a html-break, if needed
-		if( iconLabelBuffer.toString().indexOf("- ") != -1 ) {
-			iconLabelBuffer.insert(iconLabelBuffer.toString().indexOf("- ") + 2, "<BR>");
-		}
+		// is this icon in the cache?
+		if( !m_iconcache.containsKey(iconName) ) {
+			// no - generate the icon
+
+			String iconLabel = n.getAttribute(C_ICON_LABEL);
+			String iconAction = n.getAttribute(C_ICON_ACTION);
+			String iconHref = n.getAttribute(C_ICON_HREF);
+			String iconTarget = n.getAttribute(C_ICON_TARGET);
+			if(iconHref == null || "".equals(iconHref)) {
+			    iconHref = "";
+			}
         
-        // get the processed button.
-        icondef.setXmlData(C_ICON_NAME, iconName);
-        icondef.setXmlData(C_ICON_LABEL, iconLabelBuffer.toString());
-        icondef.setXmlData(C_ICON_ACTION, iconAction);
-        icondef.setXmlData(C_ICON_HREF, iconHref);
-        icondef.setXmlData(C_ICON_TARGET, iconTarget);
-		return icondef.getProcessedXmlDataValue("defaulticon", callingObject);
+			// Get button definition and language values
+			CmsXmlWpTemplateFile icondef = getIconDefinitions(cms);
+			StringBuffer iconLabelBuffer = new StringBuffer(
+				lang.getLanguageValue(C_LANG_ICON + "." + iconLabel) );
+		
+			// Insert a html-break, if needed
+			if( iconLabelBuffer.toString().indexOf("- ") != -1 ) {
+				iconLabelBuffer.insert(iconLabelBuffer.toString().indexOf("- ") + 2, "<BR>");
+			}
+        
+			// get the processed button.
+			icondef.setXmlData(C_ICON_NAME, iconName);
+			icondef.setXmlData(C_ICON_LABEL, iconLabelBuffer.toString());
+			icondef.setXmlData(C_ICON_ACTION, iconAction);
+			icondef.setXmlData(C_ICON_HREF, iconHref);
+			icondef.setXmlData(C_ICON_TARGET, iconTarget);
+			m_iconcache.put(iconName, icondef.getProcessedXmlDataValue("defaulticon", callingObject));
+		} else {
+			System.err.println(iconName + " found in cache");
+		}
+		return (String) m_iconcache.get(iconName);
     }           
 }
