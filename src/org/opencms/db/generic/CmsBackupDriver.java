@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 15:31:53 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/09/15 16:27:43 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2003/09/15 15:31:53 $
+ * @version $Revision: 1.48 $ $Date: 2003/09/15 16:27:43 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -776,7 +776,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // the group could not be read
             managerGroup = "";
         }
-        Vector projectresources = m_driverManager.getProjectDriver().readProjectResources(currentProject.getId());
+        List projectresources = m_driverManager.getProjectDriver().readProjectResources(currentProject);
         // write backup project to the database
         try {
             conn = m_sqlManager.getConnectionForBackup();

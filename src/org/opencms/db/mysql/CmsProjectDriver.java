@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/15 16:27:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,32 +34,18 @@ package org.opencms.db.mysql;
 import org.opencms.workflow.CmsTaskLog;
 
 import com.opencms.core.CmsException;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsResource;
 
 import java.util.Vector;
 
 /**
  * MySQL implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.6 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.7 $ $Date: 2003/09/15 16:27:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {      
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#deleteProjectProperties(com.opencms.file.CmsProject)
-     */
-    public void deleteProjectProperties(CmsProject project) throws CmsException {
-        // get all resources of the project
-        Vector resources = m_driverManager.getVfsDriver().readResources(project);
-        for (int i = 0; i < resources.size(); i++) {
-            // delete the properties for each resource in project
-            m_driverManager.getVfsDriver().deleteAllProperties(project.getId(), (CmsResource) resources.elementAt(i));
-        }
-    }
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)

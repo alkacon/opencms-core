@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 15:31:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/09/15 16:27:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Hashtable;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
 
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.7 $ $Date: 2003/09/15 15:31:53 $
+ * @version $Revision: 1.8 $ $Date: 2003/09/15 16:27:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -138,168 +137,10 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#createSession(java.lang.String, java.util.Hashtable)
-     */
-    public void createSession(String sessionId, Hashtable data) throws CmsException {
-        byte[] value = null;
-        PreparedStatement stmt = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement nextStmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(data);
-            oout.close();
-            value = bout.toByteArray();
-
-            // write data to database
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SESSION_FORINSERT");
-            stmt.setString(1, sessionId);
-            stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
-            stmt.executeUpdate();
-            stmt.close();
-            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SESSION_FORUPDATE");
-            stmt2.setString(1, sessionId);
-            conn.setAutoCommit(false);
-            // res = stmt2.executeQuery();
-            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
-            while (res.next()) {
-                oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
-                ByteArrayInputStream instream = new ByteArrayInputStream(value);
-                OutputStream outstream = blob.getBinaryOutputStream();
-                byte[] chunk = new byte[blob.getChunkSize()];
-                int i = -1;
-                while ((i = instream.read(chunk)) != -1) {
-                    outstream.write(chunk, 0, i);
-                }
-                instream.close();
-                outstream.close();
-            }
-            stmt2.close();
-            res.close();
-            // for the oracle-driver commit or rollback must be executed manually
-            // because setAutoCommit = false
-            nextStmt = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            nextStmt.execute();
-            nextStmt.close();
-            conn.setAutoCommit(true);
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            if (stmt2 != null) {
-                try {
-                    stmt2.close();
-                } catch (SQLException exc) {
-                }
-                try {
-                    //nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
-                    nextStmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_ROLLBACK"));
-                    nextStmt.execute();
-                } catch (SQLException se) {
-                }
-            }
-            m_sqlManager.closeAll(null, nextStmt, null);
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.oracle.CmsSqlManager();
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#updateSession(java.lang.String, java.util.Hashtable)
-     */
-    public int writeSession(String sessionId, Hashtable data) throws CmsException {
-        byte[] value = null;
-        PreparedStatement stmt = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement nextStmt = null;
-        PreparedStatement trimStmt = null;
-        Connection conn = null;
-        int retValue;
-        ResultSet res = null;
-
-        try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(data);
-            oout.close();
-            value = bout.toByteArray();
-
-            // write data to database in two steps because of using Oracle BLOB
-            // first update the session_time
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SESSION_UPDATE");
-            stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-            stmt.setString(2, sessionId);
-            retValue = stmt.executeUpdate();
-            stmt.close();
-            // now update the session_data
-            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SESSION_FORUPDATE");
-            stmt2.setString(1, sessionId);
-            conn.setAutoCommit(false);
-            // res = stmt2.executeQuery();
-            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
-            
-            while (res.next()) {
-                oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
-                // first trim the blob to 0 bytes, otherwise there could be left some bytes
-                // of the old content
-                trimStmt = m_sqlManager.getPreparedStatement(conn, "C_TRIMBLOB");
-                trimStmt.setBlob(1, blob);
-                trimStmt.setInt(2, 0);
-                trimStmt.execute();
-                ByteArrayInputStream instream = new ByteArrayInputStream(value);
-                OutputStream outstream = blob.getBinaryOutputStream();
-                byte[] chunk = new byte[blob.getChunkSize()];
-                int i = -1;
-                while ((i = instream.read(chunk)) != -1) {
-                    outstream.write(chunk, 0, i);
-                }
-                instream.close();
-                outstream.close();
-            }
-            stmt2.close();
-            res.close();
-            // for the oracle-driver commit or rollback must be executed manually
-            // because setAutoCommit = false in CmsDbPool.CmsDbPool
-            nextStmt = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            nextStmt.execute();
-            nextStmt.close();
-            conn.setAutoCommit(true);
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            if (stmt2 != null) {
-                try {
-                    stmt2.close();
-                } catch (SQLException exc) {
-                }
-                try {
-                    nextStmt = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                    nextStmt.execute();
-                } catch (SQLException se) {
-                }
-            }
-            m_sqlManager.closeAll(null, trimStmt, null);
-            m_sqlManager.closeAll(null, nextStmt, null);
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return retValue;
     }
 
     /**

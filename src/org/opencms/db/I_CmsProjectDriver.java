@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 15:31:53 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/15 16:27:43 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.*;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/09/15 15:31:53 $
+ * @version $Revision: 1.23 $ $Date: 2003/09/15 16:27:43 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -102,16 +102,6 @@ public interface I_CmsProjectDriver {
     void createProjectResource(int projectId, String resourceName) throws CmsException;
 
     /**
-     * This method creates a new session in the database. It is used
-     * for sessionfailover.
-     *
-     * @param sessionId the id of the session
-     * @param data the sessionData
-     * @throws CmsException if something goes wrong
-     */
-    void createSession(String sessionId, Hashtable data) throws CmsException;
-
-    /**
      * Creates a serializable object in the systempropertys.
      *
      * @param name The name of the property.
@@ -147,14 +137,6 @@ public interface I_CmsProjectDriver {
     void deleteProject(CmsProject project) throws CmsException;
 
     /**
-     * Deletes all properties for a project.<p>
-     *
-     * @param project the project where all properties should be deleted
-     * @throws CmsException if operation was not successful
-     */
-    void deleteProjectProperties(CmsProject project) throws CmsException;
-
-    /**
      * delete a projectResource from an given CmsResource object.<p>
      *
      * @param projectId id of the project in which the resource is used
@@ -170,19 +152,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     void deleteProjectResources(CmsProject project) throws CmsException;
-
-    /**
-     * Deletes all projectResource from an given CmsProject.<p>
-     *
-     * @param projectId The project in which the resource is used
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    void deleteProjectResources(int projectId) throws CmsException;
-
-    /**
-     * Deletes old sessions.
-     */
-    void deleteSessions();
 
     /**
      * Deletes a serializable object from the systempropertys.
@@ -311,14 +280,6 @@ public interface I_CmsProjectDriver {
     int readNextPublishVersionId() throws CmsException;
 
     /**
-     * Retrieves the online project from the database.
-     *
-     * @return com.opencms.file.CmsProject the  onlineproject for the given project.
-     * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
-     */
-    CmsProject readOnlineProject() throws CmsException;
-
-    /**
      * Reads a project by task-id.<p>
      *
      * @param task the task to read the project for
@@ -362,15 +323,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     List readProjectResources(CmsProject project) throws CmsException;
-
-    /**
-     * Select all projectResources from an given project.<p>
-     *
-     * @param projectId the project in which the resource is used
-     * @return Vector of resources belongig to the project
-     * @throws CmsException if something goes wrong
-     */
-    Vector readProjectResources(int projectId) throws CmsException;
 
     /**
      * Returns all projects, with the overgiven state.<p>
@@ -420,15 +372,6 @@ public interface I_CmsProjectDriver {
     List readProjectView(int project, String filter) throws CmsException;
 
     /**
-     * Reads a session from the database.<p>
-     *
-     * @param sessionId the id og the session to read
-     * @return the session data as Hashtable
-     * @throws CmsException if something goes wrong
-     */
-    Hashtable readSession(String sessionId) throws CmsException;
-
-    /**
      * Reads a serializable object from the systempropertys.
      *
      * @param name The name of the property.
@@ -436,24 +379,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     Serializable readSystemProperty(String name) throws CmsException;
-
-    /**
-     * Unlocks all resources in this project.
-     *
-     * @param project The project to be unlocked.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    void unlockResources(CmsProject project) throws CmsException;
-
-    /**
-     * Deletes a project from the cms.
-     * Therefore it deletes all files, resources and properties.
-     *
-     * @param project the project to delete.
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    void writeProject(CmsProject project) throws CmsException;
 
     /**
      * Update the online link table (after a project is published).<p>
@@ -477,17 +402,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException;
-
-    /**
-     * This method updates a session in the database. It is used
-     * for sessionfailover.
-     *
-     * @param sessionId the id of the session
-     * @param data the sessionData
-     * @return the number of affected sessions (should be 1 for an existing session)
-     * @throws CmsException if something goes wrong
-     */
-    int writeSession(String sessionId, Hashtable data) throws CmsException;
 
     /**
      * Writes a serializable object to the systemproperties.
