@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/21 16:08:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/21 16:08:28 $
  */
 public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserDriver {
 
@@ -87,14 +87,12 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
         m_sqlManager = initQueries(dbPoolUrl);        
         m_dbPoolUrl = dbPoolUrl;
 
-        String driverName = (String) config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER);
-
-        String digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + driverName + ".digest", "MD5");
+        String digest = config.getString(C_CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
         }
 
-        m_digestFileEncoding = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + driverName + ".digest.fileencoding", "ISO-8859-1");
+        m_digestFileEncoding = config.getString(C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
         }

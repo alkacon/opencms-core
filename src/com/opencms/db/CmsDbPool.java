@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/21 16:08:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,13 +41,13 @@ import source.org.apache.java.util.Configurations;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/21 16:08:28 $
  */
 public class CmsDbPool extends Object {
 
     public static final String C_DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
 
-    public static final String C_KEY_DATABASE_POOL = "database.pool";
+    public static final String C_KEY_DATABASE_POOL = "db.pool";
     public static final String C_KEY_DEFAULT_POOL_KEY = "default";
     public static final String C_KEY_USER_POOL_KEY = "user";
     public static final String C_KEY_VFS_POOL_KEY = "vfs";
@@ -71,15 +71,15 @@ public class CmsDbPool extends Object {
 
     public static final String createConnectionPool(Configurations config, String key) throws Exception {
         // read the values of the pool configuration specified by the given key
-        String jdbcDriver = config.getString(key + "." + C_KEY_JDBC_DRIVER);
-        String jdbcUrl = config.getString(key + "." + C_KEY_JDBC_URL);
-        int maxActive = config.getInteger(key + "." + C_KEY_MAX_ACTIVE);
-        int maxWait = config.getInteger(key + "." + C_KEY_MAX_WAIT);
-        int maxIdle = config.getInteger(key + "." + C_KEY_MAX_IDLE);
-        String testQuery = config.getString(key + "." + C_KEY_TEST_QUERY);
-        String username = config.getString(key + "." + C_KEY_USERNAME);
-        String password = config.getString(key + "." + C_KEY_PASSWORD);
-        String poolUrl = config.getString(key + "." + C_KEY_POOL_URL);
+        String jdbcDriver = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_DRIVER);
+        String jdbcUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
+        int maxActive = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_ACTIVE);
+        int maxWait = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_WAIT);
+        int maxIdle = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_IDLE);
+        String testQuery = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_TEST_QUERY);
+        String username = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_USERNAME);
+        String password = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_PASSWORD);
+        String poolUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_POOL_URL);
 
         // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();

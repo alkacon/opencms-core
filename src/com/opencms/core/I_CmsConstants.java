@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/05/21 10:25:00 $
-* Version: $Revision: 1.222 $
+* Date   : $Date: 2003/05/21 16:08:28 $
+* Version: $Revision: 1.223 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.222 $ $Date: 2003/05/21 10:25:00 $
+ * @version $Revision: 1.223 $ $Date: 2003/05/21 16:08:28 $
  */
 public interface I_CmsConstants {
 
@@ -1145,11 +1145,6 @@ public interface I_CmsConstants {
      * The "lastmodified" tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_LASTMODIFIED = "lastmodified";
-
-    /**
-     * A string in the configuration-file.
-     */
-    public static String C_CONFIGURATION_RESOURCEBROKER = "resourcebroker";
     
     /**
      * A string in the configuration-file.
@@ -1160,7 +1155,12 @@ public interface I_CmsConstants {
 	 * A string in the configuration-file.
 	 */    
 	public static String C_CONFIGURATIONS_ACCESS = "access";
-	
+
+	/**
+	 * A string in the configuration-file.
+	 */  
+	public static String C_CONFIGURATION_DB = "db";
+		
     /**
      * A string in the configuration-file.
      */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/05/21 14:35:47 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/05/21 16:08:28 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,10 @@ public class CmsSetup {
 	 * name of the database (mysql)
 	 */
 	private String m_database;
-
+	
+	// TODO: remove this later
+	private String m_resourceBroker;
+	
 	/**
 	 * database password used to drop and create database
 	 */
@@ -231,14 +234,32 @@ public class CmsSetup {
 		return m_setupType;
 	}
 
-	/** Sets the driver manager to the given value */
+	/** Gets the default pool */
+	public String getPool() {
+		return this.getExtProperty("resourcebroker.pool");
+	}
+	
+	/** Sets the resource broker to the given value *//** Sets the driver manager to the given value */
 	public void setResourceBroker(String resourceBroker) {
-		setExtProperty("resourcebroker", resourceBroker);
+		// setExtProperty("resourcebroker", resourceBroker);
+		m_resourceBroker = resourceBroker;
+		
+		String vfsAccess = this.getDbProperty(this.getResourceBroker() + ".vfs.class");
+		String userAccess = this.getDbProperty(this.getResourceBroker() + ".user.class");
+		String dbAccess = this.getDbProperty(this.getResourceBroker() + ".db.class");
+		
+		setExtProperty("resourcebroker.access.vfs.class",vfsAccess);
+		setExtProperty("resourcebroker.access.user.class",userAccess);
+		setExtProperty("resourcebroker.access.db.class",dbAccess);
 	}
 
 	/** Gets the resource broker */
 	public String getResourceBroker() {
-		return this.getExtProperty("resourcebroker");
+		//return this.getExtProperty("resourcebroker");
+		if (m_resourceBroker == null) {
+			m_resourceBroker = (String)this.getResourceBrokers().firstElement();
+		}
+		return m_resourceBroker;
 	}
 
 	/** Returns all resource Brokers found in 'dbsetup.properties' */
@@ -267,40 +288,50 @@ public class CmsSetup {
 
 	/** Sets the connection string to the database to the given value */
 	public void setDbWorkConStr(String dbWorkConStr) {
-		setExtProperty("pool." + getResourceBroker() + ".url", dbWorkConStr);
-		setExtProperty("pool." + getResourceBroker() + "backup.url", dbWorkConStr);
-		setExtProperty("pool." + getResourceBroker() + "online.url", dbWorkConStr);
+		//setExtProperty("pool." + getResourceBroker() + ".url", dbWorkConStr);
+		//setExtProperty("pool." + getResourceBroker() + "backup.url", dbWorkConStr);
+		//setExtProperty("pool." + getResourceBroker() + "online.url", dbWorkConStr);
+		String driver = this.getDbProperty(this.getResourceBroker() + ".driver");
+		
+		// TODO: set the driver in own methods
+		setExtProperty(this.getPool() + ".jdbcDriver", driver);
+		setExtProperty(this.getPool() + ".jdbcUrl", dbWorkConStr);
 	}
 
+	/** Returns a connection string */
+	public String getDbWorkConStr() {
+		//return this.getExtProperty("pool." + getResourceBroker() + ".url");
+		return this.getExtProperty(this.getPool() + ".jdbcUrl");
+	}
+	
 	/** Sets the user of the database to the given value */
 	public void setDbWorkUser(String dbWorkUser) {
-		setExtProperty("pool." + getResourceBroker() + ".user", dbWorkUser);
-		setExtProperty("pool." + getResourceBroker() + "backup.user", dbWorkUser);
-		setExtProperty("pool." + getResourceBroker() + "online.user", dbWorkUser);
+		//setExtProperty("pool." + getResourceBroker() + ".user", dbWorkUser);
+		//setExtProperty("pool." + getResourceBroker() + "backup.user", dbWorkUser);
+		//setExtProperty("pool." + getResourceBroker() + "online.user", dbWorkUser);
+		setExtProperty(this.getPool() + ".user", dbWorkUser);
 	}
 
 	/** Returns the user of the database from the properties */
 	public String getDbWorkUser() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".user");
+		//return this.getExtProperty("pool." + getResourceBroker() + ".user");
+		return this.getExtProperty(this.getPool() + ".user");
 	}
 
 	/** Sets the password of the database to the given value */
 	public void setDbWorkPwd(String dbWorkPwd) {
-		setExtProperty("pool." + getResourceBroker() + ".password", dbWorkPwd);
-		setExtProperty("pool." + getResourceBroker() + "backup.password", dbWorkPwd);
-		setExtProperty("pool." + getResourceBroker() + "online.password", dbWorkPwd);
-	}
-
-	/** Returns a conenction string */
-	public String getDbWorkConStr() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".url");
+		//setExtProperty("pool." + getResourceBroker() + ".password", dbWorkPwd);
+		//setExtProperty("pool." + getResourceBroker() + "backup.password", dbWorkPwd);
+		//setExtProperty("pool." + getResourceBroker() + "online.password", dbWorkPwd);
+		setExtProperty(this.getPool() + ".password", dbWorkPwd);
 	}
 
 	/** Returns the password of the database from the properties */
 	public String getDbWorkPwd() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".password");
+		//return this.getExtProperty("pool." + getResourceBroker() + ".password");
+		return this.getExtProperty(this.getPool() + ".password");
 	}
- 
+
 	/** Returns the extended properties */
 	public ExtendedProperties getProperties() {
 		return m_ExtProperties;
@@ -323,7 +354,8 @@ public class CmsSetup {
 
 	/** Returns the database driver belonging to the resource broker */
 	public String getDbDriver() {
-		return m_ExtProperties.get("pool." + getResourceBroker() + ".driver").toString();
+		//return m_ExtProperties.get("pool." + getResourceBroker() + ".driver").toString();
+		return this.getDbProperty(this.getResourceBroker() + ".driver");
 	}
 
 	/** Sets the minimum connections to the given value */
