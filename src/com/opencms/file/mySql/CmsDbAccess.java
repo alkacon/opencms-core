@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/01 21:41:45 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2001/02/20 15:09:46 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.48 $ $Date: 2001/02/01 21:41:45 $ *
+ * @version $Revision: 1.49 $ $Date: 2001/02/20 15:09:46 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -426,6 +426,12 @@ public void deleteProjectProperties(CmsProject project) throws CmsException {
 	 */
 	public void destroy()
 		throws CmsException {
+        try {
+            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
+        } catch(SQLException exc) {
+            // destroy not possible - ignoring the exception
+        }
+
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}

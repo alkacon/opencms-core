@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsDriver.java,v $
- * Date   : $Date: 2001/02/06 18:33:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/02/20 15:09:43 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -230,4 +230,17 @@ public class CmsDriver implements java.sql.Driver {
 		}
 		return output.toString();
 	}
+
+    /**
+     * Destroys this driver and all its connections.
+     */
+    public void destroy() {
+        Enumeration pools = m_pools.elements();
+        m_pools = new Hashtable();
+        while(pools.hasMoreElements() ){
+            CmsPool pool = (CmsPool) pools.nextElement();
+            pool.destroy();
+            Object a;
+        }
+    }
 }

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/19 12:58:20 $
- * Version: $Revision: 1.189 $
+ * Date   : $Date: 2001/02/20 15:09:44 $
+ * Version: $Revision: 1.190 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.189 $ $Date: 2001/02/19 12:58:20 $ *
+ * @version $Revision: 1.190 $ $Date: 2001/02/20 15:09:44 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2284,6 +2284,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 */
 	public void destroy()
 		throws CmsException {
+        try {
+            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
+        } catch(SQLException exc) {
+            // destroy not possible - ignoring the exception
+        }
 
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");

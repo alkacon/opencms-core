@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/02/13 12:34:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/02/20 15:09:44 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -298,4 +298,19 @@ public class CmsPool extends Thread {
 		output.append(".");
 		return output.toString();
 	}
+
+    /**
+     * Destroys this pool.
+     */
+    public void destroy() {
+        synchronized(m_availableConnections) {
+            while(m_availableConnections.size() > 0) {
+                ((CmsConnection) m_availableConnections.pop()).closeOriginalConnection();
+                m_connectionAmount--;
+            }
+        }
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": destroyed");
+		}
+    }
 }
