@@ -168,9 +168,10 @@
             userid="${db.user}"
             password="${db.password}"
             autocommit="true"
-            onerror="continue"
-            src="${build.webinf}/ocsetup/create_mysql.sql"
-            />
+            onerror="continue">
+            drop database opencms;
+            create database opencms;
+        </sql>
         <sql
             classpath="${build.inputlib.mysql}"
             driver="${db.driver}"
