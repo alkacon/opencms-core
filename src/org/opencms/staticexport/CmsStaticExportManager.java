@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/25 16:07:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/26 11:01:20 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -171,6 +171,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (publishedResources != null) {
                     // get list published resources
                     Vector resources = publishedResources.getChangedVfsResources();
+                    if (OpenCms.getLog(this).isDebugEnabled()) {
+                        OpenCms.getLog(this).debug("Static export manager catched event EVENT_PUBLISH_PROJECT with " + ((resources != null)?""+resources.size():"null") + " resources");
+                    }
                     if (resources != null) {
                         // get a guest user cms context
                         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
@@ -179,11 +182,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         while (i.hasNext()) {
                             String vfsName = (String)i.next();
                             // get the link name for the published file 
-                            String rfsName = getRfsName(cms, vfsName);                        
+                            String rfsName = getRfsName(cms, vfsName);
+                            if (OpenCms.getLog(this).isDebugEnabled()) {
+                                OpenCms.getLog(this).debug("Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
+                            }           
                             if (rfsName.startsWith(getRfsPrefix())) {     
                                 // this file could have been exported
                                 if (CmsResource.isFolder(rfsName)) {
                                     rfsName += C_EXPORT_DEFAULT_FILE;
+                                    if (OpenCms.getLog(this).isDebugEnabled()) {
+                                        OpenCms.getLog(this).debug("Static export folder modified rfsName='" + rfsName + "'");
+                                    }           
                                 }
                                 String exportFileName = getExportPath() + rfsName.substring(getRfsPrefix().length());
                                 File exportFile = new File(exportFileName);
@@ -193,11 +202,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                         exportFile.delete();
                                         // write log message
                                         if (OpenCms.getLog(this).isInfoEnabled()) {
-                                            OpenCms.getLog(this).info("Deleted exported rfs file '" + rfsName + "'");
+                                            OpenCms.getLog(this).info("Static export deleted exported rfs file '" + rfsName + "'");
                                         }
                                     }    
                                 } catch (Throwable t) {
                                     // ignore, nothing to do about this
+                                    if (OpenCms.getLog(this).isWarnEnabled()) {
+                                        OpenCms.getLog(this).warn("Error deleting static export file vfsName='" + vfsName + "' rfsName='" + rfsName + "'", t);
+                                    }
                                 }      
                             }
                         } 
@@ -209,6 +221,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 m_cacheOnlineLinks.clear();
                 m_cacheExportUris.clear();        
                 setExportnames();                
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    String eventType = "EVENT_CLEAR_CACHES";
+                    if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
+                        eventType = "EVENT_PUBLISH_PROJECT";
+                    }
+                    OpenCms.getLog(this).debug("Static export manager flushed caches after recieving event " + eventType);
+                }
                 break;
             default:
                 // no operation
@@ -233,6 +252,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String vfsName = cms.getRequestContext().removeSiteRoot(data.getVfsName());
         String rfsName = data.getRfsName();
         CmsResource resource = data.getResource();
+        
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Static export starting for resource " + data);
+        }
         
         // read vfs resource
         if (resource.isFile()) {

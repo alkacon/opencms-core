@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2003/09/25 16:07:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/26 11:01:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsResource;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsStaticExportData {
     
@@ -102,7 +102,7 @@ public class CmsStaticExportData {
         result.append(", rfsName=");
         result.append(m_rfsName);
         if (m_resource != null) {
-            result.append(", resStructureId=");
+            result.append(", structureId=");
             result.append(m_resource.getStructureId());
         }
         result.append("]");
