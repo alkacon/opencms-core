@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/18 14:50:33 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2000/06/20 14:41:22 $
+ * Version: $Revision: 1.89 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.88 $ $Date: 2000/06/18 14:50:33 $ 
+ * @version $Revision: 1.89 $ $Date: 2000/06/20 14:41:22 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -638,6 +638,7 @@ public class CmsObject implements I_CmsConstants {
 		throws CmsException {
 		c_rb.copyResourceToProject(m_context.currentUser(), 
 								   m_context.currentProject(), resource );
+        
 	}
 	
 	/**

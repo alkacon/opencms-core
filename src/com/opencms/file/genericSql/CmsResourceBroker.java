@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/19 08:45:45 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/06/20 14:41:22 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.60 $ $Date: 2000/06/19 08:45:45 $
+ * @version $Revision: 1.61 $ $Date: 2000/06/20 14:41:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2916,8 +2916,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					    m_dbAccess.copyResourceToProject(currentProject, online, onlineRes);                                                                                                                   
 					    // read the offline-resource
 					    offlineRes = readFileHeader(currentUser,currentProject, parent);
+                   
                  	    // copy the metainfos			
-					    writeProperties(currentUser,currentProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,currentProject,onlineRes.getAbsolutePath()));
+					    writeProperties(currentUser,currentProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,currentProject,onlineRes.getAbsolutePath()));                        
+             
+                        chstate(currentUser,currentProject,offlineRes.getAbsolutePath(),C_STATE_UNCHANGED);
+            
                      	} catch (CmsException exc) {
          	    	// if the subfolder exists already - all is ok
 			        }
@@ -2953,10 +2957,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                                                               
     		// read the offline-resource
 	    	CmsResource offlineRes = readFileHeader(currentUser,offlineProject, resource);
+ 
 
 		    // copy the metainfos			
 		    writeProperties(currentUser,offlineProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()));
-                  
+          
+            chstate(currentUser,offlineProject,offlineRes.getAbsolutePath(),C_STATE_UNCHANGED);
+           
+            
 		
 		    // now walk recursive through all files and folders, and copy them too
 		    if(onlineRes.isFolder()) {
@@ -4425,11 +4433,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             resource.setState(state);
             // write-acces  was granted - write the file.
 			if (filename.endsWith("/")) { 
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
                 // update the cache
                 m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);   
             } else {          
-                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
                 // update the cache
                 m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
             }

@@ -30,14 +30,7 @@ addFileExtension "jpeg" "image"
 addFileExtension "jpg" "image"
 addFileExtension "gif" "image"
 addFileExtension "js" "script"
-createProject "2" "__setupproj" "The project to setup the cms" Administrators Administrators
+createProject  "__setupproj" "The project to setup the cms" Administrators Administrators
 setCurrentProject "2"
 copyResourceToProject "/"
-lockResource "/"
-chgrp "/" Users
-unlockResource "/"
-importResources "config/workplace.zip" "/"
-publishProject "2"
-addMountPoint "/system/workplace/pics/system/" "C:/Programme/Apache/html/pics/system/" pics Guest Guests plain "383"
-writeExportPath "c:/export/"
-exit
+
