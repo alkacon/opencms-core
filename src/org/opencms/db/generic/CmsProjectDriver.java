@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 15:31:53 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2003/09/15 16:01:39 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.95 $ $Date: 2003/09/15 15:31:53 $
+ * @version $Revision: 1.96 $ $Date: 2003/09/15 16:01:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -668,10 +668,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getGroupProjectmanagers()), OpenCms.getDefaultUsers().getGroupProjectmanagers(), "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
-        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getUserGuest()), OpenCms.getDefaultUsers().getUserGuest(), m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getUserAdmin()), OpenCms.getDefaultUsers().getUserAdmin(), m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        m_driverManager.getUserDriver().addUserToGroup(guest.getId(), guests.getId());
-        m_driverManager.getUserDriver().addUserToGroup(admin.getId(), administrators.getId());
+        CmsUser guest = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getUserGuest()), OpenCms.getDefaultUsers().getUserGuest(), m_driverManager.getUserDriver().encryptPassword(""), m_driverManager.getUserDriver().encryptPassword(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser admin = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getUserAdmin()), OpenCms.getDefaultUsers().getUserAdmin(), m_driverManager.getUserDriver().encryptPassword("admin"), m_driverManager.getUserDriver().encryptPassword(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        m_driverManager.getUserDriver().createUserInGroup(guest.getId(), guests.getId());
+        m_driverManager.getUserDriver().createUserInGroup(admin.getId(), administrators.getId());
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -810,8 +810,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             try {
                 // remove the ACL online and offline
-                m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, onlineFolder.getResourceId());
-                m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFolder.getResourceId());
+                m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFolder.getResourceId());
+                m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), currentFolder.getResourceId());
             } catch (CmsException e) {
                 if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                     OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishDeletedFolder] error removing ACLs, type: " + e.getTypeText() + ",  " + currentFolder.toString());
@@ -924,8 +924,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // delete the ACL online and offline
-                    m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, onlineFile.getResourceId());
-                    m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), offlineFile.getResourceId());
+                    m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFile.getResourceId());
+                    m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), offlineFile.getResourceId());
                 } catch (CmsException e) {
                     if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                         OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishFile] error removing ACLs, type: " + e.getTypeText() + ",  " + offlineFile.toString());

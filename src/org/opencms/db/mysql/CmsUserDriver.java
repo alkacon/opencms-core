@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/15 16:01:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/15 16:01:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -57,7 +57,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#addUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
-    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
         byte[] value = null;
@@ -76,9 +76,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(2, name);
 
             // crypt the password with MD5
-            stmt.setString(3, digest(password));
+            stmt.setString(3, encryptPassword(password));
 
-            stmt.setString(4, digest(""));
+            stmt.setString(4, encryptPassword(""));
             stmt.setString(5, description);
             stmt.setString(6, firstname);
             stmt.setString(7, lastname);

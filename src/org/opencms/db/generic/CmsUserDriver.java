@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:16 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/15 16:01:39 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.22 $ $Date: 2003/09/15 15:06:16 $
+ * @version $Revision: 1.23 $ $Date: 2003/09/15 16:01:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -112,7 +112,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
-    public CmsUser addImportUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         byte[] value = null;
 
         Connection conn = null;
@@ -194,8 +194,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
             // crypt the password with MD5
-            stmt.setString(3, digest(password));
-            stmt.setString(4, digest(""));
+            stmt.setString(3, encryptPassword(password));
+            stmt.setString(4, encryptPassword(""));
             stmt.setString(5, m_sqlManager.validateNull(description));
             stmt.setString(6, m_sqlManager.validateNull(firstname));
             stmt.setString(7, m_sqlManager.validateNull(lastname));
@@ -243,7 +243,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
-    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         byte[] value = null;
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
@@ -262,8 +262,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
             // crypt the password with MD5
-            stmt.setString(3, digest(password));
-            stmt.setString(4, digest(""));
+            stmt.setString(3, encryptPassword(password));
+            stmt.setString(4, encryptPassword(""));
             stmt.setString(5, m_sqlManager.validateNull(description));
             stmt.setString(6, m_sqlManager.validateNull(firstname));
             stmt.setString(7, m_sqlManager.validateNull(lastname));
@@ -299,12 +299,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param groupid The id of the group.
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
-    public void addUserToGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
+    public void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         // check if user is already in group
-        if (!isUserInGroup(userid, groupid)) {
+        if (!validateUserInGroup(userid, groupid)) {
             // if not, add this user to the group
             try {
                 // create statement
@@ -333,7 +333,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param userType The new usertype of the user
      * @throws CmsException if something goes wrong
      */
-    public void changeUserType(CmsUUID userId, int userType) throws CmsException {
+    public void writeUserType(CmsUUID userId, int userType) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -540,7 +540,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    public void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+    public void deleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -648,7 +648,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param value The value to encrypt.
      * @return The encrypted value.
      */
-    public String digest(String value) {
+    public String encryptPassword(String value) {
         // is there a valid digest?
         if (m_digest != null) {
             try {
@@ -701,7 +701,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return a vector of access control entries defining all permissions for the given resource
      * @throws CmsException if something goes wrong
      */
-    public Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
+    public Vector readAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
 
         Vector aceList = new Vector();
         PreparedStatement stmt = null;
@@ -749,7 +749,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return users A Vector of all child groups or null.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public Vector getChild(String groupname) throws CmsException {
+    public Vector getChildGroups(String groupname) throws CmsException {
 
         Vector childs = new Vector();
         CmsGroup group;
@@ -793,7 +793,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return users A Vector of all existing groups.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public Vector getGroups() throws CmsException {
+    public Vector readGroups() throws CmsException {
         Vector groups = new Vector();
         //CmsGroup group = null;
         ResultSet res = null;
@@ -826,7 +826,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(CmsUUID userId) throws CmsException {
+    public Vector readGroupsOfUser(CmsUUID userId) throws CmsException {
         //CmsGroup group;
         Vector groups = new Vector();
 
@@ -861,7 +861,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return list of users of this type
      * @throws CmsException if something goes wrong.
      */
-    public Vector getUsers(int type) throws CmsException {
+    public Vector readUsers(int type) throws CmsException {
         Vector users = new Vector();
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -894,7 +894,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return list of users of this type matching the namefilter
      * @throws CmsException if something goes wrong.
      */
-    public Vector getUsers(int type, String namefilter) throws CmsException {
+    public Vector readUsers(int type, String namefilter) throws CmsException {
         Vector users = new Vector();
         Statement stmt = null;
         ResultSet res = null;
@@ -934,7 +934,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      *
      * @throws CmsException if operation was not successful.
      */
-    public Vector getUsersByLastname(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException {
+    public Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException {
         Vector users = new Vector();
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -983,7 +983,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return Vector of users
      * @throws CmsException if operation was not successful
      */
-    public Vector getUsersOfGroup(String name, int type) throws CmsException {
+    public Vector readUsersOfGroup(String name, int type) throws CmsException {
         Vector users = new Vector();
 
         PreparedStatement stmt = null;
@@ -1074,7 +1074,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
+    public boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
         boolean userInGroup = false;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1117,7 +1117,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         ResultSet res = null;
 
         // at first, we remove all access contries of this resource in the online project
-        removeAllAccessControlEntries(onlineProject, onlineId);
+        removeAccessControlEntries(onlineProject, onlineId);
 
         // then, we copy thze access control entries from the offline project into the online project
         try {
@@ -1357,7 +1357,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READPW");
             stmt.setString(1, name);
-            stmt.setString(2, digest(password));
+            stmt.setString(2, encryptPassword(password));
             stmt.setInt(3, type);
             res = stmt.executeQuery();
 
@@ -1406,7 +1406,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param password the password to set
      * @throws CmsException if something goes wrong
      */
-    public void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException {
+    public void writePassword(String userName, String recoveryPassword, String password) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -1416,9 +1416,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_RECOVERPW");
 
-            stmt.setString(1, digest(password));
+            stmt.setString(1, encryptPassword(password));
             stmt.setString(2, userName);
-            stmt.setString(3, digest(recoveryPassword));
+            stmt.setString(3, encryptPassword(recoveryPassword));
             result = stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1467,7 +1467,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    public void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+    public void removeAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1496,7 +1496,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param groupId The id of the group
      * @throws CmsException if something goes wrong
      */
-    public void removeUserFromGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
+    public void deleteUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -1540,14 +1540,14 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param password the password to set
      * @throws CmsException if something goes wrong
      */
-    public void setPassword(String userName, String password) throws CmsException {
+    public void writePassword(String userName, String password) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETPW");
-            stmt.setString(1, digest(password));
+            stmt.setString(1, encryptPassword(password));
             stmt.setString(2, userName);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -1564,7 +1564,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param password the recoveryPassword to set
      * @throws CmsException if something goes wrong
      */
-    public void setRecoveryPassword(String userName, String password) throws CmsException {
+    public void writeRecoveryPassword(String userName, String password) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         int result;
@@ -1573,7 +1573,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETRECPW");
 
-            stmt.setString(1, digest(password));
+            stmt.setString(1, encryptPassword(password));
             stmt.setString(2, userName);
             result = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -1595,7 +1595,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    public void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+    public void undeleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
