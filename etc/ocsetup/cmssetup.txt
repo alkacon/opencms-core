@@ -23,7 +23,7 @@ copyResourceToProject "/"
 lockResource "/"
 chgrp "/" Users
 unlockResource "/"
-importDb "config/workplace.dat" "/"
+importResources "config/workplace.zip" "/"
 publishProject "2"
 addMountPoint "/system/workplace/pics/" "C:/Programme/Apache/html/pics/" pics Guest Guests plain "383"
 writeExportPath "c:/export/"
