@@ -53,7 +53,8 @@
                         ${build.inputlib.fop}"
             debug="on"
             optimize="off"
-            deprecation="off"/>
+            deprecation="off"
+            depend="on"/>
 
        <copy todir="${build.classes}">
             <fileset dir="src" includes="**/*.properties,**/*.txt"/>
@@ -116,16 +117,8 @@
             password="${db.password}"
             autocommit="true"
             onerror="continue"
-            >drop database opencms</sql>
-        <sql
-            classpath="${build.inputlib.mysql}"
-            driver="${db.driver}"
-            url="${db.setupurl}"
-            userid="${db.user}"
-            password="${db.password}"
-            autocommit="true"
-            onerror="continue"
-            >create database opencms</sql>
+            src="${build.webinf}/ocsetup/create_mysql.sql"
+            />
         <sql
             classpath="${build.inputlib.mysql}"
             driver="${db.driver}"
