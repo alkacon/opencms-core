@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/11/10 15:20:35 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
@@ -55,7 +57,15 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
@@ -65,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.35 $ $Date: 2004/11/08 15:06:43 $
+ * @version $Revision: 1.36 $ $Date: 2004/11/10 15:20:35 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -191,6 +201,33 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         if (obj instanceof Boolean) {
             return 8; // one boolean
+        }
+        
+        if (obj instanceof CmsProperty) {
+            int size = 8;
+            
+            CmsProperty property = (CmsProperty)obj;
+            size += getMemorySize(property.getKey());
+            
+            if (property.getResourceValue() != null) {
+                size += getMemorySize(property.getResourceValue());
+            }
+            
+            if (property.getStructureValue() != null) {
+                size += getMemorySize(property.getStructureValue());
+            }
+            
+            return size;
+        }
+        
+        if (obj instanceof CmsPropertydefinition) {
+            int size = 8;
+            
+            CmsPropertydefinition propDef = (CmsPropertydefinition)obj;
+            size += getMemorySize(propDef.getName());
+            size += getMemorySize(propDef.getId());
+            
+            return size;
         }
 
         // System.err.println("Unresolved: " + obj.getClass().getName());
