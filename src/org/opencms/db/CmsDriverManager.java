@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/04 15:58:00 $
- * Version: $Revision: 1.438 $
+ * Date   : $Date: 2004/11/09 14:26:33 $
+ * Version: $Revision: 1.439 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.438 $ $Date: 2004/11/04 15:58:00 $
+ * @version $Revision: 1.439 $ $Date: 2004/11/09 14:26:33 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1797,19 +1797,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
 
             if (currentResource == null) {
-                // resource with this name does not exist, create it
+                
+                // resource does not exist.
                 newResource = m_vfsDriver.createResource(
                     runtimeInfo, 
                     context.currentProject(), 
                     newResource, 
                     content); 
+                
             } else {
-                // resource with this name already exists, update it
-                // used to "overwrite" a resource during import or a copy operation 
+                
+                // resource already exists. 
+                // probably the resource is a merged page file that gets overwritten during import, or it gets 
+                // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.
+                int updateStates = (currentResource.getState() == I_CmsConstants.C_STATE_NEW) ? CmsDriverManager.C_NOTHING_CHANGED : CmsDriverManager.C_UPDATE_ALL;
                 m_vfsDriver.writeResource(
                     runtimeInfo,
                     context.currentProject(), 
-                    newResource, C_UPDATE_ALL);
+                    newResource, 
+                    updateStates);
                 
                 if ((content != null) && resource.isFile()) {
                     // also update file content if required
@@ -1819,6 +1825,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         currentResource.getResourceId(),
                         content);
                 }
+                
             }
 
             // write the properties (internal operation, no events or duplicate permission checks)
