@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceStrings.java,v $
-* Date   : $Date: 2001/11/21 10:58:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/09/12 12:11:18 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ final class CmsHtmlConverterObjectReplaceStrings extends CmsHtmlConverterObjectR
      * @param s String suffix
      */
     protected CmsHtmlConverterObjectReplaceStrings (String sS, String p, String rS, String s) {
-        super(sS,rS);
+        super(sS, rS);
         m_prefix = p;
         m_suffix = s;
     }

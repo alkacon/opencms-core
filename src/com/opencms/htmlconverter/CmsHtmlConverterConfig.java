@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/09/12 12:09:37 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -317,15 +317,29 @@ final class CmsHtmlConverterConfig {
      * @param getReplaceFromAttrs getReplaceFromAttrs boolean
      * @param startAttribute startAttribute String
      * @param endAttribute endAttribute String
+     * @param parameter parameter String
+     * @param replaceParamAttr flag to indicate the parameter replacement
      * @return true if object was successfully added, otherwise false
      */
     protected boolean addObjectReplaceTag(String prefix, String tagName,
             String attributeName, String attributeValue, String replaceStartTag,
             String replaceEndTag, String suffix, boolean getReplaceFromAttrs,
             String startAttribute, String endAttribute, String parameter, boolean replaceParamAttr) {
-        return m_replaceTags.add(new CmsHtmlConverterObjectReplaceTags(prefix,tagName,
-                attributeName,attributeValue,replaceStartTag,replaceEndTag,
-                suffix,getReplaceFromAttrs,startAttribute,endAttribute,parameter,replaceParamAttr));
+
+        return m_replaceTags.add(
+            new CmsHtmlConverterObjectReplaceTags(
+                prefix,
+                tagName,
+                attributeName,
+                attributeValue,
+                replaceStartTag,
+                replaceEndTag,
+                suffix,
+                getReplaceFromAttrs,
+                startAttribute,
+                endAttribute,
+                parameter,
+                replaceParamAttr));
     }
 
     /**
@@ -346,14 +360,24 @@ final class CmsHtmlConverterConfig {
      * @param suffix suffix String
      * @param getReplaceFromAttrs getReplaceFromAttrs boolean
      * @param replaceAttribute replaceAttribute String
+     * @param parameter parameter String
      * @return true if object was successfully added, otherwise false
      */
     protected boolean addObjectReplaceBlock(String prefix, String tagName,
             String attributeName, String attributeValue, String replaceString,
             String suffix, boolean getReplaceFromAttrs, String replaceAttribute, String parameter) {
-        return m_replaceBlocks.add(new CmsHtmlConverterObjectReplaceBlocks(prefix,tagName,
-                attributeName,attributeValue,replaceString,suffix,
-                getReplaceFromAttrs,replaceAttribute,parameter));
+
+        return m_replaceBlocks.add(
+            new CmsHtmlConverterObjectReplaceBlocks(
+                prefix,
+                tagName,
+                attributeName,
+                attributeValue,
+                replaceString,
+                suffix,
+                getReplaceFromAttrs,
+                replaceAttribute,
+                parameter));
     }
 
     /**
@@ -370,8 +394,8 @@ final class CmsHtmlConverterConfig {
      * @return String with real "<" and ">"
      */
     protected String scanBrackets(String content) {
-        content = m_tools.replaceString(content,m_openBracket,"<");
-        content = m_tools.replaceString(content,m_closeBracket,">");
+        content = m_tools.replaceString(content, m_openBracket, "<");
+        content = m_tools.replaceString(content, m_closeBracket, ">");
         return content;
     }
 
@@ -400,7 +424,7 @@ final class CmsHtmlConverterConfig {
         if (m_isConfigured) {
             clearConfiguration();
         }
-        node = tidy.parseDOM(in,null);
+        node = tidy.parseDOM(in, null);
         parseConfig(node);
         buildObjects();
         m_isConfigured = true;
@@ -471,9 +495,9 @@ final class CmsHtmlConverterConfig {
         // Encoding project:
         // String Chars = "ä,&auml;,Ä,&Auml;,ö,&ouml;,Ö,&Ouml;,ü,&uuml;,Ü,&Uuml;,ß,&szlig;,©,&copy;,\",&quot;,<,&lt;,>,&gt;,&lt;!--,<!--,--&gt;,-->,€,&euro;";
         String Chars = "\",&quot;,<,&lt;,>,&gt;";
-        StringTokenizer T = new StringTokenizer(Chars,",");
+        StringTokenizer T = new StringTokenizer(Chars, ",");
         while (T.hasMoreTokens()) {
-            added = m_replaceExtendedChars.add(new CmsHtmlConverterObjectReplaceExtendedChars(T.nextToken(),T.nextToken()));
+            added = m_replaceExtendedChars.add(new CmsHtmlConverterObjectReplaceExtendedChars(T.nextToken(), T.nextToken()));
             if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceExtendedChars.");
             }
@@ -491,22 +515,22 @@ final class CmsHtmlConverterConfig {
     private void buildObjectReplaceContent() {
         boolean added = true;
         int len = m_tempReplaceContent.size();
-        String content,replace;
+        String content, replace;
         CmsHtmlConverterObjectReplaceContent objectReplaceContent = new CmsHtmlConverterObjectReplaceContent();
         /* get temporary objects and scan replace for encoded brackets */
-        for (int i=0;i<len;i++) {
+        for (int i=0; i<len; i++) {
             objectReplaceContent = (CmsHtmlConverterObjectReplaceContent) (m_tempReplaceContent.get(i));
             content = objectReplaceContent.getSearchString();
             replace = objectReplaceContent.getReplaceItem();
             if (m_useBrackets) {
                 replace = scanBrackets(replace);
             }
-            added = m_replaceContent.add(new CmsHtmlConverterObjectReplaceContent(content,replace));
+            added = m_replaceContent.add(new CmsHtmlConverterObjectReplaceContent(content, replace));
             if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceContent.");
             }
         }
-        added = m_replaceContent.add(new CmsHtmlConverterObjectReplaceContent("&nbsp;","$nbsp$"));
+        added = m_replaceContent.add(new CmsHtmlConverterObjectReplaceContent("&nbsp;", "$nbsp$"));
         if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceContent.");
         }
@@ -518,7 +542,7 @@ final class CmsHtmlConverterConfig {
     private void buildObjectReplaceTags() {
         boolean added = true;
         int len = m_tempReplaceTags.size();
-        String name,attrib,value,replaceStartTag,replaceEndTag,startAttribute,endAttribute,parameter;
+        String name, attrib, value, replaceStartTag, replaceEndTag, startAttribute, endAttribute, parameter;
         boolean getReplaceFromAttrs, replaceParamAttr;
         CmsHtmlConverterObjectReplaceTags objectReplaceTags = new CmsHtmlConverterObjectReplaceTags();
         /* create prefix, suffix for replaceTags  */
@@ -536,7 +560,7 @@ final class CmsHtmlConverterConfig {
                 m_replaceTagsSuffix = "\n" + m_replaceTagsSuffix;
         }
         /* get temporary objects and add them to ArrayList m_replaceTags */
-        for (int i=0;i<len;i++) {
+        for (int i=0; i<len; i++) {
             objectReplaceTags = (CmsHtmlConverterObjectReplaceTags) (m_tempReplaceTags.get(i));
             name = objectReplaceTags.getTagName();
             attrib = objectReplaceTags.getTagAttrib();
@@ -552,7 +576,21 @@ final class CmsHtmlConverterConfig {
                 replaceStartTag = scanBrackets(replaceStartTag);
                 replaceEndTag = scanBrackets(replaceEndTag);
             }
-            added = m_replaceTags.add(new CmsHtmlConverterObjectReplaceTags(m_replaceTagsPrefix,name,attrib,value,replaceStartTag,replaceEndTag,m_replaceTagsSuffix,getReplaceFromAttrs,startAttribute,endAttribute,parameter,replaceParamAttr));
+            added =
+                m_replaceTags.add(
+                    new CmsHtmlConverterObjectReplaceTags(
+                        m_replaceTagsPrefix,
+                        name,
+                        attrib,
+                        value,
+                        replaceStartTag,
+                        replaceEndTag,
+                        m_replaceTagsSuffix,
+                        getReplaceFromAttrs,
+                        startAttribute,
+                        endAttribute,
+                        parameter,
+                        replaceParamAttr));
             if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceTags.");
             }
@@ -565,7 +603,7 @@ final class CmsHtmlConverterConfig {
     private void buildObjectReplaceBlocks() {
         boolean added = true;
         int len = m_tempReplaceBlocks.size();
-        String name,attrib,value,replaceString,replaceAttribute,parameter;
+        String name, attrib, value, replaceString, replaceAttribute, parameter;
         boolean getReplaceFromAttrs;
         CmsHtmlConverterObjectReplaceBlocks objectReplaceBlocks = new CmsHtmlConverterObjectReplaceBlocks();
         /* create prefix, suffix for replaceBlocks  */
@@ -583,7 +621,7 @@ final class CmsHtmlConverterConfig {
                 m_replaceBlocksSuffix = "\n" + m_replaceBlocksSuffix;
         }
         /* get temporary objects and add them to ArrayList m_replaceBlocks */
-        for (int i=0;i<len;i++) {
+        for (int i=0; i<len; i++) {
             objectReplaceBlocks = (CmsHtmlConverterObjectReplaceBlocks) (m_tempReplaceBlocks.get(i));
             name = objectReplaceBlocks.getTagName();
             attrib = objectReplaceBlocks.getTagAttrib();
@@ -595,7 +633,18 @@ final class CmsHtmlConverterConfig {
             if (m_useBrackets) {
                 replaceString = scanBrackets(replaceString);
             }
-            added = m_replaceBlocks.add(new CmsHtmlConverterObjectReplaceBlocks(m_replaceBlocksPrefix,name,attrib,value,replaceString,m_replaceBlocksSuffix,getReplaceFromAttrs,replaceAttribute,parameter));
+            added =
+                m_replaceBlocks.add(
+                    new CmsHtmlConverterObjectReplaceBlocks(
+                        m_replaceBlocksPrefix,
+                        name,
+                        attrib,
+                        value,
+                        replaceString,
+                        m_replaceBlocksSuffix,
+                        getReplaceFromAttrs,
+                        replaceAttribute,
+                        parameter));
             if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceBlocks.");
             }
@@ -608,7 +657,7 @@ final class CmsHtmlConverterConfig {
     private void buildObjectReplaceStrings() {
         boolean added = true;
         int len = m_tempReplaceStrings.size();
-        String content,replace;
+        String content, replace;
         CmsHtmlConverterObjectReplaceStrings objectReplaceStrings = new CmsHtmlConverterObjectReplaceStrings();
         /* create prefix, suffix for replaceStrings  */
         if (m_useBrackets) {
@@ -625,19 +674,31 @@ final class CmsHtmlConverterConfig {
                 m_replaceStringsSuffix = "\n" + m_replaceStringsSuffix;
         }
         /* get temporary objects and add them to ArrayList m_replaceStrings */
-        for (int i=0;i<len;i++) {
+        for (int i=0; i<len; i++) {
             objectReplaceStrings = (CmsHtmlConverterObjectReplaceStrings) (m_tempReplaceStrings.get(i));
             content = objectReplaceStrings.getSearchString();
             replace = objectReplaceStrings.getReplaceItem();
             if (m_useBrackets) {
                 replace = scanBrackets(replace);
             }
-            added = m_replaceStrings.add(new CmsHtmlConverterObjectReplaceStrings(content,m_replaceStringsPrefix,replace,m_replaceStringsSuffix));
+            added =
+                m_replaceStrings.add(
+                    new CmsHtmlConverterObjectReplaceStrings(
+                        content,
+                        m_replaceStringsPrefix,
+                        replace,
+                        m_replaceStringsSuffix));
             if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceStrings.");
             }
         }
-        added = m_replaceStrings.add(new CmsHtmlConverterObjectReplaceStrings("$nbsp$","","&nbsp;",""));
+        added =
+            m_replaceStrings.add(
+                new CmsHtmlConverterObjectReplaceStrings(
+                    "$nbsp$",
+                    "",
+                    "&nbsp;",
+                    ""));
         if (!added) {
                 System.err.println("Configuration error: failed adding object to ArrayList m_replaceStrings.");
         }
@@ -659,32 +720,32 @@ final class CmsHtmlConverterConfig {
         case Node.ELEMENT_NODE:
             int nodeName = getConfigNodeName(node.getNodeName());
             NodeList children = node.getChildNodes();
-            if ( children != null ) {
+            if (children != null) {
                 len = children.getLength();
             }
             switch (nodeName) {
             case C_COMMENT_NODE:
                 break;
             case C_CONFIG_NODE:
-                for ( int i = 0; i < len; i++ ) {
+                for (int i = 0; i < len; i++) {
                     /* recursively call parseConfig with all child nodes */
                     parseConfig(children.item(i));
                 }
                 break;
             case C_DEFAULT_NODE:
-                 for ( int i = 0; i < len; i++) {
+                 for (int i = 0; i < len; i++) {
                     /* set defaults in configuration */
                     parseDefaults(children.item(i));
                  }
                  break;
             case C_REPLACECONTENT_NODE:
-                for ( int i = 0; i < len; i++ ) {
+                for (int i = 0; i < len; i++) {
                     /* add replacecontent to configuration */
                     parseReplaceContent(children.item(i));
                 }
                 break;
             case C_INLINETAG_NODE:
-                for ( int i = 0; i < len; i++ ) {
+                for (int i = 0; i < len; i++) {
                     /* add inlinetags to configuration */
                     valueString = parseTag(children.item(i));
                     if (!valueString.equals("")) {
@@ -696,7 +757,7 @@ final class CmsHtmlConverterConfig {
                 }
                 break;
             case C_REMOVETAG_NODE:
-                for ( int i = 0; i < len; i++ ) {
+                for (int i = 0; i < len; i++) {
                     /* add removetags to configuration */
                     valueString = parseTag(children.item(i));
                     if (!valueString.equals("")) {
@@ -708,7 +769,7 @@ final class CmsHtmlConverterConfig {
                 }
                 break;
             case C_REMOVEBLOCK_NODE:
-                for ( int i = 0; i < len; i++ ) {
+                for (int i = 0; i < len; i++) {
                     /* add removeblocks to configuration */
                     valueString = parseTag(children.item(i));
                     if (!valueString.equals("")) {
@@ -720,20 +781,20 @@ final class CmsHtmlConverterConfig {
                 }
                 break;
             case C_REPLACETAG_NODE:
-                m_replaceTagsUseDefaults = checkBoolean(node,0);
-                for ( int i = 0; i < len; i++) {
+                m_replaceTagsUseDefaults = checkBoolean(node, 0);
+                for (int i = 0; i < len; i++) {
                     parseReplaceTags(children.item(i));
                 }
                 break;
             case C_REPLACEBLOCK_NODE:
-                m_replaceBlocksUseDefaults = checkBoolean(node,0);
-                for ( int i = 0; i < len; i++) {
+                m_replaceBlocksUseDefaults = checkBoolean(node, 0);
+                for (int i = 0; i < len; i++) {
                     parseReplaceBlocks(children.item(i));
                 }
                 break;
             case C_REPLACESTRING_NODE:
-                m_replaceStringsUseDefaults = checkBoolean(node,0);
-                for ( int i = 0; i < len; i++) {
+                m_replaceStringsUseDefaults = checkBoolean(node, 0);
+                for (int i = 0; i < len; i++) {
                     parseReplaceStrings(children.item(i));
                 }
                 break;
@@ -758,7 +819,7 @@ final class CmsHtmlConverterConfig {
         case C_COMMENT_NODE:
             break;
         case C_XHTMLOUTPUT_NODE:
-            m_xhtmlOutput = checkBoolean(node,0);
+            m_xhtmlOutput = checkBoolean(node, 0);
             break;
         case C_GLOBALPREFIX_NODE:
             m_globalPrefix = attrs.item(0).getNodeValue();
@@ -767,13 +828,13 @@ final class CmsHtmlConverterConfig {
             m_globalSuffix = attrs.item(0).getNodeValue();
             break;
         case C_GLOBALADDEVERYLINE_NODE:
-            m_globalAddEveryLine = checkBoolean(node,0);
+            m_globalAddEveryLine = checkBoolean(node, 0);
             break;
         case C_USEBRACKETS_NODE:
-            for (int i=0;i<attrs.getLength();i++) {
+            for (int i=0; i<attrs.getLength(); i++) {
                 attrName = attrs.item(i).getNodeName();
                 if (attrName.equalsIgnoreCase("value")) {
-                    m_useBrackets = checkBoolean(node,i);
+                    m_useBrackets = checkBoolean(node, i);
                 }
                 if (attrName.equalsIgnoreCase("openbracket")) {
                     m_openBracket = attrs.item(i).getNodeValue();
@@ -788,10 +849,10 @@ final class CmsHtmlConverterConfig {
             }
             break;
         case C_ENCODEQUOTATIONMARKS_NODE:
-            for (int i=0;i<attrs.getLength();i++) {
+            for (int i=0; i<attrs.getLength(); i++) {
                 attrName = attrs.item(i).getNodeName();
                 if (attrName.equalsIgnoreCase("value")) {
-                    m_encodeQuotationmarks = checkBoolean(node,i);
+                    m_encodeQuotationmarks = checkBoolean(node, i);
                 }
                 if (attrName.equalsIgnoreCase("code")) {
                     m_quotationmark = attrs.item(i).getNodeValue();
@@ -821,7 +882,7 @@ final class CmsHtmlConverterConfig {
         String content = "";
         String replace = "";
         boolean added = true;
-        for (int i=0;i<attrs.getLength();i++) {
+        for (int i=0; i<attrs.getLength(); i++) {
             attrName = attrs.item(i).getNodeName();
             if (attrName.equalsIgnoreCase("content")) {
                 content = attrs.item(i).getNodeValue();
@@ -834,7 +895,7 @@ final class CmsHtmlConverterConfig {
             System.err.println("Fatal configuration error: Empty content in block <replacecontent>.");
             System.exit(1);
         }
-        added = m_tempReplaceContent.add(new CmsHtmlConverterObjectReplaceContent(content,replace));
+        added = m_tempReplaceContent.add(new CmsHtmlConverterObjectReplaceContent(content, replace));
         if (!added) {
             System.err.println("Configuration error: Failed adding object to ArrayList m_tempReplaceContent.");
         }
@@ -870,10 +931,10 @@ final class CmsHtmlConverterConfig {
             m_replaceTagsSuffix = attrs.item(0).getNodeValue();
             break;
         case C_ADDEVERYLINE_NODE:
-            m_replaceTagsAddEveryLine = checkBoolean(node,0);
+            m_replaceTagsAddEveryLine = checkBoolean(node, 0);
             break;
         case C_TAG_NODE:
-            for (int i=0;i<attrs.getLength();i++) {
+            for (int i=0; i<attrs.getLength(); i++) {
                 attrName = attrs.item(i).getNodeName();
                 if (attrName.equalsIgnoreCase("name")) {
                     attrNameValue = attrs.item(i).getNodeValue();
@@ -891,7 +952,7 @@ final class CmsHtmlConverterConfig {
                     attrEndValue = attrs.item(i).getNodeValue();
                 }
                 if (attrName.equalsIgnoreCase("getreplacefromattrs")) {
-                    attrGetReplace = checkBoolean(node,i);
+                    attrGetReplace = checkBoolean(node, i);
                 }
                 if (attrName.equalsIgnoreCase("startattribute")) {
                     attrStartAttribute = attrs.item(i).getNodeValue();
@@ -903,14 +964,28 @@ final class CmsHtmlConverterConfig {
                     attrParameter = attrs.item(i).getNodeValue();
                 }
                 if (attrName.equalsIgnoreCase("replaceparamattr")) {
-                    attrReplaceParamAttr = checkBoolean(node,i);
+                    attrReplaceParamAttr = checkBoolean(node, i);
                 }
             }
             if (attrNameValue.equals("")) {
                 System.err.println("Fatal configuration error: Tagname not specified in block <replacetags>.");
                 System.exit(1);
             }
-            added = m_tempReplaceTags.add(new CmsHtmlConverterObjectReplaceTags("",attrNameValue,attrAttribValue,attrValueValue,attrStartValue,attrEndValue,"",attrGetReplace,attrStartAttribute,attrEndAttribute,attrParameter,attrReplaceParamAttr));
+            added =
+                m_tempReplaceTags.add(
+                    new CmsHtmlConverterObjectReplaceTags(
+                        "",
+                        attrNameValue,
+                        attrAttribValue,
+                        attrValueValue,
+                        attrStartValue,
+                        attrEndValue,
+                        "",
+                        attrGetReplace,
+                        attrStartAttribute,
+                        attrEndAttribute,
+                        attrParameter,
+                        attrReplaceParamAttr));
             if (!added) {
                 System.err.println("Configuration error: Failed adding object to ArrayList m_tempReplaceTags.");
             }
@@ -947,10 +1022,10 @@ final class CmsHtmlConverterConfig {
             m_replaceBlocksSuffix = attrs.item(0).getNodeValue();
             break;
         case C_ADDEVERYLINE_NODE:
-            m_replaceBlocksAddEveryLine = checkBoolean(node,0);
+            m_replaceBlocksAddEveryLine = checkBoolean(node, 0);
             break;
         case C_TAG_NODE:
-            for (int i=0;i<attrs.getLength();i++) {
+            for (int i=0; i<attrs.getLength(); i++) {
                 attrName = attrs.item(i).getNodeName();
                 if (attrName.equalsIgnoreCase("name")) {
                     attrNameValue = attrs.item(i).getNodeValue();
@@ -965,7 +1040,7 @@ final class CmsHtmlConverterConfig {
                     attrStringValue = attrs.item(i).getNodeValue();
                 }
                 if (attrName.equalsIgnoreCase("getreplacefromattrs")) {
-                    attrGetReplace = checkBoolean(node,i);
+                    attrGetReplace = checkBoolean(node, i);
                 }
                 if (attrName.equalsIgnoreCase("replaceattribute")) {
                     attrReplaceAttribute = attrs.item(i).getNodeValue();
@@ -974,7 +1049,18 @@ final class CmsHtmlConverterConfig {
                     attrParameter = attrs.item(i).getNodeValue();
                 }
             }
-            added = m_tempReplaceBlocks.add(new CmsHtmlConverterObjectReplaceBlocks("",attrNameValue,attrAttribValue,attrValueValue,attrStringValue,"",attrGetReplace,attrReplaceAttribute,attrParameter));
+            added =
+                m_tempReplaceBlocks.add(
+                    new CmsHtmlConverterObjectReplaceBlocks(
+                        "",
+                        attrNameValue,
+                        attrAttribValue,
+                        attrValueValue,
+                        attrStringValue,
+                        "",
+                        attrGetReplace,
+                        attrReplaceAttribute,
+                        attrParameter));
             if (!added) {
                 System.err.println("Configuration error: Failed adding object to ArrayList m_tempReplaceBlocks.");
             }
@@ -1011,10 +1097,10 @@ final class CmsHtmlConverterConfig {
             m_replaceStringsSuffix = attrs.item(0).getNodeValue();
             break;
         case C_ADDEVERYLINE_NODE:
-            m_replaceStringsAddEveryLine = checkBoolean(node,0);
+            m_replaceStringsAddEveryLine = checkBoolean(node, 0);
             break;
         case C_STRING_NODE:
-            for (int i=0;i<attrs.getLength();i++) {
+            for (int i=0; i<attrs.getLength(); i++) {
                 attrName = attrs.item(i).getNodeName();
                 if (attrName.equalsIgnoreCase("content")) {
                     attrContentValue = attrs.item(i).getNodeValue();
@@ -1027,7 +1113,13 @@ final class CmsHtmlConverterConfig {
                 System.err.println("Fatal configuration error: Empty content in block <replacestrings>.");
                 System.exit(1);
             }
-            added = m_tempReplaceStrings.add(new CmsHtmlConverterObjectReplaceStrings(attrContentValue,"",attrReplaceValue,""));
+            added =
+                m_tempReplaceStrings.add(
+                    new CmsHtmlConverterObjectReplaceStrings(
+                        attrContentValue,
+                        "",
+                        attrReplaceValue,
+                        ""));
             if (!added) {
                 System.err.println("Configuration error: Failed adding object to ArrayList m_tempReplaceStrings.");
             }
@@ -1070,12 +1162,11 @@ final class CmsHtmlConverterConfig {
      * @param number analysed attribute number of node
      * @return true, if attribute value is "true"; false, if value is "false"
      */
-    private boolean checkBoolean(Node node,int number) {
+    private boolean checkBoolean(Node node, int number) {
         NamedNodeMap attrs = node.getAttributes();
         if (attrs.item(number).getNodeValue().equalsIgnoreCase("true")) {
             return true;
-        }
-        else if (attrs.item(number).getNodeValue().equalsIgnoreCase("false")) {
+        } else if (attrs.item(number).getNodeValue().equalsIgnoreCase("false")) {
             return false;
         }
         System.err.println("Fatal configuration error: Attribute value \""
