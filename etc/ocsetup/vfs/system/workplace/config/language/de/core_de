@@ -193,7 +193,7 @@
                 <chpwd2>Das alte Kennwort ist nicht korrekt.</chpwd2>
                 <chpwd3>Das Kennwort muß mindestens aus 4 Zeichen bestehen.</chpwd3>
                 <chtype>Sie haben dazu keine Berechtigung.</chtype>
-                <copy>Eventuell existiert der Zielordner nicht.</copy>
+                <copy>Eventuell existiert der Zielordner nicht oder es gibt dort bereits eine Datei mit diesem Namen.</copy>
                 <copytoproject>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</copytoproject>
                 <delete>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</delete>
                 <deleteuser>Die Benutzer Admin und Guest können nicht gelöscht werden.</deleteuser>

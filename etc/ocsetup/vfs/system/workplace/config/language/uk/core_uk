@@ -194,7 +194,7 @@
                 <chpwd2>The old password is not correct.</chpwd2>
                 <chpwd3>The password must have at last 4 characters.</chpwd3>
                 <chtype>You don't have the needed permissions.</chtype>
-                <copy>possible the target folder does not exist.</copy>
+                <copy>Maybe the target folder does not exist or it already contains a file with the same name.</copy>
                 <copytoproject>Maybe you don't have the needed permissions.</copytoproject>
                 <delete>Maybe you don't have the needed permissions.</delete>
                 <deleteuser>The users Admin and Guest can not be deleted.</deleteuser>
