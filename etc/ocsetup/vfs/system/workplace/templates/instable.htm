@@ -1,0 +1,82 @@
+<!-- Copyright 1998 Microsoft Corporation. All rights reserved. -->
+<HTML>
+<HEAD>
+<TITLE>Enter Table Information</TITLE>
+
+<STYLE TYPE="text/css">
+ BODY   {margin-left:10; font-family:Verdana; font-size:12; background:menu}
+ BUTTON {width:5em}
+ TABLE  {font-family:Verdana; font-size:12}
+ P      {text-align:center}
+</STYLE>
+
+<SCRIPT LANGUAGE=JavaScript>
+function IsDigit()
+{
+  return ((event.keyCode >= 48) && (event.keyCode <= 57))
+}
+</SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+  for ( elem in window.dialogArguments )
+  {
+    switch( elem )
+    {
+    case "NumRows":
+      NumRows.value = window.dialogArguments["NumRows"];
+      break;
+    case "NumCols":
+      NumCols.value = window.dialogArguments["NumCols"];
+      break;
+    case "TableAttrs":
+      TableAttrs.value = window.dialogArguments["TableAttrs"];
+      break;
+    case "CellAttrs":
+      CellAttrs.value = window.dialogArguments["CellAttrs"];
+      break;
+    case "Caption":
+      Caption.value = window.dialogArguments["Caption"];
+      break;
+    }
+  }
+</SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=Ok EVENT=onclick>
+  var arr = new Array();
+  arr["NumRows"] = NumRows.value;
+  arr["NumCols"] = NumCols.value;
+  arr["TableAttrs"] = TableAttrs.value;
+  arr["CellAttrs"] = CellAttrs.value;
+  arr["Caption"] = Caption.value;
+  window.returnValue = arr;
+  window.close();
+</SCRIPT>
+
+</HEAD>
+
+<BODY>
+
+<TABLE CELLSPACING=10>
+ <TR>
+  <TD>Rows:
+  <TD><INPUT ID=NumRows TYPE=TEXT SIZE=3 NAME=NumRows ONKEYPRESS="event.returnValue=IsDigit();">
+ <TR>
+  <TD>Columns:
+  <TD><INPUT ID=NumCols TYPE=TEXT SIZE=3 NAME=NumCols ONKEYPRESS="event.returnValue=IsDigit();">
+ <TR>
+  <TD>Table Attributes:
+  <TD><INPUT TYPE=TEXT SIZE=40 NAME=TableAttrs>
+ <TR>
+  <TD>Cell Attributes:
+  <TD><INPUT TYPE=TEXT SIZE=40 NAME=CellAttrs>
+ <TR>
+  <TD>Caption:
+  <TD><INPUT TYPE=TEXT SIZE=40 NAME=Caption>
+</TABLE>
+
+<P>
+<BUTTON ID=Ok TYPE=SUBMIT>OK</BUTTON>
+<BUTTON ONCLICK="window.close();">Cancel</BUTTON>
+
+</BODY>
+</HTML>

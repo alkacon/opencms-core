@@ -160,6 +160,8 @@ function doEditHTML(para)
 		break;
 	case 3:
 		//document.all.form1.CONTENT.value = escape(document.all.edit1.DocumentHTML);
+		doSubmit();
+		document.EDITHTML.submit();
 		break;
 	case 4:
 		DECMD_UNDO_onclick();
@@ -258,17 +260,10 @@ function doEditHTML(para)
 }
 
 
-<!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
-function setText()
-{
-  //
-  EDITHTML.EDIT_HTML.focus();
-}
-
-// Submitts the Document to the MhtCms System
+// Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-	document.all.EDIT_HTML.CONTENT.value = escape(document.all.EDIT_HTML.DocumentHTML);
+	document.EDITHTML.CONTENT.value = escape(document.EDITHTML.EDIT_HTML.DocumentHTML);
 }
 
 
@@ -404,7 +399,7 @@ function DECMD_OUTDENT_onclick()
 }
 function DECMD_SETFORECOLOR_onclick()
 {
-  var arr = showModalDialog( "selcolor.htm",
+  var arr = showModalDialog( "../templates/selcolor.htm",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:30em" );
 
@@ -416,7 +411,7 @@ function DECMD_SETFORECOLOR_onclick()
 
 function DECMD_SETBACKCOLOR_onclick()
 {
-  var arr = showModalDialog( "selcolor.htm",
+  var arr = showModalDialog( "../templates/selcolor.htm",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:30em" );
 
@@ -441,7 +436,7 @@ function InsertTable()
   
   arr = null;
     
-  arr = showModalDialog( "instable.htm",
+  arr = showModalDialog( "../templates/instable.htm",
                              args,
                              "font-family:Verdana; font-size:12; dialogWidth:34em; dialogHeight:25em");
   if (arr != null)

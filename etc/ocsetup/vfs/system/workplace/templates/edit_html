@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+	<!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
+	function setText()
+	{
+	  //
+	  document.all.EDIT_HTML.DocumentHTML = unescape("]]><METHOD name="setText"/><![CDATA[");
+	  EDITHTML.EDIT_HTML.focus();
+	}
+	// URL for pictures
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_edithtml.js"></SCRIPT>
+
+<script LANGUAGE="javascript" FOR="EDITHTML.EDIT_HTML" EVENT="DisplayChanged">
+<!--
+return DisplayChanged()
+//-->
+</script>
+
+</head>
+
+<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
+
+<form 
+	name=EDITHTML 
+	id=EDITHTML
+	METHOD=POST>
+
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+	<tr>
+		<td class=menu>]]><BUTTON href="#" name="bt_saveclose" action="doEditHTML(2);" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3)" name="bt_save" action="" alt="saveclose"/><![CDATA[</td>
+			
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEditHTML(4);" alt="undo"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_redo" action="doEditHTML(5);" alt="redo"/><![CDATA[</td>
+
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_search" action="doEditHTML(6);" alt="search"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_cut" action="doEditHTML(9);" alt="cut"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_copy" action="doEditHTML(10);" alt="copy"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_paste" action="doEditHTML(11);" alt="paste"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="doEditHTML(12);" alt="fileimport"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="doEditHTML(13);" alt="fileexport"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="doEditHTML(14);" alt="fileexportas"/><![CDATA[</td>
+				
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON name="bt_print" action="doEditHTML(15);" alt="print"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:openwin('help/standard.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="doEditHTML(16);" alt="help"/><![CDATA[</td>
+
+		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_close" action="doEditHTML(1);" alt="close"/><![CDATA[</td>
+	</tr>
+</table>
+		
+<hr>
+
+		<!-- Schriftformatierung -->
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+	<tr>
+		<td class=menu>
+			<select name=BLOCK ID=BLOCK onchange="return ParagraphStyle_onchange()" TITLE="Paragraph Format">
+				<option value="Normal">Normal
+				<option value="Heading 1">Heading 1
+				<option value="Heading 2">Heading 2
+				<option value="Heading 3">Heading 3
+				<option value="Heading 4">Heading 4
+				<option value="Heading 5">Heading 5
+				<option value="Heading 6">Heading 6
+				<option value="Address">Address
+				<option value="Formatted">Formatted
+			</select>
+		</td>
+		<td class=menu>
+			<select name="FONTFACE" onchange="doEditHTML(22);">
+				<option value="Arial">Arial
+				<option value="Arial Narrow">Arial Narrow
+				<option value="System">System
+				<option value="Times New Roman" selected>Times New Roman
+				<option value="Verdana">Verdana
+			</select>
+		</td>
+		<td class=menu>
+			<select name="FONTSIZE" onchange="doEditHTML(23);">
+				<option value="1">1
+				<option value="2" >2
+				<option value="3" selected>3
+				<option value="4">4
+				<option value="5">5
+				<option value="6">6
+				<option value="7">7
+			</select>
+		</td>
+		
+		<td class=menu>]]><BUTTON href="#" name="bt_bold" action="doEditHTML(24);" alt="bold"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_italic" action="doEditHTML(25);" alt="italic"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_underline" action="doEditHTML(26);" alt="underline"/><![CDATA[</td>
+		<td class=menu width="100%">&nbsp;</td>
+	</tr>
+</table>
+
+<hr>
+
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=80%>
+	<tr height=32px>
+		<td class=menu>]]><BUTTON href="#" name="bt_alignleft" action="doEditHTML(31);" alt="alignleft"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_aligncenter" action="doEditHTML(32);" alt="aligncenter"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_alignright" action="doEditHTML(33);" alt="alignright"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_ul" action="doEditHTML(34);" alt="ul"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_ol" action="doEditHTML(35);" alt="ol"/><![CDATA[</td>
+
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_indentin" action="doEditHTML(36);" alt="indentin"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_indentout" action="doEditHTML(37);" alt="indentout"/><![CDATA[</td>
+				
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fontcolor" action="doEditHTML(38);" alt="fontcolor"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_color" action="doEditHTML(39);" alt="color"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_table" action="doEditHTML(40);" alt="table"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="link"/><![CDATA[</td>
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
+		
+		<td class=menu width="100%">&nbsp;</td>
+	</tr>
+	<tr><td colspan=20><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=2 height=3></td></tr>
+	
+	<tr>
+		<td colspan=20 width=100% height=100%>
+
+			<OBJECT
+				CLASSID="clsid:2D360200-FFF5-11d1-8D03-00A0C959BC0A" 
+				ID="EDIT_HTML"
+				HEIGHT="100%"
+				WIDTH="100%"
+				VIEWASTEXT>
+				<param name=Scrollbars value=true>
+			</OBJECT>
+			<INPUT TYPE=HIDDEN NAME="CONTENT">
+		</td>
+	</tr>
+</table>
+</form>
+
+			<!-- DEInsertTableParam Object -->
+			<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
+			</object>
+			<!-- DEGetBlockFmtNamesParam Object -->
+			<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
+			</object>
+
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>
