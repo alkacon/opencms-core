@@ -47,7 +47,9 @@ create table CMS_PROJECTS               (PROJECT_ID int not null,
 										 PROJECT_PUBLISHDATE datetime,
 										 PROJECT_PUBLISHED_BY int not null,
 										 PROJECT_TYPE int not null,
-                                         primary key(PROJECT_ID), unique(PROJECT_NAME, PROJECT_CREATEDATE));
+                                         primary key(PROJECT_ID), 
+										 key(PROJECT_NAME, PROJECT_CREATEDATE),
+										 unique(PROJECT_NAME, PROJECT_CREATEDATE));
 
 create table CMS_PROPERTYDEF            (PROPERTYDEF_ID int not null, 
                                          PROPERTYDEF_NAME VARCHAR(64) not null,
