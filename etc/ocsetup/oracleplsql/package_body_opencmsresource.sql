@@ -6,7 +6,7 @@ PACKAGE BODY opencmsresource IS
   bAnyList VARCHAR2(32767);
   bResourceList VARCHAR2(32767) := '';
   bPathList userTypes.nameTable;
-  bResList userTypes.resourceTable;
+  --bResList userTypes.resourceTable;
   --FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN;
   FUNCTION addPathInList(pName VARCHAR2) RETURN BOOLEAN;
 --------------------------------------------------------------------------------------------------------------
@@ -32,9 +32,12 @@ PACKAGE BODY opencmsresource IS
   PROCEDURE lockResource(pUserId IN NUMBER, pProjectId IN NUMBER, pFolderName IN VARCHAR2, pForce IN VARCHAR2) IS
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
+    --recFile cms_resources%ROWTYPE;
+    --recFolder cms_resources%ROWTYPE;
     vFolderName cms_resources.resource_name%TYPE;
     tableResource userTypes.resourceTable;
   BEGIN
+  	tableResource.DELETE;
    -- if pFolderName is the id and not the path then read the resource_name for the resource
    -- read all Information about this resource
     IF instr(pFolderName,'/') = 0 THEN
@@ -80,6 +83,9 @@ PACKAGE BODY opencmsresource IS
             lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
           END IF;
         END LOOP;
+        IF curResource%ISOPEN THEN
+          CLOSE curResource;
+        END IF;
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
@@ -132,6 +138,8 @@ PACKAGE BODY opencmsresource IS
   PROCEDURE unlockResource(pUserId IN NUMBER, pProjectId IN NUMBER, pFolderName IN VARCHAR2) IS
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
+    recFile cms_resources%ROWTYPE;
+    recFolder cms_resources%ROWTYPE;
     vFolderName cms_resources.resource_name%TYPE;
     tableResource userTypes.resourceTable;
   BEGIN
@@ -170,19 +178,19 @@ PACKAGE BODY opencmsresource IS
         -- all files in folder
         tableResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
         FOR i IN 1..tableResource.COUNT LOOP
-          recResource := tableResource(i);
-          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-            unlockResource(pUserId, pProjectId, recResource.resource_name);
+          recFile := tableResource(i);
+          IF recFile.state != opencmsConstants.C_STATE_DELETED THEN
+            unlockResource(pUserId, pProjectId, recFile.resource_name);
           END IF;
         END LOOP;
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
           BEGIN
-            FETCH curResource INTO recResource;
+            FETCH curResource INTO recFolder;
             EXIT WHEN curResource%NOTFOUND;
-            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-              unlockResource(pUserId, pProjectId, recResource.resource_name);
+            IF recFolder.state != opencmsConstants.C_STATE_DELETED THEN
+              unlockResource(pUserId, pProjectId, recFolder.resource_name);
             END IF;
           EXCEPTION
             WHEN invalid_cursor THEN
@@ -757,7 +765,7 @@ PACKAGE BODY opencmsresource IS
     retResources userTypes.resourceTable;
     newIndex NUMBER;
   BEGIN
-    bAnyList := '';
+    bPathList.DELETE;
     curResource := readFolder(pUserId, pProjectId, pResourceName);
     FETCH curResource INTO recResource;
     IF curResource%NOTFOUND THEN
@@ -810,7 +818,7 @@ PACKAGE BODY opencmsresource IS
         END IF;
       END IF;
     END IF;
-    bAnyList := '';
+    bPathList.DELETE;
     RETURN retResources;
   END getFilesInFolder;
 ---------------------------------------------------------------------------------------------
@@ -828,7 +836,7 @@ PACKAGE BODY opencmsresource IS
     recFiles    cms_resources%ROWTYPE;
     vQueryString VARCHAR2(32767) := '';
   BEGIN
-    bAnyList := '';
+    bPathList.DELETE;
     curResource := readFolder(pUserId, pProjectId, pResourceName);
     FETCH curResource INTO recResource;
     IF curResource%NOTFOUND THEN
@@ -885,7 +893,7 @@ PACKAGE BODY opencmsresource IS
         OPEN curResource FOR 'select * from ('||vQueryString||') order by resource_name';
       END IF;
     END IF;
-    bAnyList := '';
+    bPathList.DELETE;
     RETURN curResource;
   END getFoldersInFolder;
 -------------------------------------------------------------------------------------------
@@ -1033,8 +1041,8 @@ PACKAGE BODY opencmsresource IS
         RETURN FALSE;
       END IF;
 	END LOOP;
-	IF element > 1 THEN
-	  newIndex := element+1;
+	IF bPathList.COUNT >= 1 THEN
+	  newIndex := bPathList.COUNT+1;
 	ELSE
 	  newIndex := 1;
 	END IF;
