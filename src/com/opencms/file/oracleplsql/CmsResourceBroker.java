@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/14 09:47:38 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/12/14 17:05:09 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.17 $ $Date: 2000/12/14 09:47:38 $
+ * @version $Revision: 1.18 $ $Date: 2000/12/14 17:05:09 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -335,59 +335,6 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 	}
 	
 	m_subresCache.clear();
-}
-/**
- * Publishes a project.
- * 
- * <B>Security</B>
- * Only the admin or the owner of the project can do this.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param id The id of the project to be published.
- * @return a vector of changed resources.
- * 
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public void publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
-	CmsProject publishProject = readProject(currentUser, currentProject, id);
-
-	// check the security	
-	if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
-		com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-		dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
-		m_subresCache.clear();
-		// inform about the file-system-change
-		fileSystemChanged(true);
-
-		// the project-state will be set to "published", the date will be set.
-		// the project must be written to the cms.
-
-		CmsProject project = readProject(currentUser, currentProject, id);
-		project.setFlags(C_PROJECT_STATE_ARCHIVE);
-		project.setPublishingDate(new Date().getTime());
-		project.setPublishedBy(currentUser.getId());
-		m_dbAccess.writeProject(project);
-		m_projectCache.put(project.getId(), project);
-
-		// finally set the refrish signal to another server if nescessary
-		if (m_refresh.length() > 0) {
-			try {
-				URL url = new URL(m_refresh);
-				URLConnection con = url.openConnection();
-				con.connect();
-				InputStream in = con.getInputStream();
-				in.close();
-				
-			} catch (Exception ex) {
-				throw new CmsException(0, ex);
-			}
-		}
-		// HACK: now currently we can delete the project to decrease the amount of data in the db
-		deleteProject(currentUser, currentProject, id);
-	} else {
-		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
-	}
 }
 /**
  * Reads a file from a previous project of the Cms.<BR/>
