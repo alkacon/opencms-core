@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/09 08:11:50 $
- * Version: $Revision: 1.199 $
+ * Date   : $Date: 2003/09/09 08:53:26 $
+ * Version: $Revision: 1.200 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.199 $ $Date: 2003/09/09 08:11:50 $
+ * @version $Revision: 1.200 $ $Date: 2003/09/09 08:53:26 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1158,12 +1158,22 @@ public class CmsDriverManager extends Object {
 
         // read the source properties
         newResourceProps = readProperties(context, source, null, false);
-        
-        // create a copy of the source file in the destination parent folder      
+                     
         if (copyAsLink) {
+            // create a copy of the source file in the destination parent folder
             newResource = createVfsLink(context, destination, source, newResourceProps, false);
         } else {
-            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
+            // create a new resource in the destination folder
+            
+            // check the resource flags
+            int flags = sourceFile.getFlags();
+            if (sourceFile.isLabeled()) {
+                // reset "labeled" link flag
+                flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+            }
+            
+            // create the file
+            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
             // copy the properties
             writeProperties(context, destination, newResourceProps);
@@ -1176,9 +1186,9 @@ public class CmsDriverManager extends Object {
 
             }
                         
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
+            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
             
-            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
+            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());            
         
         if (lockCopy) {
                 lockResource(context, destination);
