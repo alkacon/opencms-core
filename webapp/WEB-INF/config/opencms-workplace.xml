@@ -173,8 +173,8 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
+						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
