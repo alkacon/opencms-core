@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/08/18 09:19:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/18 13:12:10 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.6 $ $Date: 2003/08/18 09:19:19 $
+ * @version $Revision: 1.7 $ $Date: 2003/08/18 13:12:10 $
  */
 public class CmsExport implements Serializable {
 
@@ -115,7 +115,10 @@ public class CmsExport implements Serializable {
 
     /** Set of all exported files, required for later page body file export */
     private Set m_exportedResources = null;
-
+    
+    /** Set of all exported pages, required for later page body file export */
+    private Set m_exportedPageFiles = null;
+   
     /** Indicates if module data is exported */
     protected boolean m_exportingModuleData = false;
 
@@ -259,6 +262,7 @@ public class CmsExport implements Serializable {
 
         // init sets required for the body file exports 
         m_exportedResources = new HashSet();
+        m_exportedPageFiles = new HashSet();
 
         // export the folders
         for (int i = 0; i < folderNames.size(); i++) {
@@ -266,11 +270,38 @@ public class CmsExport implements Serializable {
             // first add superfolders to the xml-config file
             addSuperFolders(path);
             exportResources(path);
-            m_exportedResources.add(path);
+            m_exportedResources.add(path);           
         }
         // export the single files
         addSingleFiles(fileNames);   
+        
+        // export all body files that have not already been exported
+        addPageBodyFiles();
     }
+
+    /**
+     * Exports all page body files that have not explicityl been added by the user.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void addPageBodyFiles() throws CmsException {
+        Iterator i;
+
+        Vector bodyFileNames = new Vector();
+        String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"));
+
+        // check all exported page files if their body has already been exported
+        i = m_exportedPageFiles.iterator();
+        while (i.hasNext()) {
+            String body = bodyPath + (String)i.next();
+             bodyFileNames.add(body);
+        }
+
+        // now export the body files that have not already been exported
+        addSingleFiles(bodyFileNames);
+    }
+
+
 
     /**
      * Adds a CDATA element to the XML document.<p>
@@ -425,7 +456,9 @@ public class CmsExport implements Serializable {
         }
     }
     
-
+    
+    
+ 
     /**
      * Adds the superfolders of path to the config file, starting at the top, 
      * excluding the root folder.<p>
@@ -541,7 +574,11 @@ public class CmsExport implements Serializable {
             }  else {
                 // only create the manifest-entrys
                 writeXmlEntrys(file, false);
-            }       
+            }
+            // check if the resource is a page of the old style. if so, export the body as well       
+            if (m_cms.getResourceType(file.getType()).getResourceTypeName().equals("page")) {
+                m_exportedPageFiles.add("/"+source);                                      
+            }
         } catch (Exception exc) {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
