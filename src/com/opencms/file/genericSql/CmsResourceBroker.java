@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 09:58:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/06 12:04:48 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/06/06 09:58:07 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/06 12:04:48 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker {
@@ -75,6 +75,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 		m_configuration = config;
 		
 		// initialize the access-module.
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
+		}
 		m_dbAccess = new CmsDbAccess(config);		
     }
 	

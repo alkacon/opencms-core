@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/05 15:43:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/06 12:04:48 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,6 +38,7 @@ import com.opencms.core.*;
  * This class is used to create an pool of prepared statements.
  * 
  * @author u.roland
+ * @author a.schouten
  */
 public class CmsPreparedStatementPool {
 	
@@ -52,9 +53,19 @@ public class CmsPreparedStatementPool {
 	private String m_driver = null;
 	
 	/*
-	 * connection to the database
+	 * url to the database
 	 */
-	private String m_connectString = null;
+	private String m_url = null;
+
+	/*
+	 * user for the database
+	 */
+	private String m_user = null;
+	
+	/*
+	 * passwd for the database
+	 */
+	private String m_passwd = null;
 	
 	/*
 	 * store the PreparedStatements with an connection
@@ -81,11 +92,15 @@ public class CmsPreparedStatementPool {
 	 * 
      * @param driver - driver for the database
      * @param url - the URL of the database to which to connect
+     * @param user - the username to connect to the db.
+     * @param passwd - the passwd of the user to connect to the db.
      * @param maxConn - maximum connections
 	 */
-	public CmsPreparedStatementPool(String driver, String connectString, int maxConn) throws CmsException {
+	public CmsPreparedStatementPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
 		this.m_driver = driver;
-		this.m_connectString = connectString;
+		this.m_url = url;
+		this.m_user = user;
+		this.m_passwd = passwd;
 		this.m_maxConn = maxConn;
 		
 		// register the driver for the database
@@ -106,7 +121,7 @@ public class CmsPreparedStatementPool {
 			Connection conn = null;
 			
 			try {
-				conn = DriverManager.getConnection(m_connectString);
+				conn = DriverManager.getConnection(m_url, m_user, m_passwd);
 				m_connections.addElement(conn);
 			}
 			catch (SQLException e) {
