@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2004/07/08 15:21:05 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/11/03 13:54:00 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2004/07/08 15:21:05 $
+ * @version $Revision: 1.34 $ $Date: 2004/11/03 13:54:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -90,7 +90,6 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
         if(parameters.get("ok") != null) {
             if(action == null){
                 // start the deleting
-                project = cms.readProject(Integer.parseInt(projectId));
                 A_CmsReportThread doDelete = new CmsProjectDeleteThread(cms, Integer.parseInt(projectId));
                 doDelete.start();
                 session.putValue(C_DELETE_THREAD, doDelete);
@@ -131,6 +130,12 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
         } else {
             // show details about the project
             project = cms.readProject(Integer.parseInt(projectId));
+            
+            // set project to online project if current project is the one which will be deleted 
+            if (project.getId() == cms.getRequestContext().currentProject().getId()) {
+                cms.getRequestContext().setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));                    
+            }   
+            
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             CmsProjectlist.setListEntryData(cms, lang, xmlTemplateDocument, project);
 
