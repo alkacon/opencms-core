@@ -1,6 +1,5 @@
 package com.opencms.file;
 
-
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -14,61 +13,118 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.5 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/09 19:11:28 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
-	/**
-	 * Table names
-	 */
-	
+	/** Table name for GlobeTask */
 	private static final String C_TABLE_TASK     = "GlobeTask";
+	
+	/** Table name for GlobeTaskLog*/
 	private static final String C_TABLE_TASKLOG  = "GlobeTaskLog";
+	
+	/** Table name for GlobeTaskType*/
 	private static final String C_TABLE_TASKTYPE = "GlobeTaskType";
+	
+	/** Table name for GlobeTaskPar*/
 	private static final String C_TABLE_TASKPAR  = "GlobeTaskPar";
 	
-	/**
-	 * Column names table GlobeTask and GlobeTaskType
-	 */
+	/** Column name of table GlobeTask */
 	private static final String C_ID				  = "id";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_ID			  = "id";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_NAME			  = "name";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_STATE		  = "state";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_ROOT			  = "root";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_PARENT		  = "parent";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_TASKTYPE		  = "tasktyperef"; 
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_INITIATORUSER  = "initiatoruserref";
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_ROLE			  = "roleref";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_AGENTUSER	  = "agentuserref";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_ORIGINALUSER   = "originaluserref";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_STARTTIME	  = "starttime";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_WAKEUPTIME	  = "wakeuptime";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_TIMEOUT		  = "timeout";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_ENDTIME		  = "endtime";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_PERCENTAGE	  = "percentage";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_PERMISSION	  = "permission";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_PRIORITY		  = "priorityref"; 
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_ESCALATIONTYPE = "escalationtyperef";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_HTMLLINK		  = "htmllink"; 
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_MILESTONE	  = "milestoneref";
+	
+	/** Column name of table GlobeTask */
 	private static final String C_TASK_AUTOFINISH	  = "autofinish";
 	
-	/**
-	 * Column names table GlobeTaskLog
-	 */
-	private static final String C_LOG_ID         = "id";
-	private static final String C_LOG_COMMENT    = "comment"; 
-	private static final String C_LOG_EXUSERNAME = "externalusername"; 
-	private static final String C_LOG_STARTTIME  = "starttime"; 
-	private static final String C_LOG_TASK		 = "taskref";
-	private static final String C_LOG_USER		 = "userref";
-	private static final String C_LOG_TYPE       = "type";
-	/**
-	 * Column names table GlobeTaskLog
-	 */
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_ID         = C_TABLE_TASKLOG + ".id";
+	
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_COMMENT    = C_TABLE_TASKLOG + ".comment"; 
+	
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_EXUSERNAME = C_TABLE_TASKLOG + ".externalusername"; 
+	
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_STARTTIME  = C_TABLE_TASKLOG + ".starttime"; 
+	
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_TASK		 = C_TABLE_TASKLOG + ".taskref";
+	
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_USER		 = C_TABLE_TASKLOG + ".userref";
+	
+	/** Column name of table GlobeTaskLog */
+	private static final String C_LOG_TYPE       = C_TABLE_TASKLOG + ".type";
+	
+	/** Column names table GlobeTaskPar */
 	private static final String C_PAR_ID      = "id"; 
+	
+	/** Column names table GlobeTaskPar */
 	private static final String C_PAR_NAME    = "parname"; 
+	
+	/** Column names table GlobeTaskPar */
 	private static final String C_PAR_VALUE   = "parvalue";
+	
+	/** Column names table GlobeTaskPar */
 	private static final String C_PAR_TASK	  = "ref"; 
 	
 	/**
@@ -119,6 +175,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 */
 	private static final String C_TASK_END = "UPDATE  " + C_TABLE_TASK + "  Set " +
 											 "state=" + C_TASK_STATE_ENDED + ", " +
+											 "percentage=?, " +
 											 "endtime=? " +
 											 "WHERE id=?";
 	
@@ -173,29 +230,26 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 */
 	public A_CmsTask createProject(A_CmsUser owner, String projectname, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
 		throws CmsException {
-		
-		// TODO: here is something to cerrect!
-		// Create a dummy root project with task id 0
-		CmsProject root = new CmsProject(0,"","",0/*taskid*/,0,0,0,0, null, null);
-		
-		// Create a dummy parent task just for the id 0
-		CmsTask parent = new CmsTask(0,"",0,1,0,0,0,0,0,0,null,null,null,null,0,"",0,0,"",0,0);
-		
-		CmsTask task = (CmsTask)this.createTask(root, parent, 1, 
+/*
+		CmsTask task = (CmsTask)this.createTask(null, null, 1, 
 												owner, 
 												owner, //agent, 
 												role, 
 												projectname, "", //comment 
 												new java.sql.Timestamp(System.currentTimeMillis()), timeout, 
 												priority);
+*/		
+		return (CmsTask)this.createTask(0, // root
+										0, //parent
+										1, // tasktype
+										owner.getId(), //owner
+										owner.getId(), //agent
+										role.getId(),
+										projectname,
+										new java.sql.Timestamp(System.currentTimeMillis()),
+										timeout, priority);
 		
-		return task;
 	}
-	
-	/*
-	GlobeStartProject=GlobeStartTask(0, 0, tasktyperef, GlobeGetUserRef(), roleref, projectname, "", wakeuptime, timeout, priorityref)  
-	end function
-	*/
 	
 	/**
 	 * Creates a new task.
@@ -215,46 +269,29 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 */
 	
 	public A_CmsTask createTask(A_CmsProject project, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
-								String taskname, String taskcomment, 
-								java.sql.Timestamp timeout, int priority)
+								String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException {
 		
-		// Create a dummy parent task withe the project taskid
-		CmsTask parent = new CmsTask(project.getTaskId(),"",0,1,0,0,0,0,0,0,null,null,null,null,0,"",0,0,"",0,0);	
-		
-		return this.createTask(project, parent, 1, 
-							   owner, agent, role, 
-							   taskname, taskcomment, 
+		return this.createTask(project.getTaskId(),project.getTaskId(), 1, 
+							   owner.getId(), agent.getId(), role.getId(), 
+							   taskname, 
 							   new java.sql.Timestamp(System.currentTimeMillis()), timeout, 
 							   priority);
 	}
 	
-	/**
+		/**
 	 * Creates a new task.
 	 * 
-	 * @param project Project to witch the task belongs.
-	 * @param parent Parent Task to witch the Task belongs.
-	 * @param tasktype Tasktype used to create the new task.
-	 * @param owner User who hast created the task 
-	 * @param agent User who will edit the task 
-	 * @param role User group for the task 
-	 * @param taskname Name of the task
-	 * @param taskcomment Description of the task
-	 * @param wakeuptime Time to activate the task
-	 * @param timeout Time when the task must finished
-	 * @param priority Id for the priority
-	 * 
-	 * @return A new Task Object
+	 * @return The id  of the generated Task Object
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	public A_CmsTask createTask(A_CmsProject project, A_CmsTask parent, int tasktype, 
-								A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
-								String taskname, String taskcomment, 
-								java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, 
-								int priority) 
+	private A_CmsTask createTask(int rootId, int parentId, int tasktype, 
+						   int ownerId, int agentId,int  roleId, String taskname, 
+						   java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, 
+						   int priority) 
 		throws CmsException {
 		int id = C_UNKNOWN_ID;
 		A_CmsTask task = null;
@@ -269,40 +306,26 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			// get insert Id
 			id = this.getLastInsertId();
 			task = this.readTask(id);
+			task.setRoot(rootId);
+			task.setParent(parentId);
 			
-			// fill additional task fields
-			task.setRoot(project.getTaskId());
-			task.setParent(parent.getId());
 			task.setName(taskname);
 			task.setTaskType(tasktype);
-			task.setRole(role.getId());
-			
-			if(agent!=null){
-				task.setAgentUser(agent.getId());
-			}
-			else {
-				// Try to find an agent for this role
-				agent= findAgent(role);
-				if(agent!=null){
-					task.setAgentUser(agent.getId());
-				}
-				else{
-					task.setAgentUser(C_UNKNOWN_ID);
-				}
-			}				 
-			task.setOriginalUser(agent.getId());
+			task.setRole(roleId);
+			if(agentId==C_UNKNOWN_ID){
+				agentId = findAgent(roleId);
+			}	
+			task.setAgentUser(agentId);				 
+			task.setOriginalUser(agentId);
 			task.setWakeupTime(wakeuptime);
 			task.setTimeOut(timeout);
 			task.setPriority(priority);
 			task.setPercentage(0);
 			task.setState(C_TASK_STATE_STARTED);
-			task.setInitiatorUser(owner.getId());
+			task.setInitiatorUser(ownerId);
 			task.setStartTime(new java.sql.Timestamp(System.currentTimeMillis()));
 			task.setMilestone(0);
 			task = this.writeTask(task);
-			
-			writeTaskLog(task, owner, taskcomment);
-
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		}
@@ -403,52 +426,80 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	/**
 	 * Ends a task from the Cms.
 	 * 
-	 * @param user The úser who end th task
 	 * @param task The task to end.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void endTask( A_CmsUser user, A_CmsTask task)
-		throws CmsException{
+	public void endTask(A_CmsTask task)
+		throws CmsException {
+			endTask(task.getId());
+			task.setState(C_TASK_STATE_ENDED);
+	}
+	
+	/**
+	 * Ends a task from the Cms.
+	 * 
+	 * @param taskid Id of the task to end.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void endTask(int taskId)
+		throws CmsException {
 		try{
 			PreparedStatement statementEndTask = m_Con.prepareStatement(C_TASK_END);
-			statementEndTask.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
-			statementEndTask.setInt(2,task.getId());
+			statementEndTask.setInt(1, 100);
+			statementEndTask.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
+			statementEndTask.setInt(3,taskId);
 			statementEndTask.executeQuery();
-			writeSytemTaskLog(task, "Task finished by "+user.getName());
-			task.setState(C_TASK_STATE_ENDED);
 			
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		}
 	}
-
+	
 	
 	/**
 	 * Forwards a task to another user.
 	 * 
 	 * @param task The task that will be fowarded.
-	 * @param user User who will get the forwarede task
+	 * @param newRole The new Group the task belongs to
+	 * @param newUser User who gets the task
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void forwardTask(A_CmsTask task, A_CmsUser user)
+	public void forwardTask(A_CmsTask task, A_CmsGroup newRole, A_CmsUser newUser)
+		throws CmsException {
+			task.setAgentUser(newUser.getId());
+			task.setRole(newRole.getId());
+			forwardTask(task.getId(), newRole, newUser);
+	}
+	
+	/**
+	 * Forwards a task to another user.
+	 * 
+	 * @param taskid The id of the task that will be fowarded.
+	 * @param newRole The new Group the task belongs to
+	 * @param newUser User who gets the task
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void forwardTask(int taskId, A_CmsGroup newRole, A_CmsUser newUser)
 		throws CmsException {
 		try { 
-			
-			task.setAgentUser(user.getId());
-			String sqlstr = "UPDATE "+C_TABLE_TASK+" SET "+C_TASK_AGENTUSER+"=? WHERE "+C_TASK_ID+"=?";
+			String sqlstr = "UPDATE "+C_TABLE_TASK+" SET " + 
+							C_TASK_ROLE+"=? ," +
+							C_TASK_AGENTUSER+"=? "+
+							"WHERE "+C_TASK_ID+"=?";
 			PreparedStatement statementUpdateTask = m_Con.prepareStatement(sqlstr);
-			statementUpdateTask.setInt(1,user.getId());
-			statementUpdateTask.setInt(2,task.getId());
-			//System.out.println(statementUpdateTask);
+			statementUpdateTask.setInt(1,newRole.getId());
+			statementUpdateTask.setInt(2,newUser.getId());
+			statementUpdateTask.setInt(3,taskId);
 			statementUpdateTask.executeUpdate();
-			writeSytemTaskLog(task, "Task fowarded to "+user.getName());
-
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		}
-	}											  
+	}
+	
 	
 	/**
 	 * Reads all tasks of a user in a project.
@@ -504,13 +555,11 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			if(!first){
 				sqlstr = sqlstr+" AND ";
 			}
-			sqlstr = sqlstr + this.C_TASK_ROLE + "=" + role.getId();
+			sqlstr = sqlstr + C_TASK_ROLE + "=" + role.getId();
 			first = false;
 		}
 		
 		sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
-		
-
 		
 		// handel the order and sort parameter for the SQL String
 		if(orderBy!=null) {
@@ -528,7 +577,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			
 			Statement statement = m_Con.createStatement();
 			
-			//System.out.println(sqlstr);
+			System.out.println(sqlstr);
 			recset = statement.executeQuery(sqlstr);
 			
 			// if resultset exists - return vector of tasks
@@ -566,16 +615,16 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		return tasks;
 	}
 	
-	private A_CmsUser findAgent(A_CmsGroup role){
+	private int findAgent(int roleid){
 		
 		// todo to be implemented
-		return null;
+		return C_UNKNOWN_ID;
 	}
 	
 	/**
 	 * Writes new log for a task.
 	 * 
-	 * @param task The task.
+	 * @param taskid The id of the task.
 	 * @param user User who added the Log.
 	 * @param starttime Time when the log is created.
 	 * @param comment Description for the log.
@@ -583,12 +632,12 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private void writeTaskLog(A_CmsTask task, A_CmsUser user, 
+	private void writeTaskLog(int taskId, A_CmsUser user, 
 							  java.sql.Timestamp starttime, String comment, int type)
 		throws CmsException {
 		try {
 			PreparedStatement statementInsertTaskLog = m_Con.prepareStatement(C_TASKLOG_INSERT);
-			statementInsertTaskLog.setInt(1, task.getId());
+			statementInsertTaskLog.setInt(1, taskId);
 			if(user!=null){
 				statementInsertTaskLog.setInt(2, user.getId());
 			}
@@ -612,16 +661,16 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	/**
 	 * Writes a new user tasklog for a task.
 	 * 
-	 * @param task The task .
+	 * @param taskid The Id of the task .
 	 * @param user User who added the Log
 	 * @param comment Description for the log
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writeTaskLog(A_CmsTask task, A_CmsUser user, String comment)
+	public void writeTaskLog(int taskid, A_CmsUser user, String comment)
 		throws CmsException {
 		
-		this.writeTaskLog(task, user, 
+		this.writeTaskLog(taskid, user, 
 						  new java.sql.Timestamp(System.currentTimeMillis()), 
 						  comment, C_TASKLOG_USER);
 	}
@@ -629,16 +678,33 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	/**
 	 * Writes a new system log for a task.
 	 * 
-	 * @param task The task .
+	 * @param taskid The Id of the task .
 	 * @param comment Description for the log
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private void writeSytemTaskLog(A_CmsTask task, String comment)
+	public void writeSytemTaskLog(int taskId, String comment)
 		throws CmsException {
-		this.writeTaskLog(task, null, 
+		this.writeTaskLog(taskId, null, 
 						  new java.sql.Timestamp(System.currentTimeMillis()), 
 						  comment, C_TASKLOG_SYSTEM);
+	}
+	
+	/**
+	 * Writes new log for a task.
+	 * 
+	 * @param taskid The id of the task.
+	 * @param user User who added the Log.
+	 * @param comment Description for the log.
+	 * @param type Type of the log. 0 = Sytem log, 1 = User Log, greater then 100 is userdefined.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void writeTaskLog(int taskId, A_CmsUser user, String comment, int type)
+		throws CmsException {
+			this.writeTaskLog(taskId, user, 
+						  new java.sql.Timestamp(System.currentTimeMillis()), 
+						  comment, type);
 	}
 	
 	/**
@@ -675,20 +741,23 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	/**
 	 * Reads log entries for a task.
 	 * 
-	 * @param task The task for the tasklog to read .
+	 * @param taskid The id of the task for the tasklog to read .
 	 * @return A Vector of new TaskLog objects 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readTaskLogs(A_CmsTask task)
+	public Vector readTaskLogs(int taskId)
 		throws CmsException {
 		ResultSet recset;
 		A_CmsTaskLog log = null;
 		Vector logs = new Vector();
 		
 		try {
-			String sqlstr = "SELECT * FROM "+C_TABLE_TASKLOG+" WHERE "+C_LOG_TASK+"=?";
+			String sqlstr = "SELECT * FROM "+C_TABLE_TASKLOG + 
+							" WHERE " + C_LOG_TASK + "=? "+ 
+							" ORDER BY " + C_LOG_STARTTIME;
+			
 			PreparedStatement statementReadTaskLogs = m_Con.prepareStatement(sqlstr);
-			statementReadTaskLogs.setInt(1, task.getId());
+			statementReadTaskLogs.setInt(1, taskId);
 			recset = statementReadTaskLogs.executeQuery();
 			while(recset.next()) {				 
 				log = new CmsTaskLog(recset.getInt(C_LOG_ID),
@@ -721,9 +790,14 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		Vector logs = new Vector();
 		
 		try {
-			String sqlstr = "SELECT * FROM "+C_TABLE_TASKLOG+" WHERE "+C_LOG_TASK+"=?";
+			String sqlstr = "SELECT " + C_LOG_ID + ","+C_LOG_COMMENT+","+C_LOG_TASK+","+C_LOG_USER+"," + C_LOG_STARTTIME + "," + C_LOG_TYPE + " " +
+							"FROM " + C_TABLE_TASKLOG + ", " + C_TABLE_TASK + " " +
+							"WHERE " + C_LOG_TASK + "=GlobeTask.id AND GlobeTask.root=? " + 
+							"ORDER BY " + C_LOG_STARTTIME;
+			
 			PreparedStatement statementReadTaskLogs = m_Con.prepareStatement(sqlstr);
-			statementReadTaskLogs.setInt(1, project.getId());
+			statementReadTaskLogs.setInt(1, project.getTaskId());
+			System.out.println(statementReadTaskLogs);
 			recset = statementReadTaskLogs.executeQuery();
 			while(recset.next()) {				 
 				log = new CmsTaskLog(recset.getInt(C_LOG_ID),
@@ -752,7 +826,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public int setTaskPar(A_CmsTask task, String parname, String parvalue)
+	public int setTaskPar(int taskId, String parname, String parvalue)
 		throws CmsException {
 		
 		ResultSet recset;
@@ -762,7 +836,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			// test if the parameter already exists for this task
 			String sqlstr = "SELECT * FROM " + C_TABLE_TASKPAR + " WHERE "+C_PAR_TASK+"=? AND " + C_PAR_NAME + "=?";
 			PreparedStatement statementTaskPar = m_Con.prepareStatement(sqlstr);
-			statementTaskPar.setInt(1, task.getId());
+			statementTaskPar.setInt(1, taskId);
 			statementTaskPar.setString(2, parname);
 			//System.out.println(statementTaskPar);
 			recset = statementTaskPar.executeQuery();
@@ -781,7 +855,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 				//Parameter is not exisiting, so make an insert
 				sqlstr = "INSERT INTO " + C_TABLE_TASKPAR + "("+C_PAR_TASK+", " + C_PAR_NAME + ", " + C_PAR_VALUE + ") VALUES (?,?,?)";
 				statementTaskPar = m_Con.prepareStatement(sqlstr);
-				statementTaskPar.setInt(1, task.getId());
+				statementTaskPar.setInt(1, taskId);
 				statementTaskPar.setString(2, parname);
 				statementTaskPar.setString(3, parvalue);
 				//System.out.println(statementTaskPar);
@@ -803,7 +877,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public String getTaskPar(A_CmsTask task, String parname)
+	public String getTaskPar(int taskId, String parname)
 		throws CmsException {
 		
 		String result = null;
@@ -811,7 +885,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		try {	
 			String sqlstr = "SELECT * FROM " + C_TABLE_TASKPAR + " WHERE " + C_PAR_TASK + "=? AND " + C_PAR_NAME + "=?";
 			PreparedStatement statementTaskPar = m_Con.prepareStatement(sqlstr);
-			statementTaskPar.setInt(1, task.getId());
+			statementTaskPar.setInt(1, taskId);
 			statementTaskPar.setString(2, parname);
 			//System.out.println(statementTaskPar);
 			recset = statementTaskPar.executeQuery();
@@ -877,29 +951,29 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		{
 		case C_TASKS_ALL:
 			{
-				result = result;			
+				result = result + C_TASK_ROOT + "<>0";			
 				break;				
 			}
 			
 		case C_TASKS_OPEN:
 			{
-				result = result + "state=" + C_TASK_STATE_STARTED;
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
 				break;
 			}	
 		case C_TASKS_ACTIVE:
 			{
-				result = result + "state=" + C_TASK_STATE_STARTED;
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
 				break;
 			}
 		case C_TASKS_DONE:
 			{
-				result = result + "state=" + C_TASK_STATE_ENDED;
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_ENDED;
 				break;					
 			}
 			
 		case C_TASKS_NEW:
 			{
-				result = result + C_TASK_PERCENTAGE + "=0 AND state=" + C_TASK_STATE_STARTED;
+				result = result + C_TASK_PERCENTAGE + "=0 AND " + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
 				break;					
 			}
 			

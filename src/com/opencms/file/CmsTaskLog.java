@@ -9,7 +9,7 @@ import java.util.*;
  * This class describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.2 $ $Date: 2000/01/28 18:46:41 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/09 19:11:28 $
  */
 public class CmsTaskLog extends A_CmsTaskLog implements I_CmsConstants {
 
@@ -102,11 +102,11 @@ public class CmsTaskLog extends A_CmsTaskLog implements I_CmsConstants {
 		output.append(" User=");
 		output.append(getUser());
 		
-		if(getType()== C_TASKLOG_USER) {
-			output.append(" Type=User");
+		if(getType()== C_TASKLOG_SYSTEM) {
+			output.append(" Type=System");
 		}
 		else {
-			output.append(" Type=System");
+			output.append(" Type=User");
 		}
 		return output.toString();
 	}

@@ -9,7 +9,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.4 $ $Date: 2000/01/28 18:46:41 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/09 19:11:28 $
  */
 public class CmsTask extends A_CmsTask implements I_CmsConstants {
 
@@ -401,16 +401,7 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 				result = "Halted";
 				break;				
 			}
-		case C_TASK_STATE_MAIL:
-			{
-				result = "Mail";
-				break;				
-			}
-		case C_TASK_STATE_ONHOLD:
-			{
-				result = "On Hold";
-				break;				
-			}			
+
 		default:
 			result = "Unkown";
 		}

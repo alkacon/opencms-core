@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.2 $ $Date: 2000/01/28 18:46:41 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/09 19:11:28 $
  */
  class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
 	 /**
@@ -35,7 +35,6 @@ import com.opencms.core.*;
 	  * @param owner User who creates the project
 	  * @param projectname Name of the project
 	  * @param role Usergroup for the project
-	  * @param taskcomment Description of the task
 	  * @param timeout Time when the Project must finished
 	  * @param priority Priority for the Project
 	  * 
@@ -54,7 +53,7 @@ import com.opencms.core.*;
 	 /**
 	  * Creates a new task.
 	  * 
-	  * @param callingUser User who hast created the task 
+	  * @param currentUser User who create the task 
 	  * @param project Project to witch the task belongs.
 	  * @param agent User who will edit the task 
 	  * @param role Usergroup for the task
@@ -68,83 +67,142 @@ import com.opencms.core.*;
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 
-	 public A_CmsTask createTask(A_CmsUser callingUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
+	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
 								 String taskname, String taskcomment, 
 								 java.sql.Timestamp timeout, int priority)
 		 throws CmsException {
-		 return( m_accessTask.createTask(project, callingUser, agent, role, 
-										 taskname, taskcomment, 
-										 timeout, priority));
 		 
+		 A_CmsTask task = m_accessTask.createTask(project, currentUser, agent, role, 
+												  taskname, timeout, priority);
+		 
+		 if(!taskcomment.equals("")) {
+			m_accessTask.writeTaskLog(task.getId(), currentUser, taskcomment);
+		 }
+										   
+		 return task;
 	 }
 
 	 /**
 	  * Ends a task from the Cms.
 	  * 
-	  * @param user The úser who end th task	 
-	  * @param task The task to end.
-	  
+	  * @param currentUser User who wants to end the task
+	  * @param taskid The ID of the task to end.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void endTask(A_CmsUser callingUser, A_CmsTask task) 
+	 public void endTask(A_CmsUser currentUser, int taskid) 
 		 throws CmsException {
 		 
-		 m_accessTask.endTask(callingUser, task);
+		 m_accessTask.endTask(taskid);
+		 m_accessTask.writeSytemTaskLog(taskid, "Task finished by " + 
+											  currentUser.getFirstname() + " " +
+											  currentUser.getLastname() + ".");
 	 }	
 	 
 	 /**
 	  * Forwards a task to a new user.
 	  * 
-	  * <B>Security:</B>
-	  * // TODO: Add security-police here
-	  * 
-	  * @param callingUser The user who wants to use this method.
-	  * @param task The task to forward.
-	  * @param newUser The user to forward to.
+	  * @param currentUser The user who forwards the task.
+	  * @param taskid The Id of the task to forward.
+	  * @param newRole The new Group for the task
+	  * @param newUser The new user who gets the task.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void forwardTask(A_CmsUser callingUser, A_CmsTask task, 
-							 A_CmsUser newUser) 
+	 public void forwardTask(A_CmsUser currentUser, int taskid, 
+							 A_CmsGroup newRole, A_CmsUser newUser) 
 		 throws CmsException{
 		 
-		 m_accessTask.forwardTask(task, newUser);
+		 m_accessTask.forwardTask(taskid, newRole, newUser);
+		 m_accessTask.writeSytemTaskLog(taskid, "Task fowarded from " + 	
+											  currentUser.getFirstname() + " " +
+											  currentUser.getLastname() + " to " + 
+											  newUser.getFirstname() + " " +
+											  newUser.getLastname() + ".");
 	 }
 	 
 	 /**
 	  * Accept a task from the Cms.
 	  * 
-	  * @param callingUser The user who wants to use this method.	 
-	  * @param task The task to accept.
+	  * @param currentUser The user who accepts the task.	 
+	  * @param taskid The Id of the task to accept.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void acceptTask(A_CmsUser callingUser, A_CmsTask task)
+	 public void acceptTask(A_CmsUser currentUser, int taskId)
 		 throws CmsException {
 		 
-		 setPercentage(callingUser, task, 1);
-		 m_accessTask.writeTaskLog(task, callingUser, 
-								   "Task was accepted from " + callingUser.getFirstname() + " " + callingUser.getLastname());
+		 A_CmsTask task = readTask(taskId);
+		 task.setPercentage(1);
+		 task = m_accessTask.writeTask(task);
+		 m_accessTask.writeSytemTaskLog(taskId, 
+										"Task was accepted from " + 					
+										currentUser.getFirstname() + " " +
+										currentUser.getLastname() + ".");
 	 }
 	 
 	 /**
 	  * Set Percentage of a task
 	  * 
-	  * @param callingUser The user who wants to use this method.	 
-	  * @param task The task to set the percentage.
+	  * @param currentUser The user who wants to set the percentage.	 
+	  * @param taskid The Id of the task to set the percentage.
 	  * @param new percentage value
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setPercentage(A_CmsUser callingUser, A_CmsTask task, int percentage)
+	 public void setPercentage(A_CmsUser currentUser, int taskId, int percentage)
 		 throws CmsException {
 		 
+		 A_CmsTask task = readTask(taskId);
 		 task.setPercentage(percentage);
 		 task = m_accessTask.writeTask(task);
-		 m_accessTask.writeTaskLog(task, callingUser, 
-								   "Percentage was set to " + percentage + "% from " + callingUser.getFirstname() + " " + callingUser.getLastname());
+		 m_accessTask.writeSytemTaskLog(taskId, 
+										"Percentage was set to " + percentage + "% from " + 
+										currentUser.getFirstname() + " " + 
+										currentUser.getLastname() + ".");
 	 }
+	 
+	 /**
+	  * Set priority of a task
+	  * 
+	  * @param currentUser The user who wants to set the percentage.	 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new priority value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setPriority(A_CmsUser currentUser, int taskId, int priority)
+		 throws CmsException {
+		 
+		 A_CmsTask task = readTask(taskId);
+		 task.setPriority(priority);
+		 task = m_accessTask.writeTask(task);
+		 m_accessTask.writeSytemTaskLog(taskId, 
+										"Priority was set to " + priority + " from " + 
+										currentUser.getFirstname() + " " + 
+										currentUser.getLastname() + ".");
+	 }
+	 
+	 /**
+	  * Set timeout of a task
+	  * 
+	  * @param currentUser The user who wants to set the percentage.	 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new timeout value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setTimeout(A_CmsUser currentUser, int taskId, java.sql.Timestamp timeout)
+		 throws CmsException {
+		 
+		 A_CmsTask task = readTask(taskId);
+		 task.setTimeOut(timeout);
+		 task = m_accessTask.writeTask(task);
+		 m_accessTask.writeSytemTaskLog(taskId, 
+										"Timeout was set to " + timeout + " from " + 
+										currentUser.getFirstname() + " " + 
+										currentUser.getLastname() + ".");
+	 }	 
 	 
 	 /**
 	  * Read a task by id.
@@ -158,6 +216,17 @@ import com.opencms.core.*;
 		 return( m_accessTask.readTask(id));
 	 }
 	 
+	 /**
+	  * write a task .
+	  * 
+	  * @param task The task object to write.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask writeTask(A_CmsTask task)
+		 throws CmsException{
+		 return( m_accessTask.writeTask(task));
+	 }
 	 
 	 //--------------------------------------------
 	 // Task lists
@@ -166,105 +235,125 @@ import com.opencms.core.*;
 	 /**
 	  * Reads all tasks for a project.
 	  * 
-	  * <B>Security:</B>
-	  * // TODO: Add security-police here
-	  * 
-	  * @param callingUser The user who wants to use this method.
 	  * @param project The Project in which the tasks are defined. Can be null for all tasks
-	  * @param tasktype Type of the tasks you want to read
+	  * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
 	  * @param orderBy Chooses, how to order the tasks. 
-	  * @param sort Sort order C_TASK_ASC, C_TASK_DESC, or null
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, int tasktype, String orderBy, String sort)
+	 public Vector readTasks(A_CmsProject project, int tasktype, 
+							 String orderBy, String sort)
 		 throws CmsException{
 		 
-		 return m_accessTask.readTasks(project, null, null, null, tasktype, orderBy, sort);
+		 return m_accessTask.readTasks(project, null, null, null, tasktype, 
+									   orderBy, sort);
 	 }
 	 
 	 /**
 	  * Reads all tasks for a user in a project.
 	  * 
-	  * <B>Security:</B>
-	  * // TODO: Add security-police here
-	  * 
-	  * @param callingUser The user who wants to use this method.
 	  * @param project The Project in which the tasks are defined.
-	  * @param user The user who has to process the task.
+	  * @param role The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
-	  * 
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasks(A_CmsUser callingUser, A_CmsProject project, 
-							 A_CmsUser agent, int tasktype, String orderBy, String sort) 
+	 public Vector readTasks(A_CmsProject project, A_CmsUser user, int tasktype, 
+							 String orderBy, String sort) 
 		 throws CmsException{
 		 
-		 return m_accessTask.readTasks(project, agent, null, null, tasktype, orderBy, sort);
+		 return m_accessTask.readTasks(project, user, null, null, tasktype, 
+									   orderBy, sort);
 	 }
 	 
+	 /**
+	  * Reads all tasks for a role in a project.
+	  * 
+	  * @param project The Project in which the tasks are defined.
+	  * @param user The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTasks(A_CmsProject project, A_CmsGroup role, int tasktype, 
+							 String orderBy, String sort) 
+		 throws CmsException{
+		 
+		 return m_accessTask.readTasks(project, null, null, role, tasktype, 
+									   orderBy, sort);
+	 }
 	 
 	 /**
-	  * Reads all posed tasks of a project.
+	  * Reads all given tasks from a user for a project.
 	  * 
-	  * <B>Security:</B>
-	  * // TODO: Add security-police here
-	  * 
-	  * @param callingUser The user who wants to use this method.
 	  * @param project The Project in which the tasks are defined.
-	  * @param group The group who has to process the task.
-	  * @param tasktype
+	  * @param owner Owner of the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readPosedTasks(A_CmsUser callingUser, A_CmsProject project, 
-								  A_CmsUser owner, int taskType, 
+	 public Vector readGivenTasks(A_CmsProject project, A_CmsUser owner, int taskType, 
 								  String orderBy, String sort) 
 		 throws CmsException{
 		 
 		 return m_accessTask.readTasks(project, null, owner, null, taskType, orderBy, sort);
 	 }
 
-	 
 	 /**
 	  * Writes a new user tasklog for a task.
 	  * 
-	  * @param callingUser The user who wants to use this method.	 	 
-	  * @param task The task .
+	  * @param taskid The Id of the task .
 	  * @param user User who added the Log
 	  * @param comment Description for the log
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void writeTaskLog(A_CmsUser callinguser, A_CmsTask task, A_CmsUser user, String comment)
+	 public void writeTaskLog(int taskid, A_CmsUser user, String comment)
 		 throws CmsException {
 		 
-		 m_accessTask.writeTaskLog(task, user, comment);
+		 m_accessTask.writeTaskLog(taskid, user, comment);
+	 }
+	 
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * @param taskid The Id of the task .
+	  * @param user User who added the Log
+	  * @param comment Description for the log
+	  * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(int taskid, A_CmsUser user, String comment, int taskType)
+		 throws CmsException {
+		 
+		 m_accessTask.writeTaskLog(taskid, user, comment, taskType);
 	 }
 	 
 	 /**
 	  * Reads log entries for a task.
 	  * 
-	  * @param callingUser The user who wants to use this method.	 	 
-	  * @param task The task for the tasklog to read .
+	  * @param taskid The task for the tasklog to read .
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTaskLogs(A_CmsUser callingUser, A_CmsTask task)
+	 public Vector readTaskLogs(int taskid)
 		 throws CmsException{
-		 return m_accessTask.readTaskLogs(task);	 
+		 return m_accessTask.readTaskLogs(taskid);	 
 	 }
 	 
 	 /**
 	  * Reads log entries for a project.
 	  * 
-	  * @param callingUser The user who wants to use this method.	 
 	  * @param project The projec for tasklog to read.
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readProjectLogs(A_CmsUser callingUser, A_CmsProject project)
+	 public Vector readProjectLogs(A_CmsProject project)
 		 throws CmsException {
 		 return m_accessTask.readProjectLogs(project);	 
 	 }
@@ -272,8 +361,7 @@ import com.opencms.core.*;
 	 /**
 	  * Set a Parameter for a task.
 	  * 
-	  * @param callingUser The user who wants to use this method.	 
-	  * @param task The task.
+	  * @param taskid The Id of the task.
 	  * @param parname Name of the parameter.
 	  * @param parvalue Value if the parameter.
 	  * 
@@ -281,26 +369,24 @@ import com.opencms.core.*;
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public int setTaskPar(A_CmsUser callingUser, A_CmsTask task, String parname, String parvalue)
+	 public int setTaskPar(int taskid, String parname, String parvalue)
 		 throws CmsException {
 		 
 		 // TODO security for calling user
-		 return( m_accessTask.setTaskPar(task, parname, parvalue));		
+		 return( m_accessTask.setTaskPar(taskid, parname, parvalue));		
 	 }
 
 	 /**
 	  * Get a parameter value for a task.
 	  * 
-	  * @param callingUser The user who wants to use this method.	 
-	  * @param task The task.
+	  * @param taskid The Id of the task.
 	  * @param parname Name of the parameter.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public String getTaskPar(A_CmsUser callingUser, A_CmsTask task, String parname)
+	 public String getTaskPar(int taskid, String parname)
 		 throws CmsException {
 		 
-		 // TODO security for calling user
-		 return( m_accessTask.getTaskPar(task, parname));		
+		 return( m_accessTask.getTaskPar(taskid, parname));		
 	 }
  }
