@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/17 12:32:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.setup;
 
+import org.opencms.main.OpenCmsCore;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -49,7 +50,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsSetup {
 
@@ -72,6 +73,11 @@ public class CmsSetup {
      * Properties from dbsetup.properties 
      */
     private Properties m_dbProperties;
+    
+    /**
+     * Contains the HTML fragments for the output of the setup pages
+     */
+    private Properties m_htmlProps;
 
     /** Contains the absolute path to the opencms home directory */
     private String m_basePath;
@@ -100,6 +106,8 @@ public class CmsSetup {
             m_extProperties = CmsSetupUtils.loadProperties(path);
             m_dbProperties = new Properties();
             m_dbProperties.load(getClass().getClassLoader().getResourceAsStream(C_DB_PROPERTIES));
+            m_htmlProps = new Properties();
+            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.C_FILE_HTML_MESSAGES));
         } catch (Exception e) {
             e.printStackTrace();
             errors.add(e.toString());
@@ -706,6 +714,21 @@ public class CmsSetup {
      */
     public String getFilenameTranslationEnabled() {
         return this.getExtProperty("filename.translation.enabled");
+    }
+    
+    /**
+     * Returns the specified HTML part of the HTML property file to create the output.<p>
+     * 
+     * @param part the name of the desired part
+     * @return the HTML part or an empty String, if the part was not found
+     */
+    public String getHtmlPart(String part) {
+        String value = m_htmlProps.getProperty(part);
+        if (value == null) {
+            return "";
+        } else {
+            return value;
+        }
     }
 
     /**

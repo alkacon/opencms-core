@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/16 15:41:54 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2004/02/17 12:32:47 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -112,6 +112,9 @@ public final class OpenCmsCore {
 
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
+    
+    /** Name of the property file containing HTML fragments for setup wizard and error dialog */
+    public static final String C_FILE_HTML_MESSAGES = "org/opencms/main/htmlmsg.properties";
 
     /** Prefix for a critical init error */
     public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
@@ -1706,6 +1709,16 @@ public final class OpenCmsCore {
      */
     private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
         StringBuffer result = new StringBuffer(8192);
+        // load the property file that contains the html fragments for the dialog
+        Properties htmlProps = new Properties();
+        try {
+            htmlProps.load(getClass().getClassLoader().getResourceAsStream(C_FILE_HTML_MESSAGES));
+        } catch (Throwable thr) {
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Could not load " + C_FILE_HTML_MESSAGES, thr);
+            }
+        }
+        
         // determine language of the browser to display localized messages
         CmsAcceptLanguageHeaderParser headerParser = new CmsAcceptLanguageHeaderParser(request);
         List locales = headerParser.getAcceptedLocales();
@@ -1721,16 +1734,20 @@ public final class OpenCmsCore {
         CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, locale);
 
         // create the html for the output
-        result.append(this.getErrormsg("C_ERRORPART_1"));
+        result.append(htmlProps.getProperty("C_HTML_START"));
         // the document title
         result.append(messages.key("error.system.message"));
-        result.append(this.getErrormsg("C_ERRORPART_2"));
+        result.append(htmlProps.getProperty("C_HEAD_START"));
+        result.append(htmlProps.getProperty("C_STYLES"));
+        result.append(htmlProps.getProperty("C_JAVASCRIPT_ERROR"));
+        result.append(htmlProps.getProperty("C_HEAD_END"));
         // the dialog header
         result.append(messages.key("error.system.message"));
-        result.append(this.getErrormsg("C_ERRORPART_3"));
+        result.append(htmlProps.getProperty("C_CONTENT_START"));
+        result.append(htmlProps.getProperty("C_ERRORPART_1"));
         // the error image
         result.append(CmsWorkplace.getSkinUri(cms) + "explorer/report_error.gif");
-        result.append(this.getErrormsg("C_ERRORPART_4"));
+        result.append(htmlProps.getProperty("C_ERRORPART_2"));
         // show error message, if present
         if (t.getLocalizedMessage() != null) {
             result.append("<p><b>" + CmsStringSubstitution.substitute(t.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
@@ -1739,16 +1756,18 @@ public final class OpenCmsCore {
         result.append("<p>" + messages.key("error.system.resource") + ":<b> " + cms.getRequestContext().getRequest().getRequestedResource() + "</b><br>");
         result.append(messages.key("error.system.version") + ":<b> " + this.getSystemInfo().getVersionName() + "</b><br>");
         result.append(messages.key("error.system.context") + ":<b> " + this.getSystemInfo().getOpenCmsContext() + "</b></p>");
-        result.append(this.getErrormsg("C_ERRORPART_5"));
+        result.append(htmlProps.getProperty("C_ERRORPART_3"));
         // detail button label
         result.append(messages.key("button.detail"));
-        result.append(this.getErrormsg("C_ERRORPART_6"));
+        result.append(htmlProps.getProperty("C_ERRORPART_4"));
         // exception details
         result.append(CmsStringSubstitution.substitute(CmsException.getStackTraceAsString(t), "\n", "\n<br>"));
-        result.append(this.getErrormsg("C_ERRORPART_7"));
+        result.append(htmlProps.getProperty("C_ERRORPART_5"));
         // close button label
         result.append(messages.key("button.close"));
-        result.append(this.getErrormsg("C_ERRORPART_8"));
+        result.append(htmlProps.getProperty("C_ERRORPART_6"));
+        result.append(htmlProps.getProperty("C_CONTENT_END"));
+        result.append(htmlProps.getProperty("C_HTML_END"));
         return result.toString();
     }
 
@@ -1891,25 +1910,6 @@ public final class OpenCmsCore {
                 list[i].cmsEvent(event);
             }
         }
-    }
-
-    /**
-     * Returns a part of the html error message dialog.<p>
-     *
-     * @param part the name of the piece to return
-     * @return a part of the html error message dialog
-     */
-    private String getErrormsg(String part) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream("org/opencms/main/errormsg.properties"));
-        } catch (Throwable t) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Could not load org/opencms/main/errormsg.properties", t);
-            }
-        }
-        String value = props.getProperty(part);
-        return value;
     }
 
     /**
