@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/05/16 14:48:32 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.31 $ $Date: 2003/05/16 14:48:32 $
+ * @version $Name:  $ $Revision: 1.32 $ $Date: 2003/06/05 14:15:48 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -444,7 +444,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         }
         // is the resource owned by this user?
         if(resource.getOwnerId().equals(cms.getRequestContext().currentUser().getId())) {
-            if( (accessflags & C_ACCESS_OWNER_VISIBLE) == C_ACCESS_OWNER_VISIBLE ) {
+            if( (accessflags & C_PERMISSION_VIEW) == C_PERMISSION_VIEW ) {
                 return true ;
             }
         }

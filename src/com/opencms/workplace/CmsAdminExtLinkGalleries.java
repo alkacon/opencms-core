@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/05 14:15:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -159,14 +159,14 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                     if((flag & C_ACCESS_GROUP_VISIBLE) == 0){
                         flag ^= C_ACCESS_GROUP_VISIBLE;
                     }
-                    if((flag & C_ACCESS_OWNER_READ ) == 0){
-                        flag ^= C_ACCESS_OWNER_READ;
+                    if((flag & C_PERMISSION_READ ) == 0){
+                        flag ^= C_PERMISSION_READ;
                     }
-                    if((flag & C_ACCESS_OWNER_WRITE) == 0){
-                        flag ^= C_ACCESS_OWNER_WRITE;
+                    if((flag & C_PERMISSION_WRITE) == 0){
+                        flag ^= C_PERMISSION_WRITE;
                     }
-                    if((flag & C_ACCESS_OWNER_VISIBLE) == 0){
-                        flag ^= C_ACCESS_OWNER_VISIBLE;
+                    if((flag & C_PERMISSION_VIEW) == 0){
+                        flag ^= C_PERMISSION_VIEW;
                     }
                     if((flag & C_ACCESS_PUBLIC_VISIBLE) == 0){
                         flag ^= C_ACCESS_PUBLIC_VISIBLE;

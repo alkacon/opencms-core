@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/04 12:08:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/05 14:15:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import source.org.apache.java.util.Configurations;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsProject;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.security.CmsAccessControlEntry;
@@ -46,7 +47,7 @@ import com.opencms.security.CmsAccessControlEntry;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/06/04 12:08:20 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/05 14:15:48 $
  * @since 5.1.2
  */
 public interface I_CmsUserDriver {
@@ -91,14 +92,14 @@ public interface I_CmsUserDriver {
 	 * 
 	 * @param acEntry the new entry to write
 	 */
-	public void createAccessControlEntry(CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
+	public void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
 	
 	/**
 	 * Writes an access control entry to the cms.
 	 * 
 	 * @param acEntry the entry to write
 	 */
-	public void writeAccessControlEntry(CmsAccessControlEntry acEntry) throws CmsException;
+	public void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException;
 
 	/**
 	 * Removes an access control entry from the database
@@ -107,7 +108,7 @@ public interface I_CmsUserDriver {
 	 * @param principal		the id of the principal
 	 * @throws CmsException
 	 */
-	//public void deleteAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException;
+	//public void deleteAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
 		
 	/**
 	 * Deletes all access control entries belonging to a resource
@@ -115,7 +116,7 @@ public interface I_CmsUserDriver {
 	 * @param resource	the id of the resource
 	 * @throws CmsException
 	 */
-	public void deleteAllAccessControlEntries(CmsUUID resource) throws CmsException;
+	public void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
 	/**
 	 * Undeletes all access control entries belonging to a resource
@@ -123,7 +124,7 @@ public interface I_CmsUserDriver {
 	 * @param resource	the id of the resource
 	 * @throws CmsException
 	 */
-	public void undeleteAllAccessControlEntries(CmsUUID resource) throws CmsException;
+	public void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 	
 	/**
 	 * Removes an access control entry from the database
@@ -132,7 +133,7 @@ public interface I_CmsUserDriver {
 	 * @param principal		the id of the principal
 	 * @throws CmsException
 	 */
-	public void removeAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException;
+	public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
 	
 	/**
 	 * Removes all access control entries belonging to a resource from the database
@@ -140,7 +141,7 @@ public interface I_CmsUserDriver {
 	 * @param resource 		the id of the resource
 	 * @throws CmsException
 	 */
-	public void removeAllAccessControlEntries(CmsUUID resource) throws CmsException;
+	public void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 	
 	/**
 	 * Reads an access control entry from the cms.
@@ -149,7 +150,7 @@ public interface I_CmsUserDriver {
 	 * @param principal	the id of a group or a user any other entity
 	 * @return			an access control entry that defines the permissions of the entity for the given resource
 	 */	
-	public CmsAccessControlEntry readAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException;
+	public CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
 	
 	/**
 	 * Reads all relevant access control entries for a given resource.
@@ -157,5 +158,5 @@ public interface I_CmsUserDriver {
 	 * @param resource	the id of the resource
 	 * @return			a vector of access control entries defining all permissions for the given resource
 	 */
-	public Vector getAccessControlEntries(CmsUUID resource, boolean inheritedOnly) throws CmsException;	
+	public Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;	
 }

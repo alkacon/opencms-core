@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/03/20 16:51:44 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2003/03/20 16:51:44 $
+ * @version $Revision: 1.50 $ $Date: 2003/06/05 14:15:48 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -177,7 +177,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
         }
         if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0)
-                || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0)
+                || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_VIEW) > 0)
                 || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)
                 || (cms.getRequestContext().isAdmin())) {
             access = true;
@@ -203,7 +203,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
         }
         if(((accessflags & C_ACCESS_PUBLIC_WRITE) > 0)
                 || (cms.getRequestContext().isAdmin())
-                || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0)
+                || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_WRITE) > 0)
                 || (groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {
             access = true;
         }

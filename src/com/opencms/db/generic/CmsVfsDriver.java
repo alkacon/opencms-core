@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/03 17:45:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/05 14:15:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/06/03 17:45:46 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/05 14:15:48 $
  * @since 5.1.2
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2575,6 +2575,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             stmt.setString(1, foldername);
             stmt.setInt(2, projectId);
+            
             res = stmt.executeQuery();
 
             // create new resource

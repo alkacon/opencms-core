@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/04 13:39:33 $
-* Version: $Revision: 1.276 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.277 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.276 $
+ * @version $Revision: 1.277 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4499,23 +4499,36 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlEntries(res,true);
+		return m_driverManager.getAccessControlEntries(res, true);
 	}
 	
 	public int getPermissions(String resourceName, String userName) throws CmsException {
 		CmsAccessControlList acList = getAccessControlList(resourceName);
 		CmsUser user = readUser(userName);
-		Vector principals = getGroupsOfUser(userName);
-		principals.add(user);
-		return acList.getPermissions(principals);		
+		return acList.getPermissions(user, getGroupsOfUser(userName));		
 	}
 	
 	public int getPermissions(String resourceName) throws CmsException {
 		CmsAccessControlList acList = getAccessControlList(resourceName);
 		CmsUser user = m_context.currentUser();
-		Vector principals = getGroupsOfUser(user.getName());
-		principals.add(user);
-		return acList.getPermissions(principals);		
+		return acList.getPermissions(user, getGroupsOfUser(user.getName()));		
+	}
+	
+	/**
+	 * Checks if the current user has the requested permissions on the given resource
+	 * 
+	 * @param resourceName
+	 * @param permissionString
+	 * @return
+	 * @throws CmsException
+	 */
+	public boolean checkPermissions(String resourceName, String permissionString) throws CmsException {
+		CmsAccessControlList acList = getAccessControlList(resourceName);
+		CmsUser user = m_context.currentUser();
+		
+		int permissions[] = {0,0};
+		CmsAccessControlEntry.readPermissionString(permissionString, permissions);
+		return acList.hasPermissions(user, getGroupsOfUser(user.getName()), permissions[0]);		
 	}
 	
 	/**
@@ -4531,13 +4544,13 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
 		
 		if ("".equals(permissionString)) {
-			m_driverManager.removeAccessControlEntry(res,principal.getId());	
+			m_driverManager.removeAccessControlEntry(res, principal.getId());	
 		} else {
 			int permissions[] = {0,0};
 			int flags = CmsAccessControlEntry.readPermissionString(permissionString, permissions);
 
 			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissions[0], permissions[1], flags);
-			m_driverManager.writeAccessControlEntry(acEntry);
+			m_driverManager.writeAccessControlEntry(res, acEntry);
 		}
 	}
 	
@@ -4555,6 +4568,6 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
 				
 		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
-		m_driverManager.writeAccessControlEntry(acEntry);
+		m_driverManager.writeAccessControlEntry(res, acEntry);
 	}
 }

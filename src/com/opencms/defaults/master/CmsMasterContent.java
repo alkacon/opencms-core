@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/05/21 16:10:09 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.31 $
- * $Date: 2003/05/21 16:10:09 $
+ * $Revision: 1.32 $
+ * $Date: 2003/06/05 14:15:48 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -539,9 +539,9 @@ public abstract class CmsMasterContent
     public String getAccessFlagsAsString() {
         int accessFlags = getAccessFlags();
         String str = "";
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_OWNER_READ)>0?"r":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_OWNER_WRITE)>0?"w":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_OWNER_VISIBLE)>0?"v":"-");
+        str += ((accessFlags & I_CmsConstants.C_PERMISSION_READ)>0?"r":"-");
+        str += ((accessFlags & I_CmsConstants.C_PERMISSION_WRITE)>0?"w":"-");
+        str += ((accessFlags & I_CmsConstants.C_PERMISSION_VIEW)>0?"v":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_GROUP_READ)>0?"r":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_GROUP_WRITE)>0?"w":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_GROUP_VISIBLE)>0?"v":"-");
@@ -563,7 +563,7 @@ public abstract class CmsMasterContent
                 return true;
             } else {
                 if ( !accessOther(C_ACCESS_PUBLIC_VISIBLE)
-                    && !accessOwner(m_cms, currentUser, C_ACCESS_OWNER_VISIBLE)
+                    && !accessOwner(m_cms, currentUser, C_PERMISSION_VIEW)
                     && !accessGroup(m_cms, currentUser, C_ACCESS_GROUP_VISIBLE)) {
                     return false;
                 } else {
@@ -999,7 +999,7 @@ public abstract class CmsMasterContent
 
         // check the rights for the current resource
         if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE, resource) ||
-                accessOwner(cms, currentUser, C_ACCESS_OWNER_WRITE, resource) ||
+                accessOwner(cms, currentUser, C_PERMISSION_WRITE, resource) ||
                 accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE, resource) ) ) {
             // no write access to this resource!
             return false;

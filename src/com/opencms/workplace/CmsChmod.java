@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/01/20 23:59:19 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/06/05 14:15:48 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.30 $ $Date: 2003/06/05 14:15:48 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -119,11 +119,11 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				// calculate the new access flags
 				int flag = 0;
 				if(ur != null && ur.equals("true"))
-					flag += C_ACCESS_OWNER_READ;
+					flag += C_PERMISSION_READ;
 				if(uw != null && uw.equals("true"))
-					flag += C_ACCESS_OWNER_WRITE;
+					flag += C_PERMISSION_WRITE;
 				if(uv != null && uv.equals("true"))
-					flag += C_ACCESS_OWNER_VISIBLE;
+					flag += C_PERMISSION_VIEW;
 				if(gr != null && gr.equals("true"))
 					flag += C_ACCESS_GROUP_READ;
 				if(gw != null && gw.equals("true"))
@@ -183,15 +183,15 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
 		// now set the actual access flags i the dialog
 		int flags = file.getAccessFlags();
-		if((flags & C_ACCESS_OWNER_READ) > 0)
+		if((flags & C_PERMISSION_READ) > 0)
 			xmlTemplateDocument.setData("CHECKUR", "CHECKED");
 		else
 			xmlTemplateDocument.setData("CHECKUR", " ");
-		if((flags & C_ACCESS_OWNER_WRITE) > 0)
+		if((flags & C_PERMISSION_WRITE) > 0)
 			xmlTemplateDocument.setData("CHECKUW", "CHECKED");
 		else
 			xmlTemplateDocument.setData("CHECKUW", " ");
-		if((flags & C_ACCESS_OWNER_VISIBLE) > 0)
+		if((flags & C_PERMISSION_VIEW) > 0)
 			xmlTemplateDocument.setData("CHECKUV", "CHECKED");
 		else
 			xmlTemplateDocument.setData("CHECKUV", " ");

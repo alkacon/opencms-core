@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2003/03/10 12:07:26 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -467,7 +467,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
             if(((accessflags & C_ACCESS_PUBLIC_WRITE) > 0)
                     || (cms.getRequestContext().isAdmin())
                     || (cms.readOwner(res).equals(cms.getRequestContext().currentUser())
-                    && (accessflags & C_ACCESS_OWNER_WRITE) > 0)
+                    && (accessflags & C_PERMISSION_WRITE) > 0)
                     || (groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {
                 access = true;
             }

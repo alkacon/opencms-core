@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/02/16 02:23:17 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2003/02/16 02:23:17 $
+ * @version $Revision: 1.47 $ $Date: 2003/06/05 14:15:48 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -733,9 +733,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         int flag = 0;
 
         // now check and set all flags
-        flag += C_ACCESS_OWNER_READ;
-        flag += C_ACCESS_OWNER_WRITE;
-        flag += C_ACCESS_OWNER_VISIBLE;
+        flag += C_PERMISSION_READ;
+        flag += C_PERMISSION_WRITE;
+        flag += C_PERMISSION_VIEW;
         if(gr != null) {
             if(gr.equals("on")) {
                 flag += C_ACCESS_GROUP_READ;
@@ -1069,7 +1069,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         
         // now update the data in the template
         int flags = ((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
-        if((flags & C_ACCESS_OWNER_READ) > 0) {
+        if((flags & C_PERMISSION_READ) > 0) {
             xmlTemplateDocument.setData(C_CHECKUR, C_CHECKED);
         }
         else {
@@ -1081,12 +1081,12 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }else{
             xmlTemplateDocument.setData(C_LOCKDIALOG, " ");
         }
-        if((flags & C_ACCESS_OWNER_WRITE) > 0) {
+        if((flags & C_PERMISSION_WRITE) > 0) {
             xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);
         }else {
             xmlTemplateDocument.setData(C_CHECKUW, " ");
         }
-        if((flags & C_ACCESS_OWNER_VISIBLE) > 0) {
+        if((flags & C_PERMISSION_VIEW) > 0) {
             xmlTemplateDocument.setData(C_CHECKUV, C_CHECKED);
         }
         else {

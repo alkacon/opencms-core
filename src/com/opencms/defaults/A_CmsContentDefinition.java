@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/05/16 14:49:01 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
 
@@ -254,7 +254,7 @@ protected boolean hasReadAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
 
     if ( !accessOther(C_ACCESS_PUBLIC_READ)
-        && !accessOwner(cms, currentUser, C_ACCESS_OWNER_READ)
+        && !accessOwner(cms, currentUser, C_PERMISSION_READ)
         && !accessGroup(cms, currentUser, C_ACCESS_GROUP_READ)) {
         return false;
     }
@@ -276,7 +276,7 @@ public boolean hasWriteAccess(CmsObject cms) throws CmsException {
 
     // check the rights for the current resource
     if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE) ||
-            accessOwner(cms, currentUser, C_ACCESS_OWNER_WRITE) ||
+            accessOwner(cms, currentUser, C_PERMISSION_WRITE) ||
             accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE) ) ) {
         // no write access to this resource!
         return false;

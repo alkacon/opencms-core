@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.61 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.62 $ $Date: 2003/06/05 14:15:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -174,7 +174,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         while((!groupAccess) && allGroups.hasMoreElements()) {
             groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
         }
-        if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
+        if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_VIEW) > 0) || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
             access = true;
         }
         return access;
@@ -232,19 +232,19 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
     private String getAccessFlags(int access) {
         StringBuffer accessFlags = new StringBuffer();
-        if((access & C_ACCESS_OWNER_READ) > 0) {
+        if((access & C_PERMISSION_READ) > 0) {
             accessFlags.append("r");
         }
         else {
             accessFlags.append("-");
         }
-        if((access & C_ACCESS_OWNER_WRITE) > 0) {
+        if((access & C_PERMISSION_WRITE) > 0) {
             accessFlags.append("w");
         }
         else {
             accessFlags.append("-");
         }
-        if((access & C_ACCESS_OWNER_VISIBLE) > 0) {
+        if((access & C_PERMISSION_VIEW) > 0) {
             accessFlags.append("v");
         }
         else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/04 12:07:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/05 14:15:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.db.CmsDriverManager;
 import com.opencms.db.I_CmsUserDriver;
 import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
@@ -67,7 +68,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/06/04 12:07:47 $
+ * @version $Revision: 1.11 $ $Date: 2003/06/05 14:15:48 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1362,14 +1363,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * 
 	 * @param acEntry the new entry to write
 	 */
-	public void createAccessControlEntry(CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
+	public void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
 		
 		PreparedStatement stmt = null;
 		Connection conn = null;
 
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_CREATE");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE");
 
 			stmt.setString(1, resource.toString());
 			stmt.setString(2, principal.toString());
@@ -1392,14 +1393,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @param resource	the id of the resource
 	 * @throws CmsException
 	 */
-	public void deleteAllAccessControlEntries(CmsUUID resource) throws CmsException {
+	public void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 		
 		PreparedStatement stmt = null;
 		Connection conn = null;
 
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_SETFLAGS_ALL");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SETFLAGS_ALL");
 
 			stmt.setString(1, resource.toString());
 			stmt.setInt(2, I_CmsConstants.C_ACCESSFLAGS_DELETED);
@@ -1419,14 +1420,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @param resource	the id of the resource
 	 * @throws CmsException
 	 */
-	public void undeleteAllAccessControlEntries(CmsUUID resource) throws CmsException {
+	public void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 		
 		PreparedStatement stmt = null;
 		Connection conn = null;
 
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_RESETFLAGS_ALL");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_RESETFLAGS_ALL");
 
 			stmt.setString(1, resource.toString());
 			stmt.setInt(2, ~I_CmsConstants.C_ACCESSFLAGS_DELETED);
@@ -1447,14 +1448,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @param principal		the id of the principal
 	 * @throws CmsException
 	 */
-	public void removeAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException {
+	public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 
 		PreparedStatement stmt = null;
 		Connection conn = null;
 	
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_REMOVE");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE");
 	
 			stmt.setString(1, resource.toString());
 			stmt.setString(2, principal.toString());
@@ -1474,14 +1475,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @param resource 		the id of the resource
 	 * @throws CmsException
 	 */
-	public void removeAllAccessControlEntries(CmsUUID resource) throws CmsException {
+	public void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 		
 		PreparedStatement stmt = null;
 		Connection conn = null;
 
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_REMOVE_ALL");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL");
 
 			stmt.setString(1, resource.toString());
 			
@@ -1500,7 +1501,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * 
 	 * @param acEntry the entry to write
 	 */
-	public void writeAccessControlEntry(CmsAccessControlEntry acEntry) throws CmsException {
+	public void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException {
 		
 		PreparedStatement stmt = null;
 		Connection conn = null;
@@ -1508,7 +1509,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 		
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_READ_ENTRY");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
 
 			stmt.setString(1, acEntry.getResource().toString());
 			stmt.setString(2, acEntry.getPrincipal().toString());
@@ -1516,7 +1517,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			res = stmt.executeQuery();
 			if (!res.next()) {
 				
-				createAccessControlEntry(acEntry.getResource(),acEntry.getPrincipal(),acEntry.getAllowedPermissions(),acEntry.getDeniedPermissions(),acEntry.getFlags());
+				createAccessControlEntry(project, acEntry.getResource(),acEntry.getPrincipal(),acEntry.getAllowedPermissions(),acEntry.getDeniedPermissions(),acEntry.getFlags());
 				return;
 			}
 
@@ -1547,7 +1548,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @param principal	the id of a group or a user any other entity
 	 * @return			an access control entry that defines the permissions of the entity for the given resource
 	 */	
-	public CmsAccessControlEntry readAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException {
+	public CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 		
 		CmsAccessControlEntry ace = null;
 		PreparedStatement stmt = null;
@@ -1556,7 +1557,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 		
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_READ_ENTRY");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
 
 			stmt.setString(1, resource.toString());
 			stmt.setString(2, principal.toString());
@@ -1588,7 +1589,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @param inheritedOnly if set, only entries with the inherit flag are returned
 	 * @return				a vector of access control entries defining all permissions for the given resource
 	 */
-	public Vector getAccessControlEntries(CmsUUID resource, boolean inheritedOnly) throws CmsException {
+	public Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
 
 		Vector aceList = new Vector();
 		PreparedStatement stmt = null;
@@ -1597,7 +1598,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 		
 		try {
 			conn = m_sqlManager.getConnection();
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_READ_ENTRIES");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES");
 
 			stmt.setString(1, resource.toString());
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/04 12:07:29 $
-* Version: $Revision: 1.225 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.226 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.225 $ $Date: 2003/06/04 12:07:29 $
+ * @version $Revision: 1.226 $ $Date: 2003/06/05 14:15:48 $
  */
 public interface I_CmsConstants {
 
@@ -362,19 +362,19 @@ public interface I_CmsConstants {
     final static int C_UNKNOWN_ID = -1;
 
     /**
-     * Owner may read this resource
+     * The permission to read a resource
      */
-    final static int C_ACCESS_OWNER_READ = 1;
+    final static int C_PERMISSION_READ = 1;
 
     /**
-     * Owner may write this resource
+     * The permission to write a resource
      */
-    final static int C_ACCESS_OWNER_WRITE = 2;
+    final static int C_PERMISSION_WRITE = 2;
 
     /**
-     * Owner may view this resource
+     * The permission to view a resource
      */
-    final static int C_ACCESS_OWNER_VISIBLE = 4;
+    final static int C_PERMISSION_VIEW = 4;
 
     /**
      * Group may read this resource
@@ -414,22 +414,22 @@ public interface I_CmsConstants {
     /**
      * All may read this resource.
      */
-    final static int C_ACCESS_READ = C_ACCESS_OWNER_READ + C_ACCESS_GROUP_READ + C_ACCESS_PUBLIC_READ;
+    final static int C_ACCESS_READ = C_PERMISSION_READ + C_ACCESS_GROUP_READ + C_ACCESS_PUBLIC_READ;
 
     /**
      * All may write this resource.
      */
-    final static int C_ACCESS_WRITE = C_ACCESS_OWNER_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_WRITE;
+    final static int C_ACCESS_WRITE = C_PERMISSION_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_WRITE;
 
     /**
      * All may view this resource.
      */
-    final static int C_ACCESS_VISIBLE = C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_VISIBLE;
+    final static int C_ACCESS_VISIBLE = C_PERMISSION_VIEW + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_VISIBLE;
 
     /**
      * Owner has full access to this resource.
      */
-    final static int C_ACCESS_OWNER = C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE;
+    final static int C_ACCESS_OWNER = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW;
 
     /**
      * Group has full access to this resource.
@@ -444,7 +444,7 @@ public interface I_CmsConstants {
     /**
      * The default-flags for a new resource.
      */
-    final static int C_ACCESS_DEFAULT_FLAGS = C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE
+    final static int C_ACCESS_DEFAULT_FLAGS = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW
             + C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
 
 	/**

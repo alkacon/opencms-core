@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.46 $ $Date: 2003/06/05 14:15:48 $
  */
 public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     
@@ -327,9 +327,9 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     public String getFlagString()
     {
         String str = "";
-        str += ((m_accessFlags & C_ACCESS_OWNER_READ)>0?"r":"-");
-        str += ((m_accessFlags & C_ACCESS_OWNER_WRITE)>0?"w":"-");
-        str += ((m_accessFlags & C_ACCESS_OWNER_VISIBLE)>0?"v":"-");
+        str += ((m_accessFlags & C_PERMISSION_READ)>0?"r":"-");
+        str += ((m_accessFlags & C_PERMISSION_WRITE)>0?"w":"-");
+        str += ((m_accessFlags & C_PERMISSION_VIEW)>0?"v":"-");
         str += ((m_accessFlags & C_ACCESS_GROUP_READ)>0?"r":"-");
         str += ((m_accessFlags & C_ACCESS_GROUP_WRITE)>0?"w":"-");
         str += ((m_accessFlags & C_ACCESS_GROUP_VISIBLE)>0?"v":"-");

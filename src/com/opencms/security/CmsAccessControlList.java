@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/06/04 13:39:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/05 14:15:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,13 @@ import java.util.Hashtable;
 import java.util.ListIterator;
 import java.util.Vector;
 
+import com.opencms.file.CmsUser;
+
 /**
  * An access control list contains a permission set for a distinct resource
  * that is calculated on the permissions given by various access control entries
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/04 13:39:34 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/05 14:15:48 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -104,22 +106,28 @@ public class CmsAccessControlList {
 	 * 
 	 * @return the current permission set of the list
 	 */
-	public int getPermissions(Vector principals){
-
-		ListIterator pIterator = principals.listIterator();
+	public int getPermissions(CmsUser user, Vector groups){
+		ListIterator pIterator = groups.listIterator();
 		int allowed = 0, denied  = 0;
-		while (pIterator.hasNext()) {
-			I_CmsPrincipal principal = (I_CmsPrincipal)pIterator.next();
+		
+		I_CmsPrincipal principal = (I_CmsPrincipal)user;
+		do {
 			PrincipalPermissions permissions = (PrincipalPermissions)m_permissions.get(principal.getId());
 			if (permissions != null) {
 				allowed |= permissions.m_allowed;
 				denied  |= permissions.m_denied;		
 			}
-		}
+			if (pIterator.hasNext()) {
+				principal=(I_CmsPrincipal)pIterator.next();
+			} else {
+				principal = null;
+			}
+		} while (principal != null);
 		
 		return allowed & ~denied;
 	}
 	
+	// TODO: change to Vector
 	public String getPermissionString(I_CmsPrincipal principal){
 		PrincipalPermissions permissions = (PrincipalPermissions)m_permissions.get(principal.getId());
 		if (permissions == null)
@@ -127,6 +135,34 @@ public class CmsAccessControlList {
 			
 		return CmsAccessControlEntry.toPermissionString(permissions.m_allowed,permissions.m_denied,0);		
 	}
+	
+	/**
+	 * Checks if a given vector of principals has sufficient permissions on a resource
+	 * 
+	 * @param principals
+	 * @param permissions
+	 * @return true if permissions are sufficient
+	 */
+	public boolean hasPermissions(CmsUser user, Vector groups, int permissions){
+		ListIterator pIterator = groups.listIterator();	
+		int allowed = 0, denied  = 0;
+		I_CmsPrincipal principal = (I_CmsPrincipal)user;
+		do {
+			PrincipalPermissions pp = (PrincipalPermissions)m_permissions.get(principal.getId());
+			if (pp != null) {
+				allowed |= pp.m_allowed;
+				denied  |= pp.m_denied;		
+			}
+			if (pIterator.hasNext()) {
+				principal=(I_CmsPrincipal)pIterator.next();
+			} else {
+				principal = null;
+			}
+		} while (principal != null);
+		
+		return (permissions & (allowed & ~denied)) == permissions;		
+	}
+	
 	
 	public Enumeration getPrincipals() {
 		return m_permissions.keys();

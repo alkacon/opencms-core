@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/04 13:39:34 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/06/05 14:15:48 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import com.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.73 $ $Date: 2003/06/04 13:39:34 $
+ * @version $Revision: 1.74 $ $Date: 2003/06/05 14:15:48 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3770,5 +3770,19 @@ class CmsShellCommands implements I_CmsConstants {
 		} catch (Exception e) {
 			CmsShell.printException(e);    	
 		}    	
+	}
+	
+	/**
+	 * Checks if the current user has the requestd permissions on the given resource.
+	 * 	 
+	 * @param resourceName
+	 * @param permissionString
+	 */
+	public void checkPermissions(String resourceName, String permissionString){
+		try {
+			System.out.println(m_cms.checkPermissions(resourceName, permissionString));
+		} catch (Exception e) {
+			CmsShell.printException(e);    	
+		}   
 	}
 }
