@@ -67,8 +67,8 @@ function doSubmit(){
 				<table cellspacing=0 cellpadding=5 width=100% border=0>
 				<tr>
 					<td class=formular align=right width=60%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.submit" /><![CDATA[" id=SUBMIT name=SUBMIT onClick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');"></td>
-					<td class=formular align=right width=20%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location='explorer.html';"></td>
-					<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location='../action/explorer.html';"></td>
+					<td class=formular align=right width=20%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');"></td>
+					<td class=formular align=middle width=20%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');"></td>
 				</tr>
 				</table>
 			</td>

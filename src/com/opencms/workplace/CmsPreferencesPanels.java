@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/03/13 15:54:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/14 14:55:55 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,14 +42,20 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/13 15:54:51 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/14 14:55:55 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
            
      /** Datablock value for checked */    
 	 private static final String C_CHECKED = "CHECKED";
-    
+     
+     /** Constant for filter */
+	private static final String C_TASK_FILTER = "task.filter.";
+
+	/** Constant for filter */
+	private static final String C_SPACER = "------------------------------------------------";
+	    
      /**
      * Indicates if the results of this class are cacheable.
      * 
@@ -100,45 +106,73 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }
         System.err.println("같같�");
         // test values end
-                
+     
+           // test values
+                        
+        String[] skeys = session.getValueNames();
+        System.err.println("++++++SESSIONVALUES");
+        for (int i=0;i<skeys.length;i++) {
+	        key = (String) skeys[i];
+	        System.err.print(key);
+	        System.err.print(":");
+	        System.err.println(session.getValue(key));
+        }
+        System.err.println("같같�");
+        // test values end
+        
+        
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         //CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
         
+        // get the active panel value. This indicates which panel to be displayed.
+        panel=(String)parameters.get("panel");  
+        
         // check if the submit or ok button is selected. If so, update all values
         if ((parameters.get("SUBMIT") != null) || (parameters.get("OK") != null) ){
-            // set settings for explorer panel
-            int explorerSettings=getExplorerSettings(parameters);   
-            session.putValue("EXPLORERSETTINGS",new Integer(explorerSettings).toString());
-            cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS,new Integer(explorerSettings).toString());
+            // set settings for explorer panel if nescessary
+            if (panel!= null) {
+                // the active panel are the explorer settings, save its data
+                if (panel.equals("explorer")) {
+                    int explorerSettings=getExplorerSettings(parameters);   
+                    session.putValue("EXPLORERSETTINGS",new Integer(explorerSettings).toString());        
+                }
+                // the active panel are the task settings, save its data
+                if (panel.equals("task")) {
+                    Hashtable taskSettings=getTaskSettings(parameters,session);
+                    session.putValue("TASKSETTINGS",taskSettings);
+                }
+            }
+            // now update the user settings
+            String explorerSettings=(String)session.getValue("EXPLORERSETTINGS");
+            if (explorerSettings != null) {
+                cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS,explorerSettings);
+            }
+            
+            Hashtable taskSettings=(Hashtable)session.getValue("TASKSETTINGS");
+            if (taskSettings != null) {
+                cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS,taskSettings);
+            }
             
             // write the user data to the database
             cms.writeUser(cms.getRequestContext().currentUser());
         }
-        
-        // if the OK or cancel buttons are pressed return to the explorer and clear
-        // the data in the session.
-        if ((parameters.get("OK") != null) || (parameters.get("CANCEL") != null) ){
-        session.removeValue("EXPLORERSETTINGS");
-        try {
-               cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD);
-            } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD,CmsException.C_UNKNOWN_EXCEPTION,e);
-            }     
-        }
-                        
-        // get the active panel value. This indicates which panel to be displayed.
-        panel=(String)parameters.get("panel");
+                          
+        // get the data from the displayed panel
         if (panel != null) {
             template=panel;
-            // this is the panel for setting the explorer panels
-            if (panel.equals("explorer")) {              
+            
+            // this is the panel for setting the explorer preferences
+            if (panel.equals("explorer")) { 
+                
                 //get the actual user settings  
                 // first try to read them from the session
                 String explorerSettings=(String)session.getValue("EXPLORERSETTINGS");
+                
                 // if this fails, get the settings from the user obeject
                 if (explorerSettings== null) {
                     explorerSettings=(String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
                 }
+                
                 //check if the default button was selected.
                 // if so, reset the values to the default settings
                 if (parameters.get("DEFAULT") !=null) {
@@ -146,6 +180,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 }
                 
                 // set them to default
+                // default values are:
+                // Filetitle, Filetype and Date of last change
                 if (explorerSettings!= null) {
                     explorerSettingsValue=new Integer(explorerSettings).intValue();
                 } else {
@@ -159,69 +195,155 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKTITLE"," ");
                 }
+                
                 if ((explorerSettingsValue & C_FILELIST_TYPE) >0) {
                     xmlTemplateDocument.setXmlData("CHECKTYPE",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKTYPE"," ");
                 }
+               
                 if ((explorerSettingsValue & C_FILELIST_CHANGED) >0) {
                     xmlTemplateDocument.setXmlData("CHECKCHANGED",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKCHANGED"," ");
                 }
+                
                 if ((explorerSettingsValue & C_FILELIST_SIZE) >0) {
                     xmlTemplateDocument.setXmlData("CHECKSIZE",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKSIZE"," ");
                 }
+               
                 if ((explorerSettingsValue & C_FILELIST_STATE) >0) {
                     xmlTemplateDocument.setXmlData("CHECKSTATE",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKSTATE"," ");
                 }
+              
                 if ((explorerSettingsValue & C_FILELIST_OWNER) >0) {
                     xmlTemplateDocument.setXmlData("CHECKOWNER",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKOWNER"," ");
                 }
+               
                 if ((explorerSettingsValue & C_FILELIST_GROUP) >0) {
                     xmlTemplateDocument.setXmlData("CHECKGROUP",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKGROUP"," ");
                 }
+               
                 if ((explorerSettingsValue & C_FILELIST_ACCESS) >0) {
                     xmlTemplateDocument.setXmlData("CHECKACCESS",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKACCESS"," ");
                 }
+               
                 if ((explorerSettingsValue & C_FILELIST_LOCKED) >0) {
                     xmlTemplateDocument.setXmlData("CHECKLOCKEDBY",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHECKLOCKEDBY"," ");
                 }
-            } else {
-                // the explorer panel was not selected, so check if the explorer panel
-                // data has to be stored
-                oldPanel=(String)session.getValue(C_PARA_OLDPANEL);
+            } 
+            
+            // this is the panel for setting the task preferences
+            if (panel.equals("task")) {     
+                //get the actual user settings  
+                // first try to read them from the session
+                Hashtable taskSettings=null;
+                taskSettings=(Hashtable)session.getValue("TASKSETTINGS");
+                // if this fails, get the settings from the user obeject
+                if (taskSettings== null) {
+                    taskSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS);                    
+                }
+                
+                // if the settings are still empty, set them to default
+                // default values are:
+                // View all tasks set to false.
+                // All task messages are enabled.
+                // Task filer is new tasks for the actual user.
+                if (taskSettings== null) {
+                    taskSettings=new Hashtable();
+                    taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
+                    taskSettings.put(C_TASK_MESSAGES,new Integer(C_TASK_MESSAGES_ACCEPTED+
+                                                                 C_TASK_MESSAGES_FORWARDED+
+                                                                 C_TASK_MESSAGES_COMPLETED+
+                                                                 C_TASK_MESSAGES_MEMBERS));
+                    taskSettings.put(C_TASK_FILTER,new String("a1"));  
+                 }
+                
+                // now update the data in the template
+                if (((Boolean)taskSettings.get(C_TASK_VIEW_ALL)).booleanValue()) {
+                    xmlTemplateDocument.setXmlData("CHVIEWALL",C_CHECKED);
+                } else {
+                    xmlTemplateDocument.setXmlData("CHVIEWALL"," ");
+                }
+                
+                int taskMessages=((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
+                
+                if ((taskMessages & C_TASK_MESSAGES_ACCEPTED) >0){
+                    xmlTemplateDocument.setXmlData("CHMESSAGEACCEPTED",C_CHECKED);
+                } else {
+                    xmlTemplateDocument.setXmlData("CHMESSAGEACCEPTED"," ");
+                }
+             
+                if ((taskMessages & C_TASK_MESSAGES_FORWARDED) >0){
+                    xmlTemplateDocument.setXmlData("CHMESSAGEFORWARDED",C_CHECKED);
+                } else {
+                    xmlTemplateDocument.setXmlData("CHMESSAGEFORWARDED"," ");
+                }
+                
+                if ((taskMessages & C_TASK_MESSAGES_COMPLETED) >0){
+                    xmlTemplateDocument.setXmlData("CHMESSAGECOMPLETED",C_CHECKED);
+                } else {
+                    xmlTemplateDocument.setXmlData("CHMESSAGECOMPLETED"," ");
+                }
+                
+                if ((taskMessages & C_TASK_MESSAGES_MEMBERS) >0){
+                    xmlTemplateDocument.setXmlData("CHMESSAGEMEMEBERS",C_CHECKED);
+                } else {
+                    xmlTemplateDocument.setXmlData("CHMESSAGEMEMEBERS"," ");
+                }
+            } 
+          
+          // finally store the given data into the session
+          oldPanel=(String)session.getValue(C_PARA_OLDPANEL);
                 if (oldPanel != null) {
-                    // the previous panel was the explorer panel, save all the date form there
+                    // the previous panel was the explorer panel, save all the data form there
                     if (oldPanel.equals("explorer")) {
                         int explorerSettings=getExplorerSettings(parameters);                      
                         session.putValue("EXPLORERSETTINGS",new Integer(explorerSettings).toString());
                     }
+                    // the previous panel was the task panel, save all the data form there
+                    if (oldPanel.equals("task")) {
+                        Hashtable taskSettings=getTaskSettings(parameters,session);
+                        session.putValue("TASKSETTINGS",taskSettings);    
+                    }
                 }
-            }
-            
           session.putValue(C_PARA_OLDPANEL,panel);
         }
         
-       
+        // if the OK or cancel buttons are pressed return to the explorer and clear
+        // the data in the session.
+        if ((parameters.get("OK") != null) || (parameters.get("CANCEL") != null) ){
+  
+        session.removeValue("EXPLORERSETTINGS");
+        session.removeValue("TASKSETTINGS");
+        session.removeValue(C_PARA_OLDPANEL);
+   
+        try {
+               cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD);
+            } catch (Exception e) {
+                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD,CmsException.C_UNKNOWN_EXCEPTION,e);
+            }     
+        }
+        
+        
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
 	
     /**
-     * Calcualtes the settings for the explorer filelist form the data submitted in
-     * the preference explorer panel
+     * Calculates the settings for the explorer filelist from the data submitted in
+     * the preference explorer panel.
      * @param parameters Hashtable containing all request parameters
      * @return Explorer filelist flags.
      */
@@ -258,6 +380,54 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     }
     
      /**
+     * Calculates the task settings from the data submitted in
+     * the preference task panel.
+     * @param parameters Hashtable containing all request parameters
+     * @return Explorer filelist flags.
+     */
+    private Hashtable getTaskSettings(Hashtable parameters, HttpSession session) {
+      
+        
+        Hashtable taskSettings=new Hashtable();
+               
+        if (parameters.get("CBALL")!= null) {
+            taskSettings.put(C_TASK_VIEW_ALL,new Boolean(true));            
+        } else {
+            taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
+        }
+              
+        int taskMessages=0;
+        
+        if (parameters.get("CBMSGACCEPTED")!= null) {
+            taskMessages+=C_TASK_MESSAGES_ACCEPTED;
+        }
+
+        if (parameters.get("CBMSGFORWAREDED")!= null) {
+            taskMessages+=C_TASK_MESSAGES_FORWARDED;            
+        }
+
+        if (parameters.get("CBMSGCOMPLETED")!= null) {
+            taskMessages+=C_TASK_MESSAGES_COMPLETED;            
+        }
+      
+        if (parameters.get("CBMSGMEMBERS")!= null) {
+            taskMessages+=C_TASK_MESSAGES_MEMBERS;            
+        }
+
+        taskSettings.put(C_TASK_MESSAGES,new Integer(taskMessages));
+             
+        String filter=(String)parameters.get("filter");
+        if (filter != null) {                      
+            taskSettings.put(C_TASK_FILTER,parameters.get("filter")); 
+            session.putValue(C_SESSION_TASK_FILTER,parameters.get("filter"));
+        }
+
+        return taskSettings;
+    }
+    
+    
+    
+     /**
      * User method to get the actual panel of the PReferences dialog.
      * <P>
      * @param cms A_CmsObject Object for accessing system resources.
@@ -266,7 +436,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
-     * @see #commonPicsUrl
      */    
     public Object setPanel(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
         throws CmsException {
@@ -275,6 +444,113 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         String panel=(String)session.getValue(C_PARA_OLDPANEL);
       
         return panel;
+    }
+    
+     /**
+     * Gets all filters available in the task screen.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * <code>names</code> will contain language specific view descriptions
+     * and <code>values</code> will contain the correspondig URL for each
+     * of these views after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the user's current filter view in the vectors.
+     * @exception CmsException
+     */
+    public Integer getFilters(A_CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
+		throws CmsException {
+        
+        // Let's see if we have a session
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+      
+        String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
+       
+		int selected = 0;
+		
+		names.addElement("a1");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "a1"));
+		if("a1".equals(filter)) {
+			selected = 0;
+		}
+		names.addElement("b1");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "b1"));
+		if("b1".equals(filter)) {
+			selected = 1;
+		}
+		names.addElement("c1");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "c1"));
+		if("c1".equals(filter)) {
+			selected = 2;
+		}
+
+		names.addElement("-");
+		values.addElement(C_SPACER);		
+		
+		names.addElement("a2");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "a2"));
+		if("a2".equals(filter)) {
+			selected = 4;
+		}
+		names.addElement("b2");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "b2"));
+		if("b2".equals(filter)) {
+			selected = 5;
+		}
+		names.addElement("c2");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "c2"));
+		if("c2".equals(filter)) {
+			selected = 6;
+		}
+		
+		names.addElement("-");
+		values.addElement(C_SPACER);		
+
+		names.addElement("a3");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "a3"));
+		if("a3".equals(filter)) {
+			selected = 8;
+		}
+		names.addElement("b3");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "b3"));
+		if("b3".equals(filter)) {
+			selected = 9;
+		}
+		names.addElement("c3");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "c3"));
+		if("c3".equals(filter)) {
+			selected = 10;
+		}
+		
+		names.addElement("-");
+		values.addElement(C_SPACER);		
+
+		names.addElement("d1");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "d1"));
+		if("d1".equals(filter)) {
+			selected = 12;
+		}
+		names.addElement("d2");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "d2"));
+		if("d2".equals(filter)) {
+			selected = 13;
+		}
+		names.addElement("d3");
+		values.addElement(lang.getLanguageValue(C_TASK_FILTER + "d3"));
+		if("d3".equals(filter)) {
+			selected = 14;
+		}
+		
+		return(new Integer(selected));
     }
     
 }

@@ -11,7 +11,7 @@ Other Preference input forms will be added here
 <tr><td colspan=4 class=dialogtxt>
 	<table border=0 cellspacing=0 cellpadding=5 width=100% height=200>
 	<tr>
-			<td colspan=4 class=formular>Dateiangaben</td>
+			<td colspan=4 class=formular>]]><LABEL value="label.preferencesexplorer" /><![CDATA[</td>
 	</tr>
 	<tr> 
 		<td class=dialogtxt width=5%><INPUT type="checkbox" id=CBTITLE name=CBTITLE ]]><PROCESS>CHECKTITLE</PROCESS><![CDATA[></td>
@@ -47,4 +47,47 @@ Other Preference input forms will be added here
 </table>
 ]]>
 </TEMPLATE>
+
+<TEMPLATE name="task">
+<![CDATA[
+<table border=0 cellspacing=0 cellpadding=0 width=100% height=210>
+	<tr><td class=leerzeile colspan=4>&nbsp;</td></tr>
+	<tr>
+		<td colspan=4 class=formular><p class=einzug>]]><LABEL value="label.preferencesexplorer" /><![CDATA[</p></td>
+	</tr>
+	<tr>
+		<td class=formular><p class=einzug>]]><LABEL value="input.taskfilter" /><![CDATA[:</p> </td>
+		<td colspan=2 class=dialogtxt>
+		]]><SELECT class="textfeld" name="filter" width="210" method="getFilters" /><![CDATA[                            
+		</td>
+		<td class=dialogtxt>
+			<input type="checkbox" name=CBALL id=CBALL ]]><PROCESS>CHVIEWALL</PROCESS><![CDATA[>]]><LABEL value="input.allprojects" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td colspan=4 class=formular><p class=einzug>]]><LABEL value="input.defaulttasks" /><![CDATA[</p>  </td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+		<INPUT type="checkbox"  id=CBMSGACCEPTED name=CBMSGACCEPTED ]]><PROCESS>CHMESSAGEACCEPTED</PROCESS><![CDATA[> ]]><LABEL value="input.messageaccept" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox"  id=CBMSGFORWAREDED name=CBMSGFORWAREDED ]]><PROCESS>CHMESSAGEFORWARDED</PROCESS><![CDATA[> ]]><LABEL value="input.messageforward" /><![CDATA[
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox"  id=CBMSGCOMPLETED name=CBMSGCOMPLETED ]]><PROCESS>CHMESSAGECOMPLETED</PROCESS><![CDATA[>]]><LABEL value="input.messagecompleted" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox"  id=CBMSGMEMBERS name=CBMSGMEMBERS ]]><PROCESS>CHMESSAGEMEMEBERS</PROCESS><![CDATA[> ]]><LABEL value="input.messagemembers" /><![CDATA[
+		</td>
+	</tr>
+</table>
+]]>
+</TEMPLATE>
+
 </WORKPLACE>

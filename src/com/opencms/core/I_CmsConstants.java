@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/13 15:54:50 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/03/14 14:55:55 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.53 $ $Date: 2000/03/13 15:54:50 $
+ * @version $Revision: 1.54 $ $Date: 2000/03/14 14:55:55 $
  */
 public interface I_CmsConstants
 {
@@ -249,11 +249,11 @@ public interface I_CmsConstants
 	 */
 	 final static String C_ADDITIONAL_INFO_PREFERENCES	= "USER_PREFERENCES";
      
-     /**
-	 * Key for additional info explorer settings.
-	 */
+     /** Key for additional info explorer settings. */
 	 final static String C_ADDITIONAL_INFO_EXPLORERSETTINGS ="USER_EXPLORERSETTINGS";
-     
+   
+     /** Key for additional info task settings. */
+	 final static String C_ADDITIONAL_INFO_TASKSETTINGS ="USER_TASKSETTINGS";
      
 	/**
 	 * This constant is used to order the tasks by date.
@@ -595,6 +595,28 @@ public interface I_CmsConstants
 	/**User type value for the task log */
 	public static final int C_TASKLOG_USER   = 1;	
 	
+    /** Task preferenses filter */
+	public static final String  C_TASK_FILTER = "TaskFilter";
+    
+    /** Task preferenses view all */
+	public static final String  C_TASK_VIEW_ALL = "TaskViewAll";
+    
+    /** Task preferenses message flags */
+	public static final String C_TASK_MESSAGES  = "TaskMessages";
+    
+    /** state values of task messages when accepted */
+	public static final int C_TASK_MESSAGES_ACCEPTED   = 1;
+
+    /** state values of task messages when forwared */
+	public static final int C_TASK_MESSAGES_FORWARDED = 2;
+    
+    /** state values of task messages when completed */
+	public static final int C_TASK_MESSAGES_COMPLETED = 4;
+    
+    /** state values of task messages when members */
+	public static final int C_TASK_MESSAGES_MEMBERS = 8;
+    
+    
 
 	/**
 	 * Values for the database import and export
