@@ -28,34 +28,34 @@ function setText()
 <form id=EDITTEXT name=EDITTEXT>
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%">
 	<tr>
-		<td class=menu>]]><BUTTON name="bt_close" action="1" alt="close"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_saveclose" action="2" alt="ok"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_save" action="3" alt="ok"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_close" action="1" alt="close"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_saveclose" action="2" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_save" action="3" alt="save"/><![CDATA[</td>
 		
-		<td class=menu>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_undo" action="4" alt="ok"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_redo" action="5" alt="ok"/><![CDATA[</td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="4" alt="undo"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_redo" action="5" alt="redo"/><![CDATA[</td>
 
-		<td class=menu width=2><IMG border=0 height=32 src="../pics/gr_line.gif" width=2></td>
-		<td class=menu>]]><BUTTON name="bt_search" action="6" alt="ok"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_searchreplace" action="7" alt="ok"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_goto" action="8" alt="ok"/><![CDATA[</td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_search" action="6" alt="search"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_searchreplace" action="7" alt="searchreplace"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_goto" action="8" alt="goto"/><![CDATA[</td>
 		
-		<td class=menu width=2><IMG border=0 height=32 src="../pics/gr_line.gif" width=2></td>
-		<td class=menu>]]><BUTTON name="bt_cut" action="9" alt="ok"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_copy" action="10" alt="ok"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_paste" action="11" alt="ok"/><![CDATA[</td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_cut" action="9" alt="cut"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_copy" action="10" alt="copy"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_paste" action="11" alt="paste"/><![CDATA[</td>
 		
-		<td class=menu width=2><IMG border=0 height=32 src="../pics/gr_line.gif" width=2></td>
-		<td class=menu><A href="#" onmousedown="ChPush('bt_fileimport');doEdit(12);" onmouseout="ChOff('bt_fileimport')" onmouseover="ChOn('bt_fileimport')" onmouseup="ChOn('bt_fileimport')"><IMG alt=Importieren border=0 name=bt_fileimport src="../pics/bt_fileimport_off.gif"></a></td>
-		<td class=menu><A href="#" onmousedown="ChPush('bt_fileexport');doEdit(13);" onmouseout="ChOff('bt_fileexport')" onmouseover="ChOn('bt_fileexport')" onmouseup="ChOn('bt_fileexport')"><IMG alt=Exportieren border=0 name=bt_fileexport src="../pics/bt_fileexport_off.gif"></a></td>
-		<td class=menu><A href="#" onmousedown="ChPush('bt_fileexportas');doEdit(14);" onmouseout="ChOff('bt_fileexportas')" onmouseover="ChOn('bt_fileexportas')" onmouseup="ChOn('bt_fileexportas')"><IMG alt="Exportieren als" border =0 name=bt_fileexportas src="../pics/bt_fileexportas_off.gif" ></a></td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="12" alt="fileimport"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="13" alt="fileexport"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="14" alt="fileexportas"/><![CDATA[</td>
 		
-		<td class=menu width=2><IMG border=0 height=32 src="../pics/gr_line.gif" width=2></td>
-		<td class=menu><A href="#" onmousedown="ChPush('bt_print');doEdit(15);" onmouseout="ChOff('bt_print')" onmouseover="ChOn('bt_print')" onmouseup="ChOn('bt_print')"><IMG alt=Drucken border=0 name=bt_print src="../pics/bt_print_off.gif"></a></td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON name="bt_print" action="15" alt="print"/><![CDATA[</td>
 		
-		<td class=menu width=2><IMG border=0 height=32 src="../pics/gr_line.gif" width=2></td>
-		<td class=menu><a href="javascript:openwin('help/standard.html', 'Hilfe', 300, 600);" onMouseDown="ChPush('bt_hilfe')" onMouseUp="ChOn('bt_hilfe')" onMouseOver="ChOn('bt_hilfe')" onMouseOut="ChOff('bt_hilfe')"><img src="../pics/bt_hilfe_off.gif" alt="Hilfe" name="bt_hilfe" border=0></a></td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:openwin('help/standard.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="16" alt="help"/><![CDATA[</td>
 
 		<td class=menu width="100%">&nbsp;</td> 
 	</tr>
