@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.2 Giedi Prime - 05 March 2001
+
+- Updates for Major Release.
+
 OpenCms 4.1.62 Arakis - 23 February 2001
 
 * Bug in import module fixed. Now in all cases a proper project will be set up 
