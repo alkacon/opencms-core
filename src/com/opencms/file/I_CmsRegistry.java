@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/08/21 08:36:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/25 08:53:15 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,16 +30,16 @@ package com.opencms.file;
 
 import java.lang.*;
 import java.util.*;
- 
+import com.opencms.core.*;
+
 /**
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/08/21 08:36:43 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/25 08:53:15 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
-	
 	public static final int C_ANY_VERSION = -1;
 
 /**
@@ -73,12 +73,12 @@ public long getModuleCreateDate(String modulname);
  * Returns the module dependencies for the module.
  *
  * @param module String the name of the module to check.
- * @param modules[] String in this parameter the names of the dependend modules will be returned.
- * @param minVersions int[] in this parameter the minimum versions of the dependend modules will be returned.
- * @param maxVersions int[] in this parameter the maximum versions of the dependend modules will be returned.
+ * @param modules Vector in this parameter the names of the dependend modules will be returned.
+ * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
+ * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
  * @return int the amount of dependencies for the module will be returned.
  */
-public int getModuleDependencies(String module, String modules[], int[] minVersions, int[] maxVersions);
+public int getModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions);
 /**
  * Returns the description of the module.
  *
@@ -130,7 +130,7 @@ public boolean getModuleParameterBoolean(String modulname, String parameter);
  * @param default the default value.
  * @return boolean the value for the parameter in the module.
  */
-public boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue);
+public Boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue);
 /**
  * Returns a parameter for a module.
  * 
@@ -209,7 +209,7 @@ public Double getModuleParameterDouble(String modulname, String parameter, Doubl
  * @param default the default value.
  * @return boolean the value for the parameter in the module.
  */
-public long getModuleParameterFloat(String modulname, String parameter);
+public float getModuleParameterFloat(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
  * 
@@ -281,6 +281,13 @@ public long getModuleParameterLong(String modulname, String parameter, long defa
  * @return boolean the value for the parameter in the module.
  */
 public Long getModuleParameterLong(String modulname, String parameter, Long defaultValue);
+/**
+ * Gets all parameter-names for a module.
+ * 
+ * @param modulename String the name of the module.
+ * @return value String[] the names of the parameters for a module.
+ */
+public String[] getModuleParameterNames(String modulename);
 /**
  * Returns a parameter for a module.
  * 
@@ -367,7 +374,103 @@ public int getViews(Vector views, Vector urls);
  * 
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, byte value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, double value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, float value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, int value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, long value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, Boolean value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, Byte value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, Double value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, Float value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, Integer value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, Long value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
  * @param value java.lang.String the value to set for the parameter.
  */
-public void setModuleParameter(String modulename, String parameter, String value);
+public void setModuleParameter(String modulename, String parameter, String value) throws CmsException;
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException;
 }

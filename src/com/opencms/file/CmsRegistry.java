@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/08/21 08:11:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/25 08:53:15 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,15 +38,20 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/08/21 08:11:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/25 08:53:15 $
  * 
  */
-public class CmsRegistry implements I_CmsRegistry {
+public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
 	/**
 	 *  The xml-document representing the registry.
 	 */
 	private Document m_xmlReg;
+
+	/**
+	 *  The filename for the registry.
+	 */
+	private String m_regFileName;
 
 	/**
 	 *  A hashtable with shortcuts into the dom-structure for each module.
@@ -62,46 +67,106 @@ public class CmsRegistry implements I_CmsRegistry {
 public CmsRegistry(String regFileName) throws CmsException {
 	super();
 	try {
+		// store the filename
+		m_regFileName = regFileName;
 
 		// get the file
-		File xmlFile = new File(regFileName);
+		File xmlFile = new File(m_regFileName);
 
-		// get a buffered reader	
-		BufferedReader xmlReader = new BufferedReader(new FileReader(xmlFile));
+		// get a buffered reader
+		BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
+
+		String content = "";
+		String buffer = "";
+		do {
+			content += buffer;
+			buffer = reader.readLine();
+		} while (buffer != null);
+
+		reader.close();
 
 		// parse the registry-xmlfile and store it.
-		m_xmlReg = A_CmsXmlContent.getXmlParser().parse(xmlReader);
+		m_xmlReg = parse(content);
 		init();
 	} catch (Exception exc) {
 		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
 	}
 }
 	/**
-	 * This method clones the registry.
-	 *
-	 * @return the cloned registry.
+	 *  Checks if the type of the value is correct.
+	 *  @param type the type that the value should have..
+	 *  @param value the value to check.
 	 */
-	public Object clone() {
-		return null;
+	private boolean checkType(String type, String value) {
+		type = type.toLowerCase();
+		try {
+			if("string".equals(type) ) {
+				if( value != null) {
+					return true;
+				} else {
+					return false;
+				}				
+			} else if("int".equals(type) || "integer".equals(type)) {
+				Integer.parseInt(value);
+				return true;
+			} else if("float".equals(type)) {
+				Float.valueOf(value);
+				return true;
+			} else if("boolean".equals(type)) {
+				Boolean.valueOf(value);
+				return true;
+			} else if("long".equals(type)) {
+				Long.valueOf(value);
+				return true;
+			} else if("double".equals(type)) {
+				Double.valueOf(value);
+				return true;
+			} else if("byte".equals(type)) {
+				Byte.valueOf(value);
+				return true;
+			} else {
+				// the type dosen't exist
+				return false;
+			}
+		} catch(Exception exc) {
+			// the type of the value was wrong
+			return false;
+		}
 	}
+/**
+ * This method clones the registry.
+ *
+ * @return the cloned registry.
+ */
+public Object clone() {
+	return null;
+}
 	/**
-	 * This method returns the author of the module.
-	 *
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the author of the module.
+	 * Gets a description of this content type.
+	 * For OpenCms internal use only.
+	 * @return Content type description.
 	 */
-	public String getModuleAuthor(String modulename) {
-		return getModuleData(modulename, "author");
+	public String getContentDescription() {
+		return "Registry";
 	}
-	/**
-	 * This method returns the email of author of the module.
-	 *
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the email of author of the module.
-	 */
-	public String getModuleAuthorEmail(String modulename) {
-		return getModuleData(modulename, "email");
-	}
+/**
+ * This method returns the author of the module.
+ *
+ * @parameter String the name of the module.
+ * @return java.lang.String the author of the module.
+ */
+public String getModuleAuthor(String modulename) {
+	return getModuleData(modulename, "author");
+}
+/**
+ * This method returns the email of author of the module.
+ *
+ * @parameter String the name of the module.
+ * @return java.lang.String the email of author of the module.
+ */
+public String getModuleAuthorEmail(String modulename) {
+	return getModuleData(modulename, "email");
+}
 /**
  * Gets the create date of the module.
  *
@@ -135,314 +200,420 @@ private String getModuleData(String module, String dataName) {
 	}
 	return retValue;
 }
-	/**
-	 * Returns the module dependencies for the module.
-	 *
-	 * @param module String the name of the module to check.
-	 * @param modules[] String in this parameter the names of the dependend modules will be returned.
-	 * @param minVersions int[] in this parameter the minimum versions of the dependend modules will be returned.
-	 * @param maxVersions int[] in this parameter the maximum versions of the dependend modules will be returned.
-	 * @return int the amount of dependencies for the module will be returned.
-	 */
-	public int getModuleDependencies(String module, java.lang.String[] modules, int[] minVersions, int[] maxVersions) {
-		String mod[] = {"TestModule A", "TestModule b"};
-		int min[] = {2, 5};
-		int max[] = {5, C_ANY_VERSION};
-		modules = mod;
-		minVersions = min;
-		maxVersions = max;
-		return mod.length;
+/**
+ * Returns the module dependencies for the module.
+ *
+ * @param module String the name of the module to check.
+ * @param modules Vector in this parameter the names of the dependend modules will be returned.
+ * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
+ * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
+ * @return int the amount of dependencies for the module will be returned.
+ */
+public int getModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) {
+	try {
+		Element module = getModuleElement(modulename);
+		Element repository = (Element) (module.getElementsByTagName("dependencies").item(0));
+		NodeList deps = repository.getElementsByTagName("dependency");
+		for (int i = 0; i < deps.getLength(); i++) {
+			modules.addElement(((Element) deps.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
+			minVersions.addElement(((Element) deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
+			maxVersions.addElement(((Element) deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
+		}
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
 	}
-	/**
-	 * Returns the description of the module.
-	 *
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the description of the module.
-	 */
-	public String getModuleDescription(String module) {
-		return getModuleData(module, "description");
+	return modules.size();
+}
+/**
+ * Returns the description of the module.
+ *
+ * @parameter String the name of the module.
+ * @return java.lang.String the description of the module.
+ */
+public String getModuleDescription(String module) {
+	return getModuleData(module, "description");
+}
+/**
+ * Gets the url to the documentation of the module.
+ * 
+ * @parameter String the name of the module.
+ * @return java.lang.String the url to the documentation of the module.
+ */
+public String getModuleDocumentPath(String modulename) {
+	return getModuleData(modulename, "documentation");
+}
+/**
+ *  Private method to get the Element representing a module.
+ *
+ * @param String the name of the module.
+ *
+ */
+private Element getModuleElement(String name) {
+	return (Element) m_modules.get(name);
+}
+/**
+ * Returns the class, that receives all maintenance-events for the module.
+ * 
+ * @parameter String the name of the module.
+ * @return java.lang.Class that receives all maintenance-events for the module.
+ */
+public Class getModuleMaintenanceEventClass(String modulname) {
+	return null;
+}
+/**
+ * Returns the names of all available modules.
+ *
+ * @return Enumeration the names of all available modules.
+ */
+public Enumeration getModuleNames() {
+	return m_modules.keys();
+}
+/**
+ * Gets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @return value java.lang.String the value to set for the parameter.
+ */
+public String getModuleParameter(String modulename, String parameter) {
+	String retValue = null;
+	try {
+		Element param = getModuleParameterElement(modulename, parameter);
+		retValue = param.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
+	} catch (Exception exc) {
+		// ignore the exception - parameter is not existent
 	}
-	/**
-	 * Gets the url to the documentation of the module.
-	 * 
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the url to the documentation of the module.
-	 */
-	public String getModuleDocumentPath(String modulename) {
-		return getModuleData(modulename, "documentation");
-	}
-	/**
-	 *  Private method to get the Element representing a module.
-	 *
-	 * @param String the name of the module.
-	 *
-	 */
-	private Element getModuleElement(String name) {
-		return (Element) m_modules.get(name);
-	}
-	/**
-	 * Returns the class, that receives all maintenance-events for the module.
-	 * 
-	 * @parameter String the name of the module.
-	 * @return java.lang.Class that receives all maintenance-events for the module.
-	 */
-	public Class getModuleMaintenanceEventClass(String modulname) {
-		return null;
-	}
-	/**
-	 * Returns the names of all available modules.
-	 *
-	 * @return Enumeration the names of all available modules.
-	 */
-	public Enumeration getModuleNames() {
-		return m_modules.keys();
-	}
-	/**
-	 * Gets a parameter for a module.
-	 * 
-	 * @param modulename java.lang.String the name of the module.
-	 * @param parameter java.lang.String the name of the parameter to set.
-	 * @return value java.lang.String the value to set for the parameter.
-	 */
-	public String getModuleParameter(String modulename, String parameter) {
-		return "www.welivit.de";
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public boolean getModuleParameterBoolean(String modulname, String parameter) {
+	return retValue;
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @return boolean the value for the parameter in the module.
+ */
+public boolean getModuleParameterBoolean(String modulname, String parameter) {
+	if ("true".equals(getModuleParameter(modulname, parameter).toLowerCase())) {
+		return true;
+	} else {
 		return false;
 	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue) {
-		return false;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public boolean getModuleParameterBoolean(String modulname, String parameter, boolean defaultValue) {
-		return false;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public byte getModuleParameterByte(String modulname, String parameter) {
-		return (byte) 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue) {
-		return (byte) 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public Byte getModuleParameterByte(String modulname, String parameter, Byte defaultValue) {
-		return new Byte((byte) 0);
-	}
-	/**
-	 * Returns a description for parameter in a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @return String the description for the parameter in the module.
-	 */
-	public String getModuleParameterDescription(String modulname, String parameter) {
-		return "A very interesting parameter. You will never forget it.";
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public double getModuleParameterDouble(String modulname, String parameter) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public double getModuleParameterDouble(String modulname, String parameter, double defaultValue) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public Double getModuleParameterDouble(String modulname, String parameter, Double defaultValue) {
-		return new Double(0);
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public long getModuleParameterFloat(String modulname, String parameter) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public float getModuleParameterFloat(String modulname, String parameter, float defaultValue) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public Float getModuleParameterFloat(String modulname, String parameter, Float defaultValue) {
-		return new Float(0);
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public int getModuleParameterInteger(String modulname, String parameter) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public int getModuleParameterInteger(String modulname, String parameter, int defaultValue) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public Integer getModuleParameterInteger(String modulname, String parameter, Integer defaultValue) {
-		return new Integer(0);
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public long getModuleParameterLong(String modulname, String parameter) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public long getModuleParameterLong(String modulname, String parameter, long defaultValue) {
-		return 0;
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public Long getModuleParameterLong(String modulname, String parameter, Long defaultValue) {
-		return new Long(0);
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public String getModuleParameterString(String modulname, String parameter) {
-		return "This is a parameter value";
-	}
-	/**
-	 * Returns a parameter for a module.
-	 * 
-	 * @param modulname String the name of the module.
-	 * @param parameter String the name of the parameter.
-	 * @param default the default value.
-	 * @return boolean the value for the parameter in the module.
-	 */
-	public String getModuleParameterString(String modulname, String parameter, String defaultValue) {
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public Boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue) {
+	return new Boolean(getModuleParameterBoolean(modulname, parameter, defaultValue.booleanValue()));
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public boolean getModuleParameterBoolean(String modulname, String parameter, boolean defaultValue) {
+	if (getModuleParameterBoolean(modulname, parameter)) {
+		return true;
+	} else {
 		return defaultValue;
 	}
-	/**
-	 * This method returns the type of a parameter in a module.
-	 *
-	 * @param modulename the name of the module.
-	 * @param parameter the name of the parameter.
-	 * @return the type of the parameter.
-	 */
-	public String getModuleParameterType(String modulename, String parameter) {
-		return "String";
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public byte getModuleParameterByte(String modulname, String parameter) {
+	return Byte.parseByte(getModuleParameter(modulname, parameter));
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue) {
+	try {
+		return getModuleParameterByte(modulname, parameter);
+	} catch (Exception exc) {
+		return defaultValue;
 	}
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public Byte getModuleParameterByte(String modulname, String parameter, Byte defaultValue) {
+	return new Byte(getModuleParameterByte(modulname, parameter, defaultValue.byteValue()));
+}
+/**
+ * Returns a description for parameter in a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @return String the description for the parameter in the module.
+ */
+public String getModuleParameterDescription(String modulname, String parameter) {
+	String retValue = null;
+	try {
+		Element param = getModuleParameterElement(modulname, parameter);
+		retValue = param.getElementsByTagName("description").item(0).getFirstChild().getNodeValue();
+	} catch (Exception exc) {
+		// ignore the exception - parameter is not existent
+	}
+	return retValue;
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @return boolean the value for the parameter in the module.
+ */
+public double getModuleParameterDouble(String modulname, String parameter) {
+	return Double.valueOf(getModuleParameter(modulname, parameter)).doubleValue();
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public double getModuleParameterDouble(String modulname, String parameter, double defaultValue) {
+	try {
+		return getModuleParameterDouble(modulname, parameter);
+	} catch (Exception exc) {
+		return defaultValue;
+	}
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public Double getModuleParameterDouble(String modulname, String parameter, Double defaultValue) {
+	return new Double(getModuleParameterDouble(modulname, parameter, defaultValue.doubleValue()));
+}
+/**
+ * Private method to get them XML-Element for a parameter in a module.
+ * 
+ * @param modulename String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @return Element the XML-Element corresponding to the parameter.
+ */
+private Element getModuleParameterElement(String modulename, String parameter) {
+	Element retValue = null;
+	try {
+		Element module = getModuleElement(modulename);
+		Element parameters = (Element) (module.getElementsByTagName("parameters").item(0));
+		NodeList para = parameters.getElementsByTagName("para");
+		for (int i = 0; i < para.getLength(); i++) {
+			if (((Element) para.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue().equals(parameter)) {
+				// this is the element for the parameter.
+				retValue = (Element) para.item(i);
+				// stop searching - parameter was found
+				break;
+			}
+		}
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+	return retValue;
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public float getModuleParameterFloat(String modulname, String parameter) {
+	return Float.valueOf(getModuleParameter(modulname, parameter)).floatValue();
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public float getModuleParameterFloat(String modulname, String parameter, float defaultValue) {
+	try {
+		return getModuleParameterFloat(modulname, parameter);
+	} catch (Exception exc) {
+		return defaultValue;
+	}
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public Float getModuleParameterFloat(String modulname, String parameter, Float defaultValue) {
+	return new Float(getModuleParameterFloat(modulname, parameter, defaultValue.floatValue()));
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @return boolean the value for the parameter in the module.
+ */
+public int getModuleParameterInteger(String modulname, String parameter) {
+	return Integer.parseInt(getModuleParameter(modulname, parameter));
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public int getModuleParameterInteger(String modulname, String parameter, int defaultValue) {
+	try {
+		return getModuleParameterInteger(modulname, parameter);
+	} catch (Exception exc) {
+		return defaultValue;
+	}
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public Integer getModuleParameterInteger(String modulname, String parameter, Integer defaultValue) {
+	return new Integer(getModuleParameterInteger(modulname, parameter, defaultValue.intValue()));
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public long getModuleParameterLong(String modulname, String parameter) {
+	return Long.valueOf(getModuleParameter(modulname, parameter)).longValue();
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public long getModuleParameterLong(String modulname, String parameter, long defaultValue) {
+	try {
+		return getModuleParameterLong(modulname, parameter);
+	} catch (Exception exc) {
+		return defaultValue;
+	}
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public Long getModuleParameterLong(String modulname, String parameter, Long defaultValue) {
+	return new Long(getModuleParameterLong(modulname, parameter, defaultValue.longValue()));
+}
+/**
+ * Gets all parameter-names for a module.
+ * 
+ * @param modulename String the name of the module.
+ * @return value String[] the names of the parameters for a module.
+ */
+public String[] getModuleParameterNames(String modulename) {
+	String[] retValue = null;
+	try {
+		Element module = getModuleElement(modulename);
+		Element parameters = (Element) (module.getElementsByTagName("parameters").item(0));
+		NodeList para = parameters.getElementsByTagName("para");
+		retValue = new String[para.getLength()];
+		for (int i = 0; i < para.getLength(); i++) {
+			retValue[i] = ((Element) para.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+		}
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+	return retValue;
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @return boolean the value for the parameter in the module.
+ */
+public String getModuleParameterString(String modulname, String parameter) {
+	return getModuleParameter(modulname, parameter);
+}
+/**
+ * Returns a parameter for a module.
+ * 
+ * @param modulname String the name of the module.
+ * @param parameter String the name of the parameter.
+ * @param default the default value.
+ * @return boolean the value for the parameter in the module.
+ */
+public String getModuleParameterString(String modulname, String parameter, String defaultValue) {
+	try {
+		return getModuleParameterString(modulname, parameter);
+	} catch (Exception exc) {
+		return defaultValue;
+	}
+}
+/**
+ * This method returns the type of a parameter in a module.
+ *
+ * @param modulename the name of the module.
+ * @param parameter the name of the parameter.
+ * @return the type of the parameter.
+ */
+public String getModuleParameterType(String modulename, String parameter) {
+	String retValue = null;
+	try {
+		Element param = getModuleParameterElement(modulename, parameter);
+		retValue = param.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
+	} catch (Exception exc) {
+		// ignore the exception - parameter is not existent
+	}
+	return retValue;
+}
 /**
  * Returns all repositories for a module.
  *
@@ -450,7 +621,7 @@ private String getModuleData(String module, String dataName) {
  * @return java.lang.String[] the reprositories of a module.
  */
 public java.lang.String[] getModuleRepositories(String modulename) {
-	String[] retValue = new String[0];
+	String[] retValue = null;
 	try {
 		Element module = getModuleElement(modulename);
 		Element repository = (Element) (module.getElementsByTagName("repository").item(0));
@@ -480,15 +651,15 @@ public long getModuleUploadDate(String modulname) {
 	}
 	return retValue;
 }
-	/**
-	 * Returns the user-name of the user who had uploaded the module.
-	 * 
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the user-name of the user who had uploaded the module.
-	 */
-	public String getModuleUploadedBy(String modulename) {
-		return getModuleData(modulename, "uploadedby");
-	}
+/**
+ * Returns the user-name of the user who had uploaded the module.
+ * 
+ * @parameter String the name of the module.
+ * @return java.lang.String the user-name of the user who had uploaded the module.
+ */
+public String getModuleUploadedBy(String modulename) {
+	return getModuleData(modulename, "uploadedby");
+}
 /**
  * This method returns the version of the module.
  *
@@ -521,13 +692,13 @@ public String getModuleViewName(String modulename) {
 	}
 	return retValue;
 }
-	/**
-	 * Returns the url to the view-url for the module within the system. 
-	 * 
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the view-url to the module.
-	 */
-	public String getModuleViewUrl(String modulname) {
+/**
+ * Returns the url to the view-url for the module within the system. 
+ * 
+ * @parameter String the name of the module.
+ * @return java.lang.String the view-url to the module.
+ */
+public String getModuleViewUrl(String modulname) {
 	String retValue = null;
 	try {
 		Element module = getModuleElement(modulname);
@@ -537,7 +708,7 @@ public String getModuleViewName(String modulename) {
 		// ignore the exception - reg is not welformed
 	}
 	return retValue;
-	}
+}
 /**
  * Returns all repositories for all modules.
  * 
@@ -580,31 +751,200 @@ public int getViews(Vector views, Vector urls) {
 	}
 }
 	/**
-	 *  Inits all member-variables for the instance.
+	 * Gets the expected tagname for the XML documents of this content type
+	 * @return Expected XML tagname.
 	 */
-	private void init() throws Exception {
-		// get the entry-points for the modules
-		NodeList modules = m_xmlReg.getElementsByTagName("module");
+	public String getXmlDocumentTagName() {
+		return "registry";
+	}
+/**
+ * Returns true if the user has write-access to the registry. Otherwise false.
+ * @returns true if access is granted, else false.
+ */
+private boolean hasAccess() {
+	// TODO: check the access!
+	return true;
+}
+/**
+ *  Inits all member-variables for the instance.
+ */
+private void init() throws Exception {
+	// get the entry-points for the modules
+	NodeList modules = m_xmlReg.getElementsByTagName("module");
 
-		// create the hashtable for the shortcuts
-		m_modules = new Hashtable(modules.getLength());
+	// create the hashtable for the shortcuts
+	m_modules = new Hashtable(modules.getLength());
 
-		// walk throug all modules
-		for (int i = 0; i < modules.getLength(); i++) {
-			Element module = (Element) modules.item(i);
-			String moduleName = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+	// walk throug all modules
+	for (int i = 0; i < modules.getLength(); i++) {
+		Element module = (Element) modules.item(i);
+		String moduleName = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
 
-			// store the shortcuts to the modules
-			m_modules.put(moduleName, module);
-		}
+		// store the shortcuts to the modules
+		m_modules.put(moduleName, module);
+	}
+}
+/**
+ *  Saves the registry and stores it to the registry-file.
+ */
+private void saveRegistry() throws CmsException {
+	try {
+		// get the file
+		File xmlFile = new File(m_regFileName);
+
+		// get a buffered writer
+		BufferedWriter xmlWriter = new BufferedWriter(new FileWriter(xmlFile));
+
+		// parse the registry-xmlfile and store it.
+		A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, xmlWriter);
+	} catch (Exception exc) {
+		throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
+	}
+}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, byte value) throws CmsException {
+		setModuleParameter(modulename, parameter, value + "");
 	}
 	/**
 	 * Sets a parameter for a module.
 	 * 
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
-	 * @param value java.lang.String the value to set for the parameter.
+	 * @param the value to set for the parameter.
 	 */
-	public void setModuleParameter(String modulename, String parameter, String value) {
+	public void setModuleParameter(String modulename, String parameter, double value) throws CmsException {
+		setModuleParameter(modulename, parameter, value + "");
 	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, float value) throws CmsException {
+		setModuleParameter(modulename, parameter, value + "");
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, int value) throws CmsException {
+		setModuleParameter(modulename, parameter, value + "");
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, long value) throws CmsException {
+		setModuleParameter(modulename, parameter, value + "");
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, Boolean value) throws CmsException {
+		setModuleParameter(modulename, parameter, value.toString());
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, Byte value) throws CmsException {
+		setModuleParameter(modulename, parameter, value.toString());
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, Double value) throws CmsException {
+		setModuleParameter(modulename, parameter, value.toString());
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, Float value) throws CmsException {
+		setModuleParameter(modulename, parameter, value.toString());
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, Integer value) throws CmsException {
+		setModuleParameter(modulename, parameter, value.toString());
+	}
+	/**
+	 * Sets a parameter for a module.
+	 * 
+	 * @param modulename java.lang.String the name of the module.
+	 * @param parameter java.lang.String the name of the parameter to set.
+	 * @param the value to set for the parameter.
+	 */
+	public void setModuleParameter(String modulename, String parameter, Long value) throws CmsException {
+		setModuleParameter(modulename, parameter, value.toString());
+	}
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param value java.lang.String the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, String value) throws CmsException {
+	// check if the user is allowed to set parameters
+
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setModuleParameter'", CmsException.C_REGISTRY_ERROR);
+	}
+	try {
+		Element param = getModuleParameterElement(modulename, parameter);
+		if (!checkType(getModuleParameterType(modulename, parameter), value)) {
+			throw new CmsException("wrong number format for " + parameter + " -> " + value, CmsException.C_REGISTRY_ERROR);
+		}
+		param.getElementsByTagName("value").item(0).getFirstChild().setNodeValue(value);
+		saveRegistry();
+	} catch (CmsException exc) {
+		throw exc;
+	} catch (Exception exc) {
+		throw new CmsException("couldn't set parameter " + parameter + " for module " + modulename + " to vale " + value, CmsException.C_REGISTRY_ERROR, exc);
+	}
+}
+/**
+ * Sets a parameter for a module.
+ * 
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param the value to set for the parameter.
+ */
+public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException {
+	setModuleParameter(modulename, parameter, value + "");
+}
 }
