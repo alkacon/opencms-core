@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/08 20:13:23 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1.12
  */
@@ -609,5 +609,40 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
    public void setParamOldbodyname(String oldBodyName) {
        m_paramOldbodyname = oldBodyName;
    } 
+   
+   
+   /**
+    * Returns the OpenCms VFS uri of the template of the current page.<p>
+    * 
+    * @return the OpenCms VFS uri of the template of the current page
+    */
+   public String getUriTemplate() {
+       String result = "";
+       try {
+           result = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true, "");
+       } catch (CmsException e) {
+           OpenCms.getLog(this).warn("Template property could not be read", e);
+       }
+       return result;
+   }
+   
+   /**
+    * Returns the OpenCms VFS uri of the style sheet of the current page.<p>
+    * 
+    * @return the OpenCms VFS uri of the style sheet of the current page
+    */
+   public String getUriStyleSheet() {
+        String result = "";
+        try {
+            String currentTemplate = getUriTemplate();
+            if (! "".equals(currentTemplate)) {
+                // read the stylesheet from the template file
+                result = getCms().readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE, false, "");
+            }
+        } catch (CmsException e) {
+            OpenCms.getLog(this).warn("Template property for style sheet could not be read");
+        }
+        return result;
+   }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/02/06 17:10:51 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/08 20:13:41 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,14 +30,12 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.workplace.I_CmsWpConstants;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
+
+import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1.12
  */
@@ -92,18 +90,8 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             content = filterAnchors(content);
         } else {
             // editor is in html mode, add tags for stylesheet
-            String currentTemplate = null;
-            String stylesheet = "";
-            try {
-                currentTemplate = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
-            } catch (CmsException e) {
-                // ignore this exception
-            }
-            if (currentTemplate != null) {
-                // read the stylesheet from the template property
-                stylesheet = getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, currentTemplate, "");
-            }
-            
+            String stylesheet = getUriStyleSheet();
+                      
             if (indexBodyStart != -1) {
                 // first delete the old tags
                 content = content.substring(indexBodyStart + 6);
