@@ -12,6 +12,9 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
 * Bugfix in form "create new page". Now the selected default body will be copied by switching navigation 
   from on to off.
+* In emails for taskaction the port of the webserver was added to the generated URL.
+- Description and Keywords metatags added to empty template.
+- Removed v-flag for /moduldemos/.
 
 OpenCms 4.5si.30 Chusuk     - 14 December 2001
 * bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.

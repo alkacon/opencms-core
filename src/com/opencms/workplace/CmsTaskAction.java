@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/12/18 16:38:23 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.29 $ $Date: 2001/12/18 16:38:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -90,12 +90,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             contentBuf.append(": ");
             contentBuf.append(task.getName());
             int projectid = cms.readProject(task).getId();
-            String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-            String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-            CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-            String actionPath = conf.getWorkplaceActionPath();
-            contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                    + taskid + "&startProjectId=" + projectid);
+            contentBuf.append("\n\n\n" + getTaskUrl(cms, taskid, projectid));
             String subject = lang.getLanguageValue("task.email.accept.subject");
             CmsUser[] users =  {
                 cms.readOwner(task)
@@ -184,12 +179,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(": ");
         contentBuf.append(Utils.getFullName(cms.readOwner(task)));
         int projectid = cms.readProject(task).getId();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-        String actionPath = conf.getWorkplaceActionPath();
-        contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                + task.getId() + "&startProjectId=" + projectid);
+        contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
         String subject = lang.getLanguageValue("task.email.create.subject");
         CmsUser[] users =  {
             cms.readAgent(task)
@@ -301,12 +291,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             contentBuf.append(": ");
             contentBuf.append(Utils.getFullName(cms.readAgent(task)));
             int projectid = cms.readProject(task).getId();
-            String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-            String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-            CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-            String actionPath = conf.getWorkplaceActionPath();
-            contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                    + taskid + "&startProjectId=" + projectid);
+            contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
             String subject = lang.getLanguageValue("task.email.end.subject");
             CmsUser[] users =  {
                 cms.readOwner(task)
@@ -381,12 +366,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             contentBuf.append(": ");
             contentBuf.append(Utils.getFullName(cms.readAgent(task)));
             int projectid = cms.readProject(task).getId();
-            String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-            String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-            CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-            String actionPath = conf.getWorkplaceActionPath();
-            contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                    + taskid + "&startProjectId=" + projectid);
+            contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
             String subject = lang.getLanguageValue("task.email.forward.subject");
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
@@ -514,12 +494,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(": ");
         contentBuf.append(Utils.getFullName(cms.readOwner(task)));
         int projectid = cms.readProject(task).getId();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-        String actionPath = conf.getWorkplaceActionPath();
-        contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath
-                + "login.html?startTaskId=" + taskid + "&startProjectId=" + projectid);
+        contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
         String subject = lang.getLanguageValue("task.email.message.subject");
         CmsUser[] users =  {
             cms.readAgent(task)
@@ -604,12 +579,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(": ");
         contentBuf.append(Utils.getFullName(cms.readAgent(task)));
         int projectid = cms.readProject(task).getId();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-        String actionPath = conf.getWorkplaceActionPath();
-        contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath
-                + "login.html?startTaskId=" + taskid + "&startProjectId=" + projectid);
+        contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
         String subject = lang.getLanguageValue("task.email.query.subject");
         CmsUser[] users =  {
             cms.readOwner(task)
@@ -697,12 +667,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(": ");
         contentBuf.append(task.getName());
         int projectid = cms.readProject(task).getId();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-        String actionPath = conf.getWorkplaceActionPath();
-        contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                + taskid + "&startProjectId=" + projectid);
+        contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
         String subject = lang.getLanguageValue("task.email.reakt.subject");
         CmsUser[] users =  {
             cms.readAgent(task)
@@ -773,12 +738,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(": ");
         contentBuf.append(Utils.getFullName(cms.readAgent(task)));
         int projectid = cms.readProject(task).getId();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-        String actionPath = conf.getWorkplaceActionPath();
-        contentBuf.append("\n\n\nhttp://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                + taskid + "&startProjectId=" + projectid);
+        contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
         String subject = lang.getLanguageValue("task.email.take.subject");
         CmsUser[] users =  {
             cms.readAgent(task)
@@ -793,5 +753,18 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
             }
         }
+    }
+
+    private static String getTaskUrl(CmsObject cms, int taskid, int projectid) throws CmsException {
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
+        int serverPort = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerPort();
+        if(serverPort != 80) {
+            serverName += ":" + serverPort;
+        }
+        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
+        String actionPath = conf.getWorkplaceActionPath();
+        return "http://" + serverName + servletPath + actionPath + "login.html?startTaskId="
+                + taskid + "&startProjectId=" + projectid;
     }
 }
