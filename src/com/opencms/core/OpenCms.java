@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/05/05 08:06:24 $
-* Version: $Revision: 1.124 $
+* Date   : $Date: 2003/05/08 15:04:10 $
+* Version: $Revision: 1.125 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.124 $ $Date: 2003/05/05 08:06:24 $
+ * @version $Revision: 1.125 $ $Date: 2003/05/08 15:04:10 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -777,24 +777,25 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * 
      * @throws CmsException in case the file does not exist or the user has insufficient access permissions 
      */
-	CmsFile initResource(CmsObject cms) throws CmsException {
+    CmsFile initResource(CmsObject cms) throws CmsException {
 
-		CmsFile file = null;
-		// Get the requested filename from the request context
-		String resourceName = cms.getRequestContext().getUri();
+        CmsFile file = null;
+        // Get the requested filename from the request context
+        String resourceName = cms.getRequestContext().getUri();
+        CmsException tmpException = null;
 
-		try {
-			// Try to read the requested file
-			file = cms.readFile(resourceName);
-		} catch (CmsException e) {
-			if (e.getType() == CmsException.C_NOT_FOUND) {
-				// The requested file was not found
-				// Check if a folder name was requested, and if so, try
-				// to read the default pages in that folder
+        try {
+            // Try to read the requested file
+            file = cms.readFile(resourceName);
+        } catch (CmsException e) {
+            if (e.getType() == CmsException.C_NOT_FOUND) {
+                // The requested file was not found
+                // Check if a folder name was requested, and if so, try
+                // to read the default pages in that folder
 
-				try {
-					// Try to read the requested resource name as a folder
-					CmsFolder folder = cms.readFolder(resourceName);
+                try {
+                    // Try to read the requested resource name as a folder
+                    CmsFolder folder = cms.readFolder(resourceName);
                     // If above call did not throw an exception the folder
                     // was sucessfully read, so lets go on check for default 
                     // pages in the folder now
@@ -838,45 +839,53 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
                         // No default file was found, throw original exception
                         throw e;
                     }                                                     
-				} catch (CmsException ex) {
+                } catch (CmsException ex) {
                     // Exception trying to read the folder (or it's properties)
-					if (ex.getType() == CmsException.C_NOT_FOUND) {
-                        // Folder with the name does not exist, throw original exception
-                        throw e;
+                    if (ex.getType() == CmsException.C_NOT_FOUND) {
+                        // Folder with the name does not exist, store original exception
+                        tmpException = e;
+                        // throw e;
+                    } else {
+                        // If the folder was found there might have been a permission problem
+                        throw ex;
                     }
-                    // If the folder was found there might have been a permission problem
-                    throw ex;
-				}
-
-			} else {
-				// Throw the CmsException (possible cause e.g. no access permissions)
-				throw e;
-			}
-		}
-
-		if (file != null) {
-			// test if this file is only available for internal access operations
-			if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) > 0) {
-				throw new CmsException(
-					CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]
-						+ cms.getRequestContext().getUri(),
-					CmsException.C_INTERNAL_FILE);
-			}
-            // test if this file has to be checked or modified
-            Iterator i = m_checkFile.iterator();
-            while (i.hasNext()) {
-                try {
-                    file = ((I_CmsCheckResource) i.next()).checkResource(file, cms);
-                // the loop has to be interrupted when the exception is thrown!
-                } catch (CmsCheckResourceException e) {
-                    break;
                 }
+
+            } else {
+                // Throw the CmsException (possible cause e.g. no access permissions)
+                throw e;
             }
-		}
+        }
+
+        if (file != null) {
+            // test if this file is only available for internal access operations
+            if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) > 0) {
+                throw new CmsException(
+                    CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]
+                        + cms.getRequestContext().getUri(),
+                    CmsException.C_INTERNAL_FILE);
+            }
+        }
+        
+        // test if this file has to be checked or modified
+        Iterator i = m_checkFile.iterator();
+        while (i.hasNext()) {
+            try {
+                file = ((I_CmsCheckResource) i.next()).checkResource(file, cms);
+            // the loop has to be interrupted when the exception is thrown!
+            } catch (CmsCheckResourceException e) {
+                break;
+            }
+        }
+        
+        // file is still null and not found exception was thrown, so throw original exception
+        if (file == null && tmpException != null) {
+            throw tmpException;
+        }
         
         // Return the file read from the VFS
-		return file;
-	}
+        return file;
+    }
 
     /**
      * Inits a user and updates the given CmsObject withs this users information.<p>
