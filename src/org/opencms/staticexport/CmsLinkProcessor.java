@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/01/23 15:01:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/23 15:42:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -313,6 +313,10 @@ public class CmsLinkProcessor extends NodeVisitor {
 
             CmsSite site = null;
             
+            // if we have a local link, leave it unchanged
+            if (link.getUri().startsWith("#")) {
+                return link.getUri();
+            }
             // we are in the opencms root site but not in edit mode - use link as stored
             if (!m_processEditorLinks && "".equals(m_cms.getRequestContext().getSiteRoot())) {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());    

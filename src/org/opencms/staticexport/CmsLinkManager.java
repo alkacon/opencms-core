@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/01/16 10:21:21 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/01/23 15:41:49 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsLinkManager {
     
@@ -258,7 +258,7 @@ public class CmsLinkManager {
         }
         
         // uri with relative path is relative to the given relativePath if available and in a site, otherwise invalid
-        if (!path.startsWith("/")) {
+        if (!"".equals(path) && !path.startsWith("/")) {
             if (relativePath != null) {
                 String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
                 // if (absolutePath.startsWith(cms.getRequestContext().getSiteRoot())) {
@@ -271,7 +271,12 @@ public class CmsLinkManager {
         }
         
         // relative uri (= vfs path relative to currently selected site root)
-        return cms.getRequestContext().addSiteRoot(path) + fragment + query;
+        if (!"".equals(path)) {
+            return cms.getRequestContext().addSiteRoot(path) + fragment + query;
+        }
+        
+        // uri without path (typically local link)
+        return fragment + query;
     }
     
     /**
