@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/28 16:27:54 $
- * Version: $Revision: 1.174 $
+ * Date   : $Date: 2004/07/06 09:33:03 $
+ * Version: $Revision: 1.175 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,12 +51,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.174 $ $Date: 2004/06/28 16:27:54 $
+ * @version $Revision: 1.175 $ $Date: 2004/07/06 09:33:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -90,10 +84,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /** Table key for projects. */
     protected static final String C_TABLE_PROJECTS = "CMS_PROJECTS";
 
-    /** Table key for system properties. */
-    protected static final String C_TABLE_SYSTEMPROPERTIES = "CMS_SYSTEMPROPERTIES";
-
-    /** The driver manager. */
+   /** The driver manager. */
     protected CmsDriverManager m_driverManager;
 
     /** Array containing all max-ids for the tables. */
@@ -221,48 +212,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Creates a serializable object in the systempropertys.
-     *
-     * @param name The name of the property.
-     * @param object The property-object.
-     *
-     * @return object The property-object.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Serializable createSystemProperty(String name, Serializable object) throws CmsException {
-
-        byte[] value;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            // serialize the object
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(object);
-            oout.close();
-            value = bout.toByteArray();
-
-            // create the object
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_WRITE");
-            stmt.setInt(1, m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES));
-            stmt.setString(2, name);
-            m_sqlManager.setBytes(stmt, 3, value);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            value = null;
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-        return readSystemProperty(name);
-    }
-
-    /**
      * Deletes a project from the cms.
      * Therefore it deletes all files, resources and properties.
      *
@@ -356,31 +305,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }        
-    }
-
-    /**
-     * Deletes a serializable object from the systempropertys.
-     *
-     * @param name The name of the property.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public void deleteSystemProperty(String name) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        // this method is currently unused- dont delete it anyway!
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_DELETE");
-            stmt.setString(1, name);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
     }
 
     /**
@@ -1963,49 +1887,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return returnValue;       
     }
 
-    
-    
-    /**
-     * Reads a serializable object from the systempropertys.
-     *
-     * @param name The name of the property.
-     * @return object The property-object.
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Serializable readSystemProperty(String name) throws CmsException {
-
-        Serializable property = null;
-        byte[] value;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        // create get the property data from the database
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_READ");
-            stmt.setString(1, name);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                value = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_SYSTEMPROPERTY_VALUE"));
-                // now deserialize the object
-                ByteArrayInputStream bin = new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                property = (Serializable) oin.readObject();
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } catch (ClassNotFoundException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_CLASSLOADER_ERROR, e, false);
-        } finally {
-            value = null;
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return property;
-    }
-
     /**
      * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(org.opencms.file.CmsProject)
      */
@@ -2128,45 +2009,4 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
         }
     }
-
-    /**
-     * Writes a serializable object to the systemproperties.
-     *
-     * @param name The name of the property.
-     * @param object The property-object.
-     *
-     * @return object The property-object.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
-        byte[] value = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            // serialize the object
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(object);
-            oout.close();
-            value = bout.toByteArray();
-
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_UPDATE");
-            m_sqlManager.setBytes(stmt, 1, value);
-            stmt.setString(2, name);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            value = null;
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return readSystemProperty(name);
-    }    
-    
 }

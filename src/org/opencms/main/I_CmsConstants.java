@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/07/05 10:07:22 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/07/06 09:33:03 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public interface I_CmsConstants {
 
@@ -500,41 +500,6 @@ public interface I_CmsConstants {
      * The name of the root folder.
      */
     String C_ROOT = C_FOLDER_SEPARATOR;
-
-    /**
-     * The name of the exportpath-systemproperty.
-     */
-    String C_SYSTEMPROPERTY_CRONTABLE = "CRONTABLE";
-
-    /**
-     * The name of the exportpath-systemproperty.
-     */
-    String C_SYSTEMPROPERTY_PACKAGEPATH = "PACKAGEPATH";
-
-    /**
-     * The name of the mountpoint-systemproperty.
-     */
-    String C_SYSTEMPROPERTY_MOUNTPOINT = "MOUNTPOINT";
-
-    /**
-     * The name of the mimetypes-systemproperty.
-     */
-    String C_SYSTEMPROPERTY_MIMETYPES = "MIMETYPES";
-
-    /**
-     * The name of the resourcetype-systemproperty.
-     */
-    String C_SYSTEMPROPERTY_RESOURCE_TYPE = "RESOURCE_TYPE";
-
-    /**
-     * The name of the resourcetype-extension.
-     */
-    String C_SYSTEMPROPERTY_EXTENSIONS = "EXTENSIONS";
-
-    /**
-     * The name of the linkchecktable-systemproperty.
-     */
-    String C_SYSTEMPROPERTY_LINKCHECKTABLE = "LINKCHECKTABLE";
 
     /**
      * The key for the username in the user information hashtable.

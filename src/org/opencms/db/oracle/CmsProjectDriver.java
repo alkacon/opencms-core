@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/07/06 09:33:03 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,34 +32,29 @@
 package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDriverManager;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.dbcp.DelegatingResultSet;
 
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.26 $ $Date: 2004/06/28 07:47:32 $
+ * @version $Revision: 1.27 $ $Date: 2004/07/06 09:33:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -71,115 +66,6 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
      */
     private boolean m_enableServerCopy;
     
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#createSystemProperty(java.lang.String, java.io.Serializable)
-     */
-    public Serializable createSystemProperty(String name, Serializable object) throws CmsException {
-
-        PreparedStatement stmt = null;
-        PreparedStatement commit = null;
-        PreparedStatement rollback = null;
-        Connection conn = null;
-        ResultSet res = null;
-
-        try {
-            
-            // serialize the object
-            byte[] value = internalSerializeObject(object);
-
-            int id = m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES);
-                        
-            conn = m_sqlManager.getConnection();
-            
-            // create the object
-            // first insert the new systemproperty with empty systemproperty_value, then update
-            // the systemproperty_value. These two steps are necessary because of using Oracle BLOB
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_ADD");
-            stmt.setInt(1, id);
-            stmt.setString(2, name);
-            stmt.executeUpdate();
-            stmt.close();
-            stmt = null;
-            
-            conn.setAutoCommit(false);
-            
-            // now update the systemproperty_value
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_UPDATE");
-            stmt.setInt(1, id);
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-            if (!res.next()) {
-                throw new CmsException("createSystemProperty name=" + name + " system property not found", CmsException.C_NOT_FOUND);
-            }
-
-            // write serialized system property 
-            Blob propertyValue = res.getBlob("SYSTEMPROPERTY_VALUE");
-            ((oracle.sql.BLOB)propertyValue).trim(0);
-            OutputStream output = ((oracle.sql.BLOB)propertyValue).getBinaryOutputStream();
-            output.write(value);
-            output.close();
-            value = null;
-                         
-            commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            commit.execute();
-            
-            m_sqlManager.closeAll(null, stmt, res);
-            m_sqlManager.closeAll(null, commit, null);
-            
-//            commit.close(); 
-//            stmt.close();
-            
-            commit = null;
-            stmt = null;
-            res = null;
-                          
-            conn.setAutoCommit(true);            
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createSystemProperty name=" + name, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "createSystemProperty name=" + name, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }                
-            } 
-            if (commit != null) {
-                try {
-                    commit.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            } 
-            if (stmt != null) {
-                try {
-                    rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                    rollback.execute();
-                    rollback.close();
-                } catch (SQLException se) {
-                    // ignore
-                }
-                try {
-                    stmt.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }                
-            }                
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException se) {
-                    // ignore
-                }                   
-            }
-        }
-
-        return readSystemProperty(name);
-    }
-
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
@@ -297,103 +183,6 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
         }
         
         return newFile;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#writeSystemProperty(java.lang.String, java.io.Serializable)
-     */
-    public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
-
-        PreparedStatement stmt = null;
-        PreparedStatement commit = null;
-        PreparedStatement rollback = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            
-            // serialize the object
-            byte[] value = internalSerializeObject(object);
-            
-            conn = m_sqlManager.getConnection();
-            conn.setAutoCommit(false);
-            
-            // update system property
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_UPDATE_BYNAME");
-            stmt.setString(1, name);
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-            if (!res.next()) {
-                throw new CmsException("writeSystemProperty name=" + name + " system property not found", CmsException.C_NOT_FOUND);
-            }
-
-            // write serialized system property 
-            Blob propertyValue = res.getBlob("SYSTEMPROPERTY_VALUE");
-            ((oracle.sql.BLOB)propertyValue).trim(0);
-            OutputStream output = ((oracle.sql.BLOB)propertyValue).getBinaryOutputStream();
-            output.write(value);
-            output.close();
-            value = null;
-                         
-            commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            commit.execute();
-            
-            m_sqlManager.closeAll(null, stmt, res);
-            m_sqlManager.closeAll(null, commit, null);
-            
-//            commit.close();              
-//            stmt.close();
-
-            commit = null;
-            stmt = null;
-            res = null;
-                          
-            conn.setAutoCommit(true);            
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeSystemProperty name=" + name, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "writeSystemProperty name=" + name, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }                
-            } 
-            if (commit != null) {
-                try {
-                    commit.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            } 
-            if (stmt != null) {
-                try {
-                    rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                    rollback.execute();
-                    rollback.close();
-                } catch (SQLException se) {
-                    // ignore
-                }
-                try {
-                    stmt.close();
-                } catch (SQLException exc) {
-                    // ingnore
-                }                
-            }                
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException se) {
-                    // ignore
-                }                   
-            }
-        }
-
-        return readSystemProperty(name);
     }
 
     /**

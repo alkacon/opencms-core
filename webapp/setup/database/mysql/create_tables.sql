@@ -1,9 +1,3 @@
-create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID INT NOT NULL,
-                                         SYSTEMPROPERTY_NAME VARCHAR(40) NOT NULL, 
-                                         SYSTEMPROPERTY_VALUE blob,
-                                         primary key(SYSTEMPROPERTY_ID),
-                                         unique(SYSTEMPROPERTY_NAME));
-
 create table CMS_USERS                  (USER_ID VARCHAR(36) BINARY NOT NULL,
                                          USER_NAME VARCHAR(64) BINARY NOT NULL,
                                          USER_PASSWORD VARCHAR(32) BINARY NOT NULL,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/06 09:33:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Vector;
  */
 public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
 
-    
+    /** The defintion of the filename to store the serialized hashtable in the rfs. */
     static final String LINKTABLE_FILENAME = OpenCms.getSystemInfo().getPackagesRfsPath() + "linkcheck";
     
     /**

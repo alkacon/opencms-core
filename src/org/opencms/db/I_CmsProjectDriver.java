@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/21 09:54:49 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/07/06 09:33:03 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.main.CmsException;
-import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsTask;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -44,8 +39,11 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsTask;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -55,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.50 $ $Date: 2004/06/21 09:54:49 $
+ * @version $Revision: 1.51 $ $Date: 2004/07/06 09:33:03 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -86,16 +84,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     void createProjectResource(int projectId, String resourceName, Object reservedParam) throws CmsException;
-
-    /**
-     * Creates a serializable object in the systempropertys.<p>
-     *
-     * @param name the name of the property
-     * @param object the property-object
-     * @return object the property-object
-     * @throws CmsException if something goes wrong
-     */
-    Serializable createSystemProperty(String name, Serializable object) throws CmsException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -132,14 +120,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if operation was not succesful
      */
     void deleteProjectResources(CmsProject project) throws CmsException;
-
-    /**
-     * Deletes a serializable object from the systempropertys.<p>
-     *
-     * @param name the name of the property.
-     * @throws CmsException if something goes wrong
-     */
-    void deleteSystemProperty(String name) throws CmsException;
 
     /**
      * Deletes an entry in the published resource table.<p>
@@ -413,16 +393,6 @@ public interface I_CmsProjectDriver {
      */
      String readStaticExportPublishedResourceParameters(CmsProject currentProject, String rfsName) throws CmsException;
 
-    
-    /**
-     * Reads a serializable object from the systempropertys.<p>
-     *
-     * @param name The name of the property.
-     * @return object The property-object.
-     * @throws CmsException Throws if something goes wrong
-     */
-    Serializable readSystemProperty(String name) throws CmsException;
-
     /**
      * Inserts an entry in the publish history for a published VFS resource.<p>
      * 
@@ -460,17 +430,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void writeStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException;
-
-    /**
-     * Writes a serializable object to the systemproperties.<p>
-     *
-     * @param name The name of the property.
-     * @param object The property-object.
-     * @return object The property-object.
-     * @throws CmsException if something goes wrong
-     */
-    Serializable writeSystemProperty(String name, Serializable object) throws CmsException;
-    
+   
     /**
      * Returns the SqlManager of this driver.<p>
      * 

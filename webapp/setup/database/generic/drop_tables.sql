@@ -31,7 +31,6 @@ drop table cms_online_structure;
 drop table cms_projectresources;
 drop table cms_projects;
 drop table cms_systemid;
-drop table cms_systemproperties;
 drop table cms_task;
 drop table cms_tasklog;
 drop table cms_taskpar;
