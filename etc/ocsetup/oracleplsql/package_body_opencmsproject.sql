@@ -1,7 +1,7 @@
 CREATE OR REPLACE
 PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
-   bAnyList VARCHAR2(100) := '';
+   bAnyList VARCHAR2(1000) := '';
    PROCEDURE helperCopyResourceToProject(pUserId IN NUMBER, pProjectId IN NUMBER, pOnlineProjectId IN NUMBER, pResourceName IN VARCHAR2);
    FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
 --------------------------------------------------------------------
@@ -252,22 +252,36 @@ PACKAGE BODY OpenCmsProject IS
       curSubResource := opencmsResource.getFilesInFolder(pUserId, pOnlineProjectId, pResourceName);
       IF curSubResource IS NOT NULL THEN
         LOOP
-          FETCH curSubResource INTO recSubResource;
-          EXIT WHEN curSubResource%NOTFOUND;
-          helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
+          BEGIN
+            FETCH curSubResource INTO recSubResource;
+            EXIT WHEN curSubResource%NOTFOUND;
+            helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
+          EXCEPTION
+            WHEN invalid_cursor THEN
+              exit;
+          END;
         END LOOP;
       END IF;
-      CLOSE curSubResource;
+      IF curSubResource%ISOPEN THEN
+        CLOSE curSubResource;
+      END IF;
       -- all folder in the folder
       curSubResource := opencmsResource.getFoldersInFolder(pUserId, pOnlineProjectId, pResourceName);
       IF curSubResource IS NOT NULL THEN
         LOOP
-          FETCH curSubResource INTO recSubResource;
-          EXIT WHEN curSubResource%NOTFOUND;
-          helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
+          BEGIN
+            FETCH curSubResource INTO recSubResource;
+            EXIT WHEN curSubResource%NOTFOUND;
+            helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
+          EXCEPTION
+            WHEN invalid_cursor THEN
+              exit;
+          END;
         END LOOP;
       END IF;
-      CLOSE curSubResource;
+      IF curSubResource%ISOPEN THEN
+        CLOSE curSubResource;
+      END IF;
     END IF;
   EXCEPTION
     WHEN OTHERS THEN

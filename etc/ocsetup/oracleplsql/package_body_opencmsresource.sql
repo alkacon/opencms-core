@@ -17,9 +17,9 @@ PACKAGE BODY opencmsresource IS
     lockResource(pUserId, pProjectId, pFolderName, pForce);
     -- now build the cursor which contains the locked resources to return the resultset
     IF length(bResourceList) > 0 THEN
-      OPEN pResource FOR 'select * from cms_resources where resource_id in ('||substr(bResourceList,3)||')';
-    ELSE
-      OPEN pResource FOR 'select * from cms_resources where resource_id = -1';
+      -- open the cursor with the locked resources
+      OPEN pResource FOR 'select * from cms_resources where project_id = '||pProjectId||
+                         ' and resource_name like '''||pFolderName||'%'' and locked_by = '||pUserId;
     END IF;
     bResourceList := '';
   END;
@@ -64,29 +64,44 @@ PACKAGE BODY opencmsresource IS
       -- lock the resource for this user
       update cms_resources set locked_by = pUserId
              where resource_id = recResource.resource_id;
-      bResourceList := bResourceList||', '||to_char(recResource.resource_id);
+      -- put only one resource_id into the resource-list to mark that there was something locked
+      bResourceList := to_char(recResource.resource_id);
       -- if the resource is folder then lock all subresources
       IF substr(vFolderName, -1) = '/' THEN
         -- all files in folder
         curResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
         LOOP
-          FETCH curResource INTO recResource;
-          EXIT WHEN curResource%NOTFOUND;
-          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-            lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
-          END IF;
+		  BEGIN
+            FETCH curResource INTO recResource;
+            EXIT WHEN curResource%NOTFOUND;
+            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
+              lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
+            END IF;
+          EXCEPTION
+            WHEN invalid_cursor THEN
+              exit;  
+          END;
         END LOOP;
-        CLOSE curResource;
+        IF curResource%ISOPEN THEN
+          CLOSE curResource;
+        END IF; 
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
-          FETCH curResource INTO recResource;
-          EXIT WHEN curResource%NOTFOUND;
-          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-            lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
-          END IF;
+  		  BEGIN
+            FETCH curResource INTO recResource;
+            EXIT WHEN curResource%NOTFOUND;
+            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
+              lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
+            END IF;
+          EXCEPTION
+            WHEN invalid_cursor THEN
+              exit;
+          END;
         END LOOP;
-        CLOSE curResource;
+        IF curResource%ISOPEN THEN        
+          CLOSE curResource;
+        END IF;
       END IF;
     ELSE
       userErrors.raiseUserError(userErrors.C_NO_ACCESS);
@@ -106,11 +121,10 @@ PACKAGE BODY opencmsresource IS
     bResourceList := '';
     -- first unlock the resources
     unlockResource(pUserId, pProjectId, pFolderName);
-    -- now build the cursor which contains the locked resources to return the resultset
+    -- now build the cursor which contains the unlocked resources to return the resultset
     IF length(bResourceList) > 0 THEN
-      OPEN pResource FOR 'select * from cms_resources where resource_id in ('||substr(bResourceList,3)||')';
-    ELSE
-      OPEN pResource FOR 'select * from cms_resources where resource_id = -1';
+      OPEN pResource FOR 'select * from cms_resources where project_id='||pProjectId||
+                         ' and resource_name like '''||pFolderName||'%'' and locked_by='||opencmsConstants.C_UNKNOWN_ID;
     END IF;
     bResourceList := '';
   END unlockResource;
@@ -146,7 +160,8 @@ PACKAGE BODY opencmsresource IS
           -- unlock the resource
           update cms_resources set locked_by = opencmsConstants.C_UNKNOWN_ID
                  where resource_id = recResource.resource_id;
-          bResourceList := bResourceList||', '||to_char(recResource.resource_id);
+          -- need only one resource-id to mark that there was something unlocked       
+          bResourceList := to_char(recResource.resource_id);
         ELSE
           userErrors.raiseUserError(userErrors.C_LOCKED);
         END IF;
@@ -156,23 +171,37 @@ PACKAGE BODY opencmsresource IS
         -- all files in folder
         curResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
         LOOP
-          FETCH curResource INTO recResource;
-          EXIT WHEN curResource%NOTFOUND;
-          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-            unlockResource(pUserId, pProjectId, recResource.resource_name);
-          END IF;
+          BEGIN
+            FETCH curResource INTO recResource;
+            EXIT WHEN curResource%NOTFOUND;
+            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
+              unlockResource(pUserId, pProjectId, recResource.resource_name);
+            END IF;
+          EXCEPTION
+            WHEN invalid_cursor THEN
+              exit;
+          END;      
         END LOOP;
-        CLOSE curResource;
+        IF curResource%ISOPEN THEN
+          CLOSE curResource;
+        END IF;  
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
-          FETCH curResource INTO recResource;
-          EXIT WHEN curResource%NOTFOUND;
-          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-            unlockResource(pUserId, pProjectId, recResource.resource_name);
-          END IF;
+          BEGIN
+            FETCH curResource INTO recResource;
+            EXIT WHEN curResource%NOTFOUND;
+            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
+              unlockResource(pUserId, pProjectId, recResource.resource_name);
+            END IF;
+          EXCEPTION
+            WHEN invalid_cursor THEN
+              exit;
+          END;      
         END LOOP;
-        CLOSE curResource;
+        IF curResource%ISOPEN THEN
+          CLOSE curResource;
+        END IF;  
       END IF;
     ELSE
       userErrors.raiseUserError(userErrors.C_NO_ACCESS);
@@ -188,7 +217,7 @@ PACKAGE BODY opencmsresource IS
 -- for project with project_id = pProjectId or for online-project
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFolderAcc(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
-    curFolder userTypes.anyCursor;
+    curFolder userTypes.anyCursor;  
     recFolder cms_resources%ROWTYPE;
   BEGIN
     curFolder := readFolder(pUserId, pProjectID, pFolderName);
@@ -200,13 +229,10 @@ PACKAGE BODY opencmsresource IS
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
-      -- because the cursor was fetched into a record it seems to be necessary to read the file again for returning
-      -- the cursor
-      curFolder := readFolder(pUserId, pProjectID, pFolderName);
-    ELSE
-      -- error: open the cursor with a select that returns no rows
-      OPEN curFolder FOR select * from cms_resources where resource_id = -1;
     END IF;
+    -- because the cursor was fetched into a record it's necessary to read the file again for returning
+    -- the cursor
+    curFolder := readFolder(pUserId, pProjectID, pFolderName);    
     RETURN curFolder;
   END readFolderAcc;
 --------------------------------------------------------------------------------------------------------------
@@ -214,25 +240,18 @@ PACKAGE BODY opencmsresource IS
 -- for project with project_id = pProjectId or for online-project
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFolder(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
-    vCount NUMBER;
-    curFolder userTypes.anyCursor;
+    curOnlineProject userTypes.anyCursor;
+    recOnlineProject cms_projects%ROWTYPE;
+    curFolder userTypes.anyCursor;  
   BEGIN
-    -- does the folder exist for this project?
-    select count(*) into vCount from cms_resources where resource_name = pFolderName and project_id = pProjectId;
-    IF vCount = 0 THEN
-      -- the folder doesn't exist for this project => read the folder from online-project,
-      -- if the project isn't online-project itself
-      IF pProjectID <> 1 THEN
-        OPEN curFolder FOR select * from cms_resources
-                         where resource_name = pFolderName and project_id = 1;
-      ELSE
-        -- error: open the cursor with a select that returns no rows
-        OPEN curFolder FOR select * from cms_resources where resource_id = -1;
-      END IF;
-    ELSE
-      OPEN curFolder FOR select * from cms_resources
-                         where resource_name = pFolderName and project_id = pProjectId;
-    END IF;
+    curOnlineProject := opencmsProject.onlineProject(pProjectId);
+    FETCH curOnlineProject INTO recOnlineProject;
+    CLOSE curOnlineProject;  
+    -- read the resource from offline project or the online project, the first resource is used
+    OPEN curFolder FOR select * from cms_resources
+                       where resource_name = pFolderName 
+                       and project_id in (pProjectId, recOnlineProject.project_id)
+                       order by project_id desc;
     RETURN curFolder;
   END readFolder;
 --------------------------------------------------------------------------------------------------------------
@@ -240,16 +259,20 @@ PACKAGE BODY opencmsresource IS
 -- for the project with project_id = pProjectId or for online-projekt
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFileHeader(pUserId NUMBER, pProjectID NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
-    vCount NUMBER;
+    curOnlineProject userTypes.anyCursor;
+    recOnlineProject cms_projects%ROWTYPE;
     curResource userTypes.anyCursor;
     recFile cms_resources%ROWTYPE;
   BEGIN
+    curOnlineProject := opencmsProject.onlineProject(pProjectId);
+    FETCH curOnlineProject INTO recOnlineProject;
+    CLOSE curOnlineProject;
     -- is pFileName a folder? => readFolder
     IF substr(pFileName, -1) = '/' THEN
       curResource := readFolder(pUserId, pProjectId, pFileName);
       RETURN curResource;
     END IF;
-    curResource := readFileHeader(pUserId, pProjectId, 1, pFileName);
+    curResource := readFileHeader(pUserId, pProjectId, recOnlineProject.project_id, pFileName);
     FETCH curResource INTO recFile;
     CLOSE curResource;
     -- check the access for the existing file
@@ -258,13 +281,8 @@ PACKAGE BODY opencmsresource IS
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
-      -- because the cursor was fetched into a record it seems to be necessary to read the file again for returning
-      -- the cursor
-      curResource := readFileHeader(pUserId, pProjectId, 1, pFileName);
-    ELSE
-      -- error: open the cursor with a select that returns no rows
-      OPEN curResource FOR select * from cms_resources where resource_id = -1;
     END IF;
+    curResource := readFileHeader(pUserId, pProjectId, recOnlineProject.project_id, pFileName);    
     RETURN curResource;
   END readFileHeader;
 --------------------------------------------------------------------------------------------------------------
@@ -272,29 +290,13 @@ PACKAGE BODY opencmsresource IS
 -- for the project with project_id = pProjectId or for online-projekt
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFileHeader(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
-    vCount NUMBER;
     curFile userTypes.anyCursor;
-    recFile cms_resources%ROWTYPE;
   BEGIN
-    select count(*) into vCount from cms_resources
-           where resource_name = pFileName
-           and project_id = pProjectId;
-    IF vCount = 0 THEN
-      -- the folder doesn't exist for this project => read the folder from online-project
-      -- if the project isn't online-folder itself
-      -- it seems to be necessary to fetch the cursor, close it, check the access and open the cursor again
-      -- otherwise the cursor loose its data after the fetch
-      IF pProjectID <> 1 THEN
-        OPEN curFile FOR select * from cms_resources
-                         where resource_name = pFileName and project_id = pOnlineProjectId;
-      ELSE
-        -- error: open the cursor with a select that returns no rows
-        OPEN curFile FOR select * from cms_resources where resource_id = -1;
-      END IF;
-    ELSE
-      OPEN curFile FOR select * from cms_resources
-                         where resource_name = pFileName and project_id = pProjectId;
-    END IF;
+    -- read the resource from offline project or the online project, the first resource is used
+    OPEN curFile FOR select * from cms_resources
+                     where resource_name = pFileName 
+                     and project_id in (pProjectId, pOnlineProjectId)
+                     order by project_id desc;
     RETURN curFile;
   END readFileHeader;
 --------------------------------------------------------------------------------------------------------------
@@ -303,22 +305,14 @@ PACKAGE BODY opencmsresource IS
 -- without checking access
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFileNoAccess(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
-    curResource userTypes.anyCursor;
-    recFileHeader cms_resources%ROWTYPE;
+    curResource userTypes.anyCursor; 
   BEGIN
-    -- first read the file-header either from the project or from the onlineProject
-    curResource := readFileHeader(pUserId, pProjectId, pOnlineProjectId, pFileName);
-    FETCH curResource INTO recFileHeader;
-    -- now create the cursor for the file including the file_content
-    IF recFileHeader.resource_id IS NOT NULL THEN
-      OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
-                           where r.resource_id = recFileHeader.resource_id
-                           and r.file_id = f.file_id(+);
-    ELSE
-      -- error: open the cursor with a select that returns no rows
-      OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
-                           where r.resource_id = -1 and r.file_id = f.file_id(+);
-    END IF;
+    -- read the resource from offline project or the online project, the first resource is used
+  	OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
+                           where r.resource_name = pFileName
+                           and r.project_id in (pProjectId, pOnlineProjectId)
+                           and r.file_id = f.file_id(+)
+                           order by project_id desc;
     RETURN curResource;
   END readFileNoAccess;
 --------------------------------------------------------------------------------------------------------------
@@ -331,7 +325,8 @@ PACKAGE BODY opencmsresource IS
   BEGIN
     -- first read the file-header either from the project or from the onlineProject
     curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
-    FETCH curResource INTO recFile;
+    FETCH curResource INTO recFile;  
+    CLOSE curResource;
     -- now create the cursor for the file including the file_content
     IF recFile.resource_id IS NOT NULL THEN
       IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
@@ -341,12 +336,9 @@ PACKAGE BODY opencmsresource IS
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
-      curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
-    ELSE
-      -- error: open the cursor with a select that returns no rows
-      OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
-                           where r.resource_id = -1 and r.file_id = f.file_id(+);
     END IF;
+    -- because the cursor was fetched it has to be read again    
+    curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);    
     RETURN curResource;
   END readFile;
 --------------------------------------------------------------------------------------------------------------
@@ -354,19 +346,16 @@ PACKAGE BODY opencmsresource IS
 -- for the project with project_id = pProjectId or for online-projekt
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFile(pUserId NUMBER, pProjectID NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
-    vCount NUMBER;
     curResource userTypes.anyCursor;
     recFile userTypes.fileRecord;
-    curProject userTypes.anyCursor;
-    recProject cms_projects%ROWTYPE;
-    vOnlineProjectId NUMBER;
+    curOnlineProject userTypes.anyCursor;
+    recOnlineProject cms_projects%ROWTYPE;
   BEGIN
-    curProject := opencmsProject.onlineProject(pProjectId);
-    FETCH curProject INTO recProject;
-    CLOSE curProject;
-    vOnlineProjectId := recProject.project_id;
+    curOnlineProject := opencmsProject.onlineProject(pProjectId);
+    FETCH curOnlineProject INTO recOnlineProject;
+    CLOSE curOnlineProject;
     -- first read the file
-    curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProjectId, pFileName);
+    curResource := readFileNoAccess(pUserId, pProjectId, recOnlineProject.project_id, pFileName);
     FETCH curResource INTO recFile;
     CLOSE curResource;
     -- check the access for the existing file
@@ -378,26 +367,9 @@ PACKAGE BODY opencmsresource IS
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
-      -- because the cursor was fetched into a record it seems to be necessary to read the file again for returning
-      -- the cursor
-      curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProjectId, pFileName);
-    ELSE
-      IF pProjectId = vOnlineProjectId THEN
-        -- error: open the cursor with a select that returns no rows
-        OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
-                           where r.resource_id = -1 and r.file_id = f.file_id(+);
-      ELSE
-        curResource := readFileNoAccess(pUserId, vOnlineProjectId, vOnlineProjectId, pFileName);
-      	IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
-	   	  userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
-        END IF;
-        IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
-         -- error: no access for this file
-         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
-        END IF;
-        curResource := readFileNoAccess(pUserId, vOnlineProjectId, vOnlineProjectId, pFileName);
-      END IF;
     END IF;
+    -- because the cursor was fetched it has to be read again
+    curResource := readFileNoAccess(pUserId, pProjectId, recOnlineProject.project_id, pFileName);    
     RETURN curResource;
   END readFile;
 ----------------------------------------------------------------------------------------------
@@ -762,7 +734,7 @@ PACKAGE BODY opencmsresource IS
     IF curResource%NOTFOUND THEN
       -- error reading the folder: open cursor with select that returns no rows
       CLOSE curResource;
-      OPEN curResource FOR select * from cms_resources where resource_id = -1;
+      --OPEN curResource FOR select * from cms_resources where resource_id = -1;
       RETURN curResource;
     END IF;
     CLOSE curResource;
@@ -811,13 +783,7 @@ PACKAGE BODY opencmsresource IS
       vQueryString := substr(vQueryString, 8);
       IF substr(vQueryString,1,6) = 'select' THEN
         OPEN curResource FOR 'select * from ('||vQueryString||') order by resource_name';
-      ELSE
-        -- error: open cursor with select that returns no rows
-        OPEN curResource FOR select * from cms_resources where resource_id = -1;
       END IF;
-    ELSE
-      -- error: open cursor with select that returns no rows
-      OPEN curResource FOR select * from cms_resources where resource_id = -1;
     END IF;
     bAnyList := '';
     RETURN curResource;
@@ -843,7 +809,7 @@ PACKAGE BODY opencmsresource IS
     IF curResource%NOTFOUND THEN
       -- error reading the folder: open cursor with select that returns no rows
       CLOSE curResource;
-      OPEN curResource FOR select * from cms_resources where resource_id = -1;
+      --OPEN curResource FOR select * from cms_resources where resource_id = -1;
       RETURN curResource;
     END IF;
     CLOSE curResource;
@@ -892,13 +858,7 @@ PACKAGE BODY opencmsresource IS
       vQueryString := substr(vQueryString, 8);
       IF substr(vQueryString,1,6) = 'select' THEN
         OPEN curResource FOR 'select * from ('||vQueryString||') order by resource_name';
-      ELSE
-        -- error: open cursor with select that returns no rows
-        OPEN curResource FOR select * from cms_resources where resource_id = -1;
       END IF;
-    ELSE
-      -- error: open cursor with select that returns no rows
-      OPEN curResource FOR select * from cms_resources where resource_id = -1;
     END IF;
     bAnyList := '';
     RETURN curResource;
