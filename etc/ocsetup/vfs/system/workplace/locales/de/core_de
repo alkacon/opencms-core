@@ -509,6 +509,7 @@
                 <property>Eigenschaften</property>
                 <publish>Direkt veröffentlichen</publish>
                 <rename>Umbenennen</rename>
+                <replace>Ersetzen</replace>
                 <touch>Aktualisieren</touch>
                 <type>Dateityp ändern</type>
                 <undelete>Wiederherstellen</undelete>
@@ -1206,6 +1207,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <propinuse>Eigenschaft in Benutzung</propinuse>
             <rename>Datei umbenennen</rename>
             <renamefolder>Verzeichnis umbenennen</renamefolder>
+            <replace>Datei ersetzen</replace>
             <rootfolder>Hauptverzeichnis</rootfolder>
             <setup>Setup</setup>
             <size>Größe</size>

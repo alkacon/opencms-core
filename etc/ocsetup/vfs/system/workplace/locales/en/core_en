@@ -510,6 +510,7 @@
                 <property>Properties</property>
                 <publish>Publish Directly</publish>
                 <rename>Rename</rename>
+                <replace>Replace</replace>
                 <touch>Touch</touch>
                 <type>Change File Type</type>
                 <undelete>Undelete</undelete>
@@ -1205,6 +1206,7 @@ A new task was reactivated for you or your role.</content>
             <propinuse>Property definition already in use</propinuse>
             <rename>Rename File</rename>
             <renamefolder>Rename Folder</renamefolder>
+            <replace>Replace file</replace>
             <rootfolder>(Root Folder)</rootfolder>
             <setup>Setup</setup>            
             <size>Size</size>
