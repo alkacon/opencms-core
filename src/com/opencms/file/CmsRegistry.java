@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/03/25 00:14:35 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/03/25 08:52:21 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.72 $ $Date: 2003/03/25 00:14:35 $
+ * @version $Revision: 1.73 $ $Date: 2003/03/25 08:52:21 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -1756,7 +1756,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 CmsException.C_REGISTRY_ERROR);
         }
     
-        CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
+        CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", new CmsShellReport());
         return cmsImport.getConflictingFilenames();
     }
 
@@ -1812,7 +1812,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 CmsException.C_REGISTRY_ERROR);
         }
     
-        CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
+        CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", new CmsShellReport());
         return cmsImport.getResourcesForProject();
     }
 
@@ -1889,7 +1889,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             }
         }
             
-        CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, report);
+        CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", report);
         cmsImport.importResources(exclusion, resourceNames, resourceCodes, propertyName, propertyValue);
     
         // import the module data into the registry

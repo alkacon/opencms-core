@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/03/22 07:24:53 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/03/25 08:52:21 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.file;
 
-import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -42,9 +41,7 @@ import com.opencms.util.Encoder;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -56,105 +53,58 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * This class holds the functionaility to import resources from the filesystem
- * into the cms.
+ * Holds the functionaility to import resources from the filesystem
+ * or a zip file into the OpenCms COS.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/03/22 07:24:53 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.10 $ $Date: 2003/03/25 08:52:21 $
  */
-public class CmsImportModuledata implements I_CmsConstants, Serializable {
+public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
 
     /**
-     * The algorithm for the message digest
-     */
-    public static final String C_IMPORT_DIGEST="MD5";
-
-    /**
-     * The import-file to load resources from
-     */
-    private String m_importFile;
-
-    /**
-     * The import-resource (folder) to load resources from
-     */
-    private File m_importResource = null;
-
-    /**
-     * The version of this import, noted in the info tag of the manifest.xml.
-     * 0 if the import file dosent have a version nummber (that is befor version
-     * 4.3.23 of OpenCms).
-     */
-    private int m_importVersion = 0;
-
-    /**
-     * The import-resource (zip) to load resources from
-     */
-    private ZipFile m_importZip = null;
-
-    /**
-     * The import-path to write resources into the cms.
-     */
-    private String m_importPath;
-
-    /**
-     * The cms-object to do the operations.
-     */
-    private CmsObject m_cms;
-
-    /**
-     * The xml manifest-file.
-     */
-    private Document m_docXml;
-    
-    /** Report for the output */
-    private I_CmsReport m_report;
-
-    /**
-     * This constructs a new CmsImportModuledata-object which imports the moduledata.
+     * Constructs a new import object which imports the module date from an OpenCms 
+     * export zip file or a folder in the "real" file system.<p>
      *
-     * @param importFile the file or folder to import from.
-     * @param importPath the path to the cms to import into.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @param cms the current cms object
+     * @param importFile the file or folder to import from
+     * @param importPath the path in the cms VFS to import into
+     * @param report a report object to output the progress information to
+     * @throws CmsException if something goes wrong
      */
-    public CmsImportModuledata(String importFile, String importPath, CmsObject cms, I_CmsReport report)
-        throws CmsException {
-
-        m_importFile = importFile;
-        m_importPath = importPath;
+    public CmsImportModuledata(
+        CmsObject cms, 
+        String importFile, 
+        String importPath, 
+        I_CmsReport report
+    ) throws CmsException {
+        // set member variables
         m_cms = cms;
-        m_report = report;
-
-        // open the import resource
-        getImportResource();
-
-        // read the xml-config file
-        getXmlConfigFile();
-
-        // try to read the export version nummber
-        try{
-            m_importVersion = Integer.parseInt(
-                getTextNodeValue((Element)m_docXml.getElementsByTagName(
-                    C_EXPORT_TAG_INFO).item(0) , C_EXPORT_TAG_VERSION));
-        }catch(Exception e){            
-            //ignore the exception, the export file has no version number (version 0).
-        }
+        m_importFile = importFile;
+        m_importPath = importPath;          
+        m_report = report;  
+        m_importingChannelData = true;
     }
-
+    
     /**
-     * Imports the moduledata and writes them to the cms even if there already exist conflicting files
+     * Imports the moduledata and writes them to the cms even if there already exist 
+     * conflicting files.<p>
+     * @throws CmsException in case something goes wrong
      */
-    public void importModuledata() throws CmsException {
+    public void importResources() throws CmsException {
+        // initialize the import
+        openImportFile();  
         try{
             // first import the channels
             m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            (new CmsImport(m_cms, m_importPath, m_docXml, m_report)).importResources();
+            importResources(null, null, null, null, null);
             m_report.println(m_report.key("report.import_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
             
             // now import the moduledata
@@ -164,19 +114,15 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         } catch (CmsException e){
             throw e;
         } finally {
-            if (m_importZip != null){
-                try{
-                    m_importZip.close();
-                } catch (IOException exc) {
-                    throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-                }
-            }
+            // close the import file
+            closeImportFile();
         }
     }
 
     /**
      * Gets the available modules in the current system
-     * and imports the data for existing modules
+     * and imports the data for existing modules.<p>
+     * @throws CmsException in case something goes wrong
      */
     public void importModuleMasters() throws CmsException{
         // get all available modules in this system
@@ -224,10 +170,12 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * Imports a single master
-     * @param subId The subid of the module
-     * @param classname The name of the module class
-     * @param currentElement The current element of the xml-file
+     * Imports a single master.<p>
+     * 
+     * @param subId the subid of the module
+     * @param classname the name of the module class
+     * @param currentElement the current element of the xml file
+     * @throws CmsException in case something goes wrong
      */
     private void importMaster(String subId, String classname, Element currentElement) throws CmsException{
         // print out some information to the report
@@ -279,10 +227,12 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * Gets the dataset for the master from the xml-file
-     * @param subId The subid of the module
-     * @param currentElement The current element of the xml-file
-     * @return CmsMasterDataSet The dataset with the imported information
+     * Gets the dataset for the master from the xml file.<p>
+     * 
+     * @param subId the subid of the module
+     * @param currentElement the current element of the xml file
+     * @return the dataset with the imported information
+     * @throws CmsException in case something goes wrong
      */
     private CmsMasterDataSet getMasterDataSet(int subId, Element currentElement) throws CmsException{
         String datasetfile, username, groupname, accessFlags, publicationDate, purgeDate, flags,
@@ -422,9 +372,10 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * Gets the channelrelations for the master from the xml-file
-     * @param currentElement The current element of the xml-file
-     * @return Vector The vector contains the ids of all channels of the master
+     * Gets the channel relations for the master from the xml file.<p>
+     * 
+     * @param currentElement the current element of the xml file
+     * @return vector containing the ids of all channels of the master
      */
     private Vector getMasterChannelRelation(Element currentElement){
         Vector channelRelations = new Vector();
@@ -444,9 +395,11 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * Gets the media of the master from the xml-file
-     * @param currentElement The current element of the xml-file
-     * @return Vector The vector contains the media (CmsMasterMedia-Object) of the master
+     * Gets the media of the master from the xml file.<p>
+     * 
+     * @param currentElement The current element of the xml file
+     * @return vector containing the media (CmsMasterMedia object) of the master
+     * @throws CmsException in case something goes wrong
      */
     private Vector getMasterMedia(Element currentElement) throws CmsException{
         Vector masterMedia = new Vector();
@@ -466,9 +419,11 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * Gets the information for a single media from the media-file
-     * @param mediaFilename The name of the xml-file that contains the media information
-     * @return CmsMasterMedia The mediainformation from the media-file
+     * Gets the information for a single media from the media file.<p>
+     * 
+     * @param mediaFilename the name of the xml file that contains the media information
+     * @return the media information from the media file
+     * @throws CmsException in case something goes wrong
      */
     private CmsMasterMedia getMediaData(String mediaFilename) throws CmsException{
         String position, width, height, size, mimetype, type, title, name, description, contentfile;
@@ -512,60 +467,24 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         newMedia.setDescription(description);
         // get the content of the media
         contentfile = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT);
-        byte[] mediacontent = getFileBytes(contentfile);
+        byte[] mediacontent = null;
+        try {
+            mediacontent = getFileBytes(contentfile);
+        } catch (Exception e) {
+            m_report.println(e);
+        }
         newMedia.setMedia(mediacontent);
         return newMedia;
     }
 
     /**
-     * Returns a byte-array containing the content of the file.
+     * Returns a buffered reader for this resource using the importFile as root.<p>
      *
-     * @param filename The name of the file to read.
-     * @return bytes[] The content of the file.
+     * @param filename the name of the file to read
+     * @return the file reader for this file
+     * @throws CmsException in case something goes wrong
      */
-    private byte[] getFileBytes(String filename) throws CmsException{
-        try{
-            // is this a zip-file?
-            if(m_importZip != null) {
-                // yes
-                ZipEntry entry = m_importZip.getEntry(filename);
-                InputStream stream = m_importZip.getInputStream(entry);
-
-                int charsRead = 0;
-                int size = new Long(entry.getSize()).intValue();
-                byte[] buffer = new byte[size];
-                while(charsRead < size) {
-                    charsRead += stream.read(buffer, charsRead, size - charsRead);
-                }
-                stream.close();
-                return buffer;
-            } else {
-                // no - use directory
-                File file = new File(m_importResource, filename);
-                FileInputStream fileStream = new FileInputStream(file);
-
-                int charsRead = 0;
-                int size = new Long(file.length()).intValue();
-                byte[] buffer = new byte[size];
-                while(charsRead < size) {
-                    charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-                }
-                fileStream.close();
-                return buffer;
-            }
-        } catch (Exception e){
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION,e);
-        }
-    }
-
-    /**
-     * Returns a buffered reader for this resource using the importFile as root.
-     *
-     * @param filename The name of the file to read.
-     * @return BufferedReader The filereader for this file.
-     */
-    private BufferedReader getFileReader(String filename)
-        throws Exception{
+    private BufferedReader getFileReader(String filename) throws Exception{
         // is this a zip-file?
         if(m_importZip != null) {
             // yes
@@ -580,63 +499,13 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * Gets the import resource and stores it in object-member.
+     * Gets a xml file from the import resource.<p>
+     * 
+     * @param filename the name of the file to read
+     * @return the xml document
+     * @throws CmsException in case something goes wrong
      */
-    private void getImportResource()
-        throws CmsException {
-        try {
-            // get the import resource
-            m_importResource = new File(CmsBase.getAbsolutePath(m_importFile));
-
-            // if it is a file it must be a zip-file
-            if(m_importResource.isFile()) {
-                m_importZip = new ZipFile(m_importResource);
-            }
-        } catch(Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-
-    /**
-     * Returns the text for this node.
-     *
-     * @param elem the parent-element.
-     * @param tag the tagname to get the value from.
-     * @return the value of the tag.
-     */
-    private String getTextNodeValue(Element elem, String tag) {
-        try {
-            return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
-        } catch(Exception exc) {
-            // ignore the exception and return null
-            return null;
-        }
-    }
-
-    /**
-     * Gets the xml-config file from the import resource and stores it in object-member.
-     * Checks whether the import is from a module file
-     */
-    private void getXmlConfigFile()
-        throws CmsException {
-
-        try {
-            BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
-            m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-            xmlReader.close();
-         } catch(Exception exc) {
-
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-
-    /**
-     * Gets a xml-file from the import resource
-     * @param filename The name of the file to read
-     * @return Document The xml-document
-     */
-    private Document getXmlFile(String filename)
-        throws CmsException {
+    private Document getXmlFile(String filename) throws CmsException {
         Document xmlDoc;
         try {
             BufferedReader xmlReader = getFileReader(filename);
@@ -650,10 +519,10 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-	 * coverts String Date in long
+	 * Coverts a String Date in long.<p>
 	 *
 	 * @param date String
-	 * @return long
+	 * @return long converted date
 	 */
 	private long convertDate(String date){
 		java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
@@ -666,7 +535,8 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
 	}
 
     /**
-     * Gets the content definition class method constructor
+     * Gets the content definition class method constructor.<p>
+     * 
      * @return content definition object
      */
     protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {

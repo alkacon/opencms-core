@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/25 00:14:35 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2003/03/25 08:52:21 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,120 +65,141 @@ import org.w3c.dom.NodeList;
 
 /**
  * Holds the functionaility to import resources from the filesystem
- * into the OpenCms VFS.
+ * or a zip file into the OpenCms VFS.
  *
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.87 $ $Date: 2003/03/25 00:14:35 $
+ * @version $Revision: 1.88 $ $Date: 2003/03/25 08:52:21 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
-    /**
-     * Debug flag to show debug output
-     */
-    public static final int C_DEBUG = 0;
-    
-    /**
-     * The algorithm for the message digest
-     */
+    /** The algorithm for the message digest */
     public static final String C_IMPORT_DIGEST = "MD5";
+        
+    /** The cms contect to do the operations on the VFS/COS with */
+    protected CmsObject m_cms;
+    
+    /** The xml manifest-file */
+    protected Document m_docXml;  
+    
+    /** The object to report the log messages */
+    protected I_CmsReport m_report = null;
+    
+    /** The import-resource (folder) to load resources from */
+    protected File m_importResource = null;
+
+    /**  The import-resource (zip) to load resources from */
+    protected ZipFile m_importZip = null;
+    
+    /** Indicates if module data is being imported */
+    protected boolean m_importingChannelData;         
+         
+    /** The import-file to load resources from */
+    protected String m_importFile;
+
+    /** The import-path to write resources into the cms */
+    protected String m_importPath;  
     
     /**
-     * The path to the bodies in OpenCms 4.x
+     * The version of this import, noted in the info tag of the manifest.xml.<p>
+     * 
+     * 0 indicates an export file without a version number, that is before version 4.3.23 of OpenCms.<br>
+     * 1 indicates an export file of OpenCms with a version before 5.0.0
+     * 2 is the current (since 5.0.0) version of the export file    
      */
-    public static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
+    private int m_importVersion = 0;           
     
+    /** The path to the bodies in OpenCms 4.x */
+    private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";   
 
-    /**
-     * The import-file to load resources from
-     */
-    private String m_importFile;
-
-    /**
-     * The import-resource (folder) to load resources from
-     */
-    private File m_importResource = null;
-
-    /**
-     * The version of this import, noted in the info tag of the manifest.xml.
-     * 0 if the import file dosent have a version nummber (that is befor version
-     * 4.3.23 of OpenCms).
-     */
-    private int m_importVersion = 0;
-
-    /**
-     * Web application names for conversion support
-     */
+    /** Web application names for conversion support */
     private List m_webAppNames = new ArrayList();
     
-    /**
-     * Old webapp URL for import conversion
-     */
+    /** Old webapp URL for import conversion */
     private String m_webappUrl = null;
 
-    /**
-     * The import-resource (zip) to load resources from
-     */
-    private ZipFile m_importZip = null;
-
-    /**
-     * The import-path to write resources into the cms.
-     */
-    private String m_importPath;
-
-    /**
-     * The cms-object to do the operations.
-     */
-    private CmsObject m_cms;
-
-    /**
-     * The xml manifest-file.
-     */
-    private Document m_docXml;
-
-    /**
-     * Digest for taking a fingerprint of the files
-     */
+    /** Digest for taking a fingerprint of the files */
     private MessageDigest m_digest = null;
 
-    /**
-     * Groups to create during import are stored here
-     */
+    /** Groups to create during import are stored here */
     private Stack m_groupsToCreate = new Stack();
 
     /**
-     * In this vector we store the imported pages (as Strings from getAbsolutePath()).
-     * After the import we check them all to update the link tables for the linkmanagement.
+     * In this vector we store the imported pages (as Strings from getAbsolutePath()),
+     * after the import we check them all to update the link tables for the linkmanagement.
      */
-    private Vector m_importedPages = new Vector();
-
-    /**
-     * The object to report the log-messages.
-     */
-    private I_CmsReport m_report = null;
-    
-    /** Indicates if channel data is imported */
-    private boolean m_importingChannelData;
-    
+    private Vector m_importedPages = new Vector();    
    
+    /** Debug flag to show debug output */
+    private static final int DEBUG = 0;
+       
     /**
-     * This constructs a new CmsImport-object which imports the resources.
-     *
-     * @param importFile the file or folder to import from.
-     * @param importPath the path to the cms to import into.
-     * @param report A report object to provide the loggin messages.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * Constructs a new uninitialized import, required for the module data import.<p>
+     * 
+     * @see CmsImportModuledata
      */
-    public CmsImport(String importFile, String importPath, CmsObject cms, I_CmsReport report)
-        throws CmsException {
-
-        m_importFile = importFile;
-        m_importPath = importPath;
+    public CmsImport () {
+        // empty constructor
+    }       
+       
+    /**
+     * Constructs a new import object which imports the resources from an OpenCms 
+     * export zip file or a folder in the "real" file system.<p>
+     *
+     * @param cms the current cms object
+     * @param importFile the file or folder to import from
+     * @param importPath the path in the cms VFS to import into
+     * @param report a report object to output the progress information to
+     * @throws CmsException if something goes wrong
+     */
+    public CmsImport(
+        CmsObject cms, 
+        String importFile, 
+        String importPath, 
+        I_CmsReport report
+    ) throws CmsException {
+        // set member variables
         m_cms = cms;
-        m_report=report;     
-        m_importingChannelData = false;
-
+        m_importFile = importFile;
+        m_importPath = importPath;        
+        m_report = report;  
+        m_importingChannelData = false;       
+    }
+    
+    /**
+     * Imports the resources and writes them to the cms VFS, even if there 
+     * already exist files with the same name.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void importResources() throws CmsException {
+        // initialize the import
+        openImportFile();
+        try {
+            // first import the user information
+            if (m_cms.isAdmin()) {
+                importGroups();
+                importUsers();
+            }
+            
+            // now import the VFS resources
+            importResources(null, null, null, null, null);
+        } catch (CmsException e) {
+            throw e;
+        } finally {
+            // close the import file
+            closeImportFile();
+        }
+    }
+        
+    /**
+     * Initilizes the import.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void openImportFile() throws CmsException {        
         // create the digest
         createDigest();
 
@@ -195,56 +216,29 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     C_EXPORT_TAG_INFO).item(0) , C_EXPORT_TAG_VERSION));
         }catch(Exception e){
             //ignore the exception, the export file has no version nummber (version 0).
-        }
+        }        
     }
     
     /**
-     * Imports resources, used for importing module data.<p>
+     * Closes the import file.<p>
      * 
-     * The XML Document end the import environment will be set up in the module
-     * data import.<p>
-     * 
-     * @param cms the current CmsObject
-     * @param importPath the import path
-     * @param docXml the XML Document for the import 
-     * @param report the report to print out the progess information to
      * @throws CmsException if something goes wrong
-     * 
-     * @see CmsImportModuledata
      */
-    public CmsImport(
-        CmsObject cms, 
-        String importPath,
-        Document docXml,
-        I_CmsReport report
-    ) throws CmsException {
-        m_cms = cms;
-        m_importPath = importPath;
-        m_docXml = docXml;
-        m_report = report;
-        m_importingChannelData = true;
-    }
-    
-    /**
-     * Imports the resources and writes them to the cms even if there already exist conflicting files.<p>
-     */
-    public void importResources() throws CmsException {
-        if (!m_importingChannelData && m_cms.isAdmin()){
-            importGroups();
-            importUsers();
-        }
-        importResources(null, null, null, null, null);
-        if (m_importZip != null){
-            try{
+    protected void closeImportFile() throws CmsException {  
+        if (m_importZip != null) {
+            try {
                 m_importZip.close();
             } catch (IOException exc) {
+                m_report.println(exc);
                 throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
             }
-        }
+        }        
     }
         
     /**
-     * Read infos from the properties and create a MessageDigest
+     * Read infos from the properties and create a MessageDigest.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
     private void createDigest() throws CmsException {
         // Configurations config = m_cms.getConfigurations();
@@ -267,8 +261,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      *
      * @throws throws CmsException if something goes wrong.
      */
-    private void createPropertydefinition(String name, String resourceType)
-        throws CmsException {
+    private void createPropertydefinition(String name, String resourceType) throws CmsException {
         // does the propertydefinition exists already?
         try {
             m_cms.readPropertydefinition(name, resourceType);
@@ -332,43 +325,49 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param filename the name of the file to read
      * @return a byte array containing the content of the file
      */
-    private byte[] getFileBytes(String filename)
-        throws Exception{
-        // is this a zip-file?
-        if(m_importZip != null) {
-            // yes
-            ZipEntry entry = m_importZip.getEntry(filename);
-            InputStream stream = m_importZip.getInputStream(entry);
+    protected byte[] getFileBytes(String filename) {
+        try {
+            // is this a zip-file?
+            if (m_importZip != null) {
+                // yes
+                ZipEntry entry = m_importZip.getEntry(filename);
+                InputStream stream = m_importZip.getInputStream(entry);
 
-            int charsRead = 0;
-            int size = new Long(entry.getSize()).intValue();
-            byte[] buffer = new byte[size];
-            while(charsRead < size) {
-                charsRead += stream.read(buffer, charsRead, size - charsRead);
-            }
-            stream.close();
-            return buffer;
-        } else {
-            // no - use directory
-            File file = new File(m_importResource, filename);
-            FileInputStream fileStream = new FileInputStream(file);
+                int charsRead = 0;
+                int size = new Long(entry.getSize()).intValue();
+                byte[] buffer = new byte[size];
+                while (charsRead < size) {
+                    charsRead += stream.read(buffer, charsRead, size - charsRead);
+                }
+                stream.close();
+                return buffer;
+            } else {
+                // no - use directory
+                File file = new File(m_importResource, filename);
+                FileInputStream fileStream = new FileInputStream(file);
 
-            int charsRead = 0;
-            int size = new Long(file.length()).intValue();
-            byte[] buffer = new byte[size];
-            while(charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+                int charsRead = 0;
+                int size = new Long(file.length()).intValue();
+                byte[] buffer = new byte[size];
+                while (charsRead < size) {
+                    charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+                }
+                fileStream.close();
+                return buffer;
             }
-            fileStream.close();
-            return buffer;
+        } catch (FileNotFoundException fnfe) {
+            m_report.println(fnfe);
+        } catch (IOException ioe) {
+            m_report.println(ioe);
         }
+        // this will only be returned in case there was an exception
+        return "".getBytes();
     }
     
     /**
      * Gets the import resource and stores it in object-member.<p>
      */
-    private void getImportResource()
-        throws CmsException {
+    protected void getImportResource() throws CmsException {
         try {
             // get the import resource
             m_importResource = new File(CmsBase.getAbsolutePath(m_importFile));
@@ -378,6 +377,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_importZip = new ZipFile(m_importResource);
             }
         } catch(Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -424,6 +424,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }
             }
         } catch (Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             if (m_importingChannelData) m_cms.setContextToVfs();
@@ -433,6 +434,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             try {
                 m_importZip.close();
             } catch (IOException exc) {
+                m_report.println(exc);
                 throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
             }
         }
@@ -445,13 +447,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     }
 
     /**
-     * Returns the text of a named node
+     * Returns the text for a node.
      *
-     * @param elem the parent-element
+     * @param elem the parent element
      * @param tag the tagname to get the value from
-     * @return the text of a named node
+     * @return the value of the tag
      */
-    private String getTextNodeValue(Element elem, String tag) {
+    protected String getTextNodeValue(Element elem, String tag) {
         try {
             return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
         } catch(Exception exc) {
@@ -475,6 +477,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 } catch (Exception e) {}
             }
         } catch (Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -494,8 +497,19 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param fileCodes code of the written files (for the registry)
      *       not used when null
      */
-    private void importResource(String source, String destination, String type, String user, 
-    String group, String access, long lastmodified, Map properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+    private void importResource(
+        String source, 
+        String destination, 
+        String type, 
+        String user, 
+        String group, 
+        String access, 
+        long lastmodified, 
+        Map properties, 
+        String launcherStartClass, 
+        Vector writtenFilenames, 
+        Vector fileCodes
+    ) {
 
         boolean success = true;
         byte[] content = null;
@@ -512,7 +526,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
              
                 // convert content from pre 5.x must be activated
                 if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
-                    if (C_DEBUG > 0){
+                    if (DEBUG > 0){
                         System.err.println("#########################");
                         System.err.println("["+this.getClass().getName()+".importResource()]: starting conversion of \""+type+"\" resource "+source+".");
                     }
@@ -577,8 +591,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
      */
-    public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, 
-    String propertyName, String propertyValue) throws CmsException {
+    public void importResources(
+        Vector excludeList, 
+        Vector writtenFilenames, 
+        Vector fileCodes, 
+        String propertyName, 
+        String propertyValue
+    ) throws CmsException {
         NodeList fileNodes, propertyNodes;
         Element currentElement, currentProperty;
         String source, destination, type, user, group, access, launcherStartClass, dummy;
@@ -704,13 +723,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-        if (m_importZip != null) {
-            try {
-                m_importZip.close();
-            } catch (IOException exc) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-            }
-        }
     }
 
     /**
@@ -750,6 +762,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }
             }
         } catch (Exception exc){
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
      }
@@ -817,6 +830,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 lastname, email, address, section, defaultGroup, type, userInfo, userGroups);
             }
         } catch (Exception exc){
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -862,6 +876,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }
             }
         } catch (Exception exc){
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -958,13 +973,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 fileContent = new String(byteContent, encoding);
             } catch (UnsupportedEncodingException e) {
                 // encoding not supported, we use the default and hope we are lucky
-                if (C_DEBUG > 0){
+                if (DEBUG > 0){
                     System.err.println("["+this.getClass().getName()+".convertFile()]: Encoding not supported, using default encoding.");
                 }
             }
         } else {
             // encoding not found, set encoding of xml files to default
-            if (C_DEBUG > 0){
+            if (DEBUG > 0){
                 System.err.println("["+this.getClass().getName()+".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
             }
             encoding = OpenCms.getDefaultEncoding();
@@ -977,7 +992,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1
             || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
-            if (C_DEBUG > 0){
+            if (DEBUG > 0){
                 System.err.println("["+this.getClass().getName()+".convertFile()]: Starting scan of body page.");
             }
             fileContent = convertPageBody(fileContent, filename);
@@ -1024,7 +1039,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private String scanFrameTemplate(String content) {
         // no Meta-Tag present, insert it!
         if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
-            content = replaceString(content,"</head>","<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
+            content = CmsStringSubstitution.substitute(content, "</head>", "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
         }
         // Meta-Tag present
         else {
@@ -1127,7 +1142,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
                 // no <edittemplate> tags present, create them!
                 if (editNodes.getLength() < 1) {
-                    if (C_DEBUG > 0){
+                    if (DEBUG > 0){
                         System.err.println("["+this.getClass().getName()+".convertPageBody()]: No <edittemplate> found, creating it.");
                     }
                     createTemplateTags = true;
@@ -1211,32 +1226,4 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
         return content;
     }  
-       
-    /**
-     * Method to replace a subString with replaceItem.<p>
-     * 
-     * @param testString the original String
-     * @param searchString the subString that has to be replaced
-     * @param replaceItem the String that replaces searchString
-     * @return String with replaced subStrings
-     */
-    protected static String replaceString(String testString, String searchString, String replaceItem) {
-    	// if searchString isn't in testString, return (better performance) 
-        if (testString.toLowerCase().indexOf(searchString.toLowerCase()) == -1) {
-        	return testString;
-        }
-        int tempIndex = 0;
-        int searchLen = searchString.length();
-        int searchIndex = testString.toLowerCase().indexOf(searchString.toLowerCase());
-        StringBuffer returnString = new StringBuffer(testString.length());
-        while (searchIndex != -1) {
-            returnString.append(testString.substring(0,searchIndex));
-            returnString.append(replaceItem);
-            tempIndex = searchIndex+searchLen;
-            testString = testString.substring(tempIndex);
-            searchIndex = testString.toLowerCase().indexOf(searchString.toLowerCase());
-        }
-        returnString.append(testString);
-        return returnString.toString();
-    }
 }

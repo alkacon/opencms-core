@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/25 00:14:35 $
-* Version: $Revision: 1.371 $
+* Date   : $Date: 2003/03/25 08:52:21 $
+* Version: $Revision: 1.372 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.371 $ $Date: 2003/03/25 00:14:35 $
+ * @version $Revision: 1.372 $ $Date: 2003/03/25 08:52:21 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4149,10 +4149,10 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // or moduledata
             String firstTag = this.getFirstTagFromManifest(importFile);
             if(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equals(firstTag)){
-                CmsImportModuledata imp = new CmsImportModuledata(importFile, importPath, cms, report);
-                imp.importModuledata();
+                CmsImportModuledata imp = new CmsImportModuledata(cms, importFile, importPath, report);
+                imp.importResources();
             } else {
-                CmsImport imp = new CmsImport(importFile, importPath, cms, report);
+                CmsImport imp = new CmsImport(cms, importFile, importPath, report);
                 imp.importResources();
             }
         } else {

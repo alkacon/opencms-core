@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/03/25 00:14:35 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/03/25 08:52:21 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.52 $ $Date: 2003/03/25 00:14:35 $
+ * @version $Revision: 1.53 $ $Date: 2003/03/25 08:52:21 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -332,7 +332,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
         try {
             // creates the document
-            m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
+            if (m_exportingModuleData) {
+                // module (COS) data is exported
+                m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_MODULEXPORT);                
+            } else {
+                // standard export, only VFS resources are exported
+                m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
+            }
             // abbends the initital tags
             Node exportNode = m_docXml.getFirstChild();
 
