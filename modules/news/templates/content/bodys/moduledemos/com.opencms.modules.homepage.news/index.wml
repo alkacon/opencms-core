@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<XMLTEMPLATE>
+
+<template><![CDATA[
+<card id="news" title="]]><METHOD name="getTitle"/><![CDATA[">
+	<p>
+		<table align="LL" columns="1">]]>
+			<method name="getNewsList">-1</method> <![CDATA[
+		</table>
+	</p> 
+</card>]]>
+</template>
+
+<newsentry> <![CDATA[
+<tr>
+<td>
+  <a href="]]><method name="getServletPath"/><![CDATA[moduledemos/com.opencms.modules.homepage.news/singleNews.wml?id=]]><process>id</process><![CDATA[">]]><process>headline</process><![CDATA[</a>	 
+  <br/>
+  ]]><process>date</process><![CDATA[<br/>
+</td>
+</tr>]]>
+</newsentry>
+
+</XMLTEMPLATE>

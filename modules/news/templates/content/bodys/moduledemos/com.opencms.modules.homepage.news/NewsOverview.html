@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<XMLTEMPLATE>
+<TEMPLATE>
+<![CDATA[<table border=1>]]>
+<process>tablehead</process>
+<!-- Here the news are inserted -->
+<!-- The parameter determines the number of entries that should be displayed! -->
+<method name="getNewsList">-1</method> <![CDATA[
+</table> ]]>
+</TEMPLATE>
+
+<tablehead><![CDATA[
+<tr>
+<td><b>PDF-Version</b></td>
+<td><b>Headline</b></td>
+<td><b>Description</b></td>
+<td><b>Author</b></td>
+<td><b>Date</b></td>
+<td><b>Link</b></td>
+<td><b>Channel</b></td>
+</tr>]]>
+</tablehead>
+
+<!-- This datablock is filled by the method -->
+<newsentry> <![CDATA[
+<tr>
+<td>
+  <a href="]]><method name="getServletPath"/><![CDATA[moduledemos/com.opencms.modules.homepage.news/pdfEntry.pdf?id=]]><process>id</process><![CDATA["><img src="]]><method name="getServletPath"/><![CDATA[system/modules/com.opencms.modules.homepage.news/pics/ic_download_pdf.gif"></a>
+</td>  
+<td>
+  <a href="]]><method name="getServletPath"/><![CDATA[moduledemos/com.opencms.modules.homepage.news/singleNews.html?id=]]><process>id</process><![CDATA[">]]><process>headline</process><![CDATA[</a>	 
+</td>
+<td>]]><process>description</process><![CDATA[</td>
+<td>]]><process>author</process><![CDATA[</td>
+<td>]]><process>date</process><![CDATA[</td>
+<td>]]><process>link</process><![CDATA[</td>
+<td>]]><process>channel</process><![CDATA[</td>
+</tr>]]>
+</newsentry>
+
+</XMLTEMPLATE>
