@@ -43,6 +43,7 @@
 <!-- Inhalt -->
 <tr>
 	<td class="texteditor" colspan=23 height="100%" width=100%>
+
         <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 
         	height=100% id=edit1 name=edit1 width=100% onFocus="setTextDelayed();">
 			<PARAM NAME="_Version" VALUE="131083">	
@@ -126,7 +127,7 @@
 	<!--
 		getDimensions();
 		
-		str = '<textarea class="textarea" name="edit1" onfocus=setTextDelayed(); rows='+windowHeight+' cols='+windowWidth+' wrap=virtual></textarea>';
+		str = '<textarea class="textarea" name="edit1" onfocus=setTextDelayed(); rows='+windowHeight+' cols='+windowWidth+' wrap=virtual style="width:100%"></textarea>';
 		document.write(str);
 	//-->
 	</script>
