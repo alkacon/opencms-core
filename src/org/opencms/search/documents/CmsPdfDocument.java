@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2005/01/31 14:14:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/17 12:44:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,7 +56,7 @@ import org.pdfbox.util.PDFTextStripper;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2005/01/31 14:14:12 $
+ * @version $Revision: 1.9 $ $Date: 2005/02/17 12:44:32 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPdfDocument extends CmsVfsDocument {

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/02/17 12:44:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,7 @@ import java.util.Set;
  * <li><code>{@link CmsPermissionSet#PERMISSION_CONTROL}</code> (c) the right to set permissions of a resource</li>
  * <li><code>{@link CmsPermissionSet#PERMISSION_DIRECT_PUBLISH}</code> (d) the right direct publish a resource even without publish project permissions</li></ul><p>
  * 
- * @version $Revision: 1.17 $ $Date: 2004/08/23 15:37:02 $
+ * @version $Revision: 1.18 $ $Date: 2005/02/17 12:44:41 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {

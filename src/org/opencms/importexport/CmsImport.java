@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2005/01/04 17:34:08 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2005/02/17 12:43:47 $
+* Version: $Revision: 1.28 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.27 $ $Date: 2005/01/04 17:34:08 $
+ * @version $Revision: 1.28 $ $Date: 2005/02/17 12:43:47 $
  */
 public class CmsImport implements Serializable {
     

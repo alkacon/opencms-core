@@ -1,14 +1,14 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.41 $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/02/17 12:44:32 $
+ * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/02/17 12:44:32 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,7 +62,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2004/10/31 21:30:17 $
+ * @version $Revision: 1.42 $ $Date: 2005/02/17 12:44:32 $
  */
 public class CmsSynchronize {
 

@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 alpha 1 Caladan</opencms_version>
+		<opencms_version>6.0 beta 1 Corrin</opencms_version>
 		<createdate>9/7/04 5:26 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
@@ -17,7 +17,7 @@
 <p>Install this module only if you have to use older modules built for OpenCms 5.0.</p>
 <p><strong>Note:</strong> This module will create additional tables in your database, so the OpenCms database user must have appropriate permissions for DDL operations.</p>
 <p><strong>Note:</strong> For Oracle setup, please specify the index tablespace as module parameter if you are not using the default "users" tablespace.</p>
-<p><i>(c) 2004 by Alkacon Software (http://www.alkacon.com).</i></p>
+<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
 		<version>0.9.1</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>

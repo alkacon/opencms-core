@@ -2,8 +2,8 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0 alpha 3" />    
-    <property name="version.name"               		value="Caladan" />
+    <property name="version.number"             		value="6.0 beta 1" />    
+    <property name="version.name"               		value="Corrin" />
     
 	<property name="app.name" 							value="opencms" />
     
@@ -30,7 +30,7 @@
     <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xercesImpl-2.6.2.jar" />
     <property name="opencms.inputlib.xml-apis"      	location="${opencms.input.libs}/xml-apis-2.6.2.jar" />
     <property name="opencms.inputlib.mysql"       		location="${opencms.input.libs}/mysql-connector-java-3.0.15-ga-bin.jar" />
-    <property name="opencms.inputlib.postgresql"       		location="${opencms.input.libs}/pg74.215.jdbc3.jar" />
+    <property name="opencms.inputlib.postgresql"       	location="${opencms.input.libs}/pg74.215.jdbc3.jar" />
     <property name="opencms.inputlib.oro"         		location="${opencms.input.libs}/jakarta-oro-2.0.8.jar" />
     <property name="opencms.inputlib.tidy"        		location="${opencms.input.libs}/jtidy-r8-05102004.jar" />
     <property name="opencms.inputlib.uuid"        		location="${opencms.input.libs}/jug-1.1.2.jar" />   

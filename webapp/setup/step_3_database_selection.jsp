@@ -27,5 +27,5 @@ OpenCms Setup Wizard - Database selection
 <%@ include file="error.jsp" %>
 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
-<% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>
+<% } %>

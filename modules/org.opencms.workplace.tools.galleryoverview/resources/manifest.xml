@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
+		<opencms_version>6.0 beta 1 Corrin</opencms_version>
 		<createdate>2/15/05 12:16 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
@@ -13,8 +13,8 @@
 		<nicename><![CDATA[OpenCms 6.0 Gallery overview administration tools]]></nicename>
 		<class/>
 		<description><![CDATA[This module contains Overviews for every OpenCms Gallery Type.
-(c) 2004 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>1.0</version>
+(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.0</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 23:00:00 GMT</datecreated>

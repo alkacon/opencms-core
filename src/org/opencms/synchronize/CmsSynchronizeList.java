@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/02/17 12:44:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ import java.io.Serializable;
  *
  * @author Edna Falkenhan
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.7 $ $Date: 2005/02/17 12:44:32 $
  */
 public class CmsSynchronizeList implements Serializable {
 

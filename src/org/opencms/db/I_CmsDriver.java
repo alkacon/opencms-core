@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/02/17 12:43:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
 import java.util.List;
 
 /**
- * @version $Revision: 1.9 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.10 $ $Date: 2005/02/17 12:43:46 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */

@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
+		<opencms_version>6.0 beta 1 Corrin</opencms_version>
 		<createdate>2/17/05 12:45 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
@@ -13,7 +13,7 @@
 		<nicename><![CDATA[OpenCms 6.0 'templateone' frontend]]></nicename>
 		<class/>
 		<description><![CDATA[This module contains the highly configurable OpenCms frontend template one. This template can easily be used to display website contents.
-(c) 2004 by Alkacon Software (http://www.alkacon.com).]]></description>
+(c) 2004 - 2005 by Alkacon Software (http://www.alkacon.com).]]></description>
 		<version>0.9.7</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
+		<opencms_version>6.0 beta 1 Corrin</opencms_version>
 		<createdate>12/23/04 12:07 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
@@ -16,9 +16,9 @@
 
 
 
-(c) 2004 by Alkacon Software (http://www.alkacon.com).
+(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).
 ]]></description>
-		<version>0.9.10</version>
+		<version>0.9.8</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Thu, 23 Dec 2004 12:07:27 CET</datecreated>

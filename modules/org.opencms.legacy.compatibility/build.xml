@@ -35,7 +35,11 @@
     <target name="clean" description="Deletes outputs">
         <delete dir="${module.output.classes}" />
         <delete dir="${module.output.jar}" />
-        <delete file="${module.output.zip}/${module.name}_${module.version}.zip" />
+        <delete>
+            <fileset dir="${module.output.zip}">
+                <include name="${module.name}_*.zip"/>
+            </fileset>
+        </delete>
     </target>        
 	
     <target name="init" 
@@ -46,10 +50,12 @@
         	<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
     		<property name="@{dependency}.output.classes" location="${opencms.output}/build/classes-@{dependency}" />
     	    <property name="@{dependency}.output.jar" location="${opencms.output}/build/jars-@{dependency}" />
-    	  	
+            <property file="${@{dependency}.input}/module.properties" prefix="@{dependency}" />
+    	    <property name="@{dependency}.output.zip" location="${module.output.zip}/@{dependency}_${@{dependency}.module.version}.zip" />
+
         	<condition property="@{dependency}.available">
         		<and>		
-        			<available file="${@{dependency}.output.jar}/@{dependency}.jar" />
+        			<available file="${@{dependency}.output.zip}" />
            		</and>
         	</condition>
     	  </sequential>
@@ -135,7 +141,7 @@
 		    		 </not>
 		    		 <then>
 		            	<echo message="Module dependency @{dependency} is missing, building it" />
-		        		<ant antfile="${@{dependency}.input}/build.xml" target="jar" inheritAll="false" >
+		        		<ant antfile="${@{dependency}.input}/build.xml" target="dist" inheritAll="false" >
 		            		<property name="module.name" value="@{dependency}" />
 		            	</ant>
 		    		 </then>

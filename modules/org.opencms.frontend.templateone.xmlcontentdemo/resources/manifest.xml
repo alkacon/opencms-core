@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
+		<opencms_version>6.0 beta 1 Corrin</opencms_version>
 		<createdate>1/12/05 4:44 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
@@ -13,8 +13,8 @@
 		<nicename><![CDATA[OpenCms 6.0 'templateone' XML content demo]]></nicename>
 		<class/>
 		<description><![CDATA[This module contains demo resources for OpenCms 6.0 XML content.
-(c) 2004 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>0.9.7</version>
+(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.8</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Wed, 15 Dec 2004 17:50:42 CET</datecreated>

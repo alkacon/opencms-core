@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObjectContainer.java,v $
- * Date   : $Date: 2005/02/16 11:43:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/17 12:44:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,7 @@ import java.util.Map;
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
@@ -53,7 +53,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
      * This internal class is just for taking care of the positions in the container.<p>
      * 
      * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
-     * @version $Revision: 1.1 $
+     * @version $Revision: 1.2 $
      * @since 6.0
      */
     private class CmsNamedObjectElement {

@@ -6,7 +6,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2001 - 2003  The OpenCms Group
+ * Copyright (C) 2001 - 2005  The OpenCms Group
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

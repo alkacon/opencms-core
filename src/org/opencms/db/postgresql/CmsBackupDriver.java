@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/01/06 10:12:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/02/17 12:43:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,7 +54,7 @@ import java.util.List;
  * PostgreSql implementation of the backup driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.5 $ $Date: 2005/01/06 10:12:13 $
+ * @version $Revision: 1.6 $ $Date: 2005/02/17 12:43:50 $
  * @since 6.0
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {

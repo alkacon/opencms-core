@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/I_TermHighlighter.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/17 12:44:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the m_terms of the GNU Lesser General Public
@@ -33,7 +33,7 @@ package org.opencms.search.documents;
 /**
  * Highlights arbitrary m_terms.
  *
- * @version $Id: I_TermHighlighter.java,v 1.1 2004/02/11 15:58:55 c.weinholz Exp $
+ * @version $Id: I_TermHighlighter.java,v 1.2 2005/02/17 12:44:32 m.moossen Exp $
  * @author Maik Schreiber (mailto: bZ@iq-computing.de)
  */
 public interface I_TermHighlighter {

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/17 12:44:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -213,7 +213,8 @@ public class CmsChaccBrowser extends CmsDialog {
      */
     private StringBuffer buildEntryGroup(CmsGroup group) {
         StringBuffer retValue = new StringBuffer(256);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\""             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','"
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"" 
+            + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','"
             + group.getName() + "');\">");
         retValue.append("<img src=\""+getSkinUri()+"buttons/group_sm.gif\">&nbsp;");
         retValue.append(group.getName());

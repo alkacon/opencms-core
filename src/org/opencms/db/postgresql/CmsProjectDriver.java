@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/28 21:58:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/17 12:43:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,7 @@ import org.opencms.db.generic.CmsSqlManager;
 /**
  * PostgreSql implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * @since 6.0

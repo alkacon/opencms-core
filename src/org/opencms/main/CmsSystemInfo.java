@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/11/11 16:03:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/02/17 12:44:35 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,7 +52,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -61,7 +61,7 @@ public class CmsSystemInfo {
     private static final String C_DEFAULT_ENCODING = CmsEncoder.C_UTF8_ENCODING;
 
     /** Static version name to use if version.properties can not be read. */
-    private static final String C_DEFAULT_VERSION_NAME = "Caladan";
+    private static final String C_DEFAULT_VERSION_NAME = "Corrin";
 
     /** Static version number to use if version.properties can not be read. */
     private static final String C_DEFAULT_VERSION_NUMBER = "6.0 development";

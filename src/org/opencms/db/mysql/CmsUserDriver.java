@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/01/04 17:34:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/02/17 12:43:50 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.23 $ $Date: 2005/01/04 17:34:14 $
+ * @version $Revision: 1.24 $ $Date: 2005/02/17 12:43:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)

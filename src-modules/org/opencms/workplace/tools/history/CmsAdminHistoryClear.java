@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/02/16 11:43:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/17 12:45:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -150,7 +150,8 @@ public class CmsAdminHistoryClear extends CmsReport {
             retValue.append("<td>" + key("input.history.clear.date") + "</td>\n");
             retValue.append("<td>");
             retValue.append("<input type=\"text\" name=\"date\" id=\"date\">");
-            retValue.append("</td>\n<td>");            retValue.append("<img src=\"" + getResourceUri() + "ic_timer.gif\" id=\"triggercalendar\" ");
+            retValue.append("</td>\n<td>");
+            retValue.append("<img src=\"" + getResourceUri() + "ic_timer.gif\" id=\"triggercalendar\" ");
             retValue.append("alt=\"" + key("calendar.input.choosedate") + "\" title=\"" + key("calendar.input.choosedate") + "\">");
             retValue.append("</td>\n");
             retValue.append("</tr>\n");

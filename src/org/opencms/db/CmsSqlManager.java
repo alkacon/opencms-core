@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2005/02/04 16:56:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/17 12:43:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ import java.sql.SQLException;
  * Superclass for all SQL manager implementations.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/02/04 16:56:45 $
+ * @version $Revision: 1.2 $ $Date: 2005/02/17 12:43:47 $
  * @since 6.0 alpha 3
  */
 public class CmsSqlManager {

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2004/08/19 11:26:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/17 12:44:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2004/08/19 11:26:32 $
+ * @version $Revision: 1.9 $ $Date: 2005/02/17 12:44:35 $
  */
 
 public interface I_CmsWpConstants {

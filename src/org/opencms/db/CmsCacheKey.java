@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/02/17 12:43:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,7 @@ import org.opencms.security.CmsPermissionSet;
 /**
  * Generates the cache keys for the user and permission caches.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.11 $ $Date: 2005/02/17 12:43:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCacheKey implements I_CmsCacheKey {

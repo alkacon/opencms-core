@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/02/14 09:53:22 $
- * Version: $Revision: 1.604 $
+ * Date   : $Date: 2005/02/17 12:47:21 $
+ * Version: $Revision: 1.605 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2003 - 2004 Alkacon Software
+ * Copyright (C) 2003 - 2005 Alkacon Software
  */
 
 History of changes for the OpenCms project.
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.7.1 Caladan (aka 6.0 beta 1) - February xx, 2004
+OpenCms 5.7.1 Caladan (aka 6.0 beta 1) - February xx, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler
 ! Added logging option to site manager for debugging site configuration
 ! Height of popup windows in WYSIWYG editor now automatically adjusts to content height
