@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.292 $
+* Date   : $Date: 2001/12/03 12:55:48 $
+* Version: $Revision: 1.293 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.292 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.293 $ $Date: 2001/12/03 12:55:48 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6549,13 +6549,13 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // this is no system-user - maybe a webuser?
             user = readWebUser(currentUser, currentProject, username, password);
         }
-        if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) &&
-            ( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
+        //if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) &&
+        //    ( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
             m_dbAccess.setRecoveryPassword(username, newPassword);
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_NO_ACCESS);
-        }
+        //} else {
+        //    throw new CmsException("[" + this.getClass().getName() + "] " + username,
+        //        CmsException.C_NO_ACCESS);
+        //}
     }
     /**
      * Set a Parameter for a task.
