@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/02/21 16:13:53 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/03/17 17:34:10 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -214,6 +214,11 @@ public class LinkSubstitution {
                     // found the match
                     if(httpsMode && !retValue.startsWith("http")){
                         retValue = cms.getUrlPrefixArray()[3] + retValue;
+                    }else{
+                        if(modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
+                            // we want the path relative
+                            retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getUrlPrefixArray()[0]).length()));
+                        }
                     }
                     return retValue;
                 }
@@ -225,7 +230,60 @@ public class LinkSubstitution {
         }
         if(httpsMode && !retValue.startsWith("http")){
             retValue = cms.getUrlPrefixArray()[3] + retValue;
+        }else{
+            if(modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
+                // we want the path relative
+                retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getUrlPrefixArray()[0]).length()));
+            }
         }
         return retValue;
+    }
+
+    /**
+     * This methood calculates the relative path to a resource in OpenCms
+     * depending on the page where it is used.
+     * i.e.: baseFile  = "/folder1/folder2/index.html"
+     *       linkTarget= "/folder1/pics/pic.gif"
+     *       returns: "../pics/pic.gif"
+     *
+     * @param baseFile: the name(incl. path) of the page containing the link
+     * @param linkTarget: the name(incl. path) of the resource to link to.
+     *
+     * @return the relative path to the target resource.
+     */
+    public String getRelativePath(String baseFile, String linkTarget){
+
+        // use tokenizer for better performance
+        java.util.StringTokenizer cur = new java.util.StringTokenizer(baseFile, "/");
+        java.util.StringTokenizer tar = new java.util.StringTokenizer(linkTarget,"/");
+
+        // get the minimum of the number of tokens for both paths
+        int maxAllowed = cur.countTokens();
+        if(maxAllowed > tar.countTokens()){
+            maxAllowed = tar.countTokens();
+        }
+        // serch for the part of the path they have in common.
+        String currentToken = cur.nextToken();
+        String targetToken = tar.nextToken();
+        int counter = 1;
+        while(currentToken.equals(targetToken) && counter < maxAllowed){
+            currentToken = cur.nextToken();
+            targetToken = tar.nextToken();
+            counter++;
+        }
+        StringBuffer result = new StringBuffer();
+
+        // link to the shared root path
+        counter = cur .countTokens();
+        for(int i=0; i < counter; i++){
+            result.append("../");
+        }
+
+        // finaly add the link to the target from the shared root path
+        result.append(targetToken);
+        while(tar.hasMoreTokens()){
+            result.append("/" +tar.nextToken());
+        }
+        return result.toString();
     }
 }
