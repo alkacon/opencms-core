@@ -16,6 +16,9 @@ OpenCms 4.1.56 Arakis - 06 February 2001
 ! Introduced caching hierarchy. The system now differs between several levels
   of cacheability (still rudimentary, will be improved).
 ! JSDK 2.2 support added.
+! Added feature to synchronize the files in the virtual and the server filesystem.
+  The button for synchronizing in the workplace header is disabled until the entries 
+  for synchronisation in registry.xml are enabled
 - Removed obsolete CmsMultipartRequest
 
 OpenCms 4.1.55 Arakis - 02 February 2001
