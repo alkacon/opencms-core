@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/11/11 16:29:52 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -252,6 +252,16 @@ public interface I_CmsEventListener {
      * </ul>
      */    
     int EVENT_RESOURCES_AND_PROPERTIES_MODIFIED = 27;
+    
+    /**
+     * Event "a property definition has been created".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "propertyDefinition" (mandatory): the modified property definition</li>
+     * </ul>
+     */
+    int EVENT_PROPERTY_DEFINITION_CREATED = 28;    
     
     /**
      * Acknowledge the occurrence of the specified event, implement this 
