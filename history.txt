@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/18 14:15:00 $
- * Version: $Revision: 1.553 $
+ * Date   : $Date: 2004/06/18 15:15:36 $
+ * Version: $Revision: 1.554 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@ OpenCms 5.3.5 Ix - June 16, 2004
 ! All editors now ensure that the selected encoding/charset is used for
   the content, if chars are not available these are escaped with HTML entities
 ! If the encoding property of a file is changed, all HTML entities that are
-  avalable in the new encoding are converted to characters and vice versa  
+  available in the new encoding are converted to characters and vice versa  
 ! Elements available in the control file but not declared using the template-elements
   property are now also displayed in the editor element selection 
 ! If a template property points to a template that is not located in a 'regular'
@@ -43,7 +43,7 @@ OpenCms 5.3.5 Ix - June 16, 2004
   in the opencms-workplace.xml file
 * The "internal use only" flag has been placed on the permission dialog again
 - Refactored package org.opencms.page to org.opencms.xml.page
-! Added "Relase Date" and "Expiration Date" to the structure table of the resource
+! Added "Release Date" and "Expiration Date" to the structure table of the resource
 - Using long values instead of Timestamps for date information in VFS resource tables
 ! Added Junit test setup for OpenCms VFS tests
 ! Added a couple of initial Junit test cases for the CmsObject
@@ -52,14 +52,14 @@ OpenCms 5.3.5 Ix - June 16, 2004
 - Added jaxen as separate jar (jaxen-1.1-beta-2.jar) since it is not longer included in dom4j.jar
 - Now using the latest htmlparser version 1.41
 * Fixed issue with links that contain escaped characters like '%20'
-- "Relase Date" and "Expire Date" GUI added to Touch dialog in the Workplace
-- Flex Cache now invalidates entries according to "Relase Date" and "Expire Date"
+- "Release Date" and "Expire Date" GUI added to Touch dialog in the Workplace
+- Flex Cache now invalidates entries according to "Release Date" and "Expire Date"
 - Added org.opencms.file-CmsResourceFilter to filter results from VFS queries
 - Added patch for OpenCms to run on JBoss
 ! Added support for additional JDBC options during setup
 - The default encoding has been set to UTF-8
 * It's not longer required to run OpenCms with the same encoding as the default system encoding
-! "Relase Date" and "Expire Date" are now also displayed in the OpenCms Explorer
+! "Release Date" and "Expire Date" are now also displayed in the OpenCms Explorer
 - Property definitions are now shared among ALL resources, not per resource type
 - Improved locale handling in XmlPage
 - Added "Cache-Control" "must-revalidate" for all Workplace requests to prevent caching, this 
