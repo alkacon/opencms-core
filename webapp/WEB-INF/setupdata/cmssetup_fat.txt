@@ -59,15 +59,6 @@ createPropertydefinition page export
 createPropertydefinition page exportname
 createPropertydefinition page content-encoding
 createPropertydefinition page internal
-createPropertydefinition link Title
-createPropertydefinition link Description
-createPropertydefinition link Keywords
-createPropertydefinition link NavText
-createPropertydefinition link NavPos
-createPropertydefinition link export
-createPropertydefinition link exportname
-createPropertydefinition link content-encoding
-createPropertydefinition link internal
 createPropertydefinition pointer Title
 createPropertydefinition pointer Description
 createPropertydefinition pointer Keywords

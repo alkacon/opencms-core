@@ -163,7 +163,7 @@
             <index>
                 <name>Online project</name>
                 <rebuild>auto</rebuild>
-                <project>online</project>
+                <project>Online</project>
                 <site>/sites/default/</site>
                 <lang>en</lang>
                 <folder>
@@ -181,7 +181,7 @@
             <index>
                 <name>Offline project</name>
                 <rebuild>auto</rebuild>
-                <project>offline</project>
+                <project>Offline</project>
                 <site>/sites/default/</site>
                 <lang>en</lang>
                 <folder>
@@ -199,7 +199,7 @@
             <index>
                 <name>System folder</name>
                 <rebuild>auto</rebuild>
-                <project>online</project>
+                <project>Online</project>
                 <site>/</site>
                 <lang>en</lang>
                 <folder>
