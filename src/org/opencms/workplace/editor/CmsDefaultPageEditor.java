@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/16 16:58:55 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/01/19 08:22:32 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.12
  */
@@ -198,7 +198,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initBodyElementLanguage() {
         Set languages = m_page.getLanguages();
-        String defaultLanguage = OpenCms.getUserDefaultLanguage();
+        String defaultLanguage;
+        
+        try {
+            defaultLanguage = getCms().getDefaultLanguage(getCms().readAbsolutePath(m_file));
+        } catch (CmsException exc) {
+            defaultLanguage = OpenCms.getDefaultLanguage();
+        }
+        
         if (languages.size() == 0) {
             // no body present, create default body
             if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage)) {
@@ -307,21 +314,25 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the html for the body language selectbox
      */
     public String buildSelectBodyLanguage(String attributes) {
-        Set languages = m_page.getLanguages();
-        List options = new ArrayList(languages.size());
-        List selectList = new ArrayList(languages.size());
-        Iterator i = languages.iterator();
+        
+        String languages[] = null;
+        try {
+            languages = getCms().getLanguages(getCms().readAbsolutePath(m_file));
+        } catch (CmsException exc) {
+            languages = new String[] {OpenCms.getDefaultLanguage()};
+        }
+        
+        List options = new ArrayList(languages.length);
+        List selectList = new ArrayList(languages.length);
         int currentIndex = -1;
-        int counter = 0;
-        while (i.hasNext()) {
-            String curLang = (String)i.next();
+        for (int counter = 0; counter < languages.length; counter++) {
+            String curLang = languages[counter];
             selectList.add(curLang);
             Locale curLocale = new Locale(curLang);
             options.add(curLocale.getDisplayLanguage(new Locale(getSettings().getLanguage())));
             if (curLang.equals(getParamBodylanguage())) {
                 currentIndex = counter;
             }
-            counter++;
         }
     
         if (currentIndex == -1) {
@@ -575,6 +586,13 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // set the element data
         m_page.setContent(getCms(), body, language, content);
         m_page.setEnabled(body, language, enabled);
+        // check if there is already a default element for this body,
+        // if not, set this body as default if it has the default language
+        if (!m_page.hasElement(body, null)) {
+            if (language.equals(getCms().getDefaultLanguage(getCms().readAbsolutePath(m_file)))) {
+                m_page.setDefault(body, language);
+            }
+        }
         // write the file
         getCms().writeFile(m_page.write(m_file));
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/01/07 16:53:02 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/01/19 08:21:40 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -53,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public final class OpenCms {
     
@@ -144,6 +145,16 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getDefaultFilenames();
     }
 
+    /**
+     * Returns the configured default language.<p>
+     * 
+     * @return the default language as ISO language code
+     */
+    public static String getDefaultLanguage() {
+        // TODO: read the default language from a property
+        return Locale.getDefault().getLanguage();
+    }
+    
     /**
      * Returns the configured list of default http headers.<p>
      *  

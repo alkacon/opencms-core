@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/07 16:53:02 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/01/19 08:21:39 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1502,6 +1502,11 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
         }
         setRuntimeProperty("import.immutable.resources", immutableResources);
+        
+        // read the conversion setting
+        // TODO: check how to set this
+        String convertToXmlPage = configuration.getString("import.convert.xmlpage");
+        setRuntimeProperty("import.convert.xmlpage", convertToXmlPage);
         
         // read the default user settings
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/13 14:57:59 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/01/19 08:22:02 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsXmlPage {
     
@@ -86,6 +86,9 @@ public class CmsXmlPage {
     
     /** Link to the external document type of this xml page */
     private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
+    
+    /** String to indicate default language */
+    private static final String C_DEFAULT_LANGUAGE = "(default)";
     
     /** Reference for named elements */
     private Map m_bookmarks = null;
@@ -136,7 +139,7 @@ public class CmsXmlPage {
         element.addElement("links");
         element.addElement("content");
 
-        setBookmark (language+"_"+name, element);
+        setBookmark (name, language, element);
     }
 
     /**
@@ -151,11 +154,18 @@ public class CmsXmlPage {
     /**
      * Returns the bookmarked element for the given key.<p>
      * 
-     * @param key key of the element
+     * @param name the name of the element
+     * @param language the language of the element
      * @return the bookemarked element
      */
-    protected Element getBookmark (String key) {        
-        return (Element) m_bookmarks.get(key);
+    protected Element getBookmark (String name, String language) {        
+        Element element = (Element) m_bookmarks.get(language + "_" + name);
+        
+        if (element == null) {
+            element = (Element) m_bookmarks.get(name);
+        }
+    
+        return element;
     }
     
     /**
@@ -197,9 +207,9 @@ public class CmsXmlPage {
     public String getContent(CmsObject cms, String name, String language, boolean forEditor) 
         throws CmsPageException {
 
-        Element element = getBookmark(language+"_"+name);
+        Element element = getBookmark(name, language);        
         String content = "";
-
+        
         if (element != null) {
 
             Element data = element.element("content");
@@ -237,8 +247,10 @@ public class CmsXmlPage {
         Set languages = new HashSet();
         for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
             String name = (String)i.next();
-            String language = name.substring(0, name.indexOf("_"));
-            languages.add(language);
+            if (name.indexOf("_") >= 0) {
+                String language = name.substring(0, name.indexOf("_"));
+                languages.add(language);
+            }
         }
         return languages;
     }
@@ -252,7 +264,7 @@ public class CmsXmlPage {
      */
     public CmsLinkTable getLinkTable(String name, String language) {
 
-        Element element = getBookmark(language+"_"+name);
+        Element element = getBookmark(name, language);
         Element links = element.element("links");
         
         CmsLinkTable linkTable = new CmsLinkTable();
@@ -309,7 +321,7 @@ public class CmsXmlPage {
      */
     public boolean hasElement(String name, String language) {
     
-        return getBookmark(language+"_"+name) != null;
+        return getBookmark(name, language) != null;
     }
 
     /**
@@ -321,7 +333,7 @@ public class CmsXmlPage {
      */
     public boolean isEnabled(String name, String language) {
 
-        Element element = getBookmark(language+"_"+name);
+        Element element = getBookmark(name, language);
 
         if (element != null) {
 
@@ -346,7 +358,7 @@ public class CmsXmlPage {
             String elementName = elem.attribute("name").getValue();
             String elementLang = elem.attribute("language").getValue();
     
-            setBookmark(elementLang+"_"+elementName, elem);              
+            setBookmark(elementName, elementLang, elem);              
         }
     }
     
@@ -445,11 +457,12 @@ public class CmsXmlPage {
     /**
      * Removes a bookmark with a given key.<p>
      * 
-     * @param key the key for the bookmark
+     * @param name the name of the element
+     * @param language the language of the element
      * @return the element removed from the bookmarks or null
      */
-    protected Element removeBookmark(String key) {
-        return (Element)m_bookmarks.remove(key);
+    protected Element removeBookmark(String name, String language) {
+        return (Element)m_bookmarks.remove(language + "_" + name);
     }
     
     /**
@@ -463,20 +476,26 @@ public class CmsXmlPage {
         
         Element elements = m_document.getRootElement().element("elements");
         
-        Element element = removeBookmark(language+"_"+name);
+        Element element = removeBookmark(name, language);
         elements.remove(element);
     }
 
     /**
      * Adds a bookmark for the given element.<p>
      * 
-     * @param key the key of the bookmark
+     * @param name the name of the element
+     * @param language the language of the element
      * @param element the element to bookmark
      */
-    protected void setBookmark (String key, Element element) {
+    protected void setBookmark (String name, String language, Element element) {
         
-        m_bookmarks.put(key, element);
+        if (language != null) {
+            m_bookmarks.put(language + "_" + name, element);
+        } else {
+            m_bookmarks.put(name, element);
+        }
     }
+            
     
     /**
      * Sets the data of an already existing element.<p>
@@ -494,7 +513,7 @@ public class CmsXmlPage {
     public void setContent(CmsObject cms, String name, String language, String content) 
         throws CmsPageException {
         
-        Element element = getBookmark(language+"_"+name);
+        Element element = getBookmark(name, language);
         Element data = element.element("content");
         Element links = element.element("links");
         CmsLinkTable linkTable = new CmsLinkTable();
@@ -551,7 +570,7 @@ public class CmsXmlPage {
      */
     public void setEnabled(String name, String language, boolean isEnabled) {
 
-        Element element = getBookmark(language+"_"+name);
+        Element element = getBookmark(name, language);
         Attribute enabled = element.attribute("enabled");
         
         if (enabled == null) {
@@ -561,6 +580,34 @@ public class CmsXmlPage {
         } else {
             enabled.setValue(Boolean.toString(isEnabled));
         }
+    }
+    
+    /**
+     * Sets the default flag of an already existing element.<p>
+     * The element is registered as default element for the given
+     * element name. If another element was registered already as default,
+     * its default flag is removed.
+     * 
+     * @param name the name of the element
+     * @param language the language of the element
+     */
+    public void setDefault(String name, String language) {
+        
+        Element element = getBookmark(name, language);
+        Attribute isDefault = element.attribute("default");
+        
+        if (isDefault == null) {
+            element.addAttribute("default", "true");
+        } else {
+            isDefault.setValue("true");
+        }
+        
+        Element lastDefault = getBookmark(name, null);
+        if (lastDefault != null) {
+            lastDefault.remove(lastDefault.attribute("default"));
+        }
+        
+        setBookmark(name, null, element);
     }
     
     /**
