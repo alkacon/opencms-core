@@ -659,6 +659,7 @@
 				<parameter>Parameter</parameter>
 				<changeparameter>Eigenschaften ändern von Module</changeparameter>
 				<moduleproperty>Moduleigenschaft</moduleproperty>
+				<modulepropertys>Moduleigenschaften</modulepropertys>
 				<type>Type</type>
 				<value>Wert</value>
 				<deletemodule>Modul löschen</deletemodule>

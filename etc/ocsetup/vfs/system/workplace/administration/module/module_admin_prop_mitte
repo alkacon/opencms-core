@@ -20,7 +20,7 @@
 <!--
 	function getText()
 	{
-		parent.text.document.writeln("]]><LABEL value="module.lable.moduleproperty"/><![CDATA[");
+		parent.text.document.writeln("]]><LABEL value="module.lable.modulepropertys"/><![CDATA[");
 	}
 //-->
 </script>
@@ -32,7 +32,7 @@
 			<table width="100%" cellpadding=0 cellspacing=10 border=0>
 				<tr>
 		   		 	<td align="center">
-						<b>]]><LABEL value="module.lable.name"/><![CDATA[</b>
+						<b>]]><LABEL value="input.name"/><![CDATA[</b>
 					</td>
 					<td  style="background:#FFFFFF;" align="center">
 						<b>]]><LABEL value="module.lable.type"/><![CDATA[</b>
