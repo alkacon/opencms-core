@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/09/12 17:38:05 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/10/14 12:40:23 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,8 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -37,13 +35,17 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
+
+import org.opencms.workplace.CmsWorkplaceAction;
 
 /**
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.28 $ $Date: 2003/10/14 12:40:23 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -70,15 +72,15 @@ public class CmsChtype extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) 
     throws CmsException {
-		CmsRequestContext requestContext = cms.getRequestContext();
-		I_CmsSession session = requestContext.getSession(true);
+        CmsRequestContext requestContext = cms.getRequestContext();
+        I_CmsSession session = requestContext.getSession(true);
 
         // the template to be displayed
         String template = null;
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
-        if(initial != null) {
+        if (initial != null) {
 
             // remove all session values
             session.removeValue(C_PARA_RESOURCE);
@@ -91,7 +93,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
 
         // get the filename
         String filename = (String)parameters.get(C_PARA_RESOURCE);
-        if(filename != null) {
+        if (filename != null) {
             session.putValue(C_PARA_RESOURCE, filename);
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
@@ -99,24 +101,47 @@ public class CmsChtype extends CmsWorkplaceDefault {
 
         // check if the newtype parameter is available. This parameter is set when
         // the new file type is selected
-        if(newtype != null) {
+        if (newtype != null) {
 
             // get the new resource type
             int type = cms.getResourceTypeId(newtype);
+            
+            // read all properties of the file, store them in a map and delete them
+            Map fileProperties = cms.readProperties(filename);
+            cms.deleteAllProperties(filename);
+            
+            // change the file type
             cms.chtype(cms.readAbsolutePath(file), type);
+            
+            // now write all stored properties back to the changed file
+            Iterator i = fileProperties.keySet().iterator();
+            while (i.hasNext()) {
+                String curKey = (String)i.next();
+                String curValue = (String)fileProperties.get(curKey);
+                try {
+                    cms.writeProperty(filename, curKey, curValue);
+                } catch (CmsException e) {
+                    // Propertydefinition does not exist, try to create it
+                    if (e.getType() == CmsException.C_NOT_FOUND) {
+                        cms.createPropertydefinition(curKey, cms.readFileHeader(filename).getType());
+                        cms.writeProperty(filename, curKey, curValue);
+                    } else {
+                        throw e;
+                    }
+                }
+            }          
+            
             session.removeValue(C_PARA_RESOURCE);
 
             // return to filelist
             try {
-                if(lasturl == null || "".equals(lasturl)) {
+                if (lasturl == null || "".equals(lasturl)) {
 					requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                     + CmsWorkplaceAction.getExplorerFileUri(cms));
-                }
-                else {
+                } else {
                     requestContext.getResponse().sendRedirect(lasturl);
                 }
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                         + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
@@ -125,11 +150,11 @@ public class CmsChtype extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // set all required datablocks
-        xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(cms.readOwner(file)) */ );
+        xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(cms.readOwner(file)) */);
         xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
         xmlTemplateDocument.setData("FILENAME", file.getName());
         getResources(cms, null, null, null, null, null);
-        if(m_names != null) {
+        if (m_names != null) {
             xmlTemplateDocument.setData(C_RADIOSIZE, new Integer(m_names.size()).toString());
         }
 
