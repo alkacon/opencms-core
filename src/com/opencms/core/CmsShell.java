@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/28 06:38:54 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/09/28 08:09:25 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.39 $ $Date: 2000/09/28 06:38:54 $
+ * @version $Revision: 1.40 $ $Date: 2000/09/28 08:09:25 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -230,7 +230,6 @@ public class CmsShell implements I_CmsConstants {
 		if((command == null) || (command.size() == 0)) {
 			return;
 		}
-		
 		String splittet[] = new String[command.size()];
 		String toCall;
 		
@@ -1051,20 +1050,34 @@ public void getCurrentSite()
 		}
 	}
 /**
- * Prints all possible commands.
+ * Prints signature of all possible commands containing a certain string.<br>
+ * May also be used to print signature of a specific command by giving full command name.
+ *
+ * @author Jan Krag
+ * @param String The String to search for in the commands
  */
-public void helpSearch(String searchString)
+public void help(String searchString)
 {
 	Method meth[] = getClass().getMethods();
 	for (int z = 0; z < meth.length; z++)
 	{
-		if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC))
+		if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC) && (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1))
 		{
-			if (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)
+			printMethod(meth[z]);
+			/*
+			System.out.print("  " + meth[z].getName() + " (");
+			Class[] params = meth[z].getParameterTypes();
+			for (int i = 0; i < params.length; i++)
 			{
-				System.out.print(meth[z].getName() + "(");
-				System.out.println(meth[z].getParameterTypes().length + ")");
+				String par = params[i].getName();
+				par = par.substring(par.lastIndexOf(".") + 1);
+				if (i == 0)
+					System.out.print(par);
+				else
+					System.out.print(", " + par);
 			}
+			System.out.println(")");
+*/
 		}
 	}
 }
@@ -1076,8 +1089,7 @@ public void helpSearch(String searchString)
 		for(int z=0 ; z < meth.length ; z++) {
 			if( ( meth[z].getDeclaringClass() == getClass() ) &&
 				( meth[z].getModifiers()  == Modifier.PUBLIC ) ) {
-				System.out.print(meth[z].getName() + "(");
-				System.out.println(meth[z].getParameterTypes().length + ")");
+				printMethod(meth[z]);
 			}
 		}
 	}
@@ -1373,6 +1385,28 @@ public void newSite(String name, String description, String category, String lan
 	private void printException(Exception exc) {
 		exc.printStackTrace();
 	}
+/**
+ * Prints the full name and signature of a method.<br>
+ * Called by help-methods.
+ * Creation date: (09/28/00)
+ * @author Jan Krag
+ * @param param java.lang.reflect.Method
+ */
+private void printMethod(Method method)
+{
+	System.out.print("  " + method.getName() + " (");
+	Class[] params = method.getParameterTypes();
+	for (int i = 0; i < params.length; i++)
+	{
+		String par = params[i].getName();
+		par = par.substring(par.lastIndexOf(".") + 1);
+		if (i == 0)
+			System.out.print(par);
+		else
+			System.out.print(", " + par);
+	}
+	System.out.println(")");
+}
 	/**
 	 * Publishes a project.
 	 * 
