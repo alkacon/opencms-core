@@ -778,7 +778,6 @@ span.separator {
 	margin: 12px 0 5px 0;
 }
 
-/* für new_admin */
 .dialogcontent {
 	<% if(!(style == NEW_ADMIN)) { %>
 	border-left: 1px solid ThreeDHighlight;
