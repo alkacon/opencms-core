@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.7 $ $Date: 2000/01/14 13:46:51 $  
+* @version $Revision: 1.8 $ $Date: 2000/01/14 16:15:34 $  
 * 
 */
 
@@ -363,6 +363,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                 break;
             // file not found - display 404 error.
             case CmsException.C_NOT_FOUND:
+                res.setContentType("text/plain");
                 res.getWriter().print(e.toString());
                 //res.sendError(res.SC_NOT_FOUND);
                 break;
@@ -370,6 +371,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                 res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
                 break;
             default:
+                res.setContentType("text/plain");
                 res.getWriter().print(e.toString());
                 //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }
