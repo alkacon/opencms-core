@@ -453,6 +453,15 @@ span.tabactive {
 	font-size: 11px;
 }
 
+.buttonbackground {
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 1px;
+	background-color: ThreeDFace;	
+}
+
 /* definitions for xmlcontent editor form */
 .xmlTable { 
 	width:100%; 
