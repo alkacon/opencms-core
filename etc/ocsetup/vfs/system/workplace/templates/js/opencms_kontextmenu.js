@@ -85,6 +85,8 @@ function showkontext(welche, parameter, id)
 	// set the kontextparameter
 	kontextparam = parameter;
 	
+	if(welche!='')
+	{
 	
 	if (!shown || id!=altid)
 	{
@@ -118,6 +120,7 @@ function showkontext(welche, parameter, id)
 	}
 	letztelyr=welche;
 	altid=id;
+	}
 }
 
 
