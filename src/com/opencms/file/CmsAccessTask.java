@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessTask.java,v $
- * Date   : $Date: 2000/02/20 19:19:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/31 08:28:31 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,8 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.11 $ $Date: 2000/02/20 19:19:48 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.12 $ $Date: 2000/03/31 08:28:31 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -1072,7 +1073,9 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		try {
 			PreparedStatement statementGetLastInsertId = m_Con.prepareStatement(C_GET_LAST_INSERT_ID);
 			res = statementGetLastInsertId.executeQuery();
-			id = res.getInt(C_ID);
+            if (res.next()) {
+                id = res.getInt(C_ID);
+            }
 		} catch (SQLException e){
 			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}

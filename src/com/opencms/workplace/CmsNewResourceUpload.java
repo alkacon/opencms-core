@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/03/29 15:23:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/31 08:28:31 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/03/29 15:23:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/31 08:28:31 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -92,36 +92,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 
-     /*   // get the parameters from the request and session
-        String step=(String)parameters.get("STEP");                
-        String newtype=(String)parameters.get("R_NEU");       
-        String currentFolder=(String)session.getValue(C_PARA_FILELIST);
-        
-        
-        // get filename and file content if available
-        String filename=null;
-        byte[] filecontent=new byte[0];
-        
-        // get the filename
-        Enumeration files=cms.getRequestContext().getRequest().getFileNames();
-        while (files.hasMoreElements()) {
-           filename=(String)files.nextElement();
-        }             
-        if (filename != null) {
-            session.putValue(C_PARA_FILE,filename);
-        }        
-        filename=(String)session.getValue(C_PARA_FILE);
-        
-        // get the filecontent
-        if (filename != null) {
-            filecontent=cms.getRequestContext().getRequest().getFile(filename);
-        }        
-        if (filecontent != null) {
-            session.putValue(C_PARA_FILECONTENT,filecontent);          
-        }
-        
-        filecontent=(byte[])session.getValue(C_PARA_FILECONTENT); */
-        
+
            // get the parameters from the request and session
         String step=(String)parameters.get("STEP");                  
         String currentFolder=(String)session.getValue(C_PARA_FILELIST);
@@ -181,6 +152,14 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 } else {
                     // create the new file.    
                     // todo: error handling if file already exits      
+                    /*for (int i=10;i<100;i+=5) {
+                        filecontent=new byte[i*1000];
+                        for (int j=0;j<filecontent.length;j++) {
+                            filecontent[j]=65;
+                        }
+                        cms.createFile(currentFolder,"test"+i,filecontent,type.getResourceName());
+                        
+                    }*/                                        
                     cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
                     // remove the values form the session
                     session.removeValue(C_PARA_FILE);
@@ -202,7 +181,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 }
                 // create the new file.    
                 // todo: error handling if file already exits    
-                A_CmsResourceType type=cms.getResourceType(newtype);               
+                A_CmsResourceType type=cms.getResourceType(newtype);                                                           
                 CmsFile file=cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
                 // check if a file title was given
                 if (title!= null) {
