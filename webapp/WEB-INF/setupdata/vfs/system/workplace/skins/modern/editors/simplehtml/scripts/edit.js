@@ -67,10 +67,6 @@ function doSubmit() {
     // We have to do a blur on the textarea here. otherwise netscape may have problems with reading the value
     document.EDITOR.edit1.blur();
     document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-    if (document.EDITOR.action.value != "preview") {
-    	document.EDITOR.pagetitle.style.color = "#ffffff";
-    	document.EDITOR.pagetitle.value = encodeURIComponent(document.EDITOR.pagetitle.value);
-    }
 }
 
 // Function action on button click for Netscape Navigator
@@ -113,50 +109,60 @@ function doNsEdit(para) {
 
 // which button is clicked
 function doTemplSubmit(para) {
-	
 	document.EDITOR.action.value = "";
 	switch (para)
 	{
 	case 1:
-		doSubmit();
-		document.EDITOR.submit();
-		break;
-	case 2:
-		alert("NYI!");
-		break;
-	case 3:
+		// reload the editor
 		doSubmit();
 		document.EDITOR.action.value = "show";
 		document.EDITOR.target = "_self";
 		document.EDITOR.submit();
 		break;
-	case 4:
-		// new template selected
-		doSubmit();
-		document.EDITOR.action.value = "changetemplate";
-		document.EDITOR.target = "_self";
-		document.EDITOR.submit();
-		break;
-	case 5:
-		// preview selected			
+	case 2:
+		// preview selected	
+		doSubmit();		
 		document.EDITOR.action.value = "preview";
-		doSubmit();
 		document.EDITOR.target = "PREVIEW";
 		document.EDITOR.submit();
 		break;
-	case 6:
-		// New Body;
-		doSubmit();
-		document.EDITOR.action.value = "newbody";
-		document.EDITOR.target = "_self";
-		document.EDITOR.submit();
-		break;
-	case 7:
-		// Change Body;
+	case 3:
+		// change body;
 		doSubmit();
 		document.EDITOR.action.value = "changebody";
 		document.EDITOR.target = "_self";
 		document.EDITOR.submit();
 		break;
+	case 4:
+		// open elements window;
+		dialogWindow = window.open("about:blank","DIALOG","width=380,height=420,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
+		document.ELEMENTS.submit();
+		dialogWindow.focus();
+		break;		
+	case 5:
+		// open properties window;
+		dialogWindow = window.open("about:blank","DIALOG","width=600,height=450,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
+		document.PROPERTIES.submit();
+		dialogWindow.focus();
+		break;
+	}
+}
+
+function deleteEditorContent(bodyName, language) {
+	if (bodyName == document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
+		document.EDITOR.edit1.value = "";
+	}
+}
+
+function changeBody(bodyName, language) {
+	if (bodyName != document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
+		document.EDITOR.bodyname.value = bodyName;
+		doTemplSubmit(3);	
+	}
+}
+
+function closeDialog() {
+	if (dialogWindow) {
+		window.dialogWindow.close();
 	}
 }

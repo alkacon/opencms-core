@@ -469,10 +469,6 @@ function doSubmit()
         // IE4
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.DocumentHTML);
     }
-    if (document.EDITOR.action.value != "preview") {
-    	document.EDITOR.pagetitle.style.color = "#ffffff";
-    	document.EDITOR.pagetitle.value = encodeURIComponent(document.EDITOR.pagetitle.value);
-    }
 }
 
 

@@ -27,7 +27,7 @@
 
 </head>
 
-<body background="<%= wp.getPicsUri() %>bg_grau2.gif" bgproperties="fixed" scroll="no" onload="setText();" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0">
+<body background="<%= wp.getPicsUri() %>bg_grau2.gif" bgproperties="fixed" scroll="no" onload="setText();" onunload="closeDialog();" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0">
 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%" class="toolbar">
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
 	<tr>
@@ -36,52 +36,27 @@
 				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="30"></td>
 				<td align="left" width="20"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="28"></td>
 				<td align="left"><table border="0" cellspacing="0" cellpadding="0">
-					<tr height="20">
-						<td><%= wp.key("input.title") %>:&nbsp;&nbsp;</td>
-						<td><input name="pagetitle" value="<%= wp.getParamPagetitle() %>" size="10" maxlength=255 style="width:100px"></td>		
-						<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td>						
+					<tr height="20">					
 						<%
-						
-							if (options.showElement("selector.template") && !options.showElement("selector.body")) {%>
-								<td><%= wp.key("input.template") %>:&nbsp;&nbsp;</td>
-								<td><%= wp.buildSelectTemplates("class=\"textfeld\" name=\"pagetemplate\" width=\"150\" onchange=\"doTemplSubmit(4);\"") %></td>
-								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
-							} else if (!options.showElement("selector.template")) {%>
-								<td style="visibility: hidden;"><input type="hidden" name="pagetemplate" value="<%= wp.getParamPagetemplate() %>"></td><%
-							}
 							
 							if (!options.showElement("selector.body")) {%>
-								<td style="visibility:hidden;"><input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>"><input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>"></td>
-								<td><input type="hidden" name="newbodyname" value="<%= wp.getParamNewbodyname() %>"></td><%
-							}
-							
-							if (options.showElement("selector.template") && options.showElement("selector.body")) {%>
-								<td><%= wp.key("input.template") %>:&nbsp;&nbsp;</td>
-								<td><%= wp.buildSelectTemplates("class=\"textfeld\" name=\"pagetemplate\" width=\"150\" onchange=\"doTemplSubmit(4);\"") %></td>
-								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
+								<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>"><input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>"><%
 							}
 							
 							if (options.showElement("selector.body")) {%>
 								<td><%= wp.key("input.body") %>:&nbsp;&nbsp;</td>
-								<td><%= wp.buildSelectBodyLanguage("class=\"textfeld\" name=\"bodylanguage\" width=\"150\" onchange=\"doTemplSubmit(7);\"") %></td>
+								<td><%= wp.buildSelectBodyLanguage("class=\"textfeld\" name=\"bodylanguage\" width=\"150\" onchange=\"doTemplSubmit(3);\"") %></td>
 								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="3" height="1"></td>
-								<td><%= wp.buildSelectBodyName("class=\"textfeld\" name=\"bodyname\" width=\"150\" onchange=\"doTemplSubmit(7);\"") %></td>
+								<td><%= wp.buildSelectBodyName("class=\"textfeld\" name=\"bodyname\" width=\"150\" onchange=\"doTemplSubmit(3);\"") %></td>
 								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
-							}
-							
-							if (!options.showElement("option.newbody")) {%>
-								<td><input type="hidden" name="newbodyname" value="<%= wp.getParamNewbodyname() %>"></td><%
-							}
-							
-							if (options.showElement("selector.body") && options.showElement("option.newbody")) {%>
-								<td><input type="text" name="newbodyname" class="textfeld" size="8" length="255"></td>
-								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
-								<td width="26" align="center" class="tbl"><a href="javascript:doTemplSubmit(6);" onMouseOver="bu06.className='over';" onMouseOut="bu06.className='norm';" onClick="bu06.className='push';"><img name="bu06" src="<%= wp.getPicsUri() %>bu_newbody.gif" width="20" height="20" alt="<%= wp.key("button.newbody") %>"></td><%
-							}					
+							}									
 						
-						%>						
+						%>
+						<%= wp.button("javascript:doTemplSubmit(4);", null, "elements", "editor.dialog.elements.button", 0, wp.getSkinUri() + "editors/buttons/") %>
+						<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td>
+						<%= wp.button("javascript:doTemplSubmit(5);", null, "properties", "editor.dialog.properties.button", 0, wp.getSkinUri() + "editors/buttons/") %>				
 						<td width="20" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="20" height="28"></td>
-						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu05.className='over';" onMouseOut="bu05.className='norm';" onMouseDown="bu05.className='push';doTemplSubmit(5);"><img name="bu05" src="<%= wp.getPicsUri() %>bu_preview.gif" width="20" height="20" alt="<%= wp.key("button.preview") %>"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu05.className='over';" onMouseOut="bu05.className='norm';" onMouseDown="bu05.className='push';doTemplSubmit(2);"><img name="bu05" src="<%= wp.getPicsUri() %>bu_preview.gif" width="20" height="20" alt="<%= wp.key("button.preview") %>"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
 					</tr> 
 				</table></td>
 			</tr>
@@ -140,6 +115,20 @@
 <input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
 </form>
+
+<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOG" method="post">
+<input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
+<input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
+<input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
+</form>
+
+<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOG" method="post">
+<input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="okfunctions" value="window.close();">
+<input type="hidden" name="usetempfileproject" value="true">
+</form>
+
 </table>
 
 </body>

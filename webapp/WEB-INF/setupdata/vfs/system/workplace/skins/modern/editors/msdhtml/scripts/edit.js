@@ -95,10 +95,6 @@ function doSubmit()
         document.EDITOR.edit1.blur();
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
     }
-    if (document.EDITOR.action.value != "preview") {
-    	document.EDITOR.pagetitle.style.color = "#ffffff";
-    	document.EDITOR.pagetitle.value = encodeURIComponent(document.EDITOR.pagetitle.value);
-    }
 }
 
 // Function action on button click for Netscape Navigator
