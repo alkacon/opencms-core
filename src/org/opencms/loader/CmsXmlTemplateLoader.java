@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/18 10:50:48 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/18 15:11:21 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -192,7 +192,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      */
     private byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
         try {
-            com.opencms.template.CmsRootTemplate root = (CmsRootTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsRootTemplate");
+            CmsRootTemplate root = new CmsRootTemplate();
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
         } catch (Exception e) {
             // no document we could show...
@@ -517,7 +517,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
         }
-        Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
+        Object o = CmsTemplateClassManager.getClassInstance(classname);
 
         // Check, if the loaded class really is a OpenCms template class.
 

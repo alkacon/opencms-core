@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/08/18 15:11:21 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.65 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.66 $ $Date: 2003/08/18 15:11:21 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
@@ -225,7 +225,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
         if(classname == null || "".equals(classname)) {
             throwException("Don't know which class handles " + tagname + " tags.");
         }
-        Object loadedClass = CmsTemplateClassManager.getClassInstance(m_cms, classname);
+        Object loadedClass = CmsTemplateClassManager.getClassInstance(classname);
         if(!(loadedClass instanceof I_CmsWpElement)) {
             throwException("Loaded class " + classname + " is not implementing I_CmsWpElement");
         }

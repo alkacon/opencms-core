@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/18 15:11:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.boot.I_CmsLogChannels;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -201,19 +201,26 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return true if the object is inside the cache, false otherwise
      */
     private boolean isCached(I_CmsFlexLruCacheObject theCacheObject) {
-        if (theCacheObject == null || this.m_objectCount == 0) {
+        if (theCacheObject == null || m_objectCount == 0) {
             // the cache is empty or the object is null (which is never cached)
             return false;
         }
         
-        if (theCacheObject.getNextLruObject()!=null || theCacheObject.getPreviousLruObject()!=null) { 
+        I_CmsFlexLruCacheObject nextObj;
+        I_CmsFlexLruCacheObject prevObj;
+        
+        if (((nextObj = theCacheObject.getNextLruObject()) != null) || ((prevObj = theCacheObject.getPreviousLruObject()) != null)) { 
             // the object has either a predecessor or successor in the linked 
             // list of all cached objects, so it is inside the cache
             return true;
         }
         
-        if (theCacheObject.getNextLruObject()==null && theCacheObject.getPreviousLruObject()==null) {
-            if (this.m_objectCount==1 && this.m_listHead!=null && this.m_listTail!=null && this.m_listHead.equals(theCacheObject) && this.m_listTail.equals(theCacheObject)) {
+        if ((nextObj == null) && (prevObj == null)) {
+            if ((m_objectCount == 1) 
+            && (m_listHead != null) 
+            && (m_listTail != null)
+            && m_listHead.equals(theCacheObject) 
+            && m_listTail.equals(theCacheObject)) {
                 // the object is the one and only object in the cache
                 return true;
             }
@@ -230,29 +237,32 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return true if an object was found and touched
      */
     public synchronized boolean touch(I_CmsFlexLruCacheObject theCacheObject) {
-        if (!this.isCached(theCacheObject)) return false;
+        if (!isCached(theCacheObject)) return false;
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
-        if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_maxObjectCosts)) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE))
+        if ((m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>m_maxObjectCosts)) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) {
                 OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
-            this.remove(theCacheObject);
+            }
+            remove(theCacheObject);
             return false;
         }
                 
         // set the list pointers correct
-        if (theCacheObject.getNextLruObject()==null) {
+        I_CmsFlexLruCacheObject nextObj;
+        I_CmsFlexLruCacheObject prevObj;
+        if ((nextObj = theCacheObject.getNextLruObject()) == null) {
             // case 1: the object is already at the head pos.
             return true;
-        } else if (theCacheObject.getPreviousLruObject()==null) {
+        } else if ((prevObj = theCacheObject.getPreviousLruObject()) == null) {
             // case 2: the object at the tail pos., remove it from the tail to put it to the front as the new head
-            I_CmsFlexLruCacheObject newTail = theCacheObject.getNextLruObject();
+            I_CmsFlexLruCacheObject newTail = nextObj;
             newTail.setPreviousLruObject(null);
-            this.m_listTail = newTail;
+            m_listTail = newTail;
         } else {
             // case 3: the object is somewhere within the list, remove it to put it the front as the new head
-            theCacheObject.getPreviousLruObject().setNextLruObject(theCacheObject.getNextLruObject());
-            theCacheObject.getNextLruObject().setPreviousLruObject(theCacheObject.getPreviousLruObject());
+            prevObj.setNextLruObject(nextObj);
+            nextObj.setPreviousLruObject(prevObj);
         }
         
         // set the touched object as the new head in the linked list:

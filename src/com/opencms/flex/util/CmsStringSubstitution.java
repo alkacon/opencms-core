@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/18 15:11:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -68,19 +68,52 @@ public final class CmsStringSubstitution {
      * @return String the substituted String
      */
     public static String substitute(String content, String searchString, String replaceItem) {
-        return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "g");
-    }
-    
-    /**
-     * Substitutes first occurance of searchString in content with replaceItem.<p>
-     * 
-     * @param content the content which is scanned
-     * @param searchString the String which is searched in content
-     * @param replaceItem the new String which replaces searchString
-     * @return String the substituted String
-     */
-    public static String substituteFirst(String content, String searchString, String replaceItem) {
-        return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "");
+        // high performance implementation to avoid regular expression overhead
+        int findLength;
+        if (content == null) {
+            return null;
+        }
+        int stringLength = content.length();
+        if (searchString == null || (findLength = searchString.length()) == 0) {
+            return content;
+        }
+        if (replaceItem == null) {
+            replaceItem = "";
+        }
+        int replaceLength = replaceItem.length();
+        int length;
+        if (findLength == replaceLength) {
+            length = stringLength;
+        } else {
+            int count;
+            int start;
+            int end;
+            count = 0;
+            start = 0;
+            while ((end = content.indexOf(searchString, start)) != -1) {
+                count++;
+                start = end + findLength;
+            }
+            if (count == 0) {
+                return content;
+            }
+            length = stringLength - (count * (findLength - replaceLength));
+        }
+        int start = 0;
+        int end = content.indexOf(searchString, start);
+        if (end == -1) {
+            return content;
+        }
+        StringBuffer sb = new StringBuffer(length);
+        while (end != -1) {
+            sb.append(content.substring(start, end));
+            sb.append(replaceItem);
+            start = end + findLength;
+            end = content.indexOf(searchString, start);
+        }
+        end = stringLength;
+        sb.append(content.substring(start, end));
+        return sb.toString();
     }
     
     /**
@@ -117,7 +150,7 @@ public final class CmsStringSubstitution {
             contextSearch = "([^\\w/])" + context;
             contextReplace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
         }       
-        return CmsStringSubstitution.substitutePerl(htmlContent, contextSearch, contextReplace, "g");            
+        return substitutePerl(htmlContent, contextSearch, contextReplace, "g");            
     }
         
     /**

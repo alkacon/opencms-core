@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/08/14 15:37:25 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/08/18 15:11:21 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -146,7 +146,7 @@ public class CmsElementLocator {
                 String className = orgClassName.substring(0,orgClassName.lastIndexOf("."));
                 String methodName = orgClassName.substring(orgClassName.lastIndexOf(".")+1);
                 try {
-                    cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, className);
+                    cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(className);
                     CmsMethodCacheDirectives mcd = (CmsMethodCacheDirectives)cmsTemplate.getClass().getMethod(
                                                     "getMethodCacheDirectives", new Class[] {
                                                     CmsObject.class, String.class}).invoke(cmsTemplate,
@@ -163,7 +163,7 @@ public class CmsElementLocator {
                 }
             }else{
                 try {
-                    cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, desc.getClassName());
+                    cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(desc.getClassName());
                     result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
                     put(desc, result);
                 } catch(Throwable e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/08/18 15:11:21 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.42 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Name:  $ $Revision: 1.43 $ $Date: 2003/08/18 15:11:21 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {
@@ -96,7 +96,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             iconActiveMethod = iconActiveMethod.substring(iconActiveMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
             try {
-                Object o = CmsTemplateClassManager.getClassInstance(cms, className);
+                Object o = CmsTemplateClassManager.getClassInstance(className);
                 groupsMethod = o.getClass().getMethod(iconActiveMethod, new Class[] {
                     CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class
                 });
@@ -141,7 +141,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             iconVisibleMethod = iconVisibleMethod.substring(iconVisibleMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
             try {
-                Object o = CmsTemplateClassManager.getClassInstance(cms, className);
+                Object o = CmsTemplateClassManager.getClassInstance(className);
                 groupsMethod = o.getClass().getMethod(iconVisibleMethod, new Class[] {
                     CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class
                 });

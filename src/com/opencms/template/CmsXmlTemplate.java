@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/08/18 10:50:48 $
-* Version: $Revision: 1.125 $
+* Date   : $Date: 2003/08/18 15:11:21 $
+* Version: $Revision: 1.126 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.125 $ $Date: 2003/08/18 10:50:48 $
+ * @version $Revision: 1.126 $ $Date: 2003/08/18 15:11:21 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -557,7 +557,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // This can be done by calling the getOwnTemplateFile() method of the
             // mastertemplate class.
             // The content is needed to determine the HTML style of the body element.
-            Object tempObj = CmsTemplateClassManager.getClassInstance(cms, tempTemplateFile.getSubtemplateClass(templatename));
+            Object tempObj = CmsTemplateClassManager.getClassInstance(tempTemplateFile.getSubtemplateClass(templatename));
             CmsXmlTemplate frameTemplateClassObject = (CmsXmlTemplate)tempObj;
             templateFile = frameTemplateClassObject.getOwnTemplateFile(cms, tempTemplateFile.getSubtemplateFilename(templatename), null, null, null);
         }
@@ -978,7 +978,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 templateName = getTemplateFileName(elName, doc, parameters);
 
                 if(className != null) {
-                    I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(cms, className);
+                    I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(className);
                     CmsCacheDirectives cd2 = templClass.collectCacheDirectives(cms, templateName, elName, parameters, null);
                     /*System.err.println("*                INT PUB PRV EXP STR");
                     debugPrint(elementName, result.m_cd);
@@ -1389,7 +1389,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // try to load the subtemplate class
         try {
-            loadedObject = CmsTemplateClassManager.getClassInstance(cms, templateClass);
+            loadedObject = CmsTemplateClassManager.getClassInstance(templateClass);
         }
         catch(CmsException e) {
 

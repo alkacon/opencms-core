@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/08/18 10:50:48 $
-* Version: $Revision: 1.117 $
+* Date   : $Date: 2003/08/18 15:11:21 $
+* Version: $Revision: 1.118 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.117 $ $Date: 2003/08/18 10:50:48 $
+ * @version $Revision: 1.118 $ $Date: 2003/08/18 15:11:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -211,7 +211,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         String currentBodySection = (String)parameters.get("body");
         String bodyClassName = (String)parameters.get("bodyclass");
         String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
-        Object tempObj = CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
+        Object tempObj = CmsTemplateClassManager.getClassInstance(bodyClassName);
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
         CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms,
                 tempBodyFilename, C_BODY_ELEMENT, parameters, null);
@@ -490,7 +490,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             layoutBuffer.append("</template>\n</elementdef>\n</xmltemplate>\n");
             layoutTemplateFile = new CmsXmlTemplateFile(cms, templateFile + C_XML_CONTROL_FILE_SUFFIX, layoutBuffer.toString());
         } else {
-            tempObj = CmsTemplateClassManager.getClassInstance(cms, layoutTemplateClassName);
+            tempObj = CmsTemplateClassManager.getClassInstance(layoutTemplateClassName);
             CmsXmlTemplate layoutTemplateClassObject = (CmsXmlTemplate)tempObj;
             layoutTemplateFile = layoutTemplateClassObject.getOwnTemplateFile(cms,
                     layoutTemplateFilename, null, parameters, null);
@@ -499,7 +499,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // Get the XML parsed content of the body file.
         // This can be done by calling the getOwnTemplateFile() method of the
         // body's template class.
-        tempObj = CmsTemplateClassManager.getClassInstance(cms, bodyElementClassName);
+        tempObj = CmsTemplateClassManager.getClassInstance(bodyElementClassName);
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
         CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms,
                 tempBodyFilename, C_BODY_ELEMENT, parameters, null);

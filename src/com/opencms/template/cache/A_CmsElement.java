@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/08/14 15:37:25 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/08/18 15:11:21 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -372,7 +372,7 @@ public abstract class A_CmsElement {
      * @throws CmsException if the loaded class is no OpenCms template class
      */
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
-        Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
+        Object o = CmsTemplateClassManager.getClassInstance(classname);
         // Check, if the loaded class really is a OpenCms template class.
         if(o instanceof I_CmsTemplate) {
             return (I_CmsTemplate)o;
