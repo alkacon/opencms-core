@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/31 14:55:20 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/31 14:55:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -85,9 +85,17 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_Cm
 		// the recipient of the message
 		String userName = "";
 		
-		try {		
-			Integer sessionTaskid = (Integer)session.getValue("taskid");
-			int taskid = sessionTaskid.intValue();
+		try {
+			String taskidstr = (String) parameters.get("taskid"); 
+			int taskid;
+			if (taskidstr == null || taskidstr=="") {
+				Integer sessionTaskid = (Integer)session.getValue("taskid");
+				taskid = sessionTaskid.intValue();
+			} else {
+				Integer taskidInt = new Integer(taskidstr);
+				taskid = taskidInt.intValue();
+				session.putValue("taskid", taskidInt);
+			}   
 			A_CmsTask task = cms.readTask(taskid);
 			A_CmsUser user = null;
 

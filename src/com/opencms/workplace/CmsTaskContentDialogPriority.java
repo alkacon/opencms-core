@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
- * Date   : $Date: 2000/05/09 10:02:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/31 14:55:20 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/05/09 10:02:57 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/31 14:55:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -144,9 +144,17 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 			initConstants((CmsXmlWpTemplateFile) xmlTemplateDocument);
 		}
 		
-		try {		
-			Integer sessionTaskid = (Integer)session.getValue("taskid");
-			int taskid = sessionTaskid.intValue();
+		try {
+			String taskidstr = (String) parameters.get("taskid");
+			int taskid;
+			if (taskidstr == null || taskidstr=="") { 
+				Integer sessionTaskid = (Integer)session.getValue("taskid");
+				taskid = sessionTaskid.intValue();
+			} else {
+				Integer taskidInt = new Integer(taskidstr);
+				taskid = taskidInt.intValue();
+				session.putValue("taskid", taskidInt);
+			}  
 			A_CmsTask task = cms.readTask(taskid);
 			taskName = task.getName();
 			taskDescription = CmsTaskAction.getDescription( cms, task.getId());
@@ -160,11 +168,11 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 			// compute the indices of the user and role
 			String username = cms.readAgent(task).getName();
 			String groupname = cms.readGroup(task).getName();
+			 
 			int userindex = 0;
 			int groupindex = 0;
 			Vector groups = cms.getGroups();
-			Vector users = cms.getUsersOfGroup(groupname);
-			
+			Vector users = cms.getUsersOfGroup(groupname); 
 			int n=0;
 			for (int z=0; z < groups.size(); z++) {
 				A_CmsGroup group = (A_CmsGroup)groups.elementAt(z);
@@ -181,8 +189,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 				}
 			} 
 			userIdxString = (new Integer(userindex)).toString();
-			groupIdxString = (new Integer(groupindex)).toString();
-			
+			groupIdxString = (new Integer(groupindex)).toString(); 
 		} catch (Exception exc) {
 			// unexpected exception - ignoring
 		}
