@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/07/18 16:13:50 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/07/28 13:36:35 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.32 $ $Date: 2000/07/18 16:13:50 $
+ * @version $Revision: 1.33 $ $Date: 2000/07/28 13:36:35 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -498,9 +498,9 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
             startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
             if (startSettings != null) {
                 accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                if (accessFlags == null) {
+            }
+            if (accessFlags == null) {
                     accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                }
             }         
             cms.chmod(filename,accessFlags.intValue());
         }
