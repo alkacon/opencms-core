@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 16:16:19 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/06/09 16:23:18 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.54 $ $Date: 2000/06/09 16:16:19 $ * 
+ * @version $Revision: 1.55 $ $Date: 2000/06/09 16:23:18 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3557,6 +3557,61 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                  throw new CmsException("["+this.getClass().getName()+"] "+folder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
          }
 	 }
+
+	/**
+	 * Copies the file.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void copyFile(CmsProject project,
+                          CmsProject onlineProject,
+                          String source,int resourceId, 
+                          int parentId, int fileId,
+                          String destination,int resourceLastModifiedBy)
+         throws CmsException {
+         CmsFile file;
+         
+         // read sourcefile
+         file=readFile(project.getId(),onlineProject.getId(),source);
+         // create destination file
+         createFile(project,onlineProject,file,resourceId,parentId,fileId,destination,resourceLastModifiedBy);
+     }
+
+	/**
+	 * Deletes the file.
+	 * 
+     * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void deleteFile(CmsProject project, String filename)
+         throws CmsException {
+         PreparedStatement statement = null;
+         try { 
+           statement =m_pool.getPreparedStatement(C_RESOURCES_REMOVE_KEY);  
+           // mark the file as deleted       
+           statement.setInt(1,C_STATE_DELETED);
+           statement.setInt(2,C_UNKNOWN_ID);
+           statement.setString(3, filename);
+           statement.setInt(4,project.getId());
+           statement.executeUpdate();  
+                        
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+					if( statement != null) {
+						m_pool.putPreparedStatement(C_RESOURCES_REMOVE_KEY, statement);
+					}
+		 }         
+     }
+
+ 
      
    	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -3836,6 +3891,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		throws CmsException {
 		// init statements for resources and files
 		m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
+        m_pool.initPreparedStatement(C_RESOURCES_REMOVE_KEY,C_RESOURCES_REMOVE);
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
         m_pool.initPreparedStatement(C_FILES_UPDATE_KEY,C_FILES_UPDATE);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
