@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/09/20 07:49:55 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2000/11/03 15:25:04 $
+ * Version: $Revision: 1.99 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.98 $ $Date: 2000/09/20 07:49:55 $
+ * @version $Revision: 1.99 $ $Date: 2000/11/03 15:25:04 $
  */
 public interface I_CmsWpConstants {
 
@@ -233,7 +233,18 @@ public interface I_CmsWpConstants {
 	
 	public static final String C_SESSION_MODULE_DELETE_STEP = "moduledeletestep";
 
-	
+	public static final String C_SESSION_MODULE_ADMIN_DATA	= "module_admin_data";
+
+	public static final String C_SESSION_MODULE_ADMIN_PROP_NAMES = "module_admin_props_names";
+
+	public static final String C_SESSION_MODULE_ADMIN_PROP_DESCR = "module_admin_props_desr";
+
+	public static final String C_SESSION_MODULE_ADMIN_PROP_TYP = "module_admin_props_typ";
+
+	public static final String C_SESSION_MODULE_ADMIN_PROP_VAL = "module_admin_props_value";
+
+	public static final String C_MODULE_PACKETNAME	= "packetname";
+
 	//** The filename to the filetypelist template */
 	public static final String C_FILETYPELIST_TEMPLATEFILE = "filetypelisttemplate";
 	

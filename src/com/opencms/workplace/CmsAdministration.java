@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/10/31 13:11:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/11/03 15:28:46 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,13 +45,13 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/10/31 13:11:29 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/11/03 15:28:46 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
 	
 	/** The number of elements per row */
-	private static int C_ELEMENT_PER_ROW = 4;
+	private static int C_ELEMENT_PER_ROW = 5;
 	
 	private static String C_ADMIN_PATH = "system/workplace/action/administration_content_top.html";
 
@@ -195,8 +195,24 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 				sendBy = navPos;
 			}
 		}
+		Vector iconVector = new Vector();
+		if (sendBy.endsWith("/administration/")){
+			// we must serch for administrationPoints in AdminPath and in system/modules/.. 
+			sendBy = confFile.getWorkplaceAdministrationPath();
+			iconVector = cms.getSubFolders(sendBy);
+			Vector modules = new Vector();
+			modules = cms.getSubFolders(C_MODULES_PATH);
+			for(int i=0; i<modules.size(); i++){
+				Vector moduleAdminPoints = new Vector();
+				moduleAdminPoints = cms.getSubFolders( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() +"administration/");
+				for(int j=0; j<moduleAdminPoints.size(); j++){
+					iconVector.addElement(moduleAdminPoints.elementAt(j));
+				}
+			}
+		}else {
+			iconVector = cms.getSubFolders(sendBy);
+		}
 		session.putValue(C_SESSION_ADMIN_POS, sendBy);
-		Vector iconVector = cms.getSubFolders(sendBy);
 		Vector iconVector2 = cms.getFilesInFolder(sendBy);
 		int numFolders = iconVector.size();
 		if (numFolders > 0){
