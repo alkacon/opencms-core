@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.28 $ $Date: 2000/04/28 13:47:07 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -1082,7 +1082,6 @@ import com.opencms.core.*;
                                        A_CmsProject onlineProject,
                                        String resourcename) 
          throws CmsException {
-
          // check if the resource is a file or a folder
          if (resourcename.endsWith("/")) {
              // this is a folder

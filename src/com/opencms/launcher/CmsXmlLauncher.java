@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/03/22 10:40:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/03/22 10:40:17 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/28 13:47:07 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants { 	
         
@@ -180,7 +180,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             doc.removeFromFileCache();
             throw e;
         }
-                   
+           
         if(result != null) {
             writeBytesToResponse(cms, result);
         }

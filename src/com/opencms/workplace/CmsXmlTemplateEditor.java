@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/04/27 15:34:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2000/04/27 15:34:51 $
+ * @version $Revision: 1.25 $ $Date: 2000/04/28 13:47:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -77,7 +77,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-
+        
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         HttpSession session = orgReq.getSession(true);
@@ -386,11 +386,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         xmlTemplateDocument.setData("bodyfile", bodyElementFilename);
         xmlTemplateDocument.setData("bodyclass", bodyElementClassName);
         xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));                
-        
+       
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setData(C_PARA_FILE, file);
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+
     }            
 
     /**

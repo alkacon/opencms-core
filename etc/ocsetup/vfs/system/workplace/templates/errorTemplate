@@ -65,7 +65,7 @@
 	</div>
 
 	<div id="errordetails">
-	<link rel=stylesheet type="text/css" href="css/format.css">
+	<link rel=stylesheet type="text/css" href="../css/format.css">
 	<form id=DETAILS name=DETAILS>
 	<table cellspacing=0 cellpadding=0 border=2 width=350>
 		<tr><td class=dialogtxt>

@@ -268,5 +268,8 @@ function show_help()
 	]]>
 </TEMPLATE>
 
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.upload" message="error.message.upload" reason="error.reason.upload" suggestion="error.suggestion.upload" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+</TEMPLATE>
 
 </WORKPLACE>

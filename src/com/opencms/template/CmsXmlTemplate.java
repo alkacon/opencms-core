@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/04/19 13:10:46 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2000/04/19 13:10:46 $
+ * @version $Revision: 1.30 $ $Date: 2000/04/28 13:47:07 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -106,6 +106,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         //Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
+        
+   
+        
         //v.addElement(reqContext.currentProject().getName());
         //v.addElement(reqContext.getUri());
         //v.addElement(templateFile);
@@ -143,6 +146,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @exception CmsException 
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
+         
+    
+        
         return getContent(cms, templateFile, elementName, parameters, null);
     }
     
@@ -158,6 +164,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+         
+ 
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] template file is: " + templateFile);
@@ -189,6 +197,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @exception CmsException 
      */
     protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+             
+       
+        
         String result = null;
         // Try to process the template file
         try {
@@ -230,6 +241,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @param templateSelector template section that should be processed.
      */
     public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+  
+        
         CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);                       
         return xmlTemplateDocument;
     }                
@@ -251,6 +264,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      */
     public Object templateElement(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
+       
         
         // Our own template file that wants to include a subelement
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
@@ -397,6 +411,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public String getStylesheet(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
+             
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
         
         // Get the styles from the parameter hashtable        
@@ -453,6 +468,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public Object getTitle(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
+   
         String requestedUri = cms.getRequestContext().getUri();
         String title = cms.readProperty(requestedUri, C_PROPERTY_TITLE);
         if(title == null) {
@@ -477,6 +493,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public Object getServletPath(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
+        
+    
         return ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + "/";
     }  
        
@@ -490,8 +508,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      */
     public Object getFileUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-				
-		return cms.getRequestContext().getFileUri().getBytes();
+
+      	return cms.getRequestContext().getFileUri().getBytes();
 	}
 
     /**
@@ -509,6 +527,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      */
     public Object getQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
+        
+            
         String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
         if(query != null && !"".equals(query)) {
             query = "?" + query;
@@ -531,6 +551,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return Debugging information about all parameters.
      */
     public String parameters(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) {
+            
+        
+        
         Hashtable param = (Hashtable)userObject;
         Enumeration keys = param.keys();
         String s = "";
@@ -724,6 +747,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return Name of the template file that should be included.
      */    
     protected String getTemplateFileName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+       
+                
         if(parameters.containsKey(elementName + "._TEMPLATE_")) {
             return (String)parameters.get(elementName + "._TEMPLATE_");
         } else {
@@ -742,6 +767,8 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return Name of the class that should generate the output for the included template file.
      */    
     protected String getTemplateClassName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+     
+        
         if(parameters.containsKey(elementName + "._CLASS_")) {
             return (String)parameters.get(elementName + "._CLASS_");
         } else {
@@ -760,6 +787,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return Name of the class that should generate the output for the included template file.
      */    
     protected String getTemplateSelector(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+       
         if(parameters.containsKey(elementName + "._TEMPLATESELECTOR_")) {
             return (String)parameters.get(elementName + "._TEMPLATESELECTOR_");
         } else if (doc.hasSubtemplateSelector(elementName)) {

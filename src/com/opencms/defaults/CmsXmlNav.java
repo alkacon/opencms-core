@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/20 08:55:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.10 $ $Date: 2000/04/20 08:55:06 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/28 13:47:07 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -59,7 +59,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getFolderCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		
+	
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		return currentFolder.getBytes();
 	}
@@ -77,8 +77,8 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getFolderRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		
-		String rootFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+"/";
+		  
+   		String rootFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+"/";
 		return rootFolder.getBytes();
 	}
 	
@@ -95,7 +95,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getNavCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		
+	
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();				
 		
 		Vector resources=cms.getSubFolders(currentFolder);
@@ -169,7 +169,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getNavRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-				
+
 		int level=0;
 		// tagcontent determines the folder starting from root folder.
 		// if tagcontent is null, then the navigation of root folder must be showed.
@@ -579,6 +579,7 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getPropertyRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
+        
 		int level=0;
 		String property="";
 		// tagcontent determines the folder starting from root folder and

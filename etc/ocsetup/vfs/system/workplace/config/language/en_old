@@ -136,6 +136,7 @@
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
 				<unlock>Sorry, the file could not be locked.</unlock>
+				<upload>Sorry, the file could not be uploaded.</upload>
 			</message>
 			<reason>
 				<addgroup>The group name must be entered.</addgroup>
@@ -175,6 +176,7 @@
 				<rmdefault>At last one user that should be removed from this group had this group set as default.</rmdefault>
 				<deleteproject>You don't have the permissions to delete the project.</deleteproject>
 				<unlock>The lock was stolen by another user.</unlock>
+				<upload>The file content is empty.</upload>
 			</reason>
 			<suggestion>
 				<adduser>Please check the entered data or contact your system administrator.</adduser>
@@ -204,6 +206,7 @@
 				<rmdefault>You must first change the default group of this user(s).</rmdefault>
 				<deleteproject>Please try again later, or contact your system administrator.</deleteproject>
 				<unlock>Please try again later, or contact your system administrator.</unlock>
+				<upload>Please check the filename, or contact your system administrator.</upload>
 			</suggestion>
  		<title>	
 			 	<adduser>Create new User</adduser>
@@ -230,6 +233,7 @@
 				<publishproject>Publish Project</publishproject>
 				<deleteproject>Delete Project</deleteproject>
 				<unlock>Unlock File</unlock>
+				<upload>Upload File</upload>
 			</title>	
 		</error>
 		
@@ -431,6 +435,7 @@
 			<groupsprojectmanager>Manager Group</groupsprojectmanager>
 			<groupsprojectworker>User Group</groupsprojectworker>
 			<headline>Headline</headline>
+		    <imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
 			<loading>Loading...</loading>
 			<propertydef>Property</propertydef>

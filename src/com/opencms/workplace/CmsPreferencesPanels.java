@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/28 13:47:07 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -226,11 +226,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 
                 // the active panel is the user settings, save its data
                 if (panel.equals(C_PANEL_USER)) {
-                    String userSettings=getUserSettings(parameters);
+                   /* String userSettings=getUserSettings(parameters);
                     if (userSettings != null) {
                        
                         session.putValue(C_PARA_USERSETTINGS,userSettings);
-                    }
+                    }*/
                 }                       
             }
             
@@ -261,7 +261,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             // now update the user settings
             String userSettings=(String)session.getValue(C_PARA_USERSETTINGS);
             if (userSettings!= null) {
-                reqCont.setCurrentGroup(userSettings);
+               // reqCont.setCurrentGroup(userSettings);
             }
             
             // finally store the updated user object in the database  
@@ -310,11 +310,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     }
                     // the previous panel was the user panel, save all the data form there
                     if (oldPanel.equals("user")) {  
-                        String userSettings=getUserSettings(parameters);
+                       /* String userSettings=getUserSettings(parameters);
                         if (userSettings != null) {
                   
                             session.putValue("USERSETTINGS",userSettings);
-                        }
+                        }*/
                     }
                     // the previous panel was the start panel, save all the data form there
                     if (oldPanel.equals("start")) {  
@@ -793,6 +793,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         xmlTemplateDocument.setData("DESCRIPTION",user.getDescription());
         xmlTemplateDocument.setData("EMAIL",user.getEmail());
         xmlTemplateDocument.setData("ADRESS",user.getAddress());                
+        xmlTemplateDocument.setData("CURRENTGROUP",reqCont.currentGroup().getName());   
     }
            
     
@@ -803,11 +804,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param parameters Hashtable containing all request parameters
      * @return Sring containinb the new user group name.
      */
-    private String getUserSettings(Hashtable parameters) {
+  /*  private String getUserSettings(Hashtable parameters) {
         String group;
         group=(String)parameters.get("group");
         return group;
-    }
+    }*/
     
     
      /**

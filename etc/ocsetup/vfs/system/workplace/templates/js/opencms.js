@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/04/18 14:40:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/28 13:49:01 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -204,23 +204,21 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 
 function openwinfull(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
 {
-	if(w==0) w=screen.availWidth-20;
-	if(h==0) h=screen.availHeight-100;
+	if (url != '#') {
+		if(w==0) w=screen.availWidth-20;
+		if(h==0) h=screen.availHeight-100;
 
-	encodedurl = encodeUrl(url);
-	workplace = window.open(encodedurl,name, 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
-	if(workplace != null)
-	   {
-	      if (workplace.opener == null)
-	      {
-	         workplace.opener = self;
-	      }
-   		}
-	else
-	{
-		workplace.moveTo(0,0);
+		encodedurl = encodeUrl(url);
+		workplace = window.open(encodedurl,name, 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+		if(workplace != null) {
+            if (workplace.opener == null){
+	         	workplace.opener = self;
+	      	}
+   		} else {
+			workplace.moveTo(0,0);
+		}
+		workplace.focus();
 	}
-	workplace.focus();
 	
 }
 

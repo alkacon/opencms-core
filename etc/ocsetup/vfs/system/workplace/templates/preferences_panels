@@ -192,7 +192,8 @@ Other Preference input forms will be added here
 <tr>
 	<td class=formular>]]><LABEL value="input.currentgroup" /><![CDATA[:</td>
 	<td class=dialogtxt>
-	]]><SELECT class="textfeld" name="group" width="150" method="getGroups" /><![CDATA[
+	<!-- ]]><SELECT class="textfeld" name="group" width="150" method="getGroups" /><![CDATA[ -->
+	]]><PROCESS>CURRENTGROUP</PROCESS><![CDATA[
 	</td>
 	<td class=dialogtxt colspan=2><INPUT type="button" class=button width = 100 value="]]><LABEL value="button.changepasswd" /><![CDATA[" id=PWD name=PWD onclick="location.href='chpwd.html';"></td>
 </tr>

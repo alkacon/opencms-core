@@ -4,7 +4,7 @@
 <![CDATA[
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
+<title>]]><LABEL value="label.imagelist" /><![CDATA[ </title>
 <SCRIPT LANGUAGE="JavaScript">
 	var selectedGallery=0;
 </SCRIPT>

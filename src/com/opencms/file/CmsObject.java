@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.69 $ $Date: 2000/04/19 10:15:59 $ 
+ * @version $Revision: 1.70 $ $Date: 2000/04/28 13:47:07 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -427,7 +427,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFile readFile(String folder, String filename)
 		throws CmsException { 
-		return( c_rb.readFile(m_context.currentUser(), 
+  		return( c_rb.readFile(m_context.currentUser(), 
 							  m_context.currentProject(), 
 							  folder + filename ) );
 	}
@@ -445,7 +445,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFile readFile(String filename)
 		throws CmsException { 
-		return( c_rb.readFile(m_context.currentUser(), 
+   		return( c_rb.readFile(m_context.currentUser(), 
 							  m_context.currentProject(), 
 							  filename ) );
 	}
@@ -465,7 +465,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsResource readFileHeader(String folder, String filename)
 		throws CmsException { 
-		return( c_rb.readFileHeader(m_context.currentUser(), 
+     	return( c_rb.readFileHeader(m_context.currentUser(), 
 									m_context.currentProject(), 
 									folder + filename ) );
 	}
@@ -484,7 +484,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsResource readFileHeader(String filename)
 		throws CmsException { 
-		return( c_rb.readFileHeader(m_context.currentUser(), 
+     	return( c_rb.readFileHeader(m_context.currentUser(), 
 									m_context.currentProject(), 
 									filename ) );
 	}

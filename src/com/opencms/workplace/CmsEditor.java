@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/28 13:47:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -81,6 +81,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
+
         // Get all editor parameters
         String file = (String)parameters.get(C_PARA_FILE);
         String content = (String)parameters.get(C_PARA_CONTENT);
@@ -100,11 +101,14 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // If there is a file parameter and no content, try to read the file. 
         // If the user requested a "save file", also load the file.
         if(existsFileParam && (content == null || saveRequested)) {
+           
             editFile = readFile(cms, file);
+        
             
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.        
             if(content == null) {
+    
                 content = new String(editFile.getContents());
                 content = enc.escape(content);
                 parameters.put(C_PARA_CONTENT, content);
@@ -113,6 +117,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // If the user requested a file save, write the file content
             // back to the database.            
             if(saveRequested) {
+  
                 String decodedContent = enc.unescape(content);
                 editFile.setContents(decodedContent.getBytes());
                 cms.writeFile(editFile);
@@ -128,16 +133,18 @@ public class CmsEditor extends CmsWorkplaceDefault {
             }
             return "".getBytes();
         }
+       
             
         // Load the template file and get the browser specific section name
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+        
         String sectionName = getBrowserSpecificSection(cms, xmlTemplateDocument);
-
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setData(C_PARA_FILE, file);
         xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);                
         xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));                
+  
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }                  
     
@@ -155,6 +162,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @return String or byte[] with the content of the file that should be edited.
      */
     public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {        
+        
         Hashtable parameters = (Hashtable)userObj;
         String content = (String)parameters.get(C_PARA_CONTENT);        
         if(content==null) {
@@ -171,6 +179,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @return CmsFile object of the loaded file
      */
     private CmsFile readFile(A_CmsObject cms, String filename) throws CmsException {
+        
         CmsFile result = null;
         try {
             result = cms.readFile(filename);
@@ -204,6 +213,8 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @return name of the browser specific section in <code>templateFile</code>
      */
     private String getBrowserSpecificSection(A_CmsObject cms, CmsXmlTemplateFile templateFile) {        
+        
+       
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();                
         String browser = orgReq.getHeader("user-agent");                
         String result = null;

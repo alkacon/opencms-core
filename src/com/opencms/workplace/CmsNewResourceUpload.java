@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/28 13:47:07 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/28 13:47:07 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -149,34 +149,43 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             if (step.equals("1")) {
                 // display the select filetype screen
                 if (filename!= null) {
-                    template="step1";   
+                    // check if the file size is 0
+                    if (filecontent.length == 0) {
+                        template="error";
+                        xmlTemplateDocument.setData("details",filename);                        
+                    } else {   
+                        template="step1";   
+                    }
                 }
            } else if (step.equals("2")) {
-                // get the selected resource and check if it is an image
-                A_CmsResourceType type=cms.getResourceType(newtype);
-                if (newtype.equals(C_TYPE_IMAGE_NAME)) {
-                    // the file type is an image
-                    template="image";   
-                    xmlTemplateDocument.setData("MIME",filename);
-                    xmlTemplateDocument.setData("SIZE","Not yet available");
-                    xmlTemplateDocument.setData("FILESIZE",new Integer(filecontent.length).toString()+" Bytes");
         
-                } else {
-                    // create the new file.    
-                    // todo: error handling if file already exits      
+                              
+                    // get the selected resource and check if it is an image
+                    A_CmsResourceType type=cms.getResourceType(newtype);
+                    if (newtype.equals(C_TYPE_IMAGE_NAME)) {
+                        // the file type is an image
+                        template="image";   
+                        xmlTemplateDocument.setData("MIME",filename);
+                        xmlTemplateDocument.setData("SIZE","Not yet available");
+                        xmlTemplateDocument.setData("FILESIZE",new Integer(filecontent.length).toString()+" Bytes");
+        
+                    } else {
+                        // create the new file.    
+                        // todo: error handling if file already exits      
                                                  
-                    cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
-                    // remove the values form the session
-                    session.removeValue(C_PARA_FILE);
-                    session.removeValue(C_PARA_FILECONTENT);
-                    session.removeValue(C_PARA_NEWTYPE);
-                    // return to the filelist
-                    try {
-                        cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-                    } catch (Exception ex) {
-                        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,ex);
-                    }                      
-                }
+                        cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
+                        // remove the values form the session
+                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_FILECONTENT);
+                        session.removeValue(C_PARA_NEWTYPE);
+                        // return to the filelist
+                        try {
+                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                        } catch (Exception ex) {
+                            throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,ex);
+                        }                      
+     
+                   }
             } else if (step.equals("3")) {
                 // get the data from the special image upload dialog
                 
