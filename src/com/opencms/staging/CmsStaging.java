@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsStaging.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/27 15:39:22 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,13 +45,13 @@ import com.opencms.file.*;
  */
 public class CmsStaging {
 
-    /**
-     * Starts the staging-process for one request.
-     *
-     * @param CmsObject the cms-object for this request.
-     * @returns true if staging was possible - else it returns false.
-     */
-    public boolean getContent(CmsObject cms) {
-        return false; // currently no staging implemented
+    private CmsUriLocator m_uriLocator;
+
+    private CmsElementLocator m_elementLocator;
+
+    public CmsStaging() {
+        m_uriLocator = new CmsUriLocator();
+        m_elementLocator = new CmsElementLocator();
     }
+
 }
