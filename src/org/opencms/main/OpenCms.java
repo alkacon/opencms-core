@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/05 17:44:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.loader.CmsLoaderManager;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public final class OpenCms {
     
@@ -196,6 +197,15 @@ public final class OpenCms {
     public static String getLogFileName() {
         return OpenCmsCore.getInstance().getLogFileName();
     }
+
+    /**
+     * Returns the memory monitor.<p>
+     * 
+     * @return the memory monitor
+     */
+    public static CmsMemoryMonitor getMemoryMonitor() {
+        return OpenCmsCore.getInstance().getMemoryMonitor();
+    }    
     
     /**
      * Returns the mime type for a specified file.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/11/05 17:45:00 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -102,7 +103,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -182,6 +183,9 @@ public class OpenCmsCore {
     /** The filename of the log file */
     private String m_logfile;
 
+    /** The memory monitor for collection memory statistics */
+    private CmsMemoryMonitor m_memoryMonitor;
+    
     /** The OpenCms map of configured mime types */
     private Map m_mimeTypes;
 
@@ -208,7 +212,7 @@ public class OpenCmsCore {
     
     /** The site manager contains information about all configured sites */
     private CmsSiteManager m_siteManager;
-
+    
     /** Flag to indicate if the startup classes have already been initialized */
     private boolean m_startupClassesInitialized;
 
@@ -774,7 +778,16 @@ public class OpenCmsCore {
     protected String getLogFileName() {
         return m_logfile;
     }
-    
+
+    /**
+     * Returns the memory monitor.<p>
+     * 
+     * @return the memory monitor
+     */
+    protected CmsMemoryMonitor getMemoryMonitor() {
+        return m_memoryMonitor;    
+    }   
+     
     /**
      * Returns the mime type for a specified file.<p>
      * 
@@ -1756,6 +1769,7 @@ public class OpenCmsCore {
      */
     protected void initMembers() {
         m_log = new CmsLog();
+        m_memoryMonitor = new CmsMemoryMonitor();
         m_passwordValidatingClass = "";
         m_checkFile = new ArrayList();
         m_defaultEncoding = C_DEFAULT_ENCODING;
