@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2003/11/28 17:00:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/12/05 11:16:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -199,7 +199,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             String localeProp = OpenCms.getUserDefaultLanguage();
             
             // get the appropriate content
-            result = page.getContent(elementName, localeProp); 
+            result = page.getContent(elementName, localeProp).getBytes(); 
             
             // append the result to the output stream
             if (result != null) {

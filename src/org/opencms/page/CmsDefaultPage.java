@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsDefaultPage.java,v $
- * Date   : $Date: 2003/12/05 11:02:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/12/05 11:16:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.io.XMLWriter;
 /**
  * Simple implementation of CmsDefaultPage.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2003/12/05 11:02:07 $
+ * @version $Revision: 1.7 $ $Date: 2003/12/05 11:16:06 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
@@ -177,7 +177,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
      * @param language language of the element
      * @return the character data of the element
      */
-    public byte[] getElementData(String name, String language) {
+    public String getElementData(String name, String language) {
 
         Element element = (Element)m_elements.get(language+"_"+name);
         
@@ -188,7 +188,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
             // set the context & servlet path in editor content
             String content = CmsStringSubstitution.substitute(editdata.getText(), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
  
-            return content.getBytes();
+            return content;
         } else {
             return null;
         }
@@ -260,7 +260,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
     /**
      * @see org.opencms.page.CmsXmlPage#getContent(java.lang.String, java.lang.String)
      */
-    public byte[] getContent(String name, String language) 
+    public String getContent(String name, String language) 
         throws CmsPageException {
 
         Element element = (Element)m_elements.get(language+"_"+name);
@@ -280,7 +280,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
             }
         } 
             
-        return content.getBytes();
+        return content;
     }
     
     /**

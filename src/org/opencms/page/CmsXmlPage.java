@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/05 11:02:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/12/05 11:16:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/12/05 11:02:07 $
+ * @version $Revision: 1.6 $ $Date: 2003/12/05 11:16:06 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsXmlPage extends CmsFile {
@@ -87,7 +87,7 @@ public abstract class CmsXmlPage extends CmsFile {
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public abstract byte[] getContent(String name, String language) throws CmsPageException;
+    public abstract String getContent(String name, String language) throws CmsPageException;
     
 
     /**
