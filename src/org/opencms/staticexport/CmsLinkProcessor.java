@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/01/23 10:34:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/01/23 15:01:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -158,22 +158,24 @@ public class CmsLinkProcessor extends NodeVisitor {
         switch (m_mode) {
             case C_REPLACE_LINKS:
 
-                String targetUri = linkTag.extractLink(); 
-                if (!"".equals(targetUri)) {
-                
-                    String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
-                    if (internalUri != null) {
-                        linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), internalUri, true)));
-                    } else {
-                        linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), targetUri, false)));
+                if (linkTag.getAttribute("href") != null) {
+                    String targetUri = linkTag.extractLink(); 
+                    if (!"".equals(targetUri)) {
+                    
+                        String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                        if (internalUri != null) {
+                            linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), internalUri, true)));
+                        } else {
+                            linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), targetUri, false)));
+                        }
                     }
                 }
-                
                 break;
                 
             case C_PROCESS_LINKS:
-                
-                linkTag.setLink(processLink(m_linkTable.getLink(getLinkName(linkTag.getLink()))));
+                if (linkTag.getAttribute("href") != null) {
+                    linkTag.setLink(processLink(m_linkTable.getLink(getLinkName(linkTag.getLink()))));
+                }
                 break;           
                 
             default:
@@ -194,20 +196,22 @@ public class CmsLinkProcessor extends NodeVisitor {
               
         switch (m_mode) {
             case C_REPLACE_LINKS:
-
-                String targetUri = imageTag.getImageURL();   
-                String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
-                
-                if (internalUri != null) {
-                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
-                } else {
-                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), targetUri, false)));
+                if (imageTag.getAttribute("src") != null) {
+                    String targetUri = imageTag.getImageURL();   
+                    String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                    
+                    if (internalUri != null) {
+                        imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
+                    } else {
+                        imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), targetUri, false)));
+                    }
                 }
                 break;
                 
             case C_PROCESS_LINKS:
-                
-                imageTag.setImageURL(processLink(m_linkTable.getLink(getLinkName(imageTag.getImageURL()))));
+                if (imageTag.getAttribute("src") != null) {
+                    imageTag.setImageURL(processLink(m_linkTable.getLink(getLinkName(imageTag.getImageURL()))));
+                }
                 break;
                 
             default:
