@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/10/28 13:28:41 $
-* Version: $Revision: 1.275 $
+* Date   : $Date: 2003/11/07 12:36:11 $
+* Version: $Revision: 1.276 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.275 $ $Date: 2003/10/28 13:28:41 $
+ * @version $Revision: 1.276 $ $Date: 2003/11/07 12:36:11 $
  */
 public interface I_CmsConstants {
 
@@ -1230,4 +1230,13 @@ public interface I_CmsConstants {
     
     /** localhost ip used in fallback cases */
     String C_IP_LOCALHOST = "127.0.0.1";
+    
+    /** mode for reading project resources vorm the db */
+    int C_READMODE_IGNORESTATE = 0;
+    
+    /** mode for reading project resources vorm the db */
+    int C_READMODE_MATCHSTATE = 1;
+    
+    /** mode for reading project resources vorm the db */
+    int C_READMODE_UNMATCHSTATE = 2;
 }

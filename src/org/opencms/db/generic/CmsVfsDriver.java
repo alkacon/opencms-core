@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2003/11/07 12:36:11 $
+ * Version: $Revision: 1.153 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.152 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.153 $ $Date: 2003/11/07 12:36:11 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1669,6 +1669,55 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return result;
     }
 
+    
+  
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResources(int, int, int)
+     */
+    public List readResources(int projectId, int state, int mode) throws CmsException {
+        List result = new ArrayList();
+
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            if (mode == I_CmsConstants.C_READMODE_MATCHSTATE) {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_PROJECT_WITH_STATE");
+                stmt.setInt(1, projectId);
+                stmt.setInt(2, state);
+                stmt.setInt(3, state);
+                stmt.setInt(4, state);
+                stmt.setInt(5, state);
+            } else if (mode == I_CmsConstants.C_READMODE_UNMATCHSTATE) {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_PROJECT_WITHOUT_STATE");
+                stmt.setInt(1, projectId);
+                stmt.setInt(2, state);
+                stmt.setInt(3, state);
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_PROJECT_IGNORE_STATE");
+                stmt.setInt(1, projectId);
+            }
+            
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                CmsResource resource = createResource(res, projectId);
+                result.add(resource);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception exc) {
+            throw new CmsException("readResources" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return result;
+    }
+    
+    
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String)
      */

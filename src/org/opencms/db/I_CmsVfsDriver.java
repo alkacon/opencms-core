@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2003/11/07 12:36:10 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.64 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.65 $ $Date: 2003/11/07 12:36:10 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -307,6 +307,20 @@ public interface I_CmsVfsDriver {
      */
     List readResources(int currentProject, long starttime, long endtime) throws CmsException;
 
+    /**
+     * Reads all resources inside a given project and with a given state.<p>
+     * 
+     * @param currentProject the current project
+     * @param state the state to match
+     * @param mode flag signaling the read mode. Valid values are C_READMODE_IGNORESTATE,
+     * C_READMODE_MATCHSTATE, C_READMODE_UNMATCHSTATE. 
+     * @return List with all resources
+     * @throws CmsException if operation was not succesful 
+     */
+    List readResources(int currentProject, int state, int mode) throws CmsException;
+
+    
+    
     /**
      * Reads all resources that have set the specified property.<p>
      *

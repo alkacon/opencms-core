@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/06 15:09:31 $
- * Version: $Revision: 1.289 $
+ * Date   : $Date: 2003/11/07 12:36:10 $
+ * Version: $Revision: 1.290 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.289 $ $Date: 2003/11/06 15:09:31 $
+ * @version $Revision: 1.290 $ $Date: 2003/11/07 12:36:10 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6466,28 +6466,49 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         List resources = null;
         CmsResource currentResource = null;
         CmsLock currentLock = null;
+        
+        // first get the correct status mode
+        int state=-1;
+        if ("new".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_NEW;
+        else if ("changed".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_CHANGED;
+        else if ("deleted".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_DELETED;
+        else if ("all".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_UNCHANGED;
+        
+        // depending on the selected filter, we must use different methods to get the required 
+        // resources
+        
+        // if the "lock" filter was selected, we must handle the DB access different since
+        // lock information aren ot sotred in the DB anymore
+        if ("locked".equalsIgnoreCase(filter)) {
+            resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_IGNORESTATE);              
+        } else {
+        
+            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED) 
+                    || (state == I_CmsConstants.C_STATE_DELETED)) {
+                resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_MATCHSTATE);
+               
+                // get all resources form the database which match to the selected state
+            } else if (state == I_CmsConstants.C_STATE_UNCHANGED) {
+                // get all resources form the database which are not unchanged
+                resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_UNMATCHSTATE);
+            }
+        }
 
-        resources = readChangedResourcesInsideProject(context, projectId, I_CmsConstants.C_UNKNOWN_ID);
+          
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             currentResource = (CmsResource)i.next();
             if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
-                if ("new".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_NEW) {
-                    retValue.addElement(currentResource);
-                } else if ("changed".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_CHANGED) {
-                    retValue.addElement(currentResource);
-                } else if ("deleted".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                    retValue.addElement(currentResource);
-                } else if ("locked".equalsIgnoreCase(filter)) {
+                if ("locked".equalsIgnoreCase(filter)) {
                     currentLock = getLock(context, currentResource);
                     if (!currentLock.isNullLock()) {
                         retValue.addElement(currentResource);
                     }
-                } else if ("all".equalsIgnoreCase(filter) && currentResource.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                } else {
                     retValue.addElement(currentResource);
                 }
             }
-        }
+        } 
 
         resources.clear();
         resources = null;
