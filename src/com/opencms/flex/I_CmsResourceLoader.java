@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsResourceLoader.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/08/30 14:09:11 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,18 @@
 */
 
 package com.opencms.flex;
+
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexResponse;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * This interface describes a ResourceLoader for OpenCms.
  * A resource loader is a modern implementation of a CmsLauncher.
@@ -41,7 +53,7 @@ package com.opencms.flex;
  * will hopefully need less time to get productive with OpenCms.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsResourceLoader {
     
@@ -54,14 +66,19 @@ public interface I_CmsResourceLoader {
     /** Name of FlexCache runtime property */
     public static final String C_LOADER_CACHENAME = "flexcache";
       
+    /** Prefix for Exception message that occur on a JSP file */
+    public static final String C_LOADER_EXCEPTION_PREFIX = "Resource loader error in file";
+          
     /** Initialize the ResourceLoader */
     public void init(com.opencms.core.A_OpenCms openCms);
     
     /** Basic processing method with CmsFile */
-    public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) throws com.opencms.core.CmsException;
+    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException;
     
     /** Basic processing method with CmsFile */
-    public void service(com.opencms.file.CmsObject cms, com.opencms.file.CmsResource file, com.opencms.flex.cache.CmsFlexRequest req, com.opencms.flex.cache.CmsFlexResponse res) throws com.opencms.core.CmsException;
+    public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res) 
+    throws ServletException, IOException;
 
     /** Return a String describing the ResourceLoader */
     public String getResourceLoaderInfo();
