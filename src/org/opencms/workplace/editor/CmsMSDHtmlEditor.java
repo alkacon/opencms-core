@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/10 14:22:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/12/10 17:37:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsDefaultPage;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -56,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -85,7 +84,8 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         // Initialize a page object from the temporary file
         if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
             try {
-                m_page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+                m_file = getCms().readFile(this.getParamTempfile());
+                m_page = new CmsXmlPage().unmarshal(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
                 try {
@@ -125,7 +125,8 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
                 // create the temporary file
                 setParamTempfile(createTempFile());
                 // initialize a page object from the created temporary file
-                m_page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+                m_file =  getCms().readFile(this.getParamTempfile());
+                m_page = new CmsXmlPage().unmarshal(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
                 try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2003/12/05 11:16:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/12/10 17:35:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -180,11 +180,12 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         try {
             byte[] result = null;
             String absolutePath = cms.readAbsolutePath(file);
-            CmsXmlPage page = CmsXmlPage.newInstance(cms, cms.readFile(absolutePath));
+            CmsFile xmlFile = cms.readFile(absolutePath);
+            CmsXmlPage page = new CmsXmlPage().unmarshal(cms, xmlFile);
             
             // care about encoding issues
             String dnc = OpenCms.getDefaultEncoding().trim();
-            String enc = cms.readProperty(cms.readAbsolutePath(page), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
+            String enc = cms.readProperty(cms.readAbsolutePath(xmlFile), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
             
             cms.getRequestContext().setEncoding(enc);      
             if (DEBUG > 1) {
@@ -199,7 +200,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             String localeProp = OpenCms.getUserDefaultLanguage();
             
             // get the appropriate content
-            result = page.getContent(elementName, localeProp).getBytes(); 
+            result = page.getContent(cms, elementName, localeProp).getBytes(); 
             
             // append the result to the output stream
             if (result != null) {

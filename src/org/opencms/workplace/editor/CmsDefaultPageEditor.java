@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/12/10 10:35:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/12/10 17:37:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@ package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.CmsHelperMastertemplates;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsDefaultPage;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceAction;
 
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -74,7 +74,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     private String m_paramPageTemplate;
 
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method.<p>  */
-    protected CmsDefaultPage m_page;
+    protected CmsXmlPage m_page;
+    
+    protected CmsFile m_file;
     
     /** Helper variable to store the html content for the template selector.<p> */
     private String m_selectTemplates = null;
@@ -244,7 +246,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage);
             }
             try {
-                getCms().writeFile(m_page.marshal());
+                getCms().writeFile(m_page.marshal(m_file));
             } catch (CmsException e) {
                 // show error page
                 try {
@@ -279,7 +281,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
            // no body present, so create an empty default body
             m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, getParamBodylanguage());
             try {
-            getCms().writeFile(m_page.marshal());
+            getCms().writeFile(m_page.marshal(m_file));
             } catch (CmsException e) {
                 // writing file failed, show error page
                 try {
@@ -307,7 +309,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void initContent() {
         // get the content from the temporary file     
         try {
-            CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+            CmsXmlPage page = new CmsXmlPage().unmarshal(getCms(), getCms().readFile(this.getParamTempfile()));
             String elementData = page.getElementData(getParamBodyname(), getParamBodylanguage());
             if (elementData != null) {
                 setParamContent(elementData);
@@ -508,7 +510,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
                 if (!m_page.hasElement(newBody, getParamBodylanguage())) {
                     m_page.addElement(newBody, getParamBodylanguage());
-                    getCms().writeFile(m_page.marshal());
+                    getCms().writeFile(m_page.marshal(m_file));
                     setParamBodyname(newBody);
                     initContent();
                 }
@@ -579,10 +581,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             m_page.addElement(body, language);
         }
         // set the element data
-        m_page.setElementData(body, language, content.getBytes());
+        m_page.setElementData(body, language, content);
         
         // write the file
-        getCms().writeFile(m_page.marshal());
+        getCms().writeFile(m_page.marshal(m_file));
     }
     
     /**
