@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/14 21:25:41 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/19 13:24:38 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -403,9 +403,10 @@ public class CmsShell {
      * 
      * @param fileInputStream a (file) input stream from which commands are read
      * @param prompt the prompt format to set
+     * @param object optional object for additional shell commands
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
-    public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream) {
+    public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream, I_CmsShellCommands object) {
         setPrompt(prompt);
         
         System.out.println();         
@@ -448,9 +449,14 @@ public class CmsShell {
             // set the site root to the default site
             m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
 
-            m_commandObjects = new ArrayList();   
-            m_shellCommands = new CmsShellCommands(this, m_cms);
+            m_commandObjects = new ArrayList();            
+            // get all shell callable methods from the (optional) Object
+            if (object != null) {
+                m_commandObjects.add(new CmsCommandObject(object));
+                object.initShellCmsObject(m_cms);
+            }
             // get all shell callable methods from the CmsShellCommands
+            m_shellCommands = new CmsShellCommands(this, m_cms);
             m_commandObjects.add(new CmsCommandObject(m_shellCommands));          
             // get all shell callable methods from the CmsRequestContext
             m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext())); 
@@ -504,7 +510,7 @@ public class CmsShell {
                 // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
             }
-            new CmsShell(webInfPath, "${user}@${project}:${siteroot}|${uri}>", stream);
+            new CmsShell(webInfPath, "${user}@${project}:${siteroot}|${uri}>", stream, null);
         }
     }
 
@@ -516,7 +522,7 @@ public class CmsShell {
      */
     public static void startSetup(String webInfPath, String fileName) {
         try {
-            new CmsShell(webInfPath, "${user}@${project}>", new FileInputStream(new File(fileName)));
+            new CmsShell(webInfPath, "${user}@${project}>", new FileInputStream(new File(fileName)), null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
