@@ -6,7 +6,7 @@
 
 --%><%
 /* next page in the setup process */
-String nextPage = "step_2_database_selection.jsp";
+String nextPage = "step_2_check_components.jsp";
 
 // Reading the system properties
 Properties vmProperties = System.getProperties();
@@ -23,18 +23,20 @@ if (encodingOk) {
 OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
+<%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Wrong content encoding!
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
 
+<table border="0" cellpadding="0" cellspacing="0" style="height: 100%;">
+<tr><td style="vertical-align: bottom;">
 
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
+<%= Bean.getHtmlPart("C_BLOCK_START", "Error") %>
+<table border="0" cellpadding="5" cellspacing="0" style="width: 100%;">
 <tr>
 	<td style="vertical-align: middle;" rowspan="2"><img src="resources/error.gif" width="32" height="32" border="0"></td>
 	<td style="font-weight: bold;">
-		<span style="color: #FF0000;">Error:</span>
-		the encoding of your Java VM is different from the OpenCms encoding!
+		The encoding of your Java VM is different from the OpenCms encoding!
 	</td>
 </tr>
 <tr>
@@ -50,10 +52,21 @@ OpenCms Setup Wizard - Wrong content encoding!
 		</table>
 	</td>
 </tr>
+</table>
+<%= Bean.getHtmlPart("C_BLOCK_END") %>
+
+<div class="dialogspacer" unselectable="on">&nbsp;</div>
+<div class="dialogspacer" unselectable="on">&nbsp;</div>
+
+</td></tr>
+<tr><td style="vertical-align: top;">
+
+<%= Bean.getHtmlPart("C_BLOCK_START", "How to continue the setup process") %>
+
+<table border="0" cellpadding="5" cellspacing="0" style="width: 100%;>
 <tr><td colspan="2">&nbsp;</td></tr>
 <tr>
 	<td colspan="2" style="vertical-align: top;">
-		<span style="font-weight: bold;">To continue the setup process:</span>
 		<ul>
 		<li>Change the encoding of your Java VM.
 		To do that you must modify the <tt>file.encoding</tt> setting.
@@ -67,6 +80,10 @@ OpenCms Setup Wizard - Wrong content encoding!
 	</td>
 </tr>
 </table>
+
+<%= Bean.getHtmlPart("C_BLOCK_END") %>
+
+</td></tr></table>
 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 

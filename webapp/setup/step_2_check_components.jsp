@@ -26,7 +26,7 @@
 	/* add supported engines here */
 	String[] supportedEngines = {"Apache Tomcat/4.1", "Apache Tomcat/4.0", "Apache Tomcat/5.0"};
 
-	/* add unsupported enginges here */
+	/* add unsupported engines here */
 	String[] unsupportedEngines = {"Tomcat Web Server/3.2", "Tomcat Web Server/3.3", "Resin/2.0.b2" };
 	String[] unsEngMessages = {
 		"OpenCms does not work correctly with Tomcat 3.2.x. Tomcat 3.2.x uses its own XML parser which results in major errors while using OpenCms. Please use Tomcat 4.x instead.",
@@ -46,7 +46,7 @@
 	if(setupOk) {
 
 		if(submited) {
-			nextPage = "step_6_save_properties.jsp";
+			nextPage = "step_3_database_selection.jsp";
 		}
 		else    {
 			/* checking versions */
@@ -65,27 +65,50 @@
 OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
+<%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Check components
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
-<% if(setupOk) { %>
+<% if (setupOk) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
-	<td align="center" valign="middle">
-		<%  if(submited) {
-				if(info && !accepted) {
+	<td style="vertical-align: middle; height: 100%;">
+		<%  if (submited) {
+				if (info && !accepted) {
 					out.print("<b>To continue the OpenCms setup you have to recognize that your system may not work with OpenCms!");
 				}
 				else {
-					out.print("<script language='Javascript'>document.location.href='" + nextPage + "';</script>");
+					out.print("<script type='text/javascript'>document.location.href='" + nextPage + "';</script>");
 				}
 			} else { %>
+		
+		<%= Bean.getHtmlPart("C_BLOCK_START", "System components") %>	
+		
+		<table border="0" cellpadding="5" cellspacing="0" style="width: 100%;">
+			<tr>
+				<td style="text-align: left; width: 130px;">JDK version:</td>
+				<td style="text-align: left; font-weight:bold; width: 300px;"><%= JDKVersion %></td>
+				<td style="text-align: right; width: 200px;"><img src="resources/<% if(supportedJDK)out.print("check");else out.print("cross"); %>.gif"></td>
+			</tr>
+			<tr>
+				<td style="text-align: left;">Servlet engine:</td>
+				<td style="text-align: left; font-weight:bold;"><%= servletEngine %></td>
+				<td style="text-align: right; width: 200px;"><img src="resources/<% if(supportedServletEngine)out.print("check");else if (unsupportedServletEngine > -1)out.print("cross");else out.print("unknown"); %>.gif"></td>
+			</tr>
+			<tr>
+				<td style="text-align: left;">Operating system:</td>
+				<td style="text-align: left; font-weight:bold;"><%= System.getProperty("os.name") + " " + System.getProperty("os.version") %></td>
+				<td style="text-align: right; width: 200px;"><img src="resources/check.gif"></td>
+			</tr>
+		</table>
+		
+		<%= Bean.getHtmlPart("C_BLOCK_END") %>
+		
+		<div class="dialogspacer" unselectable="on">&nbsp;</div>
+		<div class="dialogspacer" unselectable="on">&nbsp;</div>
+		
 		<table border="0" cellpadding="5" cellspacing="0">
-			<tr><td style="text-align: left; font-weight:bold;" width="100">JDK version:</td><td style="text-align: left; width: 300px;"><%= JDKVersion %></td><td style="text-align: center; width: 30px;"><% if(supportedJDK)out.print("<img src='resources/check.gif'>");else out.print("<img src='resources/cross.gif'>"); %></td></tr>
-			<tr><td style="text-align: left; font-weight:bold;">Servlet engine:</td><td style="text-align: left;"><%= servletEngine %></td><td style="text-align: center; width: 30px;"><% if(supportedServletEngine)out.print("<img src='resources/check.gif'>");else if (unsupportedServletEngine > -1)out.print("<img src='resources/cross.gif'>");else out.print("<img src='resources/unknown.gif'>"); %></td></tr>
-			<tr><td colspan="3" height="30">&nbsp;</td></tr>
 			<tr><td align="center" valign="bottom">
 			<%
 				boolean red = !supportedJDK || (unsupportedServletEngine > -1);
@@ -106,7 +129,7 @@ OpenCms Setup Wizard - Check components
 			</td>
 			<td colspan="2" valign="middle">
 			<%
-				if(red) {
+				if (red) {
 					out.println("<p><b>Attention:</b> Your system does not have the necessary components to use OpenCms. It is assumed that OpenCms will not run on your system.</p>");
 					if (unsupportedServletEngine > -1) {
 						out.println("<p>"+unsEngMessages[unsupportedServletEngine]+"</p>");
@@ -116,25 +139,30 @@ OpenCms Setup Wizard - Check components
 					out.print("<b>Attention:</b> Your system uses components which have not been tested to work with OpenCms. It is possible that OpenCms will not run on your system.");
 				}
 				else {
-					out.print("Your system uses components which have been tested to work properly with OpenCms.");
+					out.print("<b>Your system uses components which have been tested to work properly with OpenCms.</b>");
 				}
 			%></td>
 			</tr>
 			<tr><td colspan="3" height="30">&nbsp;</td></tr>
-			<% if(!systemOk)    { %>
-				<tr><td colspan="3" class="bold" align="center"><input type="checkbox" name="accept" value="true"> I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td></tr>
+			<% if (!systemOk) { %>
+				<tr><td colspan="3">
+				<table border="0"><tr>
+					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true"> </td>
+					<td>I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td>
+				</tr></table>
+				</td></tr>
 			<% } %>
 		</table>
-		<input type="hidden" name="systemInfo" value="<% if(systemOk)out.print("true");else out.print("false"); %>">
+			
+		<input type="hidden" name="systemInfo" value="<% if (systemOk) out.print("true");else out.print("false"); %>">
 		<% } %>
 	</td>
 </tr>
-
 </table>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.back();">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='index.jsp';">
 <%
 String disabled = "";
 if(submited && info && !accepted) {

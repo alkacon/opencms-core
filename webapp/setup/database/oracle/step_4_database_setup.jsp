@@ -5,7 +5,7 @@
 	String conStr = request.getParameter("dbCreateConStr");
 	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted =( (request.getParameter("submit") != null) && (conStr != null));
-	String nextPage = "../../step_4_database_creation.jsp";
+	String nextPage = "../../step_5_database_creation.jsp";
 
 	if(isSetupOk)	{
 		String createDb = request.getParameter("createDb");
@@ -59,7 +59,8 @@
 OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
-<script type="text/javascript" language="JavaScript">
+<%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<script type="text/javascript">
 <!--
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
@@ -107,59 +108,69 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS", "../../") %>
-<% if(isSetupOk)	{ %>
+<% if (isSetupOk) { %>
+
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
+<tr><td style="vertical-align: top;">
+
 <form method="POST" onSubmit="return checkSubmit()" class="nomargin">
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<table border="0">
-			<tr>
-				<td align="center">
-					<table border="0" cellpadding="2">
+<%= Bean.getHtmlPart("C_BLOCK_START", "Database") %>
+<table border="0" cellpadding="2" cellspacing="0">
+	<tr>
+		<td>Select Database</td>
+		<td>
+			<select name="database" style="width: 250px;" size="1" onchange="location.href='../../step_3_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
+			<!-- --------------------- JSP CODE --------------------------- -->
+			<%
+				/* get all available databases */
+				List databases = Bean.getDatabases();
+				List databaseNames = Bean.getDatabaseNames();
+				/* 	List all databases found in the dbsetup.properties */
+				if (databases !=null && databases.size() > 0)	{
+					for(int i=0;i<databases.size();i++)	{
+						String db = (String) databases.get(i);
+						String dn = (String) databaseNames.get(i);
+						String selected = "";
+						if(Bean.getDatabase().equals(db))	{
+							selected = "selected";
+						}
+						out.println("<option value='"+db+"' "+selected+">"+dn);
+					}
+				}
+				else	{
+					out.println("<option value='null'>no database found");
+				}
+			%>
+			<!-- --------------------------------------------------------- -->
+			</select>
+		</td>
+	</tr>
+</table>
+<%= Bean.getHtmlPart("C_BLOCK_END") %>
+
+</td></tr>
+<tr><td style="vertical-align: middle;">
+
+<div class="dialogspacer" unselectable="on">&nbsp;</div>
+<iframe src="database_information.html" name="dbinfo" style="width: 100%; height: 80px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
+<div class="dialogspacer" unselectable="on">&nbsp;</div>
+
+</td></tr>
+<tr><td style="vertical-align: bottom;">
+
+<%= Bean.getHtmlPart("C_BLOCK_START", "Settings") %>
+					<table border="0" cellpadding="2" cellspacing="0">
 						<tr>
-							<td width="150" style="font-weight:bold;">
-								Select Database
-							</td>
-							<td width="250">
-								<select name="database" style="width:250px;" size="1" width="250" onchange="location.href='../../step_2_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
-								<!-- --------------------- JSP CODE --------------------------- -->
-								<%
-									/* get all available databases */
-									List databases = Bean.getDatabases();
-									List databaseNames = Bean.getDatabaseNames();
-									/* 	List all databases found in the dbsetup.properties */
-									if (databases !=null && databases.size() > 0)	{
-										for(int i=0;i<databases.size();i++)	{
-											String db = (String) databases.get(i);
-											String dn = (String) databaseNames.get(i);
-											String selected = "";
-											if(Bean.getDatabase().equals(db))	{
-												selected = "selected";
-											}
-											out.println("<option value='"+db+"' "+selected+">"+dn);
-										}
-									}
-									else	{
-										out.println("<option value='null'>no database found");
-									}
-								%>
-								<!-- --------------------------------------------------------- -->
-								</select>
-							</td>
+							<td>&nbsp;</td>
+							<td>User</td>
+							<td>Password</td>
+							<td>&nbsp;</td>
 						</tr>
-					</table>
-				</td>
-			</tr>
-
-			<tr><td>&nbsp;</td></tr>
-
-			<tr>
-				<td>
-					<table border="0" cellpadding="5" cellspacing="0">
-						<tr><td>&nbsp;</td><td>User</td><td>Password</td></tr>
 						<tr>
-							<td>Setup Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+							<td>Setup Connection</td>
+							<td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td>
+							<td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+							<td>&nbsp;</td>
 						</tr>
 						<%
 						String user = Bean.getDbWorkUser();
@@ -171,40 +182,42 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 						//}
 						%>
 						<tr>
-							<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+							<td>OpenCms Connection</td>
+							<td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td>
+							<td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+							<td>&nbsp;</td>
 						</tr>
 						<tr>
-							<td>Create Database</td><td><input type="checkbox" name="createDb" value="true" checked> User</td><td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
+							<td>&nbsp;</td>
+							<td>Default</td>
+							<td>Index</td>
+							<td>Temporary</td>
 						</tr>
 						<tr>
-							<td colspan="3" align="center"><b><span style="color: #FF0000;">Warning:</span></b> Existing database will be dropped !</font></b></td>
-						</tr>
-						<tr><td colspan="3"><hr></td></tr>
-						<tr>
-							<td>Default Tablespace</td><td colspan="2"><input type="text" name="dbDefaultTablespace" size="8" style="width:250px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".defaultTablespace") %>'></td>
-						</tr>
-						<tr>
-							<td>Index Tablespace</td><td colspan="2"><input type="text" name="dbIndexTablespace" size="8" style="width:250px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".indexTablespace") %>'></td>
+							<td>Tablespace</td>
+							<td><input type="text" name="dbDefaultTablespace" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".defaultTablespace") %>'></td>
+							<td><input type="text" name="dbIndexTablespace" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".indexTablespace") %>'></td>
+							<td><input type="text" name="dbTemporaryTablespace" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".temporaryTablespace") %>'></td>
 						</tr>
 						<tr>
-							<td>Temporary Tablespace</td><td colspan="2"><input type="text" name="dbTemporaryTablespace" size="8" style="width:250px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".temporaryTablespace") %>'></td>
+							<td>Create Database</td>
+							<td><input type="checkbox" name="createDb" value="true" checked> User</td>
+							<td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
+							<td>&nbsp;</td>
 						</tr>
 					</table>
-				</td>
-			</tr>
-			<tr><td align="center"><b>Attention:</b> You must have a working oracle driver in your classpath!</td></tr>
-
-		</table>
-	</td>
-</tr>
+				
+<%= Bean.getHtmlPart("C_BLOCK_END") %>
+</td></tr>
 </table>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='../../index.jsp';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.go(-2);">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../cancel.jsp';" style="margin-left: 50px;">
 </form>

@@ -2,7 +2,7 @@
 
 <jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 <%
-	boolean setupOk = (Bean.getProperties()!=null);
+	boolean setupOk = (Bean.getProperties() != null);
 %>
 <jsp:setProperty name="Bean" property="*" />
 </jsp:useBean>

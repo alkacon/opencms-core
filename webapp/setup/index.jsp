@@ -40,20 +40,43 @@ try {
 OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
+<%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<script type="text/javascript">
+	function toggleButton(theFlag) {
+		document.getElementById("continue").disabled = theFlag;
+	}	
+</script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard
+OpenCms Setup Wizard - License Agreement
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
+<form action="<%= nextPage %>" method="post" class="nomargin">
 
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; padding-right: 3px;">
 	<% if (wizardEnabled && isInitialized)	{ 
 		showButtons = true; %>
-		<tr>
-			<td style="text-align: center; font-weight: bold;">Welcome to the OpenCms Setup Wizard</td>
-		</tr>
-		<tr>
-			<td style="text-align: center; vertical-align: top;">Please press "continue" to start the setup wizard</td>
-		</tr>
+			<tr>
+				<td style="vertical-align: top;">
+					<div class="dialoginnerboxborder"><div class="dialoginnerbox">	
+					<iframe src="license.html" name="config" style="width: 100%; height: 310px; margin: 0; padding: 0; border-style: none;" frameborder="0"></iframe>
+					</div></div>
+				</td>
+			</tr>
+			<tr>
+				<td style="vertical-align: bottom;padding-top: 12px;">
+					<table border="0" cellpadding="0" cellspacing="0" style="vertical-align: bottom; height: 20px;">
+					<tr>
+						<td>Do you accept all the terms of the preceding license agreement?</td>
+						<td>&nbsp;&nbsp;</td>
+						<td style="width: 25px;"><input type="radio" name="agree" value="yes" onclick="toggleButton(false);"></td>
+						<td> yes</td>
+						<td>&nbsp;&nbsp;</td>
+						<td style="width: 25px;"><input type="radio" name="agree" value="no" onclick="toggleButton(true);"></td>
+						<td> no</td>
+					</tr>
+			
+					</table>
+				</td>
+			</tr>
 	<% } else if (! isInitialized) { %>
 		<tr>
 			<td style="text-align: center; font-weight: bold;">Error starting OpenCms setup wizard.</td>
@@ -95,11 +118,13 @@ OpenCms Setup Wizard
 
 <% if (showButtons) { %>
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<form action="<%= nextPage %>" method="post" class="nomargin">
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" disabled="disabled">
-<input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" style="visibility: hidden;" disabled="disabled">
+<input name="continue" id="continue" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='cancel.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
+<script type="text/javascript">
+	toggleButton(true);
+</script>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/18 11:49:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/18 16:58:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
- * 
+ *
  * It is not allowed to customize this bean with methods for a specific database server setup!<p>
  * 
  * Database server specific settings should be set/read using get/setDbProperty, as for example like:
@@ -63,7 +63,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable {
 
@@ -132,6 +132,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         try {
             m_extProperties = CmsSetupUtils.loadProperties(path);
             m_htmlProps = new Properties();
+            //FileInputStream input = new FileInputStream(new File(m_basePath + "setup/htmlmsg.properties"));
+            //m_htmlProps.load(input);
             m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.C_FILE_HTML_MESSAGES));
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,6 +157,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @return boolean true if all properties are set correctly
      */
     public boolean checkProperties() {
+
         // check if properties available
         if (getProperties() == null) {
             return false;
@@ -312,7 +315,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     /** 
      * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/".<p>
-     * 
+     *
      * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
     public List getDatabases() {
@@ -344,7 +347,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                                 hasMissingSetupFiles = true;
                                 System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
                                 break;
-                            }
+    }
                         }
 
                         if (!hasMissingSetupFiles) {
@@ -441,7 +444,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @return the URI of a database config page
      */
     public String getDatabaseConfigPage(String key) {
-        return "database" + I_CmsConstants.C_FOLDER_SEPARATOR + key + I_CmsConstants.C_FOLDER_SEPARATOR + "step_3_database_setup.jsp";
+        return "database" + I_CmsConstants.C_FOLDER_SEPARATOR + key + I_CmsConstants.C_FOLDER_SEPARATOR + "step_4_database_setup.jsp";
     }
 
     /** 
@@ -476,6 +479,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkUser the database user used by the opencms core 
      */
     public void setDbWorkUser(String dbWorkUser) {
+
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
     }
 
@@ -494,6 +498,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
+
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
     }
 
@@ -774,7 +779,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         m_dbCreatePwd = dbCreatePwd;
     }
 
-    /**
+    /** 
      * Checks if the setup wizard is enabled.<p>
      * 
      * @return true if the setup wizard is enables, false otherwise
@@ -950,7 +955,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public String getAppName() {
         return getExtProperty("app.name");
     }
-    
+
     /**
      * Returns the replacer.<p>
      * 
@@ -977,6 +982,5 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      */
     public String getDatabaseName(String databaseKey) {
         return (String) ((Map) getDatabaseProperties().get(getDatabase())).get(databaseKey + ".name");
-    }
-    
+}    
 }

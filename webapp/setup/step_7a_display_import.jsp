@@ -4,7 +4,7 @@
 
 <%
     /* true if properties are initialized */
-    boolean setupOk = (Bean.getProperties()!=null);
+    boolean setupOk = (Bean.getProperties() != null);
 
     /* next page to be accessed */
     String nextPage = "step_8_browser_configuration_notes.jsp";
@@ -27,15 +27,15 @@ OpenCms Setup Wizard
 		function enable() {
 			enabled = true;
 			parent.data.location.href="step_7b_data_import.jsp";
-			document.forms[0].info.value = message;
+			replaceInfo(message, "wait");
 		}
 
 		/* displays the given output */
 		function start(out) {
-			if(enabled) {
+			if (enabled) {
 				document.forms[0].ctn.disabled = true;
 				document.forms[0].bck.disabled = true;
-				temp ="";
+				temp = "";
 				for(var i=out.length-1;i>=0;i--)    {
 					temp += unescape(out[i])+"\n";
 				}
@@ -46,7 +46,7 @@ OpenCms Setup Wizard
 
 		/* Displays a message and enables the continue button */
 		function finish() {
-			document.forms[0].info.value = "Finished. Please check the output below to ensure that the workplace has been imported without major errors.";
+			replaceInfo("Finished. Please check the output below to ensure that the workplace has been imported without major errors.", "ok");
 			document.forms[0].ctn.disabled = false;
 			document.forms[0].bck.disabled = false;
 			finished = true;
@@ -54,35 +54,56 @@ OpenCms Setup Wizard
 
 		/* if finished, you can access next page */
 		function nextpage() {
-			if(finished) {
+			if (finished) {
 				top.location.href="<%= nextPage %>";
 			}
 		}
 
 		/* if finished, you can go back */
 		function lastpage() {
-			if(finished)    {
+			if (finished)    {
 				history.back(-2);
 			}
 		}
+		
+		/* replaces info message */
+		function replaceInfo(msgString, imgSrc) {
+			var el = document.getElementById("statustxt");
+			var newTextNode = document.createTextNode(msgString);
+ 			el.replaceChild(newTextNode, el.firstChild);
+ 			el = document.getElementById("statusimg");
+ 			el.src = "resources/" + imgSrc + ".gif";
+		}
+		
 	</script>
 <%= Bean.getHtmlPart("C_STYLES") %>
+<%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
 
-<% if(setupOk) { %>
+<% if (setupOk) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
-	<td align="center" valign="top">
-	<b>Status:</b><br><input type="text" style="width:650px" size="60" name="info">
+	<td style="vertical-align: middle;">
+		<%= Bean.getHtmlPart("C_BLOCK_START", "Status") %>
+		<table border="0" cellpadding="0" cellspacing="0">		
+			<tr>
+				<td><img src="resources/wait.gif" border="0" id="statusimg"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>
+					<span id="statustxt">Importing workplace ... please wait</span>
+				</td>
+			</tr>
+		</table>
+		<%= Bean.getHtmlPart("C_BLOCK_END") %>	
+		<div class="dialogspacer" unselectable="on">&nbsp;</div>
 	</td>
 </tr>
 <tr>
-	<td align="center" valign="top">
-			<textarea style="width:650px;height:325px;" cols="60" rows="16" wrap="off" name="output" id="output"></textarea>
+	<td style="vertical-align: top;">
+			<textarea style="width:99%; height:260px; font-size: 12px;" cols="60" rows="16" wrap="off" name="output" id="output"></textarea>
 	</td>
 </tr>
 </table>
@@ -97,7 +118,7 @@ OpenCms Setup Wizard - Import workplace
 <script type="text/javascript">
 	enable();
 </script>
-<% } else	{ %>
+<% } else { %>
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
 	<td align="center" valign="top">
