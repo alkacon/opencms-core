@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/16 13:51:11 $
- * Version: $Revision: 1.179 $
+ * Date   : $Date: 2000/10/16 14:36:45 $
+ * Version: $Revision: 1.180 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.179 $ $Date: 2000/10/16 13:51:11 $
+ * @version $Revision: 1.180 $ $Date: 2000/10/16 14:36:45 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4247,14 +4247,20 @@ public CmsSite newSite(String name, String description, int category, int langua
 		int newSiteId = newSite.getId();
 		m_dbAccess.newSiteProjectsRecord(newSiteId, newOnlineProject.getId());  //This line should be superfluos now.
 		m_dbAccess.newSiteUrlRecord(url, newSiteId, url);
+
+		//create a user with the right group to create the default folders with
+		CmsUser tempUser = (CmsUser) currentUser.clone();
+		CmsGroup _group = readGroup(currentUser,currentProject,group);
+		tempUser.setDefaultGroup(_group);
+		
 		//MLA: changed so parent_id is set correct
-		CmsFolder rootFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, -1, -1, C_ROOT, 0);
-		CmsFolder cFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, rootFolder.getResourceId(), -1, com.opencms.workplace.I_CmsWpConstants.C_CONTENTPATH, 0);
-		CmsFolder cbFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, cFolder.getResourceId(), -1, com.opencms.workplace.I_CmsWpConstants.C_CONTENTBODYPATH, 0);
-		CmsFolder ciFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, cFolder.getResourceId(), -1, "/content/internal/", 0);
-		CmsFolder ctFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, cFolder.getResourceId(), -1, com.opencms.workplace.I_CmsWpConstants.C_CONTENTTEMPLATEPATH, 0);
-		CmsFolder dFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, rootFolder.getResourceId(), -1, "/download/", 0);
-		CmsFolder pFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, rootFolder.getResourceId(), -1, "/pics/", 0);
+		CmsFolder rootFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, -1, -1, C_ROOT, 0);
+		CmsFolder cFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, rootFolder.getResourceId(), -1, com.opencms.workplace.I_CmsWpConstants.C_CONTENTPATH, 0);
+		CmsFolder cbFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, cFolder.getResourceId(), -1, com.opencms.workplace.I_CmsWpConstants.C_CONTENTBODYPATH, 0);
+		CmsFolder ciFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, cFolder.getResourceId(), -1, "/content/internal/", 0);
+		CmsFolder ctFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, cFolder.getResourceId(), -1, com.opencms.workplace.I_CmsWpConstants.C_CONTENTTEMPLATEPATH, 0);
+		CmsFolder dFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, rootFolder.getResourceId(), -1, "/download/", 0);
+		CmsFolder pFolder = m_dbAccess.createFolder(tempUser, newOnlineProject, rootFolder.getResourceId(), -1, "/pics/", 0);
 		//rootFolder.setGroupId(user.getId());
 		m_dbAccess.writeFolder(newOnlineProject, rootFolder, false);
 		m_dbAccess.writeFolder(newOnlineProject, cFolder, false);
@@ -4264,16 +4270,6 @@ public CmsSite newSite(String name, String description, int category, int langua
 		m_dbAccess.writeFolder(newOnlineProject, dFolder, false);
 		m_dbAccess.writeFolder(newOnlineProject, pFolder, false);
 
-		//Set the right group access
-		/*
-		chgrp(currentUser, currentProject, rootFolder.getAbsolutePath(), C_GROUP_USERS);
-		chgrp(currentUser, currentProject, cbFolder.getAbsolutePath(), C_GROUP_USERS);
-		chgrp(currentUser, currentProject, cFolder.getAbsolutePath(), C_GROUP_USERS);
-		chgrp(currentUser, currentProject, ciFolder.getAbsolutePath(), C_GROUP_USERS);
-		chgrp(currentUser, currentProject, ctFolder.getAbsolutePath(), C_GROUP_USERS);
-		chgrp(currentUser, currentProject, dFolder.getAbsolutePath(), C_GROUP_USERS);
-		chgrp(currentUser, currentProject, pFolder.getAbsolutePath(), C_GROUP_USERS);
-		*/
 		return newSite;
 	}
 	else
