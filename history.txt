@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/11/05 10:15:40 $
- * Version: $Revision: 1.416 $
+ * Date   : $Date: 2002/11/10 00:42:55 $
+ * Version: $Revision: 1.417 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,11 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.0 (next version)
+OpenCms 5.0 beta 2 Kaitain - 11 November 2002
+! Default index.jsp "welcome to OpenCms" page is now included in a new installation
+! New class "com.opencms.flex.jsp.CmsJspActionBean" to access taglib features through JSP scriplet code
+! New "replace" feature in Workplace Explorer and CmsObject, it's now possible to replace 
+  e.g. an image in the VFS by an uploaded image with a different name directly, keepig the VFS name and file properties
 ! If an uploaded file already exists, you are now asked if you want to overwrite it (instead of OpenCms throwing an exception)
 ! New "touch" feature in Workplace Explorer and CmsObject
 ! New "file name translation" feature automatically replaces illegal chars (e.g. space, ? or &) in 
@@ -48,6 +52,9 @@ OpenCms 5.0 (next version)
 * Fixed ElementCache for DumpLauncher. For DUMP-Elements no file.encoding translation is allowed.
 * Fixed ElementCache for MethodElements. Switched handling from byte[] to String.
 * Fixed a bug in cache settings that prevented PDFs from offline projects to be displayed in Acrobat Reader
+- Page body files are now automatically exported when a page file is exported
+- Refactoring of constant names for VFS paths and directories in com.opencms.workplace.I_CmsWpConstants
+- Additional options for setup wizard to enable / disable Flex JSP and directory translation options included
 - The deprecated FOP based PdfLauncher was removed
 - Login dialog has moved to "/system/login", improved behaviour for active sessions
 - Changed the workplace stylesheet to fix problems displaying german umlauts. Thanks to www.gridnine.com
