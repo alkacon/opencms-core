@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/25 13:16:52 $
- * Version: $Revision: 1.454 $
+ * Date   : $Date: 2004/12/14 09:11:14 $
+ * Version: $Revision: 1.455 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.454 $ $Date: 2004/11/25 13:16:52 $
+ * @version $Revision: 1.455 $ $Date: 2004/12/14 09:11:14 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5665,6 +5665,40 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         return retValue;
 
+    }
+
+    /**
+     * Checks the availability of a resource from the VFS, 
+     * using the specified resource filter.<p>
+     * 
+     * @param dbc the current database context
+     * @param resourcePath the name of the resource to read (full path)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource, if the resource is available,
+     *          or <code>null</code> if not. 
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#availableResource(String, CmsResourceFilter)
+     * @see CmsObject#availableResource(String)
+     */
+    public CmsResource availableResource(
+        CmsDbContext dbc,
+        String resourcePath,
+        CmsResourceFilter filter) throws CmsException {
+
+        CmsResource resource = m_vfsDriver.availableResource(
+            dbc,
+            dbc.currentProject().getId(),
+            resourcePath,
+            filter.includeDeleted());
+
+        // context dates need to be updated even if filter was applied
+        updateContextDates(dbc, resource);
+
+        // return the resource
+        return resource;
     }
 
     /**

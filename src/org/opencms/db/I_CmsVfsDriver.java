@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/25 13:16:52 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2004/12/14 09:11:15 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.99 $ $Date: 2004/11/25 13:16:52 $
+ * @version $Revision: 1.100 $ $Date: 2004/12/14 09:11:15 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -412,6 +412,22 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     CmsResource readResource(CmsDbContext dbc, int projectId, String filename, boolean includeDeleted)
+    throws CmsException;
+
+    /**
+     * Checks the availability of a resource specified by it's resource name.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the Id of the project in which the resource will be used
+     * @param filename the name of the file
+     * @param includeDeleted true if already deleted files are included
+     * 
+     * @return the resource, if the resource is available,
+     *          or <code>null</code> if not. 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    CmsResource availableResource(CmsDbContext dbc, int projectId, String filename, boolean includeDeleted)
     throws CmsException;
 
     /**

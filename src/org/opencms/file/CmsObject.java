@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/07 16:19:50 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2004/12/14 09:11:14 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1124,6 +1124,54 @@ public class CmsObject {
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         return m_securityManager.readResource(
+            m_context,
+            addSiteRoot(resourcename), 
+            filter);
+    }
+
+    /**
+     * Checks the availability of a resource in the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type {@link CmsFile} or {@link CmsFolder}.  
+     *
+     * @param resourcename the name of the resource to check (full path)
+     *
+     * @return <code>true</code> if the resource is available.
+     *
+     * @see #readResource(String)
+     * @see #availableResource(String, CmsResourceFilter)
+     *  
+     * @throws CmsException if something goes wrong
+     */
+    public boolean availableResource(String resourcename) throws CmsException {
+        return availableResource(resourcename, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Checks the availability of a resource in the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type {@link CmsFile} or {@link CmsFolder}.  
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * @param resourcename the name of the resource to check (full path)
+     * @param filter the resource filter to use while checking
+     *
+     * @return <code>true</code> if the resource is available.
+     * 
+     * @see #readResource(String)
+     * @see #readResource(String, CmsResourceFilter)
+     *  
+     * @throws CmsException if something goes wrong
+     */
+    public boolean availableResource(String resourcename, CmsResourceFilter filter) throws CmsException {
+        return m_securityManager.availableResource(
             m_context,
             addSiteRoot(resourcename), 
             filter);
