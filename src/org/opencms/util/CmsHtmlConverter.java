@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2004/10/08 13:57:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/08 14:02:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Properties;
 import org.w3c.tidy.Tidy;
 
 /**
- * Html Parser, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
+ * Html Parser, used to clean up html code (e.g. remove word tags) and creates xhtml output.<p>
  * 
  */
 public class CmsHtmlConverter {
@@ -86,7 +86,7 @@ public class CmsHtmlConverter {
     int m_mode;
     
     /** the tidy to use. */
-    Tidy m_tidy = null;
+    Tidy m_tidy;
     
     
     /**
