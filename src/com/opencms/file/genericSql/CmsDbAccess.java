@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/05/31 13:20:57 $
-* Version: $Revision: 1.245 $
+* Date   : $Date: 2002/06/05 09:51:33 $
+* Version: $Revision: 1.246 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.245 $ $Date: 2002/05/31 13:20:57 $ *
+ * @version $Revision: 1.246 $ $Date: 2002/06/05 09:51:33 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -6307,6 +6307,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         // now we have to check if the deleted resources make any problems
         Hashtable onlineResults = new Hashtable();
+        changedByName.addAll(deletedByName);
         for(int i=0; i<deleted.size(); i++){
             Vector refs = getAllOnlineReferencesForLink(((CmsResource)deleted.elementAt(i)).getResourceName(), changedByName);
             for(int index=0; index<refs.size(); index++){
