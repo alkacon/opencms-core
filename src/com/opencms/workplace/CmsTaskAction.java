@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/05/12 08:44:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/05/18 15:42:23 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/05/12 08:44:54 $
+ * @version $Revision: 1.12 $ $Date: 2000/05/18 15:42:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -96,8 +96,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			
 			String subject=lang.getLanguageValue("task.email.accept.subject");
 			A_CmsUser[] users={cms.readOwner(task)};
-			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
-			mail.start();
+			try {
+				CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
+				mail.start();
+			} catch( Exception exc ) {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+				}
+			}
 		}
 		
 	}
@@ -152,8 +158,15 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.take.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
-		mail.start();
+		try {
+			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
+			mail.start();
+		} catch( Exception exc ) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+			}
+		}
+
 	}
 	
 	/**
@@ -217,17 +230,35 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			String subject=lang.getLanguageValue("task.email.forward.subject");			
 			// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 			if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
-				CmsMail mail=new CmsMail(cms,cms.getRequestContext().currentUser(),cms.readGroup(task),subject,contentBuf.toString());
-				mail.start();
+				try {
+					CmsMail mail=new CmsMail(cms,cms.getRequestContext().currentUser(),cms.readGroup(task),subject,contentBuf.toString());
+					mail.start();
+				} catch( Exception exc ) {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+					}
+				}
 			} else {
 				// send a mail to user
 				A_CmsUser[] user={cms.readAgent(task)};
-				CmsMail mail1=new CmsMail(cms,cms.getRequestContext().currentUser(),user,subject,contentBuf.toString());
-				mail1.start();
+				try {
+					CmsMail mail1=new CmsMail(cms,cms.getRequestContext().currentUser(),user,subject,contentBuf.toString());
+					mail1.start();
+				} catch( Exception exc ) {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+					}
+				}
 				// send a mail to owner
 				A_CmsUser[] owner={cms.readOwner(task)};
-				CmsMail mail2=new CmsMail(cms,cms.getRequestContext().currentUser(),owner,subject,contentBuf.toString());
-				mail2.start();
+				try {
+					CmsMail mail2=new CmsMail(cms,cms.getRequestContext().currentUser(),owner,subject,contentBuf.toString());
+					mail2.start();
+				} catch( Exception exc ) {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+					}
+				}
 			}
 			
 		}
@@ -368,12 +399,19 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.reakt.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
+		CmsMail mail;
+		mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
 			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
 		}
-		mail.start();
+		try {
+			mail.start();
+		} catch( Exception exc ) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+			}
+		}
 	}
 	
 	/**
@@ -423,8 +461,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 			String subject=lang.getLanguageValue("task.email.end.subject");
 			A_CmsUser[] users={cms.readOwner(task)};
-			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
-			mail.start();
+			try {
+				CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
+				mail.start();
+			} catch( Exception exc ) {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+				}
+			}
 		}
 	}
 	
@@ -475,8 +519,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.message.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
-		mail.start();
+		try {
+			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
+			mail.start();
+		} catch( Exception exc ) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+			}
+		}
 	}
 	
 	/**
@@ -526,9 +576,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.query.subject");
 		A_CmsUser[] users={cms.readOwner(task)};
-		CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
-		mail.start();
-		
+		try {
+			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
+			mail.start();
+		} catch( Exception exc ) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
+			}
+		}		
 	}
 	
 	/**
