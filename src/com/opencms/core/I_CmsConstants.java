@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/14 11:59:55 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/14 12:15:33 $
  */
 public interface I_CmsConstants
 {
@@ -279,6 +279,15 @@ public interface I_CmsConstants
 	 */	
 	 static final int C_STATE_DELETED		= 3;
      
+     /**
+      * This value will be returned for int's withaout a value.
+      */
+     static final int C_UNKNOWN_INT         = -1;
+     
+     /**
+      * This value will be returned for long's withaout a value.
+      */
+     static final int C_UNKNOWN_LONG        = -1;  
   
         
 }

@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/14 11:13:42 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/14 12:15:33 $
  */
 public abstract class A_CmsUser {
 	
@@ -23,7 +23,7 @@ public abstract class A_CmsUser {
 	 * 
 	 * @return the id of this user.
 	 */
-	abstract long getId();
+	abstract public long getId();
 	
 	/**
 	 * Gets the description of this user.
@@ -136,22 +136,16 @@ public abstract class A_CmsUser {
     /**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN);</pre>
 	 * 
-	 * @return the USER_LASTLOGIN, or null.
+	 * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
 	 */
 	abstract public long getLastlogin();
 
     /**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FLAGS);</pre>
 	 * 
-	 * @return the USER_FLAGS, or null.
+	 * @return the USER_FLAGS, or C_UNKNOWN_INT.
 	 */
 	abstract public int getFlags();
     
-	// the following methods are not used, because the functionality is handled by
-	// a A_CmsObjectBase:
-	/*
-	public boolean isAdminUser();
-    public Vector getGroups();
-    public boolean isMemberOf(A_CmsGroup group);
-	*/
+
 }

@@ -6,7 +6,8 @@ import java.util.*;
  * This abstract class describes a group in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.3 $ $Date: 1999/12/14 12:15:33 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -18,11 +19,11 @@ abstract public class A_CmsGroup {
 	abstract public String getName();
 	
 	/**
-	 * Returns the id of a group. This method has the package-visibility.
+	 * Returns the id of a group. 
 	 * 
 	 * @return id The id of this group.
 	 */
-	abstract long getID();
+	abstract public long getId();
 	
 	/**
 	 * Returns the description of this group.
@@ -48,17 +49,11 @@ abstract public class A_CmsGroup {
 	/**
 	 * Decides, if this group has a parent.
 	 * 
-	 * @return PARENT_GROUP_ID != null
+	 * @return PARENT_GROUP_ID != C_UNKNOWN_ID
 	 */
 	abstract public boolean hasParent();
 
-	/**
-	 * Decides, if this group has a child(s).
-	 * 
-	 * @return true, if this group has childs, else return false.
-	 */
-	abstract public boolean hasChild();
-	
+		
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
@@ -74,18 +69,5 @@ abstract public class A_CmsGroup {
 	 */
     abstract public boolean equals(Object obj);
 
-	/**
-	 * Returns the hashcode for this object.
-	 * 
-	 * @return the hashcode for this object.
-	 */
-    abstract public int hashCode();    
-	
-	// the following methods are not used, because the functionality is handled by
-	// a A_CmsObjectBase:
-	/*
-    abstract public boolean isAdminGroup();
-    abstract public Vector getUsers();
-    abstract public boolean contains(A_CmsUser user);
-	*/
+
 }
