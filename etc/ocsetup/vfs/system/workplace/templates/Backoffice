@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <WORKPLACE>	
 
-<tabledatabegin><![CDATA[<td>]]></tabledatabegin>
+<tabledatabegin><![CDATA[<td nowrap>]]></tabledatabegin>
 <tabledataend><![CDATA[</a></td>]]></tabledataend>
 <tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
 <tablerowend><![CDATA[</tr>]]></tablerowend>
@@ -16,7 +16,7 @@
 <nowand><![CDATA[]]></nowand>
 <wand><![CDATA[
 <td class=menu nowrap width=32px valign=top>
-	<a href="javascript:document.location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[';parent.frames[1].location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new'"  
+	<a href="]]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new" target="admin_content"  
 		onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
 		 <img align=top src="/pics/system/bt_new_off.gif" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32> 
 	</a>
@@ -117,7 +117,7 @@ start();
 					   
 <!-- Begin Content-->
 <table cellspacing=1 cellpadding=1 border=0>
-	<tr bgcolor="#c0c0c0"><td width=9 colspan=2 nowrap></td>
+	<tr bgcolor="#c0c0c0" nowrap><td width=9 colspan=2 nowrap></td>
 	]]><PROCESS>tableheadline</PROCESS><![CDATA[</tr>
 	<tr bgcolor="#FFFFFF">]]><PROCESS>tablecontent</PROCESS><![CDATA[</tr>
 </table>
