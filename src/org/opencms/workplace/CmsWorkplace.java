@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/13 11:01:24 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/02/13 11:21:42 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 5.1
  */
@@ -515,6 +515,7 @@ public abstract class CmsWorkplace {
         dateFormat = dateFormat.toLowerCase();
         dateFormat = CmsStringSubstitution.substitute(dateFormat, "{$month}", "M");
         dateFormat = CmsStringSubstitution.substitute(dateFormat, "{$hour}", "H");
+        dateFormat = CmsStringSubstitution.substitute(dateFormat, "m", "mm"); // minutes with two digits
         dateFormat = dateFormat.replace('e', 'd'); // day of month
         dateFormat = dateFormat.replace('i', 'h'); // 12 hour format
         dateFormat = dateFormat.replace('p', 'a'); // pm/am String
