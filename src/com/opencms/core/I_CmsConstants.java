@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/09/12 15:21:22 $
-* Version: $Revision: 1.205 $
+* Date   : $Date: 2002/10/11 15:11:11 $
+* Version: $Revision: 1.206 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,8 +35,9 @@ package com.opencms.core;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Michaela Schleich
+ * @author Thomas Weckert
  *
- * @version $Revision: 1.205 $ $Date: 2002/09/12 15:21:22 $
+ * @version $Revision: 1.206 $ $Date: 2002/10/11 15:11:11 $
  */
 public interface I_CmsConstants {
 
@@ -1295,6 +1296,17 @@ public interface I_CmsConstants {
      * The name of the tag in registry if history is enabled.
      */     
     static final String C_ENABLE_HISTORY = "enabled";
+    
+    /**
+     * The module property key name to specifiy additional resources which are
+     * part of a module outside of {system/modules}.
+     */
+    static final String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
+    
+    /**
+     * Character to separate additional resources specified in the module properties.
+     */
+    static final String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";    
 }
 
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2002/08/12 12:49:55 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/10/11 15:12:31 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,8 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2002/08/12 12:49:55 $
+ * @author Thomas Weckert
+ * @version $Revision: 1.31 $ $Date: 2002/10/11 15:12:31 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -811,4 +812,17 @@ public void setSystemValues(String dataName, Hashtable values) throws CmsExcepti
  * @return Hashtable The exportpoints and the paths.
  */
 public Hashtable getExportpoints();
+
+    /**
+     * Returns the value of the "type" node of a module subtree in the registry.
+     * @return the value of the "type" node of a module
+     */
+    public String getModuleType( String theModulename );
+    
+    /**
+     * Sets the type for a given module.
+     * @param theModuleName the name of the module
+     * @param theModuleType the new type of the module
+     */
+    public void setModuleType( String theModulename, String theModuleType );    
 }
