@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
-* Date   : $Date: 2001/09/06 06:22:54 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/10/02 13:32:32 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -296,7 +296,16 @@ public class CmsLruCache {
     public synchronized void deleteElementsAfterPublish(){
         CacheItem item = head;
         while (item != null){
-            if (((A_CmsElement)item.value).getCacheDirectives().shouldRenew()){
+            try{
+                if (((A_CmsElement)item.value).getCacheDirectives().shouldRenew()){
+                    removeItem(item);
+                }
+            }catch(NullPointerException e){
+                System.err.println("###====== NullPointerException");
+                System.err.println("Element_key:"+item.key);
+                System.err.println("Element_value:"+((A_CmsElement)item.value));
+                System.err.println("-- CacheDirectives:"+((A_CmsElement)item.value).getCacheDirectives());
+                e.printStackTrace();
                 removeItem(item);
             }
             item = item.next;
