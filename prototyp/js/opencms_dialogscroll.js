@@ -126,7 +126,7 @@ function centerLayer(){
 		document.all['divCont'].style.left=Math.round((totalWidth-lyrWidth)/2)+15;
 	}
 	else if (ns) {
-		lyrWidth = 500;		//leider fest verdrahtete Breitenangabe
+		lyrWidth = document['frame'].clip.width;
 		document['frame'].left=Math.round((totalWidth-lyrWidth)/2);
 		document['divCont'].left=Math.round((totalWidth-lyrWidth)/2)+15;
 	}
@@ -144,5 +144,4 @@ function scrollInit(){
 	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
 	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
 	window.onresize=resized;
-
 }
