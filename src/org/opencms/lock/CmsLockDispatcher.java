@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/08/18 08:33:42 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.35 $ $Date: 2003/08/15 17:38:04 $
+ * @version $Revision: 1.36 $ $Date: 2003/08/18 08:33:42 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -149,8 +149,7 @@ public final class CmsLockDispatcher extends Object {
     /**
      * @see java.lang.Object#finalize()
      */
-    protected void finalize() throws Throwable {
-System.err.println("CmsLockDeispatcher final");        
+    protected void finalize() throws Throwable {   
         if (m_exclusiveLocks != null) {
             m_exclusiveLocks.clear();
 
