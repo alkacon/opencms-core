@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/05 15:39:13 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/08/07 14:55:28 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2003/08/05 15:39:13 $
+ * @version $Revision: 1.32 $ $Date: 2003/08/07 14:55:28 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -98,8 +98,7 @@ public final class CmsLockDispatcher extends Object {
      * @param resourcename the full resource name including the site root
      * @param userId the ID of the user who locked the resource
      * @param projectId the ID of the project where the resource is locked
-     * @param hierachy flag indicating how the resource is locked
-     * @return the new CmsLock object for the added resource
+     * @throws CmsException if somethong goes wrong
      */
     public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId) throws CmsException {
         CmsLock lock = getLock(driverManager, context, resourcename);
@@ -166,6 +165,7 @@ public final class CmsLockDispatcher extends Object {
      * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @return the CmsLock if the specified resource is locked, or the shared Null lock if the resource is not locked
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock parentFolderLock = null;
@@ -291,7 +291,7 @@ public final class CmsLockDispatcher extends Object {
      * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @return the CmsResource instance
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
         CmsResource resource = null;
@@ -320,6 +320,7 @@ public final class CmsLockDispatcher extends Object {
      * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @return true, if and only if the resource is currently locked
+     * @throws CmsException if something goes wrong
      */
     public boolean isLocked(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock lock = getLock(driverManager, context, resourcename);
@@ -337,7 +338,7 @@ public final class CmsLockDispatcher extends Object {
      * @param resourcename the full resource name including the site root
      * @param forceUnlock true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
      * @return the previous CmsLock object of the resource, or null if the resource was unlocked
-     * @throws CmsLockException if the user tried to unlock a resource in a locked folder
+     * @throws CmsException if something goes wrong
      */
     public CmsLock removeResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {
         CmsLock lock = getLock(driverManager, context, resourcename);
