@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2002/11/16 13:16:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/12/04 14:44:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * to avoid method calling overhead (a cache is about speed, isn't it :)
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexCacheKey {
     
@@ -84,8 +84,8 @@ public class CmsFlexCacheKey {
 
     /** The list of keywords of the Flex cache language */
     private java.util.List cacheCmds = java.util.Arrays.asList(new String[] {
-        "always", "never", "uri", "user", "groups", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error"} );
-    //   0         1        2      3       4         5         6            7          8                9          10       11       12
+        "always", "never", "uri", "user", "groups", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"} );
+    //   0         1        2      3       4         5         6            7          8                9          10       11       12             13
     
     /** Flag used to determine if this key is from a request or not */
     private boolean m_isRequest;
@@ -471,6 +471,7 @@ public class CmsFlexCacheKey {
                 if (DEBUG) System.err.println("Parsing token:" + t + " key=" + k + " value=" + v);
                 switch (cacheCmds.indexOf(k)) {
                     case 0: // always
+                    case 13:                    
                         m_always = 1;
                         // Continue processing (make sure we find a "never" behind "always")
                         break;
