@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2004/10/14 08:23:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/14 08:58:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
 
 /**
  * Default implementation for OpenCms password validation,
@@ -47,7 +46,7 @@ import org.apache.commons.codec.binary.Hex;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
