@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsPropertyDelete.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/23 15:03:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.3
  */
@@ -123,8 +123,7 @@ public class CmsPropertyDelete extends CmsDialog {
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             
         }
-    } 
-    
+    }  
     
     /**
      * Deletes the property definition by cascading the properties on resources.<p>
@@ -159,12 +158,12 @@ public class CmsPropertyDelete extends CmsDialog {
                         }
                         property.setStructureValue(CmsProperty.C_DELETE_VALUE);
                         property.setResourceValue(CmsProperty.C_DELETE_VALUE);
-                        // write the property with the null value to the resource and cascade him from the definition
+                        // write the property with the null value to the resource and cascade it from the definition
                         getCms().writePropertyObject(resource.getRootPath(), property);
                         // unlock the resource
                         getCms().unlockResource(resource.getRootPath());
                     }
-                    // delete the property definition at least
+                    // delete the property definition at last
                     getCms().deletePropertydefinition(getParamPropertyName());                    
                 } finally {
                     // restore the siteroot
