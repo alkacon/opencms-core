@@ -8,6 +8,13 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.34 Arakis - 14 August 2000
+
+! export extended, now several folders and files can be exported to a single zip file
+* fix method validFilename: no slashes allowed in file names
+- import on the workplace now only to the root folder, on the shell a destination might still be specified
+- order group names, user names, and project names alphabetically
+
 OpenCms 4.1.33 Arakis - 8 August 2000
 
 ! Added session-failover for OpenCms-clusters.
