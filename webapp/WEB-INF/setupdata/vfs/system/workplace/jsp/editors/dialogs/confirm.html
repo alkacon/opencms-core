@@ -79,7 +79,7 @@ function confirmAction(actionValue, theForm) {
     String detailsAttribute = "onclick=\"toggleElement('errordetails');\"";
 %>
 
-<%= wp.dialogButtons(new int[] {wp.BUTTON_OK, wp.BUTTON_CANCEL, wp.BUTTON_DETAILS}, new String[] {okAttribute, discardAttribute, detailsAttribute}) %>
+<%= wp.dialogButtons(new int[] {wp.BUTTON_EDIT, wp.BUTTON_DISCARD, wp.BUTTON_DETAILS}, new String[] {okAttribute, discardAttribute, detailsAttribute}) %>
 
 <%  } %>
 </form>

@@ -36,6 +36,10 @@ case CmsLEditEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content and show the editor again
 
 	wp.actionSave();
+	if (wp.getAction() == CmsSimpleEditor.ACTION_CANCEL) {
+		// an error occured during save
+		break;
+	}
 
 case CmsLEditEditor.ACTION_DEFAULT:
 default:

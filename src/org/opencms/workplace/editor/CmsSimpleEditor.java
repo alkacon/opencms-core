@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/03 11:47:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/05/03 13:09:44 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -180,7 +180,7 @@ public class CmsSimpleEditor extends CmsEditor {
                 editFile.setContents(decodedContent.getBytes(encoding));
             } catch (UnsupportedEncodingException e) {
                 editFile.setContents(decodedContent.getBytes());
-            }
+            }        
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
             try {
@@ -204,6 +204,7 @@ public class CmsSimpleEditor extends CmsEditor {
             setAction(ACTION_CANCEL);
             return;
         }
+    
         // save was successful, set save action 
         setAction(ACTION_SAVE);
     }

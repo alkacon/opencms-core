@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/04/30 09:58:14 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/05/03 13:09:44 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.1
  */
@@ -102,7 +102,11 @@ public class CmsDialog extends CmsWorkplace {
     public static final int BUTTON_DETAILS = 5;
     /** Constant for the "OK" button in the build button methods (without form submission) */
     public static final int BUTTON_OK_NO_SUBMIT = 6;
-    
+    /** Constant for the "Edit" button in the build button methods (same function as "Ok" button but different text on button */
+    public static final int BUTTON_EDIT = 7;
+    /** Constant for the "Discard" button in the build button methods (same function as "Cancel" button but different text on button*/
+    public static final int BUTTON_DISCARD = 8;  
+        
     /** Request parameter value for the action: dialog confirmed */
     public static final String DIALOG_CONFIRMED = "confirmed";
     /** Request parameter value for the action: show please wait screen */
@@ -848,6 +852,28 @@ public class CmsDialog extends CmsWorkplace {
             result.append(attribute);
             result.append(">\n");
             break;
+        case BUTTON_EDIT:
+            result.append("<input name=\"ok\" value=\"");
+            result.append(key("button.edit")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" type=\"submit\"");
+            } else {
+                result.append(" type=\"button\"");
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_DISCARD:
+            result.append("<input name=\"cancel\" type=\"button\" value=\"");
+            result.append(key("button.discard")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" onclick=\"submitAction('" + DIALOG_CANCEL + "', form);\"");
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;            
         case BUTTON_CLOSE:
             result.append("<input name=\"close\" type=\"button\" value=\"");
             result.append(key("button.close")+"\"");
@@ -881,7 +907,7 @@ public class CmsDialog extends CmsWorkplace {
             result.append(" class=\"dialogbutton\"");
             result.append(attribute);
             result.append(">\n");
-            break;
+            break;            
         default:
             // not a valid button code, just insert a warning in the HTML
             result.append("<!-- invalid button code: ");
