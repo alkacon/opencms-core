@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 1999/12/23 12:51:45 $
+ * @version $Revision: 1.10 $ $Date: 1999/12/23 16:48:30 $
  */
 public interface I_CmsConstants
 {
@@ -92,6 +92,16 @@ public interface I_CmsConstants
 	 static final String C_GROUP_PROJECTLEADER = "Projectleader";
 
 	/**
+	 * This is the group for guests.
+	 */
+	 static final String C_USER_GUEST = "Guest";
+	
+	/**
+	 * This is the group for administrators.
+	 */
+	 static final String C_USER_ADMIN = "Administrator";
+
+	 /**
 	 * Key for additional info emailaddress.
 	 */
 	 final static String C_ADDITIONAL_INFO_EMAIL		= "USER_EMAIL";

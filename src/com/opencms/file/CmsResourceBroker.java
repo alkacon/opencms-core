@@ -6,15 +6,60 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes THE resource broker. It merges all resource broker
+ * This is THE resource broker. It merges all resource broker
  * into one public class. The interface is local to package. <B>All</B> methods
  * get additional parameters (callingUser and currentproject) to check the security-
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 1999/12/23 16:48:30 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/23 16:49:21 $
  */
-interface I_CmsResourceBroker {
+class CmsResourceBroker implements I_CmsResourceBroker {
+	
+	/**
+	 * The resource broker for user
+	 */
+	private I_CmsRbUserGroup m_userRb;
+
+	/**
+	 * The resource broker for file
+	 */
+	private I_CmsRbFile m_fileRb;
+
+	/**
+	 * The resource broker for metadef
+	 */
+	private I_CmsRbMetadefinition m_metadefRb;
+
+	/**
+	 * The resource broker for property
+	 */
+	private I_CmsRbProperty m_propertyRb;
+
+	/**
+	 * The resource broker for project
+	 */
+	private I_CmsRbProject m_projectRb;
+
+	/**
+	 * The resource broker for task
+	 */
+	private I_CmsRbTask m_taskRb;
+	
+	/**
+	 * The constructor for this ResourceBroker. It gets all underlaying 
+	 * resource-brokers.
+	 */
+	public CmsResourceBroker(I_CmsRbUserGroup userRb, /* I_CmsRbFile fileRb ,*/ 
+							 I_CmsRbMetadefinition metadefRb, I_CmsRbProperty propertyRb,
+							 I_CmsRbProject projectRb /*,  I_CmsRbTask taskRb */) {
+		m_userRb = userRb;
+		// m_fileRb = fileRb;
+		m_metadefRb = metadefRb;
+		m_propertyRb = propertyRb;
+		m_projectRb = projectRb;
+		// m_taskRb = taskRb;
+	}
 
 	// Projects:
 	
@@ -30,7 +75,7 @@ interface I_CmsResourceBroker {
 	 * @return the onlineproject object.
 	 */
 	public A_CmsProject onlineProject(A_CmsUser currentUser, 
-										A_CmsProject currentProject);
+										A_CmsProject currentProject){ return null; }
 
 	/**
 	 * Tests if the user can access the project.
@@ -45,7 +90,7 @@ interface I_CmsResourceBroker {
 	 * @return true, if the user has access, else returns false.
 	 */
 	public boolean accessProject(A_CmsUser currentUser, A_CmsProject currentProject,
-								   String projectname);
+								   String projectname){ return false; }
 
 	/**
 	 * Reads a project from the Cms.
@@ -61,7 +106,7 @@ interface I_CmsResourceBroker {
 	 */
 	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String name)
-		 throws CmsException ;
+		 throws CmsException { return null; }
 	
 	/**
 	 * Creates a project.
@@ -83,7 +128,7 @@ interface I_CmsResourceBroker {
 	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
 									   String name, String description, A_CmsTask task, 
 									   A_CmsUser owner, A_CmsGroup group, int flags)
-		 throws CmsException;
+		 throws CmsException{ return null; }
 	
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
@@ -99,7 +144,7 @@ interface I_CmsResourceBroker {
 	 */
 	 public Vector getAllAccessibleProjects(A_CmsUser currentUser, 
 											A_CmsProject currentProject)
-		 throws CmsException;	
+		 throws CmsException{ return null; }	
 	
 	/**
 	 * Publishes a project.
@@ -116,7 +161,7 @@ interface I_CmsResourceBroker {
 	public A_CmsProject publishProject(A_CmsUser currentUser, 
 												A_CmsProject currentProject,
 												String name)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 	// Metainfos, Metadefinitions
 	/**
@@ -138,7 +183,7 @@ interface I_CmsResourceBroker {
 	public A_CmsMetadefinition readMetadefinition(A_CmsUser currentUser, 
 												  A_CmsProject currentProject, 
 												  String name, A_CmsResourceType type)
-		throws CmsException;
+		throws CmsException{ return null; }
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -157,7 +202,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
 										 A_CmsResourceType resourcetype)
-		throws CmsException;
+		throws CmsException{ return null; }
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -177,7 +222,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
 										 A_CmsResourceType resourcetype, int type)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 	/**
 	 * Creates the metadefinition for the resource type.<BR/>
@@ -198,7 +243,7 @@ interface I_CmsResourceBroker {
 													String name, 
 													A_CmsResourceType resourcetype, 
 													int type)
-		throws CmsException;
+		throws CmsException{ return null; }
 		
 	/**
 	 * Delete the metadefinition for the resource type.<BR/>
@@ -214,7 +259,7 @@ interface I_CmsResourceBroker {
 	 */
 	public void deleteMetadefinition(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 A_CmsMetadefinition metadef)
-		throws CmsException;
+		throws CmsException{ return ; }
 	
 	/**
 	 * Updates the metadefinition for the resource type.<BR/>
@@ -233,7 +278,7 @@ interface I_CmsResourceBroker {
 	public A_CmsMetadefinition writeMetadefinition(A_CmsUser currentUser, 
 												   A_CmsProject currentProject, 
 												   A_CmsMetadefinition metadef)
-		throws CmsException;
+		throws CmsException{ return null; }
 	
 	/**
 	 * Returns a Metainformation of a file or folder.
@@ -252,7 +297,7 @@ interface I_CmsResourceBroker {
 	 */
 	public String readMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  A_CmsResource resource, String meta)
-		throws CmsException;	
+		throws CmsException{ return null; }	
 
 	/**
 	 * Writes a Metainformation for a file or folder.
@@ -270,7 +315,7 @@ interface I_CmsResourceBroker {
 	 */
 	public void writeMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 A_CmsResource resource, String meta, String value)
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Writes a couple of Metainformation for a file or folder.
@@ -287,7 +332,7 @@ interface I_CmsResourceBroker {
 	 */
 	public void writeMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  A_CmsResource resource, Hashtable metainfos)
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
@@ -305,7 +350,7 @@ interface I_CmsResourceBroker {
 	 */
 	public Hashtable readAllMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
 											 A_CmsResource resource)
-		throws CmsException;
+		throws CmsException{ return null; }
 	
 	/**
 	 * Deletes all Metainformation for a file or folder.
@@ -322,7 +367,7 @@ interface I_CmsResourceBroker {
 	public void deleteAllMetainformations(A_CmsUser currentUser, 
 										  A_CmsProject currentProject, 
 										  A_CmsResource resource)
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Deletes a Metainformation for a file or folder.
@@ -339,7 +384,7 @@ interface I_CmsResourceBroker {
 	 */
 	public void deleteMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  A_CmsResource resource, String meta)
-		throws CmsException;     	
+		throws CmsException{ return ; }     	
 
 	// user and group stuff
 	
@@ -356,7 +401,7 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	public boolean isAdmin(A_CmsUser currentUser, A_CmsProject currentProject)
-         throws CmsException;
+         throws CmsException{ return false; }
     
     	/**
 	 * Determines, if the users current group is the projectleader-group.<BR/>
@@ -370,7 +415,7 @@ interface I_CmsResourceBroker {
 	 * @return true, if the users current group is the projectleader-group, 
 	 * else it returns false.
 	 */	
-	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject);
+	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject){ return false; }
 
 	/**
 	 * Returns the anonymous user object.<P/>
@@ -382,7 +427,7 @@ interface I_CmsResourceBroker {
 	 * @param currentProject The current project of the user.
 	 * @return the anonymous user object.
 	 */
-	public A_CmsUser anonymousUser(A_CmsUser currentUser, A_CmsProject currentProject);
+	public A_CmsUser anonymousUser(A_CmsUser currentUser, A_CmsProject currentProject){ return null; }
 	
 	/**
 	 * Returns a user object.<P/>
@@ -398,7 +443,7 @@ interface I_CmsResourceBroker {
 	 */
 	public A_CmsUser readUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 							  String username)
-		throws CmsException;
+		throws CmsException{ return null; }
 	
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
@@ -416,7 +461,7 @@ interface I_CmsResourceBroker {
 	 */		
 	public A_CmsUser readUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 							  String username, String password)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 
 	/**
@@ -433,7 +478,7 @@ interface I_CmsResourceBroker {
 	 */
 	public Vector getGroupsOfUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 								  String username)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 	/**
 	 * Returns a group object.<P/>
@@ -450,7 +495,7 @@ interface I_CmsResourceBroker {
 	 */
 	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 								String groupname)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 	/**
 	 * Returns a list of users in a group.<P/>
@@ -466,7 +511,7 @@ interface I_CmsResourceBroker {
 	 */
 	public Vector getUsersOfGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 								  String groupname)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 	/**
 	 * Checks if a user is member of a group.<P/>
@@ -485,7 +530,7 @@ interface I_CmsResourceBroker {
 	 */
 	public boolean userInGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String username, String groupname)
-		throws CmsException;
+		throws CmsException{ return false; }
 
 	/** 
 	 * Adds a user to the Cms.
@@ -513,7 +558,7 @@ interface I_CmsResourceBroker {
 							 String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-		throws CmsException;
+		throws CmsException{ return null; }
 
 	/** 
 	 * Deletes a user from the Cms.
@@ -531,7 +576,7 @@ interface I_CmsResourceBroker {
 	 */
 	public void deleteUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   String username)
-		throws CmsException;
+		throws CmsException{ return; }
 
 	/**
 	 * Updated the user information.<BR/>
@@ -549,7 +594,7 @@ interface I_CmsResourceBroker {
 	 */
     public void writeUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 						  A_CmsUser user)			
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Add a new group to the Cms.<BR/>
@@ -572,7 +617,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public A_CmsGroup addGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String name, String description, int flags, String parent)
-		throws CmsException;
+		throws CmsException{ return null; }
 
     
      /**
@@ -587,7 +632,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public void writeGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   A_CmsGroup group)
-		throws CmsException;
+		throws CmsException{ return ; }
     
     
 	/**
@@ -606,7 +651,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public void deleteGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							String delgroup)
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Adds a user to a group.<BR/>
@@ -624,7 +669,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public void addUserToGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String username, String groupname)
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Removes a user from a group.
@@ -642,7 +687,7 @@ interface I_CmsResourceBroker {
 	 */	
 	public void removeUserFromGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 									String username, String groupname)
-		throws CmsException;
+		throws CmsException{ return ; }
 
 	/**
 	 * Returns all users<P/>
@@ -656,7 +701,7 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getUsers(A_CmsUser currentUser, A_CmsProject currentProject)
-        throws CmsException;
+        throws CmsException{ return null; }
 	
 	/**
 	 * Returns all groups<P/>
@@ -670,7 +715,7 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getGroups(A_CmsUser currentUser, A_CmsProject currentProject)
-        throws CmsException;	
+        throws CmsException{ return null; }	
     
     
     /**
@@ -687,7 +732,7 @@ interface I_CmsResourceBroker {
 	 */
 	public Vector getChild(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   String groupname)
-        throws CmsException ;	
+        throws CmsException { return null; }	
 
 	/** 
 	 * Sets the password for a user.
@@ -707,6 +752,6 @@ interface I_CmsResourceBroker {
 	 */
 	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
 							String username, String newPassword)
-		throws CmsException;
+		throws CmsException{ return ; }
 	
 }

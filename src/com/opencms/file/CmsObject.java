@@ -6,7 +6,7 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * The class which implements this abstract class gains access to the OpenCms. 
+ * This class gains access to the OpenCms. 
  * <p>
  * The CmsObject encapsulates user identifaction and client request and is
  * the central object to transport information in the Cms Servlet.
@@ -15,9 +15,19 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 1999/12/23 16:48:30 $ 
+ * @version $Revision: 1.1 $ $Date: 1999/12/23 16:49:21 $ 
  */
-public abstract class A_CmsObject {	
+public class CmsObject extends A_CmsObject {
+	
+	/**
+	 * The resource broker to access the cms.
+	 */
+	private static I_CmsResourceBroker c_rb = null;
+	
+	/**
+	 * The resource broker to access the cms.
+	 */
+	private A_CmsRequestContext m_context = null;
 
 	/**
 	 * Initialises the CmsObject with the resourceBroker. This only done ones!
@@ -28,7 +38,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException is thrown, when the resourceBroker was set before.
 	 */
-	abstract public void init(I_CmsResourceBroker resourceBroker);
+	public void init(I_CmsResourceBroker resourceBroker) {
+		c_rb = resourceBroker;
+	}
 	
 	/**
 	 * Initialises the CmsObject for each request.
@@ -39,29 +51,38 @@ public abstract class A_CmsObject {
 	 * @param currentGroup The current group for this request.
 	 * @param currentProject The current project for this request.
 	 */
-	abstract public void init(HttpServletRequest req, HttpServletResponse resp, 
-							  String user, String currentGroup, String currentProject );	
+	public void init(HttpServletRequest req, HttpServletResponse resp, 
+					 String user, String currentGroup, String currentProject ) {
+		m_context = new CmsRequestContext();
+		m_context.init(req, resp, user, currentGroup, currentProject);
+	}
 	
 	/**
 	 * Returns the current request-context.
 	 * 
 	 * @return the current request-context.
 	 */
-	abstract A_CmsRequestContext getRequestContext();
+	A_CmsRequestContext getRequestContext() {
+		return( m_context );
+	}
 
 	/**
 	 * Returns the root-folder object.
 	 * 
 	 * @return the root-folder object.
 	 */
-	abstract public CmsFolder rootFolder();
+	public CmsFolder rootFolder() {
+		return null;
+	}
 	
 	/**
 	 * Returns the anonymous user object.
 	 * 
 	 * @return the anonymous user object.
 	 */
-	abstract public A_CmsUser anonymousUser();
+	public A_CmsUser anonymousUser() {
+		return null;
+	}
 	
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
@@ -69,14 +90,18 @@ public abstract class A_CmsObject {
 	 * 
 	 * @return the onlineproject object.
 	 */
-	abstract public A_CmsProject onlineProject();
+	public A_CmsProject onlineProject() {
+		return null;
+	}
 
 	/**
 	 * Returns a Vector with all I_CmsResourceTypes.
 	 * 
 	 * Returns a Vector with all I_CmsResourceTypes.
 	 */
-	abstract public Vector getAllResourceTypes();
+	public Vector getAllResourceTypes() { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Reads a project from the Cms.
@@ -85,8 +110,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsProject readProject(String name)
-		throws CmsException;
+	public A_CmsProject readProject(String name)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Creates a project.
@@ -99,8 +126,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
-	abstract public A_CmsProject createProject(String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+	public A_CmsProject createProject(String name, String description, int flags)
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Publishes a project.
@@ -109,8 +138,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsProject publishProject(String name)
-		throws CmsException;
+	public A_CmsProject publishProject(String name)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Returns all projects, which the user may access.
@@ -119,7 +150,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	abstract public Vector getAllAccessibleProjects(String projectname);
+	public Vector getAllAccessibleProjects(String projectname) {
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Declines a resource. The resource can be copied to the onlineproject.
@@ -129,8 +162,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public void declineResource(String project, String resource)
-		throws CmsException;
+	public void declineResource(String project, String resource)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Rejects a resource. The resource will be copied to the following project,
@@ -141,8 +176,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public void rejectResource(String project, String resource)
-		throws CmsException;
+	public void rejectResource(String project, String resource)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -167,9 +204,11 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public CmsFile createFile(String folder, String filename, 
+	public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -197,10 +236,12 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public CmsFile createFile(String folder, String filename, 
+	public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Reads a file from the Cms.<BR/>
@@ -214,8 +255,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public CmsFile readFile(String folder, String filename)
-		throws CmsException;
+	public CmsFile readFile(String folder, String filename)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Reads a file header from the Cms.<BR/>
@@ -230,8 +273,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public A_CmsResource readFileHeader(String folder, String filename)
-		throws CmsException;
+	public A_CmsResource readFileHeader(String folder, String filename)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
@@ -245,8 +290,10 @@ public abstract class A_CmsObject {
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	abstract public void writeFile(CmsFile file) 
-		throws CmsException;
+	public void writeFile(CmsFile file) 
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Writes the fileheader to the Cms.
@@ -260,8 +307,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract public void writeFileHeader(A_CmsResource resource)
-		throws CmsException;
+	public void writeFileHeader(A_CmsResource resource)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
@@ -278,8 +327,10 @@ public abstract class A_CmsObject {
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	abstract public void writeFile(CmsFile file, Hashtable metainfos)
-		throws CmsException;
+	public void writeFile(CmsFile file, Hashtable metainfos)
+		throws CmsException {
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Writes the fileheader to the Cms.
@@ -296,8 +347,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract public void writeFileHeader(A_CmsResource resource, Hashtable metainfos)
-		throws CmsException;
+	public void writeFileHeader(A_CmsResource resource, Hashtable metainfos)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Renames the file to the new name.
@@ -309,8 +362,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	abstract public void renameFile(String oldname, String newname)
-		throws CmsException;
+	public void renameFile(String oldname, String newname)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Deletes the file.
@@ -321,8 +376,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract public void deleteFile(String filename)
-		throws CmsException;
+	public void deleteFile(String filename)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Copies the file.
@@ -336,8 +393,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract public void copyFile(String source, String destination)
-		throws CmsException, CmsDuplicateKeyException;
+	public void copyFile(String source, String destination)
+		throws CmsException, CmsDuplicateKeyException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Moves the file.
@@ -351,8 +410,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract public void moveFile(String source, String destination)
-		throws CmsException, CmsDuplicateKeyException;
+	public void moveFile(String source, String destination)
+		throws CmsException, CmsDuplicateKeyException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Sets the resource-type of this resource.
@@ -364,8 +425,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public void setResourceType(String resource, A_CmsResourceType newType)
-		throws CmsException;
+	public void setResourceType(String resource, A_CmsResourceType newType)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Sets the resource-type of this resource.
@@ -379,9 +442,11 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public void setResourceType(String resource, A_CmsResourceType newType, 
+	public void setResourceType(String resource, A_CmsResourceType newType, 
 										 Hashtable metainfos)
-		throws CmsException;
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Creates a new folder.
@@ -404,8 +469,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public CmsFolder createFolder(String folder, String newFolderName)
-		throws CmsException, CmsDuplicateKeyException;
+	public CmsFolder createFolder(String folder, String newFolderName)
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -431,9 +498,11 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public CmsFolder createFolder(String folder, String newFolderName, 
+	public CmsFolder createFolder(String folder, String newFolderName, 
 											 Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Reads a folder from the Cms.<BR/>
@@ -448,8 +517,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public CmsFolder readFolder(String folder, String folderName)
-		throws CmsException;
+	public CmsFolder readFolder(String folder, String folderName)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Renames the folder to the new name.
@@ -466,9 +537,11 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	abstract public void renameFolder(String oldname, String newname, 
+	public void renameFolder(String oldname, String newname, 
 									  boolean force)
-		throws CmsException;
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Deletes the folder.
@@ -484,8 +557,10 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract public void deleteFolder(String foldername, boolean force)
-		throws CmsException;
+	public void deleteFolder(String foldername, boolean force)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Copies a folder.
@@ -504,9 +579,11 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination foldername.
 	 */	
-	abstract public void copyFolder(String source, String destination, 
+	public void copyFolder(String source, String destination, 
 									boolean force)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Moves a folder.
@@ -525,9 +602,11 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract public void moveFolder(String source, String destination, 
+	public void moveFolder(String source, String destination, 
 									boolean force)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -539,9 +618,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public Vector getSubFolders(String foldername)
-		throws CmsException;
-	
+	public Vector getSubFolders(String foldername)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}	
 	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
@@ -552,8 +632,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public Vector getFilesInFolder(String foldername)
-		throws CmsException;
+	public Vector getFilesInFolder(String foldername)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Tests if the user may write the resource.
@@ -562,7 +644,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @return true, if the user may write, else returns false.
 	 */
-	abstract public boolean isWriteable(String filename);
+	public boolean isWriteable(String filename) { 
+		return false; // TODO: implement this! 
+	}
 
 	/**
 	 * Tests if the resource exists.
@@ -571,7 +655,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @return true, if the resource exists, else returns false.
 	 */
-	abstract public boolean fileExists(String filename);
+	public boolean fileExists(String filename) { 
+		return false; // TODO: implement this! 
+	}
 	
 	/**
 	 * Changes the flags for this resource<BR/>
@@ -584,8 +670,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public void chmod(String filename, int flags)
-		throws CmsException;
+	public void chmod(String filename, int flags)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Changes the owner for this resource<BR/>
@@ -598,8 +686,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
 	 */
-	abstract public void chown(String filename, String newOwner)
-		throws CmsException;
+	public void chown(String filename, String newOwner)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Changes the group for this resource<BR/>
@@ -612,8 +702,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
 	 */
-	abstract public void chgrp(String filename, String newGroup)
-		throws CmsException;
+	public void chgrp(String filename, String newGroup)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Locks a resource<BR/>
@@ -628,8 +720,10 @@ public abstract class A_CmsObject {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	abstract public void lockFile(String resource, boolean force)
-		throws CmsException;
+	public void lockFile(String resource, boolean force)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Unlocks a resource<BR/>
@@ -642,8 +736,10 @@ public abstract class A_CmsObject {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	abstract public void unlockFile(String resource)
-		throws CmsException;
+	public void unlockFile(String resource)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Tests, if a resource was locked<BR/>
@@ -658,8 +754,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	abstract public boolean isLocked(String resource)
-		throws CmsException;
+	public boolean isLocked(String resource)
+		throws CmsException { 
+		return false; // TODO: implement this! 
+	}
 	
 	/**
 	 * Returns the user, who had locked the resource.<BR/>
@@ -674,8 +772,10 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	abstract public A_CmsUser lockedBy(String resource)
-		throws CmsException;
+	public A_CmsUser lockedBy(String resource)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Returns a Metainformation of a file or folder.
@@ -687,8 +787,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public String readMetainformation(String name, String meta)
-		throws CmsException;	
+	public String readMetainformation(String name, String meta)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Writes a Metainformation for a file or folder.
@@ -699,8 +801,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void writeMetainformation(String name, String meta, String value)
-		throws CmsException;
+	public void writeMetainformation(String name, String meta, String value)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Writes a couple of Metainformation for a file or folder.
@@ -710,8 +814,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void writeMetainformations(String name, Hashtable metainfos)
-		throws CmsException;
+	public void writeMetainformations(String name, Hashtable metainfos)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
@@ -722,8 +828,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public Vector readAllMetainformations(String name)
-		throws CmsException;
+	public Vector readAllMetainformations(String name)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Deletes all Metainformation for a file or folder.
@@ -732,8 +840,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void deleteAllMetainformations(String resourcename)
-		throws CmsException;
+	public void deleteAllMetainformations(String resourcename)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Deletes a Metainformation for a file or folder.
@@ -743,8 +853,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void deleteMetainformation(String resourcename, String meta)
-		throws CmsException;
+	public void deleteMetainformation(String resourcename, String meta)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Returns all users in the Cms.
@@ -753,7 +865,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public Vector getUsers();
+	public Vector getUsers() { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Returns all groups in the Cms.
@@ -762,8 +876,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public Vector getGroups();	
-
+	public Vector getGroups() { 
+		return null; // TODO: implement this! 
+	}
+		
 	/**
 	 * Returns a user in the Cms.
 	 * 
@@ -772,7 +888,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsUser readUser(String username);	
+	public A_CmsUser readUser(String username) { 
+		return null; // TODO: implement this! 
+	}
+	
 
 	/**
 	 * Returns a user in the Cms, if the password is correct.
@@ -783,7 +902,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsUser readUser(String username, String password);	
+	public A_CmsUser readUser(String username, String password) { 
+		return null; // TODO: implement this! 
+	}	
 
 	/**
 	 * Logs a user into the Cms, if the password is correct.
@@ -794,7 +915,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsUser loginUser(String username, String password);
+	public A_CmsUser loginUser(String username, String password) { 
+		return null; // TODO: implement this! 
+	}
 	
 	/** 
 	 * Adds a user to the Cms.
@@ -815,9 +938,11 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a user with the given username exists already.
 	 */
-	abstract public A_CmsUser addUser(String name, String password, String group, 
+	public A_CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/** 
 	 * Deletes a user from the Cms.
@@ -828,8 +953,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract public void deleteUser(String username)
-		throws CmsException;
+	public void deleteUser(String username)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Updated the userinformation.<BR/>
@@ -842,8 +969,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void updateUser(String username, Hashtable additionalInfos, int flag)
-		throws CmsException;
+	public void updateUser(String username, Hashtable additionalInfos, int flag)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Gets all users in the group.
@@ -853,8 +982,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract public Vector getUsersOfGroup(String groupname)
-		throws CmsException;
+	public Vector getUsersOfGroup(String groupname)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Gets all groups of a user.
@@ -864,8 +995,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract public Vector getGroupsOfUser(String username)
-		throws CmsException;
+	public Vector getGroupsOfUser(String username)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Tests, if a user is in a group.
@@ -876,8 +1009,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract public boolean userInGroup(String username, String groupname)
-		throws CmsException;
+	public boolean userInGroup(String username, String groupname)
+		throws CmsException { 
+		return false; // TODO: implement this! 
+	}
 
 	/**
 	 * Returns a group in the Cms.
@@ -887,7 +1022,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsGroup readGroup(String groupname);	
+	public A_CmsGroup readGroup(String groupname) { 
+		return null; // TODO: implement this! 
+	}	
 	
 	/**
 	 * Add a new group to the Cms.<BR/>
@@ -904,8 +1041,10 @@ public abstract class A_CmsObject {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	abstract public A_CmsGroup addGroup(String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+	public A_CmsGroup addGroup(String name, String description, int flags)
+		throws CmsException, CmsDuplicateKeyException { 
+		return null; // TODO: implement this! 
+	}
 	
 	/**
 	 * Delete a group from the Cms.<BR/>
@@ -915,8 +1054,10 @@ public abstract class A_CmsObject {
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	abstract public void deleteGroup(String delgroup)
-		throws CmsException;
+	public void deleteGroup(String delgroup)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Adds a user to a group.<BR/>
@@ -927,8 +1068,10 @@ public abstract class A_CmsObject {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	abstract public void addUserToGroup(String username, String groupname)
-		throws CmsException;
+	public void addUserToGroup(String username, String groupname)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 			   
 	/**
 	 * Removes a user from a group.
@@ -939,8 +1082,10 @@ public abstract class A_CmsObject {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract public void removeUserFromGroup(String username, String groupname)
-		throws CmsException;
+	public void removeUserFromGroup(String username, String groupname)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Reads the Metadefinition for the resource type.<BR/>
@@ -951,9 +1096,11 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsMetadefinition readMetadefinition(String name, 
+	public A_CmsMetadefinition readMetadefinition(String name, 
 														   A_CmsResourceType type)
-		throws CmsException;
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Reads all Metadefinitions for the resource type.<BR/>
@@ -963,8 +1110,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public Vector getAllMetadefinitions(A_CmsResourceType type)
-		throws CmsException;
+	public Vector getAllMetadefinitions(A_CmsResourceType type)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 
 	/**
 	 * Writes the Metadefinition for the resource type.<BR/>
@@ -979,9 +1128,11 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a Metadefinition with the same name for this resource-type exists already.
 	 */
-	abstract public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
+	public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
 									int type)
-		throws CmsDuplicateKeyException, CmsException;
+		throws CmsDuplicateKeyException, CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Delete the Metadefinition for the resource type.<BR/>
@@ -993,8 +1144,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public void deleteMetadefinition(String name, A_CmsResourceType type)
-		throws CmsException;
+	public void deleteMetadefinition(String name, A_CmsResourceType type)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Writes a shedule-task to the Cms.<BR/>
@@ -1004,8 +1157,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException if something goes wrong.
 	 */
-	abstract public void writeScheduleTask(A_CmsScheduleTask scheduleTask)
-		throws CmsException;
+	public void writeScheduleTask(A_CmsScheduleTask scheduleTask)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 
 	/**
 	 * Deltes a shedule-task from the Cms.<BR/>
@@ -1016,8 +1171,10 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException if something goes wrong.
 	 */
-	abstract public void deleteScheduleTask(A_CmsScheduleTask scheduleTask)
-		throws CmsException;
+	public void deleteScheduleTask(A_CmsScheduleTask scheduleTask)
+		throws CmsException { 
+		return ; // TODO: implement this! 
+	}
 	
 	/**
 	 * Reads all shedule-task from the Cms.
@@ -1026,7 +1183,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException if something goes wrong.
 	 */
-	abstract public Vector readAllScheduleTasks()
-		throws CmsException;
+	public Vector readAllScheduleTasks()
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
 	
 }
