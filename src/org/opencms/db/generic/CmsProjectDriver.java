@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2004/04/02 16:59:28 $
+ * Version: $Revision: 1.159 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,17 +37,6 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
-import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsTask;
-import org.opencms.workflow.CmsTaskLog;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -56,6 +45,17 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskLog;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.158 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.159 $ $Date: 2004/04/02 16:59:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1833,25 +1833,22 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.file.CmsProject, boolean)
+     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.file.CmsProject, int, long)
      */
-    public List readStaticExportResources(CmsProject currentProject, boolean parameterResources) throws CmsException {
+    public List readStaticExportResources(CmsProject currentProject, int parameterResources, long timestamp) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
         List returnValue = new ArrayList();
-        
-        // the parameter mode triggers either to read resources with parameter links or those without.
-        // is set to TRUE, all resources with parameter links are read
-        int parameterMode = 0;
-        if (parameterResources) {
-            parameterMode = 1;
+
+        if (parameterResources == CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER) {
+            timestamp = 0;
         }
-        
         try {
             conn = m_sqlManager.getConnection(currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_RESOURCES");
-            stmt.setInt(1, parameterMode);
+            stmt.setInt(1, parameterResources);
+            stmt.setLong(2, timestamp);
             res = stmt.executeQuery();
             // add all resourcenames to the list of return values
             while (res.next()) {
@@ -1865,6 +1862,37 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         return returnValue;        
     }   
+    
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportPublishedResourceParamters(org.opencms.file.CmsProject, java.lang.String)
+     */
+    public String readStaticExportPublishedResourceParamters(CmsProject currentProject, String rfsName) throws CmsException {
+        String returnValue = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+      
+                
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_RESOURCES_PARAMETERS");
+            stmt.setString(1, rfsName);
+            res = stmt.executeQuery();
+            // add all resourcenames to the list of return values
+            if (res.next()) {
+                returnValue=res.getString(1);               
+            }           
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }  
+
+        return returnValue;       
+    }
+
+    
     
     /**
      * Reads a serializable object from the systempropertys.
@@ -1987,10 +2015,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
     }    
 
+
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)
      */
-    public void writeStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException {
+    public void writeStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -2019,6 +2048,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 stmt.setString(2, resourceName);
                 stmt.setInt(3, linkType);
                 stmt.setString(4, linkParameter);
+                stmt.setLong(5, timestamp);
                 stmt.executeUpdate();
             } catch (SQLException e) {         
                 throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

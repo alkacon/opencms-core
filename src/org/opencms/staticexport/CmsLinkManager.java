@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/03/25 17:16:58 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/04/02 16:59:28 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsLinkManager {
     
@@ -336,12 +336,13 @@ public class CmsLinkManager {
      * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
      * @return the substituted link
      */
-    public String substituteLink(CmsObject cms, String link) {
+    public String substituteLink(CmsObject cms, String link) {     
+        
         if (link == null || "".equals(link)) {
             // not a valid parameter, return an empty String
             return "";
-        }
-
+        }      
+        
         // make sure we have an absolute link        
         String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
         
@@ -364,7 +365,7 @@ public class CmsLinkManager {
         
         String resultLink = null;
         String uriBaseName = null;
-        boolean useRelativeLinks = false;
+        boolean useRelativeLinks = false;   
         
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
             
@@ -389,19 +390,29 @@ public class CmsLinkManager {
             }
 
             // check if we have the absolute vfs name for the link target cached
-            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(vfsName);
+            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(link);
             if (resultLink == null) {
+              
                 // didn't find the link in the cache
                 if (exportRequired(cms, vfsName)) {
                     // export required, get export name for target link
-                    resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                    if (parameters != null) {
+                        // external link with parameters, so get translated rfsName
+                        resultLink = OpenCms.getStaticExportManager().getTranslatedRfsName(cms, vfsName, parameters);
+                        // now set the parameters to null, we do not need them anymore
+                        parameters = null;
+                    } else {
+                        resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                    }                        
                 } else {
                     // no export required for the target link
-                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
+                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;                    
                 }
-            }            
+            } else {
+               
+            }
             // cache the result 
-            OpenCms.getStaticExportManager().cacheOnlineLink(vfsName, resultLink);
+            OpenCms.getStaticExportManager().cacheOnlineLink(link, resultLink);
 
             if (useRelativeLinks) {
                 // we want relative links in export, so make the absolute link relative
@@ -411,13 +422,45 @@ public class CmsLinkManager {
         } else {
             // offline project, no export required
             resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
-        }
+        }      
         
         // add cut off parameters and return the result
-        if (parameters != null) {
+        if (parameters != null) {      
             return resultLink + parameters;
         } else {
             return resultLink;
         }
+
     }
+    
+    /**
+     * Returns a hash code for this string. The hash code for a
+     * <code>String</code> object is computed as
+     * <blockquote><pre>
+     * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+     * </pre></blockquote>
+     * using <code>int</code> arithmetic, where <code>s[i]</code> is the
+     * <i>i</i>th character of the string, <code>n</code> is the length of
+     * the string, and <code>^</code> indicates exponentiation.
+     * (The hash value of the empty string is zero.)
+     * @param s the strgin to calculate the hashcode from
+     * @return  a hash code value for this object.
+     */
+    public int hashCode(String s) {
+        
+        int off = 0;
+        int h=0;
+        char val[] = s.toCharArray();
+        int len = s.length();
+
+        for (int i = 0; i < len; i++) {
+            h = 31*h + val[off++];
+        }
+        
+        if (h < 0) {
+            h = -h;
+        }
+        return h;
+    }
+    
 }

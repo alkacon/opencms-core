@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/02 16:59:28 $
- * Version: $Revision: 1.347 $
+ * Date   : $Date: 2004/04/02 17:01:11 $
+ * Version: $Revision: 1.348 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.347 $ $Date: 2004/04/02 16:59:28 $
+ * @version $Revision: 1.348 $ $Date: 2004/04/02 17:01:11 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6530,7 +6530,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @param context the current request context
      * @param parameterResources flag for reading resources with parameters (1) or without (0)
-     * @param a timestamp for reading the data from the db
+     * @param timestamp for reading the data from the db
      * @return List of template resources
      * @throws CmsException if something goes wrong
      */

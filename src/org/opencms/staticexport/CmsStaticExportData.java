@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/02 16:59:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,13 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsResource;
 
+
 /**
  * Provides a data structure for the result of an export request.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsStaticExportData {
     
@@ -50,6 +51,8 @@ public class CmsStaticExportData {
     
     /** The uri in the vfs */
     private String m_vfsName;
+    
+    private String m_parameters;
 
     /**
      * Creates a new static export data object.<p>
@@ -62,8 +65,27 @@ public class CmsStaticExportData {
         m_vfsName = vfsName;
         m_rfsName = rfsName;
         m_resource = resource;
+        m_parameters = null;
     }    
 
+    /**
+     * Creates a new static export data object.<p>
+     * 
+     * @param vfsName the vfs name of the resource
+     * @param rfsName the rfs name of the resource
+     * @param resource the resource object
+     * @param parameters the parameter string of a resource
+     */
+    public CmsStaticExportData(String vfsName, String rfsName, CmsResource resource, String parameters) {
+        m_vfsName = vfsName;
+        m_rfsName = rfsName;
+        m_resource = resource;
+        m_parameters = parameters;
+        
+     
+    }  
+    
+    
     /**
      * Returns the resource to export.<p>
      *  
@@ -72,6 +94,16 @@ public class CmsStaticExportData {
     public CmsResource getResource() {
         return m_resource;
     }
+    
+    /**
+     * Return the parameters of the resource to export.<p>
+     * 
+     * @return the parameter map
+     */
+    public String getParameters() {
+        return m_parameters;
+    }
+    
     
     /**
      * Returns the rfs name of the resource to export.<p>
@@ -91,6 +123,7 @@ public class CmsStaticExportData {
         return m_vfsName;
     }
     
+        
     /**
      * @see java.lang.Object#toString()
      */    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/02 16:20:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/04/02 16:59:28 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsObject {
 
@@ -3103,14 +3103,27 @@ public class CmsObject {
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
-     * @param parameterResources flag for reading resources with parameters (true) or without (false)
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
+     * @param a timestamp for reading the data from the db
      * @return List of template resources
      * @throws CmsException if something goes wrong
      */
-    public List readStaticExportResources(boolean parameterResources) throws CmsException {
-        return m_driverManager.readStaticExportResources(m_context, parameterResources);
+    public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
+        return m_driverManager.readStaticExportResources(m_context, parameterResources, timestamp);
     }
 
+
+    /**
+     * Returns the parameters of a resource in the table of all published template resources.<p>
+     * @param rfsName the rfs name of the resource
+     * @return the paramter string of the requested resource
+     * @throws CmsException if something goes wrong
+     */
+    public String readStaticExportPublishedResourceParamters(String rfsName) throws CmsException {
+        return  m_driverManager.readStaticExportPublishedResourceParamters(m_context, rfsName);
+    }
+    
+    
     /**
      * Reads the task with the given id.
      *
@@ -3777,10 +3790,11 @@ public class CmsObject {
      * @param resourceName The name of the resource to be added to the static export
      * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
      * @throws CmsException if something goes wrong
      */
-    public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
-        m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
+    public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
+        m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter, timestamp);
     }
 
     /**
