@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/09/04 15:41:30 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/09/05 12:51:52 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,12 +53,18 @@ import java.util.StringTokenizer;
  * @author Unknown guys from Gridnine AB
  */
 public class Encoder {
+    
+    /** Flag to indicate if the Java 1.4 encoding method (with encoding parameter) is supported by the JVM */
+    private static boolean C_NEW_ENCODING_SUPPORTED = true;
+
+    /** Flag to indicate if the Java 1.4 decoding method (with encoding parameter) is supported by the JVM */
+    private static boolean C_NEW_DECODING_SUPPORTED = true;
 
     /**
      * Constructor
      */
     public Encoder() {}
-
+    
     /**
      * This method is a substitute for <code>URLEncoder.encode()</code>.
      * Use this in all OpenCms core classes to ensure the encoding is
@@ -74,19 +80,24 @@ public class Encoder {
      * 
      * @param source The string to encode
      * @param encoding The encoding to use (if null, the system default is used)
+     * @param fallbackToDefaultDecoding If true, the method will fallback to the default encoding (Java 1.3 style), 
+     * if false, the source String will be returned unencoded 
      * @return The encoded source String
      */
-    public static String encode(String source, String encoding) {
+    public static String encode(String source, String encoding, boolean fallbackToDefaultEncoding) {
         if (encoding != null) {
-            try {
-                String encodedSource = URLEncoder.encode(source, encoding); 
-                return encodedSource;
-            } 
-            catch (java.io.UnsupportedEncodingException e) {}
-            catch (java.lang.NoSuchMethodError n) {}
+            if (C_NEW_ENCODING_SUPPORTED) {
+                try {
+                    return URLEncoder.encode(source, encoding); 
+                } 
+                catch (java.io.UnsupportedEncodingException e) {}
+                catch (java.lang.NoSuchMethodError n) {
+                    C_NEW_ENCODING_SUPPORTED = false;
+                }
+            }
+            if (! fallbackToDefaultEncoding) return source;
         }
-        // Use default encoding
-        // This is also important for Java 1.3 compatibility
+        // Fallback to default encoding
         return URLEncoder.encode(source);
     }
 
@@ -105,18 +116,24 @@ public class Encoder {
      * 
      * @param source The string to decode
      * @param encoding The encoding to use (if null, the system default is used)
+     * @param fallbackToDefaultDecoding If true, the method will fallback to the default encoding (Java 1.3 style), 
+     * if false, the source String will be returned undecoded
      * @return The decoded source String
      */
-    public static String decode(String source, String encoding) {
+    public static String decode(String source, String encoding, boolean fallbackToDefaultDecoding) {
         if (encoding != null) {
-            try {
-                return URLDecoder.decode(source, encoding);                
+            if (C_NEW_DECODING_SUPPORTED) {
+                try {
+                    return URLDecoder.decode(source, encoding); 
+                } 
+                catch (java.io.UnsupportedEncodingException e) {}
+                catch (java.lang.NoSuchMethodError n) {
+                    C_NEW_DECODING_SUPPORTED = false;
+                }
             }
-            catch (java.io.UnsupportedEncodingException e) {}
-            catch (java.lang.NoSuchMethodError n) {}            
+            if (! fallbackToDefaultDecoding) return source;
         }
-        // Use default encoding
-        // This is also important for Java 1.3 compatibility
+        // Fallback to default decoding
         return URLDecoder.decode(source);        
     }
 
@@ -133,7 +150,7 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source, encoding);
+        String enc = encode(source, encoding, true);
         StringTokenizer t = new StringTokenizer(enc, "+");
         while(t.hasMoreTokens()) {
             ret.append(t.nextToken());
@@ -161,7 +178,7 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source, encoding);
+        String enc = encode(source, encoding, true);
         for(int z = 0;z < enc.length();z++) {
             if(enc.charAt(z) == '+') {
                 ret.append("%20");
@@ -249,6 +266,6 @@ public class Encoder {
                 preparedSource.append(c);
             }
         }
-        return decode(preparedSource.toString(), encoding);
+        return decode(preparedSource.toString(), encoding, true);
     }
 }
