@@ -20,7 +20,7 @@
 
 <!-- Beginn Aufbau Inhalt für Browser ohne Frameversion -->
 <body>
-<p><img src="pics/opencms.gif" border=0 alt="opencms">
+<p><img src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA[" border=0 alt="opencms">
 <p>Leider unterstützt Ihr Browser keine Frames.
 <p>Wir achten stets darauf, daß in diesem Produkt die neueste Technik verwendet wird.
 <p>Bitte laden Sie sich die aktuelle Version von
