@@ -515,7 +515,7 @@ function doEditHTML(para) {
 		ColorSelected = -1;
 		SelColor = -1;
 		CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
-		SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+		SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: yes; help: no; status: no; scroll: no;");
 		if (SelColor != null) {
 			ColorSelected = 1;
 		}
@@ -524,7 +524,7 @@ function doEditHTML(para) {
 		ColorSelected=-1;
 		SelColor=-1;
 		CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
-		SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+		SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: yes; help: no; status: no; scroll: no;");
 		if (SelColor != null) {
 			ColorSelected = 1;
 		}		
@@ -703,7 +703,7 @@ function checkTableSelection() {
 	
 			//get new attributes
 			var args2 = new Array();
-			args2 = showModalDialog("dialogs/table_new.jsp?titleType=edit", args1, "dialogWidth:550px; dialogHeight:270px; resizable: no; help: no; status: no; scroll: no;");
+			args2 = showModalDialog("dialogs/table_new.jsp?titleType=edit", args1, "dialogWidth:550px; dialogHeight:270px; resizable: yes; help: no; status: no; scroll: no;");
 	
 			// set the new attributes
 			if (args2 != null) {
@@ -790,7 +790,7 @@ function checkTableElSelection(type) {
 				args1["title"] = type;
 
 				// call dialog
-				args2 = showModalDialog("dialogs/table_element.jsp?titleType=" + type, args1, "dialogWidth:450px; dialogHeight:270px; resizable: no; help: no; status: no; scroll: no;");
+				args2 = showModalDialog("dialogs/table_element.jsp?titleType=" + type, args1, "dialogWidth:450px; dialogHeight:270px; resizable: yes; help: no; status: no; scroll: no;");
 
 				// args == null if cancel button was pressed
 				if (args2 != null) {
@@ -863,7 +863,7 @@ function InsertTable() {
 	arr = null;
 
 	// Call the "addtable" dialog and receive its results in the arr array
-	arr = showModalDialog("dialogs/table_new.jsp", args, "dialogWidth:550px; dialogHeight:270px; resizable: no; help: no; status: no; scroll: no;");
+	arr = showModalDialog("dialogs/table_new.jsp", args, "dialogWidth:550px; dialogHeight:270px; resizable: yes; help: no; status: no; scroll: no;");
 	if (arr != null) {
 
 	// Initialize table object. Values from the arr array are processed for creating the Control call
