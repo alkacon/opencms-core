@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/08/13 14:05:10 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/09/09 15:40:35 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -373,44 +373,50 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         int replaceBlock = -1;
         // detect node type 
         switch (type) {
-        case Node.DOCUMENT_NODE:
-            // initialise m_tempString and add global prefix 
-            m_tempString = new StringBuffer(m_configuration.getGlobalPrefix());
-            this.printDocument(((Document)node).getDocumentElement());
-            break;
-        case Node.ELEMENT_NODE:
-            // analyse element node and transform it 
-            replaceBlock = this.indexReplaceBlock(node);
-            replaceTag = this.indexReplaceTag(node);
-            // scan element node; if a block has to be removed or replaced,
-            // break and discard child nodes 
-            if (this.transformStartElement(node,replaceBlock,replaceTag)) {
+            case Node.DOCUMENT_NODE:
+                // initialise m_tempString and add global prefix 
+                m_tempString = new StringBuffer(m_configuration.getGlobalPrefix());
+                this.printDocument(((Document)node).getDocumentElement());
                 break;
-            }
-            // test if node has children 
-            NodeList children = node.getChildNodes();
-            if ( children != null ) {
-                int len = children.getLength();
-                for ( int i = 0; i < len; i++ )
-                // recursively call printDocument with all child nodes 
-                this.printDocument(children.item(i));
-            }
-            break;
-        case Node.TEXT_NODE:
-            // replace subStrings in text nodes 
-            this.transformTextNode(node);
-            break;
+            case Node.ELEMENT_NODE:
+                // analyse element node and transform it 
+                replaceBlock = this.indexReplaceBlock(node);
+                replaceTag = this.indexReplaceTag(node);
+                // scan element node; if a block has to be removed or replaced,
+                // break and discard child nodes 
+                if (this.transformStartElement(node, replaceBlock, replaceTag)) {
+                    break;
+                }
+                // test if node has children 
+                NodeList children = node.getChildNodes();
+                if (children != null) {
+                    int len = children.getLength();
+                    for (int i = 0; i < len; i++)
+                    // recursively call printDocument with all child nodes 
+                    this.printDocument(children.item(i));
+                }
+                break;
+            case Node.TEXT_NODE:
+                // replace subStrings in text nodes 
+                this.transformTextNode(node);
+                break;
+            default:
+                // TODO: check what to do if node type is unknown
+                break;
         }
         // end of recursion, add eventual endtags and suffixes 
         switch (type) {
-        case Node.ELEMENT_NODE:
-            // analyse endtags and add them to output 
-            this.transformEndElement(node,replaceBlock,replaceTag);
-            break;
-        case Node.DOCUMENT_NODE:
-            // add suffix to end of output 
-            this.transformEndDocument();
-            break;
+            case Node.ELEMENT_NODE:
+                // analyse endtags and add them to output 
+                this.transformEndElement(node, replaceBlock, replaceTag);
+                break;
+            case Node.DOCUMENT_NODE:
+                // add suffix to end of output 
+                this.transformEndDocument();
+                break;
+            default:
+                // TODO: check what to do if node type is unknown
+                break;
         }
     }
 
@@ -596,7 +602,10 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * Private method to delete empty "prefix+suffix" lines in output String
+     * Private method to delete empty "prefix+suffix" lines in output String.<p>
+     * 
+     * @param cleanString string for cleaning up
+     * @return the cleaned string
      */
     private String cleanOutput (String cleanString) {
         if (m_configuration.getGlobalAddEveryLine()) {
@@ -624,7 +633,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         CmsHtmlConverterObjectReplaceTags testObject = new CmsHtmlConverterObjectReplaceTags();
         for (int index = 0; index < replaceTags.size(); index++) {
             testObject = (CmsHtmlConverterObjectReplaceTags)(replaceTags.get(index));
-            if (node.getNodeName().equals(testObject.getTagName())) {
+            // cw 09.09.2003 added general qualifier *
+            if (node.getNodeName().equals(testObject.getTagName()) || "*".equals(testObject.getTagName())) {
                 /* if no identifier attribute is defined, replace all nodes */
                 if (testObject.getTagAttrib().equals("")) {
                     /* test if replaceStrings have to be retrieved from attributes */
@@ -701,21 +711,22 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         CmsHtmlConverterObjectReplaceBlocks testObject = new CmsHtmlConverterObjectReplaceBlocks();
         for (int index = 0; index < replaceBlocks.size(); index++) {
             testObject=(CmsHtmlConverterObjectReplaceBlocks)(replaceBlocks.get(index));
-            if (node.getNodeName().equals(testObject.getTagName())) {
+            // cw 09.09.2003 added general qualifier *
+            if (node.getNodeName().equals(testObject.getTagName()) || "*".equals(testObject.getTagName())) {
                 if (testObject.getTagAttrib().equals("")) {
                     /* test if replaceStrings has to be retrieved from attributes */
                     if (testObject.getReplaceFromAttrs()) {
-                        return scanBlockElementAttrs(node,testObject);
+                        return scanBlockElementAttrs(node, testObject);
                     }
                     return index;
                 }
-                for ( int i = (attrs.getLength() - 1); i >= 0 ; i-- ) {
-                    if ( attrs.item(i).getNodeName().equals(testObject.getTagAttrib())
+                for (int i = (attrs.getLength() - 1); i >= 0; i--) {
+                    if (attrs.item(i).getNodeName().equals(testObject.getTagAttrib())
                             && (attrs.item(i).getNodeValue().equals(testObject.getTagAttribValue())
-                            || testObject.getTagAttribValue().equals("")) ) {
+                            || testObject.getTagAttribValue().equals(""))) {
                         /* test if replaceString has to be retrieved from attributes */
                         if (testObject.getReplaceFromAttrs()) {
-                            return scanBlockElementAttrs(node,testObject);
+                            return scanBlockElementAttrs(node, testObject);
                         }
                         return index;
                     }
@@ -743,7 +754,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         String attrName = "";
         String parameter = testObject.getParameter();
         /* scan attributes for replaceString */
-        for (int i=0;i<attrs.getLength();i++) {
+        for (int i=0; i<attrs.getLength(); i++) {
             attrName = attrs.item(i).getNodeName();
             if (attrName.equalsIgnoreCase(replaceAttribute)) {
                 replaceString = attrs.item(i).getNodeValue();
@@ -754,9 +765,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             replaceString = m_configuration.scanBrackets(replaceString);
         }
         /* add temporary object to ArrayList replaceBlocks */
-        m_configuration.addObjectReplaceBlock(prefix,name,attrib
-                ,attrValue,replaceString,suffix,false,"",parameter);
+        m_configuration.addObjectReplaceBlock(prefix, name, attrib,
+                attrValue, replaceString, suffix, false, "", parameter);
         return m_configuration.getReplaceBlocks().size()-1;
     }
-
 }
