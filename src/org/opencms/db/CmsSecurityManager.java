@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/10/22 16:44:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/23 06:53:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.file.*;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -63,10 +62,10 @@ import org.apache.commons.collections.ExtendedProperties;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
-public class CmsSecurityManager {
+public final class CmsSecurityManager {
 
     /** The initialized OpenCms driver manager to access the database. */
     protected CmsDriverManager m_driverManager;
@@ -402,7 +401,7 @@ public class CmsSecurityManager {
      * @param context the current request context
      * @param resource theresource to apply this operation to
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#changeLastModifiedProjectId(CmsObject, CmsSecurityManager, CmsResource)
+     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLastModifiedProjectId(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -434,7 +433,7 @@ public class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to change the lock for
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#changeLock(CmsObject, CmsSecurityManager, CmsResource)
+     * @see org.opencms.file.types.I_CmsResourceType#changeLock(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLock(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -561,7 +560,7 @@ public class CmsSecurityManager {
      * @param resource the resource to change the flags for
      * @param flags the new resource flags for this resource
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#chflags(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#chflags(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chflags(CmsRequestContext context, CmsResource resource, int flags) throws CmsException {
 
@@ -591,7 +590,7 @@ public class CmsSecurityManager {
      * @param resource the resource to change the type for
      * @param type the new resource type for this resource
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chtype(CmsRequestContext context, CmsResource resource, int type) throws CmsException {
 
@@ -682,7 +681,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#copyResource(String, String, int)
-     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
      */  
     public void copyResource(CmsRequestContext context, CmsResource source, String destination, int siblingMode)
     throws CmsException {
@@ -709,7 +708,7 @@ public class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to apply this operation to
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void copyResourceToProject(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -977,7 +976,7 @@ public class CmsSecurityManager {
      * @param properties the properties for the new resource
      * @return the created resource
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */
     public CmsResource createResource(
         CmsRequestContext context,
@@ -1013,7 +1012,7 @@ public class CmsSecurityManager {
      * @param destination the name of the sibling to create with complete path
      * @param properties the individual properties for the new sibling
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#createSibling(CmsObject, CmsSecurityManager, CmsResource, String, List)
+     * @see org.opencms.file.types.I_CmsResourceType#createSibling(CmsObject, CmsSecurityManager, CmsResource, String, List)
      */
     public void createSibling(CmsRequestContext context, CmsResource source, String destination, List properties)
     throws CmsException {
@@ -1274,7 +1273,7 @@ public class CmsSecurityManager {
      * @param resource the name of the resource to delete (full path)
      * @param siblingMode indicates how to handle siblings of the deleted resource
      * @throws CmsException if something goes wrong
-     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void deleteResource(CmsRequestContext context, CmsResource resource, int siblingMode) throws CmsException {
 
@@ -2072,7 +2071,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String, int)
-     * @see I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void lockResource(CmsRequestContext context, CmsResource resource, int mode) throws CmsException {
 
@@ -3107,7 +3106,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#replaceResource(String, int, byte[], List)
-     * @see I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
     public void replaceResource(
         CmsRequestContext context,
@@ -3160,7 +3159,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#restoreResourceBackup(String, int)
-     * @see I_CmsResourceType#restoreResourceBackup(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void restoreResource(CmsRequestContext context, CmsResource resource, int tag) throws CmsException {
 
@@ -3312,7 +3311,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#touch(String, long, long, long, boolean)
-     * @see I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
      */
     public void touch(
         CmsRequestContext context,
@@ -3350,7 +3349,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#undoChanges(String, boolean)
-     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, boolean)
      */ 
     public void undoChanges(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -3396,7 +3395,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#unlockResource(String)
-     * @see I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
+     * @see org.opencms.file.types.I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void unlockResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -3514,7 +3513,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writeFile(CmsFile)
-     * @see I_CmsResourceType#writeFile(CmsObject, CmsSecurityManager, CmsFile)
+     * @see org.opencms.file.types.I_CmsResourceType#writeFile(CmsObject, CmsSecurityManager, CmsFile)
      */
     public CmsFile writeFile(CmsRequestContext context, CmsFile resource) throws CmsException {
 
@@ -3586,7 +3585,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObject(String, CmsProperty)
-     * @see I_CmsResourceType#writePropertyObject(CmsObject, CmsSecurityManager, CmsResource, CmsProperty)
+     * @see org.opencms.file.types.I_CmsResourceType#writePropertyObject(CmsObject, CmsSecurityManager, CmsResource, CmsProperty)
      */
     public void writePropertyObject(CmsRequestContext context, CmsResource resource, CmsProperty property)
     throws CmsException {
@@ -3627,7 +3626,7 @@ public class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObjects(String, List)
-     * @see I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
+     * @see org.opencms.file.types.I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
      */
     public void writePropertyObjects(CmsRequestContext context, CmsResource resource, List properties)
     throws CmsException {
