@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/23 13:24:19 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/06/23 14:55:22 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.67 $ $Date: 2000/06/23 13:24:19 $
+ * @version $Revision: 1.68 $ $Date: 2000/06/23 14:55:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3446,7 +3446,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         Vector folders = new Vector();
 		
-       folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
+       //folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
        if ((folders==null) || (folders.size()==0)){
            
        // try to get the folders in the current project
@@ -3470,7 +3470,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// no onlinefolders, ignoring them
 			}			
 		}
-        m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
+        //m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
        }
 		// return the folders
 		return(folders);
@@ -4559,7 +4559,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
     	Vector files = new Vector();
 		
-        files=(Vector)m_subresCache.get(C_FILE+currentProject.getId()+foldername);
+        //files=(Vector)m_subresCache.get(C_FILE+currentProject.getId()+foldername);
         if ((files==null) || (files.size()==0)) {
             
 		// try to get the files in the current project
@@ -4583,7 +4583,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// no onlinefiles, ignoring them
 			}			
 		}
-                m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
+               // m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
   
         }
 		// return the files
