@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/01/25 08:38:27 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/01/31 10:16:47 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1744,14 +1744,18 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         templateSelector = "list";
 
         //init vars
-        String tableHead = "";
-        String singleRow = "";
-        String allEntrys = "";
-        String entry = "";
+        StringBuffer tableHead = new StringBuffer();
+        String singleRow = new String();
+        StringBuffer allEntrys = new StringBuffer();
+        StringBuffer entry = new StringBuffer();
         String url = "";
         int columns = 0;
         String style = ">";
         String url_style = "";
+        String tabledatabegin = template.getDataValue("tabledatabegin");
+        String tabledataend = template.getDataValue("tabledataend");
+        String tablerowbegin = template.getDataValue("tablerowbegin");
+        String tablerowend = template.getDataValue("tablerowend");
 
         // get number of columns
         Vector columnsVector = new Vector();
@@ -1769,17 +1773,15 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
         //create new language file object
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-
         //create tableheadline
         for (int i = 0; i < columns; i++) {
-            tableHead += (template.getDataValue("tabledatabegin"))
-                        + style
-                        + lang.getLanguageValue(moduleName + ".label."
-                        + columnsVector.elementAt(i).toString().toLowerCase().trim())
-                        + (template.getDataValue("tabledataend"));
+            tableHead.append(tabledatabegin);
+            tableHead.append(style);
+            tableHead.append(lang.getLanguageValue(moduleName+".label."+columnsVector.elementAt(i).toString().toLowerCase().trim()));
+            tableHead.append(tabledataend);
         }
         //set template data for table headline content
-        template.setData("tableheadline", tableHead);
+        template.setData("tableheadline", tableHead.toString());
         // get vector of filterMethods and select the appropriate filter method,
         // if no filter is appropriate, select a default filter get number of rows for output
         Vector tableContent = new Vector();
@@ -1800,7 +1802,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             if (filterMethod == null) {
                 filterMethod = (CmsFilterMethod) filterMethods.firstElement();
             }
+
             // now apply the filter with the cms object, the filter method and additional user parameters
+            long stoptime = System.currentTimeMillis();
             tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
@@ -1853,10 +1857,11 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         // create output from the table data
         String fieldEntry = "";
         String id = "";
+
         for (int i = 0; i < rows; i++) {
             //init
-            entry = "";
-            singleRow = "";
+            entry = new StringBuffer();
+            singleRow = new String();
             Object entryObject = new Object();
             entryObject = tableContent.elementAt(i); //cd object in row #i
 
@@ -1921,22 +1926,22 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                     if(!url.equals("")) {
                         // enable url
                         template.setData("url_style",url_style);
-                        entry += (template.getDataValue("tabledatabegin"))
-                                + style
-                                + (template.getProcessedDataValue("url", this, parameters))
-                                + fieldEntry
-                                + (template.getDataValue("tabledataend"));
+                        entry.append(tabledatabegin);
+                        entry.append(style);
+                        entry.append(template.getProcessedDataValue("url", this, parameters));
+                        entry.append(fieldEntry);
+                        entry.append(tabledataend);
                     } else {
                         // disable url
-                        entry += (template.getDataValue("tabledatabegin"))
-                                + style
-                                + fieldEntry
-                                + (template.getDataValue("tabledataend"));
+                        entry.append(tabledatabegin);
+                        entry.append(style);
+                        entry.append(fieldEntry);
+                        entry.append(tabledataend);
                     }
                 } else {
-                    entry += (template.getDataValue("tabledatabegin"))
-                            + ""
-                            + (template.getDataValue("tabledataend"));
+                    entry.append(tabledatabegin);
+                    entry.append("");
+                    entry.append(tabledataend);
                 }
             }
             //get the unique id belonging to an entry
@@ -1952,24 +1957,25 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             if (id != null) {
                 template.setData("uniqueid", id);
             }
+
             //set the lockstates for the current entry
             setExtendedLockstates(cms, template, cdClass, entryObject, parameters);
             //set the projectflag for the current entry
             setProjectFlag(cms, template, cdClass, entryObject, parameters);
             // set the context menu of the current entry
             setContextMenu(cms, template, entryObject);
-
             //insert single table row in template
-            template.setData("entry", entry);
+            template.setData("entry", entry.toString());
             // processed row from template
             singleRow = template.getProcessedDataValue("singlerow", this, parameters);
-            allEntrys += (template.getDataValue("tablerowbegin"))
-                        + singleRow
-                        + (template.getDataValue("tablerowend"));
+            allEntrys.append(tablerowbegin);
+            allEntrys.append(singleRow);
+            allEntrys.append(tablerowend);
+
         }
 
         //insert tablecontent in template
-        template.setData("tablecontent", "" + allEntrys);
+        template.setData("tablecontent", allEntrys.toString());
 
         //save select box value into session
         session.putValue("selectbox", filterMethodName);
