@@ -9,6 +9,8 @@ Legend:
 - General comment
 
 OpenCms 4.5.5  Gom Jabbar   - xx September 2001
+* After an redirect (redirect-rules configurated in opencms.properites) a ressource
+  should not be delivered by OpenCms. 
 - Added logging-informations about jdk, servlet-engine and os.
 
 OpenCms 4.5.5  Gom Jabbar   - 03 September 2001
