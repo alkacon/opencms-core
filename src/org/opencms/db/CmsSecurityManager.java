@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/20 15:18:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/12/20 17:04:11 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -177,24 +177,25 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Adds a user to the Cms.<p>
-     *
-     * Only users, which are in the group "administrators" are granted.<p>
+     * Creates a new user by import.<p>
      * 
      * @param context the current request context
-     * @param id the id of the user
-     * @param name the name for the user
-     * @param password the password for the user
-     * @param description the description for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
-     * @param email the email of the user
-     * @param flags the flags for a user (e.g. I_CmsConstants.C_FLAG_ENABLED)
-     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
-     * @param address the address of the user
-     * @param type the type of the user
-     * @return the new user will be returned.
-     * @throws CmsException if operation was not succesfull
+     * @param id the id of the user.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param description the description for the user.
+     * @param firstname the firstname of the user.
+     * @param lastname the lastname of the user.
+     * @param email the email of the user.
+     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
+     *                      infos may be stored into the Usertables (depending on the implementation).
+     * @param address the address of the user.
+     * @param type the type of the user.
+     *
+     * @return a new <code>{@link CmsUser}</code> object representing the added user.
+     *
+     * @throws CmsException if operation was not successful.
      */
     public CmsUser addImportUser(
         CmsRequestContext context,
@@ -247,19 +248,19 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Adds a user to the Cms.<p>
+     * Creates a new user.<p>
      *
-     * Only a adminstrator can add users to the cms.
-     * Only users, which are in the group "administrators" are granted.
+     * @param context the current request context.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param group the default groupname for the user.
+     * @param description the description for the user.
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user, 
+     *          these infos may be stored into the Usertables (depending on the implementation).
      * 
-     * @param context the current request context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
-     * @return the new user will be returned
-     * @throws CmsException if operation was not succesfull
+     * @return the new user will be returned.
+     * 
+     * @throws CmsException if operation was not succesfull.
      */
     public CmsUser addUser(
         CmsRequestContext context,
@@ -492,7 +493,7 @@ public final class CmsSecurityManager {
         for (int i=0; i<resources.size(); i++) {
             // loop through found resources and check property values
             CmsResource res = (CmsResource)resources.get(i);
-            CmsProperty property = readPropertyObject(context, res.getRootPath(), propertyDefinition, false);
+            CmsProperty property = readPropertyObject(context, res, propertyDefinition, false);
             String structureValue = property.getStructureValue();
             String resourceValue = property.getResourceValue();
             boolean changed = false;
@@ -1163,9 +1164,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes all entries in the published resource table.<p>
      * 
-     * @param context the current request context
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @throws CmsException if something goes wrong
+     * @param context the current request context.
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void deleteAllStaticExportPublishedResources(CmsRequestContext context, int linkType) throws CmsException {
 
@@ -1345,11 +1347,12 @@ public final class CmsSecurityManager {
     /**
      * Deletes an entry in the published resource table.<p>
      * 
-     * @param context the current request context
-     * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters ofthe resource
-     * @throws CmsException if something goes wrong
+     * @param context the current request context.
+     * @param resourceName The name of the resource to be deleted in the static export.
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * @param linkParameter the parameters ofthe resource.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void deleteStaticExportPublishedResource(
         CmsRequestContext context,
@@ -1810,11 +1813,12 @@ public final class CmsSecurityManager {
     /**
      * Returns the parent group of a group.<p>
      *
-     * @param context the current request context
-     * @param groupname the name of the group
+     * @param context the current request context.
+     * @param groupname the name of the group.
      * 
-     * @return group the parent group or null
-     * @throws CmsException if operation was not succesful
+     * @return group the parent group or <code>null</code>.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup getParent(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -2607,20 +2611,18 @@ public final class CmsSecurityManager {
     /**
      * Reads all available backup resources for the specified resource from the OpenCms VFS.<p>
      *
-     * @param context the current request context
-     * @param resourcename the name of the file to be read
+     * @param context the current request context.
+     * @param resource the resource to be read.
      * 
-     * @return a List of backup resources
+     * @return a List of backup resources.
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllBackupFileHeaders(CmsRequestContext context, String resourcename) throws CmsException {
+    public List readAllBackupFileHeaders(CmsRequestContext context, CmsResource resource) throws CmsException {
         
         List result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // read the resource first (this will check for read permissions)
-            CmsResource resource = readResource(dbc, resourcename, CmsResourceFilter.ALL);        
             result = m_driverManager.readAllBackupFileHeaders(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2683,17 +2685,15 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param tagId the id of the tag of the file
-     * @param filename the name of the file to be read
+     * @param resource the resource to be read
      * @return the file read from the Cms.
      * @throws CmsException if operation was not succesful
      */
-    public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, String filename) throws CmsException {
+    public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, CmsResource resource) throws CmsException {
         
         CmsBackupResource result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
         try {
-            // read the resource first (this will check for read permissions)
-            CmsResource resource = readResource(dbc, filename, CmsResourceFilter.ALL);
             result = m_driverManager.readBackupFile(dbc, tagId, resource);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2778,21 +2778,19 @@ public final class CmsSecurityManager {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      *
-     * @param context the current request context
-     * @param filename the name of the file to be read
-     * @param filter the filter object
+     * @param context the current request context.
+     * @param resource the resource to be read.
+     * @param filter the filter object.
      * 
-     * @return the file read from the VFS
+     * @return the file read from the VFS.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
-    public CmsFile readFile(CmsRequestContext context, String filename, CmsResourceFilter filter) throws CmsException {
+    public CmsFile readFile(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter) throws CmsException {
 
         CmsFile result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
         try {
-            // read the resource first (this will check for read permissions)
-            CmsResource resource = readResource(dbc, filename, filter);
             result = m_driverManager.readFile(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3296,7 +3294,7 @@ public final class CmsSecurityManager {
      * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
      * @param context the context of the current request
-     * @param resourceName the name of resource where the property is mapped to
+     * @param resource the resource where the property is mapped to
      * @param key the property key name
      * @param search if <code>true</code>, the property is searched on all parent folders of the resource. 
      *      if it's not found attached directly to the resource.
@@ -3305,14 +3303,12 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsProperty readPropertyObject(CmsRequestContext context, String resourceName, String key, boolean search)
+    public CmsProperty readPropertyObject(CmsRequestContext context, CmsResource resource, String key, boolean search)
     throws CmsException {
 
         CmsProperty result = null;
         CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
-            // read the resource first (this will check for read permissions)
-            CmsResource resource = readResource(dbc, resourceName, CmsResourceFilter.ALL);
             result = m_driverManager.readPropertyObject(dbc, resource, key, search);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3336,21 +3332,19 @@ public final class CmsSecurityManager {
      * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
      * @param context the context of the current request
-     * @param resourceName the name of resource where the property is mapped to
+     * @param resource the resource where the property is mapped to
      * @param search <code>true</code>, if the properties should be searched on all parent folders  if not found on the resource
      * 
      * @return a list of <code>{@link CmsProperty}</code> objects.
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPropertyObjects(CmsRequestContext context, String resourceName, boolean search) 
+    public List readPropertyObjects(CmsRequestContext context, CmsResource resource, boolean search) 
     throws CmsException {
 
         List result = null;
         CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
-            // read the resource first (this will check for read permissions)
-            CmsResource resource = readResource(dbc, resourceName, CmsResourceFilter.ALL);
             result = m_driverManager.readPropertyObjects(dbc, resource, search);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3536,21 +3530,20 @@ public final class CmsSecurityManager {
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
-     * @param context the request context
-     * @param resourcename the name of the specified resource
-     * @param filter a filter object
+     * @param context the request context.
+     * @param resource the specified resource.
+     * @param filter a filter object.
      * 
-     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
-     * @throws CmsException if something goes wrong
+     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself.
+     * 
+     * @throws CmsException if something goes wrong.
      */
-    public List readSiblings(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
+    public List readSiblings(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter)
     throws CmsException {
 
         List result = null;
         CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
-            // read the resource first (this will check for read permissions)
-            CmsResource resource = readResource(dbc, resourcename, filter);
             result = m_driverManager.readSiblings(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -4329,13 +4322,18 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Validates the Cms resources in a Cms publish list.<p>
+     * Validates the HTML links in the unpublished files of the specified
+     * publish list, if a file resource type implements the interface 
+     * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
      * 
      * @param cms the current user's Cms object
-     * @param publishList a Cms publish list
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
+     * @param publishList an OpenCms publish list.
+     * @param report a report to write the messages to.
+     * 
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names.
+     * 
+     * @throws Exception if something goes wrong.
+     * 
      * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
      */
     public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
@@ -4544,12 +4542,13 @@ public final class CmsSecurityManager {
      * 
      * This is done during static export.<p>
      * 
-     * @param context the current request context
-     * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
-     * @throws CmsException if something goes wrong
+     * @param context the current request context.
+     * @param resourceName The name of the resource to be added to the static export.
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter).
+     * @param linkParameter the parameters added to the resource.
+     * @param timestamp a timestamp for writing the data into the db.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void writeStaticExportPublishedResource(
         CmsRequestContext context,

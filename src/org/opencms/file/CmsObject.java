@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/20 15:18:45 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2004/12/20 17:04:11 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -131,12 +131,12 @@ public class CmsObject {
      * @param lastname the lastname of the user.
      * @param email the email of the user.
      * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
-     * @param additionalInfos a <code>Map</code> with additional infos for the user. These
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
      *                      infos may be stored into the Usertables (depending on the implementation).
      * @param address the address of the user.
      * @param type the type of the user.
      *
-     * @return a <code>CmsUser</code> object representing the added user.
+     * @return a new <code>{@link CmsUser}</code> object representing the added user.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -175,7 +175,7 @@ public class CmsObject {
      * @param password the password for the user.
      * @param group the default groupname for the user.
      * @param description the description for the user.
-     * @param additionalInfos a <code>Map</code> with additional infos for the user.
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
      * 
      * @return the newly created user.
      * 
@@ -373,9 +373,14 @@ public class CmsObject {
         String newValue,
         boolean recursive) throws CmsException {
 
-        return m_securityManager.changeResourcesInFolderWithProperty(m_context, readResource(
-            resourcename,
-            CmsResourceFilter.IGNORE_EXPIRATION), property, oldValue, newValue, recursive);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_securityManager.changeResourcesInFolderWithProperty(
+            m_context,
+            resource,
+            property,
+            oldValue,
+            newValue,
+            recursive);
     }
 
     /**
@@ -1107,12 +1112,8 @@ public class CmsObject {
      */
     public List getFilesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readChildResources(
-            m_context,
-            readResource(resourcename, CmsResourceFilter.ALL),
-            filter,
-            false,
-            true);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.readChildResources(m_context, resource, filter, false, true);
     }
 
     /**
@@ -1316,12 +1317,8 @@ public class CmsObject {
      */
     public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readChildResources(
-            m_context,
-            readResource(resourcename, CmsResourceFilter.ALL),
-            filter,
-            true,
-            true);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.readChildResources(m_context, resource, filter, true, true);
     }
 
     /**
@@ -1400,12 +1397,8 @@ public class CmsObject {
      */
     public List getSubFolders(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readChildResources(
-            m_context,
-            readResource(resourcename, CmsResourceFilter.ALL),
-            filter,
-            true,
-            false);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.readChildResources(m_context, resource, filter, true, false);
     }
 
     /**
@@ -1971,7 +1964,8 @@ public class CmsObject {
      */
     public List readAllBackupFileHeaders(String filename) throws CmsException {
 
-        return (m_securityManager.readAllBackupFileHeaders(m_context, addSiteRoot(filename)));
+        CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
+        return (m_securityManager.readAllBackupFileHeaders(m_context, resource));
     }
 
     /**
@@ -1991,7 +1985,6 @@ public class CmsObject {
     /**
      * Reads all property definitions.<p>
      *
-     *
      * @return a list with the <code>{@link CmsPropertydefinition}</code> objects (may be empty).
      *
      * @throws CmsException if something goes wrong.
@@ -2007,7 +2000,7 @@ public class CmsObject {
      * The reading includes the file content.<p>
      *
      * @param filename the complete path of the file to be read.
-     * @param tagId the tag id of the resource
+     * @param tagId the tag id of the resource.
      *
      * @return file the read file.
      *
@@ -2016,7 +2009,8 @@ public class CmsObject {
      */
     public CmsBackupResource readBackupFile(String filename, int tagId) throws CmsException {
 
-        return m_securityManager.readBackupFile(m_context, tagId, addSiteRoot(filename));
+        CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
+        return m_securityManager.readBackupFile(m_context, tagId, resource);
     }
 
     /**
@@ -2078,7 +2072,8 @@ public class CmsObject {
      */
     public CmsFile readFile(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readFile(m_context, addSiteRoot(resourcename), filter);
+        CmsResource resource = readResource(resourcename, filter);
+        return m_securityManager.readFile(m_context, resource, filter);
     }
 
     /**
@@ -2218,11 +2213,7 @@ public class CmsObject {
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readPath(
-            m_context,
-            m_context.currentProject().getId(),
-            m_context.addSiteRoot(path),
-            filter);
+        return m_securityManager.readPath(m_context, m_context.currentProject().getId(), addSiteRoot(path), filter);
     }
 
     /**
@@ -2294,17 +2285,18 @@ public class CmsObject {
     /**
      * Reads the (compound) values of all properties mapped to a specified resource.<p>
      * 
-     * @param resource the resource to look up the property for.
+     * @param resourcePath the resource to look up the property for.
      * 
-     * @return Map of Strings representing all properties of the resource.
+     * @return a map of <code>String</code> objects representing all properties of the resource.
      * 
      * @throws CmsException in case there where problems reading the properties.
      * 
      * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
      */
-    public Map readProperties(String resource) throws CmsException {
+    public Map readProperties(String resourcePath) throws CmsException {
 
-        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), false);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        List properties = m_securityManager.readPropertyObjects(m_context, resource, false);
         return CmsProperty.toMap(properties);
     }
 
@@ -2312,25 +2304,26 @@ public class CmsObject {
      * Reads the (compound) values of all properties mapped to a specified resource
      * with optional direcory upward cascading.<p>
      * 
-     * @param resource the resource to look up the property for.
+     * @param resourcePath the resource to look up the property for.
      * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup).
      * 
-     * @return Map of Strings representing all properties of the resource.
+     * @return Map of <code>String</code> objects representing all properties of the resource.
      * 
      * @throws CmsException in case there where problems reading the properties.
      * 
      * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
      */
-    public Map readProperties(String resource, boolean search) throws CmsException {
+    public Map readProperties(String resourcePath, boolean search) throws CmsException {
 
-        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), search);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        List properties = m_securityManager.readPropertyObjects(m_context, resource, search);
         return CmsProperty.toMap(properties);
     }
 
     /**
      * Reads the (compound) value of a property mapped to a specified resource.<p>
      *
-     * @param resource the resource to look up the property for.
+     * @param resourcePath the resource to look up the property for.
      * @param property the name of the property to look up.
      * 
      * @return the value of the property found, <code>null</code> if nothing was found.
@@ -2341,13 +2334,10 @@ public class CmsObject {
      * 
      * @deprecated use new Object based methods.
      */
-    public String readProperty(String resource, String property) throws CmsException {
+    public String readProperty(String resourcePath, String property) throws CmsException {
 
-        CmsProperty value = m_securityManager.readPropertyObject(
-            m_context,
-            m_context.addSiteRoot(resource),
-            property,
-            false);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, resource, property, false);
         return value.isNullProperty() ? null : value.getValue();
     }
 
@@ -2355,7 +2345,7 @@ public class CmsObject {
      * Reads the (compound) value of a property mapped to a specified resource 
      * with optional direcory upward cascading.<p>
      * 
-     * @param resource the resource to look up the property for.
+     * @param resourcePath the resource to look up the property for.
      * @param property the name of the property to look up.
      * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup).
      * 
@@ -2367,13 +2357,10 @@ public class CmsObject {
      * 
      * @deprecated use new Object based methods.
      */
-    public String readProperty(String resource, String property, boolean search) throws CmsException {
+    public String readProperty(String resourcePath, String property, boolean search) throws CmsException {
 
-        CmsProperty value = m_securityManager.readPropertyObject(
-            m_context,
-            m_context.addSiteRoot(resource),
-            property,
-            search);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, resource, property, search);
         return value.isNullProperty() ? null : value.getValue();
     }
 
@@ -2382,7 +2369,7 @@ public class CmsObject {
      * with optional direcory upward cascading, a default value will be returned if the property 
      * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
-     * @param resource the resource to look up the property for.
+     * @param resourcePath the resource to look up the property for.
      * @param property the name of the property to look up.
      * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup).
      * @param propertyDefault a default value that will be returned if the property was not found on the selected resource.
@@ -2395,14 +2382,11 @@ public class CmsObject {
      * 
      * @deprecated use new Object based methods.
      */
-    public String readProperty(String resource, String property, boolean search, String propertyDefault)
+    public String readProperty(String resourcePath, String property, boolean search, String propertyDefault)
     throws CmsException {
 
-        CmsProperty value = m_securityManager.readPropertyObject(
-            m_context,
-            m_context.addSiteRoot(resource),
-            property,
-            search);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, resource, property, search);
         return value.isNullProperty() ? propertyDefault : value.getValue();
     }
 
@@ -2425,7 +2409,7 @@ public class CmsObject {
      * 
      * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
-     * @param resourcename the name of resource where the property is attached to.
+     * @param resourcePath the name of resource where the property is attached to.
      * @param property the property name.
      * @param search if true, the property is searched on all parent folders of the resource. 
      *      if it's not found attached directly to the resource.
@@ -2434,9 +2418,10 @@ public class CmsObject {
      * 
      * @throws CmsException if something goes wrong.
      */
-    public CmsProperty readPropertyObject(String resourcename, String property, boolean search) throws CmsException {
+    public CmsProperty readPropertyObject(String resourcePath, String property, boolean search) throws CmsException {
 
-        return m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resourcename), property, search);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        return m_securityManager.readPropertyObject(m_context, resource, property, search);
     }
 
     /**
@@ -2452,7 +2437,7 @@ public class CmsObject {
      * has the same property attached but with a differrent value, the result list will
      * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
-     * @param resourcename the name of resource where the property is mapped to.
+     * @param resourcePath the name of resource where the property is mapped to.
      * @param search if <code>true</code>, the properties of all parent folders of the resource 
      *      are merged with the resource properties.
      * 
@@ -2460,9 +2445,10 @@ public class CmsObject {
      * 
      * @throws CmsException if something goes wrong.
      */
-    public List readPropertyObjects(String resourcename, boolean search) throws CmsException {
+    public List readPropertyObjects(String resourcePath, boolean search) throws CmsException {
 
-        return m_securityManager.readPropertyObjects(m_context, addSiteRoot(resourcename), search);
+        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
+        return m_securityManager.readPropertyObjects(m_context, resource, search);
     }
 
     /**
@@ -2573,11 +2559,8 @@ public class CmsObject {
      */
     public List readResources(String resourcename, CmsResourceFilter filter, boolean readTree) throws CmsException {
 
-        return m_securityManager.readResources(
-            m_context,
-            readResource(resourcename, CmsResourceFilter.ALL),
-            filter,
-            readTree);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.readResources(m_context, resource, filter, readTree);
     }
 
     /**
@@ -2630,7 +2613,8 @@ public class CmsObject {
      */
     public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
+        CmsResource resource = readResource(resourcename, filter);
+        return m_securityManager.readSiblings(m_context, resource, filter);
     }
 
     /**
@@ -2999,7 +2983,7 @@ public class CmsObject {
      * @param publishList an OpenCms publish list.
      * @param report a report to write the messages to.
      * 
-     * @return a map with lists of invalid links keyed by resource names.
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names.
      * 
      * @throws Exception if something goes wrong.
      * 
@@ -3133,7 +3117,7 @@ public class CmsObject {
     /**
      * Writes a property for a file or folder.<p>
      *
-     * @param name the resource-name for which the property will be set.
+     * @param resourcename the resource-name for which the property will be set.
      * @param key the property-definition name.
      * @param value the value for the property to be set.
      * @param addDefinition flag to indicate if unknown definitions should be added.
@@ -3142,14 +3126,14 @@ public class CmsObject {
      * 
      * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
-    public void writeProperty(String name, String key, String value, boolean addDefinition) throws CmsException {
+    public void writeProperty(String resourcename, String key, String value, boolean addDefinition) throws CmsException {
 
         CmsProperty property = new CmsProperty();
         property.setKey(key);
         property.setStructureValue(value);
         property.setAutoCreatePropertyDefinition(addDefinition);
 
-        writePropertyObject(name, property);
+        writePropertyObject(resourcename, property);
     }
 
     /**
@@ -3262,12 +3246,12 @@ public class CmsObject {
     }
 
     /**
-     * Fires a CmsEvent.<p>
-     *
+     * Notify all event listeners that a particular event has occurred.<p>
+     * 
      * The event will be given to all registered <code>{@link I_CmsEventListener}</code>s.<p>
      * 
-     * @param type The type of the event.
-     * @param data A data object that contains data used by the event listeners.
+     * @param type the type of the event.
+     * @param data a data object that contains data used by the event listeners.
      * 
      * @see OpenCms#addCmsEventListener(I_CmsEventListener)
      * @see OpenCms#addCmsEventListener(I_CmsEventListener, int[])
