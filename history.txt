@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.4.6  Gom Jabbar   - XX October 2001
 * if a body file in a folder is deleted the folder can nevertheless be deleted.
 * The Import works again (body files where not imported).
+* Bugfix 1796: temporary files are not exported.
 
 
 OpenCms 4.4.5  Gom Jabbar   - 12 October 2001
