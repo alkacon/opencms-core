@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/25 15:35:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,25 +34,25 @@ package com.opencms.legacy;
 import org.opencms.file.CmsObject;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReport;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.dom4j.Document;
+
 /**
  * Import/export handler implementation for COS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/25 15:35:21 $
  * @since 5.3
  */
 public class CmsCosImportExportHandler extends Object implements I_CmsImportExportHandler {
     
     /** The description of this import/export handler.<p> */
     private String m_description;
-    
-    /** The type of this import/export handler.<p> */
-    private String m_type; 
     
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
@@ -63,15 +63,11 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
     /** The COS modules to be exported.<p> */
     private List m_exportModules;
 
-    /** COS data import/export handler type.<p> */
-    public static final String C_TYPE_COSDATA = "cosdata";    
-
     /**
      * Creates a new COS import/export handler.<p>
      */
     public CmsCosImportExportHandler() {
         super();
-        m_type = CmsCosImportExportHandler.C_TYPE_COSDATA;
         m_description = C_DEFAULT_DESCRIPTION;
     }
     
@@ -97,13 +93,6 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
     }    
 
     /**
-     * @see org.opencms.importexport.I_CmsImportExportHandler#getType()
-     */
-    public String getType() {
-        return m_type;
-    }
-
-    /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
@@ -115,7 +104,7 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
-    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+    public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
         report.println(report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         CmsImportModuledata cosImport = new CmsImportModuledata(cms, importFile, importPath, report);
         cosImport.importResources();
@@ -208,4 +197,11 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
         m_description = description;
     }    
 
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#matches(org.dom4j.Document)
+     */
+    public boolean matches(Document manifest) {
+        return (I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equalsIgnoreCase(manifest.getRootElement().getName()));
+    }
+    
 }

@@ -20,9 +20,9 @@
 			<class>org.opencms.loader.CmsXmlPageLoader</class>
 		</resourceloader>
 		<importexport>
-			<handler name="cosdata">com.opencms.legacy.CmsCosImportExportHandler</handler>
-			<handler name="vfsdata">org.opencms.importexport.CmsVfsImportExportHandler</handler>
-			<handler name="moddata">org.opencms.importexport.CmsModuleImportExportHandler</handler>
+            <handler>com.opencms.legacy.CmsCosImportExportHandler</handler>
+            <handler>org.opencms.importexport.CmsVfsImportExportHandler</handler>
+            <handler>org.opencms.importexport.CmsModuleImportExportHandler</handler>
 			<vfsdataimport>
 				<class>com.opencms.legacy.CmsImportVersion1</class>
 				<class>org.opencms.importexport.CmsImportVersion2</class>

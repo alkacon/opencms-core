@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/25 15:35:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,20 +38,20 @@ import org.opencms.report.I_CmsReport;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.Element;
+
 /**
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/25 15:35:21 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler extends Object implements I_CmsImportExportHandler {
     
     /** The description of this import/export handler.<p> */
     private String m_description;    
-
-    /** The type of this import/export handler.<p> */
-    private String m_type;
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
@@ -71,26 +71,15 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
     /** Timestamp to limit the resources to be exported by date.<p> */
     private long m_contentAge;
 
-    /** VFS data import/export handler type.<p> */
-    public static final String C_TYPE_VFSDATA = "vfsdata";
-
     /**
      * Creates a new VFS import/export handler.<p>
      */
     public CmsVfsImportExportHandler() {
         super();
-        m_type = CmsVfsImportExportHandler.C_TYPE_VFSDATA;
         m_description = C_DEFAULT_DESCRIPTION;
         m_excludeSystem = true;
         m_excludeUnchanged = false;
         m_exportUserdata = true;
-    }
-
-    /**
-     * @see org.opencms.importexport.I_CmsImportExportHandler#getType()
-     */
-    public String getType() {
-        return m_type;
     }
 
     /**
@@ -121,7 +110,7 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
-    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+    public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
         report.println(report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
         vfsImport.importResources();
@@ -261,6 +250,18 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
      */
     public void setDescription(String description) {
         m_description = description;
-    }
+    } 
+    
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#matches(org.dom4j.Document)
+     */
+    public boolean matches(Document manifest) {
+        Element rootElement = manifest.getRootElement();
+        
+        boolean hasModuleNodes = (rootElement.selectNodes("./module/name").size() > 0);
+        boolean hasFileNodes = (rootElement.selectNodes("./files/file").size() > 0);
+        
+        return (!hasModuleNodes && hasFileNodes);
+    }    
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/25 15:35:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,25 +35,31 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 
+import org.dom4j.Document;
+
 /**
  * An import/export handler is an abstract layer to hide the logic how to import/export a specific 
  * type of Cms data.<p>
  * 
+ * To export data, you would create an instance of a class implementing this interface, and call the
+ * implementation's setter methods to arrange which data should be exported. To write the export,
+ * call {@link org.opencms.importexport.CmsImportExportManager#exportData(CmsObject, I_CmsImportExportHandler, I_CmsReport)}.<p>
+ * 
+ * To import data, call {@link org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, I_CmsReport)}.
+ * You dont have to worry about importing a ZIP archive containing VFS, COS or module data in the 
+ * signature of this method- the import/export manager finds the right import/export handler implementation 
+ * to import the data. You can assign null to the importPath argument in case of a Cms module import.<p>
+ * 
+ * Use {@link org.opencms.main.OpenCms#getImportExportManager()} to get the Cms import/export manager.<p>
+ * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/25 15:35:21 $
  * @since 5.3
  */
 public interface I_CmsImportExportHandler {
 
     /** The default description being used in all handler implementations.<p> */
     String C_DEFAULT_DESCRIPTION = "No description available for this handler";
-    
-    /**
-     * Returns the type of this import/export handler.<p>
-     * 
-     * @return the type of this import/export handler
-     */
-    String getType();
     
     /**
      * Sets the description of this import/export handler.<p>
@@ -90,5 +96,14 @@ public interface I_CmsImportExportHandler {
      * @throws CmsException if operation was not successful 
      */
     void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException;
+    
+    /**
+     * Checks, if this import/export handler matches with a specified manifest document of an import,
+     * so that it is able to import the data listed in the manifest document.<p>
+     * 
+     * @param manifest the manifest.xml of the import as a dom4j XML document
+     * @return true, this handler is able to import the data listed in the manifest document
+     */
+    boolean matches(Document manifest);
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/25 15:35:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,20 +44,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.dom4j.Document;
+
 /**
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/25 15:35:21 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
 
     /** The description of this import/export handler.<p> */
     private String m_description;
-
-    /** The type of this import/export handler.<p> */
-    private String m_type;
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
@@ -68,15 +67,11 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     /** The (package) name of the module to be exported.<p> */
     private String m_moduleName;
 
-    /** Module import/export handler type.<p> */
-    public static final String C_TYPE_MODDATA = "moddata";
-
     /**
      * Creates a new Cms module import/export handler.<p>
      */
     public CmsModuleImportExportHandler() {
         super();
-        m_type = CmsModuleImportExportHandler.C_TYPE_MODDATA;
         m_description = C_DEFAULT_DESCRIPTION;
     }
 
@@ -97,13 +92,6 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImportExportHandler#getType()
-     */
-    public String getType() {
-        return m_type;
-    }
-
-    /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
@@ -119,7 +107,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
-    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+    public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
         CmsProject importProject = null;
         CmsProject previousProject = null;
         String moduleZipName = null;
@@ -266,6 +254,13 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
      */
     public void setDescription(String description) {
         m_description = description;
-    }
+    }  
+    
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#matches(org.dom4j.Document)
+     */
+    public boolean matches(Document manifest) {
+        return ((manifest.getRootElement().selectNodes("./module/name").size() > 0));
+    }    
 
 }

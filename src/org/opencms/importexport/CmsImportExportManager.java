@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/25 15:35:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,10 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
-
-import com.opencms.legacy.CmsCosImportExportHandler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,14 +49,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -68,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/25 15:35:21 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -88,9 +82,9 @@ public class CmsImportExportManager extends Object {
 
     /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps.<p> */
     private String m_webAppUrl;
-    
-    /** The class names of the import/export handlers keyed by the type names of the import/export handlers.<p> */
-    private Map m_importExportHandlerClassNames;
+
+    /** The class names of the import/export handlers.<p> */
+    private List m_importExportHandlerClassNames;
 
     /**
      * Creates a new import/export manager.<p>
@@ -100,13 +94,13 @@ public class CmsImportExportManager extends Object {
      * @param overwriteCollidingResources true, if collding resources should be overwritten during an import
      * @param webAppUrl the URL of a 4.x OpenCms app. to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.
      * @param ignoredProperties a list of property keys that should be removed from imported resources
-     * @param importExportHandlerClassNames a map with the class names of the import/export handlers keyed by the type names of the import/export handlers
+     * @param importExportHandlerClassNames a list with the class names of the import/export handlers
      */
-    public CmsImportExportManager(List immutableResources, boolean convertToXmlPage, boolean overwriteCollidingResources, String webAppUrl, List ignoredProperties, Map importExportHandlerClassNames) {
+    public CmsImportExportManager(List immutableResources, boolean convertToXmlPage, boolean overwriteCollidingResources, String webAppUrl, List ignoredProperties, List importExportHandlerClassNames) {
         m_immutableResources = (immutableResources != null && immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
         m_ignoredProperties = (ignoredProperties != null && ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
-        m_importExportHandlerClassNames = (importExportHandlerClassNames != null && importExportHandlerClassNames.keySet().size() > 0) ? importExportHandlerClassNames : Collections.EMPTY_MAP;
-        
+        m_importExportHandlerClassNames = (importExportHandlerClassNames != null && importExportHandlerClassNames.size() > 0) ? importExportHandlerClassNames : Collections.EMPTY_LIST;
+
         m_convertToXmlPage = convertToXmlPage;
         m_overwriteCollidingResources = overwriteCollidingResources;
         m_webAppUrl = webAppUrl;
@@ -183,19 +177,18 @@ public class CmsImportExportManager extends Object {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Overwrite collisions : " + (overwriteCollidingResources ? "enabled" : "disabled"));
         }
-        
-        Map importExportHandlerClassNames = (Map) new HashMap();
+
+        // read the import handlers from registry.xml
+        List importExportHandlerClassNames = (List) new ArrayList();
         CmsRegistry registry = cms.getRegistry();
         Element systemElement = registry.getDom4jSystemElement();
         Element handlerElement = null;
-        Attribute handlerAttribute = null;
         List handlerClasses = systemElement.selectNodes("./importexport/handler");
-        for (int i=0;i<handlerClasses.size();i++) {
+        for (int i = 0; i < handlerClasses.size(); i++) {
             handlerElement = (Element) handlerClasses.get(i);
-            handlerAttribute = handlerElement.attribute("name");
-            importExportHandlerClassNames.put(handlerAttribute.getValue(), handlerElement.getTextTrim());
+            importExportHandlerClassNames.add(handlerElement.getTextTrim());
         }
-        
+
         // create and return the import/export manager 
         return new CmsImportExportManager(immutableResources, convertToXmlPage, overwriteCollidingResources, webappUrl, propertyNames, importExportHandlerClassNames);
     }
@@ -342,7 +335,7 @@ public class CmsImportExportManager extends Object {
     void setWebAppUrl(String webAppUrl) {
         m_webAppUrl = webAppUrl;
     }
-    
+
     /**
      * Checks if the current user has permissions to export Cms data of a specified export handler,
      * and if so, triggers the handler to write the export.<p>
@@ -360,7 +353,7 @@ public class CmsImportExportManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "]", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
-    
+
     /**
      * Checks if the current user has permissions to import COS/VFS/module data into the Cms,
      * and if so, creates a new import handler instance that imports the data.<p>
@@ -374,15 +367,13 @@ public class CmsImportExportManager extends Object {
      */
     public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException, CmsSecurityException {
         I_CmsImportExportHandler handler = null;
-        String handlerKey = null;
 
         try {
             if (cms.isAdmin()) {
                 //report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
                 //OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
 
-                handlerKey = getImportExportHandlerKey(importFile);
-                handler = getImportExportHandler(handlerKey);
+                handler = getImportExportHandler(importFile);
                 handler.importData(cms, importFile, importPath, report);
             } else {
                 throw new CmsSecurityException("[" + this.getClass().getName() + "]", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
@@ -392,57 +383,40 @@ public class CmsImportExportManager extends Object {
                 OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
             }
         }
-    }    
-    
-    /**
-     * Returns a new import/export handler class instance for a specified key.<p>
-     * 
-     * @param key the key name to get an instance of the import/export handler implementation
-     * @return a new import/export handler class instance
-     * @throws CmsException if the import/export handler instance couldn't be instanciated
-     */
-    I_CmsImportExportHandler getImportExportHandler(String key) throws CmsException {
-        String classname = null;
-        
-        try {
-            classname = (String) m_importExportHandlerClassNames.get(key);
-            if (classname == null) {
-                throw new CmsException("No import/export handler class found for key: " + key);
-            }
-
-            return (I_CmsImportExportHandler) Class.forName(classname).newInstance();
-        } catch (Exception e) {
-            throw new CmsException("Instanciation of import/export handler class " + classname + " for key " + key + " failed", e);
-        }
     }
-    
+
     /**
-     * Returns the key name of the import handler implementation to import a specified file.<p>
+     * Returns an instance of an import/export handler implementation that is able to import
+     * a specified resource.<p>
      * 
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
-     * @return the key name of the import handler implementation
-     * @throws CmsException if the specified import file does not exist
+     * @return an instance of an import/export handler implementation
+     * @throws CmsException if somethong goes wrong
      */
-    String getImportExportHandlerKey(String importFile) throws CmsException {
-        File file = new File(importFile);
-        
-        if (!file.exists()) {
-            throw new CmsException("The specified import file " + importFile + " does not exist!", CmsException.C_NOT_FOUND);
+    I_CmsImportExportHandler getImportExportHandler(String importFile) throws CmsException {
+        String classname = null;
+        Document manifest = null;
+        I_CmsImportExportHandler handler = null;
+
+        try {
+            manifest = getManifest(new File(importFile));
+            for (int i = 0; i < m_importExportHandlerClassNames.size(); i++) {
+                classname = (String) m_importExportHandlerClassNames.get(i);
+                handler = (I_CmsImportExportHandler) Class.forName(classname).newInstance();
+
+                if (handler.matches(manifest)) {
+                    return handler;
+                }
+            }
+        } catch (Exception e) {
+            throw new CmsException("Error creating instance of import/export handler " + classname, e);
         }
-        
-        Document manifest = getManifest(file);
-        String rootElementName = manifest.getRootElement().getName();
-        String key = null;
-        
-        if (manifest.getRootElement().selectNodes("./module/name").size() > 0) {
-            key = CmsModuleImportExportHandler.C_TYPE_MODDATA;
-        } else if (I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equals(rootElementName)) {
-            key = CmsCosImportExportHandler.C_TYPE_COSDATA;
-        } else {
-            key = CmsVfsImportExportHandler.C_TYPE_VFSDATA;
+
+        if (handler == null) {
+            throw new CmsException("Cannot find matching import/export handler for import of " + importFile);
         }
-        
-        return key;
+
+        return null;
     }
 
     /**
@@ -462,14 +436,14 @@ public class CmsImportExportManager extends Object {
         Reader reader = null;
         SAXReader saxReader = null;
         File manifestFile = null;
-    
+
         try {
             if (resource.isFile()) {
                 if (!resource.getName().toLowerCase().endsWith(".zip")) {
                     // skip non-ZIP files
                     return null;
                 }
-    
+
                 // create a Reader either from a ZIP file's manifest.xml entry...
                 zipFile = new ZipFile(resource);
                 zipFileEntry = zipFile.getEntry("manifest.xml");
@@ -480,7 +454,7 @@ public class CmsImportExportManager extends Object {
                 manifestFile = new File(resource, "manifest.xml");
                 reader = new BufferedReader(new FileReader(manifestFile));
             }
-    
+
             // transform the manifest.xml file into a dom4j Document
             saxReader = new SAXReader();
             manifest = saxReader.read(reader);
@@ -497,7 +471,7 @@ public class CmsImportExportManager extends Object {
                 // noop
             }
         }
-    
+
         return manifest;
     }
 
