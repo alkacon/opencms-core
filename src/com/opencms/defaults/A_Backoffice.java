@@ -59,10 +59,14 @@ import java.lang.String;
  */
 public abstract class A_Backoffice extends CmsWorkplaceDefaultNoCache {
 	
-	public static final String C_BACKOFFICE_LABEL = "backoffice.label.";
 	
-	public static final String C_BACKOFFICE_MESSAGEBOX_DIALOG = "backoffice.messagebox.dialog.";
 
+/**
+ * gets the backoffice url of the module by using the cms object
+ * @returns a string with the backoffice url
+ */
+ 
+public abstract String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  * Gets the content of a given template file.
  * This method displays any content provided by a content definition
@@ -83,7 +87,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			
 	//return var
 	byte[] returnProcess = null;
-
+	
 	// session will be created or fetched
 	I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//create new workplace templatefile object
@@ -152,7 +156,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
 	//go to the appropriate getContent methods 
 	if ((selectbox == null) && (id == null) && (idsave == null) && (action == null)) {
-		//process the head frame´containing the filter 
+		//process the head frame containing the filter 
 		returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
 		//finally return processed data
 		return returnProcess;
@@ -283,24 +287,19 @@ private byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, St
 	if (action == null || action.equals("")) {
 		if (id != "") {
 			//set template section
-			templateSelector = "default";
-			/*-------
-			//get integer value from id
-			Integer idInteger = Integer.valueOf(id);
-			//access content definition constructor by reflection
-			//displays the the unique title of the cd object (to be implemented) 
-			String title = "no title";
-			Object o = null;
-			o = getContentDefinitionConstructor(cms, cdClass, idInteger);
-			try {
-				Method getTitleMethod = (Method) cdClass.getMethod("getTitle", new Class[] {});
-				title = (String) getTitleMethod.invoke(o, new Object[0]);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			--------*/
-			
-			//set data in the template
+			templateSelector = "delete";			
+
+			//create appropriate class name with underscores for labels
+			String moduleName = "";
+			moduleName = (String) getClass().toString(); //get name
+			moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
+			moduleName = moduleName.trim();
+			moduleName = moduleName.replace('.','_'); //replace dots with underscores
+			//create new language file object
+			CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+			//get the dialog from the langauge file and set it in the template
+			template.setData("deletehead",lang.getLanguageValue(moduleName +".dialog.delete.title"));	
+			template.setData("deletedialog", lang.getLanguageValue(moduleName +".dialog.delete.dialog"));
 			template.setData("newsentry", id);
 			template.setData("setaction", "default");
 		}
@@ -367,13 +366,30 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//get filter method from session
 	String selectBoxValue = (String) session.getValue("selectbox");
+	
+	//create appropriate class name with underscores for labels
+	String moduleName = "";
+	moduleName = (String) getClass().toString(); //get name
+	moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
+	moduleName = moduleName.trim();
+	moduleName = moduleName.replace('.','_'); //replace dots with underscores
+	//create new language file object
+	CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+	template.setData("filter",lang.getLanguageValue(moduleName +".label.filter"));
+	template.setData("filterparameter",lang.getLanguageValue(moduleName +".label.filterparameter"));	
 
 	//get vector of filter names from the content definition
 	Vector filterMethods = new Vector();
 	try {
 		filterMethods = (Vector) cdClass.getMethod("getFilterMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
+	} catch (InvocationTargetException ite) {
+		//error occured while applying the filter
+		System.err.println("Backoffice getContentHead: InvocationTargetException!");
+	} catch (NoSuchMethodException nsm) {
+		System.err.println("Backoffice getContentHead: Requested method was not found!");
 	} catch (Exception e) {
 		e.printStackTrace();
+		System.err.println("Backoffice getContentHead: Problem occured with your filter methods!");
 	}
 
 	//no filter selected so far, store a default filter in the session
@@ -450,6 +466,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	//get the class of the content definition	
 	Class cdClass = getContentDefinitionClass();
 
+	templateSelector="head";
 	//read value of the inputfield filterparameter
 	String filterParam = (String) parameters.get("filterparameter");
 	//read value of the selected filter
@@ -457,6 +474,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	if (filterMethodName == null)
 		filterMethodName = "";
 
+	templateSelector="list";
 	//init vars				
 	String tableHead = "";
 	String singleRow = "";
@@ -472,10 +490,21 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	columnsVector = (Vector) getContentMethodObject(cms, cdClass, fieldNamesMethod, paramClasses, params);
 	columns = columnsVector.size();
 
-	//create tableheadline
+	//create appropriate class name with underscores for labels
+	String moduleName = "";
+	moduleName = (String) getClass().toString(); //get name
+	moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
+	moduleName = moduleName.trim();
+	moduleName = moduleName.replace('.','_'); //replace dots with underscores
+	
+	//create new language file object
 	CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+
+	//create tableheadline
 	for (int i = 0; i < columns; i++) {
-		tableHead += (template.getDataValue("tabledatabegin")) + lang.getLanguageValue(C_BACKOFFICE_LABEL + columnsVector.elementAt(i).toString().toLowerCase()) + (template.getDataValue("tabledataend"));
+		tableHead += (template.getDataValue("tabledatabegin"))
+			+ lang.getLanguageValue(moduleName +".label." + columnsVector.elementAt(i).toString().toLowerCase())
+			+ (template.getDataValue("tabledataend"));
 	}
 	//set template data for table headline content
 	template.setData("tableheadline", tableHead);
@@ -535,13 +564,30 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	// create output from the table data
 	String fieldEntry = "";
 	String id = "";
+	String url = "";
 	for (int i = 0; i < rows; i++) {
+		
+		//init	
 		entry = "";
 		singleRow = "";
 		Object entryObject = new Object();
+		entryObject = tableContent.elementAt(i);//cd object in row #i
 		
+		//get the url belonging to an entry
+		try {
+			url = (String) cdClass.getMethod("getUrl", new Class[] {}).invoke(entryObject, new Object[] {});
+		} catch (InvocationTargetException ite) {
+			System.err.println("Backoffice getUrl: Catched Exception while using reflection!");
+			ite.getTargetException().printStackTrace();
+		} catch (NoSuchMethodException nsm) {
+			System.err.println("Backoffice getUrl: Requested method was not found!");
+		} catch (Exception e) {
+			System.err.println("Backoffice getUrl: Output section throwed an exception!");
+			e.printStackTrace();
+		}
+		if (url == null) url = "";
+		 
 		//set data of single row
-		entryObject = tableContent.elementAt(i);
 		for (int j = 0; j < columns; j++) {
 			// call the field methods  
 			Method getMethod = (Method) fieldMethods.elementAt(j);
@@ -557,7 +603,10 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			
 			//insert table entry
 			if (fieldEntry != null)
-				entry += (template.getDataValue("tabledatabegin")) + fieldEntry + (template.getDataValue("tabledataend"));
+				entry += (template.getDataValue("tabledatabegin"))
+				+ (template.getDataValue("urlbegin")) + url + (template.getDataValue("urlend")) 
+				+ fieldEntry
+				+ (template.getDataValue("tabledataend"));
 		}
 		
 		//get the unique id belonging to an entry
@@ -572,6 +621,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			System.err.println("Backoffice getUniqueId: Output section throwed an exception!");
 			e.printStackTrace();
 		}
+
 
 		//insert unique id in contextmenue
 		if (id != null)
@@ -644,6 +694,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	
 	//no button pressed, go to the default section!
 	if (action == null || action.equals("")) {
+		templateSelector = "lock";
 		//lock dialog, displays the title of the entry to be changed in lockstate
 		Integer idInteger = Integer.valueOf(id);
 		String ls = "";
@@ -658,23 +709,30 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		//get the dialog from the langauge file and set it in the template
+		
+		//create appropriate class name with underscores for labels
+		String moduleName = "";
+		moduleName = (String) getClass().toString(); //get name
+		moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
+		moduleName = moduleName.trim();
+		moduleName = moduleName.replace('.','_'); //replace dots with underscores
+		//create new language file object
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		template.setData("lockdialog", lang.getLanguageValue(C_BACKOFFICE_MESSAGEBOX_DIALOG + ls));
+		//get the dialog from the langauge file and set it in the template
+		template.setData("lockhead",lang.getLanguageValue(moduleName +".dialog.lock.title"));
+		template.setData("lockdialog",lang.getLanguageValue(moduleName +".dialog.lock.dialog"));	
+		template.setData("lockstate", lang.getLanguageValue(moduleName +".dialog.lock." + ls));
 
 		//set the title of the selected entry 
 		template.setData("newsentry", id);
 
 		//go to default template section	
 		template.setData("setaction", "default");
-		templateSelector = "default";
 		parameters.put("action","done");
 
 	// confirmation button pressed, process data!
 	} else {
 		templateSelector = "done";
-		session.removeValue("idlocksave");
 		session.removeValue("idsave");
 
 		//access content definition constructor by reflection
@@ -788,23 +846,11 @@ public byte[] getContentNew(CmsObject cms, CmsXmlWpTemplateFile templateFile, St
  
 public abstract String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
- * gets the delete url by using the cms object
- * @returns a string with the create url
- */
- 
-public abstract String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
-/**
  * gets the edit url by using the cms object
  * @returns a string with the edit url
  */
  
 public abstract String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
-/**
- * gets the lock url by using the cms object
- * @returns a string with the create url
- */
- 
-public abstract String getLockUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  *set the lockstates in the list output 
  */

@@ -106,6 +106,15 @@ public static Vector getFilterMethods(CmsObject cms) {
 	return new Vector();
 }
 /**
+ * Gets the lockstates 
+ * You have to override this method in your content definition, if you have overwritten
+ * the isLackable method with true.
+ * @returns a String with the lockstate
+ */
+public String getLockstate() {
+	return null;
+}
+/**
  * gets the unique Id of a content definition instance
  * @returns a string with the Id 
  */
@@ -117,6 +126,15 @@ public abstract String getUniqueId(CmsObject cms) ;
  */
 public static boolean isLockable() {
 	return false;
+}
+/**
+ *Sets the lockstates 
+ * You have to override this method in your content definition, 
+ * if you have overwritten the isLockable method with true.
+ * @sets the lockstate for the actual entry
+ */
+public void setLockstate(String lockstate) {
+
 }
 /**
  * abstract write method
