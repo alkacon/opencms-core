@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/10/02 14:45:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/10/07 16:20:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -88,11 +88,11 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public void export(CmsObject cms, CmsFile file) throws CmsException {
         try {
             String pointer = new String(file.getContents());        
-            OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
-            responsestream.write(C_EXPORT_PREFIX.getBytes());
-            responsestream.write(pointer.getBytes());
-            responsestream.write(C_EXPORT_SUFFIX.getBytes());
-            responsestream.close();
+            OutputStream exportStream = cms.getRequestContext().getResponse().getOutputStream();
+            exportStream.write(C_EXPORT_PREFIX.getBytes());
+            exportStream.write(pointer.getBytes());
+            exportStream.write(C_EXPORT_SUFFIX.getBytes());
+            exportStream.close();
         } catch (Throwable t) {
             if (OpenCms.getLog(this).isErrorEnabled()) { 
                 OpenCms.getLog(this).error("Error during static export of " + cms.readAbsolutePath(file), t);
@@ -103,9 +103,11 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
-        // TODO: Auto-generated method stub
-        return null;
+    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+        String pointer = new String(file.getContents());          
+        exportStream.write(C_EXPORT_PREFIX.getBytes());
+        exportStream.write(pointer.getBytes());
+        exportStream.write(C_EXPORT_SUFFIX.getBytes());        
     }
     
     /**
@@ -143,7 +145,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         if (pointer == null || "".equals(pointer.trim())) {
             throw new ServletException("Invalid pointer file " + file.getName());
         }
-            res.sendRedirect(pointer);
+        res.sendRedirect(pointer);
     }   
     
     /**

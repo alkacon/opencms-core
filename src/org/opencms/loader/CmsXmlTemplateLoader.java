@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/29 19:10:50 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/10/07 16:20:07 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -211,14 +211,12 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
         // TODO: get real file translator
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, new CmsResourceTranslator(new String[0], true));
         byte[] result = generateOutput(cms, file, cmsReq);
-        if (result != null) {
-            return result;
-        } else {
-            return "".getBytes();
+        if ((result != null) && (exportStream != null)) {
+            exportStream.write(file.getContents());
         }
     }        
     

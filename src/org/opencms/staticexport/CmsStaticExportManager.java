@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/10/06 15:53:17 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/10/07 16:20:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -385,14 +385,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         cms.getRequestContext().setUri(vfsName);
         
         // do the export
-        byte[] content = loader.export(cms, file, req, res);
+        loader.export(cms, file, exportStream, req, res);
+        
+        // close the export stream 
+        exportStream.close();       
         
         // restore context
-        cms.getRequestContext().setUri(oldUri);
-
-        // write export data to the output stream
-        exportStream.write(content);
-        exportStream.close();    
+        cms.getRequestContext().setUri(oldUri); 
         
         // log export success 
         if (OpenCms.getLog(this).isInfoEnabled()) {

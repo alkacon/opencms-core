@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/10/07 16:20:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -63,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -138,16 +139,15 @@ public interface I_CmsResourceLoader {
      *
      * @param cms the initialized CmsObject which provides user permissions
      * @param file the requested OpenCms VFS resource
+     * @param exportStream the stream to write the exported content to
      * @param req the original servlet request
      * @param res the original servlet response
-     * 
-     * @return the contents of the exported resource which should be written to the export file stream
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
      * @throws CmsException might be thrown if errors during the static export occur 
      */    
-    byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
+    void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException;
         
     /**
