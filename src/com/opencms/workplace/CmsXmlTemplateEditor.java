@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/08/02 13:34:57 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/08/03 12:48:38 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2000/08/02 13:34:57 $
+ * @version $Revision: 1.33 $ $Date: 2000/08/03 12:48:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -90,7 +90,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         Encoder encoder = new Encoder();
         
         // Get all URL parameters
-        String content = (String)parameters.get(C_PARA_CONTENT);
+        String content = (String)parameters.get(C_PARA_CONTENT);            
         String body = (String)parameters.get("body");
         String file = (String)parameters.get(C_PARA_FILE);
         String editor = (String)parameters.get("editor");
@@ -392,7 +392,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Load the body!                                        
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);        
-        content = encoder.escape(content);
+        content = encoder.escapeWBlanks(content);
         parameters.put(C_PARA_CONTENT, content);
         
         // put the body parameter so that the selectbox can set the correct current value

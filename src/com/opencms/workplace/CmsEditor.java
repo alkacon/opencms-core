@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/03 12:46:14 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/03 12:46:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -108,9 +108,9 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.        
             if(content == null) {
-    
+
                 content = new String(editFile.getContents());
-                content = enc.escape(content);
+                content = enc.escapeWBlanks(content);
                 parameters.put(C_PARA_CONTENT, content);
             }
             
