@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 08:12:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/07 09:11:44 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.16 $ $Date: 2000/06/07 08:12:06 $ * 
+ * @version $Revision: 1.17 $ $Date: 2000/06/07 09:11:44 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -384,7 +384,98 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		}
          return group;
      } 
-    
+   
+       /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 public void writeGroup(CmsGroup group)
+         throws CmsException {
+         PreparedStatement statement = null;
+         try {
+            if (group != null){
+				// create statement
+                statement=m_pool.getPreparedStatement(C_GROUPS_WRITEGROUP_KEY);
+                statement.setString(1,group.getDescription());
+				statement.setInt(2,group.getFlags());
+				statement.setInt(3,group.getParentId());
+				statement.setInt(4,group.getId());
+				statement.executeUpdate();  
+                m_pool.putPreparedStatement(C_GROUPS_WRITEGROUP_KEY,statement);
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] ",CmsException.C_NO_GROUP);	
+            }
+         } catch (SQLException e){
+            m_pool.putPreparedStatement(C_GROUPS_WRITEGROUP_KEY,statement);
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+     }
+     
+     /**
+	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param delgroup The name of the group that is to be deleted.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 public void deleteGroup(String delgroup)
+         throws CmsException {
+         PreparedStatement statement = null;
+         try {
+			 // create statement
+             statement=m_pool.getPreparedStatement(C_GROUPS_DELETEGROUP_KEY);
+			 
+             statement.setString(1,delgroup);
+			 statement.executeUpdate();
+             m_pool.putPreparedStatement(C_GROUPS_DELETEGROUP_KEY,statement);
+         } catch (SQLException e){
+            m_pool.putPreparedStatement(C_GROUPS_DELETEGROUP_KEY,statement);
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+     }
+     
+     /**
+	 * Returns all groups<P/>
+	 * 
+	 * @return users A Vector of all existing groups.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+     public Vector getGroups() 
+      throws CmsException {
+         Vector groups = new Vector();
+         CmsGroup group=null;
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         try { 
+			// create statement
+            statement=m_pool.getPreparedStatement(C_GROUPS_GETALLGROUP_KEY);
+			
+           	res = statement.executeQuery();			
+            m_pool.putPreparedStatement(C_GROUPS_GETALLGROUP_KEY,statement);
+            // create new Cms group objects
+		    while ( res.next() ) {
+                    group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
+                                  res.getString(C_GROUPS_GROUP_NAME),
+                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));
+                    groups.addElement(group);
+             }
+             res.close();
+       
+         } catch (SQLException e){
+            m_pool.putPreparedStatement(C_GROUPS_GETALLGROUP_KEY,statement);
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+         }
+      return groups;
+     }
+     
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -457,6 +548,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		// TODO: read user here!
 		return null;
 	}
+    
+   
          
     // methods working with systemproperties
     
@@ -618,7 +711,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
 	    m_pool.initPreparedStatement(C_GROUPS_READGROUP2_KEY,C_GROUPS_READGROUP2);
         m_pool.initPreparedStatement(C_GROUPS_CREATEGROUP_KEY,C_GROUPS_CREATEGROUP);
-		
+        m_pool.initPreparedStatement(C_GROUPS_WRITEGROUP_KEY,C_GROUPS_WRITEGROUP);
+	    m_pool.initPreparedStatement(C_GROUPS_DELETEGROUP_KEY,C_GROUPS_DELETEGROUP);	
+        m_pool.initPreparedStatement(C_GROUPS_GETALLGROUP_KEY,C_GROUPS_GETALLGROUP);
+        
 		// init statements for users
 		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);
 		m_pool.initPreparedStatement(C_USERS_ADD_KEY,C_USERS_ADD);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 09:08:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/07 09:11:44 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/06/07 09:08:07 $
+ * @version $Revision: 1.13 $ $Date: 2000/06/07 09:11:44 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1404,8 +1404,43 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeGroup(CmsUser currentUser, CmsProject currentProject, 
 						   CmsGroup group)
         throws CmsException {
+        // Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_dbAccess.writeGroup(group);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + group.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
+
     }
     
+    /**
+	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param delgroup The name of the group that is to be deleted.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	public void deleteGroup(CmsUser currentUser, CmsProject currentProject, 
+							String delgroup)
+		throws CmsException {
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_dbAccess.deleteGroup(delgroup);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + delgroup, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+    
+
     /**
 	 * Sets a new parent-group for an already existing group in the Cms.<BR/>
 	 * 
@@ -1422,25 +1457,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   String groupName, String parentGroupName)
         throws CmsException {
     }
-    
-	/**
-	 * Delete a group from the Cms.<BR/>
-	 * Only groups that contain no subgroups can be deleted.
-	 * 
-	 * Only the admin can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Only users, which are in the group "administrators" are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param delgroup The name of the group that is to be deleted.
-	 * @exception CmsException  Throws CmsException if operation was not succesfull.
-	 */	
-	public void deleteGroup(CmsUser currentUser, CmsProject currentProject, 
-							String delgroup)
-        throws CmsException {
-    }
+ 
 
 	/**
 	 * Adds a user to a group.<BR/>
@@ -1507,10 +1524,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public Vector getGroups(CmsUser currentUser, CmsProject currentProject)
+	 public Vector getGroups(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
-     return null;
-    }
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getGroups();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
+	}
     
     
     /**
