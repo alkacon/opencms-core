@@ -4,6 +4,10 @@
 <opencms>
 	<workplace>
 		<defaultlocale>en</defaultlocale>
+		<localizedfolders>
+			<resource uri="/system/workplace/"/>
+			<resource uri="/system/login/"/>
+		</localizedfolders>
 		<dialoghandlers>
 			<dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
 			<dialoghandler class="org.opencms.workplace.commons.CmsLock"/>
