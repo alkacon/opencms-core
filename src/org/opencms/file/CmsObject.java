@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/07/05 10:07:22 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.file;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
@@ -50,7 +49,6 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
@@ -77,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  */
 public class CmsObject {
 
@@ -1793,19 +1791,6 @@ public class CmsObject {
     // Miscellaneous methods:
     private int warning3;    
       
-
-    /**
-     * Gets the Crontable.
-     *
-     * <B>Security:</B>
-     * All users are garnted<BR/>
-     *
-     * @return the crontable.
-     * @throws CmsException if something goes wrong
-     */
-    public String readCronTable() throws CmsException {
-        return m_driverManager.readCronTable();
-    }
     
     /**
      * Returns the current OpenCms registry.<p>
@@ -1831,80 +1816,6 @@ public class CmsObject {
         m_driverManager.importFolder(this, m_context, importFile, importPath);
         
         m_driverManager.clearcache();
-    }
-    
-    /**
-     * Returns the configured file extensions (suffixes).<p>
-     *
-     * @return a Hashtable with all known file extensions as Strings.
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public Hashtable readFileExtensions() throws CmsException {
-        return m_driverManager.readFileExtensions();
-    }
-
-    /**
-     * Returns the default resource type for the given resource name, using the 
-     * configured resource type file extensions.<p>
-     * 
-     * In case the given name does not map to a configured resource type,
-     * {@link CmsResourceTypePlain} is returned.<p>
-     * 
-     * This is only required (and should <i>not</i> be used otherwise) when 
-     * creating a new resource automatically during file upload or synchronization.
-     * Only in this case, the file type for the new resource is determined using this method.
-     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
-     * and is <i>not</i> related to the file name.<p>
-     * 
-     * @param resourcename the resource name to look up the resource type for
-     * 
-     * @return the default resource type for the given resource name
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see #readFileExtensions()
-     */
-    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
-
-        String typeName = null;
-        if (! CmsStringSubstitution.isEmpty(resourcename)) {
-            int pos = resourcename.lastIndexOf('.');
-            if (pos >= 0) {
-                String suffix = resourcename.substring(pos + 1);
-                if (! CmsStringSubstitution.isEmpty(suffix)) {
-                    suffix = suffix.toLowerCase();
-    
-                    // read the known file extensions from the database
-                    Hashtable extensions = readFileExtensions();
-                    if (extensions != null) {
-                        typeName = (String)extensions.get(suffix);
-                    }                
-                }
-            }      
-        }
-        
-        if (typeName == null) {
-            // use default type "plain"
-            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
-        }
-        
-        // look up and return the resource type
-        return OpenCms.getResourceManager().getResourceType(typeName);
-    }
-
-    /**
-     * Gets the Linkchecktable.
-     *
-     * <B>Security:</B>
-     * All users are granted<BR/>
-     *
-     * @return the linkchecktable
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Hashtable readLinkCheckTable() throws CmsException {
-        return m_driverManager.readLinkCheckTable();
     }
         
     /**
@@ -1989,23 +1900,7 @@ public class CmsObject {
     public String digest(String value) {
         return m_driverManager.digest(value);
     }
-    
-    /**
-     * Adds a file extension to the list of known file extensions.
-     * <p>
-     * <b>Security:</b>
-     * Only members of the group administrators are allowed to add a file extension.
-     *
-     * @param extension a file extension like "html","txt" etc.
-     * @param resTypeName name of the resource type associated with the extension.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-
-    public void addFileExtension(String extension, String resTypeName) throws CmsException {
-        m_driverManager.addFileExtension(m_context, extension, resTypeName);
-    }
-    
+        
     /**
      * Validates the HTML links in the unpublished files of the specified
      * publish list, if a files resource type implements the interface 
@@ -2022,19 +1917,6 @@ public class CmsObject {
      */    
     public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
         return m_driverManager.validateHtmlLinks(this, publishList, report);  
-    }
-    
-    /**
-     * Writes the Linkchecktable.
-     *
-     * <B>Security:</B>
-     * Only a administrator can do this<BR/>
-     *
-     * @param linkchecktable The hashtable that contains the links that were not reachable
-     * @throws CmsException if something goes wrong
-     */
-    public void writeLinkCheckTable(Hashtable linkchecktable) throws CmsException {
-        m_driverManager.writeLinkCheckTable(m_context, linkchecktable);
     }
 
     /**
@@ -2061,32 +1943,6 @@ public class CmsObject {
         
         OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
     }       
-    
-    /**
-     * Writes the Crontable.<p>
-     *
-     * <B>Security:</B>
-     * Only a administrator can do this.<p>
-     *
-     * @param crontable the crontable to write
-     * @throws CmsException if something goes wrong
-     */
-    public void writeCronTable(String crontable) throws CmsException {
-        m_driverManager.writeCronTable(m_context, crontable);
-    }
-
-    /**
-     * Writes the file extension mappings.<p>
-     *
-     * <B>Security:</B>
-     * Only the admin user is allowed to write file extensions.
-     *
-     * @param extensions holds extensions as keys and resourcetypes (Strings) as values
-     * @throws CmsException if something goes wrong
-     */
-    public void writeFileExtensions(Hashtable extensions) throws CmsException {
-        m_driverManager.writeFileExtensions(m_context, extensions);
-    }    
     
     /**
      * Send a broadcast message to all currently logged in users.<p>

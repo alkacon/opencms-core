@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,6 +68,22 @@ import java.util.List;
  */
 public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 
+    /** The name of the addMapping() method. */
+    String C_ADD_MAPPING_METHOD = "addMappingType";
+    
+    
+    /**
+     * Maps a file extension to a resource type.<p>
+     * 
+     * When uploading files into OpenCms, they must be mapped to the different
+     * OpenCms resource types. The configuration, to map which extension to which
+     * resouce type is done in the OpenCms VFS configuration.
+     * 
+     * @param mapping the file extension mapped to the resource type
+     */
+    void addMappingType(
+        String mapping);
+    
     /**
      * Changes the project id of the resource to the current project, indicating that 
      * the resource was last modified in this project.<p>
@@ -315,6 +331,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return the loader type id of this resource type
      */
     int getLoaderId();
+    
+    /**
+     * Returns the file extensions mappings for this resource type.<p>
+     *
+     * @return a list of file extensions mappings for this resource type
+     */
+    List getMapping();
+
 
     /**
      * Returns the type id of this resource type.<p>

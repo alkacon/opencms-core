@@ -2158,7 +2158,8 @@
             <properties/>
             <accesscontrol/>
         </file>
-        <file>
+        <!--
+		<file>
             <destination>system/workplace/administration/cronmanagement</destination>
             <type>folder</type>
             <uuidresource>1b961855-c0f9-11d7-8d80-80884c2772a5</uuidresource>
@@ -2220,6 +2221,7 @@
             <properties/>
             <accesscontrol/>
         </file>
+		-->
         <file>
             <destination>system/workplace/administration/database</destination>
             <type>folder</type>
@@ -2472,6 +2474,7 @@
             <properties/>
             <accesscontrol/>
         </file>
+		<!--
         <file>
             <destination>system/workplace/administration/datatypes</destination>
             <type>folder</type>
@@ -2534,6 +2537,7 @@
             <properties/>
             <accesscontrol/>
         </file>
+		-->
         <file>
             <destination>system/workplace/administration/downloadgallery</destination>
             <type>folder</type>

@@ -24,8 +24,11 @@
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
 
+<!ELEMENT mapping (#PCDATA)>
+<!ATTLIST mapping suffix CDATA #REQUIRED>
+
 <!ELEMENT resourcetypes (type+)>
-<!ELEMENT type (param*)>
+<!ELEMENT type (mapping*, param*)>
 <!ATTLIST type class CDATA #REQUIRED>
 
 <!ELEMENT translations (filetranslations?, foldertranslations?)>

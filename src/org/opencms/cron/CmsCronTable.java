@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronTable.java,v $
- * Date   : $Date: 2004/05/24 17:20:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,11 @@
 
 package org.opencms.cron;
 
-import org.opencms.main.CmsException;
+import org.opencms.file.CmsRegistry;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsRegistry;
-
 import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +46,7 @@ import org.dom4j.Element;
  * Describes a complete crontable with cronentries.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.6 $ $Date: 2004/05/24 17:20:38 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/05 16:32:42 $
  * @since 5.1.12
  */
 public class CmsCronTable extends Object {
@@ -62,12 +57,11 @@ public class CmsCronTable extends Object {
     /**
      * Creates a cron table from the specified string representing the cron table.<p>
      * 
-     * @param table a String representing the cron table
      * @throws IOException if the string couldn't be read
      */
-    public CmsCronTable(String table) throws IOException {
+    public CmsCronTable() throws IOException {
         m_cronEntries = new ArrayList();
-        update(new StringReader(table));        
+        update();        
     }
     
     /**
@@ -82,38 +76,6 @@ public class CmsCronTable extends Object {
             // ignore
         }
         super.finalize();
-    }
-
-    /**
-     * Updates the table with the new values.<p>
-     * 
-     * @param reader - the Reader to get the new values from.
-     * @throws IOException if the reader couldn't be read
-     */
-    public void update(Reader reader) throws IOException {
-        m_cronEntries.clear();
-        LineNumberReader lineReader = new LineNumberReader(reader);
-        String line = lineReader.readLine();
-        
-        while (line != null) {
-            line = line.trim();
-            if (!"".equals(line)) {
-                try {
-                    m_cronEntries.add(new CmsCronEntry(line));
-                } catch (CmsException e) {
-                    if (org.opencms.main.OpenCms.getLog(this).isErrorEnabled()) {
-                        org.opencms.main.OpenCms.getLog(this).error("Error parsing cron tab in line: " + line, e);
-                    }                      
-                }
-            }
-            
-            line = lineReader.readLine();
-        }
-        
-        // read the cron tab configured in registry.xml
-        readCronTab();
-        
-        reader.close();
     }
     
     /**
@@ -208,12 +170,9 @@ public class CmsCronTable extends Object {
 
     /**
      * Updates the table with the new values.<p>
-     * 
-     * @param table - the String to get the new values from.
-     * @throws IOException if the reader couldn't be read
      */
-    public void update(String table) throws IOException {
-        update(new StringReader(table));
+    public void update()  {
+        readCronTab();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkCheckViewer.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/07/05 16:32:42 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 
 import org.opencms.file.CmsObject;
+
+import com.opencms.defaults.CmsLinkCheck;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Enumeration;
@@ -40,7 +42,7 @@ import java.util.Hashtable;
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
  *
- * @version $Revision: 1.12 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.13 $ $Date: 2004/07/05 16:32:42 $
  * @author Edna Falkenhan
  */
 public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault {
@@ -67,7 +69,7 @@ public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault {
             String linkcheckdate = "";
             StringBuffer linkcheckcontent = new StringBuffer();
             try {
-                Hashtable linkchecktable = cms.readLinkCheckTable();
+                Hashtable linkchecktable = CmsLinkCheck.readLinkCheckTable();
                 Enumeration keys = linkchecktable.keys();
                 while(keys.hasMoreElements()) {
                     String curKey = (String)keys.nextElement();

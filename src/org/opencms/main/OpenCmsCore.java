@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/05 15:37:34 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.130 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.129 $
+ * @version $Revision: 1.130 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -401,7 +401,7 @@ public final class OpenCmsCore {
      */
     public void updateCronTable() {
         try {
-            m_cronTable.update(m_driverManager.readCronTable());
+            m_cronTable.update();
         } catch (Exception exc) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error("Crontable is corrupt, Cron scheduler has been disabled", exc);
@@ -1097,7 +1097,7 @@ public final class OpenCmsCore {
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
-                m_cronTable = new CmsCronTable(m_driverManager.readCronTable());
+                m_cronTable = new CmsCronTable();
                 m_scheduler = new CmsCronScheduler(this, m_cronTable);
                 if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : enabled");

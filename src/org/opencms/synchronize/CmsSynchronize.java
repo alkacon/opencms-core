@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.36 $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2004/06/28 11:18:10 $
+ * @version $Revision: 1.37 $ $Date: 2004/07/05 16:32:42 $
  */
 public class CmsSynchronize {
 
@@ -453,7 +453,7 @@ public class CmsSynchronize {
             m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
             
             // get the file type of the FS file
-            int resType = m_cms.getDefaultTypeForName(resName).getTypeId();
+            int resType = OpenCms.getResourceManager().getDefaultTypeForName(resName).getTypeId();
             CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder) + filename, resType, content, null);
             
             m_report.print(m_cms.getSitePath(newFile));

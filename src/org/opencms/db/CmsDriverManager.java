@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/05 10:07:22 $
- * Version: $Revision: 1.395 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.396 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.395 $ $Date: 2004/07/05 10:07:22 $
+ * @version $Revision: 1.396 $ $Date: 2004/07/05 16:32:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2784,34 +2784,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
         }
         return (false);
-    }
-
-    /**
-     * Adds a file extension to the list of known file extensions.<p>
-     *
-     * Users, which are in the group "administrators" are granted.
-     *
-     * @param context the current request context
-     * @param extension a file extension like 'html'
-     * @param resTypeName name of the resource type associated to the extension
-     * @throws CmsException if something goes wrong
-     */
-    public void addFileExtension(CmsRequestContext context, String extension, String resTypeName) throws CmsException {
-        if (extension != null && resTypeName != null) {
-            if (isAdmin(context)) {
-                Hashtable suffixes = (Hashtable)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS);
-                if (suffixes == null) {
-                    suffixes = new Hashtable();
-                    suffixes.put(extension, resTypeName);
-                    m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
-                } else {
-                    suffixes.put(extension, resTypeName);
-                    m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
-                }
-            } else {
-                throw new CmsSecurityException("[" + this.getClass().getName() + "] addFileExtension() " + extension, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-            }
-        }
     }
 
     /**
@@ -5984,22 +5956,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         return result;
     }
 
-    /**
-     * Gets the Crontable.<p>
-     *
-     * All users are garnted.
-     *
-     * @return the crontable
-     * @throws CmsException if something goes wrong
-     */
-    public String readCronTable() throws CmsException {
-        String retValue = (String)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE);
-        if (retValue == null) {
-            return "";
-        } else {
-            return retValue;
-        }
-    }
 
     /**
      * Reads a file from the Cms.<p>
@@ -6046,19 +6002,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // access to all subfolders was granted - return the file.
         return file;
-    }
-
-    /**
-     * Gets the known file extensions (=suffixes).<p>
-     *
-     * All users are granted access.<p>
-     *
-     * @return Hashtable with file extensions as Strings
-     * @throws CmsException if operation was not succesful
-     */
-    public Hashtable readFileExtensions() throws CmsException {
-        Hashtable res = (Hashtable)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS);
-        return ((res != null) ? res : new Hashtable());
     }
 
     /**
@@ -6296,23 +6239,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_groupCache.put(new CacheId(group), group);
         }
         return group;
-    }
-
-    /**
-     * Gets the Linkchecktable.<p>
-     *
-     * All users are garnted
-     *
-     * @return the linkchecktable.
-     * @throws CmsException if operation was not succesful
-     */
-    public Hashtable readLinkCheckTable() throws CmsException {
-        Hashtable retValue = (Hashtable)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE);
-        if (retValue == null) {
-            return new Hashtable();
-        } else {
-            return retValue;
-        }
     }
 
     /**
@@ -7582,30 +7508,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
         }
     }
-    
-    /**
-     * Writes the Crontable.<p>
-     *
-     * Only a administrator can do this.
-     *
-     * @param context the current request context
-     * @param crontable the creontable
-     * @throws CmsException if something goes wrong
-     */
-    public void writeCronTable(CmsRequestContext context, String crontable) throws CmsException {
-        if (isAdmin(context)) {
-            if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE) == null) {
-                m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
-            } else {
-                m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
-            }
-            
-            // TODO enable the cron manager
-            //OpenCms.getCronManager().writeCronTab(crontable);
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeCronTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
+
 
     /**
      * Writes all export points into the file system for a publish task 
@@ -7708,36 +7611,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Writes the file extensions.<p>
-     *
-     * Users, which are in the group for administrators are authorized.
-     *
-     * @param context the current request context
-     * @param extensions holds extensions as keys and resourcetypes (Stings) as values
-     * @throws CmsException if operation was not succesful
-     */
-    public void writeFileExtensions(CmsRequestContext context, Hashtable extensions) throws CmsException {
-        if (extensions != null) {
-            if (isAdmin(context)) {
-                Enumeration enu = extensions.keys();
-                while (enu.hasMoreElements()) {
-                    String key = (String)enu.nextElement();
-                    validFilename(key);
-                }
-                if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS) == null) {
-                    // the property wasn't set before.
-                    m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
-                } else {
-                    // overwrite the property.
-                    m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
-                }
-            } else {
-                throw new CmsSecurityException("[" + this.getClass().getName() + "] writeFileExtensions() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-            }
-        }
-    }
-
-    /**
      * Writes an already existing group in the Cms.<p>
      *
      * Only the admin can do this.
@@ -7753,27 +7626,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_groupCache.put(new CacheId(group), group);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writeGroup() " + group.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Writes the Linkchecktable.<p>
-     *
-     * Only a administrator can do this.
-     *
-     * @param context the current request context
-     * @param linkchecktable the hashtable that contains the links that were not reachable
-     * @throws CmsException if operation was not succesfull
-     */
-    public void writeLinkCheckTable(CmsRequestContext context, Hashtable linkchecktable) throws CmsException {
-        if (isAdmin(context)) {
-            if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE) == null) {
-                m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
-            } else {
-                m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
-            }
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeLinkCheckTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 

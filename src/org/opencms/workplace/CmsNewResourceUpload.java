@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,8 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,7 +65,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.3
  */
@@ -362,10 +361,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
         
         // get all file extensions
         String fileExtensions = new String("");
-        Hashtable extensions = getCms().readFileExtensions();
-        Enumeration keys = extensions.keys();
-        while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
+        Map extensions = OpenCms.getResourceManager().getExtensionMapping();
+        Iterator keys = extensions.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = (String)keys.next();
             String value = (String)extensions.get(key);
             fileExtensions += key + "=" + value + ",";           
         }

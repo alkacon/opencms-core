@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/06/21 09:55:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -57,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -142,8 +143,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#initConfiguration()
      */
-    public void initConfiguration() {
-
+    public void initConfiguration() throws CmsConfigurationException {
+        super.initConfiguration();
         // ensure default content encoding is set
         if (m_defaultEncoding == null) {
             m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsImportFolder {
 
@@ -197,7 +197,7 @@ public class CmsImportFolder {
                 importResources(currentFile, importPath + currentFile.getName() + "/");
             } else {
                 // import file into cms
-                int type = m_cms.getDefaultTypeForName(currentFile.getName()).getTypeId();
+                int type = OpenCms.getResourceManager().getDefaultTypeForName(currentFile.getName()).getTypeId();
                 byte[] content = getFileBytes(currentFile);
                 // create the file
                 m_cms.createResource(importPath + currentFile.getName(), type, content, null);
@@ -270,7 +270,7 @@ public class CmsImportFolder {
             }
             if (! isFolder) {
                 // import file into cms
-                int type = m_cms.getDefaultTypeForName(path[path.length - 1]).getTypeId();
+                int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
                 size = new Long(entry.getSize()).intValue();
                 if (size == -1) {
                     Vector v = new Vector();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminCronManagement.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/07/05 16:32:42 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,11 +63,13 @@ public class CmsAdminCronManagement extends CmsWorkplaceDefault {
             templateSelector = "done";
         } else if(parameters.containsKey("table")) {
             // store the updated crontable
-            cms.writeCronTable((String)parameters.get("table"));
+            //cms.writeCronTable((String)parameters.get("table"));
             templateSelector = "done";
         } else {
-            templateDocument.setData("table", CmsEncoder.escape(cms.readCronTable(),
-                cms.getRequestContext().getEncoding()));
+            // not possible anymore
+            //TODO: make this work again
+            //templateDocument.setData("table", CmsEncoder.escape(cms.readCronTable(),
+            //    cms.getRequestContext().getEncoding()));
         }
         // Now load the template file and start the processing
         return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,12 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -81,6 +83,9 @@ public class CmsResourceManager {
 
     /** All initialized resource loaders, mapped to their id. */
     private I_CmsResourceLoader[] m_loaders;
+    
+    /** The mappings of file extensions to resource types. */
+    private Map m_mappings;
 
     /** The OpenCms map of configured mime types. */
     private Map m_mimeTypes;
@@ -105,6 +110,7 @@ public class CmsResourceManager {
         m_resourceTypes = new I_CmsResourceType[100];
         m_resourceTypeList = new ArrayList();
         m_loaderList = new ArrayList();
+        m_mappings = new HashMap();
         m_includeExtensions = new ArrayList();
 
         Properties mimeTypes = new Properties();
@@ -170,6 +176,31 @@ public class CmsResourceManager {
     }
 
     /**
+     * Adds the file extionsion mappings of a resource type to the internal
+     * mapping storage.<p>
+     *
+     * @param resourceType the resource type with the mappings
+     */
+    private void addMapping(I_CmsResourceType resourceType) {
+        
+        List mappings = resourceType.getMapping();
+        
+        Iterator i = mappings.iterator();
+        while (i.hasNext()) {
+            String mapping = (String)i.next();
+            // only add this mapping if a mapping with this file extension does not
+            // exist already
+            if (!m_mappings.containsKey(mapping)) {
+               m_mappings.put(mapping, resourceType.getTypeName());
+               if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                   OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                       ". File mapping         : Map '" + mapping + "' to resource type " + resourceType.getTypeName());
+                }
+            }          
+        }
+    }
+    
+    /**
      * Adds a new resource type to the internal list of loaded resource types.<p>
      *
      * @param resourceType the resource type to add
@@ -195,6 +226,7 @@ public class CmsResourceManager {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Resource type init   : Adding " + resourceType.getClass().getName() + " with id " + pos);
         }
+        addMapping(resourceType);
     }
 
     /**
@@ -247,6 +279,63 @@ public class CmsResourceManager {
         return result.toString();
     }
 
+    /**
+     * Returns the default resource type for the given resource name, using the 
+     * configured resource type file extensions.<p>
+     * 
+     * In case the given name does not map to a configured resource type,
+     * {@link CmsResourceTypePlain} is returned.<p>
+     * 
+     * This is only required (and should <i>not</i> be used otherwise) when 
+     * creating a new resource automatically during file upload or synchronization.
+     * Only in this case, the file type for the new resource is determined using this method.
+     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
+     * and is <i>not</i> related to the file name.<p>
+     * 
+     * @param resourcename the resource name to look up the resource type for
+     * 
+     * @return the default resource type for the given resource name
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
+
+        String typeName = null;
+        String suffix = null;
+        if (! CmsStringSubstitution.isEmpty(resourcename)) {
+            int pos = resourcename.lastIndexOf('.');
+            if (pos >= 0) {
+                suffix = resourcename.substring(pos);
+                if (! CmsStringSubstitution.isEmpty(suffix)) {
+                    suffix = suffix.toLowerCase();  
+                    typeName = (String) m_mappings.get(suffix);         
+
+                }
+            }      
+        }
+        
+        if (typeName == null) {
+            // use default type "plain"
+            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
+        }
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug(
+                "getting resource type " + typeName + " for suffix " + suffix);
+        }
+        // look up and return the resource type
+        return getResourceType(typeName);
+    }
+    
+    /**
+     * Returns the file extensions (suffixes) mappings to resource types.<p>
+     *
+     * @return a Map with all known file extensions as keys and their resource types as values.
+     */
+    public Map getExtensionMapping() {
+        return m_mappings;
+    }
+    
     /**
      * Returns the initialized resource type instance for the given id.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/06/28 07:42:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,21 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMail;
 
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,6 +67,9 @@ import java.util.Vector;
  */
 public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
 
+    
+    static final String LINKTABLE_FILENAME = OpenCms.getSystemInfo().getPackagesRfsPath() + "linkcheck";
+    
     /**
      * Constructor, does nothing.<p>
      */
@@ -283,7 +293,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
         Hashtable ownerLinkList = new Hashtable();
 
         // get the hashtable with the last check result from the system table
-        Hashtable linkckecktable = cms.readLinkCheckTable();
+        Hashtable linkckecktable = CmsLinkCheck.readLinkCheckTable();
 
         Hashtable newLinkchecktable = new Hashtable();
         // get the values for email from the registry
@@ -304,7 +314,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 
         // get all links from the database
-        linkList = new Vector(cms.readFilesByType(I_CmsConstants.C_UNKNOWN_INT, CmsResourceTypePointer.C_RESOURCE_TYPE_ID));
+        linkList = new Vector(cms.readFilesByType(1, CmsResourceTypePointer.C_RESOURCE_TYPE_ID));
         for (int i = 0; i < linkList.size(); i++) {
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);
             String linkName = cms.getSitePath(linkElement);
@@ -353,7 +363,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
             }
         }
         // write the linkchecktable to database
-        cms.writeLinkCheckTable(newLinkchecktable);
+        CmsLinkCheck.writeLinkCheckTable(newLinkchecktable);
 
         // get the information for the output
         if ((parameter != null) && (!"".equals(parameter.trim()))) {
@@ -421,5 +431,82 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
                 }
             }
         }
+    }
+   
+    /**
+     * Writes the Linkchecktable.
+     *
+     * @param newLinkchecktable The hashtable that contains the links that were not reachable
+     * @throws CmsException if something goes wrong
+     */
+    public static void writeLinkCheckTable(Hashtable newLinkchecktable) throws CmsException {
+        FileOutputStream fOut = null;
+        try {
+            File tableInRfs = new File(LINKTABLE_FILENAME); 
+            if (tableInRfs.exists()) {
+                tableInRfs.delete();
+                tableInRfs.createNewFile();
+            }
+            // serialize the object
+            fOut = new FileOutputStream(tableInRfs);
+            ObjectOutputStream oout = new ObjectOutputStream(fOut);
+            oout.writeObject(newLinkchecktable);
+            oout.close();
+            oout.flush();                                                           
+        } catch (IOException e) {
+            throw new CmsException("Error writing serialized hashtable. "+e);
+        } finally {
+            try {
+                if (fOut != null) {
+                    fOut.close();
+                }
+            } catch (IOException e) {
+                // ignore
+            }
+        }        
+    }
+    
+    /**
+     * Gets the Linkchecktable.
+     *
+     * @return the linkchecktable
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static Hashtable readLinkCheckTable() throws CmsException {
+        Hashtable result = new Hashtable();
+        FileInputStream fIn = null;
+        byte[] buffer;
+        int charsRead;
+        int size;
+        try {
+        File tableInRfs = new File(LINKTABLE_FILENAME); 
+        if (tableInRfs.exists()) {
+            fIn = new FileInputStream(tableInRfs);
+            charsRead = 0;
+            size = new Long(tableInRfs.length()).intValue();
+            buffer = new byte[size];
+            while (charsRead < size) {
+                charsRead += fIn.read(buffer, charsRead, size - charsRead);
+            }
+            
+            // now deserialize the object
+            ByteArrayInputStream bin = new ByteArrayInputStream(buffer);
+            ObjectInputStream oin = new ObjectInputStream(bin);
+            Serializable s = (Serializable) oin.readObject();
+            result = (Hashtable) s;
+        }
+        } catch (Exception e) {  
+            throw new CmsException("Error writing serialized hashtable. "+e);
+        } finally {
+        try {
+            if (fIn != null) {
+                fIn.close();
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+    }  
+        return result;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/07/03 10:17:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -53,11 +54,17 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
 
+    /** 
+     * The list of all resourcetype mappings.<p>
+     * Contains those file extensions mapped to the resourcetype.
+     */
+    private List m_mappings = new ArrayList();
+    
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
@@ -69,6 +76,24 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 "addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
         }
     }
+    
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#addMappingType(java.lang.String)
+     */
+    public void addMappingType(String mapping) {
+
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                "addMapping(" + mapping + ") added to " + this);
+        }
+        if (m_mappings == null) {
+            m_mappings = new ArrayList();
+        }   
+        m_mappings.add(mapping);
+    }
+    
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource)
@@ -239,7 +264,15 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public abstract int getLoaderId();
+  
 
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getMapping()
+     */
+    public List getMapping() {
+        return m_mappings;
+    }
+    
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
      */
@@ -288,7 +321,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             if (this == null) {
                 throw new CmsConfigurationException();
             }
-        }            
+        }         
+        
     }    
     
     /**

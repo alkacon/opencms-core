@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2004/06/21 11:43:01 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2004/07/05 16:32:42 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,20 +28,20 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.types.I_CmsResourceType;
-
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.36 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.37 $ $Date: 2004/07/05 16:32:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -141,15 +141,17 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                 try {
                     String formattedName;
                     formattedName = format(name);
-                    Hashtable h = cms.readFileExtensions();
+                    Map h = OpenCms.getResourceManager().getExtensionMapping();
                     if(h == null) {
-                        h = new Hashtable();
+                        h = new HashMap();
                     }
                     if(h.containsKey(formattedName)) {
                         throw new CmsException(CmsException.C_NOT_EMPTY);
                     }
                     h.put(formattedName, resTypeName);
-                    cms.writeFileExtensions(h);
+                    // not possible anymore right now
+                    // TODO: make this possible again
+                    //cms.writeFileExtensions(h);
                     templateSelector = "";
                 }
                 catch(CmsException e) {
@@ -179,18 +181,20 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                 if("true".equals(parameters.get("sure"))) {
 
                     // the user is sure to delete the property definition
-                    try {
-                        Hashtable h = cms.readFileExtensions();
+                    //try {
+                        Map h = OpenCms.getResourceManager().getExtensionMapping();
                         if(h != null) {
                             h.remove(extensionName);
                         }
-                        cms.writeFileExtensions(h);
+                        // not possible anymore right now
+                        // TODO: make this possible again
+                        //cms.writeFileExtensions(h);
                         templateSelector = "";
-                    }
-                    catch(CmsException e) {
+                    //}
+                    /**catch(CmsException e) {
                         xmlTemplateDocument.setData("DELETEDETAILS", CmsException.getStackTraceAsString(e));
                         templateSelector = "errordelete";
-                    }
+                    }*/
                 }
                 else {
                     templateSelector = "RUsuredelete";
@@ -220,8 +224,8 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
     public String getDatatypes(CmsObject cms, A_CmsXmlContent doc,
             CmsXmlLanguageFile lang, Hashtable parameters, Object callingObj) throws CmsException {
         StringBuffer result = new StringBuffer();
-        Hashtable extensions = cms.readFileExtensions();
-        Hashtable extByFiletypes = turnAround(extensions);
+        Map extensions = OpenCms.getResourceManager().getExtensionMapping();
+        Map extByFiletypes = turnAround(extensions);
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
         
         // get all available resource types
@@ -301,14 +305,14 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
      * @return a Hashtable of Vectors
      */
 
-    private Hashtable turnAround(Hashtable h) {
+    private Map turnAround(Map h) {
         if(h == null) {
             return null;
         }
-        Hashtable g = new Hashtable();
-        Enumeration en = h.keys();
-        while(en.hasMoreElements()) {
-            Object key = en.nextElement();
+        Map g = new HashMap();
+        Iterator en = h.keySet().iterator();
+        while(en.hasNext()) {
+            Object key = en.next();
             Object value = h.get(key);
             Vector List = (Vector)g.get(value);
             if(List == null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/07/05 16:32:42 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -55,7 +56,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.53 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.54 $ $Date: 2004/07/05 16:32:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -422,7 +423,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
         suffix = suffix.toLowerCase(); // file extension of filename
 
         // read the known file extensions from the database
-        Hashtable extensions = cms.readFileExtensions();
+        Map extensions = OpenCms.getResourceManager().getExtensionMapping();
         String resType = new String();
         if(extensions != null) {
             resType = (String)extensions.get(suffix);

@@ -27,23 +27,6 @@ createPropertydefinition template
 createPropertydefinition template-elements
 createPropertydefinition locale
 
-# Initialize the default file extensions
-addFileExtension doc binary
-addFileExtension pdf binary
-addFileExtension zip binary
-addFileExtension class binary
-addFileExtension ppt binary 
-addFileExtension txt plain 
-addFileExtension html plain 
-addFileExtension htm plain
-addFileExtension jpeg image
-addFileExtension jpg image
-addFileExtension gif image
-addFileExtension png image
-addFileExtension tif image
-addFileExtension tiff image
-addFileExtension jsp jsp
-
 # Switch to the root context
 setSiteRoot "/"
 

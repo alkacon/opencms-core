@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2004/06/21 11:43:01 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/07/05 16:32:42 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,14 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 /**
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault {
 
@@ -143,7 +144,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
             session.putValue(I_CmsWpConstants.C_PARA_RESOURCE, m_OldResourceName);
 
             // preserve the type of the old resource depending on the file extension as well
-            Hashtable fileExtensions = cms.readFileExtensions();
+            Map fileExtensions = OpenCms.getResourceManager().getExtensionMapping();
             String uploadFilenameExtension = m_OldResourceName.substring(m_OldResourceName.lastIndexOf('.') + 1).toLowerCase();
 
             if (fileExtensions != null) {

@@ -24,13 +24,32 @@
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" />
 				<type class="org.opencms.file.types.CmsResourceTypePlain">
+					<mapping suffix=".txt" />
+					<mapping suffix=".html" />
+					<mapping suffix=".htm" />
 					<param name="test1">One</param>
 					<param name="test2">Two</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePointer" />
-				<type class="org.opencms.file.types.CmsResourceTypeBinary" />
-				<type class="org.opencms.file.types.CmsResourceTypeImage" />
-				<type class="org.opencms.file.types.CmsResourceTypeJsp" />
+				<type class="org.opencms.file.types.CmsResourceTypeBinary">
+					<mapping suffix=".pdf" />
+					<mapping suffix=".zip" />
+					<mapping suffix=".class" />
+					<mapping suffix=".ppt" />
+					<mapping suffix=".doc" />
+					<mapping suffix=".xls" />
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeImage">
+					<mapping suffix=".jpeg" />
+					<mapping suffix=".jpg" />
+					<mapping suffix=".gif" />
+					<mapping suffix=".png" />
+					<mapping suffix=".tif" />
+					<mapping suffix=".tiff" />
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeJsp">
+					<mapping suffix=".jsp" />
+				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" />
 			</resourcetypes>  
         </resources>   
