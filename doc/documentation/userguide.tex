@@ -97,7 +97,7 @@ In the login dialog box (Figure~\ref{loginbox}), enter "Admin" as
 the user name and "admin" as the password.
 
 \begin{figure}[!hbt]
-\begin{minipage}[b]{0.499\linewidth}
+\begin{minipage}[b]{0.35\linewidth}
    \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/loginBox}
@@ -111,7 +111,7 @@ the user name and "admin" as the password.
 
 Logging in automatically opens a new browser window and closes the
 old one (you will be prompted to confirm this action). You are now
-in the "Workplace," in the so-called "Explorer" view
+in the ``Workplace," in the so-called ``Explorer" view
 (Figure~\ref{explorer}). This is where the actual editing starts.
 
 \begin{figure}[!hbt]
@@ -126,20 +126,21 @@ in the "Workplace," in the so-called "Explorer" view
 
 \textbf{NOTE:} OpenCms is a project based application, which means
 that you cannot modify the pages online. You first have to create
-an editing (offline) project.
+an editing (offline) project. The default ``Offline" project can 
+also be used for editing pages.
 
 \subsubsection{Creating a new project}
 
-Switch to the administration window by clicking on "View" on the
-menu bar and selecting "Administration" from the drop-down menu
+Switch to the administration window by clicking on ``View" on the
+menu bar and selecting ``Administration" from the drop-down menu
 (Figure~\ref{view}).
 
 \begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/view}
-\caption[Drop down menu "View"]
-           {Drop down menu "View"}
+\caption[Drop down menu ``View"]
+           {Drop down menu ``View"}
 \label{view}
 \end{center}
 \end{figure}
@@ -151,13 +152,13 @@ displayed: (Figure~\ref{adminview}):
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/adminView}
-\caption["Administration" view]
-           {"Administration" view}
+\caption[``Administration" view]
+           {``Administration" view}
 \label{adminview}
 \end{center}
 \end{figure}
 
-Click on "Project Management." A new page is opened that contains
+Click on ``Project Management." A new page is opened that contains
 the following buttons (Figure~\ref{projectmanager}):
 
 \begin{figure}[!hbt]
@@ -170,7 +171,7 @@ the following buttons (Figure~\ref{projectmanager}):
 \end{center}
 \end{figure}
 
-Click on "New Project" to create a new project.
+Click on ``New Project" to create a new project.
 
 The dialog window ``Create a new project" is opened
 (Figure~\ref{createnewproject}). Enter the project data:
@@ -178,9 +179,10 @@ The dialog window ``Create a new project" is opened
 \begin{itemize}
 \item Project name: Nice try
 \item Description: Create test project
-\item project Directories: /release/
-\item Project members: Users
-\item Project leader: Project manager
+\item Folders: /release/
+\item Channels: [leave empty]
+\item User group: Users
+\item Manager group: Project manager
 \end{itemize}
 
 Click on the "OK" button.
@@ -194,14 +196,14 @@ new project. The window closes automatically.
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newProject}
-\caption[Dialog window "Create a new project"]
-           {Dialog window "Create a new project"}
+\caption[Dialog window ``Create a new project"]
+           {Dialog window ``Create a new project"}
 \label{createnewproject}
 \end{center}
 \end{figure}
 
 Switch back to the Explorer view by selecting it from the ``View"
-drop-down menu. Select the ``release" directory (the same one you
+drop-down menu. Select the ``/release/" directory (the same one you
 selected when creating your project) from the drop-down menu. The
 Explorer view is opened. Open your ``Nice try" project by selecting
 it from the Project drop-down menu on the menu bar
@@ -256,7 +258,7 @@ mouse button again to display the context-sensitive menu. Click on
 
 You are now in the OpenCms HTML editor (Figure~\ref{htmleditor}).
 Here you will find a number of editing icons that should be
-familiar from other applications, such as Word.
+familiar from other applications, such as Open Office or Word.
 
 \begin{figure}[!hbt]
 \begin{center}
@@ -270,11 +272,11 @@ familiar from other applications, such as Word.
 
 In the text editor, which is just below the icons, the text that
 you saw at the release notes page is
-displayed. Make changes to the text and its format (bold, italics,
+displayed. Make changes to the text and its format (e.g. bold, italics,
 underline).
 
 \textbf{By the way:} The HTML editor view you are currently in is
-a WYSIWYG view ("\textbf{W}hat \textbf{y}ou \textbf{s}ee
+a WYSIWYG view (``\textbf{W}hat \textbf{y}ou \textbf{s}ee
 \textbf{i}s \textbf{w}hat \textbf{y}ou \textbf{g}et"); this means
 that pages are displayed here exactly as they will be seen later
 on the Internet.
@@ -296,9 +298,9 @@ the "preview" button in the upper right corner of the editor.
 
 In the upper menu bar is the "Editor" drop-down menu, which
 contains a selection of Editor views. You are currently in the
-HTML view. Select the "Text editor" view. The view is opened and
+WYSIWYG view. Select the ``Sourcecode editor" view. The view is opened and
 displays the same content as source code. Close the view by
-clicking on the button "Save \& Exit"
+clicking on the button ``Save \& Exit"
 \includegraphics{pics/usermanual/ic_saveexit}, which is at the far
 left of the menu bar.
 
@@ -309,8 +311,8 @@ The Explorer view is displayed.
 The page's details are currently displayed in red, which means
 that the page has been edited. Additionally there is a little red
 flag, which means that this page was locked and changed in the
-current project. Click on the page icon of "installation.html" with the left mouse to "unlock" it. Click on
-the menu item "Unlock" in the context-sensitive menu to unlock the
+current project. Click on the page icon of ``installation.html" with the left mouse to ``unlock" it. Click on
+the menu item ``Unlock" in the context-sensitive menu to unlock the
 page. The lock disappears (Figure~\ref{unlockpage}).
 
 \begin{figure}[!hbt]
@@ -325,8 +327,8 @@ page. The lock disappears (Figure~\ref{unlockpage}).
 
 \subsubsection{Publishing a project}
 
-Open the "Administration" view. Click on the "Project management"
-button and then on "Current projects." The project you just edited
+Open the ``Administration" view. Click on the ``Project management"
+button and after that on ``Current projects." The project you just edited
 is displayed in the overview. Click on the project's icon to
 access the context-sensitive menu. Select the menu item "Publish"
 (Figure~\ref{publishproject}). Click on "OK."
@@ -363,33 +365,36 @@ The test page is displayed with your modifications (Figure~\ref{demopage02}).
 
 You can add new pages and folders for your web page from the
 Explorer view. Create a new project or select the ``Nice try" project by following the steps
-described above. Go to the "release" directory by clicking on the
+described above. Go to the ``/release/" directory by clicking on the
 appropriate folder in the directory tree with the left mouse
 button.
 
-Click on the "new" icon
+Click on the ``new" icon
 \includegraphics{pics/usermanual/ic_newres}. The dialog window
-"New" is opened (Figure~\ref{newpage01}).
+``New" is opened (Figure~\ref{newpage01}).
 
-Click on the radio button "Page."
+Click on the radio button ``Page."
 
 \begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newPage01}
-\caption[Dialog window "New"]
-           {Dialog window "New"}
+\caption[Dialog window ``New"]
+           {Dialog window ``New"}
 \label{newpage01}
 \end{center}
 \end{figure}
 
-Click on the "Continue" button. Enter the following data in the
-dialog window "Create a new page" (Figure~\ref{newpage02}):
+Click on the ``Continue" button. Enter the following data in the
+dialog window ``Create a new page" (Figure~\ref{newpage02}):
 
 \begin{itemize}
 \item Name: help
 \item Title: Test page
 \item Template: Welcome / Release notes template
+\item Keywords: Here you can enter some keywords
+\item Description: Here you can enter a description
+\item (Checkbox) add to navigation: check (default)
 \item Text in Navigation: Help
 \item Insert after: at the last position
 \end{itemize}
@@ -398,16 +403,16 @@ dialog window "Create a new page" (Figure~\ref{newpage02}):
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newPage02}
-\caption[Dialog window "Create a new page"]
-           {Dialog window "Create a new page"}
+\caption[Dialog window ``Create a new page"]
+           {Dialog window ``Create a new page"}
 \label{newpage02}
 \end{center}
 \end{figure}
 
-\textbf{NOTE:} The "Text in navigation" is the name that will
+\textbf{NOTE:} The ``Text in navigation" is the name that will
 later be displayed as the link in the online navigator.
 
-Click on "Finish". This takes you back to the Explorer view and
+Click on ``Finish". This takes you back to the Explorer view and
 displays the details of your new page in blue with a lock
 (Figure~\ref{explnewpage}). You can either continue editing the
 page (see above) or use the context-sensitive menu to unlock it
@@ -423,13 +428,13 @@ for other users.
 \end{center}
 \end{figure}
 
-Publish the project as explained under "Publishing a project" and
+Publish the project as explained under ``Publishing a project" and
 open the installation page:\\
 http://localhost:8080/opencms/opencms/release/installation.html
 
-The installation page is displayed with the new link to your page ``help.html". Click on the link to
-view your new page (Figure~\ref{demopage03}) without any content. 
-Of course you can enter additional text with the html editor as desribed above.
+The installation page is displayed with the new link to your page ``help.html" in the top navigation.
+Click on the link to
+view your new page (Figure~\ref{demopage03}). 
 
 \begin{figure}[!hbt]
 \begin{center}
@@ -441,30 +446,30 @@ Of course you can enter additional text with the html editor as desribed above.
 \end{center}
 \end{figure}
 
-This is the end of our demo. Thank you for your attention. Additional and more detailed information about OpenCms is described in Part 2 of the guide.
+This is the end of our short demo. Thank you for your attention. Additional and more detailed information about OpenCms is described in Part 2 of the guide.
 \newpage
 \section{Part 2: OpenCms - The mechanics}
 
 \subsection{The user interface}
-The user interface is customized by clicking on the "Settings" tab
-(the "hammer" button \includegraphics{pics/usermanual/ic_settings}
+The user interface is customized by clicking on the ``Settings" tab
+(the ``hammer" button \includegraphics{pics/usermanual/ic_settings}
 on the menu bar):
 
 \begin{itemize}
-\item The additional file information that is to be displayed in the Explorer view is defined on the "Explorer" tab.
-\item The Standard view and messaging options for task management are defined on the "Tasks" tab.
-\item The user's default startup settings and permissions for new files are defined on the "Startup Options" tab.
-\item A user's group and password are changed on the "User Data" tab.
+\item The additional file information that is to be displayed in the Explorer view is defined on the ``Explorer" tab.
+\item The Standard view and messaging options for task management are defined on the ``Tasks" tab.
+\item The user's default startup settings and permissions for new files are defined on the ``Startup Options" tab.
+\item A user's group and password are changed on the ``User Data" tab.
 \end{itemize}
 
 \subsection{View Modes}
 
 The user screen contains all of the components, grouped in views,
 that enable users to create, maintain and manage web pages. In the
-"Explorer" view, users manage directories and files and edit HTML
-pages. A project's workflow is managed in the "Tasks" view. Users,
+``Explorer" view, users manage directories and files and edit HTML
+pages. A project's workflow is managed in the ``Tasks" view. Users,
 groups, projects, database connections, images, documents etc. are
-managed in the "Administration" view. The user screen (default
+managed in the ``Administration" view. The user screen (default
 startup view) is started via a login dialog and is displayed as a
 file explorer. The directory tree structure, the file view and the
 menu bar make it easy for users to access files and functions
@@ -481,12 +486,12 @@ menu bar make it easy for users to access files and functions
 \end{figure}
 
 Users can switch between the online version of the web page and
-the individual projects by selecting one of the options in the
-"Project" drop-down menu.
+the individual offline projects by selecting one of the options in the
+``Project" drop-down menu.
 
-Users can switch between the "Explorer," "Tasks" and
-"Administration" views by selecting one of the options in the
-"View" drop-down menu.
+Users can switch between the ``Explorer", ``Tasks" and
+``Administration" views by selecting one of the options in the
+``View" drop-down menu.
 
 The files and directories are managed via a context-sensitive menu
 that is activated by clicking on the file or directory icon in the
@@ -497,7 +502,7 @@ in the browser screen (Figure~\ref{browserscreen}). The website's
 files and directories cannot be modified in the online version.
 The browser screen, which displays the page as it would be seen by
 someone visiting the live site, is activated by clicking on the
-file name in the file view:
+file name in the ``Explorer" view:
 
 \begin{itemize}
 \item The Template of an OpenCms-generated browser page contains the
@@ -540,8 +545,8 @@ functions ensure that access security remains intact for larger
 user groups.
 
 The modifications that are made to the files are written to a
-backup table after publish. The information about all versions can
-be accessed via the "History" option in the context-sensitive menu
+backup table after publishing. The information about all versions can
+be accessed via the ``History" option in the context-sensitive menu
 (Figure~\ref{history01}).
 
 \begin{figure}[!hbt]
@@ -555,65 +560,67 @@ be accessed via the "History" option in the context-sensitive menu
 \end{figure}
 
 To create new content, the user creates a new file or directory by
-clicking on the "New" button on the menu bar. This opens a dialog
+clicking on the ``New" button on the menu bar. This opens a dialog
 window in which the user selects the element to create: ``Folder,"
 ``Page," ``Link", ``Text", ``XMLTemplate", ``JSP" or ``Upload new file." The
-name, title and navigator text as well as the position of the file
-or directory in the navigator, are defined in separate dialog
+name, title and navigation text as well as the position of the file
+or directory in the navigation, are defined in separate dialog
 boxes. Selecting the option ``Upload new file" enables users to load
 files that are stored on their PC's local hard disks into an
 OpenCms directory. Users access their assigned directories and
-files via the file explorer.
+files via the file ``Explorer" view of OpenCms.
 
-Clicking on the directory name (e.g. "OpenCms") in the directory
-tree structure or in the file view displays the directory's
-contents. Clicking on an HTML file name (e.g. "index.html") opens
-the file in the Internet browser. Clicking on a directory or file
+Clicking on the directory name (e.g. ``OpenCms") in the directory
+tree structure or in the ``Explorer" view displays the directory's
+contents. Clicking on an HTML file name (e.g. ``index.html") opens
+a preview of the file in the Internet browser. Clicking on a directory or file
 icon (text file, image etc.) in the file overview displays a
 context-sensitive menu. The menu contains the following functions
 that are accessible (active/inactive) based on the file's or
 directory's status and the user's access permissions:
 
 \begin{itemize}
-\item Lock or Unlock: Directories or files can be locked throughout
+\item \textbf{Lock or Unlock}: Directories or files can be locked throughout
 the editing phase to prevent them from being accessed or modified
 by several users at the same time. A file or directory is unlocked
 when the user has finished modifying it.
 
-\item Publish directly: A single resource can be published
+\item \textbf{Publish directly}: A single resource can be published
 directly. This item is enabled when a changed file is unlocked.
 
-\item Edit page: Clicking opens a WYSIWYG editor in which the file can be modified.
+\item \textbf{Edit page}: Clicking opens a WYSIWYG editor in which the file can be modified.
 At this stage, no HTML knowledge is required to modify a page.
 
-\item Edit sourcecode: Clicking opens a text editor in which the file can be modified.
+\item \textbf{Edit sourcecode}: Clicking opens a text editor in which the file can be modified.
 This requires at least basic HTML knowledge to modify a page.
 
-\item Edit control code: Clicking opens a text editor in which
-control codes can be edited. Extensive HTML knowledge is required
+\item \textbf{Edit control code}: Clicking opens a text editor in which
+control codes can be edited.
+\textbf{Warning:} Extensive knowledge of the OpenCms template mechanism is required
 to make modifications of this type.
 
-\item History: The history file displays all of the file's previous
+\item \textbf{History}: The history file displays all of the file's previous
 versions. The history file enables users to see who made which
 modifications when. When the file is locked a button for restoring
-a version is shown in the "Detail" of the version.
+a version is shown in the ``Detail" of the version.
 
 \item The respective access
 attributes for the individual files and directories are set on the
-system side by using the functions "Change owner," "Change group"
-and "Change permissions".
+system side by using the functions ``\textbf{Change owner}", ``\textbf{Change group}"
+and ``\textbf{Change permissions}".
 
-\item Change navigation: Here the navigation text and position of a resource can be changed.
+\item \textbf{Change navigation}: Here the navigation text and position of a resource can be changed.
 
-\item Properties: To every resource properties can be attached as key / value pairs, e.g. the title or the description is stored as a resource property.
+\item \textbf{Properties}: To every resource properties can be attached as key / value pairs, 
+e.g. the title or the description is stored as a resource property.
 Properties can be added, modified or deleted.
 
-\item Standard functions such as ``Copy,"
-``Rename", ``Move" and ``Delete" can be selected from the context-sensitive
-menus. ``Touch" changes the timestamp of a resource, which marks it as changed, 
+\item Standard functions such as ``\textbf{Copy}",
+``\textbf{Rename}", ``\textbf{Move}" and ``\textbf{Delete}" can be selected from the context
+menus. ``\textbf{Touch}" changes the timestamp of a resource, which marks it as changed, 
 and it will be published when the project is published.
 
-\item Undelete resources: \index{undelete} When a resource
+\item \textbf{Undelete resources}: \index{undelete} When a resource
 that already exists in the online project is deleted it is marked
 by crossing out its entry in the file list. Now it is possible to
 undelete these resources. When undeleting a folder all
@@ -634,14 +641,14 @@ After the resource is undeleted its state is set to changed and
 the resource is locked by the current user.
 
 
-\item Undo changes  \index{undo}
+\item \textbf{Undo changes}  \index{undo}
 
-Changes of a resource can now be undone. The resource must be
+Changes of a resource can be undone. The resource must be
 marked as changed and it must be locked. You must have write
 access to the resource. When the changes of a folder are undone
 all changes of subresources are undone, too. This feature copies
 the information from the online project, so all changes that were
-not published are lost and new resources are deleted.
+not published yet are lost and new resources are deleted.
 
 \begin{figure}[!hbt]
 \begin{center}
@@ -654,15 +661,15 @@ not published are lost and new resources are deleted.
 \end{figure}
 
 
-\item Restore a version from history  \index{history}
+\item \textbf{Restore a version from history}  \index{history}
 
-Now older versions of a file can be restored from the history. The
-file must be locked. This feature currently works only for files
+Older versions of a file can be restored from the history. The
+file must be locked. This feature currently works only for files,
 not for folders. The function is only enabled for locked files. It
 is implemented in the detail view of the history.
 
 You have to choose the version from the list of versions and click
-on the detail button. To restore the version click on the "Restore
+on the detail button. To restore the version click on the ``Restore
 version"-button. You must have write access to the file if you
 want to restore a version.
 
@@ -685,11 +692,11 @@ want to restore a version.
 \end{figure}
 
 
-\item Publish a resource \index{publish resource}
+\item \textbf{Publish a resource} \index{publish resource}
 
-Resources can now be published directly. They must be unlocked to
-enable the function in the context menu. Only the projectmanager
-and the administrator are allowed to publish resources.
+Resources can be published directly. They must be unlocked to
+enable the function in the context menu. Only members of the projectmanager
+and the administrator groups are allowed to publish resources of a project.
 
 \begin{figure}[!hbt]
 \begin{center}
@@ -711,7 +718,7 @@ When a resource is published directly
 \end{itemize}
 
 
-\item Copy a resource to the project
+\item \textbf{Copy a resource to the project}
 
 A resource that does not belong to the current offline project is
 colored grey. You can copy this resource to the current offline
@@ -748,12 +755,13 @@ several (Figure~\ref{newgroup}).
 The following groups are pre-defined in OpenCms:
 
 \begin{itemize}
-\item Administrators: An administrator has full access permissions to
+\item \textbf{Administrators}: An administrator has full access permissions to
 all of the files and directories. Administrators create and manage
 users and user groups.
-\item Project manager: A project manager creates new projects and coordinates their workflow. A project manager's access permissions are restricted to the projects he/she creates. A project manager can, however, access all of the files and directories within his/her projects. A project manager can also publish projects, i.e. put them online.
-\item Users: A user can create new files and directories within the project he/she is assigned to. As the owner, the user has full access permissions to the files and directories he/she creates.
-\item Guest: This group consists of all other users, such as visitors.
+\item \textbf{Projectmanager}: A project manager creates new projects and coordinates their workflow. A project manager's access permissions are restricted to the projects he/she creates. A project manager can, however, access all of the files and directories within his/her projects. A project manager can also publish projects, i.e. put them online.
+\item \textbf{Users}: A user can create new files and directories within the project he/she is assigned to. As the owner, the user has full access permissions to the files and directories he/she creates.
+\item \textbf{WebUsers}: Webusers cannot login in the OpenCms workplace, but can have access to restricted areas of a website which is forbidden for Guests.
+\item \textbf{Guest}: This group consists of all other users, such as visitors.
 \end{itemize}
 
 Based on the requirements, additional groups such as editors,
@@ -778,14 +786,14 @@ files and directories that are relevant to them. File and/or
 directory attributes, such as the owner of a file or directory, or
 the group assigned to the files, can only be modified by the
 administrator and/or the file and/or directory owner. All access
-permissions are maintained via the "Change owner," "Change group"
-and "Change access permissions" options in the context-sensitive
+permissions are maintained via the ``Change owner", ``Change group"
+and ``Change access permissions" options in the context
 menu. File and directory access permissions are classified by
-"Owner permissions," Group permissions" and "Other permissions." A
-user's access permissions can be restricted to the files and
+``Owner permissions", ``Group permissions" and ``Other permissions." A
+user's access permission can be restricted to the files and
 directories that he/she owns. The following abbreviations are used
 to set a user's permissions: r = read, w = write, v = visible, i =
-intern.
+internal.
 
 \subsection{The editor}
 
@@ -808,14 +816,14 @@ layout for the whole site - is uniform
 The functionality of the OpenCms editor is very similar to that of
 a standard WYSIWYG HTML editor with templates, tables, preview
 functions, such as Netscape Composer. It is also possible to
-switch between source text and WYSIWYG mode. A page's layout is
+switch between sourcecode and WYSIWYG mode. A page's layout is
 determined by a template. Complex layouts are created by cascading
-several templates. OpenCms is only used to edit the body.
+several templates. OpenCms is only used to edit the body of an HTML page.
 
 \subsection{Workflow}
 
 The project manager creates a new task and defines its role by
-clicking on the "New" button in the "Tasks" view. A role consists
+clicking on the ``New" button in the ``Tasks" view. A role consists
 of several users that have the skills to perform a specific task
 such as editing, designing graphics, writing HTML code, etc. A
 preferred user is selected for each task. The name, the
@@ -829,7 +837,7 @@ project manager receives an e-mail when the task has been
 accepted, rejected, forwarded or completed. Users can view the
 tasks that have been assigned to them as well as those they have
 forwarded to others by filtering on specific criteria in the
-drop-down menu "Filter" (Figure~\ref{taskview}). Different icons
+drop-down menu ``Filter" (Figure~\ref{taskview}). Different icons
 and colors are also used to define a project's status. A task that
 is still within the due date is shown in black. If the due date is
 exceeded, the task is shown in red. A completed task is shown in
