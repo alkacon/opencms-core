@@ -42,8 +42,8 @@ function show_help()
 		<td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.modulname" /><![CDATA[</p></td>
 		<td valign=bottom width=60  nowrap valign=top><p class=einzug>]]><LABEL value="label.version" /><![CDATA[</p></td>
 		<td valign=bottom width=120 nowrap valign=top><p class=einzug>]]><LABEL value="label.author" /><![CDATA[</p></td>
-		<td valign=bottom width=95  nowrap valign=top><p class=einzug>]]><LABEL value="label.uploaddate" /><![CDATA[</p></td>
 		<td valign=bottom width=95  nowrap valign=top><p class=einzug>]]><LABEL value="label.modulecreatedate" /><![CDATA[</p></td>
+		<td valign=bottom width=95  nowrap valign=top><p class=einzug>]]><LABEL value="label.uploaddate" /><![CDATA[</p></td>
 	</tr>
 	]]><MODULELIST method="moduleList" /><![CDATA[
 </table>
