@@ -18,12 +18,11 @@
 
 	<!-- Filename -->
 	var filename="]]><PROCESS>file</PROCESS><![CDATA[";
-	
-	var NS = null;
-	var IE = null;
-	
+
+	var NS = null;	
+	var IE = null;		
 	NS = (document.layers)? true:false;
-	IE = (document.all)? true:false;
+	IE = (document.all)? true:false;	
 	
 	var LANG_CUT = "]]><LABEL value="editor.context.cut"/><![CDATA[";
 	var LANG_COPY = "]]><LABEL value="editor.context.copy"/><![CDATA[";
@@ -37,6 +36,7 @@
 	var LANG_MERGECELL = "]]><LABEL value="editor.context.mergecell"/><![CDATA[";
 	var LANG_SPLITCELL = "]]><LABEL value="editor.context.splitcell"/><![CDATA[";
 </SCRIPT>
+
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/]]><PROCESS>jsfile</PROCESS><![CDATA["></SCRIPT>
 
@@ -50,6 +50,7 @@
 	displayChangedHandle();
 	//-->
 </script>
+
 <!-- Show a context menu if the right mousebutton is clicked -->
 <script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ShowContextMenu">
 <!--
@@ -60,6 +61,7 @@
 	showContextMenuHandle();
 //-->
 </script>
+
 <!-- Invoke a context menu action -->
 <script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ContextMenuAction(itemIndex)">
 <!--

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WORKPLACE>
-<TEMPLATE>
+<TEMPLATE name="ie">
 <![CDATA[
 <!-- Buttonleiste -->
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
@@ -42,14 +42,109 @@
 
 <!-- Inhalt -->
 <tr>
-	<td class="texteditor" height="100%" width="100%">
-
-	<script language="Javascript">
-		writeAppletTag();
-	</script>      
-</td></tr>
+	<td class="texteditor" colspan=23 height="100%" width=100%>
+        <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 
+        	height=100% id=edit1 name=edit1 width=100% onFocus="setTextDelayed();">
+			<PARAM NAME="_Version" VALUE="131083">	
+			<PARAM NAME="_ExtentX" VALUE="22887">
+			<PARAM NAME="_ExtentY" VALUE="7223">	
+			<PARAM NAME="_StockProps" VALUE="125">
+			<PARAM NAME="Text" VALUE="Loading .....">	
+			<PARAM NAME="ForeColor" VALUE="0">
+			<PARAM NAME="BackColor" VALUE="16777215">	
+			<PARAM NAME="BorderStyle" VALUE="1">
+			<PARAM NAME="Enabled" VALUE="-1">	
+			<PARAM NAME="AutoIndent" VALUE="-1">
+			<PARAM NAME="BackColorSelected" VALUE="8388608">
+			<PARAM NAME="BookmarksMax" VALUE="16">	
+			<PARAM NAME="CanChangeFile" VALUE="0">
+			<PARAM NAME="CanChangeFont" VALUE="0">	
+			<PARAM NAME="CaretWidth" VALUE="0">
+			<PARAM NAME="DefaultSelection" VALUE="-1">
+			<PARAM NAME="ExtraComments" VALUE="0">	
+			<PARAM NAME="Item2AsComment" VALUE="0">
+			<PARAM NAME="UnixStyleSave" VALUE="0">
+			<PARAM NAME="CurrentWordAsText" VALUE="0">
+			<PARAM NAME="MultilineItems" VALUE="0">
+			<PARAM NAME="MultilineStrings" VALUE="0">
+			<PARAM NAME="SinglelineStrings" VALUE="0">
+			<PARAM NAME="ExtraHorzSpacing" VALUE="3">
+			<PARAM NAME="ExtraVertSpacing" VALUE="0">
+			<PARAM NAME="FileMask" VALUE="/All Files/*.*/">
+			<PARAM NAME="FileName" VALUE="+">
+			<PARAM NAME="ForeColorSelected" VALUE="16777215">
+			<PARAM NAME="HasFile" VALUE="-1">	
+			<PARAM NAME="HasMenu" VALUE="0">
+			<PARAM NAME="Highlight" VALUE="0">	
+			<PARAM NAME="InsertMode" VALUE="1">
+			<PARAM NAME="ScrollBars" VALUE="3">	
+			<PARAM NAME="Syntax" VALUE="">
+			<PARAM NAME="PaintMode" VALUE="0">	
+			<PARAM NAME="TabStopSize" VALUE="4">
+			<PARAM NAME="ReadOnly" VALUE="0">	
+			<PARAM NAME="UndoDepth" VALUE="-1">
+			<PARAM NAME="InitializeType" VALUE="0">	
+			<PARAM NAME="GroupNumber" VALUE="0">
+			<PARAM NAME="StartInComments" VALUE="0">	
+			<PARAM NAME="MacStyleSave" VALUE="0">
+			<PARAM NAME="WantTab" VALUE="-1">	
+			<PARAM NAME="WordWrap" VALUE="0">
+			<PARAM NAME="WordWrapAuto" VALUE="-1">	
+			<PARAM NAME="WordWrapRMargin" VALUE="0">
+			<PARAM NAME="WordWrapWidth" VALUE="0">	
+			<PARAM NAME="NoPrintDialog" VALUE="0">
+			<PARAM NAME="NoPrintProgress" VALUE="0">	
+			<PARAM NAME="WrapKeys" VALUE="0">
+			<PARAM NAME="BackColorPrint" VALUE="16777215">
+			<PARAM NAME="PrintJobName" VALUE="Document">
+			<PARAM NAME="ZeroSubstitute" VALUE="0">            
+		</OBJECT>
+		<INPUT TYPE=HIDDEN NAME="CONTENT">	<INPUT TYPE=HIDDEN NAME="action">	
+		<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">	
+	</td>
+</tr>
 </table>
 <table>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="ns">
+<![CDATA[
+<!-- Buttonleiste -->
+<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+		<td class=menu>]]><BUTTON href="javascript:doNsEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:doNsEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:opensmallwin(help + '3_1.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
+		<td class=menu width="100%">&nbsp;</td>
+		<td class=menu align=right>]]><BUTTON href="javascript:doNsEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
+	</tr>
+</table>
+
+<!-- Inhalt -->
+
+<!-- <tr> -->
+<!-- 	<td width="100%" colspan="6" class="texteditor" valign="top"> -->
+	<!-- write the text area -->
+	<script language="JavaScript">
+	<!--
+		getDimensions();
+		
+		str = '<textarea class="textarea" name="edit1" onfocus=setTextDelayed(); rows='+windowHeight+' cols='+windowWidth+' wrap=virtual></textarea>';
+		document.open();
+		document.write(str);
+		document.close();
+	//-->
+	</script>	
+	
+	<INPUT TYPE=HIDDEN NAME="CONTENT">
+	<INPUT TYPE=HIDDEN NAME="action">
+	<INPUT TYPE=HIDDEN NAME="file" value="' + filename + '">
+	<!-- </td>
+</tr>
+</table> -->
+
 ]]>
 </TEMPLATE>
 </WORKPLACE>

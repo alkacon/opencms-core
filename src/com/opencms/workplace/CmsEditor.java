@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/03/08 14:39:54 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,12 +36,14 @@ import com.opencms.template.*;
 import java.util.*;
 import java.io.*;
 
+import javax.servlet.http.*;
+
 /**
  * Template class for displaying the text editor of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Revision: 1.9 $ $Date: 2000/03/08 14:39:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -61,8 +63,13 @@ public class CmsEditor extends CmsWorkplaceDefault {
     }    
     
     /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
+     * Displays the editor described by the template file <code>templateFile</code>.
+     * This can be either the HTML editor or the text editor.
+     * <p>
+     * The given template file will be scanned for special section "ie" and "ns"
+     * that can be used to generate browser specific versions of the editors
+     * (MS IE or Netscape Navigator). If no such section exists, the default
+     * section will be displayed.
      * 
      * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms A_CmsObject Object for accessing system resources.
@@ -80,21 +87,16 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
         CmsFile editFile = null;
         
+        // Get all editor parameters
         String content = (String)parameters.get("CONTENT");
         String file = (String)parameters.get("file");
-        //String exit = (String)parameters.get("EXIT");
-        //String save = (String)parameters.get("save");
         String action = (String)parameters.get("action");
         String jsfile = (String)parameters.get("editor.jsfile");
         
-        //boolean existsContentParam = (content!=null && (!"".equals(content)));
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
-        //boolean saveRequested = ((save != null) && "1".equals(save));
-        //boolean exitRequested = ((exit != null) && "1".equals(exit));
         boolean saveRequested = ((action != null) && ("save".equals(action) || "saveexit".equals(action)));
         boolean exitRequested = ((action != null) && ("exit".equals(action) || "saveexit".equals(action)));
-        
-        
+                
         // If there is a file parameter and no content, try to read the file. 
         // If the user requested a "save file", also load the file.
         if(existsFileParam && (content == null || saveRequested)) {
@@ -137,7 +139,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 editFile.setContents(decodedContent.getBytes());
                 cms.writeFile(editFile);
             }                
-        } // end if(existsFileParam && (content == null))
+        }
         
         // Check if we should leave th editor instead of start processing
         if(exitRequested) {
@@ -148,34 +150,62 @@ public class CmsEditor extends CmsWorkplaceDefault {
             }
             return "".getBytes();
         }
-        
+            
+        // Load the template file and get the browser specific section name
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+        String sectionName = getBrowserSpecificSection(cms, xmlTemplateDocument);
 
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setXmlData("file", file);
         xmlTemplateDocument.setXmlData("jsfile", jsfile);                
-        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }                  
     
-    public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
-            throws CmsException {
-        
+    /** 
+     * User method for setting the editable text in the editor window.
+     * <P>
+     * This method can be called in the editor's template file using
+     * <code>&lt;METHOD name="setText"/&gt></code>. This call will be replaced
+     * by the content of the file that should be edited.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of the file that should be edited.
+     */
+    public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {        
         Hashtable parameters = (Hashtable)userObj;
         String content = (String)parameters.get("CONTENT");        
-        //boolean existsContentParam = (content!=null && (!"".equals(content)));
-                
-        // Check the existance of the "file" parameter
-        if(content==null || "".equals(content)) {
-            String errorMessage = getClassName() + "No content found.";
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
-            }
-            return("");
-            // throw new CmsException(errorMessage, CmsException.C_BAD_NAME);
-        }
-                    
-        // Escape the text for including it in HTML text
+        if(content==null) {
+            content = "";
+        }                    
         return content;
     }        
+
+    /**
+     * Get the name of the section that should be loaded from the editor's
+     * template file for displaying the editor.
+     * MS IE and Netscape Navigator use different ways to display
+     * the text editor, so we must distinguish here.
+     * @param cms cms object for accessing the original HTTP request
+     * @param templateFile the editor's template file containing different sections
+     * @return name of the browser specific section in <code>templateFile</code>
+     */
+    private String getBrowserSpecificSection(A_CmsObject cms, CmsXmlTemplateFile templateFile) {        
+        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();                
+        String browser = orgReq.getHeader("user-agent");                
+        String result = null;
+        if(browser.indexOf("MSIE") >-1) {
+            if(templateFile.hasSection("ie")) {          
+                result = "ie";
+            }
+        } else {
+            if(templateFile.hasSection("ns")) {          
+    	    	result = "ns";
+            }
+	   	}
+        return result;
+    }
 }

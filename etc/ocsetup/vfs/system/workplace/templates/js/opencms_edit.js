@@ -1,8 +1,36 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
+ * Date   : $Date: 2000/03/08 14:42:41 $
+ * Version: $Revision: 1.10 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+ 
 //------------------------------------------------------//
 // Script for editcontrol
 //------------------------------------------------------//
 
-// Definition of Constants
+// Definition of constants
 var CLOSE=1;
 var SAVECLOSE=2;
 var SAVE=3;
@@ -27,90 +55,17 @@ var PRINT=15;
 // Indicates if the text of the editor window is already set
 var textSetted = false;
 
+
 var windowWidth=null;
 var windowHeight=null;
 
 
+// function for calculating the right dimensions of a HTML textarea
 function getDimensions() {
-	if( NS==true ) {
-		windowWidth = innerWidth-20;
-		windowHeight = innerHeight-20;
-	}
-	else if( IE==true ) {
-		windowWidth = document.body.clientWidth-20;
-		windowHeight = document.body.clientHeight-20;
-	}
-}
-
-
-function displayCode() {
-  document.TextEditorApplet.setCode(unescape(text));
-}
-
-
-function writeAppletTag()
-{
-  var str=null;
-  getDimensions();
-  document.open();
-  if (NS==true) 
-  {
-	str = '<APPLET name="TextEditorApplet" CODE="TextEditorApplet" CODEBASE="/" WIDTH="'+windowWidth+'" HEIGHT="'+(windowHeight-40)+'" mayscript></APPLET>';
-	str= str + '<INPUT TYPE=HIDDEN NAME="CONTENT">';
-	str= str + '<INPUT TYPE=HIDDEN NAME="action">';
-	str= str + '<INPUT TYPE=HIDDEN NAME="file" value="' + filename + '">';	
-	document.write(str);
-  }
-  else if (IE==true)
-  {
-	str = '<OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 height=100% id=edit1 name=edit1 onfocus=setTextDelayed(); width=100%><PARAM NAME="_Version" VALUE="131083"><PARAM NAME="_ExtentX" VALUE="22887"><PARAM NAME="_ExtentY" VALUE="7223"><PARAM NAME="_StockProps" VALUE="125"><PARAM NAME="Text" VALUE="Loading ....."><PARAM NAME="ForeColor" VALUE="0"><PARAM NAME="BackColor" VALUE="16777215"><PARAM NAME="BorderStyle" VALUE="1"><PARAM NAME="Enabled" VALUE="-1"><PARAM NAME="AutoIndent" VALUE="-1"><PARAM NAME="BackColorSelected" VALUE="8388608"><PARAM NAME="BookmarksMax" VALUE="16">';
-    str= str + '<PARAM NAME="CanChangeFile" VALUE="0">';
-	str= str + '<PARAM NAME="CanChangeFont" VALUE="0">';
-	str= str + '<PARAM NAME="CaretWidth" VALUE="0">';
-	str= str + '<PARAM NAME="DefaultSelection" VALUE="-1">';
-	str= str + '<PARAM NAME="ExtraComments" VALUE="0">';
-	str= str + '<PARAM NAME="Item2AsComment" VALUE="0">';
-	str= str + '<PARAM NAME="UnixStyleSave" VALUE="0">';
-	str= str + '<PARAM NAME="CurrentWordAsText" VALUE="0">';
-	str= str + '<PARAM NAME="MultilineItems" VALUE="0">';
-	str= str + '<PARAM NAME="MultilineStrings" VALUE="0">';
-	str= str + '<PARAM NAME="SinglelineStrings" VALUE="0">';
-	str= str + '<PARAM NAME="ExtraHorzSpacing" VALUE="3">';
-	str= str + '<PARAM NAME="ExtraVertSpacing" VALUE="0">';
-	str= str + '<PARAM NAME="FileMask" VALUE="\/All Files\/*.*\/">';
-	str= str + '<PARAM NAME="FileName" VALUE="+">';
-	str= str + '<PARAM NAME="ForeColorSelected" VALUE="16777215">';
-	str= str + '<PARAM NAME="HasFile" VALUE="-1">';
-	str= str + '<PARAM NAME="HasMenu" VALUE="0">';
-	str= str + '<PARAM NAME="Highlight" VALUE="0">';
-	str= str + '<PARAM NAME="InsertMode" VALUE="1">';
-	str= str + '<PARAM NAME="ScrollBars" VALUE="3">';
-	str= str + '<PARAM NAME="Syntax" VALUE="">';
-	str= str + '<PARAM NAME="PaintMode" VALUE="0">';
-	str= str + '<PARAM NAME="TabStopSize" VALUE="4">';
-	str= str + '<PARAM NAME="ReadOnly" VALUE="0">';
-	str= str + '<PARAM NAME="UndoDepth" VALUE="-1">';
-	str= str + '<PARAM NAME="InitializeType" VALUE="0">';
-	str= str + '<PARAM NAME="GroupNumber" VALUE="0">';
-	str= str + '<PARAM NAME="StartInComments" VALUE="0">';
-	str= str + '<PARAM NAME="MacStyleSave" VALUE="0">';
-	str= str + '<PARAM NAME="WantTab" VALUE="-1">';
-	str= str + '<PARAM NAME="WordWrap" VALUE="0">';
-	str= str + '<PARAM NAME="WordWrapAuto" VALUE="-1">';
-	str= str + '<PARAM NAME="WordWrapRMargin" VALUE="0">';
-	str= str + '<PARAM NAME="WordWrapWidth" VALUE="0">';
-	str= str + '<PARAM NAME="NoPrintDialog" VALUE="0">';
-	str= str + '<PARAM NAME="NoPrintProgress" VALUE="0">';
-	str= str + '<PARAM NAME="WrapKeys" VALUE="0">';
-	str= str + '<PARAM NAME="BackColorPrint" VALUE="16777215">';
-	str= str + '<PARAM NAME="PrintJobName" VALUE="Document">';
-	str= str + '<PARAM NAME="ZeroSubstitute" VALUE="0"></OBJECT>';
-	str= str + '<INPUT TYPE=HIDDEN NAME="CONTENT">';
-	str= str + '<INPUT TYPE=HIDDEN NAME="action">';
-	str= str + '<INPUT TYPE=HIDDEN NAME="file" value="' + filename + '">';	
-	document.write(str);
-	}
-  document.close();
+	windowWidth = innerWidth;
+	windowHeight = innerHeight;
+	windowWidth = Math.round(windowWidth/8.5);
+	windowHeight = Math.round(windowHeight/19);
 }
 
 // loads the file content into the editor
@@ -121,34 +76,56 @@ function setText()
 	// not loaded. 
 	// Workaround: focus() the text editor here and set the text
 	// using the onFocus event of the editor.
-	if(IE == true) 
-	{
-		document.all.edit1.focus();
-	}
-	else
-	{
-		displayCode();
-	}
+
+	document.EDITOR.edit1.focus();
 }
 
 // load the file content into the editor. this is called by the onFocus event of the edit control
 function setTextDelayed()
 {
 	if(! textSetted) {
-		document.all.edit1.Text = unescape(text);
+		document.EDITOR.edit1.Text = unescape(text);
+		document.EDITOR.edit1.value = unescape(text);
 		textSetted = true;
 	}
 }
 
+
 function doSubmit()
 {
-	if(IE == true) 
-	{
-		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
-	}
+	document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
 }
 
-// Function action on button click
+// Function action on button click for Netscape Navigator
+function doNsEdit(para)
+{
+	switch(para)
+	{
+	case 1:
+	{
+		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.value);
+		document.EDITOR.action.value = "exit";
+		document.EDITOR.submit();
+		break;
+	}
+	case 2:
+	{
+		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.value);
+		document.EDITOR.action.value = "saveexit";
+		document.EDITOR.submit();
+		break;
+	}
+	case 3:
+	{
+		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.value);
+		document.EDITOR.action.value = "save";
+		document.EDITOR.submit();
+		break;
+	}
+    }
+}
+
+// Function action on button click for MS IE
 function doEdit(para)
 {
 	switch(para)
@@ -244,9 +221,6 @@ function doEdit(para)
 		alert("NYI");
 		break;
 	}
-}	
-	if(IE == true) 
-	{
-		document.all.edit1.focus();
-	}
+	}	
+	document.EDITOR.edit1.focus();
 }
