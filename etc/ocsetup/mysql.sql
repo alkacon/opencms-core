@@ -121,6 +121,7 @@ create table CMS_BACKUP_PROPERTIES      (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID int not null,
                                          PROPERTY_VALUE VARCHAR(255) not null,
+                                         VERSION_ID int,
                                          primary key(PROPERTY_ID), 
                                          unique(PROPERTYDEF_ID, RESOURCE_ID));
                                          
@@ -234,6 +235,7 @@ create table CMS_ONLINE_FILES           (FILE_ID int not null,
 
 create table CMS_BACKUP_FILES           (FILE_ID int not null,
                                          FILE_CONTENT mediumblob not null,
+                                         VERSION_ID int,
                                          primary key(FILE_ID));
 
 create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
