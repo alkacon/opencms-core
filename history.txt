@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/11/26 13:39:31 $
- * Version: $Revision: 1.591 $
+ * Date   : $Date: 2004/11/28 21:58:53 $
+ * Version: $Revision: 1.592 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,11 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Property definitions can be deleted from Admin GUI even if resources still use the property
 - Optimized DB queries and index generation for MySQL
 * Fixed issue with "https" scheme not correctly working in site configuration
+! Added support for the PostgeSQL database, thanks to Antonio Core for his contribution
+! Added new "Download gallery" dialog for WYSIWYG editor (also available as XML content widget) 
+! Added new "External link gallery" dialog for WYSIWYG editor (also available as XML content widget) 
+! Added new "HTML gallery" dialog for WYSIWYG editor (also available as XML content widget) 
+! XML content now allows variable mapping of XML content widgets to XML content value types
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo
