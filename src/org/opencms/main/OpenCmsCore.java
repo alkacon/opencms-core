@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/06 11:28:39 $
- * Version: $Revision: 1.165 $
+ * Date   : $Date: 2005/03/07 07:10:50 $
+ * Version: $Revision: 1.166 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.165 $
+ * @version $Revision: 1.166 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -143,7 +143,7 @@ public final class OpenCmsCore {
     /** The default user and group names. */
     private CmsDefaultUsers m_defaultUsers;
     
-    /** List to save the event listeners in. */
+    /** Stores the active event listeners. */
     private Map m_eventListeners;
 
     /** The set of configured export points. */
@@ -152,7 +152,7 @@ public final class OpenCmsCore {
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
 
-    /** The link manager to resolve links in &lt;link&gt; tags. */
+    /** The link manager to resolve links in &lt;cms:link&gt; tags. */
     private CmsLinkManager m_linkManager;
 
     /** The locale manager used for obtaining the current locale. */
@@ -164,7 +164,7 @@ public final class OpenCmsCore {
     /** The OpenCms log to write all log messages to. */
     private CmsLog m_log;
 
-    /** The memory monitor for collection memory statistics. */
+    /** The memory monitor for the collection of memory and runtime statistics. */
     private CmsMemoryMonitor m_memoryMonitor;
     
     /** The module manager. */
@@ -173,10 +173,10 @@ public final class OpenCmsCore {
     /** The password handler used to digest and validate passwords. */
     private I_CmsPasswordHandler m_passwordHandler;
     
-    /** Map of request handlers. */
+    /** The configured request handlers that handle "special" requests, for example in the static export on demand. */
     private Map m_requestHandlers;
 
-    /** Member variable to store instances to modify resources. */
+    /** Stores the resource init handlers that allow modification of the requested resource. */
     private List m_resourceInitHandlers;
 
     /** The resource manager. */
@@ -185,7 +185,7 @@ public final class OpenCmsCore {
     /** The runlevel of this OpenCmsCore object instance. */
     private int m_runLevel;
 
-    /** A Map for the storage of various runtime properties. */
+    /** The runtime properties allow storage of system wide accessible runtime information. */
     private Map m_runtimeProperties;
 
     /** The configured scheduler manager. */
@@ -218,7 +218,7 @@ public final class OpenCmsCore {
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
     
-    /** The XML contnet type manager that contains the initialized XML content types. */
+    /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
         
     /**
@@ -238,9 +238,9 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the initialized OpenCms instance.<p>
+     * Returns the initialized OpenCms singleton instance.<p>
      * 
-     * @return the initialized OpenCms instance
+     * @return the initialized OpenCms singleton instance
      */
     public static OpenCmsCore getInstance() {
         
@@ -249,41 +249,10 @@ public final class OpenCmsCore {
                 // create a new core object with runlevel 1
                 new OpenCmsCore();
             } catch (CmsInitException e) {
-                // already initialized, this all we need
+                // already initialized, this is all we need
             }
         }
         return m_instance;
-    }
-    
-    /**
-     * Returns the configured export points,
-     * the returned set being an unmodifiable set.<p>
-     * 
-     * @return an unmodifiable set of the configured export points
-     */
-    public Set getExportPoints() {
-        
-        return m_exportPoints;
-    }
-
-    /**
-     * Returns the session manager.<p>
-     * 
-     * @return the session manager
-     */
-    public CmsSessionManager getSessionManager() {
-        
-        return m_sessionManager;
-    }
-
-    /**
-     * Returns an instance of the common sql manager.<p>
-     * 
-     * @return an instance of the common sql manager
-     */
-    public CmsSqlManager getSqlManager() {
-        
-        return m_securityManager.getSqlManager();
     }
 
     /**
@@ -300,7 +269,10 @@ public final class OpenCmsCore {
      * @throws CmsException in case the file does not exist or the user has insufficient access permissions 
      */
     public CmsResource initResource(CmsObject cms, String resourceName, HttpServletRequest req, HttpServletResponse res) throws CmsException {
-
+        
+        int todo = 0;
+        // TODO: Check requirement for public visibility, perhaps move this method to a different class
+        
         CmsResource resource = null;
         CmsException tmpException = null;
 
@@ -549,6 +521,17 @@ public final class OpenCmsCore {
 
         return m_defaultUsers;
     }
+    
+    /**
+     * Returns the configured export points,
+     * the returned set being an unmodifiable set.<p>
+     * 
+     * @return an unmodifiable set of the configured export points
+     */
+    protected Set getExportPoints() {
+        
+        return m_exportPoints;
+    }
 
     /**
      * Returns the initialized import/export manager,
@@ -727,6 +710,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the session manager.<p>
+     * 
+     * @return the session manager
+     */
+    protected CmsSessionManager getSessionManager() {
+        
+        return m_sessionManager;
+    }
+
+    /**
      * Returns the initialized site manager, 
      * which contains information about all configured sites.<p> 
      * 
@@ -735,6 +728,16 @@ public final class OpenCmsCore {
     protected CmsSiteManager getSiteManager() {
 
         return m_siteManager;
+    }
+
+    /**
+     * Returns an instance of the common sql manager.<p>
+     * 
+     * @return an instance of the common sql manager
+     */
+    protected CmsSqlManager getSqlManager() {
+        
+        return m_securityManager.getSqlManager();
     }
     
     /**

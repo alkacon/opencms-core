@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/06 09:26:11 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/03/07 07:10:50 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,14 @@ import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
-import org.opencms.main.CmsSessionManager;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
@@ -70,11 +70,12 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.logging.Log;
 
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.41 $ $Date: 2005/03/06 09:26:11 $
+ * @version $Revision: 1.42 $ $Date: 2005/03/07 07:10:50 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -727,7 +728,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             content += "*** Please take action NOW to ensure that no OutOfMemoryException occurs.\n\n\n";
         }
 
-        CmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
+        CmsSessionManager sm = OpenCms.getSessionManager();
 
         if (sm != null) {
             content += "Current status of the sessions:\n\n";
@@ -797,10 +798,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     private void monitorWriteLog(boolean warning) {
 
-        if (!OpenCms.getLog(this).isWarnEnabled()) {
+        Log log = OpenCms.getLog(this);
+        
+        if (!log.isWarnEnabled()) {
             // we need at last warn level for this output
             return;
-        } else if ((!warning) && (!OpenCms.getLog(this).isInfoEnabled())) {
+        } else if ((!warning) && (!log.isInfoEnabled())) {
             // if not warning we need info level
             return;
         } else if (warning
@@ -824,7 +827,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            OpenCms.getLog(this).warn(
+            log.warn(
                 " W A R N I N G Memory consumption of "
                     + usage
                     + "% has reached a critical level"
@@ -856,11 +859,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             + "%  ";
 
         if (warning) {
-            OpenCms.getLog(this).warn(memStatus);
+            log.warn(memStatus);
         } else {
 
             m_logCount++;
-            OpenCms.getLog(this).info(
+            log.info(
                 "Memory monitor log for server "
                     + OpenCms.getSystemInfo().getServerName().toUpperCase()
                     + " ("
@@ -881,7 +884,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                OpenCms.getLog(this).info(
+                log.info(
                     "    "
                         + "Monitored: "
                         + name1.sprintf(key)
@@ -899,12 +902,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         + form.sprintf(Long.toString(size)));
             }
             memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + " mb)";
-            OpenCms.getLog(this).info(memStatus);
+            log.info(memStatus);
 
-            CmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
+            CmsSessionManager sm = OpenCms.getSessionManager();
 
             if (sm != null) {
-                OpenCms.getLog(this).info(
+                log.info(
                     "Sessions users: "
                         + sm.getSessionCountAuthenticated()
                         + " current: "
@@ -912,8 +915,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         + " total: "
                         + sm.getSessionCountTotal());
             }
-
             sm = null;
+            
+            log.info("OpenCms startup time was: " 
+                + CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime())
+                + " - current runtime is: "
+                + CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime()));            
         }
     }
 }

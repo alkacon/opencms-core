@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/03/07 07:10:50 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -337,6 +337,16 @@ public class CmsSystemInfo {
     public String getServletPath() {
 
         return m_servletPath;
+    }
+
+    /**
+     * Returns the time this OpenCms instance was started in miliseconds.<p>
+     *
+     * @return the time this OpenCms instance was started in miliseconds
+     */
+    public long getStartupTime() {
+
+        return m_startupTime;
     }
 
     /**
