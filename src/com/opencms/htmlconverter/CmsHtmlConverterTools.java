@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2003/09/02 12:15:38 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/09/09 15:50:02 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,6 +53,10 @@ final class CmsHtmlConverterTools {
      * @return true if NodeName is found in tags, otherwise false.
      */
     protected boolean checkTag(String NodeName, HashSet tags) {
+        // cw09.09.2003 added general qualifier *
+        if (tags.contains(new String("*"))) {
+            return true;
+        }
         if (tags.contains(new String(NodeName))) {
             return true;
         }
@@ -68,12 +72,12 @@ final class CmsHtmlConverterTools {
      */
     protected String scanContent(String testString, ArrayList rStrings) {
         CmsHtmlConverterObjectReplaceContent testObject = new CmsHtmlConverterObjectReplaceContent();
-        String searchString,replaceItem;
-        for (int i=0;i<rStrings.size();i++) {
+        String searchString, replaceItem;
+        for (int i=0; i<rStrings.size(); i++) {
             testObject=(CmsHtmlConverterObjectReplaceContent)(rStrings.get(i));
             searchString=testObject.getSearchString();
             replaceItem=testObject.getReplaceItem();
-            testString=replaceString(testString,searchString,replaceItem);
+            testString=replaceString(testString, searchString, replaceItem);
         }
         return testString;
     }
@@ -86,12 +90,12 @@ final class CmsHtmlConverterTools {
      */
     protected String scanString(String testString, ArrayList rStrings) {
         CmsHtmlConverterObjectReplaceStrings testObject = new CmsHtmlConverterObjectReplaceStrings();
-        String searchString,replaceItem;
-        for (int i=0;i<rStrings.size();i++) {
+        String searchString, replaceItem;
+        for (int i=0; i<rStrings.size(); i++) {
             testObject=(CmsHtmlConverterObjectReplaceStrings)(rStrings.get(i));
             searchString=testObject.getSearchString();
             replaceItem=testObject.getReplaceItem();
-            testString=replaceString(testString,searchString,replaceItem);
+            testString=replaceString(testString, searchString, replaceItem);
         }
         return testString;
     }
@@ -104,12 +108,12 @@ final class CmsHtmlConverterTools {
      */
     protected String scanChar(String testString, ArrayList rStrings) {
         CmsHtmlConverterObjectReplaceExtendedChars testObject = new CmsHtmlConverterObjectReplaceExtendedChars();
-        String searchString,replaceItem;
-        for (int i=0;i<rStrings.size();i++) {
+        String searchString, replaceItem;
+        for (int i=0; i<rStrings.size(); i++) {
             testObject=(CmsHtmlConverterObjectReplaceExtendedChars)(rStrings.get(i));
             searchString=testObject.getSearchString();
             replaceItem=testObject.getReplaceItem();
-            testString=replaceString(testString,searchString,replaceItem);
+            testString=replaceString(testString, searchString, replaceItem);
         }
         return testString;
     }
@@ -131,7 +135,7 @@ final class CmsHtmlConverterTools {
         int searchIndex = testString.indexOf(searchString);
         StringBuffer returnString = new StringBuffer(testString.length());
         while (searchIndex != -1) {
-            returnString.append(testString.substring(0,searchIndex));
+            returnString.append(testString.substring(0, searchIndex));
             returnString.append(replaceItem);
             tempIndex = searchIndex+searchLen;
             testString = testString.substring(tempIndex);
@@ -149,7 +153,7 @@ final class CmsHtmlConverterTools {
      */
     protected String scanNodeAttrs(Node node, String attrName) {
         NamedNodeMap attrs = node.getAttributes();
-        for ( int i = attrs.getLength()-1; i >= 0 ; i-- ) {
+        for (int i = attrs.getLength()-1; i >= 0; i--) {
             if (attrName.equalsIgnoreCase(attrs.item(i).getNodeName())) {
                 return attrs.item(i).getNodeValue();
             }
@@ -157,32 +161,40 @@ final class CmsHtmlConverterTools {
         return "";
     }
 
+    /**
+     * TODO: add javadoc.
+     * 
+     * @param orgUrl the original url
+     * @param parameter the parameter
+     * @param prefix the prefix
+     * @param relativeRoot the relative root
+     * @return the modified parameter
+     */
     protected String modifyParameter(URL orgUrl, String parameter, String prefix, String relativeRoot) {
         try {
             URL myURL = new URL(parameter);
             parameter = myURL.getFile();
             String reference = myURL.getRef();
-            if(reference != null){
+            if (reference != null) {
                 parameter += "#"+reference;
             }
-        }
-        catch (MalformedURLException e) {
-            if(!parameter.startsWith("/")){
+        } catch (MalformedURLException e) {
+            if (!parameter.startsWith("/")) {
                 //this is a relative link
-                try{
+                try {
                     URL newUrl = new URL(orgUrl, parameter);
                     parameter = newUrl.getFile();
                     String reference = newUrl.getRef();
-                    if(reference != null){
+                    if (reference != null) {
                         parameter += "#"+reference;
                     }
-                }catch(MalformedURLException exc){
+                } catch (MalformedURLException exc) {
                 }
             }
         }
         // remove the servletprefix
-        if(prefix != null && !"".equals(prefix)){
-            if(parameter.startsWith(prefix)){
+        if (prefix != null && !"".equals(prefix)) {
+            if (parameter.startsWith(prefix)) {
                 parameter = parameter.substring(prefix.length());
             }
         }
@@ -196,6 +208,14 @@ final class CmsHtmlConverterTools {
         return parameter;
     }
 
+    /**
+     * TODO: add javadoc
+     * 
+     * @param orgUrl the original url
+     * @param valueParam the value parameter
+     * @param servletUri the servlet uri
+     * @return flag to indicate if the url should be replaced
+     */
     protected boolean shouldReplaceUrl(URL orgUrl, String valueParam, String servletUri) {
 
         // HACK: if this link has already a link tag in it don't replace it
@@ -262,29 +282,33 @@ final class CmsHtmlConverterTools {
             && orgUrl.getHost().equalsIgnoreCase(paramUrl.getHost())
             && paramUrl.getFile().startsWith(servletUri) 
             ) {
-            if (paramUrl.getFile() == null || "".equals(paramUrl.getFile())) {
-                return false;
-            } else {
-                return true;
-            }
+            return (!(paramUrl.getFile() == null || "".equals(paramUrl.getFile())));
         }
         return false;
     }
         
+    /**
+     * TODO: add javadoc comment
+     * 
+     * @param replace tbd
+     * @param node tbd
+     * @param param tbd
+     * @param quotationMark tbd
+     * @return tbd
+     */
     protected String reconstructTag(String replace, Node node, String param, String quotationMark) {
         StringBuffer tempString = new StringBuffer("");
         tempString.append("<");
         tempString.append(node.getNodeName());
         NamedNodeMap attrs = node.getAttributes();
-        for ( int i = attrs.getLength()-1; i >= 0 ; i-- ) {
+        for (int i = attrs.getLength()-1; i >= 0; i--) {
             tempString.append(" ");
             if (attrs.item(i).getNodeName().equals(param)) {
                 tempString.append(param);
                 tempString.append("=");
                 tempString.append(quotationMark);
                 tempString.append(replace);
-            }
-            else {
+            } else {
                 tempString.append(attrs.item(i).getNodeName());
                 tempString.append("=");
                 tempString.append(quotationMark);
