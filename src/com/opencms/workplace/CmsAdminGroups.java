@@ -1,12 +1,12 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.13 $Selector
+* Date   : $Date: 2001/02/19 11:11:12 $
+* Version: $Revision: 1.14 $Selector
 
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -14,15 +14,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -40,26 +40,26 @@ import javax.servlet.http.*;
 /**
  * Template class for displaying OpenCms workplace admin group screens.
  * <P>
- * 
+ *
  * @author Mario Stanke
- * @version $Revision: 1.13 $ $Date: 2001/01/24 09:43:25 $
+ * @version $Revision: 1.14 $ $Date: 2001/02/19 11:11:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
-    
-    
+
+
     /**
      * String constant which is submitted in the select box 'supergroup'
      */
-    
+
     // Could cause a problem if a real groupname happens to be "none_selected"
     final static String C_NO_SUPERGROUP_SELECTED = "none_selected";
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -67,15 +67,15 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
+
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() 
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() 
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() 
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -83,26 +83,26 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         boolean groupYetChanged = true;
         boolean groupYetEstablished = true;
-        
+
         // find out which template (=perspective) should be used
         String perspective = (String)parameters.get("perspective");
         if(perspective != null && perspective.equals("group")) {
             session.removeValue("ERROR");
             if(reqCont.getRequest().getParameter("CHANGE") != null) {
-                
+
                 // change data of selected user
                 perspective = "changegroup";
                 groupYetChanged = false;
             }
             else {
                 if(parameters.get("DELETE") != null) {
-                    
+
                     // delete the selected user
                     perspective = "deletegroup";
                 }
                 else {
                     if(parameters.get("NEW") != null) {
-                        
+
                         // establish new group
                         perspective = "newgroup";
                         groupYetEstablished = false;
@@ -111,13 +111,13 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
             }
         }
         if(perspective == null) {
-            
+
             // display the first template, which lets you chose the action
             perspective = new String("group");
         }
         if(perspective.equals("newgroup") || perspective.equals("changegroup")) {
-            
-            // first the common part of the two actions:            
+
+            // first the common part of the two actions:
             // read the parameters like group name, description, ...
             String groupname, description, supergroup;
             boolean projectManager, projectCoWorker, role;
@@ -130,7 +130,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 role = (parameters.get("ROLE") != null);
             }
             else {
-                
+
                 // an error has occurred before, retrieve the form data from the session
                 groupname = (String)session.getValue("GROUPNAME");
                 description = (String)session.getValue("GROUPDESC");
@@ -138,7 +138,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 projectManager = (session.getValue("PROJECTMANAGER") != null);
                 projectCoWorker = (session.getValue("PROJECTCOWORKER") != null);
                 role = (session.getValue("ROLE") != null);
-                
+
                 // remove the data from parameters
                 parameters.remove("ADD");
                 parameters.remove("REMOVE");
@@ -155,16 +155,16 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 supergroup = "";
             }
             session.putValue("SUPERGROUP", supergroup);
-            
+
             // vectors of Strings that hold the selected and not selected Users
             Vector selectedUsers = (Vector)session.getValue("selectedUsers");
             Vector notSelectedUsers = (Vector)session.getValue("notSelectedUsers");
             if(perspective.equals("newgroup")) {
-                
+
                 // input is the form for establishing a new group
                 templateSelector = "newgroup";
                 if(!groupYetEstablished) {
-                    
+
                     // first time the form is visited
                     groupname = "";
                     selectedUsers = new Vector();
@@ -177,8 +177,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                     session.putValue("notSelectedUsers", notSelectedUsers);
                 }
                 if(parameters.get("ADD") != null) {
-                    
-                    // add a new group to selectedGroups 
+
+                    // add a new group to selectedGroups
                     String username = (String)parameters.get("NOTSELECTEDUSERS");
                     if(username != null) {
                         selectedUsers.addElement(username);
@@ -189,8 +189,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 }
                 else {
                     if(parameters.get("REMOVE") != null) {
-                        
-                        // delete a new group from selectedGroups                         
+
+                        // delete a new group from selectedGroups
                         // and move it to notSelectedGroups
                         String username = (String)parameters.get("SELECTEDUSERS");
                         if(username != null) {
@@ -202,7 +202,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                     }
                     else {
                         if(parameters.get("OK") != null) {
-                            
+
                             // form submitted, try to establish new group
                             try {
                                 if(groupname == null || groupname.equals("")) {
@@ -229,7 +229,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                                 templateSelector = ""; //successful
                             }
                             catch(CmsException e) {
-                                
+
                                 // save the form data in the session, so it can be displayed again later
                                 session.putValue("ERROR", new String("yes")); // remeber that an error has occurred
                                 session.putValue("GROUPNAME", groupname);
@@ -265,14 +265,14 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 }
             }
             else {
-                
+
                 // input is the form for changing the group data
                 templateSelector = "changegroup";
                 if(!groupYetChanged) {
-                    
+
                     // form visited for the first time, not yet changed
-                    
-                    // read the data from the group object 
+
+                    // read the data from the group object
                     CmsGroup theGroup = (CmsGroup)cms.readGroup(groupname);
                     if(theGroup == null) {
                         throw new CmsException("user does not exist");
@@ -308,8 +308,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 }
                 else {
                     if(parameters.get("ADD") != null) {
-                        
-                        // add a new user to selectedUsers 
+
+                        // add a new user to selectedUsers
                         String username = (String)parameters.get("NOTSELECTEDUSERS");
                         if(username != null) {
                             selectedUsers.addElement(username);
@@ -318,8 +318,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                     }
                     else {
                         if(parameters.get("REMOVE") != null) {
-                            
-                            // delete a group from selectedUsers                             
+
+                            // delete a group from selectedUsers
                             // and move it to notSelectedUsers
                             String username = (String)parameters.get("SELECTEDUSERS");
                             if(username != null) {
@@ -329,8 +329,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                         }
                         else {
                             if(parameters.get("OK") != null) {
-                                
-                                // form submitted, try to change the group data 
+
+                                // form submitted, try to change the group data
                                 try {
                                     CmsGroup theGroup = (CmsGroup)cms.readGroup(groupname);
                                     if("".equals(supergroup) || supergroup.equals(C_NO_SUPERGROUP_SELECTED)) {
@@ -346,8 +346,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                                     theGroup.setRole(role);
                                     cms.writeGroup(theGroup);
                                     theGroup = (CmsGroup)cms.readGroup(groupname);
-                                    
-                                    // now change the list of users of this group but take into account that                                    
+
+                                    // now change the list of users of this group but take into account that
                                     // the default group of a user can't be removed
                                     Vector allUsers = cms.getUsersOfGroup(groupname);
                                     boolean defaultProblem = false;
@@ -356,7 +356,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                                         String theUserName = ((CmsUser)allUsers.elementAt(z)).getName();
                                         String theDefaultGroupName = ((CmsUser)allUsers.elementAt(z)).getDefaultGroup().getName();
                                         if(!selectedUsers.contains(theUserName)) {
-                                            
+
                                             // the user should be deleted
                                             if(theDefaultGroupName.equals(groupname)) {
                                                 defaultProblem = true;
@@ -386,7 +386,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                                     }
                                 }
                                 catch(CmsException e) {
-                                    
+
                                     // remeber that an error has occurred
                                     session.putValue("ERROR", new String("yes"));
                                     session.putValue("GROUPDESC", description);
@@ -411,8 +411,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 session.putValue("notSelectedUsers", notSelectedUsers);
                 session.putValue("SUPERGROUP", supergroup);
             }
-            
-            // again common part for 'newgroup' and 'changegroup':            
+
+            // again common part for 'newgroup' and 'changegroup':
             // set the variables for display in the document
             if(groupname == null) {
                 groupname = "";
@@ -438,7 +438,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
             }
             else {
                 if(perspective.equals("reallydeletegroup")) {
-                    
+
                     // deleting the group
                     try {
                         String groupname = (String)parameters.get("GROUPNAME");
@@ -446,7 +446,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                         templateSelector = "";
                     }
                     catch(Exception e) {
-                        
+
                         // groupname == null or delete failed
                         xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
                         templateSelector = "deleteerror";
@@ -454,18 +454,18 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                 }
             }
         }
-        
+
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * Gets all groups for a select box
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -473,14 +473,14 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    
-    public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, 
+
+    public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        
+
         // get all groups
         Vector groups = cms.getGroups();
         int retValue = 0;
-        
+
         // fill the names and values
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
@@ -489,14 +489,14 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
         }
         return new Integer(retValue);
     }
-    
+
     /**
      * Gets all users, that have not yet been selected for the group
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -504,8 +504,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    
-    public Integer getNotSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, 
+
+    public Integer getNotSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang,
             Vector names, Vector values, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         Vector notSelectedUsers = (Vector)session.getValue("notSelectedUsers");
@@ -518,14 +518,14 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
         }
         return new Integer(-1); // nothing preselected
     }
-    
+
     /**
      * Gets all users that have been selected to be in the group
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -533,8 +533,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
      * @return Index representing the default Group of the user
      * @exception CmsException
      */
-    
-    public Integer getSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, 
+
+    public Integer getSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         Vector selectedUsers = (Vector)session.getValue("selectedUsers");
@@ -550,14 +550,14 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
         }
         return new Integer(-1);
     }
-    
+
     /**
      * Gets all supergroups of the actual group (in session or in form data) for a selectbox
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -565,8 +565,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    
-    public Integer getSuperGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, 
+
+    public Integer getSuperGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -586,31 +586,33 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
         names.addElement(lang.getLanguageValue("input.none"));
         values.addElement(C_NO_SUPERGROUP_SELECTED);
         Vector groups = cms.getGroups();
+        int selectedGroup = 0;
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
             if(name.equals(supergroup)) {
-                retValue = z;
+                retValue = selectedGroup;
             }
             if(!name.equals(actualGroup)) {
                 names.addElement(name);
                 values.addElement(name);
+                selectedGroup++;
             }
         }
         return new Integer(retValue + 1);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
+
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
     }
