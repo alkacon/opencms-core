@@ -163,12 +163,16 @@
                 <propinuse>Diese Eigenschaft wird von Dateien verwendet.<![CDATA[<br>]]>Sie können sie nicht löschen.</propinuse>
                 <projectdatamissing>Das neue Projekt konnte nicht angelegt werden.</projectdatamissing>
                 <publishproject>Leider konnte das Projekt nicht veröffentlicht werden.</publishproject>
-                <rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
+                <publishresource>Leider konnte die Ressource nicht veröffentlicht werden.</publishresource>
+				<restoreresource>Leider konnte diese Version der Ressource nicht wiederhergestellt werden.</restoreresource>
+				<rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
                 <deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
                 <staticexport>Leider konnte der statische Export nicht vollständig ausgführt werden.</staticexport>
                 <syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
                 <syncproperties>Die Daten für die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
-                <unlock>Leider konnte die Datei nicht wieder freigegeben werden.</unlock>
+                <undelete>Leider konnte die Ressource nicht wiederhergestellt werden.</undelete>
+				<undochanges>Leider konnten die Änderungen nicht verworfen werden.</undochanges>
+				<unlock>Leider konnte die Datei nicht wieder freigegeben werden.</unlock>
                 <upload>Die Datei konnte nicht hochgeladen werden.</upload>
             </message>
             <reason>
@@ -221,14 +225,18 @@
                 <none></none>
                 <picgallery>Sie haben keine Berechtigung eine neue Galerie in diesem Projekt anzulegen.</picgallery>
                 <publishproject>In dem Projekt sind eventuell noch gesperrte Dateien enthalten.</publishproject>
-                <projectdatamissing>Die Felder Projektname und Verzeichnisse müssen ausgefüllt werden.</projectdatamissing>
-                <rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelöscht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
+                <publishresource>Sie müssen Projektmanager dieses Projektes sein.</publishresource>
+				<projectdatamissing>Die Felder Projektname und Verzeichnisse müssen ausgefüllt werden.</projectdatamissing>
+                <restoreresource>Sie haben keine Berechtigung, diese Version wiederherzustellen.</restoreresource>
+				<rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelöscht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
                 <deleteproject>Sie haben nicht das Recht dieses Projekt zu löschen.</deleteproject>
                 <staticexport>Eventuell existiert der angegebene Export-Ordner nicht.</staticexport>
                 <syncfolder>Eventuell existieren die zu synchronisierenden Ressourcen oder der Synchronisationspfad nicht.</syncfolder>
                 <syncproperties>Eventuell existieren die angegebenen Ressourcen nicht im gewählten Projekt.</syncproperties>
                 <syncdatamissing>Sie haben noch kein Projekt, keine zu synchronisierenden Ressourcen oder keinen Zielpfad gewählt.</syncdatamissing>
-                <unlock>Die Dateisperre wurde von einem anderen Benutzer übernommen.</unlock>
+                <undelete>Sie haben keine Berechtigung, die Ressource wiederherzustellen.</undelete>
+				<undochanges>Sie haben keine Berechtigung, die Änderungen zu verwerfen.</undochanges>
+				<unlock>Die Dateisperre wurde von einem anderen Benutzer übernommen.</unlock>
                 <upload>Der Dateiinhalt ist leer</upload>
             </reason>
             <suggestion>
@@ -262,11 +270,15 @@
                 <none></none> 
                 <picbrowser>Legen sie den Ordner für die Bildergalerien an oder kontaktieren Sie Ihren Systemadministrator.</picbrowser>
                 <publishproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</publishproject>
-                <rmdefault>Sie müssen die Default Gruppe dieser Benutzer zuerst ändern.</rmdefault>
+                <publishresource>Bitte kontaktieren Sie den Projektmanager des Projektes oder den Systemadministrator.</publishresource>
+				<restoreresource>Bitte überprüfen Sie die Zugriffsrechte auf die Ressource.</restoreresource>
+				<rmdefault>Sie müssen die Default Gruppe dieser Benutzer zuerst ändern.</rmdefault>
                 <deleteproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</deleteproject>
                 <syncfolder>Bitte überprüfen Sie die Einträge für die Synchronisierung in der Registrierungsdatei oder kontaktieren Sie Ihren Systemadministrator.</syncfolder>
                 <syncproperties>Bitte überprüfen Sie, ob die angegebenen Ressourcen im Projekt existieren.</syncproperties>
-                <unlock>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
+                <undelete>Bitte überprüfen Sie die Zugriffsrechte auf die Ressource.</undelete>
+				<undochanges>Bitte überprüfen Sie die Zugriffsrechte auf die Ressource.</undochanges>
+				<unlock>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
                 <upload>Bitte überprüfen Sie den Dateinamen, oder kontaktieren Sie Ihren Systemadministrator.</upload>
             </suggestion>
             <title> 
@@ -299,10 +311,14 @@
                 <picbrowser>Bildergalerie öffnen</picbrowser>
                 <picgallery>Bildergalerie anlegen</picgallery>
                 <publishproject>Projekt veröffentlichen</publishproject>
-                <deleteproject>Projekt löschen</deleteproject>
+                <publishresource>Direkt veröffentlichen</publishresource>
+				<restoreresource>Historisierte Version wiederherstellen</restoreresource>
+				<deleteproject>Projekt löschen</deleteproject>
                 <syncfolder>Ordner synchronisieren</syncfolder>
                 <syncproperties>Einstellungen für die Synchronisation</syncproperties>
-                <unlock>Datei freigeben</unlock>
+                <undelete>Ressource wiederherstellen</undelete>
+				<undochanges>Änderungen verwerfen</undochanges>
+				<unlock>Datei freigeben</unlock>
                 <upload>Datei hochladen</upload>
             </title>    
         </error>
@@ -388,8 +404,11 @@
                 <pageedit>Seite bearbeiten</pageedit>
                 <project>Als Projekt anlegen</project>
                 <property>Eigenschaften</property>
+				<publish>Direkt veröffentlichen</publish>
                 <rename>Umbenennen</rename>
                 <type>Dateityp ändern</type>
+				<undelete>Wiederherstellen</undelete>
+				<undochanges>Änderungen verwerfen</undochanges>
                 <unlock>Freigeben</unlock>
             </context>
         </explorer>
@@ -541,6 +560,9 @@
             <groupsprojectmanager>Projektleiter</groupsprojectmanager>
             <groupsprojectworker>Projektmitarbeiter</groupsprojectworker>
             <historyheader><![CDATA[Zuletzt bearbeitet am&nbsp;&nbsp;&nbsp;&nbsp;Veröffentlicht am&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bearbeitet von]]></historyheader>
+            <histrestoreversion>Wiederherstellen</histrestoreversion>
+            <histshowversion>Inhalt anzeigen</histshowversion>
+            <histdetailok>Schließen</histdetailok>
             <imagelist>Bilderliste</imagelist>
             <inactive>nicht aktiv</inactive>
             <link>Verknüpfung</link>
@@ -603,7 +625,9 @@
                 <lockfolder>Ordner sperren</lockfolder>
                 <lockchange>Datei Sperrung übernehmen</lockchange>
                 <lockchangefolder>Ordner Sperrung übernehmen</lockchangefolder>
-                <syncfolder>Ordner synchronisieren</syncfolder>
+                <publishresource>Direkt veröffentlichen</publishresource>
+				<syncfolder>Ordner synchronisieren</syncfolder>
+				<undochanges>Änderungen verwerfen</undochanges>
                 <unlock>Datei freigeben</unlock>
                 <unlockfolder>Ordner freigeben</unlockfolder>
             </title>
@@ -617,8 +641,10 @@
                 <lockfolder>Soll der Ordner wirklich zur Bearbeitung gesperrt werden?</lockfolder>
                 <lockchange>Wollen Sie die Sperrung wirklich übernehmen?</lockchange>
                 <lockchangefolder>Wollen Sie die Sperrung wirklich übernehmen?</lockchangefolder>
-                <syncfolder>Wollen Sie wirklich synchronisieren?</syncfolder>
-                <unlock> Soll die Datei wirklich freigegeben werden?</unlock>
+                <publishresource>Soll die Ressource</publishresource>
+				<syncfolder>Wollen Sie wirklich synchronisieren?</syncfolder>
+                <undochanges>Die Ressource</undochanges>
+				<unlock> Soll die Datei wirklich freigegeben werden?</unlock>
                 <unlockfolder>Soll der Ordner wirklich freigegeben werden?</unlockfolder>
             </message1>
             <message2>
@@ -631,19 +657,26 @@
                 <lockfolder>Auf den Ordner kann dann kein anderer außer Ihnen zugreifen, bis Sie den Ordner wieder freigeben.</lockfolder>
                 <lockchange>Die Datei wird zur Zeit von einem anderen Benutzer gesperrt.</lockchange>
                 <lockchangefolder>Der Ordner wird zur Zeit von einem anderen Benutzer gesperrt.</lockchangefolder>
-                <syncfolder>Die Dateien im OpenCms-System bzw. auf der Festplatte werden dabei auf den neusten Stand gebracht.</syncfolder>
-                <unlock> Die Datei kann dann auch wieder online gestellt werden.</unlock>
+                <publishresource>zuletzt geändert am</publishresource>
+				<syncfolder>Die Dateien im OpenCms-System bzw. auf der Festplatte werden dabei auf den neusten Stand gebracht.</syncfolder>
+                <undochanges>wurde zuletzt geändert am</undochanges>
+				<unlock> Die Datei kann dann auch wieder online gestellt werden.</unlock>
                 <unlockfolder> Der Ordner kann dann auch wieder online gestellt werden.</unlockfolder>              
             </message2>
             <message3>
                 <deletepropdef1>Soll die Eigenschaft</deletepropdef1>
                 <deletepropdef2>für Dateityp </deletepropdef2>
                 <deletepropdef3> wirklich gelöscht werden?</deletepropdef3>
+				<publishresource>von</publishresource>
+				<undochanges>von</undochanges>
             </message3>
             <message4>
                 <deleteextension1>Soll die Zuordnung der Dateiendung</deleteextension1>
                 <deleteextension2>zum Dateityp </deleteextension2>
                 <deleteextension3> wirklich gelöscht werden?</deleteextension3>
+				<publishresource>wirklich direkt verröffentlicht werden?</publishresource>
+				<restoreresource>Wollen Sie die Änderungen verwerfen und die historisierte Version wiederherstellen?</restoreresource>
+				<undochanges>Wollen Sie alle nicht veröffentlichten Änderungen an der Ressource verwerfen?</undochanges>
             </message4>
             <message5>Wollen Sie diese Gruppe wirklich löschen?</message5>
             <message6>Wollen Sie diesen Benutzer wirklich löschen?</message6>

@@ -164,11 +164,15 @@
 				<propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
 				<projectdatamissing>Sorry, the new project could not be created.</projectdatamissing>
 				<publishproject>Sorry, the project could not be published.</publishproject> 
+				<publishresource>Sorry, the resource could not be published directly.</publishresource>
+				<restoreresource>Sorry, this version of the resource could not be restored.</restoreresource>
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
 				<staticexport>Sorry, the Resources could not be exported.</staticexport>
 				<syncfolder>Sorry, the folders could not be synchronized.</syncfolder>
 				<syncproperties>Sorry, the properties for synchronisation could not be saved.</syncproperties>
+				<undelete>Sorry, the resource could not be undeleted.</undelete>
+				<undochanges>Sorry, the changes of the resource could not be undone</undochanges>
 				<unlock>Sorry, the file could not be locked.</unlock>
 				<upload>Sorry, the file could not be uploaded.</upload>
 			</message>
@@ -222,12 +226,16 @@
 				<nogroup>You must pick at last one group.</nogroup>
 				<none></none>
 				<publishproject>There are still locked files in the project.</publishproject>
+				<publishresource>You have to be projectmanager of the project to publish resources.</publishresource>
+				<restoreresource>You have no access rights to restore this version.</restoreresource>
 				<rmdefault>At last one user that should be removed from this group had this group set as default.</rmdefault>
 				<deleteproject>You don't have the permissions to delete the project.</deleteproject>
 				<staticexport>Maybe the export folder does not exist.</staticexport>
 				<syncfolder>Maybe the resource to be synchronized or the synchronize path not exist.</syncfolder>
 				<syncproperties>Maybe a resource does not exist in the choosen project.</syncproperties>
 				<syncdatamissing>You did not choose a project, the resources to be synchronised or the destination path</syncdatamissing>
+				<undelete>You have no access rights to undelete the resource</undelete>
+				<undochanges>You have no access rights to undo the changes of the resource.</undochanges>
 				<unlock>The lock was stolen by another user.</unlock>
 				<upload>The file content is empty.</upload>
 			</reason>
@@ -263,10 +271,14 @@
 				<picbrowser>Create the folder for the picture galleries or contact your system administrator.</picbrowser>
 				<picgallery>Creating a picture gallery</picgallery>
 				<publishproject>Please try again later, or contact your system administrator.</publishproject>
+				<publishresource>Please contact the projectmanager of the project or your system administrator.</publishresource>
+				<restoreresource>Please check the write access on the resource.</restoreresource>
 				<rmdefault>You must first change the default group of this user(s).</rmdefault>
 				<deleteproject>Please try again later, or contact your system administrator.</deleteproject>
 				<syncfolder>Please check the entries for synchronisation in the registry or contact your system administrator.</syncfolder>
 				<syncproperties>Please check if all resources exist in the choosen project.</syncproperties>
+				<undelete>Please check the write access on the resource.</undelete>
+				<undochanges>Please check the write access on the resource.</undochanges>
 				<unlock>Please try again later, or contact your system administrator.</unlock>
 				<upload>Please check the filename, or contact your system administrator.</upload>
 			</suggestion>
@@ -300,9 +312,13 @@
 				<picbrowser>Picture Browser</picbrowser>
 				<picgallery>Creating new Picture Gallery</picgallery>
 				<publishproject>Publish Project</publishproject>
+				<publishresource>Publish Resource</publishresource>
+				<restoreresource>Restore Version</restoreresource>
 				<deleteproject>Delete Project</deleteproject>
 				<syncfolder>Synchronize Folders</syncfolder>
 				<syncproperties>Properties for Synchronisation</syncproperties>
+				<undelete>Undelete Resource</undelete>
+				<undochanges>Undo Changes</undochanges>
 				<unlock>Unlock File</unlock>
 				<upload>Upload File</upload>
 			</title>	
@@ -389,8 +405,11 @@
 				<pageedit>Edit Page</pageedit>
 				<project>Create as project</project>
 				<property>Properties</property>
+				<publish>Publish Directly</publish>
 				<rename>Rename</rename>
 				<type>Change File Type</type>
+				<undelete>Undelete</undelete>
+				<undochanges>Undo Changes</undochanges>
 				<unlock>Unlock</unlock>
 			</context>
 		</explorer>
@@ -540,6 +559,9 @@
 			<groupsprojectmanager>Manager Group</groupsprojectmanager>
 			<groupsprojectworker>User Group</groupsprojectworker>
 			<historyheader><![CDATA[Last edited at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edited by]]></historyheader>
+			<histrestoreversion>Restore Version</histrestoreversion>
+            <histshowversion>Show Content</histshowversion>
+            <histdetailok>Close</histdetailok>
 			<imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
 			<link>Link</link>
@@ -603,7 +625,10 @@
 				<lockfolder>Lock Folder</lockfolder>
 				<lockchange>Steal File Lock</lockchange>
 				<lockchangefolder>Steal Folder Lock</lockchangefolder>
+				<publishresource>Publish Resource</publishresource>
+				<restoreresource>Restore Version</restoreresource>
 				<syncfolder>Synchronize Folders</syncfolder>
+				<undochanges>Undo Changes</undochanges>
 				<unlock>Unlock File</unlock>
 				<unlockfolder>Unlock Folder</unlockfolder>
 			</title>
@@ -617,7 +642,9 @@
 				<lockfolder>Really lock the selected Folder?</lockfolder>
 				<lockchange>Really steal the File Lock?</lockchange>
 				<lockchangefolder>Really steal the Folder Lock?</lockchangefolder>
+				<publishresource>Do you really want to publish</publishresource>
 				<syncfolder>Really synchronize?</syncfolder>
+				<undochanges>The resource</undochanges>
 				<unlock> Really unlock the File?</unlock>
 				<unlockfolder>Really unlock the Folder?</unlockfolder>
 			</message1>
@@ -631,7 +658,9 @@
 				<lockfolder>Only you will be able to change the folder until you unlock it.</lockfolder>
 				<lockchange>The File is currently locked by another user.</lockchange>
 				<lockchangefolder>The Folder is currently locked by another user.</lockchangefolder>
+				<publishresource>last modified on</publishresource>
 				<syncfolder>The files in OpenCms system or the server filesystem will be updated.</syncfolder>
+				<undochanges>was last modified on</undochanges>
 				<unlock> Other Users can then edit the File again.</unlock>
 				<unlockfolder> Other Users can then edit the Folder again.</unlockfolder>				
 			</message2>
@@ -639,11 +668,16 @@
 				<deletepropdef1>Do you really want to delete the property definition</deletepropdef1>
 				<deletepropdef2>of resource type </deletepropdef2>
 				<deletepropdef3>?</deletepropdef3>
+				<publishresource>by</publishresource>
+				<undochanges>by</undochanges>
 			</message3>
 			<message4>
 				<deleteextension1>Do you really want to delete the association of </deleteextension1>
 				<deleteextension2>to the resource type </deleteextension2>
 				<deleteextension3>?</deleteextension3>
+				<publishresource>directly?</publishresource>
+				<restoreresource>Do you really want to restore this version and loose all changes?</restoreresource>
+				<undochanges>Do you really want to undo all changes that were not published?</undochanges>
 			</message4>
 			<message5>Do you really want to delete this group?</message5>
 			<message6>Do you really want to delete this user?</message6>
