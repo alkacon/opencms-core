@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 16:46:05 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/07/31 14:20:50 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1
  */
@@ -481,9 +481,9 @@ public class CmsExplorer extends CmsWorkplace {
             // position 16: name of project where the resource is locked in         
             int lockedInProject = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             String lockedInProjectName = "";
-            if (! lock.isNullLock()) {
+            if (res.getProjectId()>0) {
                 try {
-                    lockedInProjectName = getCms().readProject(lockedInProject).getName();
+                    lockedInProjectName = getCms().readProject(res.getProjectId()).getName();
                 } catch (CmsException exc) {
                     // ignore the exception - this is an old project so ignore it
                 }
