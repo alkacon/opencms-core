@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/05 13:48:43 $
-* Version: $Revision: 1.268.2.1 $
+* Date   : $Date: 2004/01/06 12:45:04 $
+* Version: $Revision: 1.268.2.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.268.2.1 $
+ * @version $Revision: 1.268.2.2 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2111,7 +2111,7 @@ public Vector getUsersByLastname(String Lastname,
 public void importFolder(String importFile, String importPath) throws CmsException {
     // import the resources
     clearcache();
-    m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, getSiteRoot(importPath), this);
+    m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
     clearcache();
 }
 
