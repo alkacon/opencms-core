@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/02/16 02:23:17 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/02/22 11:17:31 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2003/02/16 02:23:17 $
+ * @version $Revision: 1.43 $ $Date: 2003/02/22 11:17:31 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -52,6 +52,16 @@ public class CmsXmlLanguageFile {
     /** The name of the property file */
     public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
     
+    /** Localized message access object for the default workplace */
+    private CmsMessages m_messages;
+    
+    /** CmsObject provided with the constructror */
+    private CmsObject m_cms;
+    
+    /** Locale (2 letter ISO country code like "en") */
+    private String m_locale;
+
+    // static data storages to prevent multiple lookups
     /** Map of locales from the installed modules */
     private static Map m_allModuleMessages = null;     
     
@@ -60,19 +70,13 @@ public class CmsXmlLanguageFile {
     
     /** Map of encodings from the installed languages */
     private static Map m_allEncodings = null;
-               
-    /** Localized message access object for the default workplace */
-    private CmsMessages m_messages;
-        
+                       
     /** Flag to indicate support for old locale mechanism */
-    private boolean m_supportOldLocale = false;
-    
-    /** CmsObject provided with the constructror */
-    private CmsObject m_cms;
-    
-    /** Locale (2 letter ISO country code like "en") */
-    private String m_locale;
-    	         
+    private static Boolean m_supportOldLocale = null;
+
+    /** DEBUG flag */
+    private static final int DEBUG = 0; 
+                 
     /**
      * Constructor for creating a new language file 
      * initialized with the workplace preferences locale of the current user.<p>
@@ -96,12 +100,14 @@ public class CmsXmlLanguageFile {
         m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);   
         // initialize the static encodings map if required
         if (m_allEncodings == null) {        
+            if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): initializing the static encodings");
             synchronized (this) {     
                 m_allEncodings = new HashMap(); 
             }            
         }  
         // initialize the static hash if not already done
         if (m_allModuleMessages == null) {        
+            if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): initializing module messages hash");
             synchronized (this) {     
                 m_allModuleMessages = new HashMap(); 
             }            
@@ -109,6 +115,7 @@ public class CmsXmlLanguageFile {
         // initialize the static module messages
         Object obj = m_allModuleMessages.get(m_locale);
         if (obj == null) {
+            if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): collecting static module messages");
             synchronized (this) {    
                 m_moduleMessages = collectModuleMessages(m_cms, m_locale);
                 m_allModuleMessages.put(m_locale, m_moduleMessages);
@@ -116,9 +123,14 @@ public class CmsXmlLanguageFile {
         } else {
             m_moduleMessages = (Set)obj;
         }      
-        // set compatiblity flag for old locales
-        Boolean flag = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
-        m_supportOldLocale = (flag!=null)?flag.booleanValue():false;           
+        if (m_supportOldLocale == null) {
+            if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): reading old locale support property");
+            synchronized(this) {
+                // set compatiblity flag for old locales
+                Boolean flag = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
+                m_supportOldLocale = (flag != null)?flag:new Boolean(false);                
+            }
+        }
     }
     
     /**
@@ -162,8 +174,9 @@ public class CmsXmlLanguageFile {
         // try to read from static map
         String result = (String)m_allEncodings.get(m_locale);
         if (result != null) return result;
-        
+
         // encoding not stored so far, let's try to figure it out
+        if (DEBUG > 0) System.err.println("CmsXmlLanguageFile.getEncoding(): looking up encoding for locale " + m_locale);
         try {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
@@ -206,11 +219,13 @@ public class CmsXmlLanguageFile {
      * @return the resource string for the given key 
      */
     public String getLanguageValue(String keyName) {       
-        if ((m_moduleMessages.size() == 0) && (! m_supportOldLocale)) return m_messages.key(keyName);
+        if (DEBUG > 2) System.err.println("CmsXmlLanguageFile.getLanguageValue(): looking key " + keyName);
         try {
             return m_messages.getString(keyName);
         } catch (MissingResourceException e) {}
+
         // key was not found in default workplace bundles
+        if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found in workplace messages");
         Iterator i = m_moduleMessages.iterator();
         while (i.hasNext()) {
             try {
@@ -220,7 +235,8 @@ public class CmsXmlLanguageFile {
                 // ignore and continue looking in the other bundles
             }
         }
-        if (m_supportOldLocale) {
+        if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' also not found in module messages (this is not good)");
+        if (m_supportOldLocale.booleanValue()) {
             // we have not found the key and we are in old compatiblity mode,
             // so let's look up the XML locales
             try {
@@ -232,6 +248,7 @@ public class CmsXmlLanguageFile {
             }
         }
         
+        if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found at all (this is bad)");
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
                 ".getLanguageValue() - Missing value for locale key: " + keyName);
@@ -262,6 +279,7 @@ public class CmsXmlLanguageFile {
             currentLanguage = (String)session.getValue(I_CmsConstants.C_START_LANGUAGE); 
         }                 
         if (currentLanguage == null) {
+            if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found in session");
             // language is not stored in the session yet, must check it out the hard way
             Hashtable startSettings =
                 (Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
@@ -271,6 +289,7 @@ public class CmsXmlLanguageFile {
             }    
             // no startup language in user settings found, so check the users browser locale settings
             if (currentLanguage == null) {
+                if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found in user preferences");        
                 Vector language = (Vector)cms.getRequestContext().getAcceptedLanguages();
                 int numlangs = language.size();
                 for (int i = 0; i < numlangs; i++) {
@@ -286,6 +305,7 @@ public class CmsXmlLanguageFile {
             }
             // if no language was found so far, set it to the default language
             if (currentLanguage == null) {
+                if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found at all (using default)");        
                 currentLanguage = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
             }
             // store language in session
