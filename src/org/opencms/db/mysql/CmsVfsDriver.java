@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/29 11:35:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/29 11:35:35 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -119,6 +119,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             //stmt.setString(12, user.getId().toString());
             stmt.setString(12, CmsUUID.getNullUUID().toString());
             stmt.setInt(13, project.getId());
+            stmt.setInt(14, 0);
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);                      
 
@@ -128,11 +129,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setString(2, parentId.toString());
             stmt.setString(3, resourceId.toString());
             stmt.setString(4, filename);
-            stmt.setInt(5, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-            stmt.setInt(6, state);
-            stmt.setTimestamp(7, new Timestamp(dateCreated));
-            stmt.setString(8, user.getId().toString());
-            stmt.setString(9, user.getId().toString());
+            stmt.setInt(5, state);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
