@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/10/29 08:39:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2002/11/11 10:29:07 $
+ * Version: $Revision: 1.9 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,7 +22,7 @@ Legend:
 d Decision: Feature will be implemented, but implementation is delayed beyond next release
 - Decision: Feature will NOT be implemented
 ? No desicion made about this feature
-# Feature has already been implemented for the next release
+# Feature has already been implemented
 
 As a small rule, there can be only a decision to implement a feature if there is
 also a volunteer to do the work!
@@ -225,7 +225,7 @@ Volunteers:
   Alexander Kandzior (a.kandzior@alkacon.com)
 
 
-[ + ] Create a default /index.html page during installation
+[ # ] Create a default /index.html page during installation
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -372,7 +372,7 @@ Updates:
   to the OpenCms group who will be able to roll it into a future release (I hope).
 
 
-[ + ] Import tool for content of pre 5.0 releases.
+[ # ] Import tool for content of pre 5.0 releases.
 ================================================================================
 Suggested by:
   Michael Emmerich (Michael.Emmerich@framfab.de)
@@ -412,3 +412,31 @@ Issues:
 Volunteers:
   Andreas Schouten (andreas.schouten@framfab.de)
   Michael Emmerich (Michael.Emmerich@framfab.de)
+
+
+[ ? ] Cleanup / Minor points
+================================================================================
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
+
+Description:
+  Some minor issues that could/should be improved and fixed
+  * Improved temp-file handling, no more "deat" ~page1.html files
+  * Reports do not always scroll right while exporting/publishing
+  * Add reports to module export/import (don't use System.out here)
+  * Chech new link dialog in HTML editor for handling of filename parameters
+  * Make help files a module and an optional part of the installation
+  * Add posibility to "lock" the workplace to one language
+  * Add a feature "remove help button for languages where no help is available"
+
+Issues:
+    None known. Someone has to do the work.
+
+Volunteers:
+  Alexander Kandzior (a.kandzior@alkacon.com)
+
+Updates:
+  (11/11/02) Alexander Kandzior
+  I will see what I can do before the 5.0 final is released.
+  None of the bullets seems to be critical enough to
+  prevent the release, though.
