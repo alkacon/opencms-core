@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/01 22:57:41 $
-* Version: $Revision: 1.352 $
+* Date   : $Date: 2003/02/02 10:22:39 $
+* Version: $Revision: 1.353 $
 
 *
 * This library is part of OpenCms -
@@ -37,7 +37,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.util.Utils;
 
 import java.io.BufferedReader;
@@ -72,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.352 $ $Date: 2003/02/01 22:57:41 $
+ * @version $Revision: 1.353 $ $Date: 2003/02/02 10:22:39 $
 
  *
  */

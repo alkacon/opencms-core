@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2003/02/01 22:59:31 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/02/02 10:22:56 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,10 +30,11 @@
 package com.opencms.template;
 
 import com.opencms.boot.I_CmsLogChannels;
-import java.util.*;
-import java.lang.reflect.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+
+import java.lang.reflect.Constructor;
 
 /**
  * Class for managing of the instances of all
@@ -44,7 +45,7 @@ import com.opencms.core.*;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2003/02/01 22:59:31 $
+ * @version $Revision: 1.30 $ $Date: 2003/02/02 10:22:56 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels {
 
