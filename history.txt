@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.34 Chusuk       - xx February 2001
+! The copy method of the mastermodule now returns the id of the new content definition. 
+  The dataset can be cloned.
+
 OpenCms 4.5.33 Chusuk       - 30 January 2001
 * Change current project to online project after publishing a temporary project.
 - Addind mechanism of redirect to the correct ressource based on the current project
