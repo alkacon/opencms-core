@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/12 08:43:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/12/12 11:56:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -73,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsXmlPage {
     
@@ -352,6 +353,16 @@ public class CmsXmlPage {
         try {
             SAXReader reader = new SAXReader();
             reader.setEntityResolver(new CmsEntityResolver(cms));
+            
+            // TODO: check why this does not work ...
+            // try {
+            //    reader.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
+            //} catch (SAXException exc) {
+            //    if (OpenCms.getLog(this).isDebugEnabled()) {
+            //        OpenCms.getLog(this).debug("Cannot disable sax feature resolve-dtd-uris", exc);
+            //    }
+            //}
+            
             Document document = reader.read(new StringReader(xmlData));            
             // Document document = DocumentHelper.parseText(xmlData);
             return new CmsXmlPage(document);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsEntityResolver.java,v $
- * Date   : $Date: 2003/12/12 08:43:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/12/12 11:56:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,13 @@ import com.opencms.file.CmsObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/12 08:43:19 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/12 11:56:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsEntityResolver implements EntityResolver {
@@ -75,12 +76,16 @@ public class CmsEntityResolver implements EntityResolver {
 //                // noop
 //            }
 //        }
+        
         if (publicId == null) {
             
             try {
-                InputStream in = new ByteArrayInputStream(m_cms.readFile(systemId).getContents());
+                URI dtdURI = new URI(systemId);
+                
+                // TODO: assumes that the system id is an opencms internal path 
+                InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdURI.getPath()).getContents());
                 return new InputSource(in);
-            } catch (CmsException exc) {
+            } catch (Exception exc) {
                 // noop
             }
         }        
