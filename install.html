@@ -1,339 +1,142 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-    <html>
-    <head>  
+<html>
+    <head>
         <TITLE>Installation</TITLE>
     </head>
-<body>
-<H1>This file is outdated and describes the old way of installation.
-It will be updated soon for tomcat-deployment.</H1>
-<p>
-<H1><FONT color=black>Installation of OpenCms 4.3.x</FONT></H1>
-This chapter provides information on how to install OpenCms using
-all standard components described in the previous chapter. All installation
-parts are described as single steps. After completing a step you are strongly
-advised to verify the success by running the particular commands and 
-watching the results.
-
-<p>If not mentioned, all commands refer both to UNIX and Windows systems.
-All shell commands containing path information are written in UNIX style using
-a slash "/" as folder separator. On Windows you will have to
-replace these characters by a backslash "\". 
-Be very careful with replacing this characters since the virtual filesystem
-of OpenCms uses a slash. Using a backslash in virtual filenames will 
-prevent OpenCms from running properly! Ensure that you really only replace
-slashes in shell commands and paths concerning the real file system.
-
-<p>You also will need a 
-MS-DOS prompt in order to execute all commands in a Windows enviroment.
-
-<hr><H2><FONT color="#E31659">1 Installing the Apache Web Server</FONT></H2>
-
-<p>Install the Apache Web Server <a href="http://www.apache.org/httpd.html">http://www.apache.org/httpd.html</a>. 
-Write down the document root path of the Apache containing all static HTML 
-pages, your will need it later for configuring OpenCms.
-On WIN32 systems we recommend installing the Apache as service
-using <kbd>apache.exe -i</kbd>. 
-
-<p>Run your web server by calling the <kbd>httpd</kbd> deamon in the Apache
- <kbd>bin</kbd> folder (UNIX)
-or starting the service (Windows). Check that it
-is working by requesting an example page 
-(e.g. the demo index.html that comes with the Apache distribution).
-
-<p>
-<hr><H2><FONT color="#E31659">2 Installing Java JDK and JSDK</FONT></H2>
-Install the Java JDK (from SUN <a href="http://java.sun.com/products/j2se/">http://java.sun.com/products/j2se/</a> or
-IBM <a href="http://www3.software.ibm.com">http://www3.software.ibm.com</a>) and the Apache Jserv 1.1.2 from 
-<a href="http://java.apache.org/jserv/index.html">http://java.apache.org/jserv/index.html</a>.
-For details on how to install these components on your operating system,
-see the documentation that comes with them.
-
-<p>Write down your JServ installation path. Like the Apache document root, you
-will need it later.
-
-<p>Make sure that you update the PATH environment variable with JDK <kbd>bin</kbd>
-directory, e.g. <kbd>/usr/java/bin</kbd> on UNIX and <kbd>C:\jdk\bin</kbd>
-on Windows systems.
-
-<p>Check that a JServ servlet zone is set up properly and running on your 
-machine by requesting the default
-<kbd>http://your server/servlets/IsItWorking</kbd> class that comes with JServ. 
-
-<hr><H2><FONT color="#E31659">3 Installing MySQL</FONT></H2>
-Install MySQL from http://www.mysql.com/downloads/index.html
-(see the MySQL documentation on http://www.mysql.com/documentation/index.html). 
-
-<p>Note: On Windows-based systems MySQL has to be installed on the C:\ drive
-and should be registered as service using (your MySQL path)/mysql/bin/mysqld -install.
-
-<p>Start the MySQL server by running the service (WIN32) or executing 
- (your MySQL path)/mysql/bin/mysqld (UNIX).
-
-<p>Check that MySQL is running before you continue by starting the MySQL monitor 
-(command mysql in your MySQL bin folder).
-The database works correctly if a MySQL prompt appears after calling the monitor. 
-Quit the MySQL monitor by typing exit and go to the next step. 
-
-<hr><H2><FONT color="#E31659">4 Installing the OpenCms files</FONT></H2>
-We currently do not have an RPM or setup.exe, 
-but there are plans to make them available in the near future.
-We recommend that you unpack your OpenCms distribution archive file 
-(opencms_4.3.yy from 
-<a href="http://www.opencms.com/servlets/opencms/service/download.html">http://www.opencms.com/servlets/opencms/service/download.html</a>)
-in your C:\Program Files\ folder on Windows systems and 
-in the /opt folder on UNIX systems. 
-
-<p>While extracting the ZIP archive
-a new folder opencms_4.yy (with yy replaced by the current build number) 
-will be created. This new folder will be your OpenCms home
-directory. Make it to your current directory and check the content of
-the subfolder <kbd>oclib</kbd>. This folder is the right place for all external
-components and drivers used by OpenCms. In order to run OpenCms properly
-you should put the following JAR files in this folder:
-
-<p><UL>
-<li><kbd>xerces.jar</kbd> from the Apache Xerces XML parser. 
-<li>The MySQL JDBC database driver <kbd>mm.mysql-2.0.1-bin.jar</kbd>.
-<li><kbd>mail.jar</kbd> and <kbd>activation.jar</kbd> from the JavaMail distribution.
-<li><kbd>fop_bin.jar</kbd> (optional) from the FOP packet of the Apache XML project.
-</UL>
-
-<p>See the Components page on the OpenCms web site<br>
-(<a href="http://www.opencms.com/servlets/opencms/background/components.html">http://www.opencms.com/servlets/opencms/background/components.html</a>) 
-or chapter <em>Components</em> of the documentation for a more detailed description
-of these external parts of OpenCms.
-
-<p>
-
-<hr><H2><FONT color="#E31659">5 Setting up the OpenCms database</FONT></H2>
-For setting up the MySQL database for OpenCms, create a new database opencms42
-by calling
-
-<p><BLOCKQUOTE>
- (your MySQL path)/mysql/bin/mysqladmin create opencms42
-</BLOCKQUOTE>
-
-<p>It is important to name the database opencms42 because the configuration file of
-OpenCms ( opencms.properties) creates a database connection to a database named opencms42.
-If you want to use another name for your database
-you will have to change the line for the database connection in the opencms.properties file.
-
-<p>Run
-<BLOCKQUOTE>
- (your MySQL path)/mysql/bin/mysql opencms42 &lt; config/mysql.sql
-</BLOCKQUOTE>
-This will create all of the required database tables. 
-Make sure that all of the tables are created properly by calling the MySQL monitor again with
-
-<p><BLOCKQUOTE>
- (your MySQL path)/mysql/bin/mysql opencms42
-</BLOCKQUOTE>
-
-<p>and entering 
-<BLOCKQUOTE>
-show tables
-</BLOCKQUOTE>
-at the monitor prompt. MySQL should print the following list of tables: 
-
-<p><BLOCKQUOTE>
-<pre>
-+--------------------------+
-| Tables_in_opencms42      |
-+--------------------------+
-| cms_files                |
-| cms_groups               |
-| cms_groupusers           |
-| cms_module_forum         |
-| cms_module_forum_comment |
-| cms_projects             |
-| cms_properties           |
-| cms_propertydef          |
-| cms_resources            |
-| cms_sessions             |
-| cms_systemid             |
-| cms_systemproperties     |
-| cms_task                 |
-| cms_tasklog              |
-| cms_taskpar              |
-| cms_tasktype             |
-| cms_users                |
-+--------------------------+
-</pre>
-</BLOCKQUOTE>
-
-<p>On success, you now can exit MySQL simply by typing
-<BLOCKQUOTE>
-exit
-</BLOCKQUOTE>
-
-<hr><H2><FONT color="#E31659">6 Initializing the OpenCms database</FONT></H2>
-
-Edit the opencms.properties file in the config folder of your OpenCms home 
-directory and set the path for the log file:
-
-<p><BLOCKQUOTE>
- log.file=(your OpenCms home directory)/logs/opencms.log
-</BLOCKQUOTE>
-
-<p>On UNIX systems, Apache may have problems writing to the logs folder. 
-For this reason you should set its owner to nobody. 
-
-<p>OpenCms is able to export folders to the real file system on the server during 
-publishing operations. This feature commonly is used for storing pictures or large downloadable
-binary files in the Apache Web Server's
-document root. This will increase performance while displaying web pages with OpenCms.
-We recommend to set the following export paths in the opencms.properties file:
-
-<p><BLOCKQUOTE>
-<pre>
-exportpoint.0 = /pics/
-exportpoint.path.0 = (real path to apache document root)/pics/
-exportpoint.1 = /download/
-exportpoint.path.1 = (real path to apache document root)/download/
-exportpoint.2 = /system/workplace/pics/
-exportpoint.path.2 = (real path to apache document root)/pics/system/
-</pre>
-</BLOCKQUOTE>
-
-<p>Note the trailing slash
-characters. They are very important and must not be omitted.
-
-<p>Ensure that all paths you are using as export points in your real file system
-do really exist. OpenCms won't try to create these folders.
-
-<p>Similar to the log file on UNIX systems access rights conflicts may occur while
-OpenCms is trying to write to these folders. Set their owner to nobody, too.
-
-<p>Now take a look at the file cmssetup.txt:
-Set the path for OpenCms export files appropriate to your system by editing
-the line beginning with "writeExportPath" to 
-
-<p><BLOCKQUOTE>
- writeExportPath "(your OpenCms home directory)/export/"
-</BLOCKQUOTE>
-
-<p>(you will find these lines near to the end of the file).
-Again the trailing slash is very important. 
-
-<p>Make the OpenCms home directory to your current directory again and
-initialize the database with all workplace default files by calling the following command:
-
-<p><BLOCKQUOTE>
- java -mx64M -jar opencmsboot.jar &lt; config/cmssetup.txt
-</BLOCKQUOTE>
-
-<p>Note: The Java binary java should 
-reside in the bin folder of your JDK installation. If you have added this folder to your 
-system PATH environment as recommended during the installation of the Java VM,
-this command should work without giving a path.
-
-<p>If you have a Java runtime environment 
-on your system rather than a complete JDK, you
-can replace the java command by jre.
-
-<p>If there are errors, check the database connection configuration in your
-<kbd>opencms.properties</kbd>. Also ensure you are using Java 1.2 or higher since previous versions
-are not able to start a JAR file.
-
-<p>After fixing a problem, you should drop ( mysqladmin -user=root -p drop opencms42) and recreate 
-the existing database opencms42 (see previous section) before 
-running the command above for a second time.
-
-<p>After this the OpenCms database setup is completed. You are now able to check the basic OpenCms system. 
-Call the OpenCms console by entering:
-
-<p><BLOCKQUOTE>
- java -mx64M -jar opencmsboot.jar
-</BLOCKQUOTE>
-
-<p>This command is similar to the one above.
-Note that the part " &lt; config/cmssetup.txt" is missing now.
-
-<p>Log in as Admin and check the accessibility of a workplace file in your database. 
-You execute these commands on the shell: 
-
-<p><BLOCKQUOTE>
- login Admin admin<br>
-readFile "/system/workplace/action/start.html"
-</BLOCKQUOTE>
-
-<p>The OpenCms console answers e.g. with
-
-<p><BLOCKQUOTE>
-<pre>
-[Resource]:/system/workplace/action/start.html,
-Project=1 , User=2 , Group=3 : Access=rwvr------ : Resource-type=2 : Locked=-1 : lenght=168 : state=0
-</pre>
-</BLOCKQUOTE>
-
-<p>Quit the console by typing <kbd>exit</kbd>.
-
-<p><a name="LtohTOCentry-8"></a>
-<hr><H2><FONT color="#E31659">7 Configuring your servlet zone</FONT></H2>
-Finalize the configuration of your servlet zone. Make sure that your jserv.conf in 
-the <kbd>conf</kbd> folder of your Apache JServ installation directory contains the line
-
-<p><BLOCKQUOTE>
-<pre>ApJServMount /servlets /root</pre>
-</BLOCKQUOTE>
-
-Note: <kbd>ApJServMount</kbd>, <kbd>/servlets</kbd> and <kbd>/root</kbd> are separated by blanks.
-
-The file jserv.properties in the JServ <kbd>conf</kbd> folder must contain
-
-<BLOCKQUOTE>
-<pre>
-zones=root
-wrapper.bin.parameters=-mx64M
-root.properties=(your servlet configuration path)/zone.properties
-</pre>
-</BLOCKQUOTE>
-
-Note: On Windows systems you should use a backslash instead of a slash. 
-
-Update your zone.properties and set the following repository: 
-
-<BLOCKQUOTE>
-<pre>
-repositories=(your OpenCms home directory)/opencmsboot.jar
-
-</pre>
-</BLOCKQUOTE>
-
-<p>and add to the Servlet Aliases section the line: 
-
-<p><BLOCKQUOTE>
-    <pre>servlet.opencms.code=com.opencms.boot.OpenCmsServlet</pre> 
-</BLOCKQUOTE>
-
-<p>and to the Aliased Servlet Init Parameters section 
-
-<p><BLOCKQUOTE>
-    <pre>servlet.opencms.initArgs=opencms.home=(OpenCms home)</pre>
-</BLOCKQUOTE>
-<p>
-After configuring your servlet zone you should restart the Apache to
-ensure the new settings are read by the servlet engine.
-
-<p><a name="LtohTOCentry-9"></a>
-<hr><H2><FONT color="#E31659">8 Now your system is ready</FONT></H2>
-
-<p>Start your web server. The OpenCms system is available at<br>
-http://your.server/servlets/opencms/system/workplace/action/login.html.<br>
-Login as Admin using the default password admin. 
-
-<p><a name="LtohTOCentry-10"></a>
-<hr><H2><FONT color="#E31659">9 Security</FONT></H2>
-
-<p>After you have installed OpenCms you should look at the security.
-Change the Admin password of OpenCms by calling the user preferences 
-("hammer" icon on the main screen of the workplace). 
-Then can add a password to the MySQL database. Enter the following commands 
-at the MySQL command line.<br> 
-
-<p><BLOCKQUOTE>
-<pre>
+    <body>
+        <p>
+        <h1>Installation of OpenCms 4.4</h1>
+            
+        This chapter provides information on how to install OpenCms using 
+        <a href="http://jakarta.apache.org/tomcat/index.html">Tomcat</a> 
+        and <a href="http://www.mysql.com">MySql</a>. All installation 
+        parts are described as single steps. After completing a step you 
+        are strongly advised to verify the success.
+        </p>
+        
+        <p>
+        If not mentioned, all commands refer both to UNIX and Windows systems.
+        All shell commands containing path information are written in UNIX style using
+        a slash "/" as folder separator. On Windows you will have to
+        replace these characters by a backslash "\". 
+        Be very careful with replacing this characters since the virtual filesystem
+        of OpenCms uses a slash. Using a backslash in virtual filenames will 
+        prevent OpenCms from running properly! Ensure that you really only replace
+        slashes in shell commands and paths concerning the real file system.
+        </p>
+        
+        <p>
+        You also will need a MS-DOS prompt in order to execute all commands in a 
+        Windows enviroment.
+        </p>
+        
+        <hr></hr>
+        
+        <h2>1 Installing Java JDK</h2>
+        Install the Java JDK (from SUN <a href="http://java.sun.com/products/j2se/">http://java.sun.com/products/j2se/</a> or
+        IBM <a href="http://www3.software.ibm.com">http://www3.software.ibm.com</a>).
+        For details on how to install these components on your operating system,
+        see the documentation that comes with them.
+        
+        <hr></hr>
+        
+        <p>
+        <h2>2 Installing Tomcat</h2>
+        Install the Jakarta Tomcat 
+        <a href="http://jakarta.apache.org/tomcat/index.html">http://jakarta.apache.org/tomcat/index.html</a>
+        into your desired folder. This is the TOMCAT_HOME folder.
+        </p>
+        
+        <p>
+        Test the installation by running tomcat in standalone mode and check the examples. Notice: Tomcat uses 
+        port 8080 in standalone mode.
+        </p>
+        
+        <p>
+        If you wish you can combine the servlet-engine with a webserver like the Apache Web Server 
+        <a href="http://www.apache.org/httpd.html">http://www.apache.org/httpd.html</a>.
+        </p>
+        
+        <hr></hr>
+
+        <p>        
+        <h2>3 Installing MySQL</h2>
+        Install MySQL from <a href="http://www.mysql.com/downloads/index.html">http://www.mysql.com/downloads/index.html</a>
+        (see the MySQL documentation on <a href="http://www.mysql.com/documentation/index.html">http://www.mysql.com/documentation/index.html</a>). 
+        </p>
+        
+        <p>
+        Note: On Windows-based systems MySQL has to be installed on the C:\ drive
+        and should be registered as service using (your MySQL path)/mysql/bin/mysqld -install.
+        </p>
+        
+        <p>
+        Start the MySQL server by running the service (WIN32) or executing 
+        (your MySQL path)/mysql/bin/mysqld (UNIX).
+        </p>
+        
+        <p>
+        Check that MySQL is running before you continue by starting the MySQL monitor 
+        (command mysql in your MySQL bin folder).
+        The database works correctly if a MySQL prompt appears after calling the monitor. 
+        Quit the MySQL monitor by typing exit and go to the next step. 
+        </p>
+        
+        <hr></hr>
+        
+        <p>
+        <h2>4 Deploy the opencms.war file</h2>
+        Copy the opencms.war file to TOMCAT_HOME/web-apps/. Notice: replace TOMCAT_HOME
+        with the real-path to your Tomcat-installation.
+        </p>
+        
+        <p>
+        (Re-)Start Tomcat. Tomcat will now deploy the web-application OpenCms.
+        </p>
+        
+        <hr></hr>
+        
+        <p>
+        <h2>5 Install OpenCms using the Setup-Wizard</h2>
+        Start the setup-wizard by pointing your webbrowser to 
+        <a href="http://localhost:8080/opencms/ocsetup">http://localhost:8080/opencms/ocsetup</a>.
+        </p>
+        
+        <p>
+        Notice: maybe you have to replace localhost with your servername. The port 8080 is only used if
+        you start Tomcat in standalone mode.
+        </p>
+        
+        <p>
+        Follow the instructions of the OpenCms Setup-Wizard. It will set up the opencms-database and
+        imports all workplace-ressources into the system.
+        </p>
+        
+        <p>
+        For normal installations with MySql and Tomcat running on the same server all default-settings
+        will fit your needs.
+        </p>
+        
+        <hr></hr>
+        
+        <p>
+        <h2>6 Now your system is ready</h2>
+        Now your system is ready to use. You can login with user: Admin password: admin. Please change the
+        password as soon as possible. The login-url of OpenCms is:
+        <a href="http://localhost:8080/opencms/opencms/system/workplace/action/login.html">http://localhost:8080/opencms/opencms/system/workplace/action/login.html</a>
+        </p>
+        
+        <hr></hr>
+        
+        <h2>7 Security</h2>
+        
+        <p>After you have installed OpenCms you should look at the security.
+        Change the Admin password of OpenCms by calling the user preferences 
+        ("hammer" icon on the main screen of the workplace). 
+        Then you can add a password to the MySQL database. Enter the following commands 
+        at the MySQL command line.<br> 
+        
+        <p><BLOCKQUOTE>
+        <pre>
 use mysql;
 insert into user values ('localhost', 'ocmsuser',
 password('XXXXX'),'N','N','N','N','N','N','N','N','N',
@@ -341,276 +144,14 @@ password('XXXXX'),'N','N','N','N','N','N','N','N','N',
 insert into db values ('localhost', 'opencms42', 'ocmsuser',
 'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y'); 
 flush privileges; 
-</pre>
-</BLOCKQUOTE>
-
-<p>Don't forget to add the new user and password to all connect strings 
-of the database to your opencms.properties. 
-The new user can now only connect to the OpenCms tables. 
-For more information see the MySQL documentation. 
-
-<p><a name="LtohTOCentry-11"></a>
-<hr><H2><FONT color="#E31659">10 Troubleshooting</FONT></H2>
-
-<p>Look at all of the available log files 
-(here with the paths used in a standard UNIX installation) 
-if you have problems calling the login screen: 
-
-<p><UL>
-<li><strong></strong> Apache log file (usually (Apache home)/logs/error_log)
-<li><strong></strong> JServ module log file (usually ((JServ home)/logs/mod_jserv.log)
-<li><strong></strong> OpenCms log file ( (OpenCms home)/logs/opencms.log)
-</UL>
-
-<p><a name="LtohTOCentry-12"></a>
-<hr><H2><FONT color="#E31659">11 Installation of the example news module</FONT></H2>
-
-<p>The setup of the basic system is now complete, but you may want
-to add some more functionality to it.
-A good way to get used to the system is to practice with the 
-module mechanism and to install a first module. 
-
-<p>A simple newsfeed module came with the basic system or can be downloaded
-from the opencms homepage. The installation of the module is quite easy.
-
-<p><UL>
-<li><strong></strong> Unzip the file NewsModule.zip.
-The zip-file contains two files: another zip containinig the real module 
-( com.opencms.modules.homepage.news_2.zip)
-and a script to set up the MySQL database ( NewsModuleSetup.sql).
-
-<p><li><strong></strong>
-First prepare the database.
-Change to the folder in which the file <br>
- NewsModuleSetup.sql resides and type in the following shell command:
-
-<p><BLOCKQUOTE>
- (your MySQL path)/bin/mysql opencms42 &lt; NewsModuleSetup.sql
-</BLOCKQUOTE>
-
-<p>This creates all necessary tables and inserts some test data.
-
-<p><li><strong></strong> Then upload the module.
-Move the file <br>
- com.opencms.modules.homepage.news_2.zip to the modules
-subdirectory in your export path.
-
-<p>Open the OpenCms workplace and change to the module management under the
-administration view.
-Make sure that you are within the online project.
-Choose the icon to upload a new module.
-Choose upload new module from server and continue.
-
-<p>The module should appear in the selectbox. 
-Select continue to start uploading the module.
-</UL>
-
-<p>If all went well, the module is now installed.
-The module provides two new administration points. A further documentation
-can be found in the virtual filesystem. 
-
-<p>Start exploring under /moduledemos/com.opencms.modules.homepage.news/. 
-
-<p>
-<a name="LtohTOCentry-13"></a>
-<hr><H2><FONT color="#E31659">12 Setting up a local copy of the OpenCms homepage</FONT></H2>
-You can complete your test system by setting up a local copy of the OpenCms homepage.
-The OpenCms homepage uses the news module, so it is necessary to install the module if
-you want to make your first steps with the OpenCms homepage.
-
-<p>To get the templates of the OpenCms homepage you have to make a simple import.
-The required import file (\name website_import.zip) is shipped with OpenCms 4.2,
-together with another sql-script (\name website.sql). This script inserts the content
-which is handled by the News Module into the database.
-Both files are bundled to the zip file \name website.zip.
-
-<p><UL>
-<li><strong></strong>
-Extract this file first and then move the file \name website_import.zip to your
-export path.
-
-<p><li><strong></strong>
-Then insert the content into the database by using the sql-script.
-Change to the folder in which the file
- website.sql resides and type in the following shell command:
-
-<p><BLOCKQUOTE>
- (your MySQL path)/bin/mysql opencms42 &lt; website.sql
-</BLOCKQUOTE>
-
-<p><li><strong></strong>
-Then you have to import the templates.
-To be able to do this, you have to be within a project
-(not the online project), so create a new
-project first. <br>
-Change to the administration view and choose Projectmanagement
--&gt; New Project.<br> 
-Specify a project name, for example OpenCmsHomepage and the folders that
-should be included. <br>
-In this case include everything, type in / and press
-the button with the blue arrow to adopt this directory to the list of folders that
-have to be included.
-
-<p>After creating the new project, make sure that you are actually inside it and
-change again to the administration view. 
-
-<p><li><strong></strong>
-Now start the import of the OpenCms homepage. 
-Make sure that the import file <br>
- website_import.zip can be found within your
-export directory.
-Choose the point Databasemanagement and then import.
-Choose the file website_import.zip from the selectbox and start the process.
-
-<p></UL>
-That's all.<br>
-Note: The pictures are missing right now, but they will be available after
-publishing the project.
-
-<p><a name="LtohTOCentry-14"></a>
-<hr><H2><FONT color="#E31659">13 Setting up OpenCms with different components</FONT></H2>
-OpenCms is developed and tested in the environment described in 
-chapter \ref<font color=maroon><em> Unknown LaTeX command </em> \ref </font>components<font color=maroon><em>  </em>  </font>. Since the system is based on standards and
-written 100% in Java, it should be easy to use other components.
-
-<p>Global and detailed instructions for all possible constellations of components
-would go out of the scope of this documentation. However, we are very
-interested in descriptions on how to set up OpenCms with other
-well-known and commonly used environments. 
-
-<p>If you managed to set up OpenCms with different components, please let us know. 
-You can send your configuration information to documentation@opencms.com.
-
-<p><a name="LtohTOCentry-15"></a>
-<H3><FONT color=black>13.1 Installation on Solaris with BEA Weblogic 5.1 and Oracle 8</FONT></H3>
-Heiko Kirschke has set up OpenCms on 
-a Solaris system with a BEA Weblogic 5.1 application server using an
-Oracle 8 database. He sent us the follwing annotions. All step numbers
-refer to the corresponding steps in the instructions for the reference system.
-
-<p>If you have questions
-concerning these instructions, please directly contact Heiko Kirschke 
-(mailto:Heiko.Kirschke@acm.org).
-</p>
-
-<ul>
-<li><strong>Step 1</strong> Installing Apache is not necessary for BEA Weblogic,
-since BEA WebLogic has its own Web server. Use this URL instead:
-http://your.server:7001, this should come up with the standard BEA
-page.
-
-<p><li><strong>Step 2</strong> For BEA WebLogic, install the J2EE additionally. Set up
-an environment variable J2EE_HOME which points towards this
-installation directory.
-
-<p>Installing Apache JServ is not necessary for BEA
-Weblogic, since BEA WebLogic has its own servlet engine.
-
-<p><li><strong>Step 3</strong> With BEA WebLogic, normally Oracle (or one of the other
-major commercial RDBMs) is used. Haven't checked BEA WebLogic with
-mySQL up to now.
-
-<p><li><strong>Step 4</strong> Assuming that $WL_HOME points towards the BEA WebLogic
-installation directory (e.g. $WL_HOME=/usr/local/weblogic), create
-directory<br>
-$WL_HOME/myserver/servletclasses/opencms and put these files
-there. I prefer to use a symbolic link <b><font color="#000099">`</font></b> opencms' here, with <b><font color="#000099">`</font></b> opencms'
-being a symbolic directory link to the current used OpenCms version.
-
-<p>The document root folder is $WL_HOME/myserver/public_html
-
-<p>In BEA WebLogic, (your servlet path)/servlets becomes<br> 
- $WL_HOME/myserver/servletclasses/opencms, i.e.:
-<BLOCKQUOTE>
-<pre>
-$WL_HOME/myserver/servletclasses/opencms/ExternalComponents/xerces.jar
-$WL_HOME/myserver/servletclasses/opencms/logs/
-$WL_HOME/myserver/servletclasses/opencms/opencms.jar
-$WL_HOME/myserver/servletclasses/opencms/opencms.properties
-</pre>
-</BLOCKQUOTE>
-
-<p><li><strong>Step 5</strong> In BEA WebLogic with Oracle, start sqlplus and source in
-the Oracle setup script, e.g.:
-<BLOCKQUOTE>
- sqlplus<br>
-<p>... &lt;login to DB etc.&gt; <br>
-@oraclePlsql.sql <br>
-quit
-</BLOCKQUOTE>
-
-<p>Be aware that this erases all pre-existent OpenCms data of previous
-OpenCms installations.
-
-<p><li><strong>Step 6</strong>  In BEA WebLogic, I use the log file <br>
- $WL_HOME/myserver/servletclasses/opencms/logs/opencms.log
-
-<p>Use the document root instead of the (your apache docroot) as described above, i.e.:
-
-<p><BLOCKQUOTE>
-<pre>
-registry = (your opencms folder)/config/registry.xml
-exportpoint.path.0 = $WL_HOME/myserver/public_html/pics/
-exportpoint.path.1 = $WL_HOME/myserver/public_html/download/
-exportpoint.path.2 = $WL_HOME/myserver/public_html/pics/system/
-</pre>
-</BLOCKQUOTE>
-
-<p>I have a special Solaris user and
-group weblogic which owns all BEA WebLogic files (i.e., all files
-including and below $WL_HOME).
-
-<p><li><strong>Step 7</strong> Add following lines to $WL_HOME/weblogic.properties
-(replace (path to <br>
-servletclasses) by the complete path of your servletclasses
-subfolder in your local $WL_HOME installation directory):
-
-<p><BLOCKQUOTE>
-<pre>
-weblogic.httpd.register.opencms=com.opencms.core.OpenCmsServlet
-weblogic.httpd.initArgs.opencms=\
-    properties=/(path to servletclasses)/opencms/opencms.properties
-</pre>
-</BLOCKQUOTE>
-
-<p>
-Change following lines in $WL_HOME/startWebLogic.sh from:
-
-<p><BLOCKQUOTE>
-<pre>
-PRE_CLASSPATH=
-POST_CLASSPATH=
-</pre>
-</BLOCKQUOTE>
-
-<p>to:
-
-<p><BLOCKQUOTE>
-<pre>
-PRE_CLASSPATH="${WL_HOME}/myserver/servletclasses/opencms/opencms.jar:
-${WL_HOME}/lib/xerces.jar:${J2EE_HOME}/lib/j2ee.jar"
-
-POST_CLASSPATH="${ORACLE_HOME}/jdbc/lib/classes12.zip:
-${ORACLE_HOME}/jdbc/lib/nls_charset12_01.zip"
-</pre>
-</BLOCKQUOTE>
-
-<p>This assumes that $ORACLE_HOME points towards your Oracle installation
-directory, since the Oracle driver classes are loaded from
-there. $J2EE points towards your J2EE installation. I've put the
- xerces.jar into $WL_HOME/lib instead into the ExternalComponents
-directory.
-
-<p><li><strong>Step 8</strong> For BEA WebLogic, use this URL instead: <br>
-http://your.server:7001/opencms/system/workplace/action/login.html.
-
-<p>
-
-<p><li><strong>Step 10</strong>  BEA WebLogic puts its logging entries into
- $WL_HOME/myserver/weblogic.log
-</ul>
-<p>
-
+        </pre>
+        </BLOCKQUOTE>
+        
+        <p>Don't forget to add the new user and password to all connect strings 
+        of the database to your opencms.properties. 
+        The new user can now only connect to the OpenCms tables. 
+        For more information see the MySQL documentation. 
+        
     </body>
-    </html>
+</html>
     

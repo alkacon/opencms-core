@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.4.0  Gom Jabbar   - 03 August 2001
+- Added credits.html
+- Updated install.html
+
 OpenCms 4.3.43 Bela Tegeuse - 03 August 2001
 - Added missing system-images.
 - Switched off some debug log-channels.

@@ -7,7 +7,7 @@
     value at the commandline.
     Set it like this: ant all -Dversion.number=4.3.28 -->
 
-    <property name="version.name"               value="Bela Tegeuse"/>
+    <property name="version.name"               value="Gom Jabbar"/>
     <property name="app.name"                   value="opencms"/>
     <property name="build.home"                 value="../build"/>
     <property name="zip.home"                   value="../zip"/>
@@ -64,7 +64,7 @@
                         ${build.inputlib.mysql}:
                         ${build.inputlib.fop}:
                         ${build.inputlib.fesi}"
-            debug="on"
+            debug="off"
             optimize="off"
             deprecation="off"
             />
