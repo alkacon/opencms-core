@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/08 15:03:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/11/08 15:16:56 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -376,6 +376,8 @@ private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, 
 			int maxInt = -1;
 			try{
 				minInt = Integer.parseInt(min);
+			}catch(Exception e){}
+			try{
 				if(!"*".equals(max)){
 					maxInt = Integer.parseInt(max);
 				}
