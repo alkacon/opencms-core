@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/01/13 18:12:51 $
+ * @version $Revision: 1.23 $ $Date: 2000/01/14 10:59:14 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -178,8 +178,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 return( m_projectRb.createProject(name, description, task, currentUser, 
 											   group, C_PROJECT_STATE_UNLOCKED ) );
 		} else {
-			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			 throw new CmsException(name, CmsException.C_NO_ACCESS);
 		}
 	 }
 	
@@ -264,8 +263,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 // return the changed resources.
 			 return(resources);			 
 		} else {
-			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			 throw new CmsException(name, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -377,8 +375,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 																	 resourcetype),
 													 type) );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(name, CmsException.C_NO_ACCESS);
 		}
 	}
 		
@@ -408,8 +405,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 															   currentProject, 
 															   resourcetype)));
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(name, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -435,8 +431,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			return( m_metadefRb.writeMetadefinition(metadef) );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(metadef.getName(), CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -573,8 +568,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_metadefRb.deleteAllMetainformations(res);
 		} else {
 			// yes - throw exception
-			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_MANDATORY_METAINFO],
-				CmsException.C_MANDATORY_METAINFO);
+			 throw new CmsException(resource, CmsException.C_MANDATORY_METAINFO);
 		}
 	}
 
@@ -610,8 +604,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_metadefRb.deleteMetainformation(res, meta);
 		} else {
 			// yes - throw exception
-			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_MANDATORY_METAINFO],
-				CmsException.C_MANDATORY_METAINFO);
+			 throw new CmsException(resource, CmsException.C_MANDATORY_METAINFO);
 		}
 	}
 
@@ -784,8 +777,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_userRb.getUsersOfGroup(groupname);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(groupname, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -810,8 +802,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_userRb.userInGroup(username, groupname);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(username, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -848,8 +839,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			return( m_userRb.addUser(name, password, group, description, 
  									 additionalInfos, flags) );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(name, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -876,8 +866,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			!(username.equals(C_USER_ADMIN) || username.equals(C_USER_GUEST))) {
 			m_userRb.deleteUser(username);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(username, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -908,8 +897,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			m_userRb.writeUser(user);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(user.getName(), CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -939,8 +927,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			return( m_userRb.addGroup(name, description, flags, parent) );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(name, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -962,8 +949,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			m_userRb.writeGroup(group);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(group.getName(), CmsException.C_NO_ACCESS);
 		}
 	}
     
@@ -988,8 +974,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			m_userRb.deleteGroup(delgroup);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(delgroup, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -1014,8 +999,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			m_userRb.addUserToGroup(username, groupname);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(username, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -1040,8 +1024,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			m_userRb.removeUserFromGroup(username, groupname);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(username, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -1063,8 +1046,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_userRb.getUsers();
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(currentUser.getName(), CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -1085,8 +1067,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_userRb.getGroups();
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(currentUser.getName(), CmsException.C_NO_ACCESS);
 		}
 	}
     
@@ -1109,8 +1090,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_userRb.getChild(groupname);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(groupname, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -1139,8 +1119,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
 			m_userRb.setPassword(username, newPassword);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(username, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -1189,8 +1168,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
 			
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(mountpoint, CmsException.C_NO_ACCESS);
 		}		
 	}
 
@@ -1252,8 +1230,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
 			
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(mountpoint, CmsException.C_NO_ACCESS);
 		}		
 	}
 	
@@ -1289,8 +1266,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			return( (A_CmsMountPoint) mountpoints.get(mountpoint));
 			
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(mountpoint, CmsException.C_NO_ACCESS);
 		}		
 	}
 
@@ -1324,8 +1300,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 			
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(mountpoint, CmsException.C_NO_ACCESS);
 		}		
 	}
 	
@@ -1350,8 +1325,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			return( (Hashtable) m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT));
 			
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(currentUser.getName(), CmsException.C_NO_ACCESS);
 		}		
 	}
 	
@@ -1460,8 +1434,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// return the new resource-type
 			return(getResourceType(currentUser, currentProject, resourceType));
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(resourceType, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -1632,31 +1605,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// acces to all subfolders was granted - return the folder.
 			return(cmsFolder);
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(folder + folderName, CmsException.C_NO_ACCESS);
 		}
-	}
-	
-    /**
-     * Publishes a specified project to the online project. <br>
-     * This is done by copying all resources of the specified project to the online
-     * project.
-     *
-     * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user is the owner of the project</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @return Vector of all resource names that are published.
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector publishProject(A_CmsUser currentUser, A_CmsProject currentProject)
-		throws CmsException {
-		return null; // TODO: implement this!
 	}
 	
 	/**
@@ -1707,8 +1657,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										 folder + newFolderName + C_FOLDER_SEPERATOR,
 										 0));
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(folder + newFolderName, CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -1872,6 +1821,28 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 		
 	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resource The complete path to the resource.
+	 * 
+	 * @return the user, who had locked the resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
+							  String resource)
+		throws CmsException {
+		return( m_userRb.readUser(
+			readFileHeader(currentUser, currentProject, resource).isLockedBy()) );
+	}
+	
+	/**
 	 * Creates a new file with the given content and resourcetype. <br>
 	 * 
 	 * Files can only be created in an offline project, the state of the new file
@@ -1940,8 +1911,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									   getResourceType(currentUser, currentProject, 
 													   type)) );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(folder + filename, CmsException.C_NO_ACCESS);
 		}
 	 }
 
@@ -1978,8 +1948,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.writeFile(currentProject, 
 							   onlineProject(currentUser, currentProject), file );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(file.getAbsolutePath(), CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2033,8 +2002,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.renameFile(currentProject, 
 								onlineProject(currentUser, currentProject), oldname, newname );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(oldname, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2075,8 +2043,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.deleteFile(currentProject, filename);
 								
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2117,8 +2084,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  source, destination + file.getName());
 			// TODO: copy the metainfos
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(destination, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2160,8 +2126,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.chmod(currentProject, onlineProject(currentUser, currentProject), 
 						   filename, flags );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2208,8 +2173,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.chown(currentProject, onlineProject(currentUser, currentProject), 
 						   filename, owner );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2256,8 +2220,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.chgrp(currentProject, onlineProject(currentUser, currentProject), 
 						   filename, group );
 		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -2573,8 +2536,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		
 		if (filename == null) {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_BAD_NAME],
-				CmsException.C_BAD_NAME);
+			throw new CmsException(filename, CmsException.C_BAD_NAME);
 		}
 
 		int l = filename.length();
@@ -2588,8 +2550,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				(c != '-') && (c != '/') && (c != '.') &&
 				(c != '|') && (c != '_') //removed because of MYSQL regexp syntax
 				) {
-				throw new CmsException(CmsException.C_EXTXT[CmsException.C_BAD_NAME],
-					CmsException.C_BAD_NAME);
+				throw new CmsException(filename, CmsException.C_BAD_NAME);
 			}
 		}
 	}

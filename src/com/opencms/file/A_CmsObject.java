@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/01/13 16:11:48 $ 
+ * @version $Revision: 1.27 $ $Date: 2000/01/14 10:59:14 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -56,7 +56,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @return the root-folder object.
 	 */
-	abstract public CmsFolder rootFolder();
+	abstract public CmsFolder rootFolder()
+		throws CmsException;
+
 	
 	/**
 	 * Returns the anonymous user object.
@@ -169,29 +171,6 @@ public abstract class A_CmsObject {
 	abstract public Vector getAllAccessibleProjects()
 		throws CmsException;
 	
-	/**
-	 * Declines a resource. The resource can be copied to the onlineproject.
-	 * 
-	 * @param project The name of the project.
-	 * @param resource The full path to the resource, which will be declined.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	abstract public void declineResource(String project, String resource)
-		throws CmsException;
-
-	/**
-	 * Rejects a resource. The resource will be copied to the following project,
-	 * at publishing time.
-	 * 
-	 * @param project The name of the project.
-	 * @param resource The full path to the resource, which will be declined.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	abstract public void rejectResource(String project, String resource)
-		throws CmsException;
-
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If there are some mandatory Metadefinitions for the resourcetype, a 
@@ -325,57 +304,6 @@ public abstract class A_CmsObject {
 		throws CmsException;
 	
 	/**
-	 * Writes the fileheader to the Cms.
-	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory Metainformations.<BR/>
-	 * 
-	 * @param resource The resource to write the header of.
-	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */	
-	abstract public void writeFileHeader(A_CmsResource resource)
-		throws CmsException;
-	
-	/**
-	 * Writes a file to the Cms.<BR/>
-	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory Metainformations.<BR/>
-	 * 
-	 * @param file The file to write.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for Metadefinitions, the values are
-	 * the values for the metainfos.
-	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
-	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
-	 * if the user has not the rights for this resource.
-	 */	
-	abstract public void writeFile(CmsFile file, Hashtable metainfos)
-		throws CmsException;
-	
-	/**
-	 * Writes the fileheader to the Cms.
-	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory Metainformations.<BR/>
-	 * 
-	 * @param resource The resource to write the header of.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for Metadefinitions, the values are
-	 * the values for the metainfos.
-	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */	
-	abstract public void writeFileHeader(A_CmsResource resource, Hashtable metainfos)
-		throws CmsException;
-
-	/**
 	 * Renames the file to the new name.
 	 * 
 	 * @param oldname The complete path to the resource which will be renamed.
@@ -428,35 +356,6 @@ public abstract class A_CmsObject {
 	 * the destination filename.
 	 */	
 	abstract public void moveFile(String source, String destination)
-		throws CmsException;
-	
-	/**
-	 * Sets the resource-type of this resource.
-	 * 
-	 * @param resource The complete path for the resource to be changed.
-	 * @param type The new type for the resource.
-	 * 
-	 * @exception CmsException will be thrown, if the file type couldn't be changed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	abstract public void setResourceType(String resource, A_CmsResourceType newType)
-		throws CmsException;
-	
-	/**
-	 * Sets the resource-type of this resource.
-	 * The onlineproject will be used for this resource<BR/>
-	 * 
-	 * @param resource The complete path for the resource to be changed.
-	 * @param type The new type for the resource.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * 
-	 * @exception CmsException will be thrown, if the file type couldn't be changed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	abstract public void setResourceType(String resource, A_CmsResourceType newType, 
-										 Hashtable metainfos)
 		throws CmsException;
 
     /**
@@ -552,24 +451,6 @@ public abstract class A_CmsObject {
 	abstract public CmsFolder readFolder(String folder)
 		throws CmsException;
 	
-	/**
-	 * Renames the folder to the new name.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * renamed, too.
-	 * 
-	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (No path information allowed).
-	 * @param force If force is set to true, all sub-resources will be renamed.
-	 * If force is set to false, the folder will be renamed only if it is empty.
-	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be renamed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */		
-	abstract public void renameFolder(String oldname, String newname, 
-									  boolean force)
-		throws CmsException;
 	
 	/**
 	 * Deletes the folder.
@@ -586,48 +467,6 @@ public abstract class A_CmsObject {
 	abstract public void deleteFolder(String foldername)
 		throws CmsException ;
 	
-	/**
-	 * Copies a folder.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * copied, too.
-	 * 
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * @param force If force is set to true, all sub-resources will be copied.
-	 * If force is set to false, the folder will be copied only if it is empty.
-	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be copied. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination foldername.
-	 */	
-	abstract public void copyFolder(String source, String destination, 
-									boolean force)
-		throws CmsException;
-	
-	/**
-	 * Moves a folder.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * moved, too.
-	 * 
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
-	 * @param force If force is set to true, all sub-resources will be moved.
-	 * If force is set to false, the folder will be moved only if it is empty.
-	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
-	 */	
-	abstract public void moveFolder(String source, String destination, 
-									boolean force)
-		throws CmsException;
-
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
@@ -670,24 +509,6 @@ public abstract class A_CmsObject {
 	 abstract public Vector readAllFileHeaders(String filename)
 		 throws CmsException;
 	 
-	/**
-	 * Tests if the user may write the resource.
-	 * 
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the user may write, else returns false.
-	 */
-	abstract public boolean isWriteable(String filename);
-
-	/**
-	 * Tests if the resource exists.
-	 * 
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the resource exists, else returns false.
-	 */
-	abstract public boolean fileExists(String filename);
-	
 	/**
 	 * Changes the flags for this resource<BR/>
 	 * 

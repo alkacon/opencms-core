@@ -272,8 +272,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			   								result.getInt(C_METADEF_TYPE) ) );
 			} else {
 			    // not found!
-			    throw new CmsException("Metadefinition " + name + " not found.", 
-			   	 CmsException.C_NOT_FOUND);
+			    throw new CmsException(name, CmsException.C_NOT_FOUND);
 			}
 		 } catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
@@ -419,7 +418,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		throws CmsException {
 		try {
 			if(countMetainfos(metadef) != 0) {
-				throw new CmsException("Existing metainfos for metadefinition " + metadef, 
+				throw new CmsException(metadef.getName(), 
 					CmsException.C_UNKNOWN_EXCEPTION);
 			}
 			synchronized(m_statementDeleteMetadef) {
@@ -453,7 +452,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			if( result.next() ) {
 				return( result.getInt(1) );
 			} else {
-				throw new CmsException("Error in statement.", 
+				throw new CmsException(metadef.getName(), 
 					CmsException.C_UNKNOWN_EXCEPTION);
 			}
 			
@@ -539,7 +538,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		
 		if( metadef == null) {
 			// there is no metadefinition for with the overgiven name for the resource
-			throw new CmsException("Metadefinition " + meta + " not found.", CmsException.C_NOT_FOUND);
+			throw new CmsException(meta, CmsException.C_NOT_FOUND);
 		} else {
 			// write the metainfo into the db
 			try {
@@ -663,7 +662,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
-			throw new CmsException("Metadefinition " + meta + " not found.", CmsException.C_NOT_FOUND);
+			throw new CmsException(meta, CmsException.C_NOT_FOUND);
 		} else {
 			// delete the metainfo into the db
 			try {

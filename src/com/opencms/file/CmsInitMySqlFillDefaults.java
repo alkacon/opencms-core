@@ -9,7 +9,7 @@ import com.opencms.core.*;
  * anonymous user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/13 12:27:37 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/14 10:59:14 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -39,7 +39,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			A_CmsUser user = userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, 
 											"the guest-user", new Hashtable(), 
 											C_FLAG_ENABLED);
-			userRb.addUser(C_USER_ADMIN, "", C_GROUP_ADMIN, "the admin-user", 
+			userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, "the admin-user", 
 						   new Hashtable(), C_FLAG_ENABLED);
 			
 			I_CmsRbProject projectRb = new CmsRbProject(

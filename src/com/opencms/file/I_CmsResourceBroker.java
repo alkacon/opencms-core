@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/01/13 16:11:48 $
+ * @version $Revision: 1.21 $ $Date: 2000/01/14 10:59:14 $
  */
 interface I_CmsResourceBroker {
 
@@ -1024,6 +1024,25 @@ interface I_CmsResourceBroker {
         throws CmsException;
 	
 	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resource The complete path to the resource.
+	 * 
+	 * @return the user, who had locked the resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
+							  String resource)
+		throws CmsException;
+	
+	/**
 	 * Returns a Vector with all I_CmsResourceTypes.
 	 * 
 	 * <B>Security:</B>
@@ -1320,26 +1339,6 @@ interface I_CmsResourceBroker {
 									  String filename)
          throws CmsException;
 
-    /**
-     * Publishes a specified project to the online project. <br>
-     * This is done by copying all resources of the specified project to the online
-     * project.
-     *
-     * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user is the owner of the project</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @return Vector of all resource names that are published.
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector publishProject(A_CmsUser currentUser, A_CmsProject currentProject)
-        throws CmsException;
-							
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 
