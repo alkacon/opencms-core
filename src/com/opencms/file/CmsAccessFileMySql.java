@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/01/28 17:42:30 $
+ * @version $Revision: 1.21 $ $Date: 2000/02/03 15:23:31 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -1174,7 +1174,7 @@ import com.opencms.core.*;
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
-                     
+                     files.addElement(file);
              }
 
          } catch (SQLException e){

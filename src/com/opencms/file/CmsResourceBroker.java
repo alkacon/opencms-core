@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2000/02/01 18:17:22 $
+ * @version $Revision: 1.41 $ $Date: 2000/02/03 15:23:31 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2558,7 +2558,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path to the destination-folder.
+	 * @param destination The complete path to the destination.
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
@@ -2566,25 +2566,38 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                          String source, String destination)
 		throws CmsException {
 		
+		// the name of the new file.
+		String filename;
+		// the name of the folder.
+		String foldername;
+		
 		// read the source-file, to check readaccess
 		A_CmsResource file = readFileHeader(currentUser, currentProject, source);
 		
+		// split the destination into file and foldername
+		if (destination.endsWith("/")) {
+			filename = file.getName();
+			foldername = destination;
+		}else{
+			foldername = destination.substring(0, destination.lastIndexOf("/")+1);
+			filename = destination.substring(destination.lastIndexOf("/")+1,
+											 destination.length());
+		}
 		
-		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
-												  destination);
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, foldername);
 		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - copy the file and the metainfos
 			m_fileRb.copyFile(currentProject, onlineProject(currentUser, currentProject), 
-							  source, destination + file.getName());
+							  source, foldername + filename);
 			
 			// copy the metainfos
 			m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(file),
 											  currentProject.getId(), 
-											  destination + file.getName(), 
+											  foldername + filename, 
 											  file.getType());			
 			// inform about the file-system-change
-			fileSystemChanged(currentProject.getName(), destination + file.getName());
+			fileSystemChanged(currentProject.getName(), foldername + filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
 				CmsException.C_NO_ACCESS);
@@ -2833,7 +2846,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										  A_CmsProject currentProject,
 										  String foldername)
 		throws CmsException {
-
 		// get the folder to read from, to check access
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  foldername);

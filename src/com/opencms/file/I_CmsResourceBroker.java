@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2000/01/31 18:59:50 $
+ * @version $Revision: 1.30 $ $Date: 2000/02/03 15:23:31 $
  */
 interface I_CmsResourceBroker {
 
@@ -1318,7 +1318,7 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path to the destination-folder.
+	 * @param destination The complete path to the destination.
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	

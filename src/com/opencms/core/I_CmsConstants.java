@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/02/01 08:19:58 $
+ * @version $Revision: 1.28 $ $Date: 2000/02/03 15:23:30 $
  */
 public interface I_CmsConstants
 {
@@ -136,7 +136,7 @@ public interface I_CmsConstants
 	/**
 	 * This is the group for administrators.
 	 */
-	 static final String C_USER_ADMIN = "Administrator";
+	 static final String C_USER_ADMIN = "Admin";
 
 	 /**
 	 * Key for additional info emailaddress.
