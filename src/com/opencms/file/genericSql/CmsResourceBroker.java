@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/21 10:10:19 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2000/08/24 09:25:39 $
+ * Version: $Revision: 1.107 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.106 $ $Date: 2000/08/21 10:10:19 $
+ * @version $Revision: 1.107 $ $Date: 2000/08/24 09:25:39 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -73,13 +73,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	private CmsDbAccess m_dbAccess = null;
 
-
 	/**
 	* The Registry
 	*/
 	private I_CmsRegistry m_registry = null;
-
-
 
 	/**
 	 *  Define the caches
@@ -94,8 +91,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private CmsCache m_propertyDefCache = null;
 	private CmsCache m_propertyDefVectorCache = null;
 	private String m_refresh = null;
-
-	/**
+	 
+	/** 
 	 * Accept a task from the Cms.
 	 * 
 	 * <B>Security:</B>
@@ -1808,7 +1805,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 projectid,
 											 taskType, 
 											 currentUser.getId(),
-											 agent.getId(),  // Agent is not known yet
+											 agent.getId(),   
 											 role.getId(), 
 											 taskName, now, timestamp, priority);
 		if(taskComment!=null && !taskComment.equals("")) {
@@ -1845,12 +1842,17 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		CmsGroup role = m_dbAccess.readGroup(roleName);
 		java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
 		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-		
+		int agentId = C_UNKNOWN_ID;
+		try {
+			agentId = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
+		} catch (Exception e) {
+			// ignore that this user doesn't exist and create a task for the role
+		} 
 		return m_dbAccess.createTask(currentProject.getTaskId(), 
 									 currentProject.getTaskId(),
 									 1, // standart Task Type
 									 currentUser.getId(),
-									 C_UNKNOWN_ID,  // Agent is not known yet
+									 agentId,
 									 role.getId(), 
 									 taskname, now, timestamp, priority);
 	}
@@ -2319,15 +2321,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentProject current project of the user
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
 	 * @param exportPath the name (absolute Path) of folder from which should be exported
-	 * @param includeSystem, desides if to include the system resources to the export.
+	 * @param excludeSystem, decides whether to exclude the system
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
-			new CmsExport(exportFile, exportPaths, cms, includeSystem);
+			new CmsExport(exportFile, exportPaths, cms, excludeSystem);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
 				 CmsException.C_NO_ACCESS);

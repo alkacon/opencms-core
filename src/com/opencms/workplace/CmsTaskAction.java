@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/08/22 13:22:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/24 09:25:39 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/08/22 13:22:51 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/24 09:25:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -146,7 +146,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 													  Integer.parseInt(splittetDate[0]), 0, 0, 0);
 		long timeout = cal.getTime().getTime(); 
 		CmsTask task = cms.createTask(agentName, roleName, taskName, 
-										taskcomment, timeout, priority);
+										taskcomment, timeout, priority); 
 		cms.setTaskPar(task.getId(),C_TASKPARA_ACCEPTATION, paraAcceptation);
 		cms.setTaskPar(task.getId(),C_TASKPARA_ALL, paraAll);
 		cms.setTaskPar(task.getId(),C_TASKPARA_COMPLETION, paraCompletion);
@@ -188,7 +188,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		String subject=lang.getLanguageValue("task.email.create.subject");
 		CmsUser[] users={cms.readAgent(task)};
 		CmsMail mail = null;
-		try {
+		try { 
 			mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString(),"text/plain");
 		 } catch(CmsException e) {
 			if(A_OpenCms.isLogging()) {

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/22 13:22:48 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2000/08/24 09:25:37 $
+ * Version: $Revision: 1.116 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.115 $ $Date: 2000/08/22 13:22:48 $ * 
+ * @version $Revision: 1.116 $ $Date: 2000/08/24 09:25:37 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1261,8 +1261,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		throws CmsException {
 		int newId = C_UNKNOWN_ID;
 		CmsTask task = null;
-		PreparedStatement statement = null;
-		
+		PreparedStatement statement = null; 
 		try {
 			
 			newId = nextId(C_TABLE_TASK);
@@ -1288,7 +1287,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 			task.setTimeOut(timeout);
 			task.setPriority(priority);
 			task.setPercentage(0);
-			task.setState(C_TASK_STATE_STARTED);
+			task.setState(C_TASK_STATE_STARTED); 
 			task.setInitiatorUser(ownerId);
 			task.setStartTime(new java.sql.Timestamp(System.currentTimeMillis()));
 			task.setMilestone(0);
@@ -4562,65 +4561,62 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		  }	
 		return property;
 	}
-	/**
-	 * Reads a task from the Cms.
-	 * 
-	 * @param id The id of the task to read.
-	 * 
-	 * @return a task object or null if the task is not found.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsTask readTask(int id)
-		throws CmsException {
-		ResultSet res;
-		CmsTask task = null;
-		PreparedStatement statement = null;
-		
-		try {
-			statement = m_pool.getPreparedStatement(C_TASK_READ_KEY);
-			statement.setInt(1,id);
-			res = statement.executeQuery();
-			if(res.next()) {
-				id = res.getInt(C_TASK_ID);
-				String name = res.getString(C_TASK_NAME);
-				int autofinish = res.getInt(C_TASK_AUTOFINISH);
-				java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,C_TASK_STARTTIME);
-				java.sql.Timestamp timeout = SqlHelper.getTimestamp(res,C_TASK_TIMEOUT);
-				java.sql.Timestamp endtime = SqlHelper.getTimestamp(res,C_TASK_ENDTIME);
-				java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res,C_TASK_WAKEUPTIME);
-				int escalationtype = res.getInt(C_TASK_ESCALATIONTYPE);
-				int initiatoruser = res.getInt(C_TASK_INITIATORUSER);
-				int originaluser = res.getInt(C_TASK_ORIGINALUSER);
-				int agentuser = res.getInt(C_TASK_AGENTUSER);
-				int role = res.getInt(C_TASK_ROLE);
-				int root = res.getInt(C_TASK_ROOT);
-				int parent = res.getInt(C_TASK_PARENT);
-				int milestone = res.getInt(C_TASK_MILESTONE);
-				int percentage = res.getInt(C_TASK_PERCENTAGE);
-				String permission = res.getString(C_TASK_PERMISSION);
-				int priority = res.getInt(C_TASK_PRIORITY);
-				int state = res.getInt(C_TASK_STATE);
-				int tasktype = res.getInt(C_TASK_TASKTYPE);
-				String htmllink = res.getString(C_TASK_HTMLLINK);
-				res.close();
-				task =  new CmsTask(id, name, state, tasktype, root, parent,
-									initiatoruser, role, agentuser, originaluser,
-									starttime, wakeuptime, timeout, endtime,
-									percentage, permission, priority, escalationtype,
-									htmllink, milestone, autofinish);
-			}
-		} catch( SQLException exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-		} catch( Exception exc ) {
-			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-		} finally {
-			if(statement != null) {
-				m_pool.putPreparedStatement(C_TASK_READ_KEY, statement);
-			}
+/**
+ * Reads a task from the Cms.
+ * 
+ * @param id The id of the task to read.
+ * 
+ * @return a task object or null if the task is not found.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public CmsTask readTask(int id) throws CmsException {
+	ResultSet res;
+	CmsTask task = null;
+	Statement statement = null; 
+ 
+	try {
+		// At this place I use a statement instead of a prepared statement because for some odd reason 
+		// the prepared statement doesn't always work correctly. At the time the beans are spilled we should
+		// switch back to the prepared statement. Mario Stanke
+		statement = m_pool.getStatement();
+		res = statement.executeQuery(C_TASK_READ_STATEMENT+id);  
+		if (res.next()) { 
+			int autofinish = res.getInt(C_TASK_AUTOFINISH);
+			java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, C_TASK_ENDTIME);
+			int escalationtype = res.getInt(C_TASK_ESCALATIONTYPE);
+			id = res.getInt(C_TASK_ID);
+			int initiatoruser = res.getInt(C_TASK_INITIATORUSER); 
+			int milestone = res.getInt(C_TASK_MILESTONE);
+			String name = res.getString(C_TASK_NAME); 
+			int originaluser = res.getInt(C_TASK_ORIGINALUSER);
+			int agentuser = res.getInt(C_TASK_AGENTUSER);
+			int parent = res.getInt(C_TASK_PARENT);
+			int percentage = res.getInt(C_TASK_PERCENTAGE);
+			String permission = res.getString(C_TASK_PERMISSION);
+			int priority = res.getInt(C_TASK_PRIORITY);
+			int role = res.getInt(C_TASK_ROLE);
+			int root = res.getInt(C_TASK_ROOT);
+			java.sql.Timestamp starttime = SqlHelper.getTimestamp(res, C_TASK_STARTTIME);
+			int state = res.getInt(C_TASK_STATE);
+			int tasktype = res.getInt(C_TASK_TASKTYPE);
+			java.sql.Timestamp timeout = SqlHelper.getTimestamp(res, C_TASK_TIMEOUT);
+			java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res, C_TASK_WAKEUPTIME);
+			String htmllink = res.getString(C_TASK_HTMLLINK);
+			res.close();
+			task = new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, originaluser, starttime, wakeuptime, timeout, endtime, percentage, permission, priority, escalationtype, htmllink, milestone, autofinish);
 		}
-		return task;
+	} catch (SQLException exc) {
+		throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+	} catch (Exception exc) {
+		throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+	} finally {
+		if (statement != null) {
+			m_pool.putStatement(statement);
+		} 
 	}
+	return task;
+}
 	/**
 	 * Reads a log for a task.
 	 * 
@@ -5959,7 +5955,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 			statement.setInt(2,task.getState());
 			statement.setInt(3,task.getTaskType());
 			statement.setInt(4,task.getRoot());
-			statement.setInt(5,task.getParent());
+			statement.setInt(5,task.getParent()); 
 			statement.setInt(6,task.getInitiatorUser());
 			statement.setInt(7,task.getRole());
 			statement.setInt(8,task.getAgentUser());

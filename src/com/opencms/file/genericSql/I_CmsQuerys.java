@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/22 13:22:49 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/08/24 09:25:39 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.59 $ $Date: 2000/08/22 13:22:49 $
+ * @version $Revision: 1.60 $ $Date: 2000/08/24 09:25:39 $
  */
 public interface I_CmsQuerys {
 	
@@ -577,6 +577,9 @@ public interface I_CmsQuerys {
 	public static final String C_PAR_TASK	  = "ref"; 
 	
 	public static final String C_TASK_TYPE_FIELDS = "autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref";
+	public static final String C_TASK_FIELDS = "AUTOFINISH, ENDTIME, ESCALATIONTYPEREF, ID , INITIATORUSERREF, MILESTONEREF, NAME, "+
+											   "ORIGINALUSERREF , AGENTUSERREF, PARENT, PERCENTAGE, PERMISSION, PRIORITYREF , ROLEREF, "+
+											   "ROOT, STARTTIME, STATE , TASKTYPEREF , TIMEOUT, WAKEUPTIME, HTMLLINK";
 	
 	public static final Integer C_TASK_TYPE_COPY_KEY = new Integer(801);	
 	public static final String C_TASK_TYPE_COPY = "INSERT INTO " +  C_TABLENAME_TASK + "  (id," + C_TASK_TYPE_FIELDS + ") " +
@@ -608,8 +611,9 @@ public interface I_CmsQuerys {
 											   " WHERE id=?";
 
 	public static final Integer C_TASK_READ_KEY = new Integer(803);
-	public static final String C_TASK_READ = "SELECT * FROM  " + C_TABLENAME_TASK + "  WHERE id=?";
-
+	public static final String C_TASK_READ = "SELECT " + C_TASK_FIELDS + " FROM " + C_TABLENAME_TASK + "  WHERE id=?";
+	public static final String C_TASK_READ_STATEMENT = "SELECT " + C_TASK_FIELDS + " FROM " + C_TABLENAME_TASK + "  WHERE ID=";
+	
 	public static final Integer C_TASK_END_KEY = new Integer(804);
 	public static final String C_TASK_END = "UPDATE  " + C_TABLENAME_TASK + "  Set " +
 											 "state=" + CmsDbAccess.C_TASK_STATE_ENDED + ", " +

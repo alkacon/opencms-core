@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
- * Date   : $Date: 2000/08/08 14:08:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/24 09:25:37 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:23 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/24 09:25:37 $
  */
 public class CmsTask implements I_CmsConstants {
 
@@ -159,8 +159,8 @@ public class CmsTask implements I_CmsConstants {
 			java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
 			java.sql.Timestamp timeout, java.sql.Timestamp endtime,
 			int percentage, String permission, int priority,
-			int escalationtype, String htmllink, int milestone,int autofinish){
-
+			int escalationtype, String htmllink, int milestone,int autofinish){ 
+				
 		m_Id = id;
 		m_Name = name;
 		m_State = state;

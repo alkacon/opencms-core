@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/08/22 15:59:58 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/24 09:25:39 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/08/22 15:59:58 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/24 09:25:39 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
 	
@@ -127,7 +127,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 		}
 		
 		if(instanceCache.containsKey(classname)) {
-			System.err.println("---- GOT FROM INSTANCE CACHE:"+classname);
+			//System.err.println("---- GOT FROM INSTANCE CACHE:"+classname);
 			o = instanceCache.get(classname);
 		} else {
 			System.err.println("---- REQUEST FROM CLASSLOADER:"+classname);

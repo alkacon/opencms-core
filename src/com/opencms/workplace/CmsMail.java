@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/08/08 14:08:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/24 09:25:39 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,8 +43,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: h.riege $
- * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/08/08 14:08:31 $
+ * @author $Author: m.stanke $
+ * @version $Name:  $ $Revision: 1.10 $ $Date: 2000/08/24 09:25:39 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -72,7 +72,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 */	
 	public CmsMail(CmsObject cms,CmsUser from, CmsUser[] to, String subject, String content, String type)
 		throws CmsException{
-		// Get WORKPLACE.INI
+		// Get WORKPLACE.INI 
 		System.err.println(from);
 		System.err.println(to);
 		System.err.println(subject);
