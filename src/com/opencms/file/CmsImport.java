@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.107 $
+* Date   : $Date: 2003/07/16 13:01:52 $
+* Version: $Revision: 1.108 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.107 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.108 $ $Date: 2003/07/16 13:01:52 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -857,8 +857,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     m_cms.readFileHeader("/system/workplace/restypes/"+CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
                     mergePageFiles();
                     removeFolders();
-                } catch (CmsException e) {
-                    // do nothing here
+                } catch (CmsException e) {                  
+                    throw e;
                 }
             }
 
@@ -888,6 +888,21 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // the template propertydefintion does not exist. So create it.
             m_cms.createPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY , CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         }
+        // copy all propertydefinitions of the old page to the new page
+        Vector definitions= m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+
+        Iterator j=definitions.iterator();   
+        while (j.hasNext()) {           
+            CmsPropertydefinition definition=(CmsPropertydefinition)j.next();
+            System.err.println("creating..."+definition);  
+            // check if this propertydef already exits
+            try {
+                m_cms.readPropertydefinition(definition.getName(), CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            } catch (Exception e) {                    
+                m_cms.createPropertydefinition(definition.getName(), CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            }
+            System.err.println("done");  
+        }        
 
         // iterate through the list of all page controlfiles found during the import process
         int size = m_pageStorage.size();
@@ -911,11 +926,14 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // now parse the content of the headerfile to identify the master template used by this
             // page
             InputStream in = new ByteArrayInputStream(pagefile.getContents());
-            try {
+            Document contentXml;
+            CmsFile bodyfile;
+            
+            try {               
                 String mastertemplate = "";
                 String bodyname = "";
                 // create DOM document
-                Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
+                contentXml = A_CmsXmlContent.getXmlParser().parse(in);
                 // get the <masterTemplate> node to check the content.
                 // this node contains the name of the template file
                 NodeList masterTemplateNode = contentXml.getElementsByTagName("masterTemplate");
@@ -928,35 +946,43 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // this node contains the name of the body file.
                 NodeList bodyNode = contentXml.getElementsByTagName("TEMPLATE");
                 // there is only one <masterTemplate> allowed
-                if (bodyNode.getLength() == 1) {
+                if (bodyNode.getLength() == 1) {               
                     // get the name of the mastertemplate
                     bodyname = bodyNode.item(0).getFirstChild().getNodeValue();
                     // lock the resource, so that it can be manipulated
                     m_cms.lockResource(resname);
-                    // get all properties
+                    // get all properties                   
                     Map properties=m_cms.readProperties(resname);
-                    // now get the content of the bodyfile and insert it into the control file
-                    CmsFile bodyfile = m_cms.readFile(bodyname);
+                    // now get the content of the bodyfile and insert it into the control file                   
+                    bodyfile = m_cms.readFile(bodyname);
                     pagefile.setContents(bodyfile.getContents());
                     //new set the type to new page                               
                     pagefile.setType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
-                    // write all changes
-                    m_cms.writeFile(pagefile);
+                    // write all changes                     
+                    m_cms.writeFile(pagefile);                
                     // add the template property to the controlfile
-                    m_cms.writeProperty(resname, C_XML_CONTROL_TEMPLATE_PROPERTY , mastertemplate);
+                    m_cms.writeProperty(resname, C_XML_CONTROL_TEMPLATE_PROPERTY , mastertemplate);                    
                     m_cms.writeProperties(resname, properties);                                           
-                    // don, ulock the resource
+                    // don, ulock the resource                   
                     m_cms.unlockResource(resname, false);               
                     // finally delete the old body file, it is not needed anymore
-                    m_cms.lockResource(bodyname);
+                    m_cms.lockResource(bodyname);                    
                     m_cms.deleteResource(bodyname);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                    
                 }
 
-            } catch (Exception e) {          
+            } catch (Exception e) {                          
                 throw new CmsException(e.toString());
+            } finally {
+                // free mem
+                pagefile=null;
+                in=null;
+                contentXml=null;
+                bodyfile=null;           
             }
+            
             counter++;
+           
         }
         // free mem
         m_pageStorage=null;

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.10 $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/16 13:01:52 $
+ * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/16 13:01:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/16 13:01:52 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -119,7 +119,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
     /**
      * list to store all file modifiaction interface implementations
      */
-    private static List m_checkFile;
+    private static List m_synchronizeModifications;
 
     /**
      * Creates a new CmsSynchronize object which automatically start the 
@@ -134,8 +134,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         // test if the list of all file modifiaction interface implementations
         // has to be generatetd. 
         // This has only made once.
-        if (m_checkFile == null) {
-            m_checkFile = createSyncModificationImplentations();
+        if (m_synchronizeModifications == null) {
+            m_synchronizeModifications = createSyncModificationImplentations();
         }
 
         m_synchronizePath = m_cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PATH);
@@ -301,10 +301,10 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             CmsResource newFolder = m_cms.createResource(translate(folder), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new HashMap(), new byte[0], null);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
-            Iterator i = m_checkFile.iterator();
+            Iterator i = m_synchronizeModifications.iterator();
             while (i.hasNext()) {
                 try {
-                    ((I_CmsSyncModification)i.next()).modifyVfs(m_cms, newFolder, fsFile);
+                    ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, newFolder, fsFile);
                 } catch (CmsSynchronizeException e1) {
                     break;
                 }
@@ -437,10 +437,10 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, m_cms.getResourceTypeId(type), null, content);
             // now check if there is some external method to be called which
             // should modify the imported resource in the VFS
-            Iterator i = m_checkFile.iterator();
+            Iterator i = m_synchronizeModifications.iterator();
             while (i.hasNext()) {
                 try {
-                    ((I_CmsSyncModification)i.next()).modifyVfs(m_cms, newFile, fsFile);
+                    ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, newFile, fsFile);
                 } catch (CmsSynchronizeException e) {
                     break;
                 }
@@ -514,10 +514,10 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                     writeFileByte(vfsFile.getContents(), fsFile);
                     // now check if there is some external method to be called 
                     // which should modify the exported resource in the FS
-                    Iterator i = m_checkFile.iterator();
+                    Iterator i = m_synchronizeModifications.iterator();
                     while (i.hasNext()) {
                         try {
-                            ((I_CmsSyncModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
+                            ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
                             break;
                         }
@@ -566,10 +566,10 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             // now check if there is some external method to be called which 
             // should modify
             // the updated resource in the VFS
-            Iterator i = m_checkFile.iterator();
+            Iterator i = m_synchronizeModifications.iterator();
             while (i.hasNext()) {
                 try {
-                    ((I_CmsSyncModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
+                    ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
                 } catch (CmsSynchronizeException e) {
                     break;
                 }
@@ -825,10 +825,10 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
     private String translate(String name) {
         String translation = null;
         // test if an external translation should be used
-        Iterator i = m_checkFile.iterator();
+        Iterator i = m_synchronizeModifications.iterator();
         while (i.hasNext()) {
             try {
-                translation = ((I_CmsSyncModification)i.next()).translate(m_cms, name);
+                translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
                 break;
             }
