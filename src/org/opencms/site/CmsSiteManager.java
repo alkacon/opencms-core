@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/21 14:18:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -204,6 +204,7 @@ public final class CmsSiteManager implements Cloneable {
     public static List getAvailableSites(CmsObject cms, boolean includeDefaults) {
         Map sites = A_OpenCms.getSiteManager().getSiteList();
         List siteroots = new ArrayList(sites.size() + 1);
+        Map siteServers = new HashMap(sites.size() + 1);
         List result = new ArrayList(sites.size() + 1);
                 
         Iterator i;
@@ -214,10 +215,11 @@ public final class CmsSiteManager implements Cloneable {
             String folder = site.getSiteRoot() + "/";
             if (! siteroots.contains(folder)) {
                 siteroots.add(folder);
+                siteServers.put(folder, site.getSiteMatcher());
             }            
         }        
         // add default site
-        if (A_OpenCms.getSiteManager().getDefaultSite() != null) {
+        if (includeDefaults && A_OpenCms.getSiteManager().getDefaultSite() != null) {
             String folder = A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
             if (! siteroots.contains(folder)) {
                 siteroots.add(folder);
@@ -246,7 +248,8 @@ public final class CmsSiteManager implements Cloneable {
                     if (title == null) {
                         title = folder;
                     }
-                    result.add(new CmsSite(folder, res.getId(), title));                                         
+                    result.add(new CmsSite(folder, res.getId(), title, (CmsSiteMatcher)siteServers.get(folder)));
+                                        
                 } catch (CmsException e) {
                     // user probably has no read access to the folder, ignore and continue iterating            
                 }      
