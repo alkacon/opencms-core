@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2003/05/21 16:08:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/22 16:07:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,8 @@ import source.org.apache.java.util.Configurations;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/21 16:08:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/22 16:07:45 $
+ * @since 5.1.2
  */
 public class CmsDbPool extends Object {
 

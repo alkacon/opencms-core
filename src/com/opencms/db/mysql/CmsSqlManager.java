@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 16:07:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,23 @@
  
 package com.opencms.db.mysql;
 
+import com.opencms.core.A_OpenCms;
+import com.opencms.util.Encoder;
+
 import java.util.Properties;
 
 /**
  * Reads SQL queries from query.properties of this driver package.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $ 
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:12 $ 
+ * @since 5.1.2
  */
 public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
     
-    private static Properties m_queries = null;    
     private static final String C_PROPERTY_FILENAME = "com/opencms/db/mysql/query.properties";
+    private static Properties c_queries = null; 
+    private static Boolean c_escapeStrings = null;   
     
     /**
      * CmsSqlManager constructor.
@@ -50,8 +55,8 @@ public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
     public CmsSqlManager(String dbPoolUrl) {
         super(dbPoolUrl);
         
-        if (m_queries == null) {
-            m_queries = loadProperties(C_PROPERTY_FILENAME);
+        if (c_queries == null) {
+            c_queries = loadProperties(C_PROPERTY_FILENAME);
         }
     }
 
@@ -62,11 +67,11 @@ public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
      * @return The value of the property
      */
     public String get(String queryName) {
-        if (m_queries == null) {
-            m_queries = loadProperties(C_PROPERTY_FILENAME);
+        if (c_queries == null) {
+            c_queries = loadProperties(C_PROPERTY_FILENAME);
         }
         
-        String value = m_queries.getProperty(queryName);
+        String value = c_queries.getProperty(queryName);
         if (value == null || "".equals(value)) {
             value = super.get(queryName);
         }
@@ -74,4 +79,50 @@ public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
         return value;
     }
     
+    /**
+     * Escapes a String to prevent issues with UTF-8 encoding, same style as
+     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
+     * TODO: this method is both in the DbcAccess and VfsAccess!
+     * 
+     * @param value String to be escaped
+     * @return the escaped String
+     */
+    public static String escape(String value) {
+        if (singleByteEncoding()) {
+            return value;
+        }
+        
+        return Encoder.encode(value);
+    }
+
+
+    /**
+     * Returns <code>true</code> if Strings must be escaped before they are stored in the DB, 
+     * this is required because MySQL does not support multi byte unicode strings.<p>
+     * 
+     * @return boolean <code>true</code> if Strings must be escaped before they are stored in the DB
+     */
+    public static boolean singleByteEncoding() {
+        if (c_escapeStrings == null) {
+            String encoding = A_OpenCms.getDefaultEncoding();
+            c_escapeStrings = new Boolean("ISO-8859-1".equalsIgnoreCase(encoding) || "ISO-8859-15".equalsIgnoreCase(encoding) || "US-ASCII".equalsIgnoreCase(encoding) || "Cp1252".equalsIgnoreCase(encoding));
+        }
+        return c_escapeStrings.booleanValue();
+    }
+
+    /**
+     * Unescapes a String to prevent issues with UTF-8 encoding, same style as
+     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
+     * 
+     * @param value String to be unescaped
+     * @return the unescaped String
+     */
+    public static String unescape(String value) {
+        if (singleByteEncoding()) {
+            return value;
+        }
+        
+        return Encoder.decode(value);
+    }
+        
 }

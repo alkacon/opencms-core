@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 16:07:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import oracle.jdbc.driver.OracleResultSet;
  * This is the generic access module to load and store resources from and into
  * the database.
  *
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $ *
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:26 $ *
  */
 public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver implements I_CmsConstants, I_CmsLogChannels {
 
@@ -88,7 +88,7 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver im
         Connection conn = null;
         ResultSet res = null;
         try {
-            int id = nextId(C_TABLE_SYSTEMPROPERTIES);
+            int id = m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES);
             // serialize the object
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutputStream oout = new ObjectOutputStream(bout);
@@ -140,7 +140,8 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver im
                 } catch (SQLException exc){
                 }
                 try {
-                    nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
+                    //nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
+                    nextStmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_ROLLBACK"));
                     nextStmt.execute();
                 } catch (SQLException exc){
                     // nothing to do here
@@ -219,7 +220,8 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver im
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
+                    //nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
+                    nextStmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_ROLLBACK"));
                     nextStmt.execute();
                 } catch (SQLException se) {
                 }
@@ -248,7 +250,7 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver im
              stmt.setInt(1, 300);
              res = stmt.executeQuery();
              while(res.next()) {
-                 Vector resources = m_driverManager.getVfsAccess().readBackupProjectResources(res.getInt("VERSION_ID"));
+                 Vector resources = m_driverManager.getVfsDriver().readBackupProjectResources(res.getInt("VERSION_ID"));
                  projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
                                                     res.getInt("PROJECT_ID"),
                                                     res.getString("PROJECT_NAME"),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 16:07:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,21 +64,16 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:00 $
+ * @since 5.1.2
  */
 public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChannels {
 
-    protected String m_dbPoolUrl;
-
     protected com.opencms.db.generic.CmsSqlManager m_sqlManager;
     
-	/**
-	 * 
-	 * 
-	 */
 	public void init(Configurations config, String dbPoolUrl) {
 		m_sqlManager = initQueries(dbPoolUrl);
-		m_dbPoolUrl = dbPoolUrl;		
+
 	}
 	
     /**
@@ -634,19 +629,19 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
                 if (i == 0) {
                     conn = m_sqlManager.getConnection();
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE");
-                    stmt.setInt(1, nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF")));
+                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF")));
                 }
                 // create the propertydefinition in the online db
                 else if (i == 1) {
                     conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
                     stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_PROPERTYDEF_CREATE");
-                    stmt.setInt(1, nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF_ONLINE")));
+                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF_ONLINE")));
                 }
                 // create the propertydefinition in the backup db
                 else {
                     conn = m_sqlManager.getConnectionForBackup();
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
-                    stmt.setInt(1, nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF_BACKUP")));
+                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF_BACKUP")));
                 }
                 stmt.setString(2, name);
                 stmt.setInt(3, resourcetype);
@@ -1226,7 +1221,8 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
         try {
             // read file data from database
             conn = m_sqlManager.getConnection(projectId);
-            stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement) + add1 + add2);
+            //stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement) + add1 + add2);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement) + add1 + add2);
             stmt.setInt(1, projectId);
             res = stmt.executeQuery();
             // create new file
@@ -1458,17 +1454,6 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
 
     public com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
         return new com.opencms.db.generic.CmsSqlManager(dbPoolUrl);
-    }
-
-    /**
-     * Private method to get the next id for a table.
-     * This method is synchronized, to generate unique id's.
-     *
-     * @param key A key for the table to get the max-id from.
-     * @return next-id The next possible id for this table.
-     */
-    protected synchronized int nextId(String key) throws CmsException {
-        return com.opencms.db.CmsIdGenerator.nextId(m_dbPoolUrl, key);
     }
 
     /**
@@ -2116,7 +2101,8 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
         }
         try {
             conn = m_sqlManager.getConnection(projectId);
-            stmt = conn.prepareStatement(m_sqlManager.get(projectId, "C_RESOURCES_READFILESBYPROJECT") + onlyChanged + inProject);
+            //stmt = conn.prepareStatement(m_sqlManager.get(projectId, "C_RESOURCES_READFILESBYPROJECT") + onlyChanged + inProject);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get(projectId, "C_RESOURCES_READFILESBYPROJECT") + onlyChanged + inProject);
             stmt.setInt(1, projectId);
             res = stmt.executeQuery();
 
@@ -2352,7 +2338,8 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
         try {
             conn = m_sqlManager.getConnection(projectId);
             // read folder data from database
-            stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_READFOLDERSBYPROJECT" + usedStatement) + inProject + onlyChanged);
+            //stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_READFOLDERSBYPROJECT" + usedStatement) + inProject + onlyChanged);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_RESOURCES_READFOLDERSBYPROJECT" + usedStatement) + inProject + onlyChanged);
             stmt.setInt(1, projectId);
             res = stmt.executeQuery();
             // create new folder
@@ -2647,9 +2634,9 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
         }
         try {
             conn = m_sqlManager.getConnection(project);
-            //stmt = m_sqlManager.getPreparedStatement(conn, project, "");
             // read resource data from database
-            stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_READ_LIKENAME_1" + usedStatement) + resourcename + m_sqlManager.get("C_RESOURCES_READ_LIKENAME_2" + usedStatement));
+            //stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_READ_LIKENAME_1" + usedStatement) + resourcename + m_sqlManager.get("C_RESOURCES_READ_LIKENAME_2" + usedStatement));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_RESOURCES_READ_LIKENAME_1" + usedStatement) + resourcename + m_sqlManager.get("C_RESOURCES_READ_LIKENAME_2" + usedStatement));
             stmt.setInt(1, project.getId());
             res = stmt.executeQuery();
             // create new resource
@@ -3207,7 +3194,7 @@ public class CmsVfsDriver extends Object implements I_CmsConstants, I_CmsLogChan
                     // property dosen't exist - use create.
                     // create statement
                     stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_CREATE");
-                    stmt.setInt(1, nextId(m_sqlManager.get(projectId, "C_TABLE_PROPERTIES")));
+                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get(projectId, "C_TABLE_PROPERTIES")));
                     stmt.setInt(2, propdef.getId());
                     stmt.setString(3, resource.getResourceId().toString());
                     stmt.setString(4, m_sqlManager.validateNull(value));

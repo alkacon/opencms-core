@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 16:07:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,8 @@ import oracle.jdbc.driver.OracleResultSet;
  * Oracle/OCI implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:26 $
+ * @since 5.1.2
  */
 public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements I_CmsConstants, I_CmsLogChannels {
 
@@ -163,7 +164,8 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
                     oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");
                     // first trim the blob to 0 bytes, otherwise there could be left some bytes
                     // of the old content
-                    trimStatement = conn.prepareStatement(m_sqlManager.get("C_TRIMBLOB"));
+                    //trimStatement = conn.prepareStatement(m_sqlManager.get("C_TRIMBLOB"));
+                    trimStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_TRIMBLOB"));
                     trimStatement.setBlob(1, blobnew);
                     trimStatement.setInt(2, 0);
                     trimStatement.execute();
@@ -179,7 +181,8 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
                 }
                 // for the oracle-driver commit or rollback must be executed manually
                 // because setAutoCommit = false in CmsDbPool.CmsDbPool
-                nextStatement = conn.prepareStatement(m_sqlManager.get("C_COMMIT"));
+                //nextStatement = conn.prepareStatement(m_sqlManager.get("C_COMMIT"));
+                nextStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_COMMIT"));
                 nextStatement.execute();
                 nextStatement.close();
                 conn.setAutoCommit(true);

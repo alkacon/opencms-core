@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 16:07:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,8 @@ import java.util.Hashtable;
  * MySQL implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
- * 
- * @see com.opencms.db.generic.CmsUserDriver
- * @see com.opencms.db.generic.I_CmsUserDriver
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:12 $
+ * @since 5.1.2
  */
 public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver implements I_CmsConstants, I_CmsLogChannels, I_CmsUserDriver {
 

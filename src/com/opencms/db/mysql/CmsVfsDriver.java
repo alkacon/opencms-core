@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 16:07:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.db.mysql;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -41,7 +40,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.Encoder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -55,11 +53,10 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:12 $
+ * @since 5.1.2
  */
 public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements I_CmsConstants, I_CmsLogChannels {
-
-    private static Boolean m_escapeStrings = null;
 
     /**
      * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
@@ -171,21 +168,6 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
         return readFile(project.getId(), onlineProject.getId(), filename);
     }
 
-    /**
-     * Escapes a String to prevent issues with UTF-8 encoding, same style as
-     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
-     * TODO: this method is both in the DbcAccess and VfsAccess!
-     * 
-     * @param value String to be escaped
-     * @return the escaped String
-     */
-    private String escape(String value) {
-        // no need to encode if OpenCms is not running in Unicode mode
-        if (singleByteEncoding())
-            return value;
-        return Encoder.encode(value);
-    }
-
     public com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
         return new com.opencms.db.mysql.CmsSqlManager(dbPoolUrl);
     }
@@ -287,13 +269,13 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
      */
     public HashMap readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
         HashMap original = super.readProperties(projectId, resource, resourceType);
-        if (singleByteEncoding())
+        if (CmsSqlManager.singleByteEncoding())
             return original;
         HashMap result = new HashMap(original.size());
         Iterator keys = original.keySet().iterator();
         while (keys.hasNext()) {
             Object key = keys.next();
-            result.put(key, unescape((String) original.get(key)));
+            result.put(key, CmsSqlManager.unescape((String) original.get(key)));
         }
         original.clear();
         return result;
@@ -305,37 +287,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
      * @see com.opencms.db.generic.CmsProjectDriver#readProperty(String, int, CmsResource, int)
      */
     public String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
-        return unescape(super.readProperty(meta, projectId, resource, resourceType));
-    }
-
-    /**
-     * Returns <code>true</code> if Strings must be escaped before they are stored in the DB, 
-     * this is required because MySQL does not support multi byte unicode strings.<p>
-     * TODO: this method is both in the DbcAccess and VfsAccess!
-     * 
-     * @return boolean <code>true</code> if Strings must be escaped before they are stored in the DB
-     */
-    private boolean singleByteEncoding() {
-        if (m_escapeStrings == null) {
-            String encoding = A_OpenCms.getDefaultEncoding();
-            m_escapeStrings = new Boolean("ISO-8859-1".equalsIgnoreCase(encoding) || "ISO-8859-15".equalsIgnoreCase(encoding) || "US-ASCII".equalsIgnoreCase(encoding) || "Cp1252".equalsIgnoreCase(encoding));
-        }
-        return m_escapeStrings.booleanValue();
-    }
-
-    /**
-     * Unescapes a String to prevent issues with UTF-8 encoding, same style as
-     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
-     * TODO: this method is both in the DbcAccess and VfsAccess!
-     * 
-     * @param value String to be unescaped
-     * @return the unescaped String
-     */
-    private String unescape(String value) {
-        // no need to encode if OpenCms is not running in Unicode mode
-        if (singleByteEncoding())
-            return value;
-        return Encoder.decode(value);
+        return CmsSqlManager.unescape(super.readProperty(meta, projectId, resource, resourceType));
     }
 
     /**
@@ -350,7 +302,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
-        super.writeProperty(meta, projectId, escape(value), resource, resourceType, addDefinition);
+        super.writeProperty(meta, projectId, CmsSqlManager.escape(value), resource, resourceType, addDefinition);
     }
 
 }

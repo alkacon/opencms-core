@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/21 16:08:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/22 16:07:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,8 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/21 16:08:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/22 16:07:00 $
+ * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserDriver {
 
@@ -79,13 +80,10 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
      */
     protected String m_digestFileEncoding = null;
 
-    protected String m_dbPoolUrl;
-
     protected com.opencms.db.generic.CmsSqlManager m_sqlManager;
 	    
     public void init(Configurations config, String dbPoolUrl) {
         m_sqlManager = initQueries(dbPoolUrl);        
-        m_dbPoolUrl = dbPoolUrl;
 
         String digest = config.getString(C_CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
