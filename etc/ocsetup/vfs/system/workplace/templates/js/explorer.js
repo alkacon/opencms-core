@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/08/02 10:11:00 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -25,6 +25,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+ /**
+  * this function disables all javascript error messages for this window.
+  */
+ function stopErrors() {
+   return true;
+ }
+ window.onerror = stopErrors;
 
  /**
   *  contains information about the actual help page.
@@ -223,8 +231,8 @@
         h=screen.availHeight-200;
         workplace = window.open(url,'preview', 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
         if(workplace != null) {
-            workplace.moveTo(0,0);
             workplace.focus();
+            workplace.moveTo(0,0);
         }
 
     }
