@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/21 14:14:14 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -100,6 +100,11 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
 
         // get our own cache directives
         A_CmsCacheDirectives cd = getCacheDirectives();
+        
+        if (cd == null) {
+            // the XmlTemplate implementation is faulty, let assume no caching
+            cd = new CmsMethodCacheDirectives(false);
+        }
 
         // streaming
         boolean streamable = cms.getRequestContext().isStreaming();
@@ -200,6 +205,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             }
             result = null;
         }
+        if (result == null) return null;
         try {
 	        return result.getBytes(cms.getRequestContext().getEncoding());
         } catch (UnsupportedEncodingException uee) {
