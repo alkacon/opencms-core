@@ -188,7 +188,7 @@ public boolean isWriteable() {
  * set the owner of the CD
  * @param id of the owner
  */
-public void setUser(int userId) {
+public void setOwner(int userId) {
     m_user = userId;
 }
 
@@ -196,7 +196,7 @@ public void setUser(int userId) {
  * get the owner of the CD
  * @returns id of the owner (int)
  */
-public int getUser() {
+public int getOwner() {
     return m_user;
 }
 
@@ -287,7 +287,7 @@ private boolean accessOwner(CmsObject cms, CmsUser currentUser,
         return(true);
     }
     // is the resource owned by this user?
-    if(getUser() == currentUser.getId()) {
+    if(getOwner() == currentUser.getId()) {
         if( (getAccessFlags() & flags) == flags ) {
             return true ;
         }
