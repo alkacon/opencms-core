@@ -76,7 +76,7 @@
 			
 			<tr>
 				<td class=dialogtxt colspan=2>
-					 ]]><LABEL value="sitemanagement.label.suredeletingsite1" /><![CDATA[ ]]><PROCESS>name</PROCESS><![CDATA[ ]]><LABEL value="label.suredeletingsite2" /><![CDATA[
+					 ]]><LABEL value="sitemanagement.label.suredeletingsite1" /><![CDATA[ ]]><PROCESS>name</PROCESS><![CDATA[ 
 				</td>
 			</tr>
 			
