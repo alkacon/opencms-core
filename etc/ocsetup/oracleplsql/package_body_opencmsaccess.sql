@@ -228,7 +228,8 @@ PACKAGE BODY opencmsAccess IS
         RETURN 0;
     END;
     -- project_flags != C_PROJECT_STATE_UNLOCKED => false
-    IF vProjFlags != opencmsConstants.C_PROJECT_STATE_UNLOCKED THEN
+    IF vProjFlags != opencmsConstants.C_PROJECT_STATE_UNLOCKED AND
+	   vProjFlags != opencmsConstants.C_PROJECT_STATE_INVISIBLE THEN
       RETURN 0;
     END IF;
     -- user = owner or user isAdmin => true
