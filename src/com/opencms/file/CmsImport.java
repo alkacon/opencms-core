@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/02/19 13:02:37 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/02/19 16:23:11 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2001/02/19 13:02:37 $
+ * @version $Revision: 1.38 $ $Date: 2001/02/19 16:23:11 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -653,7 +653,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
                     }
                 }
                 // get the groups of the user and put them into the vector
-                groupNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_GROUP);
+                groupNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_GROUPNAME);
                 userGroups = new Vector();
                 for (int j=0; j < groupNodes.getLength(); j++){
                     currentGroup = (Element) groupNodes.item(j);
@@ -720,11 +720,14 @@ private boolean inExcludeList(Vector excludeList, String path) {
                                     section, Integer.parseInt(type));
                 // add user to all groups vector
                 for (int i=0; i < userGroups.size(); i++){
-                    m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
+                    try{
+                        m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
+                    } catch (CmsException exc){
+                    }
                 }
                 System.out.println("OK");
             } catch (CmsException exc){
-                System.out.println("error");
+                System.out.println("not created");
             }
         } catch (Exception exc){
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

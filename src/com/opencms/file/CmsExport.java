@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/02/19 13:02:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2001/02/19 16:23:10 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2001/02/19 13:02:37 $
+ * @version $Revision: 1.15 $ $Date: 2001/02/19 16:23:10 $
  */
 public class CmsExport implements I_CmsConstants {
 
@@ -480,7 +480,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			Node exportNode = m_docXml.getFirstChild();
 			exportNode.appendChild( m_docXml.createComment("Creator: " + m_cms.getRequestContext().currentUser().getName()));
 			exportNode.appendChild( m_docXml.createComment("Createdate: " + Utils.getNiceDate(new Date().getTime())));
-            exportNode.appendChild( m_docXml.createComment("CurrentProject: " + m_cms.getRequestContext().currentProject().getName()));
+            exportNode.appendChild( m_docXml.createComment("Project: " + m_cms.getRequestContext().currentProject().getName()));
 
 			if(moduleNode != null) {
 				// this is a module export - import module informations here
@@ -745,7 +745,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         userdata.appendChild(usergroup);
         for (int i = 0; i < userGroups.size(); i++){
             String groupName = ((CmsGroup)userGroups.elementAt(i)).getName();
-            addElement(usergroup, C_EXPORT_TAG_NAME, groupName);
+            Element group = m_docXml.createElement(C_EXPORT_TAG_GROUPNAME);
+            usergroup.appendChild(group);
+            addElement(group, C_EXPORT_TAG_NAME, groupName);
         }
     }
 }
