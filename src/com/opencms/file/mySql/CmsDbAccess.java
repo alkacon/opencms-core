@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/31 13:11:27 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/11/16 11:17:54 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,9 +52,19 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.39 $ $Date: 2000/10/31 13:11:27 $ * 
+ * @version $Revision: 1.40 $ $Date: 2000/11/16 11:17:54 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
+	/**
+	 * Instanciates the access-module and sets up all required modules and connections.
+	 * @param config The OpenCms configuration.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsDbAccess(Configurations config) 
+		throws CmsException {
+
+		super(config);
+	}
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -242,7 +252,6 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
-
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
@@ -392,8 +401,8 @@ protected void fillDefaults() throws CmsException
 	// set the groups
 	CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
 	CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
-	CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, null);
 	CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+	CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, users.getName());
 
 	// add the users
 	CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER);
@@ -442,16 +451,6 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY, m_cq.C_SYSTEMID_UNLOCK);
 }
 	/**
-	 * Instanciates the access-module and sets up all required modules and connections.
-	 * @param config The OpenCms configuration.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsDbAccess(Configurations config) 
-		throws CmsException {
-
-		super(config);
-	}
-	/**
 	 * Private method to get the next id for a table.
 	 * This method is synchronized, to generate unique id's.
 	 * 
@@ -490,7 +489,6 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		}
 		return(	newId );
 	}
-
 /**
  * Publishes a specified project to the online project. <br>
  *
@@ -905,8 +903,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	} // end of for
 	//clearFilesTable();
 }
-
-	
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
