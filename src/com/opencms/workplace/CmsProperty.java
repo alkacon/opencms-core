@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2001/01/15 10:03:20 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2001/01/23 10:31:28 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2001/01/15 10:03:20 $
+ * @version $Revision: 1.21 $ $Date: 2001/01/23 10:31:28 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -159,6 +159,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 		} 
 	  
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();   
 	 
 		// now process the data taken form the dialog
 		
@@ -220,7 +221,6 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 				}                           
 			}
 		}
-		
 		// new propertydef was selected
 		if (newpropertydef != null) {
 			 // check if the ok button was selected
@@ -239,6 +239,13 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 						//session.removeValue(C_PARA_PROPERTYDEF);
 					} catch(CmsException e) {
 						// todo: add an error message that this key is already exisitng
+						StringBuffer errmesg = new StringBuffer();
+						errmesg.append(lang.getLanguageValue("error.reason.newprop1")+" '"+ newValue + "' " + 
+									   lang.getLanguageValue("error.reason.newprop2")+ " '"+type.getResourceName() +
+								       "' "+ lang.getLanguageValue("error.reason.newprop3")+"\n\n");
+						errmesg.append(Utils.getStackTrace(e));
+						xmlTemplateDocument.setData("NEWDETAILS", errmesg.toString());
+						template = "newerror";	
 					}
 					 
 				 } else {
@@ -255,7 +262,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 		if (title==null) {
 			title="";
 		}
-		CmsXmlLanguageFile lang=xmlTemplateDocument.getLanguageFile();
+
 		CmsUser owner=cms.readOwner(file);
 		xmlTemplateDocument.setData("TITLE",title);
 		xmlTemplateDocument.setData("STATE",getState(cms,file, lang));

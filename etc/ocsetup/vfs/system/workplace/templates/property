@@ -535,4 +535,9 @@ function show_help()
 <TEMPLATE name="error">
 <ERRORPAGE title="error.title.property" message="error.message.property" reason="error.reason.property" suggestion="error.suggestion.chgrp" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
+
+<TEMPLATE name="newerror">
+<ERRORPAGE title="error.title.newprop" message="error.message.newprop" reason="error.reason.newprop" suggestion="error.suggestion.newprop" ref="property.html?ORGANIZE=Organisieren..." ><PROCESS>NEWDETAILS</PROCESS></ERRORPAGE>
+</TEMPLATE> 
+
 </WORKPLACE>
