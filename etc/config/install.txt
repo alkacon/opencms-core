@@ -14,9 +14,9 @@ Check that your server is working by requesting an example page
  
 
 Step 2
-Install the Java JDK (from SUN or IBM) and the Apache JServ 1.0. OpenCms
-currently works only with version 1.0. For details on how to install these
-components on your operating system, see the documentation that comes with them.
+Install the Java JDK (from SUN or IBM) and the Apache JServ 1.1.2. 
+For details on how to install these components on your operating system, see 
+the documentation that comes with them.
 
 Check that a Jserv Servlet Zone is set up properly and running on your machine
 by requesting the default IsItWorking class coming with JServ.
