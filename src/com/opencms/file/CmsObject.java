@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/04 17:26:28 $
-* Version: $Revision: 1.263 $
+* Date   : $Date: 2003/03/05 15:39:15 $
+* Version: $Revision: 1.264 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.263 $
+ * @version $Revision: 1.264 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -3358,7 +3358,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @return a Vector of Strings
      *
      * @throws CmsException if operation was not succesful
-     * @deprecated use readPropertiesMap(String) instead
+     * @deprecated use readProperties(String) instead
      */
     public Hashtable readAllProperties(String resource) throws CmsException {
         Hashtable result = new Hashtable();
