@@ -8247,7 +8247,7 @@
 			<properties/>
 		</file>
         <file>
-            <source>pics/ic_admin_elementcache.gif</source>
+            <source>pics/system/ic_admin_elementcache.gif</source>
             <destination>system/workplace/pics/ic_admin_elementcache.gif</destination>
             <type>image</type>
             <user>Admin</user>
