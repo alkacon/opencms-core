@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/02 11:03:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/04 13:55:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -132,7 +132,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * Checks if a folder with a given name exits in the VFS.<p>
      * 
-     * @param getCms() the current cms context
+     * @param cms the current cms context
      * @param folder the folder to check for
      * @return true if the folder exists in the VFS
      */
@@ -566,7 +566,7 @@ public class CmsExplorer extends CmsWorkplace {
      * Get the resources in the folder stored in parameter param
      * or in the project shown in the projectview
      *
-     * @param getCms() the current getCms() context
+     * @param cms the current getCms() context
      * @param mode the mode to use
      * @param folder the fodler to read the files from
      * @return a vector with ressources to display

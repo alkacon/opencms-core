@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/04 07:25:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/04 13:55:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,16 +35,13 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */

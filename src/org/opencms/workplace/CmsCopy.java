@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/04 07:25:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/04 13:55:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -106,6 +106,13 @@ public class CmsCopy extends CmsDialog {
         return true;
     }
     
+    /**
+     * Creates the path to the destination of the copy process.<p>
+     * 
+     * @param wholePath the uri of the destination
+     * @param file the source resource to be copied
+     * @return the destination path
+     */
     private String getNewFolder(String wholePath, CmsResource file) {
         if(wholePath != null && !("".equals(wholePath))){
             if(wholePath.startsWith("/")){
@@ -119,6 +126,13 @@ public class CmsCopy extends CmsDialog {
         return new String();
     }
     
+    /**
+     * Creates the name of the destination resource of the copy process.<p>
+     * 
+     * @param wholePath the uri of the destination
+     * @param file the source resource to be copied
+     * @return the destination resource name
+     */
     private String getNewFile(String wholePath, CmsResource file) {   
         String newFile = new String();
         if(wholePath != null && !("".equals(wholePath))){
