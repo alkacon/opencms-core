@@ -8,8 +8,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.23 Chusuk       - xx November 2001
-! Added the Tidy to Opencms. 
+OpenCms 4.5.23 Chusuk       - 22 November 2001
+! Added Tidy library to Opencms. 
 ! The html editor can handle link tags now.
 * Bugfixing mastermodule.
 * Bugfixing generic backoffice.
