@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/09 16:36:30 $
-* Version: $Revision: 1.228 $
+* Date   : $Date: 2003/06/11 11:35:28 $
+* Version: $Revision: 1.229 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.228 $ $Date: 2003/06/09 16:36:30 $
+ * @version $Revision: 1.229 $ $Date: 2003/06/11 11:35:28 $
  */
 public interface I_CmsConstants {
 
@@ -1163,7 +1163,37 @@ public interface I_CmsConstants {
      * The "lastmodified" tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_LASTMODIFIED = "lastmodified";
-    
+	
+	/**
+	 * Tag to identify a generic id
+	 */
+	public static String C_EXPORT_TAG_ID = "id";
+	
+	/**
+	 * Tag to identify accesscontrolentries 
+	 */
+	public static String C_EXPORT_TAG_ACCESSCONTROL_ENTRIES = "accesscontrol";
+	
+	/**
+	 * Tag to identify a single access control entry
+	 */
+	public static String C_EXPORT_TAG_ACCESSCONTROL_ENTRY = "accessentry";
+	
+	/**
+	 * Tag to identify a permission set
+	 */
+	public static String C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET = "permissionset";
+	
+	/**
+	 * Tag to identify allowed permissions
+	 */
+	public static String C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS = "allowed";
+	
+	/**
+	 * Tag to identify denied permissions
+	 */
+	public static String C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS = "denied";
+
     /**
      * A string in the configuration-file.
      */    

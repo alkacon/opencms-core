@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/05/15 12:39:34 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/06/11 11:36:42 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,16 +28,6 @@
 
 package com.opencms.file;
 
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.CmsShellReport;
-import com.opencms.report.I_CmsReport;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
-import com.opencms.workplace.I_CmsWpConstants;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +50,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
+import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
+import com.opencms.workplace.I_CmsWpConstants;
+
 /**
  * Provides the functionality to export files from the OpenCms VFS to a ZIP file.<p>
  * 
@@ -70,7 +71,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.54 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.55 $ $Date: 2003/06/11 11:36:42 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -716,9 +717,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
         // get all needed informations from the resource
         source = getSourceFilename(resource.getAbsolutePath());
         type = m_cms.getResourceType(resource.getType()).getResourceTypeName();
-        user = m_cms.readOwner(resource).getName();
-        group = m_cms.readGroup(resource).getName();
-        access = resource.getAccessFlags() + "";
+        // TODO: fix this later
+        // user = m_cms.readOwner(resource).getName();
+        // group = m_cms.readGroup(resource).getName();
+        // access = resource.getAccessFlags() + "";
         launcherStartClass = resource.getLauncherClassname();
         lastModified = String.valueOf(resource.getDateLastModified()); 
 
@@ -738,9 +740,9 @@ public class CmsExport implements I_CmsConstants, Serializable {
         }
         addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, source);
         addElement(m_docXml, file, C_EXPORT_TAG_TYPE, type);
-        addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
-        addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
-        addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
+        // addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
+        // addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
+        // addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
         addElement(m_docXml, file, C_EXPORT_TAG_LASTMODIFIED, lastModified);
         if (launcherStartClass != null
             && !"".equals(launcherStartClass)
@@ -772,6 +774,30 @@ public class CmsExport implements I_CmsConstants, Serializable {
                 addElement(m_docXml, property, C_EXPORT_TAG_TYPE, propertyType);
                 addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, value);
             }
+        }
+        
+        // append the nodes for access control entries
+        Element acentries = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
+        file.appendChild(acentries);
+        // TODO: this should be already available in the resource
+        addElement(m_docXml, acentries, C_EXPORT_TAG_ID, resource.getResourceAceId().toString());
+        
+        // read the access control entries
+        Vector fileAcEntries = m_cms.getAccessControlEntries(resource.getAbsolutePath(), false);
+        i = fileAcEntries.iterator();
+        
+        // create xml elements for each access control entry
+        while (i.hasNext()) {
+        	CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+        	Element acentry = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+        	acentries.appendChild(acentry);
+        	
+        	addElement(m_docXml, acentry, C_EXPORT_TAG_ID, ace.getPrincipal().toString());
+        	addElement(m_docXml, acentry, C_EXPORT_TAG_FLAGS, new Integer(ace.getFlags()).toString());
+        	
+        	Element acpermissionset = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET); 
+        	addElement(m_docXml, acentry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
+        	addElement(m_docXml, acentry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/10 16:19:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/06/11 11:35:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/06/10 16:19:34 $
+ * @version $Revision: 1.14 $ $Date: 2003/06/11 11:35:47 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1402,8 +1402,8 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			conn = m_sqlManager.getConnection();
 			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SETFLAGS_ALL");
 
-			stmt.setString(1, resource.toString());
-			stmt.setInt(2, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+			stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+			stmt.setString(2, resource.toString());
 			
 			stmt.executeUpdate();
 
@@ -1429,8 +1429,8 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			conn = m_sqlManager.getConnection();
 			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_RESETFLAGS_ALL");
 
-			stmt.setString(1, resource.toString());
-			stmt.setInt(2, ~I_CmsConstants.C_ACCESSFLAGS_DELETED);
+			stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+			stmt.setString(2, resource.toString());
 			
 			stmt.executeUpdate();
 

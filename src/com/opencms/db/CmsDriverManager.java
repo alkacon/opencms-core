@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/10 16:20:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/06/11 11:36:14 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,13 +101,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.17 $ $Date: 2003/06/10 16:20:23 $
+ * @version $Revision: 1.18 $ $Date: 2003/06/11 11:36:14 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.17 $ $Date: 2003/06/10 16:20:23 $
+ * @version $Revision: 1.18 $ $Date: 2003/06/11 11:36:14 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -195,7 +195,7 @@ public class CmsDriverManager implements I_CmsConstants {
 			
 			permissions.denyPermissions(denied);
 
-System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
+// System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
 
 			return permissions;
 		}
@@ -9219,7 +9219,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 		while (!(resId = res.getParentId()).isNullUUID()) {
 			
 			res = m_vfsDriver.readFolder(currentProject.getId(), resId);
-			acEntries = getAccessControlEntries(currentUser, currentProject, resId).listIterator();
+			acEntries = getAccessControlEntries(currentUser, currentProject, resId, true).listIterator();
 			while (acEntries.hasNext()) {
 				acList.add((CmsAccessControlEntry)acEntries.next());
 			}

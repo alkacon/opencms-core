@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/10 16:21:00 $
-* Version: $Revision: 1.280 $
+* Date   : $Date: 2003/06/11 11:36:42 $
+* Version: $Revision: 1.281 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.280 $
+ * @version $Revision: 1.281 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4483,10 +4483,14 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res); 
     }
-    
+
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
+		return getAccessControlEntries(resourceName, true);    
+	}
+	
+	public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlEntries(m_context.currentUser(), m_context.currentProject(), res, true);
+		return m_driverManager.getAccessControlEntries(m_context.currentUser(), m_context.currentProject(), res, getInherited);
 	}
 	
 	public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
