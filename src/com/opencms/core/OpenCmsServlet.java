@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.4 $ $Date: 2000/01/13 12:13:39 $  
+* @version $Revision: 1.5 $ $Date: 2000/01/13 17:41:51 $  
 * 
 */
 
@@ -154,7 +154,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             out.println("<br><br><h2>"+file+"</h2>");
             out.println("<br><br><h2>"+new String(file.getContents())+"</h2>");
             out.println("<br><br>"); 
-        } catch (CmsException e) {
+       } catch (CmsException e) {
             out.println("<br>"+e.toString());
             errorHandling(req,res,e);
         } 
@@ -332,6 +332,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             case CmsException.C_NOT_FOUND:
                 res.getWriter().print(e.toString());
                 //res.sendError(res.SC_NOT_FOUND);
+                break;
+            case CmsException.C_SERVICE_UNAVAILABLE:
+                res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
                 break;
             default:
                 res.getWriter().print(e.toString());
