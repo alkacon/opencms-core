@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/10/31 21:30:17 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2004/11/22 18:03:06 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2008,7 +2008,7 @@ public class CmsDbAccess {
         Connection conn = null;
         
         try {
-            conn = m_sqlManager.getConnection(project);
+            conn = m_sqlManager.getConnection(project.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
             stmt.setInt(1, tagId);
             // structure id is null
@@ -2029,7 +2029,6 @@ public class CmsDbAccess {
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
-        
     }    
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2004/06/14 12:19:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/22 18:03:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 package org.opencms.db;
 
 
-import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.security.CmsPermissionSet;
@@ -39,7 +38,7 @@ import org.opencms.security.CmsPermissionSet;
 /**
  * Generates the cache keys for the user and permission caches.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/06/14 12:19:33 $
+ * @version $Revision: 1.10 $ $Date: 2004/11/22 18:03:05 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCacheKey implements I_CmsCacheKey {
@@ -59,11 +58,11 @@ public class CmsCacheKey implements I_CmsCacheKey {
     public CmsCacheKey() {
         // empty
     }
-    
+
     /**
-     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserPermissions(java.lang.String, org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet)
+     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserPermissions(java.lang.String, org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet)
      */
-    public String getCacheKeyForUserPermissions(String prefix, CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
+    public String getCacheKeyForUserPermissions(String prefix, CmsDbContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
         
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
@@ -75,11 +74,11 @@ public class CmsCacheKey implements I_CmsCacheKey {
         cacheBuffer.append(resource.getStructureId().toString());
         return cacheBuffer.toString();
     }
-    
+
     /**
-     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserGroups(java.lang.String, org.opencms.file.CmsRequestContext, org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserGroups(java.lang.String, org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public String getCacheKeyForUserGroups (String prefix, CmsRequestContext context, CmsUser user) {
+    public String getCacheKeyForUserGroups (String prefix, CmsDbContext context, CmsUser user) {
         
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/11/22 08:50:28 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/11/22 18:03:05 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,13 +48,13 @@ import java.util.List;
  * This allows the Cms app to pass the list around between classes, but with restricted access to 
  * create this list.<p>
  * 
- * {@link org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)}
+ * {@link org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)}
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2004/11/22 08:50:28 $
+ * @version $Revision: 1.16 $ $Date: 2004/11/22 18:03:05 $
  * @since 5.3.0
- * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
+ * @see org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)
  */
 public class CmsPublishList extends Object {
 
@@ -168,11 +168,34 @@ public class CmsPublishList extends Object {
             addFolder((CmsResource) i.next());
         }
     }
+    
+    /**
+     * Initializes the publish list, ensuring all internal lists are in the right order.<p>
+     */
+    protected void initialize() {
+
+        if (m_folderList != null) {
+            // ensure folders are sorted starting with parent folders
+            Collections.sort(m_folderList, CmsResource.COMPARE_ROOT_PATH);
+        }
+        
+        if (m_fileList != null) {
+            // ensure files are sorted starting with files in parent folders
+            Collections.sort(m_fileList, CmsResource.COMPARE_ROOT_PATH);
+        }        
+        
+        if (m_deletedFolderList != null) {
+            // ensure deleted folders are sorted starting with child folders
+            Collections.sort(m_deletedFolderList, CmsResource.COMPARE_ROOT_PATH);
+            Collections.reverse(m_deletedFolderList);
+        }
+    }
 
     /**
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
+        
         try {
             if (m_fileList != null) {
                 m_fileList.clear();
@@ -183,6 +206,11 @@ public class CmsPublishList extends Object {
                 m_folderList.clear();
             }
             m_folderList = null;
+            
+            if (m_deletedFolderList != null) {
+                m_deletedFolderList.clear();
+            }
+            m_deletedFolderList = null;            
         } catch (Throwable t) {
             // ignore
         }
@@ -191,13 +219,11 @@ public class CmsPublishList extends Object {
     }
 
     /**
-     * Returns the list of deleted folders resources in reversed order.<p>
+     * Returns a list of folder resources with the given state.<p>
      * 
-     * @return the list of deleted folders
+     * @return a list of folder resources with the desired state
      */
     public List getDeletedFolderList() {
-        
-        Collections.sort(m_deletedFolderList, Collections.reverseOrder());
         return m_deletedFolderList;
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2004/11/05 18:15:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/11/22 18:03:05 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2004/11/05 18:15:11 $
+ * @version $Revision: 1.21 $ $Date: 2004/11/22 18:03:05 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -239,5 +239,27 @@ public class CmsDefaultUsers {
             || m_groupProjectmanagers.equals(groupName) 
             || m_groupUsers.equals(groupName) 
             || m_groupGuests.equals(groupName);
+    }
+    
+    /**
+     * Checks if a given user name is the name of one of the OpenCms default users.<p>
+     *
+     * @param userName the group name to check
+     * @return <code>true</code> if user name is one of OpenCms default users, <code>false</code> if it is not
+     * or if <code>userName</code> is <code>null</code> or an empty string (no trim)
+     * 
+     * @see #getUserAdmin()
+     * @see #getUserExport()
+     * @see #getUserGuest()
+     */    
+    public boolean isDefaultUser(String userName) {
+        
+        if ((userName == null) || (userName.length() == 0)) {
+            return false;
+        }
+        
+        return m_userAdmin.equals(userName) 
+        || m_userGuest.equals(userName) 
+        || m_userExport.equals(userName);        
     }
 }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsRuntimeInfo.java,v $
- * Date   : $Date: 2004/10/22 14:36:02 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDbContextFactory.java,v $
+ * Date   : $Date: 2004/11/22 18:03:05 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,54 +31,38 @@
  
 package org.opencms.db;
 
+import org.opencms.file.CmsRequestContext;
 
-import org.opencms.report.I_CmsReport;
-
-import java.util.EmptyStackException;
-import java.util.Stack;
 
 /**
- * A default implementation of {@link CmsRuntimeInfo} as a stack.<p>
+ * This interface defines a factory to create runtime info objects.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.5.2
  */
-public class CmsRuntimeInfo extends Stack implements I_CmsRuntimeInfo {
+public interface I_CmsDbContextFactory {
     
     /**
-     * @see java.util.Stack#pop()
+     * Initializes the runtime info factory with the OpenCms driver manager.<p>
+     * 
+     * @param driverManager the initialized OpenCms driver manager
      */
-    public Object pop() {
-        
-        Object obj;
-        
-        try {
-            obj = super.pop();
-        } catch (EmptyStackException e) {
-            
-            // return null if the stack is empty
-            obj = null;
-        }
-        
-        return obj;
-    }
-
+    void initialize(CmsDriverManager driverManager);
+    
     /**
-     * @see org.opencms.db.I_CmsRuntimeInfo#report(org.opencms.report.I_CmsReport, String, java.lang.Throwable)
+     * Returns a new database context based on the given user request context.<p>
+     * 
+     * @param context the user request context to initialize the database context with
+     * 
+     * @return a new database context based on the given user request context
      */
-    public void report(I_CmsReport report, String message, Throwable throwable) {
-        
-        if (report != null) {
-            if (message != null) {
-                report.println(message);
-            }
-            
-            if (throwable != null) {
-                report.println(throwable);
-            }
-        }
-
-    }
-
+    CmsDbContext getDbContext(CmsRequestContext context);
+    
+    /**
+     * Returns a new database context.<p>
+     * 
+     * @return a new database context
+     */    
+    CmsDbContext getDbContext();
 }

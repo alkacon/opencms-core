@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/11/08 17:40:44 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,8 @@
 
 package org.opencms.db.oracle;
 
-import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsRuntimeInfo;
-import org.opencms.db.I_CmsRuntimeInfo;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
@@ -47,7 +44,6 @@ import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,20 +59,15 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2004/11/08 17:40:44 $
+ * @version $Revision: 1.41 $ $Date: 2004/11/22 18:03:06 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
-
-    /*
-     * Indicates that server side copying should be used
-     */
-    private boolean m_enableServerCopy;
     
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(I_CmsRuntimeInfo, java.util.List, int)
+     * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
-    public void deleteBackups(I_CmsRuntimeInfo runtimeInfo, List existingBackups, int maxVersions) throws CmsException {
+    public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsException {
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         PreparedStatement stmt3 = null;
@@ -87,7 +78,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         int count = existingBackups.size() - maxVersions;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt1 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_CONTENT");
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_RESOURCES");
             stmt3 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_STRUCTURE");
@@ -126,19 +117,11 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (Exception ex) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
-            m_sqlManager.closeAll(null, conn, stmt1, null);
-            m_sqlManager.closeAll(null, conn, stmt2, null);
-            m_sqlManager.closeAll(null, conn, stmt3, null);
-            m_sqlManager.closeAll(null, conn, stmt4, null);
+            m_sqlManager.closeAll(dbc, conn, stmt1, null);
+            m_sqlManager.closeAll(dbc, conn, stmt2, null);
+            m_sqlManager.closeAll(dbc, conn, stmt3, null);
+            m_sqlManager.closeAll(dbc, conn, stmt4, null);
         }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
-     */
-    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
-        m_enableServerCopy = "true".equals(configurationManager.getConfiguration().getString("db.oracle.servercopy"));
-        super.init(configurationManager, successiveDrivers, driverManager);
     }
     
     /**
@@ -150,9 +133,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.generic.CmsBackupDriver#internalWriteBackupFileContent(org.opencms.db.I_CmsRuntimeInfo, org.opencms.util.CmsUUID, org.opencms.file.CmsResource, int, int)
+     * @see org.opencms.db.generic.CmsBackupDriver#internalWriteBackupFileContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.file.CmsResource, int, int)
      */
-    protected void internalWriteBackupFileContent(I_CmsRuntimeInfo runtimeInfo, CmsUUID backupId, CmsResource resource, int tagId, int versionId) throws CmsException {
+    protected void internalWriteBackupFileContent(CmsDbContext dbc, CmsUUID backupId, CmsResource resource, int tagId, int versionId) throws CmsException {
                       
         PreparedStatement stmt = null, stmt2 = null;
         PreparedStatement commit = null;
@@ -171,7 +154,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         }
         
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_ADDBACKUP");
 
             // first insert new file without file_content, then update the file_content
@@ -186,58 +169,35 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-
+        
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(dbc);
             
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 conn.setAutoCommit(false);
             }
             
-            if (m_enableServerCopy) {
-                // read the content blob
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_READCONTENT");
-                stmt.setString(1, resource.getResourceId().toString());
-                res = stmt.executeQuery();
-                
-                if (res.next()) {
-                    // backup the content
-                    Blob content = res.getBlob(1);
-                    stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_BACKUPCONTENT");
-                    stmt2.setBlob(1, content);
-                    stmt2.setString(2, contentId.toString());
-                    stmt2.setString(3, backupId.toString());
-                    stmt2.executeUpdate();
-                    stmt2.close();
-                    stmt2 = null;                
-                } else {
-                    // TODO: check if exception is useful
-                }
-                res.close();
-                res = null;
-            } else {
-                // select the backup record for update            
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
-                stmt.setString(1, contentId.toString());
-                stmt.setString(2, backupId.toString());
-                
-                res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-                if (!res.next()) {
-                    throw new CmsException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString() + " content not found", CmsException.C_NOT_FOUND);
-                }
+            // select the backup record for update            
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
+            stmt.setString(1, contentId.toString());
+            stmt.setString(2, backupId.toString());
             
-                // write file content
-                OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
-                output.write(fileContent);
-                output.close();
-                res.close();
-                res = null;
-                fileContent = null;
+            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
+            if (!res.next()) {
+                throw new CmsException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString() + " content not found", CmsException.C_NOT_FOUND);
             }
+        
+            // write file content
+            OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
+            output.write(fileContent);
+            output.close();
+            res.close();
+            res = null;
+            fileContent = null;
             
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
                 commit.close();
@@ -247,7 +207,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.close();
             stmt = null;
 
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 conn.setAutoCommit(true);    
             }
         } catch (IOException e) {
@@ -278,7 +238,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 }
             }
             
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 if (stmt != null) {
                     try {
                         rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
@@ -292,10 +252,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     } catch (SQLException exc) {
                         // ignore
                     }                
-                }     
-            }
-            
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                }
                 if (conn != null) {
                     try {
                         conn.setAutoCommit(true);
@@ -309,9 +266,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects()
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
-    public Vector readBackupProjects() throws CmsException {
+    public Vector readBackupProjects(CmsDbContext dbc) throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -319,12 +276,12 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_PROJECTS_READLAST_BACKUP");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("TAG_ID"));
+                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(dbc, res.getInt("TAG_ID"));
                 projects.addElement(
                     new CmsBackupProject(
                         res.getInt("PUBLISH_TAG"),
@@ -348,7 +305,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, "readBackupProjects", CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(null, conn, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
         return (projects);

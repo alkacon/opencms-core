@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/17 15:07:38 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.file;
  
 import org.opencms.db.CmsPublishList;
-import org.opencms.db.CmsRuntimeInfoFactory;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
@@ -72,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1125,8 +1124,7 @@ public class CmsObject {
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         return m_securityManager.readResource(
-            m_context, 
-            CmsRuntimeInfoFactory.getNullRuntimeInfo(),
+            m_context,
             addSiteRoot(resourcename), 
             filter);
     }
@@ -1206,7 +1204,7 @@ public class CmsObject {
      */
     public CmsFolder readFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readFolder(m_context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), addSiteRoot(resourcename), filter);
+        return m_securityManager.readFolder(m_context, addSiteRoot(resourcename), filter);
     }
     
     /**
@@ -1511,7 +1509,8 @@ public class CmsObject {
      * @return the user or group with the given UUID
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
-        return m_securityManager.lookupPrincipal(principalId);
+
+        return m_securityManager.lookupPrincipal(m_context, principalId);
     }
 
     /**
@@ -1521,7 +1520,7 @@ public class CmsObject {
      * @return the user or group with the given name
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) {
-        return m_securityManager.lookupPrincipal(principalName);
+        return m_securityManager.lookupPrincipal(m_context, principalName);
     }    
     
 
@@ -1584,7 +1583,8 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
    public List readProjectLogs(int projectId) throws CmsException {
-       return m_securityManager.readProjectLogs(projectId);
+       
+       return m_securityManager.readProjectLogs(m_context, projectId);
    }
           
 
@@ -1606,7 +1606,7 @@ public class CmsObject {
       * @throws CmsException if something goes wrong
       */
     public CmsTask createTask(int projectid, String agentName, String roleName, String taskname, String taskcomment, int tasktype, long timeout, int priority) throws CmsException {
-        return m_securityManager.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
+        return m_securityManager.createTask(m_context, m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
     }
 
     /**
@@ -1674,7 +1674,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
-        m_securityManager.setTaskPar(taskid, parname, parvalue);
+        m_securityManager.setTaskPar(m_context, taskid, parname, parvalue);
     }
 
     /**
@@ -1723,7 +1723,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsTask readTask(int id) throws CmsException {
-        return (m_securityManager.readTask(id));
+        return m_securityManager.readTask(m_context, id);
     }
 
     /**
@@ -1734,7 +1734,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTaskLogs(int taskid) throws CmsException {
-        return m_securityManager.readTaskLogs(taskid);
+        return m_securityManager.readTaskLogs(m_context, taskid);
     }
 
     /**
@@ -1749,7 +1749,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_securityManager.readTasksForProject(projectId, tasktype, orderBy, sort));
+        return (m_securityManager.readTasksForProject(m_context, projectId, tasktype, orderBy, sort));
     }
 
     /**
@@ -1765,7 +1765,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_securityManager.readTasksForRole(projectId, roleName, tasktype, orderBy, sort));
+        return m_securityManager.readTasksForRole(m_context, projectId, roleName, tasktype, orderBy, sort);
     }
 
     /**
@@ -1781,7 +1781,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_securityManager.readTasksForUser(projectId, userName, tasktype, orderBy, sort));
+        return m_securityManager.readTasksForUser(m_context, projectId, userName, tasktype, orderBy, sort);
     }
     
     /**
@@ -1792,7 +1792,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
-        return m_securityManager.readOriginalAgent(task);
+        return m_securityManager.readOriginalAgent(m_context, task);
     }
     
     /**
@@ -1803,7 +1803,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsProject project) throws CmsException {
-        return m_securityManager.readOwner(project);
+        return m_securityManager.readOwner(m_context, project);
     }
 
     /**
@@ -1814,7 +1814,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTask task) throws CmsException {
-        return m_securityManager.readOwner(task);
+        return m_securityManager.readOwner(m_context, task);
     }
 
     /**
@@ -1825,7 +1825,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
-        return m_securityManager.readOwner(log);
+        return m_securityManager.readOwner(m_context, log);
     }    
     
     /**
@@ -1862,7 +1862,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public String getTaskPar(int taskid, String parname) throws CmsException {
-        return (m_securityManager.getTaskPar(taskid, parname));
+        return m_securityManager.getTaskPar(m_context, taskid, parname);
     }
 
     /**
@@ -1873,7 +1873,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public int getTaskType(String taskname) throws CmsException {
-        return m_securityManager.getTaskType(taskname);
+        return m_securityManager.getTaskType(m_context, taskname);
     }
 
     /**
@@ -1884,7 +1884,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readAgent(CmsTask task) throws CmsException {
-        return (m_securityManager.readAgent(task));
+        return m_securityManager.readAgent(m_context, task);
     }    
     
 
@@ -1901,7 +1901,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
-        return (m_securityManager.readGivenTasks(projectId, ownerName, taskType, orderBy, sort));
+        return m_securityManager.readGivenTasks(m_context, projectId, ownerName, taskType, orderBy, sort);
     }        
     
     /**
@@ -2003,17 +2003,6 @@ public class CmsObject {
      */
     public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
         m_securityManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
-    }
-
-    /**
-     * Method to encrypt the passwords.<p>
-     *
-     * @param value The value to encrypt.
-     * @return The encrypted value.
-     * @throws CmsException if something goes wrong
-     */
-    public String digest(String value) throws CmsException {
-        return m_securityManager.digest(value);
     }
         
     /**
@@ -2294,7 +2283,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup getParent(String groupname) throws CmsException {
-        return (m_securityManager.getParent(groupname));
+        return m_securityManager.getParent(m_context, groupname);
     }  
     
     /**
@@ -2346,7 +2335,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
-        return m_securityManager.addWebUser(name, password, group, description, additionalInfos);
+        return m_securityManager.addWebUser(m_context, name, password, group, description, additionalInfos);
     }
     
     /**
@@ -2414,7 +2403,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void writeWebUser(CmsUser user) throws CmsException {
-        m_securityManager.writeWebUser(user);
+        m_securityManager.writeWebUser(m_context, user);
     }    
     
     /**
@@ -2453,7 +2442,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
-        m_securityManager.deleteWebUser(userId);
+        m_securityManager.deleteWebUser(m_context, userId);
     }
     
     /**
@@ -2463,7 +2452,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getUsers() throws CmsException {
-        return (m_securityManager.getUsers(m_context));
+        return m_securityManager.getUsers(m_context);
     }
     
     /**
@@ -2474,7 +2463,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(CmsUUID userId) throws CmsException {
-        return m_securityManager.readUser(userId);
+        return m_securityManager.readUser(m_context, userId);
     }
 
     /**
@@ -2498,7 +2487,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, int type) throws CmsException {
-        return (m_securityManager.readUser(username, type));
+        return m_securityManager.readUser(m_context, username, type);
     }
 
     /**
@@ -2511,7 +2500,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, String password) throws CmsException {
-        return (m_securityManager.readUser(username, password));
+        return m_securityManager.readUser(m_context, username, password);
     }
 
     /**
@@ -2526,7 +2515,7 @@ public class CmsObject {
      * @throws CmsException  Throws CmsException if operation was not succesful
     */
     public CmsUser readWebUser(String username) throws CmsException {
-        return (m_securityManager.readWebUser(username));
+        return m_securityManager.readWebUser(m_context, username);
     }
 
     /**
@@ -2542,7 +2531,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
-        return (m_securityManager.readWebUser(username, password));
+        return m_securityManager.readWebUser(m_context, username, password);
     }    
     
 
@@ -2616,7 +2605,7 @@ public class CmsObject {
      * @throws CmsException if the user data could not be read from the database
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_securityManager.resetPassword(username, oldPassword, newPassword);
+        m_securityManager.resetPassword(m_context, username, oldPassword, newPassword);
     }
 
     /**
@@ -2663,7 +2652,7 @@ public class CmsObject {
      * @return the group of the given project
      */
     public CmsGroup readGroup(CmsProject project) {
-        return m_securityManager.readGroup(project);
+        return m_securityManager.readGroup(m_context, project);
     }
 
     /**
@@ -2674,7 +2663,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(CmsTask task) throws CmsException {
-        return m_securityManager.readGroup(task);
+        return m_securityManager.readGroup(m_context, task);
     }
 
     /**
@@ -2685,7 +2674,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
-        return m_securityManager.readGroup(groupId);
+        return m_securityManager.readGroup(m_context, groupId);
     }
 
     /**
@@ -2695,7 +2684,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(String groupName) throws CmsException {
-        return (m_securityManager.readGroup(groupName));
+        return (m_securityManager.readGroup(m_context, groupName));
     }
     
     /**
@@ -2729,7 +2718,7 @@ public class CmsObject {
      * @return the managergroup of the project
      */
     public CmsGroup readManagerGroup(CmsProject project) {
-        return m_securityManager.readManagerGroup(project);
+        return m_securityManager.readManagerGroup(m_context, project);
     }
 
     /**
@@ -2833,7 +2822,7 @@ public class CmsObject {
      */    
     public String loginUser(String username, String password, String remoteAddress, int type) throws CmsSecurityException {    
         // login the user
-        CmsUser newUser = m_securityManager.loginUser(username, password, remoteAddress, type);
+        CmsUser newUser = m_securityManager.loginUser(m_context, username, password, remoteAddress, type);
         // set the project back to the "Online" project
         CmsProject newProject;
         try {
@@ -2979,7 +2968,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
-        return m_securityManager.readProject(task);
+        return m_securityManager.readProject(m_context, task);
     }
 
     /**
@@ -3013,7 +3002,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsProject project) throws CmsException {
-        return m_securityManager.readProjectResources(project);
+        return m_securityManager.readProjectResources(m_context, project);
     }
     
     /**
@@ -3145,7 +3134,7 @@ public class CmsObject {
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
     public Vector getAllBackupProjects() throws CmsException {
-        return m_securityManager.getAllBackupProjects();
+        return m_securityManager.getAllBackupProjects(m_context);
     }
 
     /**
@@ -3199,7 +3188,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
-        return m_securityManager.readPath(m_context.currentProject().getId(), m_context.addSiteRoot(path), filter);
+        return m_securityManager.readPath(m_context, m_context.currentProject().getId(), m_context.addSiteRoot(path), filter);
     }        
 
     /**
@@ -3373,7 +3362,7 @@ public class CmsObject {
      * @return int The new version id
      */
     public int getBackupTagId() {
-        return m_securityManager.getBackupTagId();
+        return m_securityManager.getBackupTagId(m_context);
     }  
     
     /**
@@ -3390,7 +3379,7 @@ public class CmsObject {
      * to read the file, or if the file couldn't be read.
      */
     public CmsBackupResource readBackupFile(String filename, int tagId) throws CmsException {
-        return (m_securityManager.readBackupFile(m_context, tagId, addSiteRoot(filename)));
+        return m_securityManager.readBackupFile(m_context, tagId, addSiteRoot(filename));
     }
 
     /**
@@ -3401,7 +3390,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
-        return (m_securityManager.readBackupProject(tagId));
+        return (m_securityManager.readBackupProject(m_context, tagId));
     }
 
     /**

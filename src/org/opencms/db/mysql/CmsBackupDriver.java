@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db.mysql;
 
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.17 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.18 $ $Date: 2004/11/22 18:03:06 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -63,9 +64,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects()
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
-    public Vector readBackupProjects() throws CmsException {
+    public Vector readBackupProjects(CmsDbContext dbc) throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -73,12 +74,12 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("PUBLISH_TAG"));
+                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
                 projects.addElement(
                     new CmsBackupProject(
                         res.getInt("PUBLISH_TAG"),
@@ -102,7 +103,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(null, conn, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return (projects);
     }

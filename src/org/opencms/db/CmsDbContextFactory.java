@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsRuntimeInfoFactory.java,v $
- * Date   : $Date: 2004/10/22 14:36:02 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContextFactory.java,v $
+ * Date   : $Date: 2004/11/22 18:03:05 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,27 +31,40 @@
  
 package org.opencms.db;
 
-import org.opencms.main.CmsException;
+import org.opencms.file.CmsRequestContext;
+
+
 
 /**
- * This interface defines a factory to create runtime info objects.<p>
+ * A default implementation of {@link I_CmsDbContextFactory}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.5.2
- * @see org.opencms.db.I_CmsRuntimeInfo
  */
-public interface I_CmsRuntimeInfoFactory {
+public class CmsDbContextFactory implements I_CmsDbContextFactory {
+       
+    /**
+     * @see org.opencms.db.I_CmsDbContextFactory#getDbContext(org.opencms.file.CmsRequestContext)
+     */
+    public CmsDbContext getDbContext(CmsRequestContext context) {
+
+        return new CmsDbContext(context);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsDbContextFactory#getDbContext()
+     */
+    public CmsDbContext getDbContext() {
+
+        return new CmsDbContext();
+    }
     
     /**
-     * Creates a new runtime info object.<p>
-     * 
-     * @param driverManager the initialized OpenCms driver manager
-     * @param runtimeFlags the flags to create the runtime info object
-     * 
-     * @return a new runtime info object
-     * @throws CmsException if an error occurs
+     * @see org.opencms.db.I_CmsDbContextFactory#initialize(org.opencms.db.CmsDriverManager)
      */
-    I_CmsRuntimeInfo getRuntimeInfo(CmsDriverManager driverManager, int runtimeFlags) throws CmsException;
+    public void initialize(CmsDriverManager driverManager) {
 
+        // noop
+    }
 }

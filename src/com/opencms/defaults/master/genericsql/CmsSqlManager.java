@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,16 @@ package com.opencms.defaults.master.genericsql;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,7 +63,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.23 $ $Date: 2004/11/22 18:03:06 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -134,7 +138,39 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             while(replace(key));
         }
     }
+    
+    /**
+     * Returns a JDBC connection from the connection pool.<p>
+     * 
+     * @return a JDBC connection
+     * @throws SQLException if a database access error occurs
+     */
+    public Connection getConnection() throws SQLException {
 
+        return getConnection(0);
+    }
+    
+    /**
+     * @see org.opencms.db.generic.CmsSqlManager#getConnection(int)
+     */
+    public Connection getConnection(int projectId) throws SQLException {
+
+        return super.getConnection(projectId);
+    }
+    
+    /**
+     * Returns a JDBC connection from the connection pool.<p>
+     * 
+     * @param project the project to get the connection for
+     * 
+     * @return a JDBC connection
+     * @throws SQLException if a database access error occurs
+     */
+    public Connection getConnection(CmsProject project) throws SQLException {
+
+        return super.getConnection(project.getId());
+    }
+    
     /**
      * Computes one run of the replacement for one query.
      * Stores the new value into m_queries.<p>
@@ -256,6 +292,17 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             }
         }
         return value;
+    }
+    
+    /**
+     * @see org.opencms.db.generic.CmsSqlManager#closeAll(org.opencms.db.CmsDbContext, java.sql.Connection, java.sql.Statement, java.sql.ResultSet)
+     */
+    public void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
+
+        if (dbc == null) {
+            dbc = new CmsDbContext();
+        }
+        super.closeAll(dbc, con, stmnt, res);
     }
     
 }

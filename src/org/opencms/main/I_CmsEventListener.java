@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/11/11 16:29:52 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -75,11 +75,14 @@ public interface I_CmsEventListener {
     /** Key name for passing a report in the data map. */
     String KEY_REPORT = "report";
     
-    /** Key name for passing a publish history id in the date map. */
+    /** Key name for passing a publish history id in the data map. */
     String KEY_PUBLISHID = "publishHistoryId";
     
-    /** Key name for passing a project id in the date map. */
+    /** Key name for passing a project id in the data map. */
     String KEY_PROJECTID = "projectId";
+    
+    /** Key name for passing a database context in the data map. */
+    String KEY_DBCONTEXT = "dbContext";
     
     /**
      * Marker for "all events".<p>

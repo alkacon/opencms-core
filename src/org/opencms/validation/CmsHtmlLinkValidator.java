@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/11/17 16:12:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,16 @@
 
 package org.opencms.validation;
 
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsRuntimeInfoFactory;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2004/11/17 16:12:47 $
+ * @version $Revision: 1.24 $ $Date: 2004/11/22 18:03:06 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -100,7 +99,6 @@ public class CmsHtmlLinkValidator extends Object {
      * @param cms the current user's Cms object the current request context
      * @param offlineResources a list of offline Cms resources
      * @return a Map with Lists of invalid hrefs keyed by resource names
-     * @see CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
      */
     public Map validateResources(CmsObject cms, List offlineResources) {
         return validateResources(cms, offlineResources, new CmsShellReport());
@@ -115,7 +113,6 @@ public class CmsHtmlLinkValidator extends Object {
      * @param offlineResources a list of offline Cms resources
      * @param report an instance of I_CmsReport to print messages
      * @return a map with lists of invalid links keyed by resource names
-     * @see CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
      */
     public Map validateResources(CmsObject cms, List offlineResources, I_CmsReport report) {
         CmsResource resource = null;
@@ -244,7 +241,7 @@ public class CmsHtmlLinkValidator extends Object {
             try {
                 // ... if the linked resource exists in the online project
                 m_driverManager.getVfsDriver().readResource(
-                    CmsRuntimeInfoFactory.getNullRuntimeInfo(), 
+                    new CmsDbContext(), 
                     I_CmsConstants.C_PROJECT_ONLINE_ID, 
                     link, true);
                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsPropertyDelete.java,v $
- * Date   : $Date: 2004/11/19 10:03:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/22 18:03:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.3
  */
@@ -218,6 +219,9 @@ public class CmsPropertyDelete extends CmsDialog {
      */
     public String buildResourceList(List resourceList, boolean lockInfo) throws CmsException {
         
+        // reverse the resource list
+        Collections.reverse(resourceList);
+        
         StringBuffer result = new StringBuffer();        
         result.append("<table border=\"0\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">\n");
         result.append("<tr>\n");
@@ -267,7 +271,7 @@ public class CmsPropertyDelete extends CmsDialog {
                 result.append("</td>\n");
                 // file address
                 result.append("\t<td>");
-                result.append(getCms().getSitePath(resource));
+                result.append(resource.getRootPath());
                 result.append("</td>\n");                
                 // title
                 result.append("\t<td>");

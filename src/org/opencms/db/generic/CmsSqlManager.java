@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/10/25 14:17:57 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.db.generic;
 
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
-import org.opencms.db.I_CmsRuntimeInfo;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
@@ -58,7 +58,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2004/10/25 14:17:57 $
+ * @version $Revision: 1.44 $ $Date: 2004/11/22 18:03:06 $
  * @since 5.1
  */
 public class CmsSqlManager implements Serializable, Cloneable {
@@ -149,24 +149,24 @@ public class CmsSqlManager implements Serializable, Cloneable {
 
         return query;
     }
-
+    
     /**
      * Attemts to close the connection, statement and result set after a statement has been executed.<p>
      * 
-     * @param runtimeInfo the current runtime info project
+     * @param dbc the current database context
      * @param con the JDBC connection
      * @param stmnt the statement
      * @param res the result set
      */
-    public void closeAll(I_CmsRuntimeInfo runtimeInfo, Connection con, Statement stmnt, ResultSet res) {
+    public void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
 
         // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
         // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
         // So, the connection tries to close it again when the connection is closed itself; 
         // as a result there is an error that forces the connection to be destroyed and not pooled
 
-        if (runtimeInfo == null) {            
-            // makes eclipse happy...
+        if (dbc == null) {            
+            OpenCms.getLog(this).error("Database context is null!");
         }
         
         try {
@@ -224,7 +224,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
     /**
      * Wraps an exception in a new CmsException object.<p>
      * 
-     * Optionally, a log message is written to the "critical" OpenCms logging channel.
+     * Optionally, a log message is written to the OpenCms error logging channel.
      * 
      * @param o the object caused the exception
      * @param message a message that is written to the log
@@ -275,7 +275,11 @@ public class CmsSqlManager implements Serializable, Cloneable {
         message = className + message;
 
         if (!logSilent && OpenCms.getLog(this).isErrorEnabled()) {
-            OpenCms.getLog(this).error(message);
+            if (rootCause != null) {
+                OpenCms.getLog(this).error(message, rootCause);
+            } else {
+                OpenCms.getLog(this).error(message);
+            }
         }
 
         switch (exceptionType) {
@@ -288,99 +292,39 @@ public class CmsSqlManager implements Serializable, Cloneable {
     }
     
     /**
-     * Returns a JDBC connection from the connection pool and saves runtime infos in the specified runtime info object.<p>
+     * Returns a JDBC connection from the connection pool.<p>
      * 
-     * Use this method to get a connection for reading/writing project independent data such as users, groups.<p>
+     * Use this method to get a connection for reading/writing project independent data.<p>
      * 
-     * @param runtimeInfo an implementation of {@link I_CmsRuntimeInfo}
-     * @return a JDBC connection
-     * @throws SQLException if a database access error occurs
-     */
-    public Connection getConnection(I_CmsRuntimeInfo runtimeInfo) throws SQLException {
-        
-        return getConnection(runtimeInfo, 0);
-    }
-    
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given CmsProject and saves 
-     * runtime infos in the specified runtime info object.<p>
+     * @param dbc the current database context
      * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param runtimeInfo an implementation of {@link I_CmsRuntimeInfo}
-     * @param project a Cms project (e.g. the current project from the request context)
      * @return a JDBC connection
      * @throws SQLException if a database access error occurs
      */    
-    public Connection getConnection(I_CmsRuntimeInfo runtimeInfo, CmsProject project) throws SQLException {
+    public Connection getConnection(CmsDbContext dbc) throws SQLException {
         
-        return getConnection(runtimeInfo, project.getId());
-    }    
+        return getConnection(dbc, 0);
+    }
     
     /**
-     * Returns a JDBC connection from the connection pool specified by the given project ID and saves 
-     * runtime infos in the specified runtime info object.<p>
-     * 
-     * The project ID is (usually) the ID of the current project.<p>
+     * Returns a JDBC connection from the connection pool specified by the given CmsProject id.<p>
      * 
      * Use this method to get a connection for reading/writing data either in online or offline projects
      * such as files, folders.<p>
      * 
-     * @param runtimeInfo an implementation of {@link I_CmsRuntimeInfo}
-     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
+     * @param dbc the current database context
+     * @param projectId the id of a project (to distinguish between online / offline tables)
+     * 
      * @return a JDBC connection
      * @throws SQLException if a database access error occurs
-     */     
-    public Connection getConnection(I_CmsRuntimeInfo runtimeInfo, int projectId) throws SQLException {
+     */       
+    public Connection getConnection(CmsDbContext dbc, int projectId) throws SQLException {
         
-        Connection conn = getConnection(projectId);
-        StringBuffer buf = new StringBuffer();
-        
-        buf.append("autocommit=").append(conn.getAutoCommit() ? "true" : "false").append(" ");
-        buf.append("closed=").append(conn.isClosed() ? "true" : "false").append(" ");
-        //buf.append("pool=").append(m_poolUrl).append(" ");
-        buf.append("info=").append(conn.toString());
-        
-        if (runtimeInfo != null) {            
-            runtimeInfo.push(buf.toString());
+        if (dbc == null) {
+            OpenCms.getLog(this).error("Null database context used");
         }
-        
-        return conn;
-    }    
-
-    /**
-     * Returns a JDBC connection from the connection pool.<p>
-     * 
-     * Use this method to get a connection for reading/writing project independent data
-     * such as users, groups.<p>
-     * 
-     * @return a JDBC connection
-     * @throws SQLException if a database access error occurs
-     */
-    public Connection getConnection() throws SQLException {
-
-        return getConnection(0);
-    }
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given CmsProject.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param project a Cms project (e.g. the current project from the request context)
-     * @return a JDBC connection from the pool specified by the project-ID 
-     * @throws SQLException if a database access error occurs
-     */
-    public Connection getConnection(CmsProject project) throws SQLException {
-
-        // the specified project is not evaluated in this implementation.
-        // extensions of this object might evaluate the project to return
-        // different connections...
-        
-        return getConnection(project.getId());
-    }
+        return getConnection(projectId);
+    } 
 
     /**
      * Returns a JDBC connection from the connection pool specified by the given project ID.<p>
@@ -394,7 +338,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnection(int projectId) throws SQLException {
+    protected Connection getConnection(int projectId) throws SQLException {
         
         // the specified project ID is not evaluated in this implementation.
         // extensions of this object might evaluate the project ID to return

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/08 17:40:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,7 @@
 
 package org.opencms.db.oracle;
 
-import org.opencms.db.CmsRuntimeInfo;
-import org.opencms.db.I_CmsRuntimeInfo;
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
@@ -52,20 +51,20 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2004/11/08 17:40:44 $
+ * @version $Revision: 1.25 $ $Date: 2004/11/22 18:03:06 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createContent(I_CmsRuntimeInfo, CmsProject, org.opencms.util.CmsUUID, byte[], int)
+     * @see org.opencms.db.I_CmsVfsDriver#createContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[], int)
      */
-    public void createContent(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resourceId, byte[] content, int versionId) throws CmsException {
+    public void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         
         try {            
-            conn = m_sqlManager.getConnection(runtimeInfo, project);
+            conn = m_sqlManager.getConnection(dbc, project.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_ADD");
             
             // first insert new file without file_content, then update the file_content
@@ -77,11 +76,11 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "createFileContent resourceId=" + resourceId.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
 
         // now update the file content
-        writeContent(runtimeInfo, project, resourceId, content);
+        writeContent(dbc, project, resourceId, content);
     }
 
     /**
@@ -93,9 +92,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeContent(I_CmsRuntimeInfo, CmsProject, org.opencms.util.CmsUUID, byte[])
+     * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[])
      */
-    public void writeContent(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsException {
+    public void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
@@ -104,10 +103,10 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         ResultSet res = null;
         
         try {            
-            conn = m_sqlManager.getConnection(runtimeInfo, project);
+            conn = m_sqlManager.getConnection(dbc, project.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
             
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 conn.setAutoCommit(false);
             }
             
@@ -123,19 +122,19 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             output.write(content);
             output.close();
                 
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
                 m_sqlManager.closeAll(null, null, commit, null); 
             }
             
-            m_sqlManager.closeAll(null, null, stmt, res);          
+            m_sqlManager.closeAll(dbc, null, stmt, res);          
 
             commit = null;
             stmt = null;
             res = null;
                 
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 conn.setAutoCommit(true);
             }
                 
@@ -161,7 +160,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 }
             } 
             
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+            if (dbc.isDefaultDbContext()) {
                 if (stmt != null) {
                     try {
                         rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
@@ -175,10 +174,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                     } catch (SQLException exc) {
                         // ignore
                     }                
-                }     
-            }
-            
-            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                }
                 if (conn != null) {
                     try {
                         conn.setAutoCommit(true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/11/05 18:15:11 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.configuration;
 
 import org.opencms.db.CmsDefaultUsers;
-import org.opencms.db.I_CmsRuntimeInfoFactory;
+import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
@@ -292,7 +292,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     private List m_resourceInitHandlers;
     
     /** The runtime info factory. */
-    private I_CmsRuntimeInfoFactory m_runtimeInfoFactory;
+    private I_CmsDbContextFactory m_runtimeInfoFactory;
     
     /** The runtime properties. */
     private Map m_runtimeProperties;
@@ -860,7 +860,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * 
      * @return the runtime info factory instance
      */
-    public I_CmsRuntimeInfoFactory getRuntimeInfoFactory() {
+    public I_CmsDbContextFactory getRuntimeInfoFactory() {
         
         return m_runtimeInfoFactory;
     }
@@ -1045,8 +1045,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             return;
         }
         
-        if (objectInstance instanceof I_CmsRuntimeInfoFactory) {
-            m_runtimeInfoFactory = (I_CmsRuntimeInfoFactory)objectInstance;
+        if (objectInstance instanceof I_CmsDbContextFactory) {
+            m_runtimeInfoFactory = (I_CmsDbContextFactory)objectInstance;
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Runtime Info factory : " + className + " instanciated");
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:23 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/11/22 18:03:06 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,33 +31,22 @@
 
 package org.opencms.db.oracle;
 
-import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.generic.CmsSqlManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.List;
 
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.33 $ $Date: 2004/10/29 17:26:23 $
+ * @version $Revision: 1.34 $ $Date: 2004/11/22 18:03:06 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
-public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {    
-
-    /**
-     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
-     */
-    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
-
-        super.init(configurationManager, successiveDrivers, driverManager);
-    }
+public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)

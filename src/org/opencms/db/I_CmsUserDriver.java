@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/11/04 15:58:00 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/11/22 18:03:05 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,24 +43,24 @@ import org.opencms.file.CmsUser;
 import java.util.Hashtable;
 import java.util.Vector;
 
-
 /**
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2004/11/04 15:58:00 $
+ * 
+ * @version $Revision: 1.39 $ $Date: 2004/11/22 18:03:05 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
-    
+
     /** The type ID to identify user driver implementations. */
-    int C_DRIVER_TYPE_ID = 2;    
+    int C_DRIVER_TYPE_ID = 2;
 
     /**
      * Creates an access control entry.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
      * @param principal the id of the principal (user or group)
@@ -70,112 +70,126 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsException if something goes wrong
      */
-    void createAccessControlEntry(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
+    void createAccessControlEntry(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsUUID resource,
+        CmsUUID principal,
+        int allowed,
+        int denied,
+        int flags) throws CmsException;
 
     /**
      * Creates a new group.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param groupId The id of the new group
-     * @param groupName The name of the new group
+     * @param dbc the current database context
+     * @param groupId the id of the new group
+     * @param groupName the name of the new group
      * @param description The description for the new group
-     * @param flags The flags for the new group
-     * @param parentGroupName The name of the parent group (or null)
+     * @param flags the flags for the new group
+     * @param parentGroupName the name of the parent group (or null if the group has no parent)
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      *
-     * @return Group the new group
-     * @throws CmsException if operation was not succesfull
+     * @return the created group
+     * @throws CmsException if something goes wrong
      */
-    CmsGroup createGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException;
+    CmsGroup createGroup(
+        CmsDbContext dbc,
+        CmsUUID groupId,
+        String groupName,
+        String description,
+        int flags,
+        String parentGroupName,
+        Object reservedParam) throws CmsException;
 
     /**
-     * Adds a user to the database.<p>
+     * Creates a new user.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param name username
-     * @param password user-password
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param address user-defauladdress
-     * @param type user-type
-     * @return the created user.
-     * @throws CmsException if something goes wrong.
+     * @param dbc the current database context
+     * @param name the user name
+     * @param password the user password
+     * @param description the user description
+     * @param firstname the user firstname
+     * @param lastname the user lastname
+     * @param email the user email
+     * @param lastlogin the user lastlogin time
+     * @param flags the user flags
+     * @param additionalInfos the user additional infos
+     * @param address the user default address
+     * @param type the user type
+     * 
+     * @return the created user
+     * @throws CmsException if something goes wrong
      */
-    CmsUser createUser(I_CmsRuntimeInfo runtimeInfo, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException;
+    CmsUser createUser(
+        CmsDbContext dbc,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        long lastlogin,
+        int flags,
+        Hashtable additionalInfos,
+        String address,
+        int type) throws CmsException;
 
     /**
      * Adds a user to a group.<p>
      *
-     * Only the admin can do this.
-     * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param userid the id of the user that is to be added to the group
      * @param groupid the id of the group
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @throws CmsException if operation was not succesfull
      */
-    void createUserInGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException;
+    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException;
 
     /**
-     * Removes an access control entry from the database.<p>
+     * Deletes all access control entries (ACEs) belonging to a resource.<p>
      * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param principal the id of the principal
-     * @throws CmsException if something goes wrong
-     */
-
-    /**
-     * Deletes all access control entries belonging to a resource.<p>
-     * 
-     * @param runtimeInfo the current runtime info
-     * @param project the project to write the entry
-     * @param resource the id of the resource
+     * @param dbc the current database context
+     * @param project the project to delete the ACEs in
+     * @param resource the id of the resource to delete the ACEs from
      * 
      * @throws CmsException if something goes wrong
      */
-    void deleteAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource) throws CmsException;
+    void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
-     * Delete a group from the Cms.<p>
+     * Deletes a group.<p>
      * 
-     * Only groups that contain no subgroups can be deleted.
-     * Only the admin can do this.
+     * Only groups that contain no subgroups can be deleted.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param name the name of the group that is to be deleted
      *
-     * @throws CmsException if operation was not succesfull
-     */
-    void deleteGroup(I_CmsRuntimeInfo runtimeInfo, String name) throws CmsException;
-
-    /**
-     * Deletes a user from the database.<p>
-     * 
-     * @param runtimeInfo the current runtime info
-     * @param userName the user to delete
      * @throws CmsException if something goes wrong
      */
-    void deleteUser(I_CmsRuntimeInfo runtimeInfo, String userName) throws CmsException;
+    void deleteGroup(CmsDbContext dbc, String name) throws CmsException;
+
+    /**
+     * Deletes a user.<p>
+     * 
+     * @param dbc the current database context
+     * @param userName the name of the user to delete
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    void deleteUser(CmsDbContext dbc, String userName) throws CmsException;
 
     /**
      * Removes a user from a group.<p>
-     *
-     * Only the admin can do this.
      * 
-     * @param runtimeInfo the current runtime info
-     * @param userId the id of the user that is to be added to the group
+     * @param dbc the current database context
+     * @param userId the id of the user that is to be removed from the group
      * @param groupId the id of the group
      * 
      * @throws CmsException if something goes wrong
      */
-    void deleteUserInGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, CmsUUID groupId) throws CmsException;
+    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Destroys this driver.<p>
@@ -186,26 +200,73 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void destroy() throws Throwable, CmsException;
 
     /**
-     * Adds a user to the database.<p>
+     * Tests if a group with the specified name exists.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param id user id
-     * @param name username
-     * @param password user-password
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param address user-defauladdress
-     * @param type user-type
+     * @param dbc the current database context
+     * @param groupname the user name to be checked
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
-     * @return the created user.
+     * 
+     * @return true, if a group with the specified name exists, false otherwise
      * @throws CmsException if something goes wrong
      */
-    CmsUser importUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException;
+    boolean existsGroup(CmsDbContext dbc, String groupname, Object reservedParam) throws CmsException;
+
+    /**
+     * Tests if a user with the specified name exists.<p>
+     * 
+     * @param dbc the current database context
+     * @param username the user name to be checked
+     * @param usertype the type of the user
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * 
+     * @return true, if a user with the specified name exists, false otherwise
+     * @throws CmsException if something goes wrong
+     */
+    boolean existsUser(CmsDbContext dbc, String username, int usertype, Object reservedParam) throws CmsException;
+
+    /**
+     * Returns the SqlManager of this driver.<p>
+     * 
+     * @return the SqlManager of this driver
+     */
+    CmsSqlManager getSqlManager();
+
+    /**
+     * Imports a user.<p>
+     * 
+     * @param dbc the current database context
+     * @param id the id of the user
+     * @param name the user name
+     * @param password the user password
+     * @param description the user description
+     * @param firstname the user firstname
+     * @param lastname the user lastname
+     * @param email the user email
+     * @param lastlogin the user lastlogin time
+     * @param flags the user flags
+     * @param additionalInfos the user additional infos
+     * @param address the user default address
+     * @param type the user type
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * 
+     * @return the imported user
+     * @throws CmsException if something goes wrong
+     */
+    CmsUser importUser(
+        CmsDbContext dbc,
+        CmsUUID id,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        long lastlogin,
+        int flags,
+        Hashtable additionalInfos,
+        String address,
+        int type,
+        Object reservedParam) throws CmsException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -223,233 +284,259 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Publish all access control entries of a resource from the given offline project to the online project.<p>
      * 
      * Within the given project, the resource is identified by its offlineId, in the online project,
-     * it is identified by the given onlineId.
+     * it is identified by the given onlineId.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param offlineProject an offline project
      * @param onlineProject the onlie project
      * @param offlineId the offline resource id
      * @param onlineId the online resource id
+     * 
      * @throws CmsException if something goes wrong
      */
-    void publishAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException;
+    void publishAccessControlEntries(
+        CmsDbContext dbc,
+        CmsProject offlineProject,
+        CmsProject onlineProject,
+        CmsUUID offlineId,
+        CmsUUID onlineId) throws CmsException;
 
     /**
      * Reads all relevant access control entries for a given resource.<p>
      * 
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
      * @param inheritedOnly flag to indicate that only inherited entries should be returned
      * @return a vector of access control entries defining all permissions for the given resource
+     * 
      * @throws CmsException if something goes wrong
      */
-    Vector readAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;
+    Vector readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly)
+    throws CmsException;
 
     /**
-     * Reads an access control entry from the cms.<p>
+     * Reads an access control entry for a given principal that is attached to a resource.<p>
      * 
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
-     * @param principal the id of a group or a user any other entity
-     * @return an access control entry that defines the permissions of the entity for the given resource
+     * @param principal the id of the principal
+     * 
+     * @return an access control entry that defines the permissions of the principal for the given resource
      * @throws CmsException if something goes wrong
      */
-    CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
+    CmsAccessControlEntry readAccessControlEntry(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsUUID resource,
+        CmsUUID principal) throws CmsException;
 
     /**
-     * Returns all child groups of a groups.<p>
+     * Reads all child groups of a group.<p>
      *
-     *
-     * @param groupname the name of the group
+     * @param dbc the current database context
+     * @param groupname the name of the group to read the child groups from
+     * 
      * @return users a Vector of all child groups or null
      * @throws CmsException if operation was not succesful
      */
-    Vector readChildGroups(String groupname) throws CmsException;
+    Vector readChildGroups(CmsDbContext dbc, String groupname) throws CmsException;
 
     /**
-     * Returns a group object.<p>
+     * Reads a group based on the group id.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param groupId the id of the group that is to be read
      * 
-     * @return the CmsGroup object.
-     * @throws CmsException if operation was not successful
-     */
-    CmsGroup readGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID groupId) throws CmsException;
-
-    /**
-     * Returns a group object.<p>
-     * 
-     * @param runtimeInfo the current runtime info
-     * @param groupName the name of the group
-     * 
-     * @return the group with the given name
+     * @return the group that was read
      * @throws CmsException if something goes wrong
      */
-    CmsGroup readGroup(I_CmsRuntimeInfo runtimeInfo, String groupName) throws CmsException;
+    CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException;
 
     /**
-     * Returns all groups.<p>
-     *
-     * @return a Vector of all existing groups.
-     * @throws CmsException if operation was not succesful
+     * Reads a group based on the group name.<p>
+     * 
+     * @param dbc the current database context
+     * @param groupName the name of the group that is to be read
+     * 
+     * @return the group that was read
+     * @throws CmsException if something goes wrong
      */
-    Vector readGroups() throws CmsException;
+    CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsException;
 
     /**
-     * Returns a list of groups of a user.<p>
+     * Reads all existing groups.<p>
      *
+     * @param dbc the current database context
+     * 
+     * @return a Vector of all existing groups
+     * @throws CmsException if something goes wrong
+     */
+    Vector readGroups(CmsDbContext dbc) throws CmsException;
+
+    /**
+     * Reads all groups the given user is a member in.<p>
+     *
+     * @param dbc the current database context
      * @param userId the id of the user
      * @param paramStr additional parameter
-     * @return vector of groups
-     * @throws CmsException if operation was not succesful
-     */
-    Vector readGroupsOfUser(CmsUUID userId, String paramStr) throws CmsException;
-
-    /**
-     * Reads a user from the database.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param id the id of the user
-     *
-     * @return the user object
+     * @return all groups the given user is a member in
      * @throws CmsException if something goes wrong
      */
-    CmsUser readUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID id) throws CmsException;
+    Vector readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException;
 
     /**
-     * Reads a user from the database.<p>
+     * Reads a user based on the user id.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param name the name of the user
-     * @param type the type of the user
+     * @param dbc the current database context
+     * @param id the id of the user to read
      *
-     * @return the read user
+     * @return the user that was read
      * @throws CmsException if something goes wrong
      */
-    CmsUser readUser(I_CmsRuntimeInfo runtimeInfo, String name, int type) throws CmsException;
+    CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException;
+
+    /**
+     * Reads a user based in the user name and user type.<p>
+     * 
+     * @param dbc the current database context
+     * @param name the name of the user to read
+     * @param type the type of the user to read
+     *
+     * @return the user that was read
+     * @throws CmsException if something goes wrong
+     */
+    CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
      *
+     * @param dbc the current database context
      * @param name the name of the user
      * @param password the password of the user
      * @param type the type of the user
-     * @return the read user
+     * 
+     * @return the user that was read
      * @throws CmsException if something goes wrong
      */
-    CmsUser readUser(String name, String password, int type) throws CmsException;
+    CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
      *
+     * @param dbc the current database context
      * @param name the name of the user
      * @param password the password of the user
      * @param remoteAddress the remote address of the request
      * @param type the type of the user
-     * @return the read user
-     * @throws CmsException if something goes wrong
-     */
-    CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException;
-
-    /**
-     * Gets all users of a type.<p>
-     *
-     * @param type the type of the user
-     * @return list of users of this type
-     * @throws CmsException if something goes wrong
-     */
-    Vector readUsers(int type) throws CmsException;
-
-    /**
-     * Gets all users of a type and namefilter.<p>
-     *
-     * @param type the type of the user
-     * @param namefilter the namefilter
-     * @return list of users of this type matching the namefilter
-     * @throws CmsException if something goes wrong
-     */
-    Vector readUsers(int type, String namefilter) throws CmsException;
-
-    /**
-     * Returns a list of users of a group.<p>
-     *
-     * @param name the name of the group
-     * @param type the type of the users to read
-     * @return Vector of users
-     * @throws CmsException if operation was not successful
-     */
-    Vector readUsersOfGroup(String name, int type) throws CmsException;
-
-    /**
-     * Removes all access control entries belonging to a resource from the database.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @return the user that was read
+     * @throws CmsException if something goes wrong
+     */
+    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type)
+    throws CmsException;
+
+    /**
+     * Reads all existing users of the given type.<p>
+     *
+     * @param dbc the current database context
+     * @param type the type to read the users for
+     * 
+     * @return all existing users of the given type
+     * @throws CmsException if something goes wrong
+     */
+    Vector readUsers(CmsDbContext dbc, int type) throws CmsException;
+
+    /**
+     * Reads all users that are members of the given group.<p>
+     *
+     * @param dbc the current database context
+     * @param name the name of the group to read the users from
+     * @param type the type of the users to read
+     * 
+     * @return all users that are members of the given group
+     * @throws CmsException if something goes wrong
+     */
+    Vector readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException;
+
+    /**
+     * Removes all access control entries belonging to a resource.<p>
+     * 
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
+     * 
      * @throws CmsException if something goes wrong
      */
-    void removeAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource) throws CmsException;
+    void removeAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
-     * Removes all access control entries belonging to a principal from the database.<p>
+     * Removes all access control entries belonging to a principal.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param onlineProject the online project 
      * @param principal the id of the principal
+     * 
      * @throws CmsException if something goes wrong
      */
-    void removeAccessControlEntriesForPrincipal(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsProject onlineProject, CmsUUID principal) throws CmsException;
+    void removeAccessControlEntriesForPrincipal(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsProject onlineProject,
+        CmsUUID principal) throws CmsException;
 
-    
     /**
-     * Removes an access control entry from the database.<p>
+     * Removes an access control entry.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
      * @param principal the id of the principal
      * 
      * @throws CmsException if something goes wrong
      */
-    void removeAccessControlEntry(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
+    void removeAccessControlEntry(CmsDbContext dbc, CmsProject project, CmsUUID resource, CmsUUID principal)
+    throws CmsException;
 
     /**
      * Undeletes all access control entries belonging to a resource.<p>
      * 
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    void undeleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
+    void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
-     * Writes an access control entry to the cms.<p>
+     * Writes an access control entry.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param project the project to write the entry
      * @param acEntry the entry to write
      * 
      * @throws CmsException if something goes wrong
      */
-    void writeAccessControlEntry(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsAccessControlEntry acEntry) throws CmsException;
+    void writeAccessControlEntry(CmsDbContext dbc, CmsProject project, CmsAccessControlEntry acEntry)
+    throws CmsException;
 
     /**
-     * Writes an already existing group in the Cms.<p>
-     *
-     * Only the admin can do this.
+     * Updates an already existing group.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param group The group that should be written to the Cms.
+     * @param dbc the current database context
+     * @param group the group to update
      *
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
+     * @throws CmsException if something goes wrong
      */
-    void writeGroup(I_CmsRuntimeInfo runtimeInfo, CmsGroup group) throws CmsException;
+    void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
 
     /**
      * Sets a new password for a user.<p>
      * 
+     * @param dbc the current database context
      * @param userName the user to set the password for
      * @param type the type of the user
      * @param oldPassword the current password
@@ -457,59 +544,28 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsException if something goes wrong
      */
-    void writePassword(String userName, int type, String oldPassword, String newPassword) throws CmsException;
+    void writePassword(CmsDbContext dbc, String userName, int type, String oldPassword, String newPassword)
+    throws CmsException;
 
     /**
-     * Writes a user to the database.<p>
+     * Updates an already existing user.<p>
      * 
-     * @param runtimeInfo the current runtime info
-     * @param user the user to write
+     * @param dbc the current database context
+     * @param user the user to update
      *
      * @throws CmsException if something goes wrong
      */
-    void writeUser(I_CmsRuntimeInfo runtimeInfo, CmsUser user) throws CmsException;
+    void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException;
 
     /**
-     * Changes the user type of the user.<p>
+     * Changes the user type of the given user.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the current database context
      * @param userId the id of the user to change
-     * @param userType the new usertype of the user
+     * @param userType the new type of the user
      *
      * @throws CmsException if something goes wrong
      */
-    void writeUserType(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, int userType) throws CmsException;
+    void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType) throws CmsException;
 
-    /**
-     * Returns the SqlManager of this driver.<p>
-     * 
-     * @return the SqlManager of this driver
-     */
-    CmsSqlManager getSqlManager();
-    
-    /**
-     * Tests if a user with the specified name exists.<p>
-     * 
-     * @param runtimeInfo the current runtime info
-     * @param username the user name to be checked
-     * @param usertype the type of the user
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
-     * 
-     * @return true, if a user with the specified name exists, false otherwise
-     * @throws CmsException if something goes wrong
-     */
-    boolean existsUser(I_CmsRuntimeInfo runtimeInfo, String username, int usertype, Object reservedParam) throws CmsException;
-    
-    /**
-     * Tests if a group with the specified name exists.<p>
-     * 
-     * @param runtimeInfo the current runtime info
-     * @param groupname the user name to be checked
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
-     * 
-     * @return true, if a group with the specified name exists, false otherwise
-     * @throws CmsException if something goes wrong
-     */
-    boolean existsGroup(I_CmsRuntimeInfo runtimeInfo, String groupname, Object reservedParam) throws CmsException;
-    
 }
