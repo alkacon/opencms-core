@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/15 15:18:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/05/16 11:00:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/05/15 15:18:35 $
+ * @version $Revision: 1.6 $ $Date: 2003/05/16 11:00:43 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
@@ -929,7 +929,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
                     // mark the folder as deleted
                     statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_REMOVE" + usedStatement));
                     statement.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
-                    statement.setInt(2, com.opencms.core.I_CmsConstants.C_UNKNOWN_ID);
+                    statement.setString(2, CmsUUID.getNullUUID().toString());
                     statement.setString(3, orgFolder.getResourceName());
                     statement.executeUpdate();
                 } catch (SQLException e) {
@@ -3316,7 +3316,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
             statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_REMOVE" + usedStatement));
             // mark the file as deleted
             statement.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
-            statement.setInt(2, com.opencms.core.I_CmsConstants.C_UNKNOWN_ID);
+            statement.setString(2, CmsUUID.getNullUUID().toString());
             statement.setString(3, filename);
             statement.executeUpdate();
         } catch (SQLException e) {
