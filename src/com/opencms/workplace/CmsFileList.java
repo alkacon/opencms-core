@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/01/30 19:14:03 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/02/03 14:42:22 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.57 $ $Date: 2003/01/30 19:14:03 $
+ * @version $Revision: 1.58 $ $Date: 2003/02/03 14:42:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -542,7 +542,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = cms.getResourceType(file.getType());
                     String icon = getIcon(cms, type, config);
-                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, cms.getRequestContext().getRequest().getServletUrl() + config.getWpPicturePath() + icon);
+                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPicturePath() + icon);
 
                     // set the link, but only if the resource is not deleted
                     if(res.getState() != C_STATE_DELETED) {
