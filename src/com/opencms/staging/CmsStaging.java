@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsStaging.java,v $
-* Date   : $Date: 2001/04/27 15:39:22 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/27 15:41:26 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,6 +52,14 @@ public class CmsStaging {
     public CmsStaging() {
         m_uriLocator = new CmsUriLocator();
         m_elementLocator = new CmsElementLocator();
+    }
+
+    public CmsUriLocator getUriLocator() {
+        return m_uriLocator;
+    }
+
+    public CmsElementLocator getElementLocator() {
+        return m_elementLocator;
     }
 
 }
