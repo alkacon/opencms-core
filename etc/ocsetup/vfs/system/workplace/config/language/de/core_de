@@ -471,6 +471,7 @@
             </context>
             <message>
             	<confirmhttp>Die Link URL sieht wie eine externe URL aus\naber es fehlt das notwendige Protokoll (z.B. 'http://').\n\nSoll das http Protokoll zur URL addiert werden?</confirmhttp>
+            	<noselection>Fehler: Keine gültige Auswahl.\nBitte markieren Sie den Text oder das Bild, welches verlinkt werden soll.</noselection>            	
             </message>
         </editor>
         <explorer>

@@ -472,6 +472,7 @@
             </context>
             <message>
             	<confirmhttp>The link URL you entered looks like a server name\nbut misses the required protocol (eg. 'http://').\n\nShould the http protocol be added to the URL?</confirmhttp>
+            	<noselection>Error: No valid selection.\nPlease select the text or image you wish to add a link to.</noselection>            	
             </message>
         </editor>
         <explorer>
