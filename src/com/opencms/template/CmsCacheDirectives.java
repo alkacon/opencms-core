@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/08 13:08:15 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/08 13:16:46 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2001/05/08 13:08:15 $
+ * @version $Revision: 1.4 $ $Date: 2001/05/08 13:16:46 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -299,11 +299,13 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      *
      */
     private void autoSetExternalCache(){
-        boolean proxPriv = m_uri && (m_cacheParameter == null || m_cacheParameter.isEmpty())
-                            && isInternalCacheable();
-        boolean proxPubl = proxPriv && m_user;
-        // ToDo: check the internal flag for export
-        boolean export = proxPubl; // && !flag(extenal);
-        setExternalCaching(isInternalCacheable(), proxPriv, proxPubl, export, isStreamable());
+        if (m_changeCd){
+            boolean proxPriv = m_uri && (m_cacheParameter == null || m_cacheParameter.isEmpty())
+                                && isInternalCacheable();
+            boolean proxPubl = proxPriv && m_user;
+            // ToDo: check the internal flag for export
+            boolean export = proxPubl; // && !flag(extenal);
+            setExternalCaching(isInternalCacheable(), proxPriv, proxPubl, export, isStreamable());
+        }
     }
 }
