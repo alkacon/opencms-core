@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/07/16 18:24:16 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/07/20 06:57:24 $
+* Version: $Revision: 1.46 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.45 $ $Date: 2001/07/16 18:24:16 $
+ * @version $Revision: 1.46 $ $Date: 2001/07/20 06:57:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -364,7 +364,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             // Okay. All values are initialized. Now we can create
             // the temporary files.
             tempPageFilename = createTemporaryFile(cms, pageFileResource);
-            tempBodyFilename = createTemporaryFile(cms, contentFileResource);
+            tempBodyFilename = "/content/bodys" + tempPageFilename;
+
             session.putValue("te_temppagefile", tempPageFilename);
             session.putValue("te_tempbodyfile", tempBodyFilename);
         }
@@ -560,7 +561,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             // First delete temporary files
             temporaryControlFile.removeFromFileCache();
             bodyTemplateFile.removeFromFileCache();
-            cms.deleteFile(tempBodyFilename);
+            // deleting the pagefile will delete the bodyfile too
             cms.deleteFile(tempPageFilename);
             try {
                 cms.getRequestContext().getResponse().sendCmsRedirect("/system/workplace/action/index.html");
