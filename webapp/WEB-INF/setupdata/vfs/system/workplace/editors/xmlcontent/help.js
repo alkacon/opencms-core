@@ -55,13 +55,19 @@ function findPosY(obj) {
     return curtop;
 }
 
-function showHelp(id) { 
+function showHelp(id, fieldId) { 
 
     var text = document.getElementById("help" + id);
     var icon = document.getElementById("img" + id);
     if (text.style.visibility == "visible") {
         return;
     }
+    try {
+    	var formField = document.getElementById(fieldId);
+    	if (formField.tagName.toUpperCase() == "SELECT") {
+    		formField.style.visibility = "hidden";	
+    	}
+    } catch (e) {}
     x = findPosX(icon) + 8;
     y = findPosY(icon) + 8;
     var textHeight = text.scrollHeight;
@@ -105,10 +111,16 @@ function showHelp(id) {
     text.style.visibility = "visible"; 
 }
 
-function hideHelp(id) {
+function hideHelp(id, fieldId) {
     var text = document.getElementById("help" + id);
     text.style.visibility = "hidden";
     text.style.left = "0px";
     text.style.top =  "0px";
+    try {
+    	var formField = document.getElementById(fieldId);
+    	if (formField.tagName.toUpperCase() == "SELECT") {
+    		formField.style.visibility = "visible";	
+    	}
+    } catch (e) {}
 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/12/16 08:44:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/01/21 15:08:34 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -78,7 +78,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) {
 
-        return getHelpText(widgetDialog, value.getContentDefinition(), value.getElementName());
+        return getHelpText(widgetDialog, value.getContentDefinition(), value);
     }
 
     /**
@@ -154,15 +154,9 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
     
     /**
-     * Creates a help bubble.<p>
-     * 
-     * @param cms the CmsObject
-     * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefintion the ContentDefinition or null
-     * @param value the value to create the help bubble for
-     * @return HTML code for adding a help bubble
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public static String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
+    public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value) {
         StringBuffer result = new StringBuffer(128);
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
@@ -170,12 +164,13 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             contentDefinitionName = contentDefintion.getName();
         }
         // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value + "." + C_HELP_POSTFIX;
+        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value.getElementName() + "." + C_HELP_POSTFIX;
         String locValue = widgetDialog.key(locKey);
         if (locValue.startsWith("???")) {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.buttonBarSpacer(16);
         } else {
+            String id = getParameterName(value); 
             result.append("<td>");
             result.append("<img id=\"img");
             result.append(locKey);
@@ -185,8 +180,12 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
             result.append("\" border=\"0\" onmouseout=\"hideHelp('");                
             result.append(locKey);
+            result.append("', '");
+            result.append(id);
             result.append("');\" onmouseover=\"showHelp('");
             result.append(locKey);
+            result.append("', '");
+            result.append(id);
             result.append("');\">");       
             result.append("</td>");  
             return result.toString();
@@ -194,14 +193,9 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
     
     /**
-     * Creates a &lt;div&gt; containing a help text.<p>
-     * 
-     * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefintion the ContentDefinition or null
-     * @param value the value to create the help bubble for
-     * @return HTML code for adding a help text
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    protected String getHelpText(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
+    public String getHelpText(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value) {
         StringBuffer result = new StringBuffer(128);
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
@@ -209,20 +203,25 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             contentDefinitionName = contentDefintion.getName();
         }
         // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value + "." + C_HELP_POSTFIX;
+        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value.getElementName() + "." + C_HELP_POSTFIX;
         String locValue = widgetDialog.key(locKey);
         if (locValue.startsWith("???")) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
+            String id = getParameterName(value); 
             result.append("<div class=\"help\" name=\"help");
             result.append(locKey);
             result.append("\" id=\"help");
             result.append(locKey);
             result.append("\" onmouseout=\"hideHelp('");
             result.append(locKey);
+            result.append("', '");
+            result.append(id);
             result.append("');\" onmouseover=\"showHelp('");
             result.append(locKey);
+            result.append("', '");
+            result.append(id);
             result.append("');\">");
             result.append(locValue);
             result.append("</div>"); 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/01/21 15:08:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
@@ -127,6 +127,27 @@ public interface I_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) throws CmsXmlException;
 
+    /**
+     * Creates a help bubble.<p>
+     * 
+     * @param cms the CmsObject
+     * @param widgetDialog the dialog where the widget is used on
+     * @param contentDefintion the ContentDefinition or null
+     * @param value the value to create the help bubble for
+     * @return HTML code for adding a help bubble
+     */
+    String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value);
+    
+    /**
+     * Creates a &lt;div&gt; containing a help text.<p>
+     * 
+     * @param widgetDialog the dialog where the widget is used on
+     * @param contentDefintion the ContentDefinition or null
+     * @param value the value to create the help bubble for
+     * @return HTML code for adding a help text
+     */
+    String getHelpText(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value);
+    
     /**
      * Returns the name of the form parameter for the provided XML content value as a String.<p>
      * 
