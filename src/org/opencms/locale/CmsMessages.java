@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2004/02/04 10:48:13 $
- * Version: $Revision: 1.10 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsMessages.java,v $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package com.opencms.flex.util;
+package org.opencms.locale;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -47,11 +47,11 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0 beta 2
  */
-public final class CmsMessages extends Object {  
+public class CmsMessages extends Object {  
         
     /** Prefix / Suffix for unknown keys */
     public static final String C_UNKNOWN_KEY_EXTENSION = "???";
@@ -177,7 +177,8 @@ public final class CmsMessages extends Object {
     }
     
     /**
-     * Returns a formatted date with a time.<p>
+     * Returns a formatted date with a time formatted with the 
+     * {@link DateFormat.SHORT} formatting.<p>
      * 
      * @param date the date to format 
      * @return a formatted date with a time

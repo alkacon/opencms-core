@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/02/03 10:59:16 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -304,7 +304,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
             }
         } catch (CmsException exc) {
-            xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+            xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exc));
             templateSelector = "error";
         }
 

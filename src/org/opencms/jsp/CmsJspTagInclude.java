@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -480,17 +480,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         } catch (javax.servlet.ServletException e) {
             if (DEBUG) {
                 System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
-            }
-            if (DEBUG) {
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                e.printStackTrace(System.err);
             }
             throw new JspException(imprintExceptionMessage(e, target), e);    
         } catch (java.io.IOException e) {
             if (DEBUG) {
                 System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
-            }
-            if (DEBUG) {
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                e.printStackTrace(System.err);
             }
             throw new JspException(imprintExceptionMessage(e, target), e);
         } finally {
@@ -532,17 +528,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         } catch (javax.servlet.ServletException e) {
             if (DEBUG) {
                 System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
-            }
-            if (DEBUG) {
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                e.printStackTrace(System.err);
             }
             throw new JspException(imprintExceptionMessage(e, target), e); 
         } catch (java.io.IOException e) {
             if (DEBUG) {
                 System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
-            }
-            if (DEBUG) {
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                e.printStackTrace(System.err);
             }
             throw new JspException(imprintExceptionMessage(e, target), e);
         }

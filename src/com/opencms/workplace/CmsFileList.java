@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -41,7 +42,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.77 $ $Date: 2004/01/25 12:42:45 $
+ * @version $Revision: 1.78 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -462,7 +462,7 @@ public class CmsFileList extends A_CmsWpElement {
                         // set the folder title
                         title = "";
                         try {
-                            title = Encoder.escapeXml(cms.readProperty(cms.readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE));
+                            title = CmsEncoder.escapeXml(cms.readProperty(cms.readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 
@@ -572,7 +572,7 @@ public class CmsFileList extends A_CmsWpElement {
                         // set the file title
                         title = "";
                         try {
-                            title = Encoder.escapeXml(cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_TITLE));
+                            title = CmsEncoder.escapeXml(cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/11/14 10:09:12 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/04 17:18:08 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
@@ -45,7 +46,6 @@ import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.17 $ $Date: 2003/11/14 10:09:12 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/04 17:18:08 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -216,7 +216,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             m_report.println(e);
             throw new CmsException("Cannot get dataset ", e);
         }
-        m_report.print("'" + Encoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");
+        m_report.print("'" + CmsEncoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");
         m_report.print(m_report.key("report.dots"));
         // try to get the channelrelations
         try {

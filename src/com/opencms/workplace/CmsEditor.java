@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2004/02/04 15:48:16 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.OpenCms;
@@ -41,7 +42,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Encoder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2004/02/04 15:48:16 $
+ * @version $Revision: 1.62 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -205,7 +205,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 } catch (UnsupportedEncodingException e) {
                     content = new String(editFile.getContents());
                 }
-                content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING);
+                content = CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);
                 parameters.put(C_PARA_CONTENT, content);
             }
 
@@ -213,7 +213,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // back to the database.
             if(saveRequested) {
                 try{
-                    String decodedContent = Encoder.unescape(content, Encoder.C_UTF8_ENCODING);
+                    String decodedContent = CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
                     try {
                         editFile.setContents(decodedContent.getBytes(encoding));
                     } catch (UnsupportedEncodingException e) {

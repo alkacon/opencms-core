@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsVersion.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 
 import java.io.IOException;
 
@@ -42,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 /**
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -134,7 +134,7 @@ public class CmsVersion {
                 return;
             }
             byte[] result = res.getContents();
-            result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), m_cms.getRequestContext().getEncoding());
+            result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), m_cms.getRequestContext().getEncoding());
             m_response.setContentType(OpenCms.getMimeType(res.getName(), m_cms.getRequestContext().getEncoding()) + ":cms");
             m_response.setContentLength(result.length);
             try {

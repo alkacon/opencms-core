@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.41 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.42 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -203,7 +203,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                cms.unlockResource(cms.readAbsolutePath(folder), false);
             }
             catch(CmsException ex) {
-                xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
+                xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));
                 templateSelector = "error";
             }
         }
@@ -305,7 +305,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                     session.removeValue(C_PARA_RESOURCE);
                                     session.removeValue(C_PARA_FILECONTENT);
                                     session.removeValue(C_PARA_NEWTYPE);
-                                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error2");
 
                                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkCheckViewer.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/02/04 17:18:06 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,11 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -40,7 +41,7 @@ import java.util.Hashtable;
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
  *
- * @version $Revision: 1.8 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/04 17:18:06 $
  * @author Edna Falkenhan
  */
 public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault {
@@ -80,10 +81,10 @@ public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault {
                     }
                 }
             } catch(Exception exc) {
-                linkcheckcontent.append(Utils.getStackTrace(exc));
+                linkcheckcontent.append(CmsException.getStackTraceAsString(exc));
             }
             templateDocument.setData("logfiledate", linkcheckdate);
-            templateDocument.setData("logfile", Encoder.escape(linkcheckcontent.toString(),
+            templateDocument.setData("logfile", CmsEncoder.escape(linkcheckcontent.toString(),
                 cms.getRequestContext().getEncoding()));
             templateDocument.setData("logfilesize", length + "");
         }

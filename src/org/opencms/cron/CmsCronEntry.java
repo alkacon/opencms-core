@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronEntry.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.cron;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
-import com.opencms.util.Utils;
 
 import java.util.Calendar;
 
@@ -44,7 +43,7 @@ import org.dom4j.Element;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.3 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/04 17:18:08 $
  * @since 5.1.12
  */
 public class CmsCronEntry extends Object {
@@ -115,7 +114,7 @@ public class CmsCronEntry extends Object {
     CmsCronEntry(String paramstring) throws CmsException {
         paramstring = CmsStringSubstitution.substitute(paramstring, "*", C_ASTERIX + "");
         try {
-            String params[] = Utils.split(paramstring, C_SPLITSTRING);
+            String params[] = CmsStringSubstitution.split(paramstring, C_SPLITSTRING);
             m_minute = Integer.parseInt(params[0]);
             m_hour = Integer.parseInt(params[1]);
             m_dayOfMonth = Integer.parseInt(params[2]);

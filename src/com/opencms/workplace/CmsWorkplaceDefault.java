@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsTree;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -38,11 +39,11 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -58,7 +59,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.65 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -72,17 +73,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
 
     /** Reference to the config file */
     private CmsXmlWpConfigFile m_configFile = null;
-
-    /**
-     * Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of
-     * by name in the template dropdown, because it is the title that is shown in the dropdown.
-     * Creation date: (10/24/00 13:55:12)
-     * @param names The vector to sort
-     * @param data Vector with data that accompanies names.
-     */
-    public void bubblesort(Vector names, Vector data) {
-        Utils.bubblesort(names, data);
-    }
 
     /**
      * Checks a Java System property for containing the given value
@@ -271,7 +261,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
                             String value = (idx < (currToken.length() - 1)) ? currToken.substring(idx + 1) : "";
                             encLasturl.append(key);
                             encLasturl.append("=");
-                            encLasturl.append(Encoder.escape(value,
+                            encLasturl.append(CmsEncoder.escape(value,
                                 cms.getRequestContext().getEncoding()));
                         }
                         else {
@@ -601,7 +591,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException
      */
     public Object userName(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        return Utils.getFullName(cms.getRequestContext().currentUser());
+        return CmsUser.getFullName(cms.getRequestContext().currentUser());
     }
     
 

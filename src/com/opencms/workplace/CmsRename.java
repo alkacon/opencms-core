@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.54 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.55 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault {
@@ -144,7 +144,7 @@ public class CmsRename extends CmsWorkplaceDefault {
                         // something went wrong, so remove all session parameters
                         session.removeValue(C_PARA_RESOURCE); //don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
-                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(ex));
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "errorbadname");
                     }
@@ -177,7 +177,7 @@ public class CmsRename extends CmsWorkplaceDefault {
                         // something went wrong, so remove all session parameters
                         session.removeValue(C_PARA_RESOURCE); //don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
-                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(ex));
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "errorbadname");
                     }
@@ -200,7 +200,7 @@ public class CmsRename extends CmsWorkplaceDefault {
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 //			TODO fix this later
             // CmsUser owner = cms.readOwner(file);
-            xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
+            xmlTemplateDocument.setData("TITLE", CmsEncoder.escapeXml(title));
             xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);

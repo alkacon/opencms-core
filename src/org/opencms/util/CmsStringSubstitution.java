@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ package org.opencms.util;
 
 import com.opencms.workplace.I_CmsWpConstants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
 
@@ -41,7 +44,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -230,5 +233,26 @@ public final class CmsStringSubstitution {
             System.err.println("[CmsStringSubstitution]: escaped String to: " + result.toString());
         }
         return new String(result);
+    }
+
+    /**
+     * This method splits a String into substrings along the provided delimiter.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return an array of Strings
+     */
+    public static String[] split(String source, String delimiter) {
+        List parts = new ArrayList();
+        int index = 0;
+        int nextIndex = source.indexOf(delimiter);
+        while (nextIndex != -1) {
+            parts.add(source.substring(index, nextIndex));
+            index = nextIndex + delimiter.length();
+            nextIndex = source.indexOf(delimiter, index);
+        }
+        parts.add(source.substring(index));
+        return (String[])parts.toArray(new String[parts.size()]);
     }
 }

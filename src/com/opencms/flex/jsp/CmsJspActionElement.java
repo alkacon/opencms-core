@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/01/22 11:52:35 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.loader.CmsPointerLoader;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.locale.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.security.CmsSecurityException;
@@ -57,7 +58,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import com.opencms.flex.util.CmsMessages;
 import com.opencms.template.CmsXmlTemplate;
 
 import java.io.UnsupportedEncodingException;
@@ -90,7 +90,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 5.0 beta 2
  */
@@ -858,7 +858,7 @@ public class CmsJspActionElement {
      * @return CmsMessages a message bundle initialized with the provided values
      * 
      * @see java.util.ResourceBundle
-     * @see com.opencms.flex.util.CmsMessages
+     * @see org.opencms.locale.CmsMessages
      */
     public CmsMessages getMessages(String bundleName, String language, String country, String variant, String defaultLanguage) {
         try {

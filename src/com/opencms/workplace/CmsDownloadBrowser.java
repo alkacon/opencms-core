@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2004/01/07 16:42:09 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,13 +35,13 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 /**
@@ -49,7 +49,7 @@ import org.opencms.main.OpenCms;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.35 $ $Date: 2004/01/07 16:42:09 $
+ * @version $Revision: 1.36 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -82,7 +82,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
             cms.readFileHeader(getConfigFile(cms).getDownGalleryPath());
         }
         catch(CmsException e) {
-            xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+            xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
             templateSelector = "error";
         }
         if(!"error".equals(templateSelector)) {
@@ -135,7 +135,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                             }
                             cms.deleteResource(deleteResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
                         } catch (CmsException e) {
-                            xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+                            xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
                             templateSelector = "error";
                             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
                         }
@@ -163,7 +163,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                 int maxpage = ((filteredFiles.size() - 1) / C_DOWNBROWSER_MAXENTRIES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                xmlTemplateDocument.setData(C_PARA_FOLDER, CmsEncoder.escape(folder,
                     cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);

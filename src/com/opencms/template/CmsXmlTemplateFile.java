@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.template;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsXmlTemplateLinkConverter;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsRequest;
@@ -40,7 +41,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.template.cache.CmsElementLink;
 import com.opencms.template.cache.CmsElementVariant;
 import com.opencms.template.cache.CmsMethodLink;
-import com.opencms.util.LinkSubstitution;
 
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.85 $ $Date: 2004/01/25 12:42:45 $
+ * @version $Revision: 1.86 $ $Date: 2004/02/04 17:18:07 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -1045,7 +1045,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         // now we have something for the tidy
         try{
-            copyOfContent = LinkSubstitution.substituteEditorContent(cms, copyOfContent, filePath, relativeRoot);
+            copyOfContent = CmsXmlTemplateLinkConverter.convertFromEditor(cms, copyOfContent, filePath, relativeRoot);
         }catch(CmsException e){
             throw new CmsException("["+this.getClass().getName()+"] cant parse the content:", e);
         }

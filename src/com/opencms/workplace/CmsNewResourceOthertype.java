@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
 
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.38 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
@@ -79,9 +79,9 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
         if(initial == null) {
 
             filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
-            title = Encoder.redecodeUriComponent(cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE));
-            keywords = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
-            description = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
+            title = CmsEncoder.redecodeUriComponent(cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE));
+            keywords = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
+            description = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
             // foldername = (String)session.getValue(C_PARA_FILELIST);
             foldername = CmsWorkplaceAction.getCurrentFolder(cms);
             if(foldername == null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
@@ -38,7 +39,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.33 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -199,9 +199,9 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
 
         // unexpected exception - ignoring
         }
-        xmlTemplateDocument.setData("task", Encoder.escape(taskName,
+        xmlTemplateDocument.setData("task", CmsEncoder.escape(taskName,
             cms.getRequestContext().getEncoding()));
-        xmlTemplateDocument.setData("description", Encoder.escape(taskDescription,
+        xmlTemplateDocument.setData("description", CmsEncoder.escape(taskDescription,
             cms.getRequestContext().getEncoding()));
         xmlTemplateDocument.setData("due", due);
         xmlTemplateDocument.setData(C_TASKPARA_ACCEPTATION, paraAcceptation);

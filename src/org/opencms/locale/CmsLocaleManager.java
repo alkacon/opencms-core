@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/01/23 10:35:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 package org.opencms.locale;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.util.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +47,7 @@ import java.util.Set;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2004/01/23 10:35:09 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/04 17:18:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLocaleManager {
@@ -85,7 +85,7 @@ public class CmsLocaleManager {
         m_availableLocaleNames = configuration.getStringArray("locale.available");
         m_availableLocales = new HashMap();
         for (int i = 0; i < m_availableLocaleNames.length; i++) {
-            String localeName[] = Utils.split(m_availableLocaleNames[i], "_");
+            String localeName[] = CmsStringSubstitution.split(m_availableLocaleNames[i], "_");
             Locale locale = new Locale(localeName[0],
                     (localeName.length > 1) ? localeName[1] : "",
                     (localeName.length > 2) ? localeName[2] : ""
@@ -115,7 +115,7 @@ public class CmsLocaleManager {
      *
      * The default locale is the first locale of the configured default locales.
      *
-     * @return the namer of the default locale
+     * @return the name of the default locale
      */
     public String getDefaultLocaleName() {
         return m_defaultLocaleNames[0];
@@ -124,7 +124,7 @@ public class CmsLocaleManager {
     /**
      * Returns the list of default locale names configured in <code>opencms.properties</code>.<p>
      * 
-     * @return the list of default locale names, i.e <code>en, de</code>
+     * @return the list of default locale names, e.g. <code>en, de</code>
      */
     public String[] getDefaultLocaleNames() {
         return m_defaultLocaleNames;
@@ -133,7 +133,7 @@ public class CmsLocaleManager {
     /**
      * Returns the list of available locale names configured in <code>opencms.properties</code>.<p>
      *
-     * @return the list of available locale names, i.e. <code>en, de</code>
+     * @return the list of available locale names, e.g. <code>en, de</code>
      */
     public String[] getAvailableLocaleNames() {
         return m_availableLocaleNames;
@@ -265,8 +265,8 @@ public class CmsLocaleManager {
      */
     private int match (String localeName1, String localeName2, StringBuffer matching) {
         
-        String name1[] = Utils.split(localeName1, "_");
-        String name2[] = Utils.split(localeName2, "_");
+        String name1[] = CmsStringSubstitution.split(localeName1, "_");
+        String name2[] = CmsStringSubstitution.split(localeName2, "_");
         matching.delete(0, matching.length());
 
         int i;
@@ -292,7 +292,7 @@ public class CmsLocaleManager {
      * @return the locale or <code>null</code> if not available
      */
     public Locale getLocale(String fullName) {
-        String name[] = Utils.split(fullName, "_");
+        String name[] = CmsStringSubstitution.split(fullName, "_");
         Locale l;
         
         l = (Locale)m_availableLocales.get(fullName);
@@ -427,7 +427,7 @@ public class CmsLocaleManager {
             return null;
         }
         
-        String result[] = Utils.split(names, ",");
+        String result[] = CmsStringSubstitution.split(names, ",");
         for (int i = 0; i < result.length; i++) {
             result[i] = result[i].trim();
         }

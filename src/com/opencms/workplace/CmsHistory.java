@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2004/02/04 15:48:16 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@ import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2004/02/04 15:48:16 $
+ * @version $Revision: 1.39 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {
@@ -131,13 +131,13 @@ public class CmsHistory extends CmsWorkplaceDefault {
                 }
             }
             String editedBy = backupFile.getLastModifiedByName();
-            xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
+            xmlTemplateDocument.setData("TITLE", CmsEncoder.escapeXml(title));
             xmlTemplateDocument.setData("SIZE", new Integer(backupFile.getLength()).toString());
             xmlTemplateDocument.setData("EDITEDBY", editedBy);
             xmlTemplateDocument.setData("EDITEDAT", Utils.getNiceDate(backupFile.getDateLastModified()));
             xmlTemplateDocument.setData("PUBLISHEDBY", project.getPublishedByName());
             xmlTemplateDocument.setData("PUBLISHEDAT", Utils.getNiceDate(project.getPublishingDate()));
-            xmlTemplateDocument.setData("PROJECTDESCRIPTION", Encoder.escapeXml(project.getDescription()));
+            xmlTemplateDocument.setData("PROJECTDESCRIPTION", CmsEncoder.escapeXml(project.getDescription()));
         }
         xmlTemplateDocument.setData("FILENAME", theFileName);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.List;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public interface I_CmsReport {
         
@@ -121,7 +121,7 @@ public interface I_CmsReport {
      * @param keyName the key for the desired string
      * @return the resource string for the given key
      * 
-     * @see com.opencms.flex.util.CmsMessages#key(String)
+     * @see org.opencms.locale.CmsMessages#key(String)
      */
     String key(String keyName);
 

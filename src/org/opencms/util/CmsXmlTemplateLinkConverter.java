@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.38 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsXmlTemplateLinkConverter.java,v $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.util;
+package org.opencms.util;
 
 import org.opencms.main.OpenCms;
 
@@ -42,17 +42,18 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Does the dynamic link replacement for the link tags.<p> 
+ * Provides utility methods for handling content of deprecated XmlTemplate methods.<p>
  * 
- * @author Hanjo Riege
- * @version $Revision: 1.38 $
+ * This class is mostly required for database imports of OpenCms versions &lt; 5.0.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.1 $ 
+ * @since 5.3.2
  */
-public final class LinkSubstitution {
+public final class CmsXmlTemplateLinkConverter {
 
-    /**
-     * String to configure the CmsHtmlConverter
-     */
-    private static String m_converterConfiguration =
+    /**  The JTidy configuration for the HTML conversion */
+    private static final String m_converterConfiguration =
         "<?xml version=\"1.0\"?>"
             + "<converterconfig>"
             + "   <defaults>"
@@ -92,24 +93,26 @@ public final class LinkSubstitution {
     /**
      * Hide constructor since this class contains only static methods.<p>
      */
-    private LinkSubstitution() {
+    private CmsXmlTemplateLinkConverter() {
         // empty
     }
 
     /**
-    * Parses the html content for the editor. It replaces the links in <a href=""
-    * and in &lt;image src="". They will be replaced with ]]&gt;&lt;LINK&gt; path in opencms &lt;LINK&gt;&lt;![CDATA[.<p>
-    * 
-    * This method is used for database imports of OpenCms versions &lt; 5.0<p>
-    * 
-    * @param body the html content fragment
-    * @param webappUrl the old web app URL, e.g. http://localhost:8080/opencms/opencms/
-    * @param fileName the path and name of current file
-    * @return String the converted content
-    * @throws CmsException if something goes wrong
-    */
-    public static String substituteContentBody(String body, String webappUrl, String fileName) throws CmsException {
-
+     * Parses the html content of an imported XmlTemplate. <p>
+     * 
+     * It replaces the links in &lt;a href="" and in &lt;image src="". 
+     * They will be replaced with ]]&gt;&lt;LINK&gt;
+     * {path in OpenCms} &lt;LINK&gt;&lt;![CDATA[. <p>
+     * 
+     * This method is used for database imports of OpenCms versions &lt; 5.0 <p>
+     * 
+     * @param body the html content fragment
+     * @param webappUrl the old web app URL, e.g. http://localhost:8080/opencms/opencms/
+     * @param fileName the path and name of current file
+     * @return String the converted content
+     * @throws CmsException if something goes wrong
+     */
+    public static String convertFromImport(String body, String webappUrl, String fileName) throws CmsException {
         // prepare the content for the JTidy
         body = "<html><head></head><body>" + body + "</body></html>";
         CmsHtmlConverter converter = new CmsHtmlConverter();
@@ -141,20 +144,13 @@ public final class LinkSubstitution {
     }
 
     /**
-     * Parses the html content for the editor.
+     * Parses the html content of an edited XmlTemplate. <p>
      * 
-     * @param cms the CmsObject
-     * @param content the html content fragment
-     * @return the substituted content
-     * @throws CmsException if something goes wrong
-     */
-    public static String substituteEditorContent(CmsObject cms, String content) throws CmsException {
-        return substituteEditorContent(cms, content, null, null);
-    }
-
-    /**
-     * Parses the html content from the editor and replaces the links in 'a href=..'
-     * and in 'image src=..' with XMLTemplate mechanism &lt;LINK&gt; tags.<p>
+     * It replaces the links in &lt;a href="" and in &lt;image src="". 
+     * They will be replaced with ]]&gt;&lt;LINK&gt;
+     * {path in OpenCms} &lt;LINK&gt;&lt;![CDATA[. <p>
+     * 
+     * This method is used for by the old XmlTemplate page editor.<p>
      * 
      * @param cms the cms context
      * @param content the content of the editor
@@ -163,7 +159,7 @@ public final class LinkSubstitution {
      * @return the parsed content
      * @throws CmsException if something goes wrong
      */
-    public static String substituteEditorContent(CmsObject cms, String content, String path, String relativeRoot) throws CmsException {
+    public static String convertFromEditor(CmsObject cms, String content, String path, String relativeRoot) throws CmsException {
         CmsHtmlConverter converter = new CmsHtmlConverter();
         String retValue = null;
         if (path == null || "".equals(path)) {
@@ -188,31 +184,5 @@ public final class LinkSubstitution {
             throw new CmsException("[LinkSubstitution] can't convert the editor content:" + e.toString());
         }
         return retValue;
-    }
-
-    /**
-     * Parses the content of the body tag of a html page. It is the same as
-     * substituteEditorContent except that it expects only the part of the
-     * html page between the body tags.<p>
-     * 
-     * @param cms the cms object
-     * @param body body content
-     * @return the substituted content
-     * @throws CmsException if something goes wrong
-     */
-    public static String substituteEditorContentBody(CmsObject cms, String body) throws CmsException {
-
-        // we have to prepare the content for the tidy
-        body = "<html><head></head><body>" + body + "</body></html>";
-        // start the tidy
-        String result = substituteEditorContent(cms, body);
-        // remove the preparetags
-        int startIndex = result.indexOf("<body");
-        startIndex = result.indexOf(">", startIndex + 1) + 1;
-        int endIndex = result.lastIndexOf("</body>");
-        if (startIndex > 0) {
-            result = result.substring(startIndex, endIndex);
-        }
-        return result;
     }
 }

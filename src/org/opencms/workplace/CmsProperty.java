@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
@@ -295,7 +295,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         
         for (int i = 0; i < propertyDef.size(); i++) {
             CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
-            retValue.append(Encoder.escapeXml(curProperty.getName()));
+            retValue.append(CmsEncoder.escapeXml(curProperty.getName()));
             if ((i+1) < propertyDef.size()) {
                 retValue.append("<br>");            
             }
@@ -350,14 +350,14 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             for (int i = 0; i < propertyDef.size(); i++) {
                 // walk through all property definitions for the resource
                 CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
-                String propName = Encoder.escapeXml(curProperty.getName());
+                String propName = CmsEncoder.escapeXml(curProperty.getName());
                 retValue.append("<tr>\n");
                 retValue.append("\t<td style=\"white-space: nowrap;\">"+propName);
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"maxwidth\">");
                 if (activeProperties.containsKey(curProperty.getName())) {
                     // the property is used, so create text field with value, checkbox and hidden field
-                    String propValue = Encoder.escapeXml((String)activeProperties.get(curProperty.getName()));
+                    String propValue = CmsEncoder.escapeXml((String)activeProperties.get(curProperty.getName()));
                     retValue.append("<input type=\"text\" class=\"maxwidth\" value=\"");
                     retValue.append(propValue+"\" name=\""+PREFIX_VALUE+propName+"\" id=\""+PREFIX_VALUE+propName+"\" onKeyup=\"checkValue('"+propName+"');\"" + disabled + ">");
                     retValue.append("<input type=\"hidden\" name=\""+PREFIX_HIDDEN+propName+"\" id=\""+PREFIX_HIDDEN+propName+"\" value=\""+propValue+"\"></td>\n");
@@ -540,7 +540,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             // check all property definitions of the resource for new values
             for (int i=0; i<propertyDef.size(); i++) {
                 CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
-                String propName = Encoder.escapeXml(curProperty.getName());
+                String propName = CmsEncoder.escapeXml(curProperty.getName());
                 String paramValue = request.getParameter(PREFIX_VALUE+propName);
                             
                 // check if there is a parameter value for the current property

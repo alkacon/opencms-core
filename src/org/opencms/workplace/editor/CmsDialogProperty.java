@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/27 14:08:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.CmsHelperMastertemplates;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsChnav;
 import org.opencms.workplace.CmsProperty;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.0
  */
@@ -325,8 +325,8 @@ public class CmsDialogProperty extends CmsProperty {
         retValue.append(buildTableRowStart(propertyTitle));
         if (activeProperties.containsKey(propertyName)) {
             // the property is used, so create text field with value, checkbox and hidden field
-            String propValue = Encoder.escapeXml((String)activeProperties.get(propertyName));
-            propertyName = Encoder.escapeXml(propertyName);
+            String propValue = CmsEncoder.escapeXml((String)activeProperties.get(propertyName));
+            propertyName = CmsEncoder.escapeXml(propertyName);
             retValue.append("<input type=\"text\" class=\"maxwidth\" value=\"");
             retValue.append(propValue+"\" name=\""+PREFIX_VALUE+propertyName+"\" id=\""+PREFIX_VALUE+propertyName+"\"");
             if (editable) {

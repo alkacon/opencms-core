@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupUtils.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.setup;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.util.Encoder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Provides utilities methods used by the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsSetupUtils {
 
@@ -91,7 +91,7 @@ public class CmsSetupUtils {
      * @return the encoding String
      */
     public static String escape(String source, String encoding) {
-        return Encoder.escapeWBlanks(source, encoding);
+        return CmsEncoder.escapeWBlanks(source, encoding);
     }
 
     /**

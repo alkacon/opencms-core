@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -178,14 +178,14 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     }catch(CmsException e) {
                         if(e.getType() != CmsException.C_FILE_EXISTS) {
                             // couldn't create Module
-                            templateDocument.setData("details", Utils.getStackTrace(e));
+                            templateDocument.setData("details", CmsException.getStackTraceAsString(e));
                             return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
                         }else {
                             try {
                                 cms.readFolder(C_VFS_PATH_MODULES + packagename + "/");
                             }catch(CmsException ex) {
                                 // folder exist but is deleted
-                                templateDocument.setData("details", "Sorry, you have to publish this Project and create a new one.\n" + Utils.getStackTrace(e));
+                                templateDocument.setData("details", "Sorry, you have to publish this Project and create a new one.\n" + CmsException.getStackTraceAsString(e));
                                 return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
                             }
                         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/02/04 17:18:06 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.43 $ $Date: 2004/02/04 17:18:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -170,7 +170,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
                     cms.unlockProject(projectId);
                     action = "ok";
                 }catch (CmsException exc){
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exc));
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"errorlock");
                 }
             }

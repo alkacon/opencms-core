@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workflow.CmsTaskLog;
 
 import com.opencms.core.CmsException;
@@ -47,7 +48,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.16 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -61,7 +62,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
      */
     
     private String addBrTags(String value) {
-        String lines[] = Utils.split(value, "\n");
+        String lines[] = CmsStringSubstitution.split(value, "\n");
         String retValue = "";
         for(int i = 0;i < lines.length;i++) {
             retValue += lines[i] + "<BR>";
@@ -119,7 +120,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
                 
                 // add the user
                 CmsUser user = cms.readOwner(tasklog);
-                template.setData("USER", Utils.getFullName(user));
+                template.setData("USER", CmsUser.getFullName(user));
                 
                 // set the message
                 template.setData("MESSAGE", addBrTags(tasklog.getComment()));

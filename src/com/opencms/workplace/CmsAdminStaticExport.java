@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsStaticExportThread;
@@ -35,7 +36,6 @@ import org.opencms.threads.CmsStaticExportThread;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -128,11 +128,11 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
                     result = "error: "+ e.getMessage();
                 }
             }
-            xmlTemplateDocument.setData("link", Encoder.escape(link,
+            xmlTemplateDocument.setData("link", CmsEncoder.escape(link,
                 cms.getRequestContext().getEncoding()));
-            xmlTemplateDocument.setData("regExpr", Encoder.escape(regExpr,
+            xmlTemplateDocument.setData("regExpr", CmsEncoder.escape(regExpr,
                 cms.getRequestContext().getEncoding()));
-            xmlTemplateDocument.setData("result", Encoder.escape(result,
+            xmlTemplateDocument.setData("result", CmsEncoder.escape(result,
                 cms.getRequestContext().getEncoding()));
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "regTest");
         }

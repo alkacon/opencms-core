@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,6 @@
 
 package org.opencms.main;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.CmsRequestHttpServlet;
-import com.opencms.core.CmsResponseHttpServlet;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResponse;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
-import com.opencms.util.Utils;
-import com.opencms.workplace.I_CmsWpConstants;
-
 import org.opencms.cron.CmsCronEntry;
 import org.opencms.cron.CmsCronScheduleJob;
 import org.opencms.cron.CmsCronScheduler;
@@ -69,8 +54,23 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsResourceTranslator;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
+
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsRequestHttpServlet;
+import com.opencms.core.CmsResponseHttpServlet;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.*;
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -410,7 +410,7 @@ public final class OpenCmsCore {
         output.append(title);
         output.append(this.getErrormsg("C_ERRORPART_2"));
         output.append("\n\n");
-        output.append(Utils.getStackTrace(t));
+        output.append(CmsException.getStackTraceAsString(t));
         output.append("\n\n");
         output.append(this.getErrormsg("C_ERRORPART_3"));
         return output.toString();
@@ -433,14 +433,6 @@ public final class OpenCmsCore {
         } catch (Throwable e) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error("[OpenCms]" + e.toString());
-            }
-        }
-        try {
-            Utils.getModulShutdownMethods(getRegistry());
-        } catch (Throwable e) {
-            // log exception since we are about to shutdown anyway
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("[OpenCms] Module shutdown exception: " + e);
             }
         }
         if (getLog(this).isInfoEnabled()) {
@@ -1640,7 +1632,7 @@ public final class OpenCmsCore {
         try {
             m_exportHeaders = configuration.getStringArray("staticexport.headers");
             for (int i = 0; i < m_exportHeaders.length; i++) {
-                if (Utils.split(m_exportHeaders[i], ":").length == 2) {
+                if (CmsStringSubstitution.split(m_exportHeaders[i], ":").length == 2) {
                     if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                         getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + m_exportHeaders[i]);
                     }

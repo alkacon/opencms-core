@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/01/23 08:39:44 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.util.CmsStringSubstitution;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1
  */
@@ -505,7 +505,7 @@ public class CmsDialog extends CmsWorkplace {
                 boolean firstParam = true;
                 // append the parameters to the link
                 if (getParamOkLink() != null) {
-                    link += "?" + PARAM_OKLINK + "=" + Encoder.encode(getParamOkLink());
+                    link += "?" + PARAM_OKLINK + "=" + CmsEncoder.encode(getParamOkLink());
                     firstParam = false;
                 }
                 if (getParamOkFunctions() != null) {
@@ -514,7 +514,7 @@ public class CmsDialog extends CmsWorkplace {
                     } else {
                         link += "&";
                     }
-                    link += PARAM_OKFUNCTIONS + "=" + Encoder.encode(getParamOkFunctions());
+                    link += PARAM_OKFUNCTIONS + "=" + CmsEncoder.encode(getParamOkFunctions());
                 }
                 return "onclick=\"location.href='" + link + "';\"";
             }

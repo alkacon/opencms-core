@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2003/10/24 08:36:06 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -39,8 +40,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypePointer;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.CmsLinkCheck;
-import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -57,7 +56,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2003/10/24 08:36:06 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -173,7 +172,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         // set the values e.g. after an error
         xmlTemplateDocument.setData("LINKNAME", filename);
         xmlTemplateDocument.setData("LINKVALUE", targetName);
-        xmlTemplateDocument.setData("NAVTITLE", Encoder.escapeHtml(navtitle));
+        xmlTemplateDocument.setData("NAVTITLE", CmsEncoder.escapeHtml(navtitle));
         xmlTemplateDocument.setData("KEEPPROPERTIES", keepTargetProperties==true ? "true" : "false" );
         xmlTemplateDocument.setData("ADDTONAV", addToNav==true ? "true" : "false" );
 
@@ -400,8 +399,8 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
 
             // finally fill the result vectors
             for(int i = 0;i <= count;i++) {
-                names.addElement(Encoder.escapeHtml(nicenames[i]));
-                values.addElement(Encoder.escapeHtml(nicenames[i]));
+                names.addElement(CmsEncoder.escapeHtml(nicenames[i]));
+                values.addElement(CmsEncoder.escapeHtml(nicenames[i]));
                 if ((preselect != null) && (preselect.equals(nicenames[i]))){
                     retValue = values.size() -1;
                 }

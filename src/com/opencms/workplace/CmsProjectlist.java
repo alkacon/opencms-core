@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,7 +49,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.28 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -207,7 +208,7 @@ public class CmsProjectlist extends A_CmsWpElement {
             state = C_PROJECTLIST_STATE_LOCKED;
         }
         xmlFile.setData(C_PROJECTLIST_NAME, project.getName());
-        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName(),
+        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, CmsEncoder.escape(project.getName(),
             cms.getRequestContext().getEncoding()));
         xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");
         xmlFile.setData(C_PROJECTLIST_DESCRIPTION, project.getDescription());

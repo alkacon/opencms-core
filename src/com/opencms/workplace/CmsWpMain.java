@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -40,7 +41,6 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.61 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.62 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -139,7 +139,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			String message = (String) cms.getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
 			if (message != null) {
 				cms.getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-				xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + Encoder.escape(message, cms.getRequestContext().getEncoding()) + "'));");
+				xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + CmsEncoder.escape(message, cms.getRequestContext().getEncoding()) + "'));");
 			}
 		}
 

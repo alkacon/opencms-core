@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.11 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault {
@@ -112,7 +112,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
                     }
                 } catch (CmsException e) {
                     session.removeValue(C_PARA_RESOURCE);
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
             } else {

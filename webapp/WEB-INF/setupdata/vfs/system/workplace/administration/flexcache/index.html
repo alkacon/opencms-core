@@ -2,7 +2,7 @@
 <%@ page import="
 	org.opencms.cache.*,
 	org.opencms.flex.*,
-	com.opencms.flex.util.*,
+	org.opencms.locale.*,
 	com.opencms.core.*,
 	org.opencms.main.*,
 	java.util.*" 
@@ -53,7 +53,7 @@ top.head.helpUrl='administration/index.html';
     
     // get the current locale
 	locale = com.opencms.workplace.CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-	CmsMessages messages = new CmsMessages("com/opencms/workplace/workplace", locale);
+	CmsMessages messages = new CmsMessages("org/opencms/workplace/workplace", locale);
 	
 	out.println("<h1>" + messages.key("flexcache.admin.heading") + "</h1>");
 	

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/09/15 10:51:13 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/02/04 17:18:08 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
@@ -37,7 +38,6 @@ import com.opencms.defaults.A_CmsBackoffice;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpTemplateFile;
 
@@ -265,7 +265,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         template.setData("channelId", ""+m_channel.getChannelId());
         template.setData("resourceid", m_channel.getId().toString());
         template.setData("channelName", m_channel.getChannelName());
-        template.setData("title", Encoder.escape(m_channel.getTitle(),
+        template.setData("title", CmsEncoder.escape(m_channel.getTitle(),
             cms.getRequestContext().getEncoding()));
         template.setData("parentName", m_channel.getParentName());
         template.setData("error", error);
@@ -284,7 +284,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId", channelId);
                 template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title,
+                template.setData("title", CmsEncoder.escape(title,
                     cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
@@ -295,7 +295,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId", channelId);
                 template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title,
+                template.setData("title", CmsEncoder.escape(title,
                     cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
@@ -320,7 +320,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId", channelId);
                 template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title,
+                template.setData("title", CmsEncoder.escape(title,
                     cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
@@ -332,7 +332,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId",  channelId);
                 template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title,
+                template.setData("title", CmsEncoder.escape(title,
                     cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();

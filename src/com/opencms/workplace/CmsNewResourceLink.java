@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/10/09 16:44:19 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,12 @@ package com.opencms.workplace;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
+import com.opencms.defaults.CmsLinkCheck;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.CmsLinkCheck;
-import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -47,6 +46,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -57,7 +57,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2003/10/09 16:44:19 $
+ * @version $Revision: 1.54 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -174,7 +174,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
         // set the values e.g. after an error
         xmlTemplateDocument.setData("LINKNAME", filename);
         xmlTemplateDocument.setData("LINKVALUE", targetName);
-        xmlTemplateDocument.setData("NAVTITLE", Encoder.escapeHtml(navtitle));
+        xmlTemplateDocument.setData("NAVTITLE", CmsEncoder.escapeHtml(navtitle));
         xmlTemplateDocument.setData("KEEPPROPERTIES", keepTargetProperties==true ? "true" : "false" );
         xmlTemplateDocument.setData("ADDTONAV", addToNav==true ? "true" : "false" );
 
@@ -441,8 +441,8 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
 
             // finally fill the result vectors
             for(int i = 0;i <= count;i++) {
-                names.addElement(Encoder.escapeHtml(nicenames[i]));
-                values.addElement(Encoder.escapeHtml(nicenames[i]));
+                names.addElement(CmsEncoder.escapeHtml(nicenames[i]));
+                values.addElement(CmsEncoder.escapeHtml(nicenames[i]));
                 if ((preselect != null) && (preselect.equals(nicenames[i]))){
                     retValue = values.size() -1;
                 }

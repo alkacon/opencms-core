@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.JspException;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
  
@@ -71,8 +71,9 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
                 this.getBodyContent().writeOut(pageContext.getOut());
 
             } catch (Exception ex) {
-                System.err.println("Error in Jsp 'link' tag processing: " + ex);
-                System.err.println(com.opencms.util.Utils.getStackTrace(ex));
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'link' tag processing", ex);
+                }
                 throw new JspException(ex);
             }            
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2004/01/23 08:36:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
@@ -39,7 +40,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,7 +57,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2004/01/23 08:36:00 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/04 17:18:07 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
@@ -94,9 +94,9 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
         // get request parameters
         String newFile = (String)parameters.get(C_PARA_NEWFILE);
-        String title = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_TITLE));                   
-        String keywords = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
-        String description = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
+        String title = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_TITLE));                   
+        String keywords = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
+        String description = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
 
         // look if createFolder called us, then we have to preselect index.html as name
         String fromFolder = (String)parameters.get("fromFolder");
@@ -110,7 +110,7 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
         }
 
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
-        String navtitle = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVTEXT));
+        String navtitle = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVTEXT));
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
         String layoutFilePath = (String)parameters.get(C_PARA_LAYOUT);
 
@@ -394,8 +394,8 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
             // finally fill the result vectors
             for(int i = 0;i <= count;i++) {
-                names.addElement(Encoder.escapeHtml(nicenames[i]));
-                values.addElement(Encoder.escapeHtml(nicenames[i]));
+                names.addElement(CmsEncoder.escapeHtml(nicenames[i]));
+                values.addElement(CmsEncoder.escapeHtml(nicenames[i]));
             }
         }
         else {

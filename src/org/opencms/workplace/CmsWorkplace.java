@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,11 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.flex.util.CmsMessages;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.locale.CmsMessages;
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.1
  */
@@ -889,7 +889,7 @@ public abstract class CmsWorkplace {
                 value = null;
             }
             if (value != null) {
-                value = Encoder.decode(value);
+                value = CmsEncoder.decode(value);
             }
             try {
                 if (DEBUG && (value != null)) {
@@ -966,7 +966,7 @@ public abstract class CmsWorkplace {
             result.append("<input type=\"hidden\" name=\"");
             result.append(param);
             result.append("\" value=\"");
-            result.append(Encoder.encode(value.toString()));
+            result.append(CmsEncoder.encode(value.toString()));
             result.append("\">\n");
         }        
         return result.toString();
@@ -988,7 +988,7 @@ public abstract class CmsWorkplace {
             Object value = params.get(param);
             result.append(param);
             result.append("=");
-            result.append(Encoder.encode(value.toString()));
+            result.append(CmsEncoder.encode(value.toString()));
             if (i.hasNext()) {
                 result.append("&");
             }

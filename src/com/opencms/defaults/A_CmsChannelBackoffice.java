@@ -176,7 +176,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             // get the alt_text
             String media_title = (String) parameters.get("media_alt_text");
             media_title=(media_title!=null?media_title.trim():"");
-            media_title = com.opencms.util.Encoder.unescape(media_title,
+            media_title = org.opencms.locale.CmsEncoder.unescape(media_title,
                 cms.getRequestContext().getEncoding());
             // get the pos
             String pos = (String) parameters.get("pos");
@@ -324,7 +324,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                 templateFile.setData("media_name", selectedmediaCD.getName());
                 templateFile.setData("posEdit", pos);
                 String title=selectedmediaCD.getTitle();
-                title=com.opencms.util.Encoder.unescape(title,
+                title=org.opencms.locale.CmsEncoder.unescape(title,
                     cms.getRequestContext().getEncoding());
                 templateFile.setData("media_alt_text", title);
                 templateFile.setData("media_file", templateFile.getProcessedDataValue("media_edit", this));

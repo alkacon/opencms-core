@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2003/07/31 13:19:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Hashtable;
  * Template class for displaying the chpwd screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.13 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsChpwd extends CmsWorkplaceDefault {
@@ -90,12 +90,12 @@ public class CmsChpwd extends CmsWorkplaceDefault {
 					catch(CmsException exp) {
 						// check if the old password was not correct
 						if(exp.getType() == CmsException.C_NO_USER) {
-							xmlTemplateDocument.setData("details", Utils.getStackTrace(exp));
+							xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exp));
 							template = "error2";
 						}
 						else {
 							if (exp.getType() == 1){
-								xmlTemplateDocument.setData("details", Utils.getStackTrace(exp));
+								xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exp));
 								template = "error2";
 							} else {
 								throw exp;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2004/02/04 15:48:16 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.18 $ $Date: 2004/02/04 15:48:16 $
+ * @version $Revision: 1.19 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault {
@@ -132,7 +132,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
                     return null;
                 } catch (CmsException e) {
                     session.removeValue(C_PARA_RESOURCE);
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }

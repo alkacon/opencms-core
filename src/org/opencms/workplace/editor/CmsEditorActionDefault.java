@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/23 10:56:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
@@ -54,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.3.0
  */
@@ -80,7 +80,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         // define the parameters which are necessary for publishing the resource 
         String params = "?resource=" + editor.getParamResource() + "&action=" + CmsDialog.DIALOG_CONFIRMED;
         params += "&reporttype=simple&directpublish=true&publishsiblings=true";
-        params += "&title=" + Encoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), Encoder.C_UTF8_ENCODING) + "&okfunctions=";
+        params += "&title=" + CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), CmsEncoder.C_UTF8_ENCODING) + "&okfunctions=";
         if ("true".equals(editor.getParamDirectedit())) {
             String linkTarget;
             if (!"".equals(editor.getParamBacklink())) {
@@ -89,10 +89,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 linkTarget = jsp.link(editor.getParamResource());
             }
             // append the parameters and the report "ok" button action to the link
-            publishLink += params + Encoder.escapeWBlanks("location.href('" + linkTarget + "');", Encoder.C_UTF8_ENCODING);
+            publishLink += params + CmsEncoder.escapeWBlanks("location.href('" + linkTarget + "');", CmsEncoder.C_UTF8_ENCODING);
         } else {
             // append the parameters and the report "ok" button action to the link
-            publishLink += params + Encoder.escapeWBlanks("location.href('" + jsp.link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI) + "');", Encoder.C_UTF8_ENCODING);
+            publishLink += params + CmsEncoder.escapeWBlanks("location.href('" + jsp.link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI) + "');", CmsEncoder.C_UTF8_ENCODING);
        
         }
         // redirect to the publish dialog with all necessary parameters

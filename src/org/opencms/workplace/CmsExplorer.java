@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -41,7 +42,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 5.1
  */
@@ -401,7 +401,7 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 content.append("\"");
                 if (title != null) {
-                    content.append(Encoder.escapeHtml(title));
+                    content.append(CmsEncoder.escapeHtml(title));
                 }
                 content.append("\",");
                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/01/25 12:42:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
@@ -45,7 +46,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Encoder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -249,7 +249,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             if (!res.isCommitted() || m_errorPagesAreNotCommited) {
                 // If a JSP errorpage was triggered the response will be already committed here
                 result = f_res.getWriterBytes();
-                result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                
+                result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                
                 // Process headers and write output                                          
                 res.setContentLength(result.length);
                 CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
@@ -349,7 +349,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             for (int i = 0; i<values.length; i++) {
                 exportUrl.append(key);
                 exportUrl.append("=");
-                exportUrl.append(Encoder.encode(values[i]));
+                exportUrl.append(CmsEncoder.encode(values[i]));
                 exportUrl.append("&");
             }
         }
@@ -363,14 +363,14 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             exportUrl.append("&");
             exportUrl.append(C_EXPORT_BODY);
             exportUrl.append("=");
-            exportUrl.append(Encoder.encode(body));            
+            exportUrl.append(CmsEncoder.encode(body));            
         }
         // add the encoding used for the output page to the request
         String encoding = cms.getRequestContext().getEncoding();
         exportUrl.append("&");
         exportUrl.append(C_EXPORT_ENCODING);
         exportUrl.append("=");
-        exportUrl.append(Encoder.encode(encoding));        
+        exportUrl.append(CmsEncoder.encode(encoding));        
         
         if (DEBUG > 2) {
             System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
@@ -402,7 +402,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             // add all the links to the current cms context
             StringTokenizer tok = new StringTokenizer(cmslinks, C_EXPORT_HEADER_SEP);
             while (tok.hasMoreTokens()) {
-                String link = Encoder.decode(tok.nextToken());
+                String link = CmsEncoder.decode(tok.nextToken());
                 cms.getRequestContext().addLink(link);
                 if (DEBUG > 3) {
                     System.err.println("CmsJspLoader.exportJsp(): Extracted link " + link);
@@ -449,7 +449,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         Iterator i = s.iterator();
         // build a string out of the found links
         while (i.hasNext()) {
-            links.append(Encoder.encode((String)i.next()));
+            links.append(CmsEncoder.encode((String)i.next()));
             if (i.hasNext()) {
                 links.append(C_EXPORT_HEADER_SEP);
             }
@@ -608,7 +608,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // default encoding. In case another encoding is set 
                         // in the 'content-encoding' property of the file, 
                         // we need to re-encode the output here. 
-                        result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
+                        result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
 
                         // Check for export request links 
                         if (exportmode) {
@@ -708,7 +708,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             } catch (Exception e) {            
                 System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
                 if (DEBUG > 0) {
-                    System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                    e.printStackTrace(System.err);
                 }
                 throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
             } 
@@ -723,7 +723,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // default encoding. In case another encoding is set
                         // in the 'content-encoding' property of the file,
                         // we need to re-encode the output here
-                        result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
+                        result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used
@@ -733,7 +733,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 } catch (Exception e) {
                     System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
                     if (DEBUG > 0) {
-                        System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                        e.printStackTrace(System.err);
                     }
                     throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
                 }        
@@ -978,7 +978,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // Encoding project:
                     // Contents of original file where not modified,
                     // just translate to the required JSP encoding (if necessary)
-                    contents = Encoder.changeEncoding(contents, OpenCms.getDefaultEncoding(), jspEncoding);   
+                    contents = CmsEncoder.changeEncoding(contents, OpenCms.getDefaultEncoding(), jspEncoding);   
                 }                                         
                 fs.write(contents);                
                 fs.close();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/01/30 16:49:27 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
@@ -144,7 +144,7 @@ public class CmsFrameset extends CmsWorkplace {
                 result.append("\n<script type=\"text/javascript\">\n<!--\n");
                 // the timeout gives the frameset enough time to load before the alert is shown
                 result.append("setTimeout(\"alert(unescape('" + key("label.messagetoall") + ": ");
-                result.append(Encoder.escape(message, getCms().getRequestContext().getEncoding()) + "'));\", 2000);");
+                result.append(CmsEncoder.escape(message, getCms().getRequestContext().getEncoding()) + "'));\", 2000);");
                 result.append("\n//-->\n</script>");
             }
         }

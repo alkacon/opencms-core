@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/10/15 15:22:53 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
@@ -35,20 +37,16 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypePointer;
-import com.opencms.util.CmsLinkCheck;
-import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 import java.util.Map;
-
-import org.opencms.workplace.CmsWorkplaceAction;
 
 /**
  * Template Class for administration of picture galleries
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.25 $ $Date: 2003/10/15 15:22:53 $
+ * @version $Revision: 1.26 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -185,7 +183,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                     cms.unlockResource(cms.readAbsolutePath(folder), false);
                 }
                 catch(CmsException ex) {
-                    xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
+                    xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));
                     templateSelector = "error";
                 }
             } else {

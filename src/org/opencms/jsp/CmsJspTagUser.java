@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,12 @@
  
 package org.opencms.jsp;
 
+import org.opencms.flex.CmsFlexController;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
-import org.opencms.flex.CmsFlexController;
 
 import javax.servlet.ServletRequest;
 
@@ -42,7 +44,7 @@ import javax.servlet.ServletRequest;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -112,8 +114,9 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
-                System.err.println("Error in Jsp 'user' tag processing: " + ex);
-                System.err.println(com.opencms.util.Utils.getStackTrace(ex));
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'user' tag processing", ex);
+                }                    
                 throw new javax.servlet.jsp.JspException(ex);
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2004/01/14 10:00:04 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/02/04 17:18:06 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,14 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsResourceType;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Collections;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2004/01/14 10:00:04 $
+ * @version $Revision: 1.48 $ $Date: 2004/02/04 17:18:06 $
  */
 public class CmsProperty extends CmsWorkplaceDefault {
 
@@ -253,7 +254,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
                         // todo: add an error message that this key is already exisitng
                         StringBuffer errmesg = new StringBuffer();
                         errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + file.getType() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
-                        errmesg.append(Utils.getStackTrace(e));
+                        errmesg.append(CmsException.getStackTraceAsString(e));
                         xmlTemplateDocument.setData("NEWDETAILS", errmesg.toString());
                         template = "newerror";
                     }
@@ -271,7 +272,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
         }
         // TODO: remove this later
         // CmsUser owner = cms.readOwner(file);
-        xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
+        xmlTemplateDocument.setData("TITLE", CmsEncoder.escapeXml(title));
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
         xmlTemplateDocument.setData("OWNER", "" /* owner.getFirstname() + " " + owner.getLastname() + "(" + owner.getName() + ")" */);
         xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
@@ -306,8 +307,8 @@ public class CmsProperty extends CmsWorkplaceDefault {
             while(i.hasNext()) {
                 String key = (String)i.next();
                 String value = (String)properties.get(key);
-                names.addElement(Encoder.escapeXml(key + ":" + value));
-                values.addElement(Encoder.escapeXml(key));
+                names.addElement(CmsEncoder.escapeXml(key + ":" + value));
+                values.addElement(CmsEncoder.escapeXml(key));
             }
             Collections.sort(names);
             Collections.sort(values);
@@ -349,8 +350,8 @@ public class CmsProperty extends CmsWorkplaceDefault {
                 CmsPropertydefinition prop = (CmsPropertydefinition)enu.nextElement();
                 String propertyvalue = (String)properties.get(prop.getName());
                 if(propertyvalue == null) {
-                    names.addElement(Encoder.escapeXml(prop.getName()));
-                    values.addElement(Encoder.escapeXml(prop.getName()));
+                    names.addElement(CmsEncoder.escapeXml(prop.getName()));
+                    values.addElement(CmsEncoder.escapeXml(prop.getName()));
                 }
             }
             Collections.sort(names);
@@ -389,7 +390,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
                 }
             }
         }
-        return Encoder.escapeXml(propertyValue);
+        return CmsEncoder.escapeXml(propertyValue);
     }
 
     /**

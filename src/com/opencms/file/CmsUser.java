@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -621,5 +621,44 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     public boolean isTouched() {
         return m_isTouched;
     }
-        
+
+    /**
+     * Returns the "full" name the given user in the format "{firstname} {lastname} ({username})",
+     * or the empty String "" if the user is null.<p>
+     * 
+     * @param user the user to get the full name from
+     * @return the "full" name the user
+     * @see #getFullName() 
+     */
+    public static String getFullName(CmsUser user) {
+        if (user == null) {
+            return "";
+        } else {
+            return user.getFullName();
+        }
+    }
+     
+    /**
+     * Returns the "full" name this user in the format "{firstname} {lastname} ({username})".<p>
+     * 
+     * @return the "full" name this user 
+     */
+    public String getFullName() {
+        StringBuffer buf = new StringBuffer();
+        String first = getFirstname();
+        if ((null != first) && !"".equals(first.trim())) { 
+            buf.append(first);
+            buf.append(" ");
+        }
+        String last = getLastname();
+        if ((null != last) && !"".equals(last.trim())) { 
+            buf.append(getLastname());
+            buf.append(" ");
+        }
+        buf.append("(");
+        buf.append(getName());
+        buf.append(")");
+        return buf.toString();
+    }    
+    
 }

@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/11/08 10:32:44 $
-* Version: $Revision: 1.32 $
+* File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsEncoder.java,v $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -26,7 +26,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-package com.opencms.util;
+package org.opencms.locale;
 
 import org.opencms.main.OpenCms;
 
@@ -36,7 +36,7 @@ import java.net.URLEncoder;
 import java.util.StringTokenizer;
 
 /**
- * The OpenCms Encoder class provides static methods to decode and encode data.<p>
+ * The OpenCms CmsEncoder class provides static methods to decode and encode data.<p>
  * 
  * The methods in this class are substitutes for <code>java.net.URLEncoder.encode()</code> and
  * <code>java.net.URLDecoder.decode()</code>. Use the methods from this class in all OpenCms 
@@ -52,7 +52,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public final class Encoder {
+public final class CmsEncoder {
     
     /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
     public static final String C_UTF8_ENCODING = "UTF-8";
@@ -60,7 +60,7 @@ public final class Encoder {
     /**
      * Constructor
      */
-    private Encoder() {
+    private CmsEncoder() {
         // empty
     }
     

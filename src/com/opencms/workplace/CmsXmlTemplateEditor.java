@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/01/22 11:50:01 $
-* Version: $Revision: 1.128 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.129 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
@@ -48,7 +49,6 @@ import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Encoder;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.128 $ $Date: 2004/01/22 11:50:01 $
+ * @version $Revision: 1.129 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -221,7 +221,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         int numBodys = allBodys.size();
         for(int i = 0;i < numBodys;i++) {
             String bodyname = (String)allBodys.elementAt(i);
-            String encodedBodyname = Encoder.escapeXml(bodyname);
+            String encodedBodyname = CmsEncoder.escapeXml(bodyname);
             if(bodyname.equals(currentBodySection)) {
                 currentBodySectionIndex = loop;
             }
@@ -635,9 +635,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             String relativeRoot = cms.readProperty(file, C_PROPERTY_RELATIVEROOT, true);
             
             // save file contents to our temporary file.
-            content = Encoder.unescape(content, Encoder.C_UTF8_ENCODING);
-            if (! Encoder.C_UTF8_ENCODING.equalsIgnoreCase(cms.getRequestContext().getEncoding())) {			
-                content = Encoder.escapeNonAscii(content);
+            content = CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
+            if (! CmsEncoder.C_UTF8_ENCODING.equalsIgnoreCase(cms.getRequestContext().getEncoding())) {			
+                content = CmsEncoder.escapeNonAscii(content);
             }          
 			
             if((!exitRequested) || saveRequested) {
@@ -740,7 +740,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 		content = CmsStringSubstitution.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
         
         // escape content
-        content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING);
+        content = CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);
         
         parameters.put(C_PARA_CONTENT, content);
 
@@ -903,7 +903,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
     public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String title = (String)session.getValue("te_oldbodytitle");
-        return Encoder.escapeXml(title);
+        return CmsEncoder.escapeXml(title);
     }
     
     public Object getCharset(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {
@@ -954,6 +954,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String name = (String)session.getValue("te_title");
-        return Encoder.escapeXml(name);
+        return CmsEncoder.escapeXml(name);
     }
 }

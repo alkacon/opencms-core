@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/04 17:18:06 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -37,7 +38,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.18 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.19 $ $Date: 2004/02/04 17:18:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -82,7 +82,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         try {
             cms.readFileHeader(C_VFS_GALLERY_EXTERNALLINKS);
         } catch(CmsException e) {
-            xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+            xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
             templateSelector = "error";
         }
         if(!"error".equals(templateSelector)) {
@@ -134,7 +134,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
                 int maxpage = ((filteredLinks.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                xmlTemplateDocument.setData(C_PARA_FOLDER, CmsEncoder.escape(folder,
                     cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);

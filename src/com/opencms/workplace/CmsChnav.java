@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -37,7 +38,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.20 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.21 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault {
@@ -122,7 +122,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
                 } catch(CmsException ex) {
                     session.putValue(C_SESSIONHEADER + C_PARA_NAVPOS, navpos);
                     session.putValue(C_SESSIONHEADER + C_PARA_NAVTEXT, navtext);
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(ex));
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error_system");
                 }
@@ -149,7 +149,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
             }
         }
         xmlTemplateDocument.setData("frametitle", resource.getName());
-        xmlTemplateDocument.setData(C_PARA_NAVTEXT, Encoder.escapeXml(navtext));
+        xmlTemplateDocument.setData(C_PARA_NAVTEXT, CmsEncoder.escapeXml(navtext));
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
@@ -223,7 +223,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
                         String navpos = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVPOS);
                         // check if there is a navpos for this file/folder
                         if(navpos != null) {
-                            nicename = Encoder.escapeHtml(cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT));
+                            nicename = CmsEncoder.escapeHtml(cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT));
                             if(nicename == null) {
                                 nicename = res.getName();
                             }
@@ -304,7 +304,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
             for(int i = 0;i <= count;i++) {
                 names.addElement(nicenames[i]);
                 values.addElement(nicenames[i]);
-                if ((preselect != null) && (Encoder.escapeHtml(preselect).equals(nicenames[i]))){
+                if ((preselect != null) && (CmsEncoder.escapeHtml(preselect).equals(nicenames[i]))){
                     retValue = values.size() -1;
                 }
             }
@@ -390,7 +390,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
             // now find the file after which the new file is sorted
             int pos = 0;
             for(int i = 0;i < nicenames.length;i++) {
-                if(Encoder.escapeHtml(navpos).equals(nicenames[i])) {
+                if(CmsEncoder.escapeHtml(navpos).equals(nicenames[i])) {
                     pos = i;
                 }
             }

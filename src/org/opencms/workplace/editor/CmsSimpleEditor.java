@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -97,7 +97,7 @@ public class CmsSimpleEditor extends CmsEditor {
             setAction(ACTION_DEFAULT);
             initContent();
         }      
-        setParamContent(Encoder.escapeWBlanks(getParamContent(), Encoder.C_UTF8_ENCODING));        
+        setParamContent(CmsEncoder.escapeWBlanks(getParamContent(), CmsEncoder.C_UTF8_ENCODING));        
     }
     
     /**
@@ -158,7 +158,7 @@ public class CmsSimpleEditor extends CmsEditor {
         CmsFile editFile = null;
         try {
             editFile = getCms().readFile(getParamResource());
-            String decodedContent = Encoder.unescape(getParamContent(), Encoder.C_UTF8_ENCODING);
+            String decodedContent = CmsEncoder.unescape(getParamContent(), CmsEncoder.C_UTF8_ENCODING);
             // Read file encoding from the property of the temporary file 
             String encoding = getCms().getRequestContext().getEncoding();
             encoding = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, encoding);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.31 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.32 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -131,7 +131,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                             parameters, "done");
                 } else {
                     // get errorpage:
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(error));
+                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(error));
                     return startProcessing(cms, xmlTemplateDocument, elementName,
                             parameters, "error");
                 }
@@ -204,7 +204,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                             + notWriteable.toString());
                 }
             } catch(Exception exc) {
-                xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+                xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exc));
                 templateSelector = "error";
             }
         }

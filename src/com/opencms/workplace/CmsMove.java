@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -35,7 +36,6 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.64 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.65 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault {
@@ -267,7 +267,7 @@ public class CmsMove extends CmsWorkplaceDefault {
             }
 //			TODO fix this later
             // CmsUser owner = cms.readOwner(file);
-            xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
+            xmlTemplateDocument.setData("TITLE", CmsEncoder.escapeXml(title));
             xmlTemplateDocument.setData("STATE", getState(cms, source, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);

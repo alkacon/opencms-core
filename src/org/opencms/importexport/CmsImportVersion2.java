@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/03 14:20:24 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,13 @@ import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsXmlTemplateLinkConverter;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlXercesParser;
-import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayInputStream;
@@ -1049,7 +1049,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                          templateString = editString;
                          // substitute the links in the <template> tag String
                          try {
-                             templateString = LinkSubstitution.substituteContentBody(templateString, m_webappUrl, fileName);
+                             templateString = CmsXmlTemplateLinkConverter.convertFromImport(templateString, m_webappUrl, fileName);
                          } catch (CmsException e) {
                              throw new CmsException("[" + this.getClass().getName() + ".convertPageBody()] can't parse the content: ", e);
                          }

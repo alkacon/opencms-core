@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/02/04 17:18:08 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,14 +35,20 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsUser;
-import com.opencms.util.CmsByteArrayDataSource;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.activation.MimetypesFileTypeMap;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -89,7 +95,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.25 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Name:  $ $Revision: 1.26 $ $Date: 2004/02/04 17:18:08 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -424,10 +430,11 @@ public class CmsMail extends Thread {
         if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
-        if (isBcc)
+        if (isBcc) {
             m_bcc = users;
-        else
+        } else {
             m_cc=users;
+        }
     }
 
     /**
@@ -654,6 +661,7 @@ public class CmsMail extends Thread {
             // in a thread and the initiating request is completed for a long time.
             // Get nested Exception used for pretty printed error message in logfile
             for (; e instanceof MessagingException; e = ((MessagingException)e).getNextException()) {
+                // loop until first Exception is found that is not a messaging exception
             }
 
             // First print out an error message...
@@ -673,6 +681,7 @@ public class CmsMail extends Thread {
 
                     // Get nested Exception used for pretty printed error message in logfile
                     for (; e2 instanceof MessagingException; e2 = ((MessagingException)e2).getNextException()) {
+                        // loop until first Exception is found that is not a messaging exception
                     }
                     if (OpenCms.getLog(this).isFatalEnabled()) {
                         OpenCms.getLog(this).fatal("Could not send Email, even alternative SMPT server failed", e2);
@@ -685,4 +694,125 @@ public class CmsMail extends Thread {
             }
         }
     }
+    
+    /**
+     * Check a given email address for conforms with
+     * RFC822 rules, see {@link http://www.rfc-editor.org/rfc.html}.<p>
+     * 
+     * @param address Email address to be checked
+     * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise
+    */
+    public static boolean checkEmail(String address) {
+        boolean result = true;
+        try {
+            new javax.mail.internet.InternetAddress(address);
+        } catch (javax.mail.internet.AddressException e) {
+            result = false;
+        }
+        return result;
+    }
+
+    /** 
+     * This class implements a DataSource from an InputStream, a byte array or a 
+     * String and is most often used to create a mail message with the CmsMail object.<p>
+     * 
+     * See also
+     * <a href="http://java.sun.com/products/javamail/index.html">http://java.sun.com/products/javamail/index.html</a>.<p>
+     * 
+     * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+     * 
+     * @version $Revision: 1.26 $ $Date: 2004/02/04 17:18:08 $
+     * @see com.opencms.defaults.CmsMail
+     */
+    class CmsByteArrayDataSource implements DataSource {
+        
+        private byte[] m_data; // data
+        private String m_datatype; // content-type
+        
+
+        /**
+         * Constructor to create a DataSource from a byte array.<p>
+         * 
+         * @param data the data
+         * @param type the type of the data
+         */
+        public CmsByteArrayDataSource(byte[] data, String type) {
+            m_data = data;
+            m_datatype = type;
+        }
+        
+        /**
+         * Constructor to create a DataSource from an input stream.<p>
+         * 
+         * @param is the data as input stream
+         * @param type the type of the data
+         */
+        public CmsByteArrayDataSource(InputStream is, String type) {
+            m_datatype = type;
+            try {
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                int ch;
+                while ((ch = is.read()) != -1) {
+                    
+                    // XXX - must be made more efficient by                
+                    // doing buffered reads, rather than one byte reads
+                    os.write(ch);
+                }
+                m_data = os.toByteArray();
+            } catch (IOException ioex) {
+                // ignore
+            }
+        }
+
+        /**
+         * Constructor to create a DataSource from a String.<p>
+         * 
+         * @param data the data as string
+         * @param type the type of the data
+         * @param encoding the encoding
+         */
+        public CmsByteArrayDataSource(String data, String type, String encoding) {
+            try {
+                
+                // Assumption that the string contains only ASCII            
+                // characters!  Otherwise just pass a charset into this            
+                // constructor and use it in getBytes()
+                m_data = data.getBytes(encoding);
+            } catch (UnsupportedEncodingException uex) {
+                m_data = data.getBytes();
+            }
+            m_datatype = type;
+        }
+        
+        /**
+         * @see javax.activation.DataSource#getContentType()
+         */
+        public String getContentType() {
+            return m_datatype;
+        }
+
+        /**
+         * @see javax.activation.DataSource#getInputStream()
+         */
+        public InputStream getInputStream() throws IOException {
+            if (m_data == null) {
+                throw new IOException("no data");
+            }
+            return new ByteArrayInputStream(m_data);
+        }
+        
+        /**
+         * @see javax.activation.DataSource#getName()
+         */
+        public String getName() {
+            return "dummy";
+        }
+        
+        /**
+         * @see javax.activation.DataSource#getOutputStream()
+         */
+        public OutputStream getOutputStream() throws IOException {
+            throw new IOException("cannot do this");
+        }
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,13 @@ package org.opencms.loader;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -98,7 +98,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             String header = (String)i.next();
             
             // set header only if format is "key: value"
-            String parts[] = Utils.split(header, ":"); 
+            String parts[] = CmsStringSubstitution.split(header, ":"); 
             if (parts.length == 2) {
                 res.setHeader(parts[0], parts[1]);
             }
@@ -188,7 +188,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
                 content = cms.readFile(filename).getContents();
             }  catch (CmsException e) {
                 if (DEBUG > 0) {
-                    System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                    e.printStackTrace(System.err);
                 }
                 throw new ServletException("Error in CmsDumpLoader while processing " + filename, e);    
             }

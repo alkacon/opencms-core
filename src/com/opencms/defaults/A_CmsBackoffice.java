@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -43,7 +44,6 @@ import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.template.I_CmsXmlTemplate;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 import com.opencms.workplace.CmsWorkplaceDefault;
 import com.opencms.workplace.CmsXmlLanguageFile;
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -3491,7 +3491,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 // set the escaped value into datablock for unescaping
                 String escapedValue = value;
                 if (!"".equals(escapedValue.trim())) {
-                    escapedValue = Encoder.escape(escapedValue, cms.getRequestContext().getEncoding());
+                    escapedValue = CmsEncoder.escape(escapedValue, cms.getRequestContext().getEncoding());
                 }
                 template.setData(datablockName + "escaped", escapedValue);
             } catch (Exception e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2004/01/07 16:42:09 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -37,7 +38,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.19 $ $Date: 2004/01/07 16:42:09 $
+ * @version $Revision: 1.20 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -83,7 +83,7 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
         try {
             cms.readFileHeader(C_VFS_GALLERY_EXTERNALLINKS);
         } catch(CmsException e) {
-            xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+            xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
             templateSelector = "error";
         }
         if(!"error".equals(templateSelector)) {
@@ -135,7 +135,7 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
                 int maxpage = ((filteredLinks.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                xmlTemplateDocument.setData(C_PARA_FOLDER, CmsEncoder.escape(folder,
                     cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
@@ -287,11 +287,11 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
             xmlTemplateDocument.setData("snippetid", "" + i);
             xmlTemplateDocument.setData("filecontent", new String(file.getContents()));
             try {
-                xmlTemplateDocument.setData("filecontent_escaped", Encoder.escape(
+                xmlTemplateDocument.setData("filecontent_escaped", CmsEncoder.escape(
                     new String(file.getContents(), cms.getRequestContext().getEncoding()),
                     cms.getRequestContext().getEncoding()));
             } catch (UnsupportedEncodingException e) {
-                xmlTemplateDocument.setData("filecontent_escaped", Encoder.escape(
+                xmlTemplateDocument.setData("filecontent_escaped", CmsEncoder.escape(
                     new String(file.getContents()),
                     cms.getRequestContext().getEncoding()));
             }

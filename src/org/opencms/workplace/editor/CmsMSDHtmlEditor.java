@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/01/30 13:24:04 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1.12
  */
@@ -131,7 +131,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         } else {
             // escape special characters for saving
             // TODO: escape only if required because of encoding settings
-            content = Encoder.escapeNonAscii(content);
+            content = CmsEncoder.escapeNonAscii(content);
         }
         return content.trim();
     }  

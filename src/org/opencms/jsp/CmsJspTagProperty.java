@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@
 
 package org.opencms.jsp;
 
+import org.opencms.flex.CmsFlexController;
+import org.opencms.locale.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.core.CmsException;
-import org.opencms.flex.CmsFlexController;
-import com.opencms.util.Encoder;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -86,7 +87,7 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -258,8 +259,9 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
                 pageContext.getOut().print(prop);
                 
             } catch (Exception ex) {
-                System.err.println("Error in Jsp 'property' tag processing: " + ex);
-                System.err.println(com.opencms.util.Utils.getStackTrace(ex));
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'property' tag processing", ex);
+                }
                 throw new javax.servlet.jsp.JspException(ex);
             }
         }
@@ -327,7 +329,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
                 value = controller.getCmsObject().readProperty(CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()), property, false, defaultValue);
         }           
         if (escape) {
-            value = Encoder.escapeHtml(value);
+            value = CmsEncoder.escapeHtml(value);
         }
         if (DEBUG > 0) {
             System.err.println("propertyTagAction(): result=" + value);

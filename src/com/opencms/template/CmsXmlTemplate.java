@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.137 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.138 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.template;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -47,7 +48,6 @@ import com.opencms.template.cache.CmsElementDefinitionCollection;
 import com.opencms.template.cache.CmsElementDescriptor;
 import com.opencms.template.cache.CmsElementVariant;
 import com.opencms.template.cache.CmsElementXml;
-import com.opencms.util.Encoder;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.137 $ $Date: 2004/01/25 12:42:45 $
+ * @version $Revision: 1.138 $ $Date: 2004/02/04 17:18:07 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -728,7 +728,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         if(title == null) {
             return "";
         }
-        return Encoder.escapeHtml(title);
+        return CmsEncoder.escapeHtml(title);
     }
     
     /**

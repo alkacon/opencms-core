@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 public class CmsException extends Exception {
 
@@ -486,5 +486,34 @@ public class CmsException extends Exception {
             result.append(m_rootCause);
         }
         return result.toString();
+    }
+
+    /**
+     * Returns the stack trace of an exception as a String.<p>
+     * 
+     * If the exception is a CmsException, 
+     * also writes the root cause to the String.<p>
+     * 
+     * @param e the exception to get the stack trace from
+     * @return the stack trace of an exception as a String
+     */
+    public static String getStackTraceAsString(Throwable e) {    
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        e.printStackTrace(writer);
+        if (e instanceof CmsException) {
+            // if the exception is a CmsException, also write the root cause to the String
+            CmsException cmsException = (CmsException)e;
+            if (cmsException.getException() != null) {
+                cmsException.getException().printStackTrace(writer);
+            }
+        }
+        try {
+            writer.close();
+            stringWriter.close();
+        } catch (Throwable t) {
+            // ignore
+        }
+        return stringWriter.toString();
     }
 }

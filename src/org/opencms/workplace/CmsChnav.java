@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/01/15 08:35:46 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -37,7 +39,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.flex.jsp.CmsJspNavBuilder;
 import com.opencms.flex.jsp.CmsJspNavElement;
-import com.opencms.util.Encoder;
 
 import java.util.ArrayList;
 
@@ -55,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -287,10 +288,10 @@ public class CmsChnav extends CmsDialog {
             
             // if the element is the current file, mark it in selectbox
             if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
-                options.add(Encoder.escapeHtml(messages.key("input.currentposition")+" ["+ne.getFileName()+"]"));
+                options.add(CmsEncoder.escapeHtml(messages.key("input.currentposition")+" ["+ne.getFileName()+"]"));
                 values.add("-1");
             } else {
-                options.add(Encoder.escapeHtml(navText+" ["+ne.getFileName()+"]"));
+                options.add(CmsEncoder.escapeHtml(navText+" ["+ne.getFileName()+"]"));
                 values.add(newPos+"");
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2004/02/04 15:48:16 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.32 $ $Date: 2004/02/04 15:48:16 $
+ * @version $Revision: 1.33 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -450,7 +450,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
                     catch(Exception e) {
 
                         // groupname == null or delete failed
-                        xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("DELETEDETAILS", CmsException.getStackTraceAsString(e));
                         templateSelector = "deleteerror";
                     }
                 }

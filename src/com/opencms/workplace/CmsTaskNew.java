@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.38 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -178,7 +178,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
                 if(OpenCms.getLog(this).isWarnEnabled() ) {
                     OpenCms.getLog(this).warn("Could not create task", exc);
                 }
-                xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+                xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exc));
                 templateSelector = "error";
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/11/03 09:05:52 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -26,29 +26,11 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
 package com.opencms.util;
 
-import org.opencms.main.OpenCms;
-
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.defaults.I_CmsLifeCycle;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsUser;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * This is a general helper class.<p>
@@ -65,22 +47,6 @@ public final class Utils {
         // empty
     }
     
-    /**
-     * Returns a string representation of the full name of a user.<p>
-     * 
-     * @param user the user to get the full name from
-     * @return a string representation of the user fullname
-     */
-    public static String getFullName(CmsUser user) {
-        String retValue = "";
-        if (user != null) {
-            retValue += user.getFirstname() + " ";
-            retValue += user.getLastname() + " (";
-            retValue += user.getName() + ")";
-        }
-        return retValue;
-    }
-
     /**
      * Returns a formated time String form a long time value, the
      * format being "dd.mm.yy hh:mm".<p>
@@ -142,181 +108,5 @@ public final class Utils {
         niceTime.append(month + ".");
         niceTime.append(year);
         return niceTime.toString();
-    }
-    
-    /**
-     * Converts date string to a long value.<p>
-     * 
-     * @param dateString the date as a String
-     * @return long value of date
-     */
-    public static long splitDate(String dateString) {
-        long result = 0;
-        if (dateString != null && !"".equals(dateString)) {
-            String splittetDate[] = Utils.split(dateString, ".");
-            GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-                    Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
-            result = cal.getTime().getTime();
-        }
-        return result;
-    }    
-
-    /**
-     * Returns all publish methods of the configured modules.<p>
-     *
-     * @param cms the current cms context object
-     * @param changedLinks will be filled with the links (as String) that have changed during the publishing
-     */
-    public static void getModulPublishMethods(CmsObject cms, Vector changedLinks) {
-        // now publish the module masters
-        Vector publishModules = new Vector();
-        cms.getRegistry().getModulePublishables(publishModules, I_CmsConstants.C_PUBLISH_METHOD_LINK);
-
-        for (int i = 0; i < publishModules.size(); i++) {
-            // call the publishProject method of the class with parameters:
-            // cms, changedLinks
-            try {
-                Class.forName((String)publishModules.elementAt(i)).getMethod("publishLinks",
-                                        new Class[] {CmsObject.class, Vector.class}).invoke(
-                                        null, new Object[] {cms, changedLinks});
-            } catch (Exception ex) {
-                if (OpenCms.getLog(Utils.class).isErrorEnabled()) {
-                    OpenCms.getLog(Utils.class).error("Error when publish data of module " + publishModules.elementAt(i), ex);
-                }
-            }
-        }
-    }
-
-    /**
-     * Calls the startup method on all module classes that are registerd in the registry.<p>
-     *
-     * @param cms the current cms context object
-     */
-    public static void getModulStartUpMethods(CmsObject cms) {
-        Vector startUpModules = new Vector();
-        cms.getRegistry().getModuleLifeCycle(startUpModules);
-        for (int i = 0; i < startUpModules.size(); i++) {
-            try {
-                I_CmsLifeCycle lifeClass = (I_CmsLifeCycle)Class.forName((String)startUpModules.elementAt(i)).getConstructor(new Class[] {}).newInstance(new Class[] {});
-                lifeClass.startUp(cms);
-            } catch (Exception ex) {
-                // ignore
-            }
-        }
-    }
-
-    /**
-     * Calls the shutdown method on all module classes that are registerd in the registry.<p>
-     *
-     * @param reg the current registry
-     */
-    public static void getModulShutdownMethods(CmsRegistry reg) {
-        Vector startUpModules = new Vector();
-        reg.getModuleLifeCycle(startUpModules);
-        for (int i = 0; i < startUpModules.size(); i++) {
-            try {
-                I_CmsLifeCycle lifeClass = (I_CmsLifeCycle)Class.forName((String)startUpModules.elementAt(i)).getConstructor(new Class[] {}).newInstance(new Class[] {});
-                lifeClass.shutDown();
-            } catch (Exception ex) {
-                // ignore
-            }
-        }
-    }
-
-    /**
-     * Gets the stack-trace of a exception, and returns it as a string.
-     * @param e The exception to get the stackTrace from.
-     * @return the stackTrace of the exception.
-     */
-    public static String getStackTrace(Throwable e) {
-
-        // print the stack-trace into a writer, to get its content
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        e.printStackTrace(writer);
-        if (e instanceof CmsException) {
-            CmsException cmsException = (CmsException)e;
-            if (cmsException.getException() != null) {
-                cmsException.getException().printStackTrace(writer);
-            }
-        }
-        try {
-            writer.close();
-            stringWriter.close();
-        } catch (Exception err) {
-            // ignore
-        }
-        return stringWriter.toString();
-    }
-
-    /**
-     * Replaces all line breaks in a given string object by
-     * white spaces, also all lines will be trimed to
-     * delete all unnecessary white spaces.<p>
-     * 
-     * @param s Input string
-     * @return Output String
-     * @throws CmsException if something goes wrong
-     */
-    public static String removeLineBreaks(String s) throws CmsException {
-        StringBuffer result = new StringBuffer();
-        BufferedReader br = new BufferedReader(new StringReader(s));
-        String lineStr = null;
-        try {
-            while ((lineStr = br.readLine()) != null) {
-                result.append(lineStr.trim());
-                result.append(" ");
-            }
-        } catch (IOException e) {
-            throw new CmsException("Error while reading input stream in com.opencms.util.Utils.removeLineBreaks: " + e);
-        }
-        return result.toString();
-    }
-
-    /**
-     * This method splits a String into substrings.
-     *
-     * @param toSplit the String to split
-     * @param at the delimeter to split at
-     *
-     * @return an array of Strings
-     */
-    public static final String[] split(String toSplit, String at) {
-        List parts = new ArrayList();
-        int index = 0;
-        int nextIndex = toSplit.indexOf(at);
-        while (nextIndex != -1) {
-            parts.add(toSplit.substring(index, nextIndex));
-            index = nextIndex + at.length();
-            nextIndex = toSplit.indexOf(at, index);
-        }
-        parts.add(toSplit.substring(index));
-        return (String[])parts.toArray(new String[parts.size()]);
-    }
-
-    /**
-     * Sorts two vectors using bubblesort.<p>
-     * 
-     * This is a quick hack to display templates sorted by title instead of
-     * by name in the template dropdown, because it is the title that is shown in the dropdown.
-     *
-     * @param names the vector to sort
-     * @param data vector with data that accompanies names
-     */
-    public static void bubblesort(Vector names, Vector data) {
-        for (int i = 0; i < names.size() - 1; i++) {
-            int len = names.size() - i - 1;
-            for (int j = 0; j < len; j++) {
-                String a = (String)names.elementAt(j);
-                String b = (String)names.elementAt(j + 1);
-                if (a.toLowerCase().compareTo(b.toLowerCase()) > 0) {
-                    names.setElementAt(a, j + 1);
-                    names.setElementAt(b, j);
-                    a = (String)data.elementAt(j);
-                    data.setElementAt(data.elementAt(j + 1), j);
-                    data.setElementAt(a, j + 1);
-                }
-            }
-        }
     }
 }

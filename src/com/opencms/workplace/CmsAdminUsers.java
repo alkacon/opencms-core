@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2004/02/04 15:48:16 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.40 $ $Date: 2004/02/04 15:48:16 $
+ * @version $Revision: 1.41 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -359,7 +359,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                             templateSelector = "errordatamissing1";
                                         }else {
                                             // unknown error
-                                            xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                                            xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                                             templateSelector = "error";
                                         }
                                     }
@@ -598,7 +598,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     }catch(Exception e) {
 
                         // user == null or delete failed
-                        xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("DELETEDETAILS", CmsException.getStackTraceAsString(e));
                         templateSelector = "deleteerror";
                     }
                 } // delete user

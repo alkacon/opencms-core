@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.workplace;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
@@ -51,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2004/01/25 12:42:45 $
+ * @version $Revision: 1.47 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -100,7 +101,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             contentBuf.append(task.getName());
             int projectid = cms.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, taskid, projectid));
-            String subject = lang.getLanguageValue("task.email.accept.subject") + " " + Utils.getFullName(cms.readAgent(task));
+            String subject = lang.getLanguageValue("task.email.accept.subject") + " " + CmsUser.getFullName(cms.readAgent(task));
             CmsUser[] users =  {
                 cms.readOwner(task)
             };
@@ -148,7 +149,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         int priority = Integer.parseInt(priorityString);
 
         // create a long from the overgiven date.
-        String splittetDate[] = Utils.split(timeoutString, ".");
+        String splittetDate[] = CmsStringSubstitution.split(timeoutString, ".");
         GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
                 Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
@@ -158,7 +159,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         cms.setTaskPar(task.getId(), C_TASKPARA_COMPLETION, paraCompletion);
         cms.setTaskPar(task.getId(), C_TASKPARA_DELIVERY, paraDelivery);
         String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
-        comment += lang.getLanguageValue("task.label.editor") + ": " + Utils.getFullName(cms.readUser(task.getAgentUser())) + "\n";
+        comment += lang.getLanguageValue("task.label.editor") + ": " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + "\n";
         comment += taskcomment;
         cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
 
@@ -185,10 +186,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
         contentBuf.append("\n");
         contentBuf.append(lang.getLanguageValue("task.label.actuator"));
         contentBuf.append(": ");
-        contentBuf.append(Utils.getFullName(cms.readOwner(task)));
+        contentBuf.append(CmsUser.getFullName(cms.readOwner(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.create.subject") + " " + Utils.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
+        String subject = lang.getLanguageValue("task.email.create.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
         CmsUser[] users =  {
             cms.readAgent(task)
         };
@@ -238,7 +239,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
     public static void due(CmsObject cms, int taskid, String timeoutString) throws CmsException {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = cms.readTask(taskid);
-        String splittetDate[] = Utils.split(timeoutString, ".");
+        String splittetDate[] = CmsStringSubstitution.split(timeoutString, ".");
         GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
                 Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
@@ -291,14 +292,14 @@ public class CmsTaskAction implements I_CmsWpConstants {
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.taskfor"));
             contentBuf.append(": ");
-            contentBuf.append(Utils.getFullName(cms.readOriginalAgent(task)));
+            contentBuf.append(CmsUser.getFullName(cms.readOriginalAgent(task)));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.editor"));
             contentBuf.append(": ");
-            contentBuf.append(Utils.getFullName(cms.readAgent(task)));
+            contentBuf.append(CmsUser.getFullName(cms.readAgent(task)));
             int projectid = cms.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-            String subject = lang.getLanguageValue("task.email.end.subject") + " " + Utils.getFullName(cms.readAgent(task));
+            String subject = lang.getLanguageValue("task.email.end.subject") + " " + CmsUser.getFullName(cms.readAgent(task));
             CmsUser[] users =  {
                 cms.readOwner(task)
             };
@@ -334,7 +335,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsGroup oldRole = cms.readGroup(newRoleName);
         cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
         String comment = lang.getLanguageValue("task.dialog.forward.logmessage");
-        comment += " " + Utils.getFullName(newEditor);
+        comment += " " + CmsUser.getFullName(newEditor);
         cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_FORWARDED);
 
         // send an email if "Benachrichtigung bei Weiterleitung" was selected.
@@ -361,18 +362,18 @@ public class CmsTaskAction implements I_CmsWpConstants {
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.actuator"));
             contentBuf.append(": ");
-            contentBuf.append(Utils.getFullName(cms.readOwner(task)));
+            contentBuf.append(CmsUser.getFullName(cms.readOwner(task)));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.taskfor"));
             contentBuf.append(": ");
-            contentBuf.append(Utils.getFullName(cms.readOriginalAgent(task)));
+            contentBuf.append(CmsUser.getFullName(cms.readOriginalAgent(task)));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.editor"));
             contentBuf.append(": ");
-            contentBuf.append(Utils.getFullName(cms.readAgent(task)));
+            contentBuf.append(CmsUser.getFullName(cms.readAgent(task)));
             int projectid = cms.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-            String subject = lang.getLanguageValue("task.email.forward.subject") + " " + Utils.getFullName(cms.readUser(task.getAgentUser())) + " / " + newRoleName;
+            String subject = lang.getLanguageValue("task.email.forward.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + newRoleName;
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
@@ -444,7 +445,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
 
             // check if this is a type "created" or "new"
             if((type == C_TASKLOGTYPE_CREATED) || (type == C_TASKLOGTYPE_REACTIVATED)) {
-                String comment[] = Utils.split(tasklog.getComment(), "\n");
+                String comment[] = CmsStringSubstitution.split(tasklog.getComment(), "\n");
                 for(int j = 2;j < comment.length;j++) {
                     retValue.append(comment[j] + "\n");
                 }
@@ -468,7 +469,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsTask task = cms.readTask(taskid);
         String comment = lang.getLanguageValue("task.dialog.message.head") + " ";
         if((message != null) && (message.length() != 0)) {
-            comment += Utils.getFullName(cms.readAgent(task)) + "\n";
+            comment += CmsUser.getFullName(cms.readAgent(task)) + "\n";
             comment += message;
             cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_CALL);
         }
@@ -495,10 +496,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
         contentBuf.append("\n");
         contentBuf.append(lang.getLanguageValue("task.label.actuator"));
         contentBuf.append(": ");
-        contentBuf.append(Utils.getFullName(cms.readOwner(task)));
+        contentBuf.append(CmsUser.getFullName(cms.readOwner(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.message.subject") + " " + Utils.getFullName(cms.readOwner(task));
+        String subject = lang.getLanguageValue("task.email.message.subject") + " " + CmsUser.getFullName(cms.readOwner(task));
         CmsUser[] users =  {
             cms.readAgent(task)
         };
@@ -553,7 +554,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsTask task = cms.readTask(taskid);
         String comment = lang.getLanguageValue("task.dialog.query.head") + " ";
         if((message != null) && (message.length() != 0)) {
-            comment += Utils.getFullName(cms.readOwner(task)) + "\n";
+            comment += CmsUser.getFullName(cms.readOwner(task)) + "\n";
             comment += message;
             cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_CALL);
         }
@@ -580,10 +581,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
         contentBuf.append("\n");
         contentBuf.append(lang.getLanguageValue("task.label.editor"));
         contentBuf.append(": ");
-        contentBuf.append(Utils.getFullName(cms.readAgent(task)));
+        contentBuf.append(CmsUser.getFullName(cms.readAgent(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.query.subject") + " " + Utils.getFullName(cms.readAgent(task));
+        String subject = lang.getLanguageValue("task.email.query.subject") + " " + CmsUser.getFullName(cms.readAgent(task));
         CmsUser[] users =  {
             cms.readOwner(task)
         };
@@ -635,7 +636,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         cms.setPriority(taskid, priority);
 
         // create a long from the overgiven date.
-        String splittetDate[] = Utils.split(timeoutString, ".");
+        String splittetDate[] = CmsStringSubstitution.split(timeoutString, ".");
         GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]), Integer.parseInt(splittetDate[1]) - 1,
                 Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
@@ -646,7 +647,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         cms.setTaskPar(taskid, C_TASKPARA_DELIVERY, paraDelivery);
         cms.forwardTask(taskid, roleName, agentName);
         String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
-        comment += lang.getLanguageValue("task.label.editor") + ": " + Utils.getFullName(cms.readUser(agentName)) + "\n";
+        comment += lang.getLanguageValue("task.label.editor") + ": " + CmsUser.getFullName(cms.readUser(agentName)) + "\n";
         comment += taskcomment;
         cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_REACTIVATED);
 
@@ -671,7 +672,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         contentBuf.append(task.getName());
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.reakt.subject") + " " + Utils.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
+        String subject = lang.getLanguageValue("task.email.reakt.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
         CmsUser[] users =  {
             cms.readAgent(task)
         };
@@ -713,7 +714,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
             cms.acceptTask(taskid);
             String comment = lang.getLanguageValue("task.dialog.take.logmessage");
-            comment += " " + Utils.getFullName(newEditor);
+            comment += " " + CmsUser.getFullName(newEditor);
             cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_TAKE);
         }
 
@@ -739,10 +740,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
         contentBuf.append("\n");
         contentBuf.append(lang.getLanguageValue("task.label.taskfor"));
         contentBuf.append(": ");
-        contentBuf.append(Utils.getFullName(cms.readAgent(task)));
+        contentBuf.append(CmsUser.getFullName(cms.readAgent(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.take.subject") + " " + Utils.getFullName(newEditor);
+        String subject = lang.getLanguageValue("task.email.take.subject") + " " + CmsUser.getFullName(newEditor);
         CmsUser[] users =  {
             cms.readAgent(task)
         };

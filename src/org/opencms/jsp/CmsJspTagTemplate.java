@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/01/22 11:52:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,7 @@ package org.opencms.jsp;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
-
-import com.opencms.util.Utils;
+import org.opencms.util.CmsStringSubstitution;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -45,7 +44,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -212,7 +211,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(controller.getCmsObject().getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(controller.getCmsObject(), absolutePath), page.getLanguages());
             
             // check the elements in the elementlist, if the check fails don't render the body
-            String elements[] = Utils.split(elementlist, ",");
+            String elements[] = CmsStringSubstitution.split(elementlist, ",");
             boolean found = false;
             for (int i = 0; i < elements.length; i++) {
                 String el = elements[i].trim();

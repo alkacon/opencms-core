@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.24 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -101,7 +101,7 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault {
                 // this is the message-dialog
                 user = cms.readAgent(task);
             }
-            userName = Utils.getFullName(user);
+            userName = CmsUser.getFullName(user);
         }
         catch(Exception exc) {
             

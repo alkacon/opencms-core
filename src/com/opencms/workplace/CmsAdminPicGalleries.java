@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2004/02/04 15:48:16 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.48 $ $Date: 2004/02/04 15:48:16 $
+ * @version $Revision: 1.49 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -209,7 +209,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     cms.unlockResource(cms.readAbsolutePath(folder), false);
                 }
                 catch(CmsException ex) {
-                    xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
+                    xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));
                     templateSelector = "error";
                 }
             }
@@ -322,7 +322,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 }
                             }
                             catch(CmsException ex) {
-                                xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                                xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(ex));
                                 templateSelector = "error";
                                 xmlTemplateDocument.setData("link_value", foldername);
                                 xmlTemplateDocument.setData("lasturl", lasturl);

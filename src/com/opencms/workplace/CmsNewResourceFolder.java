@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -39,7 +40,6 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeImage;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.53 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {
@@ -116,8 +116,8 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
         // get request parameters
         String newFolder = (String) parameters.get(C_PARA_NEWFOLDER);
-        String title = Encoder.redecodeUriComponent((String) parameters.get(C_PARA_TITLE));
-        String navtitle = Encoder.redecodeUriComponent((String) parameters.get(C_PARA_NAVTEXT));
+        String title = CmsEncoder.redecodeUriComponent((String) parameters.get(C_PARA_TITLE));
+        String navtitle = CmsEncoder.redecodeUriComponent((String) parameters.get(C_PARA_NAVTEXT));
         String navpos = (String) parameters.get(C_PARA_NAVPOS);
 
         // get the current phase of this wizard
@@ -200,7 +200,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                         // all done, now we have to clean up our mess
                         clearSession(session);
                     } catch (CmsException ex) {
-                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(ex));
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error_system");
                     }
                 }
@@ -265,13 +265,13 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                         // we dont need our session entrys anymore
                         clearSession(session);
                     } catch (CmsException ex) {
-                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(ex));
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error_system");
                     }
                 } else {
                     // user pressed backbutton. show the first template again
                     xmlTemplateDocument.setData("name", newFolder);
-                    xmlTemplateDocument.setData("title", Encoder.escapeXml(title));
+                    xmlTemplateDocument.setData("title", CmsEncoder.escapeXml(title));
                     if (navtitle != null) {
                         xmlTemplateDocument.setData("navtext", navtitle);
                     } else {
@@ -284,7 +284,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                 // error while creating the folder go to firs page and set the stored parameter
                 template = null;
                 xmlTemplateDocument.setData("name", (String) session.getValue(C_SESSIONHEADER + C_PARA_NEWFOLDER));
-                xmlTemplateDocument.setData("title", Encoder.escapeXml((String) session.getValue(C_SESSIONHEADER + C_PARA_TITLE)));
+                xmlTemplateDocument.setData("title", CmsEncoder.escapeXml((String) session.getValue(C_SESSIONHEADER + C_PARA_TITLE)));
                 navtitle = (String) session.getValue(C_SESSIONHEADER + C_PARA_NAVTEXT);
                 if (navtitle != null) {
                     xmlTemplateDocument.setData("navtext", navtitle);
@@ -432,8 +432,8 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
             // finally fill the result vectors
             for (int i = 0; i <= count; i++) {
-                names.addElement(Encoder.escapeHtml(nicenames[i]));
-                values.addElement(Encoder.escapeHtml(nicenames[i]));
+                names.addElement(CmsEncoder.escapeHtml(nicenames[i]));
+                values.addElement(CmsEncoder.escapeHtml(nicenames[i]));
                 if ((preselect != null) && (preselect.equals(nicenames[i]))) {
                     retValue = values.size() - 1;
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2004/01/28 11:53:52 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.33 $ $Date: 2004/01/28 11:53:52 $
+ * @version $Revision: 1.34 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -212,7 +212,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
                     cms.unlockResource(filename, false);
                     action = "ok";
                 } catch (CmsException exc){
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+                    xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exc));
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"errorlock");
                 }

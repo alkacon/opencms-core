@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
@@ -147,8 +147,9 @@ public class CmsJspTagInfo extends TagSupport {
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
-                System.err.println("Error in Jsp 'info' tag processing: " + ex);
-                System.err.println(com.opencms.util.Utils.getStackTrace(ex));
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'info' tag processing", ex);
+                }
                 throw new JspException(ex);
             }
         }

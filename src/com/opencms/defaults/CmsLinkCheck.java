@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
+ * Date   : $Date: 2004/02/04 17:18:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,13 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.util;
+package com.opencms.defaults;
 
 import org.opencms.cron.I_CmsCronJob;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.defaults.CmsMail;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResourceTypeLink;
@@ -134,8 +133,8 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
     ) throws CmsException {
         // create a new CmsMail object and start sending the mails
         CmsMail mail = null;
-        if (MailUtils.checkEmail(mailFrom)) {
-            if (MailUtils.checkEmail(mailTo[0])) {
+        if (CmsMail.checkEmail(mailFrom)) {
+            if (CmsMail.checkEmail(mailTo[0])) {
                 if (mailCc.length > 0 && mailBcc.length > 0) {
                     mail = new CmsMail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent, mailType);
                     mail.start();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/01/22 14:03:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/04 17:18:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
  
 package org.opencms.report;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
+import com.opencms.core.CmsException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
@@ -172,7 +172,7 @@ public class CmsHtmlReport extends A_CmsReport {
         if (m_showExceptionStackTracke) {
                 buf.append("aT('");
                 buf.append(key("report.exception"));
-                String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
+                String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
                 exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
@@ -194,7 +194,7 @@ public class CmsHtmlReport extends A_CmsReport {
             if (m_showExceptionStackTracke) {
             buf.append("<span class='throw'>");
             buf.append(key("report.exception"));
-            String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
+            String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
             exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
             StringTokenizer tok = new StringTokenizer(exception, "\r\n");
             while (tok.hasMoreTokens()) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.22 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.23 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsHelperMastertemplates {
@@ -129,7 +129,7 @@ public class CmsHelperMastertemplates {
         }
         
         // finally sort the found elemets
-        Utils.bubblesort(names, values);        
+        CmsHelperMastertemplates.bubblesort(names, values);        
         
         // no explicit return value, but the parameter vectors are filled with the found values
     }
@@ -144,5 +144,31 @@ public class CmsHelperMastertemplates {
      */
     public static boolean checkVisible(CmsObject cms, CmsResource res) throws CmsException {
         return cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
+    }
+
+    /**
+     * Sorts two vectors using bubblesort.<p>
+     * 
+     * This is a quick hack to display templates sorted by title instead of
+     * by name in the template dropdown, because it is the title that is shown in the dropdown.
+     *
+     * @param names the vector to sort
+     * @param data vector with data that accompanies names
+     */
+    public static void bubblesort(Vector names, Vector data) {
+        for (int i = 0; i < names.size() - 1; i++) {
+            int len = names.size() - i - 1;
+            for (int j = 0; j < len; j++) {
+                String a = (String)names.elementAt(j);
+                String b = (String)names.elementAt(j + 1);
+                if (a.toLowerCase().compareTo(b.toLowerCase()) > 0) {
+                    names.setElementAt(a, j + 1);
+                    names.setElementAt(b, j);
+                    a = (String)data.elementAt(j);
+                    data.setElementAt(data.elementAt(j + 1), j);
+                    data.setElementAt(a, j + 1);
+                }
+            }
+        }
     }
 }

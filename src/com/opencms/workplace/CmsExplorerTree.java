@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -37,7 +38,6 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Encoder;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -51,7 +51,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault {
@@ -326,13 +326,13 @@ public class CmsExplorerTree extends CmsWorkplaceDefault {
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(cms.readAbsolutePath(folder))) {
                             template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
-                                    + Encoder.escape(curfolder,
+                                    + CmsEncoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MEND, this);
                         }
                         else {
                             template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
-                                    + Encoder.escape(cms.readAbsolutePath(folder),
+                                    + CmsEncoder.escape(cms.readAbsolutePath(folder),
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PEND, this);
                         }
@@ -350,13 +350,13 @@ public class CmsExplorerTree extends CmsWorkplaceDefault {
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(cms.readAbsolutePath(folder))) {
                            template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
-                                    + Encoder.escape(curfolder,
+                                    + CmsEncoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MCROSS, this);
                         }
                         else {
                             template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
-                                    + Encoder.escape(cms.readAbsolutePath(folder),
+                                    + CmsEncoder.escape(cms.readAbsolutePath(folder),
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PCROSS, this);
                         }

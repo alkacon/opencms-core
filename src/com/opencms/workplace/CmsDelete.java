@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -36,7 +37,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.54 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.55 $ $Date: 2004/02/04 17:18:07 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault {
@@ -122,7 +122,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_RESOURCE);
-                        xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                     }
@@ -148,7 +148,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_RESOURCE);
-                        xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                     }
@@ -169,7 +169,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             // TODO fix this later
             // CmsUser owner = cms.readOwner(file);
-            xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
+            xmlTemplateDocument.setData("TITLE", CmsEncoder.escapeXml(title));
             xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);

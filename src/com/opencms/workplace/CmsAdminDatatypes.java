@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/02/04 17:18:07 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.locale.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -35,7 +36,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/04 17:18:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -166,7 +166,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                                     + " '" + name + "' " + lang.getLanguageValue("error.reason.newextension2")
                                             + " '" + resTypeName + "' "
                                                     + lang.getLanguageValue("error.reason.newextension3") + "\n\n");
-                            errmesg.append(Utils.getStackTrace(e));
+                            errmesg.append(CmsException.getStackTraceAsString(e));
                             xmlTemplateDocument.setData("NEWDETAILS", errmesg.toString());
                             templateSelector = "newerror";
                         }
@@ -188,7 +188,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                         templateSelector = "";
                     }
                     catch(CmsException e) {
-                        xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("DELETEDETAILS", CmsException.getStackTraceAsString(e));
                         templateSelector = "errordelete";
                     }
                 }
@@ -262,14 +262,14 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
         templateFile.setData(C_TAG_RESTYPE, resTypeName);
 
-        templateFile.setData(C_TAG_RESTYPE + "_esc", Encoder.escapeWBlanks(resTypeName,
+        templateFile.setData(C_TAG_RESTYPE + "_esc", CmsEncoder.escapeWBlanks(resTypeName,
             cms.getRequestContext().getEncoding()));
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
         if(suffList != null) {
             for(int z = 0;z < suffList.size();z++) {
                 String suffix = (String)suffList.elementAt(z);
                 templateFile.setData("EXTENSION_NAME", suffix);
-                templateFile.setData("EXTENSION_NAME_ESC", Encoder.escapeWBlanks(suffix,
+                templateFile.setData("EXTENSION_NAME_ESC", CmsEncoder.escapeWBlanks(suffix,
                     cms.getRequestContext().getEncoding()));
                 output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject));
             }
