@@ -115,69 +115,70 @@ function pageMousedown(event) {
 function buttonClick(event, menuId) {
 
 	var button;
-
-	// Get the target button element.
-
-	if (browser.isIE)
-		button = window.event.srcElement;
-	else
-		button = event.currentTarget;
-
-	// Blur focus from the link to remove that annoying outline.
-
-	button.blur();
-
-	// Associate the named menu to this button if not already done.
-	// Additionally, initialize menu display.
-
-	if (button.menu == null) {
-		button.menu = document.getElementById(menuId);
-		if (button.menu.isInitialized == null)
-			menuInit(button.menu);
-	}
-
-<%
-	if (isMouseOver) {
-%>
-	// [MODIFIED] Added for activate/deactivate on mouseover.
-
-	// Set mouseout event handler for the button, if not already done.
-
-	if (button.onmouseout == null)
-		button.onmouseout = buttonOrMenuMouseout;
-
-	// Exit if this button is the currently active one.
-
-	if (button == activeButton)
-		return false;
-
-	// [END MODIFIED]
-<%
-	}
-%>
-
-	// Reset the currently active button, if any.
-
-	if (activeButton != null) {
-		resetButton(activeButton);}
-
-	// Activate this button, unless it was the currently active one.
-
-	if (button != activeButton) {
-		depressButton(button);
-		activeButton = button;
-	}
-	else {<%
-	if (! isMouseOver) {
-%>
-		// AZ: open link when pressing top menu button again
-		document.location.href = activeButton.href;
-		// /AZ
-<% 
-	} 
-%>
-		activeButton = null;	
-	}
+	try {
+		// Get the target button element.
+	
+		if (browser.isIE)
+			button = window.event.srcElement;
+		else
+			button = event.currentTarget;
+	
+		// Blur focus from the link to remove that annoying outline.
+	
+		button.blur();
+	
+		// Associate the named menu to this button if not already done.
+		// Additionally, initialize menu display.
+	
+		if (button.menu == null) {
+			button.menu = document.getElementById(menuId);
+			if (button.menu.isInitialized == null)
+				menuInit(button.menu);
+		}
+	
+	<%
+		if (isMouseOver) {
+	%>
+		// [MODIFIED] Added for activate/deactivate on mouseover.
+	
+		// Set mouseout event handler for the button, if not already done.
+	
+		if (button.onmouseout == null)
+			button.onmouseout = buttonOrMenuMouseout;
+	
+		// Exit if this button is the currently active one.
+	
+		if (button == activeButton)
+			return false;
+	
+		// [END MODIFIED]
+	<%
+		}
+	%>
+	
+		// Reset the currently active button, if any.
+	
+		if (activeButton != null) {
+			resetButton(activeButton);}
+	
+		// Activate this button, unless it was the currently active one.
+	
+		if (button != activeButton) {
+			depressButton(button);
+			activeButton = button;
+		}
+		else {<%
+		if (! isMouseOver) {
+	%>
+			// AZ: open link when pressing top menu button again
+			document.location.href = activeButton.href;
+			// /AZ
+	<% 
+		} 
+	%>
+			activeButton = null;	
+		}
+	} catch (e) {}
 	
 	return false;
 }
