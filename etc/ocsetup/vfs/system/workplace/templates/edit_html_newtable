@@ -32,7 +32,14 @@ function setTBColor(arr)
   {
   if (arr != -1) 
     {
-	 TableColor.Value=arr;
+	if(arr == 0) {
+	  TableColor.value="";	      
+	  TableColorSelected.checked = false;
+	}
+	else {
+	  TableColor.value = arr;	      
+	  TableColorSelected.checked = true;
+	}
      window.clearInterval(CheckTBCol);
   	}
   }
@@ -119,7 +126,7 @@ function setTBColor(arr)
     arr["Caption"] = "";  
   }
   if (TableColorSelected.checked) arr["TableColorSelected"] ="TRUE";
-  arr["TableColor"]=TableColor.Value;
+  arr["TableColor"]=TableColor.value;
   
   window.returnValue = arr;
   window.close();
@@ -131,7 +138,7 @@ function setTBColor(arr)
 <!-- The "setTBColor" function is called every second to check if the color selection is completed -->
 
 
-<SCRIPT LANGUAGE=JavaScript FOR=TableColor EVENT=onclick>
+<SCRIPT LANGUAGE=JavaScript FOR=TableColorBt EVENT=onclick>
   ColorSelected=-1;
   SelColor=-1;
   CheckTBCol= window.setInterval("setTBColor(SelColor)",1000);
@@ -197,7 +204,8 @@ function setTBColor(arr)
  <TR>
   <TD> <input type=checkbox  ID="TableColorSelected" name="TableColorSelected" value="TRUE">
   <TD> ]]><LABEL value="input.color"/><![CDATA[
-  <TD> <INPUT type=button  ID=TableColor value="]]><LABEL value="button.color"/><![CDATA[">
+  <TD> <INPUT type=text  ID=TableColor name="TableColor" size="20" maxlength="7">
+  <TD> <INPUT type=button  ID=TableColorBt value="]]><LABEL value="button.color"/><![CDATA[">
   
   
 </TABLE>
