@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/22 15:57:41 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2000/06/23 08:01:33 $
+ * Version: $Revision: 1.75 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.74 $ $Date: 2000/06/22 15:57:41 $ * 
+ * @version $Revision: 1.75 $ $Date: 2000/06/23 08:01:33 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -595,7 +595,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public CmsGroup getParent(String groupname)
+	/*public CmsGroup getParent(String groupname)
         throws CmsException {
         CmsGroup parent = null;
         
@@ -627,7 +627,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	        }
          }
         return parent;
-    }
+    }*/
     
     /**
 	 * Returns a list of groups of a user.<P/>
@@ -923,11 +923,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		CmsUser user = null;
-
+        
 		try	{			
             statement = m_pool.getPreparedStatement(C_USERS_READ_KEY);
             statement.setString(1,name);
 			statement.setInt(2,type);
+   
 			res = statement.executeQuery();
 			
 			// create new Cms user object
@@ -958,7 +959,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 								   res.getString(C_USERS_USER_ADDRESS),
 								   res.getString(C_USERS_USER_SECTION),
 								   res.getInt(C_USERS_USER_TYPE));
-			} else {
+            } else {
 				res.close();
 				throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
 			}
@@ -2884,7 +2885,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                            res.getInt(C_RESOURCES_RESOURCE_FLAGS),
                                            res.getInt(C_RESOURCES_USER_ID),
                                            res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_PROJECT_ID),
                                            res.getInt(C_RESOURCES_ACCESS_FLAGS),
                                            res.getInt(C_RESOURCES_STATE),
                                            res.getInt(C_RESOURCES_LOCKED_BY),
@@ -3003,7 +3004,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                                res.getInt(C_RESOURCES_RESOURCE_FLAGS),
                                                res.getInt(C_RESOURCES_USER_ID),
                                                res.getInt(C_RESOURCES_GROUP_ID),
-                                               res.getInt(C_PROJECT_ID_RESOURCES),
+                                               res.getInt(C_RESOURCES_PROJECT_ID),
                                                res.getInt(C_RESOURCES_ACCESS_FLAGS),
                                                res.getInt(C_RESOURCES_STATE),
                                                res.getInt(C_RESOURCES_LOCKED_BY),
@@ -3099,8 +3100,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			PreparedStatement statement = null;
             try {   
                 statement=m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+                int id=nextId(C_TABLE_RESOURCES);
                 // write new resource to the database
-                statement.setInt(1,nextId(C_TABLE_RESOURCES));
+               
+                statement.setInt(1,id);
                 statement.setInt(2,resource.getParentId());
                 statement.setString(3,resource.getAbsolutePath());
                 statement.setInt(4,resource.getType());
@@ -3114,8 +3117,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statement.setInt(12,resource.isLockedBy());
                 statement.setInt(13,resource.getLauncherType());
                 statement.setString(14,resource.getLauncherClassname());
+          
                 statement.setTimestamp(15,new Timestamp(resource.getDateCreated()));
-                statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
+                statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));                
                 statement.setInt(17,resource.getLength());
                 statement.setInt(18,resource.getResourceLastModifiedBy());
                 statement.executeUpdate();
@@ -3127,7 +3131,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
 			}
 		  }
-     
          return readResource(project,resource.getAbsolutePath());
       } 
             
@@ -3556,6 +3559,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                CmsFile file,
                                int userId,
                                int parentId, String filename, boolean copy)
+
          throws CmsException {
           int state=0;         
           if (project.equals(onlineProject)) {
@@ -3752,7 +3756,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                res = statement.executeQuery();
                // create new resource
                if(res.next()) {
-                        folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
+
+                   folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
 											   res.getInt(C_RESOURCES_PARENT_ID),
 											   res.getInt(C_RESOURCES_FILE_ID),
 											   res.getString(C_RESOURCES_RESOURCE_NAME),
@@ -3760,7 +3765,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                                res.getInt(C_RESOURCES_RESOURCE_FLAGS),
                                                res.getInt(C_RESOURCES_USER_ID),
                                                res.getInt(C_RESOURCES_GROUP_ID),
-                                               res.getInt(C_PROJECT_ID_RESOURCES),
+                                               res.getInt(C_RESOURCES_PROJECT_ID),
                                                res.getInt(C_RESOURCES_ACCESS_FLAGS),
                                                res.getInt(C_RESOURCES_STATE),
                                                res.getInt(C_RESOURCES_LOCKED_BY),
@@ -3931,6 +3936,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */	
 	 public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
          throws CmsException {
+           System.err.println("++++"+folder.getAbsolutePath());
+           System.err.println("++++"+folder.getState());
+           System.err.println("++++"+changed);
            PreparedStatement statement = null;
            try {   
                 // update resource in the database

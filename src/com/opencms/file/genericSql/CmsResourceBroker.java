@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/22 15:57:41 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/06/23 08:01:34 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,8 @@ package com.opencms.file.genericSql;
 
 import javax.servlet.http.*;
 import java.util.*;
+import java.net.*;
+import java.io.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
@@ -46,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.63 $ $Date: 2000/06/22 15:57:41 $
+ * @version $Revision: 1.64 $ $Date: 2000/06/23 08:01:34 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -86,7 +88,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     private CmsCache m_propertyCache=null;
     private CmsCache m_propertyDefCache=null;
     private CmsCache m_propertyDefVectorCache=null;
-    
+    private String m_refresh=null;
+
+
+
     // Internal ResourceBroker methods   
     
     /**
@@ -117,6 +122,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         m_propertyCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
         m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));                  
         m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
+        m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");       
     }
 	
     /**
@@ -430,6 +436,20 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 project.setPublishedBy(currentUser.getId());
          m_dbAccess.writeProject(project);
          m_projectCache.put(project.getId(),project);
+         
+         // finally set the refrish signal to another server if nescessary
+         if (m_refresh.length()>0) {
+            try {
+                URL url=new URL(m_refresh);
+                URLConnection con=url.openConnection();
+                con.connect();
+                InputStream in=con.getInputStream();
+                in.close();      
+            }
+            catch (Exception ex) {
+                throw new CmsException(0,ex);                       
+            }
+         }
     }
     
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/17 11:41:37 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/06/23 08:01:35 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.42 $ $Date: 2000/06/17 11:41:37 $
+ * @version $Revision: 1.43 $ $Date: 2000/06/23 08:01:35 $
  */
 public interface I_CmsQuerys {
     
@@ -60,7 +60,7 @@ public interface I_CmsQuerys {
     public static final String C_RESOURCES_LAUNCHER_CLASSNAME="LAUNCHER_CLASSNAME";    
 	public static final String C_RESOURCES_DATE_CREATED="DATE_CREATED";    
     public static final String C_RESOURCES_DATE_LASTMODIFIED="DATE_LASTMODIFIED";    
-    public static final String C_RESOURCES_SIZE="SIZE";
+    public static final String C_RESOURCES_SIZE="RESOURCE_SIZE";
 	public static final String C_RESOURCES_LASTMODIFIED_BY="RESOURCE_LASTMODIFIED_BY";
     public static final String C_RESOURCES_FILE_CONTENT="FILE_CONTENT";
     
@@ -100,7 +100,7 @@ public interface I_CmsQuerys {
                                                +"LAUNCHER_CLASSNAME = ? ," 
                                                +"DATE_LASTMODIFIED = ? ,"
                                                +"RESOURCE_LASTMODIFIED_BY = ? ,"
-                                               +"SIZE = ? , "
+                                               +"RESOURCE_SIZE = ? , "
                                                +"FILE_ID = ? "
                                                +"WHERE RESOURCE_ID = ?";
     
@@ -118,7 +118,7 @@ public interface I_CmsQuerys {
                                                                     +"RESOURCE_FLAGS,USER_ID,"
                                                                     +"GROUP_ID,ACCESS_FLAGS,STATE,"
                                                                     +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
-                                                                    +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,SIZE "
+                                                                    +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,RESOURCE_SIZE "
                                                                     +" FROM " + C_DATABASE_PREFIX + "RESOURCES "
                                                                     +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? "
                                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_TYPE <> "+I_CmsConstants.C_TYPE_FOLDER;
@@ -130,7 +130,7 @@ public interface I_CmsQuerys {
                                                                       +"RESOURCE_FLAGS,USER_ID,"
                                                                       +"GROUP_ID,ACCESS_FLAGS,STATE,"
                                                                       +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
-                                                                      +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,SIZE "
+                                                                      +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,RESOURCE_SIZE "
                                                                       +" FROM " + C_DATABASE_PREFIX + "RESOURCES "
                                                                       +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? "
                                                                       +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_TYPE <> "+I_CmsConstants.C_TYPE_FOLDER;        
@@ -149,7 +149,7 @@ public interface I_CmsQuerys {
                                                +"LAUNCHER_CLASSNAME = ? ," 
                                                +"DATE_LASTMODIFIED = ? ,"
                                                +"RESOURCE_LASTMODIFIED_BY = ? ,"
-                                               +"SIZE = ? , "
+                                               +"RESOURCE_SIZE = ? , "
                                                +"FILE_ID = ? "
                                                +"WHERE RESOURCE_ID = ?";
     
@@ -166,7 +166,7 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_READBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES where PROJECT_ID = ?";
 
 	public static final Integer C_RESOURCES_PUBLISH_MARKED_KEY = new Integer(123);
-	public static final String C_RESOURCES_PUBLISH_MARKED = "select OL.*, OFF.* from " + C_DATABASE_PREFIX + "RESOURCES as OL, " + C_DATABASE_PREFIX + "RESOURCES as OFF " + 
+	public static final String C_RESOURCES_PUBLISH_MARKED = "select OL.*, OFF.* from " + C_DATABASE_PREFIX + "RESOURCES  OL, " + C_DATABASE_PREFIX + "RESOURCES  OFF " + 
 															 "where OFF.PROJECT_ID = ? and OL.PROJECT_ID = ? and OFF.RESOURCE_NAME = OL.RESOURCE_NAME and OFF.STATE = ? " +
 															 "order by OFF.RESOURCE_NAME";
 
@@ -226,7 +226,7 @@ public interface I_CmsQuerys {
                                                      +"RESOURCE_FLAGS,USER_ID,"
                                                      + "GROUP_ID,"+C_DATABASE_PREFIX+"FILES.FILE_ID,ACCESS_FLAGS,STATE,"
                                                      +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
-                                                     +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,SIZE, "
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,RESOURCE_SIZE, "
                                                      + C_DATABASE_PREFIX + "FILES.FILE_CONTENT FROM " + C_DATABASE_PREFIX + "RESOURCES," + C_DATABASE_PREFIX + "FILES "
                                                      +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.FILE_ID = " + C_DATABASE_PREFIX + "FILES.FILE_ID "
                                                      +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = ? "
@@ -279,9 +279,9 @@ public interface I_CmsQuerys {
     public static final String C_GROUPS_GETPARENT = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_ID = ?";
        
     public static final Integer C_GROUPS_GETGROUPSOFUSER_KEY = new Integer(209);
-    public static final String C_GROUPS_GETGROUPSOFUSER = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS AS G, "
-                                                        + C_DATABASE_PREFIX + "USERS AS U, "
-                                                        + C_DATABASE_PREFIX + "GROUPUSERS AS GU  "
+    public static final String C_GROUPS_GETGROUPSOFUSER = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS G, "
+                                                        + C_DATABASE_PREFIX + "USERS U, "
+                                                        + C_DATABASE_PREFIX + "GROUPUSERS GU  "
                                                         + "where U.USER_NAME = ? AND U.USER_ID=GU.USER_ID "
                                                         + "AND GU.GROUP_ID = G.GROUP_ID";
     
@@ -292,10 +292,10 @@ public interface I_CmsQuerys {
     public static final String C_GROUPS_USERINGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
 
     public static final Integer C_GROUPS_GETUSERSOFGROUP_KEY = new Integer(212);
-    public static final String C_GROUPS_GETUSERSOFGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS AS G, "
-														  + C_DATABASE_PREFIX + "USERS AS U, "
-														  + C_DATABASE_PREFIX + "GROUPUSERS AS GU, "
-														  + C_DATABASE_PREFIX + "GROUPS AS DG "
+    public static final String C_GROUPS_GETUSERSOFGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS  G, "
+														  + C_DATABASE_PREFIX + "USERS  U, "
+														  + C_DATABASE_PREFIX + "GROUPUSERS  GU, "
+														  + C_DATABASE_PREFIX + "GROUPS  DG "
 														  + "where G.GROUP_NAME = ? AND U.USER_ID=GU.USER_ID "
 														  + "AND GU.GROUP_ID = G.GROUP_ID "
 														  + "AND U.USER_DEFAULT_GROUP_ID = DG.GROUP_ID "

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/06/07 13:56:36 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/06/23 08:01:33 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/06/07 13:56:36 $
+ * @version $Revision: 1.23 $ $Date: 2000/06/23 08:01:33 $
  */
 
 public class CmsUser implements I_CmsConstants,
@@ -45,7 +45,7 @@ public class CmsUser implements I_CmsConstants,
     /**
      * The login-name of the user.
      */
-    private String m_name = null;
+    private String m_name = "";
     
     /**
      * The Id of this user.
@@ -55,13 +55,13 @@ public class CmsUser implements I_CmsConstants,
     /**
      * The password of the user.
      */
-    private String m_password = null;
+    private String m_password = "";
      
     
     /**
      * The description of the user.
      */
-    private String m_description = null;
+    private String m_description = "";
         
      /**
      * A storage for additional user information.
@@ -139,21 +139,22 @@ public class CmsUser implements I_CmsConstants,
 					String section, int typ) {
             
         m_id=id;
-        m_name=name;
-        m_password = password;
-        m_description=description;
-        m_firstname = firstname;
-        m_lastname = lastname;
-        m_email = email;
+        m_name=checkNull(name);
+        m_password = checkNull(password);
+        m_description=checkNull(description);
+        m_firstname = checkNull(firstname);
+        m_lastname = checkNull(lastname);
+        m_email = checkNull(email);
         m_lastlogin = lastlogin;
         m_lastused = lastused;
         m_flags  = flags;
         this.setDefaultGroup(defaultGroup);
         m_additionalInfo=additionalInfo;
-        m_address = address;
-        m_section = section;
+        m_address = checkNull(address);
+        m_section = checkNull(section);
         m_type = typ;
     }
+      
     
 	/**
 	 * Gets the login-name of the user.
@@ -539,6 +540,19 @@ public class CmsUser implements I_CmsConstants,
 								  m_lastused, m_flags, getAdditionalInfo(),
 								  m_defaultGroup, new String(m_address), new String(m_section),m_type);
         return user;   
+    }
+
+     /**
+      * Checks if a string value is null and returns a empty string if nescessary.
+      * @param value The string to be checked.
+      * @return Original string value or empty string
+      */   
+    private String checkNull(String value) {
+        String ret="";
+        if (value!=null) {
+            ret=value;
+        }
+        return ret;
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/18 14:50:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/23 08:01:33 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/06/18 14:50:33 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/23 08:01:33 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -88,12 +88,13 @@ public class CmsImport implements I_CmsConstants {
 		m_importPath = importPath;
 		m_cms = cms;
 
+        System.err.println("getImportResource");
 		// open the import resource
 		getImportResource();
-		
+		 System.err.println("getXmlConfigFile");
 		// read the xml-config file
 		getXmlConfigFile();
-		
+		 System.err.println("importResources");
 		// import the resources
 		importResources();
 	}
@@ -123,14 +124,11 @@ public class CmsImport implements I_CmsConstants {
 		throws CmsException {
 		
 		try {
-			
 			BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
-		
 			m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-			
 			xmlReader.close();
-
-		} catch(Exception exc) {
+		 } catch(Exception exc) {
+            		System.err.println(exc.toString());
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}

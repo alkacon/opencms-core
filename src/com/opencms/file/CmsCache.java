@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/06/17 16:00:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/23 08:01:33 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/06/17 16:00:09 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/23 08:01:33 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -66,7 +66,6 @@ public class CmsCache implements I_CmsConstants {
 	 * @param value The value of the new object stroed in the cache.
 	 */
 	public void put(String strKey, Object value) {
-
 		if (cache.size() < max_objects) {
 			cache.put(strKey,new CmsCachedObject(value));
 	
@@ -77,8 +76,7 @@ public class CmsCache implements I_CmsConstants {
 		int id = getId(value);
 		if (id != C_UNKNOWN_INT){
 			index.put(new Integer(id),strKey);
-		}
-		
+		}		
 	}
 	
 	/**
