@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/01/31 10:25:22 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/01/31 17:01:55 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.78 $ $Date: 2003/01/31 10:25:22 $
+ * @version $Revision: 1.79 $ $Date: 2003/01/31 17:01:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -239,7 +239,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -259,8 +258,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         int curProject = cms.getRequestContext().currentProject().getId();
 
         // Get the user's browser
-        String browser = orgReq.getHeader("user-agent");
-        // TESTFIX (AJS) Old code: String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST");
+        String browser = orgReq.getHeader("user-agent");;
         String hostName = orgReq.getScheme() + "://" + orgReq.getServerName() + ":" + orgReq.getServerPort();
 
         // Get all URL parameters
@@ -571,10 +569,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             String relativeRoot = cms.readProperty(file, C_PROPERTY_RELATIVEROOT, true);
             
             // save file contents to our temporary file.
-            //Gridnine AB Aug 8, 2002
-            content = Encoder.unescape(content,
-                cms.getRequestContext().getEncoding());
-            // TODO: Set correct error page here
+            content = Encoder.unescape(content, Encoder.C_URI_ENCODING);
             if((!exitRequested) || saveRequested) {
                 bodyTemplateFile.setEditedTemplateContent(cms, content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]), file, relativeRoot);
             }
@@ -672,8 +667,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // Load the body!
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
         //Gridnine AB Aug 8, 2002
-        content = Encoder.escapeWBlanks(content,
-            cms.getRequestContext().getEncoding());
+        content = Encoder.escapeWBlanks(content, Encoder.C_URI_ENCODING);
         parameters.put(C_PARA_CONTENT, content);
 
         // put the body parameter so that the selectbox can set the correct current value

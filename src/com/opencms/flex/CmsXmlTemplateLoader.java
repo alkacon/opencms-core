@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/01/31 10:01:26 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/01/31 17:00:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.flex.cache.CmsFlexCache;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.launcher.CmsXmlLauncher;
+import com.opencms.util.Encoder;
 
 import java.io.IOException;
 
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -187,10 +188,8 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
                 // The byte array must internally be encoded in the OpenCms
                 // default encoding. It will be converted to the requested encoding 
                 // on the most top-level JSP element
-                if (DEBUG > 1) System.out.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);
-                if (! enc.equalsIgnoreCase(dnc)) {
-                    result = (new String(result, enc)).getBytes(dnc);
-                }                                
+                result = Encoder.changeEncoding(result, enc, dnc);
+                if (DEBUG > 1) System.out.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);                             
                 res.getOutputStream().write(result);
             }        
         }  catch (Exception e) {

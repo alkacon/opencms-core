@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2003/01/31 10:01:26 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/01/31 17:00:10 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -300,7 +300,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         Iterator i = s.iterator();
         // build a string out of the found links
         while (i.hasNext()) {
-            links.append(Encoder.encode((String)i.next(), "UTF-8", true));
+            links.append(Encoder.encode((String)i.next()));
             if (i.hasNext()) links.append(C_EXPORT_HEADER_SEP);
         }
         // set the export header and we are finished
@@ -357,7 +357,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             for (int i=0; i<values.length; i++) {
                 exportUrl.append(key);
                 exportUrl.append("=");
-                exportUrl.append(Encoder.encode(values[i], "UTF-8", true));
+                exportUrl.append(Encoder.encode(values[i]));
                 exportUrl.append("&");
             }
         }
@@ -371,14 +371,14 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             exportUrl.append("&");
             exportUrl.append(C_EXPORT_BODY);
             exportUrl.append("=");
-            exportUrl.append(Encoder.encode(body, "UTF-8", true));            
+            exportUrl.append(Encoder.encode(body));            
         }
         // add the encoding used for the output page to the request
         String encoding = cms.getRequestContext().getEncoding();
         exportUrl.append("&");
         exportUrl.append(C_EXPORT_ENCODING);
         exportUrl.append("=");
-        exportUrl.append(Encoder.encode(encoding, "UTF-8", true));        
+        exportUrl.append(Encoder.encode(encoding));        
         
         if (DEBUG > 2) System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
 
@@ -577,12 +577,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                         // default encoding. In case another encoding is set 
                         // in the 'content-encoding' property of the file, 
                         // we need to re-encode the output here. 
-                        String dnc = A_OpenCms.getDefaultEncoding().trim().toLowerCase();  
-                        String enc = cms.getRequestContext().getEncoding().trim().toLowerCase();
-                        if (! dnc.equals(enc)) {
-                            if (DEBUG > 1) System.err.println("CmsJspLoader.load(): Encoding result from " + dnc + " to " + enc);
-                            result = (new String(result, dnc)).getBytes(enc);                            
-                        }
+                        result = Encoder.changeEncoding(result, A_OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());   
                                                                                                                               
                         // Check for export request links 
                         if (exportmode) {
@@ -675,13 +670,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                         // The byte array will internally be encoded in the OpenCms
                         // default encoding. In case another encoding is set
                         // in the 'content-encoding' property of the file,
-                        // we need to re-encode the output here.
-                        String dnc = A_OpenCms.getDefaultEncoding().trim().toLowerCase();
-                        String enc = cms.getRequestContext().getEncoding().trim().toLowerCase();
-                        if (! dnc.equals(enc)) {
-                            if (DEBUG > 1) System.err.println("CmsJspLoader.loadTemplate(): Encoding result from " + dnc + " to " + enc);
-                            result = (new String(result, dnc)).getBytes(enc);
-                        }                                                
+                        // we need to re-encode the output here
+                        result = Encoder.changeEncoding(result, A_OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used
@@ -908,10 +898,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                     // Encoding project:
                     // Contents of original file where not modified,
                     // just translate to the required JSP encoding (if necessary)
-                    String defaultEncoding = A_OpenCms.getDefaultEncoding().trim().toLowerCase();  
-                    if (! jspEncoding.equals(defaultEncoding)) {
-                        contents = (new String(contents, defaultEncoding)).getBytes(jspEncoding); 
-                    }                    
+                    contents = Encoder.changeEncoding(contents, A_OpenCms.getDefaultEncoding(), jspEncoding);                    
                 }                                         
                 fs.write(contents);                
                 fs.close();

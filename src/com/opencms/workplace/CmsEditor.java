@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/31 17:01:40 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsXmlContent;
@@ -52,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.39 $ $Date: 2003/01/31 17:01:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -67,7 +66,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param templateFile the editor's template file containing different sections
      * @return name of the browser specific section in <code>templateFile</code>
      */
-
     protected String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile, Hashtable parameters) {
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
         String browser = orgReq.getHeader("user-agent");
@@ -113,7 +111,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
@@ -167,18 +164,20 @@ public class CmsEditor extends CmsWorkplaceDefault {
             editFile = readFile(cms, file);
             checkit = true;
 
+            // Read file encoding from the property of the file 
+            String encoding = cms.getRequestContext().getEncoding();
+            encoding = cms.readProperty(file, C_PROPERTY_CONTENT_ENCODING, true, encoding);
+
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.
             if(content == null) {
                 //Gridnine AB Aug 8, 2002
                 try {
-                    content = new String(editFile.getContents(),
-                        cms.getRequestContext().getEncoding());
+                    content = new String(editFile.getContents(), encoding);
                 } catch (UnsupportedEncodingException e) {
                     content = new String(editFile.getContents());
                 }
-                content = Encoder.escapeWBlanks(content,
-                    cms.getRequestContext().getEncoding());
+                content = Encoder.escapeWBlanks(content, Encoder.C_URI_ENCODING);
                 parameters.put(C_PARA_CONTENT, content);
             }
 
@@ -187,11 +186,9 @@ public class CmsEditor extends CmsWorkplaceDefault {
             if(saveRequested) {
                 try{
                     //Gridnine AB Aug 8, 2002
-                    String decodedContent = Encoder.unescape(content,
-                        cms.getRequestContext().getEncoding());
+                    String decodedContent = Encoder.unescape(content, Encoder.C_URI_ENCODING);
                     try {
-                        editFile.setContents(decodedContent.getBytes(
-                            cms.getRequestContext().getEncoding()));
+                        editFile.setContents(decodedContent.getBytes(encoding));
                     } catch (UnsupportedEncodingException e) {
                         editFile.setContents(decodedContent.getBytes());
                     }
@@ -265,7 +262,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
@@ -278,7 +274,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param filename Name of the file to be loaded
      * @return CmsFile object of the loaded file
      */
-
     protected CmsFile readFile(CmsObject cms, String filename) throws CmsException {
         CmsFile result = null;
         try {
@@ -316,7 +311,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of the file that should be edited.
      */
-
     public Object setText(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
             Object userObj) {
         Hashtable parameters = (Hashtable)userObj;
@@ -325,21 +319,5 @@ public class CmsEditor extends CmsWorkplaceDefault {
             content = "";
         }
         return content;
-    }
-    
-    public Object getCharset(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {
-        // Try to find property on file and all parent folders
-        String prop = null;
-        try {
-            I_CmsSession session = cms.getRequestContext().getSession(true);
-            String file = (String)session.getValue("te_file");
-            prop = cms.readProperty(file, C_PROPERTY_CONTENT_ENCODING);
-            while ((prop == null) && (! "".equals(file))) {
-                file = file.substring(0, file.lastIndexOf("/"));
-                prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
-            } 
-        } catch (Exception e) {}
-        if (prop == null) prop = OpenCms.getDefaultEncoding();
-        return prop;
     }
 }
