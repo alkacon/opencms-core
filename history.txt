@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/08/30 12:47:04 $
- * Version: $Revision: 1.564 $
+ * Date   : $Date: 2004/09/20 05:43:29 $
+ * Version: $Revision: 1.565 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - August xx, 2004
+OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - September 20, 2004
 ! Junit test suites now have nice display names
 * Improved "Cache-Control" headers by adding a "max-age=0" for all Workplace requests 
   to prevent caching, this should allow operation with a browser 
@@ -42,6 +42,8 @@ OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - August xx, 2004
 ! WYSIWYG editor: First public version of HtmlArea add-on module
 ! Workplace dialog "Edit external link" is now JSP
 * Fixed issue with static export sending a 404 header during "on-demand" first request
+* Fixed issue with deny permissions not being inherited if "overwrite inherited" is set
+* Fixed issue with "view" permission not working as expected in OpenCms Workplace
 
 OpenCms 5.3.6 Ix - August 2, 2004
 ! Improved core search configuration by adding configurable "input sources" for the indexers
