@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/18 01:48:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/03/18 17:48:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.flex.util.CmsMessages;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.0 beta 2
  */
@@ -78,7 +79,7 @@ public class CmsJspActionElement {
     private CmsFlexResponse m_response;
 
     /** JSP page context */
-    private PageContext m_context;
+    private PageContext m_context;    
     
     /** JSP navigation builder */
     private CmsJspNavBuilder m_navigation = null;    
@@ -216,16 +217,22 @@ public class CmsJspActionElement {
         if (m_notInitialized) return;
         if (parameterMap != null) {
             try {
+                HashMap modParameterMap = new HashMap(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
                 Iterator i = parameterMap.keySet().iterator();
                 while (i.hasNext()) {
                     String key = (String)i.next();
                     Object value = parameterMap.get(key);
-                    if (value instanceof String) {
-                        String[] newValue = new String[] {(String)value };
-                        parameterMap.put(key, newValue);
+                    if (value instanceof String[]) {
+                        modParameterMap.put(key, value);
+                    } else {
+                        if (value == null)
+                            value = "null";
+                        String[] newValue = new String[] { value.toString()};
+                        modParameterMap.put(key, newValue);
                     }
                 }
+                parameterMap = modParameterMap;
             } catch (UnsupportedOperationException e) {
                 // parameter map is immutable, just use it "as is"
             }
@@ -354,6 +361,62 @@ public class CmsJspActionElement {
         } else {
             return defaultValue;
         }
+    }
+
+    /**
+     * Returns all properites of the current file.<p>
+     * 
+     * @return Map all properties of the current file
+     */
+    public Map properties() {
+        return this.properties(null);
+    }
+       
+    /**
+     * Returns all properites of the selected file.<p>
+     * 
+     * Please see the description of the class {@link com.opencms.flex.jsp.CmsJspTagProperty} for
+     * valid options of the <code>file</code> parameter.<p>
+     * 
+     * @param file the file (or folder) to look at for the properties
+     * @return Map all properties of the current file 
+     *     (and optional of the folders containing the file)
+     * 
+     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     */
+    public Map properties(String file) {
+        if (m_notInitialized) return new HashMap();
+        Map value = new HashMap();        
+        try {
+            if (file == null) file = CmsJspTagProperty.USE_URI;   
+            switch (CmsJspTagProperty.m_actionValue.indexOf(file)) {      
+                case 0: // USE_URI
+                case 1: // USE_PARENT
+                    value = getCmsObject().readProperties(getRequestContext().getUri(), false);
+                    break;
+                case 2: // USE_SEARCH
+                case 3: // USE_SEARCH_URI
+                case 4: // USE_SEARCH_PARENT 
+                    value = getCmsObject().readProperties(getRequestContext().getUri(), true);                        
+                    break;                
+                case 5: // USE_ELEMENT_URI
+                case 6: // USE_THIS
+                    // Read properties of this file            
+                    value = getCmsObject().readProperties(m_request.getCmsResource(), false);
+                    break;
+                case 7: // USE_SEARCH_ELEMENT_URI
+                case 8: // USE_SEARCH_THIS
+                    // Try to find property on this file and all parent folders
+                    value = getCmsObject().readProperties(m_request.getCmsResource(), true);
+                    break;
+                default:
+                    // Read properties of the file named in the attribute            
+                    value = getCmsObject().readProperties(m_request.toAbsolute(file), false);
+            }            
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return value;          
     }
     
     /**

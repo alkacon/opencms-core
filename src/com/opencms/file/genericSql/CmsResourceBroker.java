@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/18 01:53:50 $
-* Version: $Revision: 1.366 $
+* Date   : $Date: 2003/03/18 17:48:22 $
+* Version: $Revision: 1.367 $
 
 *
 * This library is part of OpenCms -
@@ -49,6 +49,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -76,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.366 $ $Date: 2003/03/18 01:53:50 $
+ * @version $Revision: 1.367 $ $Date: 2003/03/18 17:48:22 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -128,9 +129,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
      */
     protected int m_limitedWorkplacePort = -1;
 
-    /**
-     *  Define some caches for often read resources
-     */
+    // Define caches for often read resources
     protected Map m_userCache = null;
     protected Map m_groupCache = null;
     protected Map m_userGroupsCache = null;
@@ -142,6 +141,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     protected Map m_resourceCache = null;
     protected Map m_resourceListCache = null;    
     
+    // Constants used for cache property lookup
+    protected static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
+    protected static final String C_CACHE_ALL_PROPERTIES = "__CACHE_ALL_PROPERTIES__";
+        
     protected CmsProject m_onlineProjectCache = null;
     protected int m_cachelimit = 0;
     protected String m_refresh = null;
@@ -6096,7 +6099,8 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     /**
      * Looks up a specified property with optional direcory upward cascading.<p>
      * 
-     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
+     * <b>Security:</b>
+     * Only a user is granted who has the right to read the resource.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
@@ -6120,17 +6124,38 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                 CmsException.C_NO_ACCESS);
         }
         
+        property = property.toLowerCase();
         search = search && (siteRoot != null);
         // check if we have the result already cached
         String cacheKey = getCacheKey(property + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
         String value = (String)m_propertyCache.get(cacheKey);
         
-        if (value == null) {
-            // result not cached, let's look it up in the DB
-            if (search) {
-                String cacheKey2 = getCacheKey(property + false, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
-                value = (String)m_propertyCache.get(cacheKey2);
-                if (value == null) {                    
+        if (value == null) {            
+            // check if the map of all properties for this resource is alreday cached
+            String cacheKey2 = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+            Map allProperties = (HashMap)m_propertyCache.get(cacheKey2);    
+                    
+            if (allProperties != null) {
+                // map of properties already read, look up value there 
+                value = (String)allProperties.get(property);
+                if (value == null) {
+                    // unfortunatly, the Map is case sentitive, so to make really sure we must 
+                    // look up all the entries in the map manually, which should be faster 
+                    // then a check in the DB nevertheless
+                    Iterator i = allProperties.keySet().iterator();
+                    while (i.hasNext()) {
+                        String key = (String)i.next();
+                        if (key.equalsIgnoreCase(property)) {
+                            value = (String)allProperties.get(key);
+                            break;
+                        }
+                    }
+                }                
+            } else if (search) {
+                // result not cached, look it up in the DB with search enabled
+                String cacheKey3 = getCacheKey(property + false, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+                value = (String)m_propertyCache.get(cacheKey3);
+                if ((value == null) || (value == C_CACHE_NULL_PROPERTY_VALUE)) {                    
                     boolean cont;
                     siteRoot += "/";
                     do {
@@ -6140,12 +6165,14 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                     } while (cont);
                 }
             } else {
+                // result not cached, look it up in the DB without search
                 value = m_dbAccess.readProperty(property, currentProject.getId(), res, res.getType());
             }  
+            if (value == null) value = C_CACHE_NULL_PROPERTY_VALUE;
             // store the result in the cache
             m_propertyCache.put(cacheKey, value);
         }
-        return value;
+        return (value == C_CACHE_NULL_PROPERTY_VALUE)?null:value;
     }
 
     /**
@@ -6153,7 +6180,8 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * a default value will be returned if the property is not found on the
      * resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
-     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
+     * <b>Security:</b>
+     * Only a user is granted who has the right to read the resource.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
@@ -6207,7 +6235,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         // check if we have the result already cached
         HashMap value = null;
         
-        String cacheKey = getCacheKey("properties_" + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+        String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
         value = (HashMap)m_propertyCache.get(cacheKey);
         
         if (value == null) {
@@ -8443,8 +8471,8 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param theReport the report to print the output
      * @return an ArrayList with the resource names that were identified as broken links
      * @see com.opencms.file.genericSql.CmsDbAccess#updateResourceFlags
-     * @see com.opencms.file.genericSql.CmsDbAccess#fetchLinkTargetIDs
-     * @see com.opencms.file.genericSql.CmsDbAccess#fetchVfsLinks
+     * @see com.opencms.file.genericSql.CmsDbAccess#fetchAllVfsLinks
+     * @see com.opencms.file.genericSql.CmsDbAccess#fetchResourceID
      * @see com.opencms.file.genericSql.CmsDbAccess#updateAllResourceFlags
      * @throws CmsException
      */

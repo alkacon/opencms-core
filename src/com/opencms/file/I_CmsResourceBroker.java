@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/18 01:49:57 $
-* Version: $Revision: 1.198 $
+* Date   : $Date: 2003/03/18 17:48:22 $
+* Version: $Revision: 1.199 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.198 $ $Date: 2003/03/18 01:49:57 $
+ * @version $Revision: 1.199 $ $Date: 2003/03/18 17:48:22 $
  *
  */
 
@@ -2796,7 +2796,8 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
     /**
      * Looks up a specified property with optional direcory upward cascading.<p>
      * 
-     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
+     * <b>Security:</b>
+     * Only a user is granted who has the right to read the resource.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
@@ -2817,7 +2818,8 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      * a default value will be returned if the property is not found on the
      * resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
-     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
+     * <b>Security:</b>
+     * Only a user is granted who has the right to read the resource.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
@@ -3873,8 +3875,8 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param theReport the report to print the output
      * @return an ArrayList with the resources which were identified as broken links
      * @see com.opencms.file.genericSql.CmsDbAccess#updateResourceFlags
-     * @see com.opencms.file.genericSql.CmsDbAccess#fetchLinkTargetIDs
-     * @see com.opencms.file.genericSql.CmsDbAccess#fetchVfsLinks
+     * @see com.opencms.file.genericSql.CmsDbAccess#fetchAllVfsLinks
+     * @see com.opencms.file.genericSql.CmsDbAccess#fetchResourceID
      * @see com.opencms.file.genericSql.CmsDbAccess#updateAllResourceFlags
      */      
     public ArrayList joinLinksToTargets(CmsObject cms, CmsUser theUser, CmsProject theProject, I_CmsReport theReport)

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/18 01:51:54 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/03/18 17:48:23 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.85 $ $Date: 2003/03/18 01:51:54 $ *
+ * @version $Revision: 1.86 $ $Date: 2003/03/18 17:48:23 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -982,7 +982,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
     /**
      * Added unescaping of property values as MySQL doesn't support Unicode strings
      * 
-     * @see com.opencms.file.genericSql.CmsDbAccess#readAllProperties(int, CmsResource, int)
+     * @see com.opencms.file.genericSql.CmsDbAccess#readProperties(int, CmsResource, int)
      */
     public HashMap readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
         HashMap original = super.readProperties(projectId, resource, resourceType);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/03/14 12:54:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/03/18 17:48:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import com.opencms.util.Encoder;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -106,7 +106,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     private final static int DEBUG = 0;
     
     /** static array of the possible "file" properties */
-    private static final String[] m_actionValues = {
+    public static final String[] m_actionValues = {
             USE_URI,
             USE_PARENT,
             USE_SEARCH,
@@ -119,7 +119,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
         };
 
     /** array list for fast lookup */
-    private static final java.util.List m_actionValue =
+    public static final java.util.List m_actionValue =
         java.util.Arrays.asList(m_actionValues);    
     
     /**
