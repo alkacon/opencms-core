@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2003/07/23 12:23:02 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.66 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.67 $ $Date: 2003/07/23 12:23:02 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -731,7 +731,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         // <link>
         addElement(m_docXml, file, C_EXPORT_TAG_LINK, String.valueOf(resource.getVfsLinkType()));
         // <uuidstructure>
-        addElement(m_docXml, file, C_EXPORT_TAG_UUIDSTRUCTURE,resource.getId().toString());
+        //addElement(m_docXml, file, C_EXPORT_TAG_UUIDSTRUCTURE,resource.getId().toString());
         //  <uuidresource>
         addElement(m_docXml, file, C_EXPORT_TAG_UUIDRESOURCE, resource.getResourceId().toString());
         //  <uuidcontent>
