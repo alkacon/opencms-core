@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.5.22 Chusuk       - xx November 2001
 * Bugfix in import. Importing groups with empty description (null) caused errors.
+- Added templates for generic media-chooser for mastermodules.
 
 OpenCms 4.5.21 Chusuk       - 19 November 2001
 ! Added schedule task management to the workplace.
