@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2004/02/17 11:40:29 $
+* Version: $Revision: 1.14 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -38,17 +40,15 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import com.opencms.template.A_CmsXmlContent;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -58,9 +58,9 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * Holds the functionaility to import resources from the filesystem
@@ -69,8 +69,9 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.14 $ $Date: 2004/02/17 11:40:29 $
  */
 public class CmsImport implements Serializable {
 
@@ -199,6 +200,7 @@ public class CmsImport implements Serializable {
                 m_report.println(m_report.key("report.import_db_noclass"), I_CmsReport.C_FORMAT_WARNING);               
             }
         } catch (CmsException e) {
+            m_report.println(e);
             throw e;
         } finally {
             // close the import file
@@ -220,11 +222,11 @@ public class CmsImport implements Serializable {
         getImportResource();
 
         // read the xml-config file
-        getXmlConfigFile();
+        m_docXml = CmsImport.getXmlDocument(getFileBytes(I_CmsConstants.C_EXPORT_XMLFILENAME));
 
-        // try to read the export version nummber
+        // try to read the export version number
         try {
-            m_importVersion = Integer.parseInt(getTextNodeValue((Element)m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_INFO).item(0), I_CmsConstants.C_EXPORT_TAG_VERSION));
+            m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_EXPORT + "/" + I_CmsConstants.C_EXPORT_TAG_INFO + "/" + I_CmsConstants.C_EXPORT_TAG_VERSION).get(0)).getTextTrim());
         } catch (Exception e) {
             //ignore the exception, the export file has no version nummber (version 0).
         }
@@ -272,19 +274,21 @@ public class CmsImport implements Serializable {
      * @throws CmsException if something goes wrong
      */
     public Vector getConflictingFilenames() throws CmsException {
-        NodeList fileNodes;
+        List fileNodes;
         Element currentElement;
         String source, destination;
         Vector conflictNames = new Vector();
+        //String xpathExpr = null;
+
         try {
             // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
 
             // walk through all files in manifest
-            for (int i = 0; i < fileNodes.getLength(); i++) {
-                currentElement = (Element)fileNodes.item(i);
-                source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
-                destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+            for (int i = 0; i < fileNodes.size(); i++) {
+                currentElement = (Element)fileNodes.get(i);
+                source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+                destination = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 if (source != null) {
                     // only consider files
                     boolean exists = true;
@@ -388,7 +392,7 @@ public class CmsImport implements Serializable {
      * @throws CmsException if something goes wrong
      */
     public Vector getResourcesForProject() throws CmsException {
-        NodeList fileNodes;
+        List fileNodes;
         Element currentElement;
         String destination;
         Vector resources = new Vector();
@@ -399,11 +403,12 @@ public class CmsImport implements Serializable {
             }
 
             // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
+
             // walk through all files in manifest
-            for (int i = 0; i < fileNodes.getLength(); i++) {
-                currentElement = (Element)fileNodes.item(i);
-                destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+            for (int i = 0; i < fileNodes.size(); i++) {
+                currentElement = (Element)fileNodes.get(i);
+                destination = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
 
                 // get the resources for a project
                 try {
@@ -447,45 +452,113 @@ public class CmsImport implements Serializable {
         }
         return resources;
     }
-
+    
     /**
-     * Returns the text for a node.
-     *
-     * @param elem the parent element
-     * @param tag the tagname to get the value from
-     * @return the value of the tag
-     */
-    protected String getTextNodeValue(Element elem, String tag) {
-        try {
-            return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
-        } catch (Exception exc) {
-            // ignore the exception and return null
-            return null;
-        }
-    }
-
-    /**
-     * Gets the xml-config file from the import resource and stores it in object-member.
-     * Checks whether the import is from a module file
+     * Creates a dom4j document out a specified byte array.<p>
      * 
+     * @param content the byte array
+     * @return a dom4j document
      * @throws CmsException if something goes wrong
      */
-    private void getXmlConfigFile() throws CmsException {
+    static Document getXmlDocument(byte[] content) throws CmsException {
+        ByteArrayInputStream stream = null;
+        Document doc = null;
+        
         try {
-            InputStream in = new ByteArrayInputStream(getFileBytes(I_CmsConstants.C_EXPORT_XMLFILENAME));
+            stream = new ByteArrayInputStream(content);
+            SAXReader saxReader = new SAXReader();
+            doc = saxReader.read(stream);
+        } catch (Exception e) {            
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);            
+        } finally {
             try {
-                m_docXml = A_CmsXmlContent.getXmlParser().parse(in);
-            } finally {
-                try {
-                    in.close();
-                } catch (Exception e) {
-                    // ignore
+                if (stream != null) {
+                    stream.close();
                 }
+            } catch (Exception e) {
+                // noop
             }
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
+        
+        return doc;
+    }    
+
+    /**
+     * Creates a dom4j document out of a specified string.<p>
+     * 
+     * @param content the string
+     * @return a dom4j document
+     * @throws CmsException if something goes wrong
+     */
+    static Document getXmlDocument(String content) throws CmsException {
+        StringReader reader = null;
+        Document doc = null;
+        
+        try {
+            reader = new StringReader(content);
+            SAXReader saxReader = new SAXReader();
+            doc = saxReader.read(reader);
+        } catch (Exception e) {            
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);            
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
+        }
+        
+        return doc;
     }
+    
+    /**
+     * Creates a dom4j document out of a specified reader.<p>
+     * 
+     * The specified reader will be forced to be closed inside this method!<p>
+     * 
+     * @param reader the reader
+     * @return a dom4j document
+     * @throws CmsException if something goes wrong
+     */
+    static Document getXmlDocument(Reader reader) throws CmsException {
+        Document doc = null;
+        
+        try {
+            SAXReader saxReader = new SAXReader();
+            doc = saxReader.read(reader);
+        } catch (Exception e) {            
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);            
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
+        }
+        
+        return doc;
+    }
+
+    /**
+     * Returns the value of a child element with a specified name for a given parent element.<p>
+     *
+     * @param parentElement the parent element
+     * @param elementName the child element name
+     * @return the value of the child node, or null if something went wrong
+     */
+    static String getChildElementTextValue(Element parentElement, String elementName) {
+        try {
+            // get the first child element matching the specified name
+            Element childElement = (Element) parentElement.selectNodes("./" + elementName).get(0);
+            // return the value of the child element
+            return childElement.getTextTrim();
+        } catch (Exception e) {
+            return null;
+        }
+    }    
 
 }

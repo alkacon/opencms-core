@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/02/17 11:40:29 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -44,8 +45,6 @@ import org.opencms.util.CmsUUID;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
-import org.opencms.file.CmsObject;
-import com.opencms.template.A_CmsXmlContent;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,12 +59,12 @@ import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.dom4j.Document;
+import org.dom4j.Element;
 
 /**
  * Holds the functionaility to import resources from the filesystem
@@ -73,8 +72,9 @@ import org.w3c.dom.NodeList;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.21 $ $Date: 2004/02/17 11:40:29 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -134,6 +134,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             importModuleMasters();
             m_report.println(m_report.key("report.import_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsException e) {
+            m_report.println(e);
             throw e;
         } finally {
             // close the import file
@@ -166,20 +167,20 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
 
         }
         // now get the moduledata for import
-        NodeList masterNodes;
+        List masterNodes;
         Element currentElement;
         String subid;
 
         try {
             // get all master-nodes
-            masterNodes = m_docXml.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_MASTER);
-            int length = masterNodes.getLength();
+            masterNodes = m_docXml.selectNodes("//" + CmsExportModuledata.C_EXPORT_TAG_MASTER);
+            int length = masterNodes.size();
 
             // walk through all files in manifest
             for (int i = 0; i < length; i++) {
-                currentElement = (Element)masterNodes.item(i);
+                currentElement = (Element)masterNodes.get(i);
                 // get the subid of the modulemaster
-                subid = getTextNodeValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
+                subid = CmsImport.getChildElementTextValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
                 // check if there exists a module with this subid
                 String classname = (String)availableModules.get(subid);
                 if ((classname != null) && !("".equals(classname.trim()))) {
@@ -266,15 +267,15 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
 
         // get the file with the dataset of the master
-        datasetfile = getTextNodeValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET);
-        Document datasetXml = this.getXmlFile(datasetfile);
-        Element dataset = datasetXml.getDocumentElement();
+        datasetfile = CmsImport.getChildElementTextValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET);
+        Document datasetXml = CmsImport.getXmlDocument(getFileReader(datasetfile));
+        Element dataset = (Element) datasetXml.selectNodes("//" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0);
         // get the information from the dataset and add it to the dataset
         // first add the subid
         newDataset.m_subId = subId;
         newDataset.m_masterId = CmsUUID.getNullUUID();
         // get the id of the user or set the owner to the current user
-        username = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
+        username = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
         CmsUUID userId = m_cms.getRequestContext().currentUser().getId();
         try {
             if ((username != null) && !("".equals(username.trim()))) {
@@ -285,7 +286,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user        
-        groupname = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
+        groupname = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
 
         CmsUUID groupId = CmsUUID.getNullUUID();
         try {
@@ -302,56 +303,56 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
 
         newDataset.m_groupId = groupId;
         // set the accessflags or the default flags
-        accessFlags = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ACCESSFLAGS);
+        accessFlags = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ACCESSFLAGS);
         try {
             newDataset.m_accessFlags = Integer.parseInt(accessFlags);
         } catch (Exception e) {
             newDataset.m_accessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         }
         // set the publication date
-        publicationDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
+        publicationDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
         try {
             newDataset.m_publicationDate = convertDate(publicationDate);
         } catch (Exception e) {
             // ignore
         }
         // set the purge date
-        purgeDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PURGEDATE);
+        purgeDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PURGEDATE);
         try {
             newDataset.m_purgeDate = convertDate(purgeDate);
         } catch (Exception e) {
             // ignore
         }
         // set the flags
-        flags = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FLAGS);
+        flags = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FLAGS);
         try {
             newDataset.m_flags = Integer.parseInt(flags);
         } catch (Exception e) {
             // ignore
         }
         // set the feedid
-        feedId = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDID);
+        feedId = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDID);
         try {
             newDataset.m_feedId = Integer.parseInt(feedId);
         } catch (Exception e) {
             // ignore
         }
         // set the feedreference
-        feedReference = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDREFERENCE);
+        feedReference = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDREFERENCE);
         try {
             newDataset.m_feedReference = Integer.parseInt(feedReference);
         } catch (Exception e) {
             // ignore
         }
         // set the feedfilenam
-        feedFilename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDFILENAME);
+        feedFilename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDFILENAME);
         newDataset.m_feedFilename = feedFilename;
         // set the masters title
-        title = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_TITLE);
+        title = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_TITLE);
         newDataset.m_title = title;
         // set the values of data_big
         for (int i = 0; i < newDataset.m_dataBig.length; i++) {
-            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATABIG + i);
+            String filename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATABIG + i);
             String value = new String();
             if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
@@ -361,7 +362,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_medium
         for (int i = 0; i < newDataset.m_dataMedium.length; i++) {
-            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAMEDIUM + i);
+            String filename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAMEDIUM + i);
             String value = new String();
             if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
@@ -371,7 +372,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_small
         for (int i = 0; i < newDataset.m_dataSmall.length; i++) {
-            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASMALL + i);
+            String filename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASMALL + i);
             String value = new String();
             if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
@@ -381,7 +382,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_int
         for (int i = 0; i < newDataset.m_dataInt.length; i++) {
-            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAINT + i);
+            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAINT + i);
             try {
                 newDataset.m_dataInt[i] = new Integer(value).intValue();
             } catch (Exception e) {
@@ -390,7 +391,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_reference
         for (int i = 0; i < newDataset.m_dataReference.length; i++) {
-            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAREFERENCE + i);
+            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAREFERENCE + i);
             try {
                 newDataset.m_dataReference[i] = new Integer(value).intValue();
             } catch (Exception e) {
@@ -399,7 +400,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_date
         for (int i = 0; i < newDataset.m_dataDate.length; i++) {
-            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATADATE + i);
+            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATADATE + i);
             try {
                 newDataset.m_dataDate[i] = convertDate(value);
             } catch (Exception e) {
@@ -418,12 +419,12 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     private Vector getMasterChannelRelation(Element currentElement) {
         Vector channelRelations = new Vector();
         // get the channelnames of the master
-        NodeList channelNodes = currentElement.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
+        List channelNodes = currentElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
 
         // walk through all channelrelations
-        for (int j = 0; j < channelNodes.getLength(); j++) {
+        for (int j = 0; j < channelNodes.size(); j++) {
             // get the name of the channel
-            String channelName = ((Element)channelNodes.item(j)).getFirstChild().getNodeValue();
+            String channelName = ((Element) channelNodes.get(j)).getTextTrim();
             // try to read the channel and get its channelid
             if ((channelName != null) && !("".equals(channelName.trim()))) {
                 channelRelations.addElement(channelName);
@@ -442,11 +443,11 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     private Vector getMasterMedia(Element currentElement) throws CmsException {
         Vector masterMedia = new Vector();
         // get the mediafiles of the master
-        NodeList mediaNodes = currentElement.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
+        List mediaNodes = currentElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
         // walk through all media
-        for (int j = 0; j < mediaNodes.getLength(); j++) {
+        for (int j = 0; j < mediaNodes.size(); j++) {
             // get the name of the file where the mediadata is stored
-            String mediaFilename = ((Element)mediaNodes.item(j)).getFirstChild().getNodeValue();
+            String mediaFilename = ((Element) mediaNodes.get(j)).getTextTrim();
             // try to get the information of the media
             if ((mediaFilename != null) && !("".equals(mediaFilename.trim()))) {
                 CmsMasterMedia newMedia = getMediaData(mediaFilename);
@@ -468,48 +469,48 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         // get the new media object
         CmsMasterMedia newMedia = new CmsMasterMedia();
         // get the file with the data of the media
-        Document mediaXml = this.getXmlFile(mediaFilename);
-        Element media = mediaXml.getDocumentElement();
-        position = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION);
+        Document mediaXml = CmsImport.getXmlDocument(getFileReader(mediaFilename));
+        Element media = mediaXml.getRootElement();
+        position = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION);
         try {
             newMedia.setPosition(Integer.parseInt(position));
         } catch (Exception e) {
             // ignore
         }
-        width = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH);
+        width = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH);
         try {
             newMedia.setWidth(Integer.parseInt(width));
         } catch (Exception e) {
             // ignore
         }
-        height = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT);
+        height = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT);
         try {
             newMedia.setHeight(Integer.parseInt(height));
         } catch (Exception e) {
             // ignore
         }
-        size = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE);
+        size = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE);
         try {
             newMedia.setSize(Integer.parseInt(size));
         } catch (Exception e) {
             // ignore
         }
-        mimetype = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE);
+        mimetype = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE);
         newMedia.setMimetype(mimetype);
-        type = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE);
+        type = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE);
         try {
             newMedia.setType(Integer.parseInt(type));
         } catch (Exception e) {
             // ignore
         }
-        title = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE);
+        title = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE);
         newMedia.setTitle(title);
-        name = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME);
+        name = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME);
         newMedia.setName(name);
-        description = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_DESCRIPTION);
+        description = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_DESCRIPTION);
         newMedia.setDescription(description);
         // get the content of the media
-        contentfile = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT);
+        contentfile = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT);
         byte[] mediacontent = null;
         try {
             mediacontent = getFileBytes(contentfile);
@@ -526,40 +527,24 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      *
      * @param filename the name of the file to read
      * @return the file reader for this file
-     * @throws Exception in case something goes wrong
-     */
-    private BufferedReader getFileReader(String filename) throws Exception {
-        // is this a zip-file?
-        if (m_importZip != null) {
-            // yes
-            ZipEntry entry = m_importZip.getEntry(filename);
-            InputStream stream = m_importZip.getInputStream(entry);
-            return new BufferedReader(new InputStreamReader(stream));
-        } else {
-            // no - use directory
-            File xmlFile = new File(m_importResource, filename);
-            return new BufferedReader(new FileReader(xmlFile));
-        }
-    }
-
-    /**
-     * Gets a xml file from the import resource.<p>
-     * 
-     * @param filename the name of the file to read
-     * @return the xml document
      * @throws CmsException in case something goes wrong
      */
-    private Document getXmlFile(String filename) throws CmsException {
-        Document xmlDoc;
+    private BufferedReader getFileReader(String filename) throws CmsException {
         try {
-            BufferedReader xmlReader = getFileReader(filename);
-            xmlDoc = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-            xmlReader.close();
-        } catch (Exception exc) {
-
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            // is this a zip-file?
+            if (m_importZip != null) {
+                // yes
+                ZipEntry entry = m_importZip.getEntry(filename);
+                InputStream stream = m_importZip.getInputStream(entry);
+                return new BufferedReader(new InputStreamReader(stream));
+            } else {
+                // no - use directory
+                File xmlFile = new File(m_importResource, filename);
+                return new BufferedReader(new FileReader(xmlFile));
+            }
+        } catch (Exception e) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
-        return xmlDoc;
     }
 
     /**

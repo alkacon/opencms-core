@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/17 11:40:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,25 +30,22 @@
  */
 package org.opencms.importexport;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.file.CmsObject;
-
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.Locale;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/17 11:40:29 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -76,9 +73,7 @@ public final class CmsXmlPageConverter {
         
         try {
             xmlPage = new CmsXmlPage();
-            
-            SAXReader reader = new SAXReader();
-            Document page = reader.read(new StringReader(content));
+            Document page = CmsImport.getXmlDocument(content);
             
             Element xmltemplate = page.getRootElement();
             if (xmltemplate == null || !"XMLTEMPLATE".equals(xmltemplate.getName())) {

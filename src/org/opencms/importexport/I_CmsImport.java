@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2004/02/14 22:56:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/17 11:40:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.security.MessageDigest;
 import java.util.Vector;
 import java.util.zip.ZipFile;
 
-import org.w3c.dom.Document;
+import org.dom4j.Document;
 
 /**
  * This interface describes a import class which is used to import resources into the VFS.<p>
@@ -58,6 +58,7 @@ import org.w3c.dom.Document;
  * </code>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public interface I_CmsImport {
 
@@ -94,4 +95,5 @@ public interface I_CmsImport {
      * @return the version of the import implementation
      */
     int getVersion();
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/17 11:40:29 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePointer;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -38,11 +42,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypePointer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,19 +61,19 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.dom4j.Document;
+import org.dom4j.Element;
 
 /**
  * Collection of common used methods for implementing OpenCms Import classes.<p>
  * 
  * This class does not implement a real OpenCms import, real import implmentation should be 
- * inherited form this class.
- * 
- * @see org.opencms.importexport.I_CmsImport
+ * inherited form this class.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * 
+ * @see org.opencms.importexport.I_CmsImport
  */
 
 public abstract class A_CmsImport implements I_CmsImport {
@@ -383,7 +382,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected HashMap getPropertiesFromXml(Element currentElement, int resType, String propertyName, String propertyValue, List deleteProperties) throws CmsException {
         // get all properties for this file
-        NodeList propertyNodes = currentElement.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
+        List propertyNodes = currentElement.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_PROPERTIES + "/" + I_CmsConstants.C_EXPORT_TAG_PROPERTY);
         // clear all stores for property information
         HashMap properties = new HashMap();
         // add the module property to properties
@@ -392,14 +391,14 @@ public abstract class A_CmsImport implements I_CmsImport {
             properties.put(propertyName, propertyValue);
         }
         // walk through all properties
-        for (int j = 0; j < propertyNodes.getLength(); j++) {
-            Element currentProperty = (Element)propertyNodes.item(j);
+        for (int j = 0; j < propertyNodes.size(); j++) {
+            Element currentProperty = (Element)propertyNodes.get(j);
             // get name information for this property
-            String name = getTextNodeValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_NAME);
+            String name = CmsImport.getChildElementTextValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_NAME);
             // check if this is an unwanted property
             if ((name != null) && (!deleteProperties.contains(name))) {
                 // get value information for this property
-                String value = getTextNodeValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_VALUE);
+                String value = CmsImport.getChildElementTextValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_VALUE);
                 if (value == null) {
                     // create an empty property
                     value = "";
@@ -410,22 +409,6 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         }
         return properties;
-    }
-
-    /**
-     * Returns the text for a node.
-     *
-     * @param elem the parent element
-     * @param tag the tagname to get the value from
-     * @return the value of the tag
-     */
-    protected String getTextNodeValue(Element elem, String tag) {
-        try {
-            return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
-        } catch (Exception exc) {
-            // ignore the exception and return null
-            return null;
-        }
     }
 
     /**
@@ -551,5 +534,6 @@ public abstract class A_CmsImport implements I_CmsImport {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+        
 
 }

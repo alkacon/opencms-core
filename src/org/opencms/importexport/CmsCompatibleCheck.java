@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 11:40:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,18 +36,20 @@ import org.opencms.file.CmsResourceTypePlain;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import com.opencms.template.A_CmsXmlContent;
+import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * Checks path information on vfs resources.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- *
- * @version $Revision: 1.3 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * 
+ * @version $Revision: 1.4 $
  */
 public class CmsCompatibleCheck {
 
@@ -66,17 +68,17 @@ public class CmsCompatibleCheck {
      */
     private boolean checkElementDefOk(Element el) {
         // first the name
-        String elementName = el.getAttribute("name");
+        String elementName = el.attribute("name").getText();
         if (!("contenttemplate".equalsIgnoreCase(elementName) || "frametemplate".equalsIgnoreCase(elementName))) {
             // no other elementdefinition allowed
             return false;
         }
         // now the templateclass only the standard class is allowed
-        String elClass = el.getElementsByTagName("CLASS").item(0).getFirstChild().getNodeValue();
+        String elClass = CmsImport.getChildElementTextValue(el,"CLASS");
         if (!I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS.equals(elClass)) {
             return false;
         }
-        String elTemplate = el.getElementsByTagName("TEMPLATE").item(0).getFirstChild().getNodeValue();
+        String elTemplate = CmsImport.getChildElementTextValue(el,"TEMPLATE");
         if (elTemplate == null || elTemplate.indexOf(elementName) < 1) {
             // it must be in the path /content/"elementName"/ or in
             // the path /system/modules/"modulename"/"elementName"/
@@ -93,25 +95,25 @@ public class CmsCompatibleCheck {
      */
     private boolean checkTemplateTagOk(Element el) {
 
-        NodeList list = el.getChildNodes();
-        if (list.getLength() > 3) {
+        List list = el.elements();
+        if (list.size() > 3) {
             // only the one template tag allowed (and the two empty text nodes)
             return false;
         }
-        for (int i = 0; i < list.getLength(); i++) {
-            Node n = list.item(i);
+        for (int i = 0; i < list.size(); i++) {
+            Node n = (Node) list.get(i);
             short ntype = n.getNodeType();
             if (ntype == Node.TEXT_NODE) {
-                String nodeValue = n.getNodeValue();
+                String nodeValue = n.getText();
                 if ((nodeValue != null) && (nodeValue.trim().length() > 0)) {
                     return false;
                 }
             } else if (ntype == Node.ELEMENT_NODE) {
                 // this should be <ELEMENT name="frametemplate"/>
-                if (!"element".equalsIgnoreCase(n.getNodeName())) {
+                if (!"element".equalsIgnoreCase(n.getName())) {
                     return false;
                 }
-                if (!"frametemplate".equals(((Element)n).getAttribute("name"))) {
+                if (!"frametemplate".equals(((Element)n).attribute("name").getText())) {
                     return false;
                 }
             } else {
@@ -146,14 +148,14 @@ public class CmsCompatibleCheck {
             }
             // to check the rest we have to parse the content
             try {
-                org.w3c.dom.Document xmlDoc = A_CmsXmlContent.getXmlParser().parse(new java.io.StringReader(new String(content)));
-                for (Node n = xmlDoc.getFirstChild(); n != null; n = treeWalker(xmlDoc, n)) {
+                Document xmlDoc = DocumentHelper.parseText(new String(content));
+                for (Node n = (Node) xmlDoc.content().get(0); n != null; n = treeWalker(xmlDoc, n)) {
                     short ntype = n.getNodeType();
                     if (((ntype > Node.CDATA_SECTION_NODE) && ntype < Node.DOCUMENT_TYPE_NODE) || (ntype == Node.ATTRIBUTE_NODE)) {
                         return false;
                     }
                     if (n.getNodeType() == Node.ELEMENT_NODE) {
-                        String tagName = n.getNodeName();
+                        String tagName = n.getName();
                         if (!("template".equalsIgnoreCase(tagName) || "xmltemplate".equalsIgnoreCase(tagName))) {
                             return false;
                         }
@@ -171,19 +173,20 @@ public class CmsCompatibleCheck {
             }
             // to check the rest we have to parse the content
             try {
-                org.w3c.dom.Document xmlDoc = A_CmsXmlContent.getXmlParser().parse(new java.io.StringReader(new String(content)));
+                Document xmlDoc = DocumentHelper.parseText(new String(content));                
+                
                 // we check the sub nodes from <xmltemplate>
                 // there should be the two elementdefs, one template and some empty text nodes
-                NodeList list = xmlDoc.getChildNodes();
-                list = (list.item(0)).getChildNodes();
+                List list = xmlDoc.getRootElement().content();
+                list = ((Element) list.get(0)).content();
                 int counterEldefs = 0;
                 int counterTeplate = 0;
-                for (int i = 0; i < list.getLength(); i++) {
-                    Node n = list.item(i);
+                for (int i = 0; i < list.size(); i++) {
+                    Node n = (Node) list.get(i);
                     short nodeType = n.getNodeType();
                     if (nodeType == Node.ELEMENT_NODE) {
                         // allowed is the Elementdef or the template tag
-                        String nodeName = n.getNodeName();
+                        String nodeName = n.getName();
                         if ("elementdef".equalsIgnoreCase(nodeName)) {
                             // check the rules for the elementdefinitions
                             if (!checkElementDefOk((Element)n)) {
@@ -203,7 +206,7 @@ public class CmsCompatibleCheck {
 
                     } else if (nodeType == Node.TEXT_NODE) {
                         // text node is only allowed if the value is empty
-                        String nodeValue = n.getNodeValue();
+                        String nodeValue = n.getText();
                         if ((nodeValue != null) && (nodeValue.trim().length() > 0)) {
                             return false;
                         }
@@ -233,40 +236,64 @@ public class CmsCompatibleCheck {
      */
     private Node treeWalker(Node root, Node n) {
         Node nextnode = null;
-        if (n.hasChildNodes()) {
+        if (n.hasContent()) {
             // child has child notes itself
             // process these first in the next loop
-            nextnode = n.getFirstChild();
+            nextnode = (Node) ((Element)n).content().get(0);
         } else {
             // child has no subchild.
             // so we take the next sibling
-            nextnode = treeWalkerWidth(root, n);
+            nextnode = treeWalkerBreadth(root, n);
         }
         return nextnode;
     }
 
     /**
-     * Help method to walk through the DOM document tree by a width-first-order.<p>
+     * Help method to walk through the document tree by a breadth-first-order.<p>
      * 
      * @param root the root Node
      * @param n a Node representing the current position in the tree
      * @return next node
      */
-    private Node treeWalkerWidth(Node root, Node n) {
+    private Node treeWalkerBreadth(Node root, Node n) {
         if (n == root) {
             return null;
         }
         Node nextnode = null;
         Node parent = null;
-        nextnode = n.getNextSibling();
-        parent = n.getParentNode();
+        nextnode = getNextSibling(n);        
+        parent = n.getParent();
         while (nextnode == null && parent != null && parent != root) {
             // child has sibling
             // last chance: we take our parent's sibling
             // (or our grandparent's sibling...)
-            nextnode = parent.getNextSibling();
-            parent = parent.getParentNode();
+            nextnode = getNextSibling(parent);
+            parent = parent.getParent();
         }
         return nextnode;
     }
+    
+    /**
+     * Returns the next sibling of a node.<p>
+     * 
+     * @param node the node
+     * @return the next sibling, or null
+     */
+    private Node getNextSibling(Node node) {
+        Node parent = null;
+        Node sibling = null;
+        List content = null;
+        int i = 0;
+
+        if ((parent = node.getParent()) != null) {
+            content = ((Element) parent).content();
+            i = content.indexOf(node);
+            if (i < content.size() - 1) {
+                sibling = (Node) content.get(i + 1);
+            }
+        }
+
+        return sibling;
+    }
+    
 }
