@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/15 09:50:41 $
- * Version: $Revision: 1.275 $
+ * Date   : $Date: 2003/10/17 14:21:41 $
+ * Version: $Revision: 1.276 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.275 $ $Date: 2003/10/15 09:50:41 $
+ * @version $Revision: 1.276 $ $Date: 2003/10/17 14:21:41 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1208,7 +1208,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // check the resource flags
             int flags = sourceFile.getFlags();
             if (sourceFile.isLabeled()) {
-                // reset "labeled" link flag
+                // reset "labeled" link flag for new resource
                 flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
 
@@ -2003,21 +2003,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // construct a dummy that is written to the db
         linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, CmsResourceTypeLink.C_RESOURCE_TYPE_ID, targetResource.getFlags(), context.currentProject().getId(), com.opencms.core.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
 
-        // check if the target resource is already marked
-        if (!targetResource.isLabeled()) {
-            // check if the new link lies in the "marked sites"
-            List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
-            Iterator i = markedSites.iterator();
-            while (i.hasNext()) {
-                String curSite = (String)i.next();
-                if (linkName.startsWith(curSite) || targetResource.getRootPath().startsWith(curSite)) {
-                    // the link or target lies in the marked site, so update the file header!
-                    int flags = linkResource.getFlags();
-                    flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-                    linkResource.setFlags(flags);
-                    break;
-                }
-            }
+        // check if the resource has to be labeled now
+        if (labelResource(context, targetResource, linkName, 1)) {
+            int flags = linkResource.getFlags();
+            flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+            linkResource.setFlags(flags);
         }
 
         // setting the full resource name twice here looks crude but is essential!
@@ -2265,7 +2255,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     // remove the access control entries
                     m_userDriver.removeAccessControlEntries(context.currentProject(), currentResource.getResourceId());
                     // the resource doesn't exist online => remove the file
-                    if (currentResource.isLabeled() && !hasLabeledLinks(context, currentResource)) {
+                    if (currentResource.isLabeled() && !labelResource(context, currentResource, null, 2)) {
                         // update the resource flags to "unlabel" the other siblings
                         int flags = currentResource.getFlags();
                         flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
@@ -4156,41 +4146,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Checks if one of the resources VFS links (except the resource itself) resides in a "labeled" site folder.<p>
-     *   
-     * @param context the current request context
-     * @param resource the resource
-     * @return true if the flag should be removed from the resource, otherwise false
-     * @throws CmsException if something goes wrong
-     */
-    public boolean hasLabeledLinks(CmsRequestContext context, CmsResource resource) throws CmsException {
-        boolean hasLinks = false;
-        if (resource.isLabeled()) {
-            // get the list of labeled site folders from the runtime property
-            List labeledSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
-
-            // check if one of the other vfs links lies in a labeled site folder
-            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
-            Iterator i = vfsLinkList.iterator();
-            while (i.hasNext()) {
-                CmsResource currentResource = (CmsResource)i.next();
-                if (currentResource.equals(resource)) {
-                    continue;
-                }
-                currentResource.setFullResourceName(readPath(context, currentResource, true));
-                String curPath = currentResource.getRootPath();
-                for (int k = 0; k < labeledSites.size(); k++) {
-                    if (curPath.startsWith((String)labeledSites.get(k))) {
-                        // one link is still in the marked site
-                        return true;
-                    }
-                }
-            }
-        }
-        return hasLinks;
-    }
-
-    /**
      * Performs a non-blocking permission check on a resource.<p>
      *
      * @param context the current request context
@@ -4352,26 +4307,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
 
             // check if a link to the imported resource lies in a marked site
-            // get the list of marked sites from the runtime property
-            List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
-            // now check if one of the other vfs links lies in a marked site
-            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
-            setFullResourceNames(context, vfsLinkList);
-            Iterator i = vfsLinkList.iterator();
-            boolean markedFound = false;
-            while (!markedFound && i.hasNext()) {
-                CmsResource currentResource = (CmsResource)i.next();
-                String curPath = currentResource.getRootPath();
-                for (int k = 0; k < markedSites.size(); k++) {
-                    if (curPath.startsWith((String)markedSites.get(k))) {
-                        // one link is in a marked site, so update the flags
-                        int flags = resource.getFlags();
-                        flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-                        resource.setFlags(flags);
-                        markedFound = true;
-                    }
-                }
-            }
+            if (labelResource(context, resource, newResourceName, 2)) {
+                int flags = resource.getFlags();
+                flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+                resource.setFlags(flags);
+            }            
         }
 
         // checks, if the filename is valid, if not it throws a exception
@@ -4652,6 +4592,97 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw e;
         }
         return true;
+    }
+    
+    /**
+    * Checks if one of the resources VFS links (except the resource itself) resides in a "labeled" site folder.<p>
+    * 
+    * This method is used when creating a new sibling (use the newResource parameter & action = 1) or deleting/importing a resource (call with action = 2).<p> 
+    *   
+    * @param context the current request context
+    * @param resource the resource
+    * @param newResource absolute path for a resource sibling which will be created
+    * @param action the action which has to be performed (1 = create VFS link, 2 all other actions)
+    * @return true if the flag should be set for the resource, otherwise false
+    * @throws CmsException if something goes wrong
+    */
+    public boolean labelResource(CmsRequestContext context, CmsResource resource, String newResource, int action) throws CmsException {
+        // get the list of labeled site folders from the runtime property
+        List labeledSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+        
+        if (action == 1) {
+            // CASE 1: a new resource is created, check the sites
+            if (!resource.isLabeled()) {
+                // source isn't labeled yet, so check!
+                boolean linkInside = false;
+                boolean sourceInside = false;
+                Iterator i = labeledSites.iterator();
+                while (i.hasNext()) {
+                    String curSite = (String)i.next();
+                    if (newResource.startsWith(curSite)) {
+                        // the link lies in a labeled site
+                        linkInside = true;
+                    }
+                    if (resource.getRootPath().startsWith(curSite)) {
+                        // the source lies in a labeled site
+                        sourceInside = true;
+                    }
+                }
+                // return true when either source or link is in labeled site, otherwise false
+                return (linkInside != sourceInside);
+            }
+            // resource is already labeled
+            return false;
+            
+        } else {
+            // CASE 2: the resource will be deleted or created (import)
+            // check if at least one of the other siblings resides inside a "labeled site"
+            // and if at least one of the other siblings resides outside a "labeled site"
+            boolean isInside = false;
+            boolean isOutside = false;
+            // check if one of the other vfs links lies in a labeled site folder
+            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
+            setFullResourceNames(context, vfsLinkList);
+            Iterator i = vfsLinkList.iterator();
+            while (i.hasNext() && (!isInside || !isOutside)) {
+                CmsResource currentResource = (CmsResource)i.next();
+                if (currentResource.equals(resource)) {
+                    // dont't check the resource itself!
+                    continue;
+                }
+                String curPath = currentResource.getRootPath();
+                boolean curInside = false;
+                for (int k = 0; k < labeledSites.size(); k++) {
+                    if (curPath.startsWith((String)labeledSites.get(k))) {
+                        // the link is in the labeled site
+                        isInside = true;
+                        curInside = true;
+                        break;
+                    }
+                }
+                if (!curInside) {
+                    // the current link was not found in labeled site, so it is outside
+                    isOutside = true;
+                }   
+            }
+            // now check the new resource name if present
+            if (newResource != null) {
+                boolean curInside = false;
+                for (int k = 0; k < labeledSites.size(); k++) {
+                    if (newResource.startsWith((String)labeledSites.get(k))) {
+                        // the new resource is in the labeled site
+                        isInside = true;
+                        curInside = true;
+                        break;
+                    }
+                }
+                if (!curInside) {
+                    // the new resource was not found in labeled site, so it is outside
+                    isOutside = true;
+                }   
+            }
+            return (isInside && isOutside);
+        }
     }
 
     /**
@@ -5133,7 +5164,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
                 }
 
-                // finally set the refrish signal to another server if nescessary
+                // finally set the refresh signal to another server if necessary
                 if (m_refresh.length() > 0) {
                     try {
                         URL url = new URL(m_refresh);
@@ -7175,7 +7206,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             state = I_CmsConstants.C_STATE_NEW;
         }
         if (backupFile != null && offlineFile != null) {
-            CmsFile newFile = new CmsFile(offlineFile.getStructureId(), offlineFile.getResourceId(), offlineFile.getParentStructureId(), offlineFile.getFileId(), offlineFile.getName(), backupFile.getType(), backupFile.getFlags(), context.currentProject().getId(), state, backupFile.getLoaderId(), offlineFile.getDateCreated(), backupFile.getUserCreated(), offlineFile.getDateLastModified(), context.currentUser().getId(), backupFile.getLength(), backupFile.getLinkCount(), backupFile.getContents());
+            // get the backed up flags 
+            int flags = backupFile.getFlags();
+            if (offlineFile.isLabeled()) {
+                // set the flag for labeled links on the restored file
+                flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+            }
+            CmsFile newFile = new CmsFile(offlineFile.getStructureId(), offlineFile.getResourceId(), offlineFile.getParentStructureId(), offlineFile.getFileId(), offlineFile.getName(), backupFile.getType(), flags, context.currentProject().getId(), state, backupFile.getLoaderId(), offlineFile.getDateCreated(), backupFile.getUserCreated(), offlineFile.getDateLastModified(), context.currentUser().getId(), backupFile.getLength(), backupFile.getLinkCount(), backupFile.getContents());
             writeFile(context, newFile);
 
             // now read the backup properties

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/17 07:46:58 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2003/10/17 14:21:40 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.126 $ $Date: 2003/10/17 07:46:58 $
+ * @version $Revision: 1.127 $ $Date: 2003/10/17 14:21:40 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -832,18 +832,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     throw e;
                 }
 
-                if (offlineFileHeader.isLabeled() && !m_driverManager.hasLabeledLinks(context, offlineFileHeader)) {
+                if (offlineFileHeader.isLabeled() && !m_driverManager.labelResource(context, offlineFileHeader, null, 2)) {
                     // update the resource flags to "unlabeled" of the siblings of the offline resource
                     int flags = offlineFileHeader.getFlags();
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                     offlineFileHeader.setFlags(flags);
-                }
-
-                if (onlineFileHeader.isLabeled() && !m_driverManager.hasLabeledLinks(context, onlineFileHeader)) {
-                    // update the resource flags to "unlabeled" of the siblings of the online resource
-                    int flags = onlineFileHeader.getFlags();
-                    flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-                    onlineFileHeader.setFlags(flags);
                 }
                 
                 try {
@@ -927,7 +920,12 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the file header online                   
                     onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), false);
-                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath());                    
+                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath()); 
+                    
+                    // reset the labeled link flag before writing the online file
+                    int flags = offlineFileHeader.getFlags();
+                    flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+                    offlineFileHeader.setFlags(flags);                   
 
                     // delete the properties online
                     m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader);
@@ -1019,6 +1017,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 report.print(report.key("report.dots"));
 
                 try {
+                    // reset the labeled link flag before writing the online file
+                    int flags = offlineFileHeader.getFlags();
+                    flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+                    offlineFileHeader.setFlags(flags);     
+                    
                     // publish the file content
                     newFile = m_driverManager.getProjectDriver().publishFileContent(context.currentProject(), onlineProject, offlineFileHeader, publishedContentIds);
                 } catch (CmsException e) {
@@ -1128,7 +1131,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // create the file online              
                 newFile = (CmsFile) offlineFile.clone();
                 newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                newFile.setFullResourceName(offlineFileHeader.getRootPath());  
+                            
                 m_driverManager.getVfsDriver().createFile(onlineProject, newFile, offlineFile.getUserCreated(), newFile.getParentStructureId(), newFile.getName());
 
                 // update the online/offline structure and resource records of the file

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/10/17 14:21:41 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.22 $ $Date: 2003/10/15 09:50:42 $
+ * @version $Revision: 1.23 $ $Date: 2003/10/17 14:21:41 $
  */
 public class CmsExport implements Serializable {
 
@@ -681,7 +681,9 @@ public class CmsExport implements Serializable {
         // <usercreated>
         e.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());
         // <flags>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resource.getFlags()));
+        int resFlags = resource.getFlags();
+        resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+        e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resFlags));
 
         // append the node for properties
         Element p = e.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
