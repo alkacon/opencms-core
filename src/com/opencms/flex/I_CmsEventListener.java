@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/08/29 10:13:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/01 16:44:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -106,7 +106,7 @@ public interface I_CmsEventListener {
     int EVENT_PUBLISH_BO_RESOURCE = 4;    
         
     /** 
-     * Event "all caches mut be cleared".<p>
+     * Event "all caches must be cleared".<p>
      *
      * Not thrown by the core classes, but might be used in modules.
      */

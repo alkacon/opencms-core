@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.186 $
+ * Date   : $Date: 2003/09/01 16:44:53 $
+ * Version: $Revision: 1.187 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.186 $ $Date: 2003/09/01 09:09:17 $
+ * @version $Revision: 1.187 $ $Date: 2003/09/01 16:44:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1163,6 +1163,8 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", newResource)));
     }
 
     /**
@@ -1246,6 +1248,8 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         m_resourceListCache.clear();
         m_accessCache.clear();
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", newResource)));
     }
 
     /**
@@ -1338,6 +1342,18 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
+    
+    public int countLockedResources(CmsRequestContext context, String foldername) throws CmsException {
+        // check the security
+        if (isAdmin(context) || isManagerOfProject(context) || (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
+            // count locks
+            return m_lockDispatcher.countExclusiveLocksInFolder(foldername);
+        } else if (!isAdmin(context) && !isManagerOfProject(context)) {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
+        } else {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+        }
+    }    
 
     /**
      * Creates a project for the direct publish.<p>
@@ -3242,23 +3258,6 @@ public class CmsDriverManager extends Object {
     private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
         CmsFolder parentFolder = readFolder(context, folder);        
         return (Set) new HashSet(m_vfsDriver.getFolderTree(context.currentProject(), parentFolder));
-        
-        /*
-        Set storage = new HashSet();
-        // get the folder tree of the given folder
-        List folders = getFolderTree(context, readFolder(context, folder));
-        // extract all id's in a hashset. 
-        Iterator j = folders.iterator();
-        while (j.hasNext()) {
-            CmsResource fold = (CmsResource) j.next();
-            // check if this folder is not marked as deleted
-            if (fold.getState() != I_CmsConstants.C_STATE_DELETED) {
-                // check the read access to the folder
-                storage.add(fold.getId());
-            }
-        }
-        return storage;
-        */
     }
 
     /**
@@ -4416,6 +4415,8 @@ public class CmsDriverManager extends Object {
 
         // update the resource cache
         clearResourceCache();
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
     
     public void changeLock(CmsRequestContext context, String resourcename) throws CmsException {
@@ -4644,7 +4645,7 @@ public class CmsDriverManager extends Object {
         // lock the new resource
         lockResource(context,destinationName);
         
-        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", source)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", source)));
     }
     
     
@@ -4872,7 +4873,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report) throws CmsException {
+    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report, CmsResource directPublishResource) throws CmsException {
         CmsPublishedResources allChanged = new CmsPublishedResources(context.currentProject());
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
@@ -4889,7 +4890,7 @@ public class CmsDriverManager extends Object {
                     versionId = 0;
                 }
                 
-                changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), versionId, report, m_registry.getExportpoints());
+                changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), versionId, report, m_registry.getExportpoints(), directPublishResource);
 
                 // now publish the module masters
                 Vector publishModules = new Vector();
@@ -5387,7 +5388,11 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
 
         // set full resource name
-        resource.setFullResourceName(filename);
+        if (resource.isFolder()) {
+            resource.setFullResourceName(filename + I_CmsConstants.C_FOLDER_SEPARATOR);
+        } else {
+            resource.setFullResourceName(filename);
+        }
 
         // access was granted - return the file-header.
         return resource;
@@ -7526,53 +7531,6 @@ public class CmsDriverManager extends Object {
         
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", res)));
     }
-    
-//    /**
-//     * Access the driver underneath to change the timestamp of a resource.
-//     * 
-//     * @param context.currentUser() the currentuser who requested this method
-//     * @param context.currentProject() the current project of the user 
-//     * @param resourceName the name of the resource to change
-//     * @param timestamp timestamp the new timestamp of the changed resource
-//     * @param user the user who is inserted as userladtmodified 
-//     */
-//    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp, CmsUUID user) throws CmsException {
-//        
-//        // NOTE: this is the new way to update the state !
-//        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-//            res.setState(I_CmsConstants.C_STATE_CHANGED);
-//                
-//        res.setDateLastModified(timestamp);
-//        res.setUserLastModified(user);
-//        m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_STRUCTURE);
-//        
-//        clearResourceCache();
-//        fileSystemChanged(res.isFolder());        
-//    }   
-    
-//    /**
-//     * Removes the deleted mark for all access control entries of a given resource
-//     * 
-//     * <B>Security:</B>
-//     * Access is granted, if:
-//     * <ul>
-//     * <li>the current user has write permission on the resource
-//     * </ul>
-//     * 
-//     * @param context the current request context	
-//     * @param resource			the resource
-//     * @throws CmsException		if something goes wrong
-//     */
-//    private void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
-//
-//        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-//
-//        m_userDriver.undeleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
-//        clearAccessControlListCache();
-//        
-//        // not here
-//        //touchResource(context, resource, System.currentTimeMillis());
-//    }
 
     /**
      * Undeletes a file in the Cms.<br>
@@ -7758,10 +7716,13 @@ public class CmsDriverManager extends Object {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();   
+        clearResourceCache();
         
-        return oldLock;     
-        }
+        CmsResource resource = readFileHeader(context, resourcename);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+
+        return oldLock;
+    }
         
     /**
      * When a project is published this method aktualises the online link table.

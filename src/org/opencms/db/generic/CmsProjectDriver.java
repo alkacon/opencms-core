@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2003/09/01 16:44:53 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.72 $ $Date: 2003/09/01 09:09:17 $
+ * @version $Revision: 1.73 $ $Date: 2003/09/01 16:44:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1047,7 +1047,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @return a vector of changed or deleted resources
      * @throws CmsException if something goes wrong
      */
-    public synchronized Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints) throws CmsException {
+    public synchronized Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource) throws CmsException {
         CmsExportPointDriver discAccess = null;
         CmsFolder currentFolder = null;
         CmsFile currentFile = null;
@@ -1062,7 +1062,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Vector changedResources = new Vector();
         String currentExportKey = null;
         String currentResourceName = null;
-        //int backupVersionId = 1;
         long publishDate = System.currentTimeMillis();
         Iterator i = null;
         boolean publishCurrentResource = false;
@@ -1079,8 +1078,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             discAccess = new CmsExportPointDriver(exportpoints);
             
             if (backupEnabled) {
-                // create a new backup version ID
-                //backupVersionId = m_driverManager.getBackupVersionId();
                 // write an entry in the publish project log
                 m_driverManager.backupProject(context, context.currentProject(), backupTagId, publishDate, context.currentUser());
             }
@@ -1091,7 +1088,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // read all changed/new/deleted folders in the offline project
             offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
 
-
             // ensure that the folders appear in the correct (DFS) tree order
             sortedFolderMap = (Map) new HashMap();
             i = offlineFolders.iterator();
@@ -1101,10 +1097,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 sortedFolderMap.put(currentResourceName, currentFolder);
             }
     
-               
             sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
             Collections.sort(sortedFolderList);
-
 
             offlineFolders.clear();
             offlineFolders = null;
@@ -1113,22 +1107,24 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentResourceName = (String) i.next();
                 currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-                currentLock = m_driverManager.getLock(context, currentResourceName);
+                currentLock = m_driverManager.getLock(context, currentResourceName);                
 
                 // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
-                publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_CHANGED;
+                publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
 
-                // or the resource must have a changed state and must be changed in the project that is currently published
-                if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
-                    publishCurrentResource = currentFolder.getProjectId() == context.currentProject().getId();
+                if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
+                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
+                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getFullResourceName());                                        
+                } else {
+                    // the resource must have a changed state and must be changed in the project that is currently published
+                    publishCurrentResource = publishCurrentResource && currentFolder.getProjectId() == context.currentProject().getId();
+
+                    // the resource must be in one of the paths defined for the project            
+                    publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);                   
                 }
-
-                // the resource must be in one of the paths defined for the project
-                // attention: the resource needs a full resource path ! (so readPath has to be done before !)            
-                publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
                 
-                // do not publish locked resources
-                publishCurrentResource = publishCurrentResource && currentLock.isNullLock(); 
+                // the resource must be unlocked
+                publishCurrentResource = publishCurrentResource && currentLock.isNullLock();                                
 
                 if (publishCurrentResource) {
                     currentExportKey = checkExport(currentResourceName, exportpoints);
@@ -1330,14 +1326,18 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 
                 // or the resource must have a changed state and must be changed in the project that is currently published
                 if (currentFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED)
-                */
+                */              
 
-                // the resource must be in one of the paths defined for the project
-                // attention: the resource needs a full resource path ! (so readPath has to be done before !)
-                publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFileHeader);
-
+                if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
+                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
+                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getFullResourceName());                    
+                } else {
+                    // the resource must be in one of the paths defined for the project
+                    publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFileHeader);                    
+                }
+                
                 // do not publish resource that are locked
-                publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
+                publishCurrentResource = publishCurrentResource && currentLock.isNullLock();                  
 
                 if (publishCurrentResource) {
                     currentFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, currentFileHeader.getId());

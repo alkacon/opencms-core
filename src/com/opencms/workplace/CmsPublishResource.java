@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/09/01 16:44:53 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 
 package com.opencms.workplace;
 
-import org.opencms.lock.CmsLock;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -40,14 +40,13 @@ import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Template class for displaying the publish screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.26 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.27 $ $Date: 2003/09/01 16:44:53 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -109,7 +108,10 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("USER", cms.readUser(file.getUserLastModified()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getResourceName());
             
-        } else if("showResult".equals(action)){
+        } 
+        
+        /*
+        else if("showResult".equals(action)){
             A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
             //still working?
             if(doTheWork.isAlive()){
@@ -131,7 +133,9 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
             
-        } else if("doThePublish".equals(action)){
+        } 
+                        
+        else if("doThePublish".equals(action)){
             
             // linkcheck is ready. Now we can start the publishing
             CmsResource file = readResource(cms, filename);                     
@@ -142,7 +146,10 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("actionParameter", "showPublishResult");
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "showresult");
             
-        } else if("showPublishResult".equals(action)){
+        }
+        */
+         
+        else if("showPublishResult".equals(action)){
             
             // thread is started and we shoud show the report information.
             A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_THREAD);
@@ -180,10 +187,15 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
         } else {            
             CmsResource file = readResource(cms, filename);
             String lasturl = getLastUrl(cms, parameters);
+            
+            if (file.isFolder() && !filename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                filename += I_CmsConstants.C_FOLDER_SEPARATOR;
+            }
                         
             if ("check".equals(action)){
                 if(file.getState() != C_STATE_DELETED){
-                    if(checkLocked(cms, file)){
+                    //if(checkLocked(cms, file)){
+                    if (cms.countLockedResources(filename)==0) {                   
                         action = "ok";
                     } else {
                         // ask user if the locks should be removed
@@ -195,7 +207,8 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             } else if("rmlocks".equals(action)){
                 // remove the locks and publish
                 try{
-                    cms.unlockResource(filename, true);
+                    cms.lockResource(filename);
+                    cms.unlockResource(filename, false);
                     action = "ok";
                 } catch (CmsException exc){
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
@@ -203,7 +216,17 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"errorlock");
                 }
             }
+            
             if("ok".equals(action)) {
+                file = readResource(cms, filename);                                     
+                A_CmsReportThread doPublish = new CmsPublishResourceThread(cms, cms.readAbsolutePath(file));
+                doPublish.start();
+                session.putValue(C_PUBLISH_THREAD, doPublish);
+                // indicate that changes in the user project etc. must be ignored here
+                xmlTemplateDocument.setData("actionParameter", "showPublishResult");
+                return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "showresult");
+                                
+                /*
                 // publish is confirmed, let's go
                 try{
                     // here is the plan: 
@@ -231,6 +254,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
+                */
             }
         }        
         // process the selected template
@@ -261,6 +285,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
      * @param cms The CmsObject for accessing system resources
      * @param resource The resource to check
      */
+    /*
     private boolean checkLocked(CmsObject cms, CmsResource resource) throws CmsException {
         CmsLock lock = cms.getLock(resource);
         
@@ -292,6 +317,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
         }
         return true;
     }
+    */
 
     /**
      * Unlocks all resources in the folder

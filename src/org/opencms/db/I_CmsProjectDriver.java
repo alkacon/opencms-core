@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/01 16:44:53 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/01 16:44:53 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -309,7 +309,7 @@ public interface I_CmsProjectDriver {
      * @return a vector of changed or deleted resources
      * @throws CmsException if something goes wrong
      */    
-    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints) throws CmsException;
+    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource) throws CmsException;
 
     /**
      * Select all projectResources from an given project.<p>

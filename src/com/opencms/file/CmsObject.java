@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/01 09:09:17 $
-* Version: $Revision: 1.391 $
+* Date   : $Date: 2003/09/01 16:44:53 $
+* Version: $Revision: 1.392 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.391 $
+ * @version $Revision: 1.392 $
  */
 public class CmsObject {
 
@@ -597,6 +597,10 @@ public class CmsObject {
      */
     public int countLockedResources(int id) throws CmsException {
         return m_driverManager.countLockedResources(m_context, id);
+    }
+    
+    public int countLockedResources(String foldername) throws CmsException {
+        return m_driverManager.countLockedResources(m_context, addSiteRoot(foldername));
     }
 
     /**
@@ -2630,23 +2634,35 @@ public class CmsObject {
     }
 
     /**
-     * Publishes a project.<p>
-     *
-     * @param id the id of the project to be published
-     * @throws CmsException if operation was not successful
+     * Publishes the current project, printing messages to a shell report.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void publishProject() throws CmsException {
         publishProject(new CmsShellReport());
     }
-
+    
     /**
-     * Publishes a project.<p>
-     *
-     * @param publishProjectId the id of the project to be published
-     * @param report A report object to provide the loggin messages
-     * @throws CmsException if operation was not successful
+     * Publishes the current project, printing messages to the specified report.<p>
+     * 
+     * @param report the report
+     * @throws CmsException if something goes wrong
      */
     public void publishProject(I_CmsReport report) throws CmsException {
+        publishProject(report, null);
+    }
+
+    /**
+     * Publishes the current project, or direct publishes a specified resource.<p>
+     * 
+     * To direct publish a resource, the type of the project has to be set to
+     * I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH before.
+     * 
+     * @param report the report
+     * @param directPublishResource the resource to get published direct, or null
+     * @throws CmsException if something goes wrong
+     */
+    public void publishProject(I_CmsReport report, CmsResource directPublishResource) throws CmsException {
         Vector newResources = null;
         Vector deletedResources = null;
         Vector changedResources = null;
@@ -2668,7 +2684,7 @@ public class CmsObject {
 
             updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
            
-            publishedResources = m_driverManager.publishProject(this, m_context, report);
+            publishedResources = m_driverManager.publishProject(this, m_context, report, directPublishResource);
 
             // update the online links table for the new resources (now they are there)
             updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
@@ -2733,9 +2749,9 @@ public class CmsObject {
             if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
                 m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
             }
+            
+            this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
         }
-
-        this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
     }
 
     /**
@@ -2760,11 +2776,25 @@ public class CmsObject {
      *
      * @throws CmsException if operation was not successful.
      */
-    public int publishResource(String resourcename, boolean justPrepare) throws CmsException {
-        return publishResource(resourcename, justPrepare, justPrepare ? null : new CmsShellReport());
+    public void publishResource(String resourcename, boolean justPrepare) throws CmsException {
+        publishResource(resourcename, justPrepare, justPrepare ? null : new CmsShellReport());
     }
 
-    public int publishResource(String resourcename, boolean justPrepare, I_CmsReport report) throws CmsException {
+    public void publishResource(String resourcename, boolean justPrepare, I_CmsReport report) throws CmsException {
+        int oldProjectType = m_context.currentProject().getType();
+        CmsResource resource = resource = readFileHeader(resourcename, true);
+        
+        try {
+            m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
+            publishProject(report, resource);
+        } catch (CmsException e) {
+            throw e;
+        } finally {
+            m_context.currentProject().setType(oldProjectType);
+            OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", resource)));
+        }
+        
+        /*
         int oldProjectId = m_context.currentProject().getId();
         int retValue = -1;
         
@@ -2817,6 +2847,7 @@ public class CmsObject {
         OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", res)));
         
         return retValue;
+        */
     }
 
     public String readAbsolutePath(CmsResource resource) {

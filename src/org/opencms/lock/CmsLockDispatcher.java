@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/29 10:12:32 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/09/01 16:44:53 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2003/08/29 10:12:32 $
+ * @version $Revision: 1.40 $ $Date: 2003/09/01 16:44:53 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -146,6 +146,27 @@ public final class CmsLockDispatcher extends Object {
 
         return count;
     }
+    
+    /**
+     * Counts the exclusive locked resources inside a folder.<p>
+     * 
+     * @param foldername the folder
+     * @return the number of exclusive locked resources in the specified folder
+     */    
+    public int countExclusiveLocksInFolder(String foldername) {
+        Iterator i = m_exclusiveLocks.values().iterator();
+        CmsLock lock = null;
+        int count = 0;
+
+        while (i.hasNext()) {
+            lock = (CmsLock) i.next();
+            if (lock.getResourceName().startsWith(foldername)) {
+                count++;
+            }
+        }
+
+        return count;
+    }   
 
     /**
      * @see java.lang.Object#finalize()
