@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
- * Date   : $Date: 2000/12/22 17:31:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2001/01/11 10:47:52 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/12/22 17:31:21 $
+ * @version $Revision: 1.14 $ $Date: 2001/01/11 10:47:52 $
  */
 public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
 	
@@ -132,7 +132,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
 	 * @return <code>true</code>
 	 */
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-		return false;
+		return true;
 	}
 	/** 
 	 * Any results of this class are cacheable since we don't include

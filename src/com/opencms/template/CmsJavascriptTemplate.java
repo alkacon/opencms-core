@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2001/01/11 10:47:52 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -116,7 +116,7 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
 	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
 	 */
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-		return false;
+		return true;
 	}
 	/**
 	 * Tests, if the template cache is setted.
