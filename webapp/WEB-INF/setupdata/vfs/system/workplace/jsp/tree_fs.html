@@ -32,16 +32,16 @@
 <% 
 
 	String init =  wp.initTree();
-	//System.err.println(init);
+	// System.err.println(init);
 	out.println(init);
 	
 %>
 </script>
 </head>
 
-<frameset rows="<%= frameRows %>" border="0" frameborder="0" framespacing="0">
-	<%= frameSiteSelector %><frame name="tree_display" src="<%= wp.getSkinUri() %>files/empty.html" scrolling="auto">
-	<frame name="tree_files" src="tree_files.html?resource=/<%= params %>">
+<frameset rows="<%= frameRows %>" border="0" frameborder="0" framespacing="0">	
+	<%= frameSiteSelector %><frame name="tree_display" src="<%= wp.getSkinUri() %>files/empty.html" scrolling="auto">	
+	<frame <%= wp.getFrameSource("tree_files", cms.link("tree_files.html?resource=" + wp.getRootFolder() + params)) %>>
 </frameset>
 
 </html>

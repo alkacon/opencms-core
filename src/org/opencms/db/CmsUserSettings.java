@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/06/16 14:20:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -84,6 +84,7 @@ public class CmsUserSettings {
     private int m_explorerSettings;
     private Locale m_locale;
     private String m_project;
+    private boolean m_restrictExplorerView;
     private boolean m_showLock;
     private String m_startFolder;
     private String m_startSite;
@@ -234,6 +235,15 @@ public class CmsUserSettings {
      */
     public String getPreferredEditor(String resourceType) {
         return (String)m_editorSettings.get(resourceType);
+    }
+    
+    /**
+     * Sets if the explorer view is restricted to the defined site and folder.<p>
+     * 
+     * @return true if the explorer view is restricted, otherwise false
+     */
+    public boolean getRestrictExplorerView() {
+        return m_restrictExplorerView;    
     }
     
     /**
@@ -504,6 +514,13 @@ public class CmsUserSettings {
             m_startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
         }
         
+        // restrict explorer folder view
+        try {
+            m_restrictExplorerView = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW)).booleanValue();
+        } catch (Throwable t) {
+            m_restrictExplorerView  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView();           
+        }
+        
         try {
             save(null);
         } catch (CmsException e) {
@@ -653,13 +670,19 @@ public class CmsUserSettings {
             m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE, getStartSite());    
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE);
-        }
-        
+        }        
         // start folder
         if (getStartFolder() != null && !"".equals(getStartFolder().trim()) && !getStartFolder().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder())) {
             m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_FOLDER, getStartFolder());    
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_FOLDER);
+        }
+        
+        // restrict explorer folder view
+        if (getRestrictExplorerView() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView()) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW, new Boolean(getRestrictExplorerView()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
         }
       
         // only write the updated user to the DB if we have the cms object
@@ -787,6 +810,15 @@ public class CmsUserSettings {
             m_editorSettings.remove(resourceType);
         }
         m_editorSettings.put(resourceType, editorUri);
+    }
+    
+    /**
+     * Sets if the explorer view is restricted to the defined site and folder.<p>
+     * 
+     * @param restrict true if the explorer view is restricted, otherwise false
+     */
+    public void setRestrictExplorerView(boolean restrict) {
+            m_restrictExplorerView = restrict;
     }
 
     /**

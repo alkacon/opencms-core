@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/16 14:20:11 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -73,6 +73,9 @@ public class CmsTree extends CmsWorkplace {
 
     /** Indicates if a complete new tree should be created. */
     private boolean m_newTree;
+    
+    /** the name of the root folder to dsiplay the tree from, usually "/". */
+    private String m_rootFolder;
 
     /** The name of the start folder (or "last known" folder) to be loaded. */
     private String m_startFolder;
@@ -187,9 +190,11 @@ public class CmsTree extends CmsWorkplace {
     private String getRootNode() {
         CmsResource resource = null;
         String title = null;
-        try { 
-            resource = getCms().readFolder("/");
-            title = getCms().readPropertyObject("/", I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+        String folder = getRootFolder();   
+        try {
+            resource = getCms().readFolder(folder);
+            // get the title information of the folder
+            title = getCms().readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
             if (title == null) {
                 getCms().readAbsolutePath(resource);
                 title = resource.getRootPath();
@@ -198,6 +203,27 @@ public class CmsTree extends CmsWorkplace {
             // should not happen
         }
         return getNode(title, resource.getType(), resource.getStructureId(), resource.getParentStructureId(), false);
+    }
+    
+    /**
+     * Determines the root folder of the current tree dependent on users setting of explorer view restriction.<p>
+     * 
+     * @return the root folder resource name to display
+     */
+    public String getRootFolder() {
+        if (m_rootFolder == null) {
+            String folder = "/";
+            if (getTreeType() == null && getSettings().getUserSettings().getRestrictExplorerView()) {
+                folder = getSettings().getUserSettings().getStartFolder();    
+            }
+            try {
+                getCms().readFolder(folder);
+            } catch (CmsException e) {
+                folder = "/";    
+            }
+            m_rootFolder = folder;  
+        } 
+        return m_rootFolder;    
     }
     
     /**
@@ -290,7 +316,6 @@ public class CmsTree extends CmsWorkplace {
         List resources = new ArrayList();
         CmsFolder folder = null;    
         String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
-        
         boolean restoreSiteRoot = false;
         
         if (targetFolder != null) {
@@ -426,6 +451,11 @@ public class CmsTree extends CmsWorkplace {
                     result.append("\");\n");
                 }         
             }
+            // set the root folder in javascript
+            result.append("parent.setRootFolder(\"");
+            result.append(getRootFolder());
+            result.append("\");\n");
+            
             if (newTree()) {
                 // new tree 
                 result.append("parent.showTree(parent.tree_display.document, \"");
@@ -485,8 +515,8 @@ public class CmsTree extends CmsWorkplace {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        setIncludeFiles("true".equals(request.getParameter("includefiles")));
-        boolean rootloaded = "true".equals(request.getParameter("rootloaded"));
+        setIncludeFiles(Boolean.valueOf(request.getParameter("includefiles")).booleanValue());
+        boolean rootloaded = Boolean.valueOf(request.getParameter("rootloaded")).booleanValue();
         String resource = request.getParameter("resource");
         setTreeType(request.getParameter("type"));
         String treeSite = request.getParameter("treesite");
@@ -507,12 +537,14 @@ public class CmsTree extends CmsWorkplace {
         if ((lastknown != null) && (! lastknown.endsWith("/"))) {
             lastknown += "/";
         }
-        if ("/".equals(resource) && !"/".equals(currentResource) && (lastknown == null) && !rootloaded) {
+
+        String rootFolder = getRootFolder();
+        if (rootFolder.equals(resource) && !rootFolder.equals(currentResource) && (lastknown == null) && !rootloaded) {
             // direct load of a new tree with subtree (e.g. when returning from an editor)
-            lastknown = "/";
+            lastknown = getRootFolder();
             resource = currentResource;
             setNewTree(true);
-        } else if ("/".equals(resource)) {
+        } else if (rootFolder.equals(resource)) {
             // load new tree if not already loaded
             setNewTree(! rootloaded);
         } else {

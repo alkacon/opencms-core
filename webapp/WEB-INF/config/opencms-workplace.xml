@@ -367,6 +367,7 @@
 					<workplaceview>/system/workplace/jsp/explorer_fs.html</workplaceview>
 					<folder>/</folder>
 					<site>/sites/default/</site>
+					<restrictexplorerview>false</restrictexplorerview>
 				</workplace-startupsettings>
 			</workplace-preferences>
 			<explorer-preferences>

@@ -157,13 +157,30 @@ function res(text, nicename, icon, createLink, isEditable){
 function setDisplayResource(resource) {
 	displayResource = resource;
 	if (mode == "explorerview") {
-		win.head.forms.urlform.resource.value = displayResource;
+		win.head.forms.urlform.resource.value = displayResource.substring(getRootFolder().length - 1);
 	}
 }
 
 
-function getDisplayResource() {
+function getDisplayResource(param) {
+	if (param == "true") {
+		return displayResource.substring(getRootFolder().length - 1);
+	}
 	return displayResource;
+}
+
+var m_rootFolder = "/";
+
+function getRootFolder() {
+	if (m_rootFolder == null) {
+		return "/";
+	} else {
+		return m_rootFolder;
+	}
+}
+
+function setRootFolder(value) {
+	m_rootFolder = value;
 }
 
 
@@ -205,11 +222,15 @@ function dU(doc, pages, actpage) {
 
 
 function updateWindowStore() {
-	if ((mode == "projectview") || (mode == "galleryview") || window.body.admin_head) {
-		win = new windowStore(window.body.document, window.body.admin_head.document, null, window.body.admin_content.document);
+	var theTree = null;
+	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
+		theTree = window.body.explorer_body.explorer_tree;
+	}
+	if ((mode == "projectview") || (mode == "galleryview") || window.body.admin_head) {		
+		win = new windowStore(window.body.document, window.body.admin_head.document, theTree, window.body.admin_content.document);
 	} else {
 		try {
-			win = new windowStore(window.body.document, window.body.explorer_head.document, null, window.body.explorer_body.explorer_files.document);
+			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files.document);
 		} catch (e) {}
 	}
 }
@@ -725,7 +746,7 @@ function display_ex() {
 
 
 function submitResource() {
-	setDisplayResource(win.head.forms.urlform.resource.value);
+	setDisplayResource(getRootFolder() + win.head.forms.urlform.resource.value.substring(1));
 	openurl();
 }
 
@@ -763,14 +784,16 @@ function addProjectDir(nodid) {
 
 function dirUp(){
 	var temp;
-	var marke=0;
+	var marke=0;	
 	var directory = getDisplayResource();
 	var zaehler=0;
 	var newDir = directory.substring(0, directory.length - 1);
 	var res = newDir.substring(0, newDir.lastIndexOf("/") + 1);
-	if(res.length < 3 ) {
-		res = "/";
+
+	if (res.length < (getRootFolder().length + 1)) {
+		res = getRootFolder();
 	}
+
 	setDisplayResource(res);
 	openurl();
 }
@@ -783,7 +806,7 @@ function displayHead(doc, pages, actpage){
 	var btWizard = "";
 	var pageSelect = "";
 
-	if(vr.actDirectory == "/") {
+	if(vr.actDirectory == getRootFolder()) {
 		btUp = button(null, null, "up_in", vr.langup, buttonType);
 	} else {
 		btUp = button("javascript:top.dirUp();", null, "up", vr.langup, buttonType);
@@ -835,12 +858,12 @@ function displayHead(doc, pages, actpage){
 
 	+ buttonSep(5, 5, 1)
 	+ "<td>"+vr.langadress+"&nbsp;</td>\n"
-	+ "<td width=\"100%\"><input value=\""+getDisplayResource()+"\" maxlength=\"255\" name=\"resource\" class=\"location\"></td>\n"
+	+ "<td width=\"100%\"><input value=\""+ getDisplayResource("true") +"\" maxlength=\"255\" name=\"resource\" class=\"location\"></td>\n"
 	+ pageSelect
 
 	+ "</tr>\n</form>\n</table>\n"
 	+ "</body>\n</html>";
-
+	
 	doc.open();
 	doc.writeln(html);
 	doc.close();
@@ -999,7 +1022,6 @@ function openFolder(folderName) {
 	openurl();
 }
 
-
 function updateTreeFolder(folderName) {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
 		window.body.explorer_body.explorer_tree.updateCurrentFolder(window.body.explorer_body.explorer_tree.tree_display.document, folderName, false);
@@ -1019,14 +1041,6 @@ function reloadNodeList() {
 		window.body.explorer_body.explorer_tree.loadNodeList(window.body.explorer_body.explorer_tree.tree_display.document, "&rootloaded=true");
 	}
 }
-
-
-/*
-function openthisfolder(thisdir) {
-	setDisplayResource(getDisplayResource() + thisdir + "/");
-	openurl();
-}
-*/
 
 
 function openthisfolderflat(thisdir){

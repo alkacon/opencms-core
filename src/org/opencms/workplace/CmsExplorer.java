@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/16 07:31:19 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * 
  * @since 5.1
  */
@@ -247,6 +247,10 @@ public class CmsExplorer extends CmsWorkplace {
         StringBuffer content = new StringBuffer(2048);
         content.append("function initialize() {\n");
 
+        content.append("top.setRootFolder(\"");        
+        content.append(getRootFolder());
+        content.append("\");\n");
+        
         content.append("top.mode=\"");        
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
@@ -624,6 +628,24 @@ public class CmsExplorer extends CmsWorkplace {
         
         content.append("}\n");
         return content.toString();
+    }
+    
+    /**
+     * Determines the root folder of the current tree dependent on users setting of explorer view restriction.<p>
+     * 
+     * @return the root folder resource name to display
+     */
+    public String getRootFolder() {
+        String folder = "/";
+        if (getSettings().getUserSettings().getRestrictExplorerView()) {
+            folder = getSettings().getUserSettings().getStartFolder();    
+        }
+        try {
+            getCms().readFolder(folder);
+            return folder;
+        } catch (CmsException e) {
+            return "/";    
+        }
     }
     
     /**

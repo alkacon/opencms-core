@@ -483,6 +483,19 @@ function setSitePrefix(value) {
 	m_sitePrefix = value;
 }
 
+var m_rootFolder = null;
+
+function getRootFolder() {
+	if (m_rootFolder == null) {
+		return "/";
+	} else {
+		return m_rootFolder;
+	}
+}
+
+function setRootFolder(value) {
+	m_rootFolder = value;
+}
 
 // called if the folder name is clicked in the tree
 function doAction(doc, nodeId) {
@@ -515,6 +528,9 @@ function doActionFolderOpen(doc, nodeId) {
     if (getTreeType() != null) {
     	params += "&type=" + getTreeType();
     }
+    if (m_rootFolder != null) {
+    	nodeName = m_rootFolder + nodeName.substring(1);    	
+    }
     var target = "tree_files.html?resource=" + nodeName + params;
     tree_files.location.href = vr.contextPath + vr.workplacePath + target;
     if (inExplorer()) {
@@ -535,6 +551,9 @@ function doActionInsertSelected(doc, nodeId) {
 function updateCurrentFolder(doc, folderName) {
 	if ((folderName != "/") && (folderName.charAt(folderName.length-1) == '/')) {
 			folderName = folderName.substring(0, folderName.length-1);
+	}
+	if (m_rootFolder != null) {
+		folderName = folderName.substring(m_rootFolder.length-1);
 	}
 	var nodeId = getNodeIdByName(folderName);
 	var nodeName = null;
@@ -581,6 +600,9 @@ function addNodeToLoad(nodeId, nodeName) {
 	if (nodeName.charAt(nodeName.length-1) != '/') {
 		nodeName += "/";
 	}
+	if (m_rootFolder != null) {
+    	nodeName = m_rootFolder + nodeName.substring(1);    	
+    }
 	node = new nodeToLoad(nodeId, nodeName);	
 	if (nodeListToLoad == null) {
 		nodeListToLoad = new Array();

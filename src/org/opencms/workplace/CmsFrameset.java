@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/08 14:08:06 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.1
  */
@@ -373,6 +373,11 @@ public class CmsFrameset extends CmsWorkplace {
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
+        if (getSettings().getUserSettings().getRestrictExplorerView()) {
+            // restricted explorer view to site and folder, do not show site selector
+            return false;    
+        }
+        // count available sites
         int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
         return (siteCount > 1);    
     }

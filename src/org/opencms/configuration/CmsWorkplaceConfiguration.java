@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/06/16 14:20:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -233,6 +233,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the report type node. */
     public static final String N_REPORTTYPE = "reporttype";
     
+    /** The node name of the restrict explorer view node. */
+    public static final String N_RESTRICTEXPLORERVIEW = "restrictexplorerview";
+    
     /** The name of the separator node. */
     protected static final String N_SEPARATOR = "separator";
     
@@ -431,6 +434,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             "setStartFolder", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_WORKPLACEPREFERENCES + "/"+ N_WORKPLACESTARTUPSETTINGS  + "/" + N_SITE,
             "setStartSite", 0);
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_WORKPLACEPREFERENCES + "/"+ N_WORKPLACESTARTUPSETTINGS  + "/" + N_RESTRICTEXPLORERVIEW,
+            "setRestrictExplorerView", 0);
 
         // add explorer preferences generaloptions rules 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EXPLORERPREFERENCES + "/"+ N_EXPLORERGENERALOPTIONS + "/" + N_BUTTONSTYLE,
@@ -654,6 +659,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceStartupsettings.addElement(N_FOLDER).setText(m_workplaceManager.getDefaultUserSettings().getStartFolder());
         // add the <site> node
         workplaceStartupsettings.addElement(N_SITE).setText(m_workplaceManager.getDefaultUserSettings().getStartSite());
+        // add the <restrictexplorerview> node
+        workplaceStartupsettings.addElement(N_RESTRICTEXPLORERVIEW).setText(m_workplaceManager.getDefaultUserSettings().getRestrictExplorerViewString());
        
         // add the <explorer-preferences> node
         Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * user preferences.<p>
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
    
@@ -242,6 +242,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
        } else {
         return "false";
        }
+   }
+   
+   /**
+    * Returns if the explorer view is restricted to the defined site and folder.<p>
+    * 
+    * @return true if the explorer view is restricted, otherwise false
+    */
+   public String getRestrictExplorerViewString() {
+       return getBoolRepresentation(getRestrictExplorerView());
    }
     
     /**
@@ -548,14 +557,23 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         }
    }
 
-   /**
-    * Sets the workplace locale.<p> 
-    * 
-    * @param locale the workplace language default
-    */
-   public void setLocale(String locale) {
+    /**
+     * Sets the workplace locale.<p> 
+     * 
+     * @param locale the workplace language default
+     */
+    public void setLocale(String locale) {
        // set the language     
        setLocale(CmsLocaleManager.getLocale(locale));
+    }
+    
+    /**
+     * Sets if the explorer view is restricted to the defined site and folder.<p>
+     * 
+     * @param restrict true if the explorer view is restricted, otherwise false
+     */
+    public void setRestrictExplorerView(String restrict) {
+        setRestrictExplorerView(Boolean.valueOf(restrict).booleanValue());
     }
    
      /**

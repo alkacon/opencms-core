@@ -374,7 +374,8 @@
 									 project,
 									 workplaceview,
 									 folder,
-									 site)>
+									 site,
+									 restrictexplorerview)>
 <!--
 # A locale for the default workplace language (e.g. "en" or "de").
 -->	
@@ -399,7 +400,13 @@
 <!--
 # The name of the start site (e.g. "/" or "/sites/default/").
 -->									
-<!ELEMENT site (#PCDATA)>									 
+<!ELEMENT site (#PCDATA)>
+
+<!--
+# If this element is set to "true", the workplace explorer view is limited to
+# the predefined site and folder of the preferences.
+-->									
+<!ELEMENT restrictexplorerview (#PCDATA)>								 
 						
 <!--
 # The explorer preferences define the preferences workplace explorer.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/16 14:20:11 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/17 13:33:49 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1.12
  */
@@ -205,6 +205,9 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name for the workplace view. */
     public static final String PARAM_WORKPLACE_VIEW = "tabwpview";
+    
+    /** Request parameter name for the workplace explorer view restriction. */
+    public static final String PARAM_WORKPLACE_RESTRICTEXPLORERVIEW = "tabwprestrictexplorerview"; 
     
     private String m_paramNewPassword;
     private String m_paramOldPassword;
@@ -1090,6 +1093,15 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "workplace restrict explorer view" setting.<p>
+     * 
+     * @return the "workplace restrict explorer view" setting
+     */
+    public String getParamTabWpRestrictExplorerView() {
+        return "" + m_userSettings.getRestrictExplorerView();    
+    }
+    
+    /**
      * Returns the "display lock dialog" setting.<p>
      * 
      * @return "true" if the "display lock dialog" input field is checked, otherwise ""
@@ -1573,6 +1585,15 @@ public class CmsPreferences extends CmsTabDialog {
             // set only if valid parameter value is found
             m_userSettings.setWorkplaceReportType(value);
         }
+    }
+    
+    /**
+     * Sets the "workplace restrict explorer view" setting.<p>
+     * 
+     * @param value the "workplace restrict explorer view" setting
+     */
+    public void setParamTabWpRestrictExplorerView(String value) {
+        m_userSettings.setRestrictExplorerView("true".equals(value));    
     }
 
     /**
