@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/10/24 07:26:36 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/10/25 10:54:53 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.40 $ $Date: 2000/10/24 07:26:36 $  
+* @version $Revision: 1.41 $ $Date: 2000/10/25 10:54:53 $  
 * 
 * */
 
@@ -172,6 +172,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 		cms.init(c_rb);
 		cms.destroy();
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (10/25/00 12:42:11)
+ * @return com.opencms.launcher.CmsLauncherManager
+ */
+public CmsLauncherManager getLauncherManager() {
+	return m_launcherManager;
+}
 	 /**
 	 * This method gets the requested document from the OpenCms and returns it to the 
 	 * calling module.

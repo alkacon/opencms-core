@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/10/13 13:09:13 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/10/25 10:54:53 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.61 $ $Date: 2000/10/13 13:09:13 $  
+* @version $Revision: 1.62 $ $Date: 2000/10/25 10:54:53 $  
 * 
 * */
 
@@ -686,6 +686,8 @@ private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throw
 		if (loginParameter != null)
 		{
 			cms.clearcache();
+			com.opencms.launcher.CmsLauncherManager lm = ((OpenCms)m_opencms).getLauncherManager();
+			if (lm != null) lm.clearCaches();
 		}
 
 		// get the actual session
