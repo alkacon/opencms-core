@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2004/07/18 16:39:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/09 15:59:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution".<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -55,7 +55,7 @@ public class TestCmsStringUtil extends TestCase {
     }
 
     /**
-     * Tests the basinc String substitution.<p>
+     * Tests the basic String substitution.<p>
      */
     public void testSubstitute() {
         String test, result;
@@ -77,6 +77,62 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(test, result);
     }
 
+    
+    /**
+     * Tests the macro String substitution
+     */
+    public void testSubstituteMacros() {
+    
+        I_CmsStringMapper substitution = new I_CmsStringMapper() {
+            public String getValue(String key) {
+                if ("test".equals(key)) {
+                    return "REPLACED";
+                } else {
+                    return "";
+                }
+            }
+        };
+        
+        String content, result;
+        
+        content = "<<This is a prefix >>${test}<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >>REPLACED<<This is a suffix>>", result);
+        
+        content = "${test}<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("REPLACED<<This is a suffix>>", result);        
+        
+        content = "<<This is a prefix >>${test}";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >>REPLACED", result);
+        
+        content = "<<This is a prefix >>$<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >>$<<This is a suffix>>", result);            
+
+        content = "$<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("$<<This is a suffix>>", result);        
+        
+        content = "<<This is a prefix >>$";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >>$", result);
+        
+        content = "<<This is a prefix >>${}<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);  
+        
+        content = "<<This is a prefix >>${unknown}<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >><<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>${test<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution);
+        assertEquals("<<This is a prefix >>${test<<This is a suffix>>", result);
+    }
+    
+    
     /**
      * Tests for the escape patterns.<p>
      */

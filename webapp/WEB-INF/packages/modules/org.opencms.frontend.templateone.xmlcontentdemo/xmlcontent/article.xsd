@@ -23,16 +23,24 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.xmlcontentdemo.workplace"/>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Release" mapto="attribute:datereleased" />
 			</mappings>
 			<validationrules>
-				<rule element="Title" regex="!.*[Ee]rror.*" />
-				<rule element="Title" regex="!.*[Ww]arn.*" type="warning" />
-				<rule element="Teaser" regex="!.*[Ww]arn.*" type="warning" />
-				<rule element="Text" regex="!.*[Ww]arn.*" type="warning" />
+				<rule element="Title" regex="!.*[Ee]rror.*" message="${key:editor.errormessage.Article.mustnotcontainerror.1} ${validation:path} ${key:editor.errormessage.Article.mustnotcontainerror.2}" />
+				<rule element="Title" regex="!.*[Ww]arn.*" type="warning" message="${key:editor.warning.Article.mustnotcontainwarn.1} ${validation:path} ${key:editor.warning.Article.mustnotcontainwarn.2}"/>
+				<rule element="Teaser" regex="!.*[Ww]arn.*" type="warning" message="${key:editor.warning.Article.mustnotcontainwarn.1} ${validation:path} ${key:editor.warning.Article.mustnotcontainwarn.2}"/>
+				<rule element="Text" regex="!.*[Ww]arn.*" type="warning" message="${key:editor.warning.Article.mustnotcontainwarn.1} ${validation:path} ${key:editor.warning.Article.mustnotcontainwarn.2}"/>
 			</validationrules>
+			<defaults>
+				<default element="Title" value="${key:editor.defaults.Article.Title}"/>
+				<default element="Teaser" value="${key:editor.defaults.Article.Teaser}"/>
+				<default eleemnt="Release" value="${currenttime}"/>
+				<default element="Author" value="${currentuser:fullname}"/>
+			</defaults>
 		</xsd:appinfo>
+
 	</xsd:annotation>  
 </xsd:schema>

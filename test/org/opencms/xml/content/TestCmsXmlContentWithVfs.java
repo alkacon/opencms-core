@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/08 17:29:34 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/09 15:59:46 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -67,7 +68,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -78,7 +79,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String C_SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
     private static final String C_SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
     private static final String C_SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
-
+    private static final String C_SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
+    
     /**
      * Default JUnit constructor.<p>
      * 
@@ -114,6 +116,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));        
         suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -741,8 +744,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         
         titleProperty = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_TITLE, false);
         assertEquals(titleStr, titleProperty.getValue());
-    }
-
+    } 
+    
     /**
      * Test using a nested XML content schema.<p>
      * 
@@ -825,7 +828,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
     }
-
+    
     /**
      * Test the validation of the value elements.<p>
      * 
@@ -924,6 +927,87 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertTrue(errorHandler.hasWarnings());
         assertEquals(2, errorHandler.getErrors(Locale.ENGLISH).size());
         assertEquals(3, errorHandler.getWarnings(Locale.ENGLISH).size());
+    }
+
+    /**
+     * Tests the macros in messages and default values.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testMacros() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing macros in the XML content");
+
+        CmsUser admin = cms.getRequestContext().currentUser();
+        admin.setFirstname("Hans");
+        admin.setLastname("Mustermann");
+        admin.setEmail("hans.mustermann@germany.de");
+        admin.setAddress("Heidestraße 17, München");
+        cms.writeUser(admin);
+        
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-9.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_9, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-9.xml", CmsEncoder.C_UTF8_ENCODING);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+
+        CmsXmlContentErrorHandler errorHandler;
+
+        I_CmsXmlContentValue value1;
+
+        value1 = xmlcontent.getValue("Test", Locale.ENGLISH);
+        value1.setStringValue(cms, "This produces a warning!");
+
+        errorHandler = xmlcontent.validate(cms);
+        assertFalse(errorHandler.hasErrors());
+        assertTrue(errorHandler.hasWarnings());
+
+        value1.setStringValue(cms, "This produces a warning and an error!");
+
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertTrue(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors().size());
+        assertEquals(1, errorHandler.getWarnings().size());
+
+        value1 = xmlcontent.getValue("Toast", Locale.ENGLISH);
+        value1.setStringValue(cms, "This produces a warning but no error!");
+
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertTrue(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors(Locale.ENGLISH).size());
+        assertEquals(2, errorHandler.getWarnings(Locale.ENGLISH).size());
+
+        value1 = xmlcontent.addValue(cms, "Option", Locale.ENGLISH, 0);
+        assertEquals("Author: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de", value1.getStringValue(cms));
+
+        value1 = xmlcontent.addValue(cms, "Option", Locale.GERMAN, 0);
+        assertEquals("Autor: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de", value1.getStringValue(cms));
+        
+        // output the current document
+        System.out.println(xmlcontent.toString());
+        // re-create the document
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        errorHandler = xmlcontent.validate(cms);
+        assertTrue(errorHandler.hasErrors());
+        assertTrue(errorHandler.hasWarnings());
+        assertEquals(1, errorHandler.getErrors(Locale.ENGLISH).size());
+        assertEquals(2, errorHandler.getWarnings(Locale.ENGLISH).size());
     }
     
     /**
