@@ -124,11 +124,11 @@
 <!--
 
 function checkHowMuch(){
-
-    if(document.META.selectpara.length<1){
+    if(document.META.selectpara.selectedIndex<0){
 				document.META.CANCEL.disabled=true;
+	}else{
+		document.META.CANCEL.disabled=false;
 	}
-
 }
 
 
@@ -178,7 +178,7 @@ function checkHowMuch(){
 					<tr><td class=dialogtxt>
 						<table border=0 width=100%>
 							<tr><td class=dialogtxt>
-							<select name="selectpara" size="10" width=480 style="width:480px" onDblClick="document.META.submit()">
+							<select name="selectpara" size="10" width=480 style="width:480px" onClick="checkHowMuch();">
 								]]><PROCESS>allparameter</PROCESS><![CDATA[
 							</select>
 							</td></tr>
