@@ -103,7 +103,7 @@ function initContextMenus() {
 
 
 var isAdmin = ]]><process>isadmin</process><![CDATA[;
-
+var picsUrl = ']]><METHOD name="picsUrl"/><![CDATA[';
 
 function drawContextMenus() {
 

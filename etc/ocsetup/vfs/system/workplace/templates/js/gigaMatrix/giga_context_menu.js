@@ -317,7 +317,7 @@ function _drawMenu() {
 			if(tmpItem.branch == true) {
 			
 				branchMenuId = tmpItem.itemHref;
-				branchIcon = '<img src="../pics/icon_context_branch2.gif" width="13" height="7">';
+				branchIcon = '<img src="'+picsUrl+'icon_context_branch2.gif" width="13" height="7">';
 				tmpItem.itemHref = 'javascript:'
 				//skipLineBreak = true;
 				
@@ -335,12 +335,12 @@ function _drawMenu() {
 			
 				tmpItem.itemHref += this.gigaContextMenuCollectionId + ".menus['" + branchMenuId + "'].toggleMenu('" + this.menuId + "');"
 				
-				tmpCnt = addTable(addTR(addTD('<img src="../pics/sitedot.gif" width="10" height="1">' + addLink(tmpItem.itemHref, tmpItem.itemCnt,'class=menuItem')) + addTD(branchIcon,'align="right"')),'border="0" width="100%" cellpadding="0" cellspacing="0"')
+				tmpCnt = addTable(addTR(addTD('<img src="'+picsUrl+'sitedot.gif" width="10" height="1">' + addLink(tmpItem.itemHref, tmpItem.itemCnt,'class=menuItem')) + addTD(branchIcon,'align="right"')),'border="0" width="100%" cellpadding="0" cellspacing="0"')
 					
 			}
 			else {
 			
-				tmpCnt = '<img src="../pics/sitedot.gif" width="10" height="1">' + addLink(tmpItem.itemHref, tmpItem.itemCnt,'class=menuItem onclick="' + this.gigaContextMenuCollectionId + '.menus[\'' + eval(this.gigaContextMenuCollectionId).rootMenuId + '\'].hideChildren();' + this.gigaContextMenuCollectionId + '.menus[\'' + eval(this.gigaContextMenuCollectionId).rootMenuId + '\'].showMenu(false)"') + '<br>';
+				tmpCnt = '<img src="'+picsUrl+'sitedot.gif" width="10" height="1">' + addLink(tmpItem.itemHref, tmpItem.itemCnt,'class=menuItem onclick="' + this.gigaContextMenuCollectionId + '.menus[\'' + eval(this.gigaContextMenuCollectionId).rootMenuId + '\'].hideChildren();' + this.gigaContextMenuCollectionId + '.menus[\'' + eval(this.gigaContextMenuCollectionId).rootMenuId + '\'].showMenu(false)"') + '<br>';
 			}
 			
 		}
@@ -348,17 +348,17 @@ function _drawMenu() {
 
 			if(tmpItem.itemCnt == '---') {
 			
-				tmpCnt = '<img src="../pics/context_sep.gif" width="' + (this.menuWidth-6) + '" height="2" vspace="1"><br>'
+				tmpCnt = '<img src="'+picsUrl+'context_sep.gif" width="' + (this.menuWidth-6) + '" height="2" vspace="1"><br>'
 			}
 			else {
 			
-			    tmpCnt = '<img src="../pics/sitedot.gif" width="10" height="1"><i>' + addSpan(tmpItem.itemCnt, 'class=ghostItem') + '</i><br>';	
+			    tmpCnt = '<img src="'+picsUrl+'sitedot.gif" width="10" height="1"><i>' + addSpan(tmpItem.itemCnt, 'class=ghostItem') + '</i><br>';	
 			}
 		}
 		
 		if((i != (this.numberOfItems-1)) && (!skipLineBreak)) {
 		
-			 tmpVSpace = '<img src="../pics/sitedot.gif" width="1" height="5" alt="" border="0"><br>';
+			 tmpVSpace = '<img src="'+picsUrl+'sitedot.gif" width="1" height="5" alt="" border="0"><br>';
 		}
 		else {
 		

@@ -89,7 +89,7 @@ function _drawMatrix() {
 
 	var tmpHtml = '';
 	var tmpHtmlX = '';
-	var tmpHtmlY = addTD( '<img src="../pics/sitedot.gif" width="100" height="1" alt="" border="0">' );;
+	var tmpHtmlY = addTD( '<img src="'+picsUrl+'sitedot.gif" width="100" height="1" alt="" border="0">' );;
 	var checkChar = 'l';
 	var checkCharStart = checkChar;
 	var currSiteNodeId;
@@ -101,7 +101,7 @@ function _drawMatrix() {
 	
 	for(var x = 1; x <= this.numOfSiteDomains; x++) { // create top headers
 			
-		tmpHtmlY += addTD( this.siteDomains[ this.siteDomainsIdx[x] ]["domainCnt"] + '<br><img src="../pics/sitedot.gif" width="40" height="1" alt="" border="0">', 'align=center class="headers"');
+		tmpHtmlY += addTD( this.siteDomains[ this.siteDomainsIdx[x] ]["domainCnt"] + '<br><img src="'+picsUrl+'sitedot.gif" width="40" height="1" alt="" border="0">', 'align=center class="headers"');
 		
 	}
 	
@@ -134,7 +134,7 @@ function _drawMatrix() {
 				
 //				tmpAlt = this.siteTypes[ this.siteTypesIdx[y] ]["siteTypeCnt"] + ' - ' + this.siteDomains[ this.siteDomainsIdx[x] ]["domainCountry"]
 				tmpAlt = this.siteNodes[currSiteNodeId].cmsSiteName;			
-				tmpHtmlX += addTD( addLink("javascript:currSiteNodeId='" + currSiteNodeId + "';" + menuCollNeg + ".menus['m001'].showMenu(false,null);" + menuColl + ".menus['m001'].showMenu(true,null)" ,'<img src="../pics/sitedot_' + tmpNodeHtml + '.gif" width="20" height="20" border="0" alt="' + tmpAlt + '">'), 'align=center class="' + checkChar + 'grey"');
+				tmpHtmlX += addTD( addLink("javascript:currSiteNodeId='" + currSiteNodeId + "';" + menuCollNeg + ".menus['m001'].showMenu(false,null);" + menuColl + ".menus['m001'].showMenu(true,null)" ,'<img src="'+picsUrl+'sitedot_' + tmpNodeHtml + '.gif" width="20" height="20" border="0" alt="' + tmpAlt + '">'), 'align=center class="' + checkChar + 'grey"');
 			}
 			else {
 			
