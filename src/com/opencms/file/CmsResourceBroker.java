@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2000/01/20 18:31:23 $
+ * @version $Revision: 1.27 $ $Date: 2000/01/21 14:31:06 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -253,8 +253,26 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 														onlineProject(currentUser, 
 																	  currentProject) );
 			 
-			 // TODO: copy the metainfos for the resources
-			 
+			 // walk through all resources, and copy the metainfos, where needed.
+			 for( int i = 0; i < resources.size(); i++ ) {
+				 try {
+					 // read the online-resource
+					 A_CmsResource resource = m_fileRb.readFileHeader(
+						onlineProject(currentUser, currentProject), 
+						(String) resources.elementAt(i));
+					 // delete the metainfos of the online-resource
+					 m_metadefRb.deleteAllMetainformations(resource);
+					 // copy the metainfos from the publish-resource ...
+					 Hashtable metainfos = m_metadefRb.readAllMetainformations(
+						publishProject.getId(), (String) resources.elementAt(i),
+						resource.getType());
+					 // ... to the online-resource
+					 m_metadefRb.writeMetainformations(resource, metainfos);
+				 } catch(CmsException exc) {
+					 // the resource was deleted - ignore it
+				 }
+			 }
+			 			 
 			 // the project-state will be set to "published"
 			 // the project must be written to the cms.
 			 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
@@ -2125,7 +2143,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// read the source-file, to check readaccess
 		A_CmsResource file = readFileHeader(currentUser, currentProject, source);
 		
-		// TODO: copy the metainfos!
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  destination);
@@ -2134,7 +2151,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - copy the file and the metainfos
 			m_fileRb.copyFile(currentProject, onlineProject(currentUser, currentProject), 
 							  source, destination + file.getName());
-			// TODO: copy the metainfos
+			
+			// copy the metainfos
+			m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(file),
+											  currentProject.getId(), 
+											  destination + file.getName(), 
+											  file.getType());			
 		} else {
 			throw new CmsException(destination, CmsException.C_NO_ACCESS);
 		}
