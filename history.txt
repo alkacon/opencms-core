@@ -8,11 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.30 Chusuk       - xx December 2001
+OpenCms 4.5si.30 Chusuk     - 14 December 2001
 * bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.
 - Changed the configuration of the static export. It now enabled and configured by default.
   You can browse the exported ressource by pointing your browser to: 
-  Http://localhost:8080/opencms/export/index.html.
+  http://localhost:8080/opencms/export/index.html.
   The configuration is more handy, you can configure with ${WEB_APP_NAME} instead of opencms, so
   you can rename your webapplication without changing the opencms.properties.
 - Now members of the groups projectmanagers and users are allowed to export static resources, too.
