@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/27 08:57:21 $
- * Version: $Revision: 1.414 $
+ * Date   : $Date: 2004/08/27 12:11:24 $
+ * Version: $Revision: 1.415 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.414 $ $Date: 2004/08/27 08:57:21 $
+ * @version $Revision: 1.415 $ $Date: 2004/08/27 12:11:24 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2304,14 +2304,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         Vector ace = m_userDriver.readAccessControlEntries(context.currentProject(), resource.getResourceId(), false);
 
         // get the ACE of each parent folder
-        while (getInherited) {
-            String parentPath = CmsResource.getParentFolder(resource.getRootPath());
-            if (I_CmsConstants.C_ROOT.equals(parentPath)) {
-                break;
-            }
-            
+        String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+        while (getInherited && parentPath != null) {            
             resource = m_vfsDriver.readFolder(context.currentProject().getId(), parentPath);
             ace.addAll(m_userDriver.readAccessControlEntries(context.currentProject(), resource.getResourceId(), getInherited));
+            parentPath = CmsResource.getParentFolder(resource.getRootPath());
         }
 
         return ace;
@@ -2348,7 +2345,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsAccessControlList getAccessControlList(CmsRequestContext context, CmsResource resource, boolean inheritedOnly) throws CmsException {
 
-        CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(getCacheKey(inheritedOnly + "_", context.currentProject(), resource.getStructureId().toString()));
+        String cacheKey = getCacheKey(inheritedOnly + "_", context.currentProject(), resource.getStructureId().toString());
+        CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
 
         // return the cached acl if already available
         if (acl != null) {
@@ -2375,15 +2373,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         while (ace.hasNext()) {
             CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
 
+            acl.add(acEntry);
+            
             // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry
-            if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {                
+            // denied permissions are kept or extended
+            if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
                 acl.setAllowedPermissions(acEntry);
-            } else {
-                acl.add(acEntry);
             }
         }
 
-        m_accessControlListCache.put(getCacheKey(inheritedOnly + "_", context.currentProject(), resource.getStructureId().toString()), acl);
+        m_accessControlListCache.put(cacheKey, acl);
 
         return acl;
     }    
