@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/01/31 10:58:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/01/31 15:02:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -761,7 +761,7 @@ public class CmsChacc extends CmsDialog {
         
         return m_inherit;
     }
-      
+    
     /**
      * Returns if the inherited permissions information should be displayed.<p>
      *
@@ -936,7 +936,7 @@ public class CmsChacc extends CmsDialog {
      * @param showInheritedPermissions true if the inherited permissions information should be displayed, otherwise false
      */
     protected void setShowInheritedPermissions(boolean showInheritedPermissions) {
-
+    
         m_showInheritedPermissions = showInheritedPermissions;
     }
     
@@ -1011,8 +1011,7 @@ public class CmsChacc extends CmsDialog {
             // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
-                String parentUri = org.opencms.file.CmsResource.getParentFolder(getParamResource());
-                CmsAccessControlList acList = getCms().getAccessControlList(parentUri, true);
+                CmsAccessControlList acList = getCms().getAccessControlList(getParamResource(), true);
                 Set principalSet = acList.getPrincipals();
                 i = principalSet.iterator();
                 while (i.hasNext()) {
@@ -1067,7 +1066,7 @@ public class CmsChacc extends CmsDialog {
             if (internal) {
                 result.append(" checked=\"checked\"");
             }
-            if (! getEditable()) {
+            if (!getEditable()) {
                 result.append(" disabled=\"disabled\"");            
             }
             result.append(" ></td>\n");
@@ -1346,5 +1345,5 @@ public class CmsChacc extends CmsDialog {
         }
         return result;
     }
-    
+      
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/01/28 09:29:35 $
- * Version: $Revision: 1.470 $
+ * Date   : $Date: 2005/01/31 15:01:09 $
+ * Version: $Revision: 1.471 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.470 $ $Date: 2005/01/28 09:29:35 $
+ * @version $Revision: 1.471 $ $Date: 2005/01/31 15:01:09 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2930,15 +2930,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         List ace = m_userDriver.readAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId(), false);
 
         // get the ACE of each parent folder
+        // Note: for the immediate parent, get non-inherited access control entries too,
+        // if the resource is not a folder
         String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+        int d = (resource.isFolder()) ? 1 : 0;
+        
         while (getInherited && parentPath != null) {
             resource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
-            ace.addAll(m_userDriver.readAccessControlEntries(
+            List entries = m_userDriver.readAccessControlEntries(
                 dbc,
                 dbc.currentProject(),
                 resource.getResourceId(),
-                getInherited));
+                d > 0);
+            
+            for (Iterator i = entries.iterator(); i.hasNext();) {
+                CmsAccessControlEntry e = (CmsAccessControlEntry)i.next();
+                e.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+            }
+            
+            ace.addAll(entries);
             parentPath = CmsResource.getParentFolder(resource.getRootPath());
+            d++;
         }
 
         return ace;
@@ -2966,6 +2978,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * If <code>inheritedOnly</code> is set, only inherited access control entries 
      * are returned.<p>
      * 
+     * Note: For file resources, *all* permissions set at the immediate parent folder are inherited,
+     * not only these marked to inherit. 
+     * 
      * @param dbc the current database context
      * @param resource the resource
      * @param inheritedOnly skip non-inherited entries if set
@@ -2979,7 +2994,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource resource,
         boolean inheritedOnly) throws CmsException {
         
-        return getAccessControlList(dbc, resource, inheritedOnly ? 1 : 2);
+        return getAccessControlList(dbc, resource, inheritedOnly, resource.isFolder(), 0);
     }
     
     /**
@@ -2988,6 +3003,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param dbc the current database context
      * @param resource the resource
      * @param depth the depth to include non-inherited access entries, also
+     * @param inheritedOnly flag indicates to collect inherited permissions only
      * 
      * @return the access control list of the resource
      * 
@@ -2996,9 +3012,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     private CmsAccessControlList getAccessControlList(
         CmsDbContext dbc,
         CmsResource resource,
-        int depth) throws CmsException {
+        boolean inheritedOnly, boolean forFolder, int depth) throws CmsException {
 
-        String cacheKey = getCacheKey(depth + "_", dbc.currentProject(), resource.getStructureId().toString());
+        String cacheKey = getCacheKey(inheritedOnly + "_" + forFolder + "_" + depth + "_", dbc.currentProject(), resource.getStructureId().toString());
         CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
 
         // return the cached acl if already available
@@ -3011,33 +3027,35 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (parentPath != null) {
             CmsResource parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
             // recurse
-            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, (depth > 0) ? depth-1 : 0).clone();
+            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, inheritedOnly, forFolder, depth+1).clone();
         } else {
             acl = new CmsAccessControlList();
         }
 
-        // add the access control entries belonging to this resource
-        // in case depth
-        ListIterator ace = m_userDriver.readAccessControlEntries(
-            dbc,
-            dbc.currentProject(),
-            resource.getResourceId(),
-            depth <= 0).listIterator();
+        if (!(depth == 0 && inheritedOnly)) {
 
-        while (ace.hasNext()) {
-            CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
+            ListIterator ace = m_userDriver.readAccessControlEntries(dbc,
+                dbc.currentProject(),
+                resource.getResourceId(),
+                depth > 1 || (depth > 0 && forFolder)).listIterator();
+               
+            while (ace.hasNext()) {
+                CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
+                if (depth > 0) {
+                    acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+                }
+            
+                acl.add(acEntry);
 
-            acl.add(acEntry);
-
-            // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry
-            // denied permissions are kept or extended
-            if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
-                acl.setAllowedPermissions(acEntry);
+                // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry
+                // denied permissions are kept or extended
+                if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
+                    acl.setAllowedPermissions(acEntry);
+                }
             }
         }
-
+        
         m_accessControlListCache.put(cacheKey, acl);
-
         return acl;
     }
 
