@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/11/03 17:31:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/01/30 14:33:29 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,12 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
+
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,10 +49,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 
 /**
  * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
@@ -60,7 +61,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -124,6 +125,30 @@ public class CmsFrameset extends CmsWorkplace {
             }
         }  
         return result.toString();      
+    }
+    
+    /**
+     * Returns the javascript code for the broadcast message alert in the foot of the workplace.<p>
+     * 
+     * @return javascript code showing an alert box when the foot load
+     */
+    public String getBroadcastMessage() {
+        StringBuffer result = new StringBuffer(512);
+        // get the broadcast message from the session
+        String message = (String) getCms().getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+        if (message != null) {
+            // remove the message from session
+            getCms().getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+            if (!"".equals(message.trim())) {
+                // create a javascript alert for the message if message is not empty
+                result.append("\n<script type=\"text/javascript\">\n<!--\n");
+                // the timeout gives the frameset enough time to load before the alert is shown
+                result.append("setTimeout(\"alert(unescape('" + key("label.messagetoall") + ": ");
+                result.append(Encoder.escape(message, getCms().getRequestContext().getEncoding()) + "'));\", 2000);");
+                result.append("\n//-->\n</script>");
+            }
+        }
+        return result.toString();
     }
     
     /**
