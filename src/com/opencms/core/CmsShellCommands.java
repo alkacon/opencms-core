@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/11/07 09:28:56 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/11/14 10:07:15 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.44 $ $Date: 2001/11/07 09:28:56 $
+ * @version $Revision: 1.45 $ $Date: 2001/11/14 10:07:15 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -3454,5 +3454,20 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void setContextToCos(){
         m_cms.setContextToCos();
+    }
+
+    /**
+     * Returns the project history
+     */
+    public void getAllBackupProjects(){
+        try {
+            Vector projects = m_cms.getAllBackupProjects();
+            for(int i = 0;i < projects.size();i++) {
+                System.out.println((CmsBackupProject)projects.elementAt(i));
+            }
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
     }
 }
