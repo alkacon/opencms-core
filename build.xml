@@ -233,8 +233,8 @@ ${opencms.inputlib.pdfbox}
       			<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}"/>
       			<filter token="OPENCMS_VERSION_NAME" value="${version.name}"/>
     		</filterset>			
-		</copy>
-		
+		</copy>		
+      				    	
 		<copy 
 			file="${opencms.input.warfiles}/WEB-INF/setupdata/vfs/system/login/version.js" 
 			tofile="${opencms.output.classes}/version.js" overwrite="true">			
@@ -250,6 +250,15 @@ ${opencms.inputlib.pdfbox}
       			<filter token="OPENCMS_VERSION" value="OpenCms ${version.number}"/>
     		</filterset>			
 		</copy>
+    	
+		<copy 
+			file="${opencms.input.warfiles}/setup/license.html" 
+			tofile="${opencms.output.classes}/license.html" overwrite="true">			
+    		<filterset>
+      			<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}"/>
+      			<filter token="OPENCMS_VERSION_NAME" value="${version.name}"/>
+    		</filterset>			
+		</copy>    	
        	
 	   	<copy 
 	   		file="${opencms.input.defaultconfiguration}" 
@@ -337,12 +346,14 @@ ${opencms.inputlib.pdfbox}
        			<exclude name="WEB-INF/config/registry.xml" />
        			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
        			<exclude name="setup/versions.txt" />
+       			<exclude name="setup/license.html" />
        			<exclude name="build.xml,.*,${excludes}" />
        		</fileset>
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/setupdata/vfs/system/login" includes="version.js" />
   			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
+			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
         </war>        
     </target>
     
