@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/10/27 07:42:20 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.20 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.21 $ $Date: 2000/10/27 07:42:20 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -108,9 +108,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 				}
 				// Check if nav is current nav				
 				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
+					result.append(xmlDataBlock.getProcessedDataValue("navCurrent", this));
 				} else {
-					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
+					result.append(xmlDataBlock.getProcessedDataValue("navEntry", this));
 				}
 			}
 		}
@@ -144,7 +144,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		
 		int max=extractNav(cms,resources,navLink,navText,navPos);
 		if (max>0) {
-			result.append(xmlDataBlock.getProcessedDataValue("navTreeStart"));
+			result.append(xmlDataBlock.getProcessedDataValue("navTreeStart", this));
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
@@ -173,9 +173,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 				}
 				// Check if nav is current nav				
 				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
+					result.append(xmlDataBlock.getProcessedDataValue("navCurrent", this));
 				} else {
-					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
+					result.append(xmlDataBlock.getProcessedDataValue("navEntry", this));
 				}
 				// if the folder was clicked				
 				if (cmsfolder!=null && (!cmsfolder.equals("")) && (cmsfolder.indexOf(navLink[i])!=-1)) {
@@ -189,7 +189,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 					result.append(buildNavFold(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath));
 				}
 			}
-			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd"));
+			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd", this));
 		}
 		
 		return result.toString();
@@ -272,9 +272,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 				}
 				// Check if nav is current nav				
 				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
+					result.append(xmlDataBlock.getProcessedDataValue("navCurrent", this));
 				} else {
-					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
+					result.append(xmlDataBlock.getProcessedDataValue("navEntry", this));
 				}
 			}
 		}
@@ -307,7 +307,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		
 		int max=extractNav(cms,resources,navLink,navText,navPos);
 		if (max>0) {
-			result.append(xmlDataBlock.getProcessedDataValue("navTreeStart"));
+			result.append(xmlDataBlock.getProcessedDataValue("navTreeStart", this));
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
@@ -335,9 +335,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 				}
 				// Check if nav is current nav				
 				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
+					result.append(xmlDataBlock.getProcessedDataValue("navCurrent", this));
 				} else {
-					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
+					result.append(xmlDataBlock.getProcessedDataValue("navEntry", this));
 				}
 				// choose only folders.
 				depth--;
@@ -354,7 +354,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 					}
 				}
 			}
-			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd"));
+			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd", this));
 		}
 		return result.toString();
 		
