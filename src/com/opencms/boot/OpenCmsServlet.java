@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/OpenCmsServlet.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/09/07 12:15:18 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -95,6 +95,11 @@ public class OpenCmsServlet extends HttpServlet {
     public void service(ServletRequest p0, ServletResponse p1) throws ServletException, IOException {
         // test if we must create a new http-servlet
         if (m_loader.shouldReload()){
+            /* Switching off this feature because of problems in
+               running systems. TODO: refactore the automatic reload of classes.
+               Now you have to restart your system manually after updating classes.
+
+
             System.err.println("[OpenCmsServlet] there are new Classes,"
                         +" we have to create a new http-servlet to throw away the old ones.");
             System.err.println("[OpenCmsServlet] first destroy the old http-servlet.");
@@ -102,6 +107,12 @@ public class OpenCmsServlet extends HttpServlet {
             System.err.println("[OpenCmsServlet] now init the a new http-servlet.");
             init(m_config);
             System.err.println("[OpenCmsServlet] finaly call the service.");
+
+               Log-message about "should reload classes"
+            */
+
+            System.err.println("[OpenCmsServlet] there are new Classes, you should restart the system...");
+
         }
         m_servlet.service(p0, p1);
     }
