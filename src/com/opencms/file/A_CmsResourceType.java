@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/03 15:12:00 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/08/04 10:48:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -133,9 +133,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
      */
     public void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, int type) throws CmsException {
-        // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        CmsResource res = cms.readFileHeader(resourcename, true);
-        cms.doLockResource(cms.readAbsolutePath(res), false);
         cms.doReplaceResource(resourcename, content, type, properties);
     }
 

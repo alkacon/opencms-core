@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 09:14:11 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2003/08/04 10:48:42 $
+ * Version: $Revision: 1.131 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.130 $ $Date: 2003/08/04 09:14:11 $
+ * @version $Revision: 1.131 $ $Date: 2003/08/04 10:48:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6837,6 +6837,9 @@ public class CmsDriverManager extends Object {
      */
     public CmsResource replaceResource(CmsRequestContext context, String resName, int newResType, Map newResProps, byte[] newResContent) throws CmsException {
         CmsResource resource = null;
+
+
+        lockResource(context, resName, false);
 
         // read the existing resource
         resource = readFileHeader(context, resName, true);
