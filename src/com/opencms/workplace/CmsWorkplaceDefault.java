@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2002/03/13 11:24:23 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/07/09 14:30:56 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2002/03/13 11:24:23 $
+ * @version $Revision: 1.44 $ $Date: 2002/07/09 14:30:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -371,13 +371,35 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
+     * @return <code>true</code> if the current user is in the Administrators Group, <code>false</code> otherwise.
      * @exception CmsException if there were errors while accessing project data.
      */
 
     public Boolean isAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean(reqCont.isAdmin());
+    }
+
+    /**
+     * Checks if the current user is the administrator <strong>Admin</strong>.
+     * <P>
+     * This method is used by workplace icons to decide whether the icon should
+     * be activated or not. 
+     * 
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the current user is the user Admin, <code>false</code> otherwise.
+     * @exception CmsException if there were errors while accessing project data.
+     */
+
+    public Boolean isTheAdminUser(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
+        CmsRequestContext reqCont = cms.getRequestContext();
+        if(reqCont.isAdmin()){
+            return new Boolean(reqCont.currentUser().getName().equals(C_USER_ADMIN));
+        }else{
+            return new Boolean(false);
+        }
     }
 
     /**
