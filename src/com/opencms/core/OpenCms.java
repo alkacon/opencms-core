@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/07/04 09:58:36 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2003/01/08 09:04:22 $
+* Version: $Revision: 1.87.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.87 $ $Date: 2002/07/04 09:58:36 $
+ * @version $Revision: 1.87.2.1 $ $Date: 2003/01/08 09:04:22 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -140,6 +140,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     private static Hashtable c_variantDeps = null;
 
+	// Gridnine AB Aug 1, 2002
+	private static String c_encoding = "ISO-8859-1";
+   
     /**
      * Constructor, creates a new OpenCms object.
      *
@@ -365,6 +368,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
             }
         }
+		// Gridnine AB Aug 1, 2002
+		c_encoding = conf.getString("defaultContentEncoding", "ISO-8859-1");
+
     }
 
     /**
@@ -566,16 +572,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             mimetype = (String)m_mt.get(ext);
 
             // was there a mimetype fo this extension?
-            if(mimetype != null) {
-                cms.getRequestContext().getResponse().setContentType(mimetype);
+            if(mimetype == null) {
+				mimetype = C_DEFAULT_MIMETYPE;
             }
-            else {
-                cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
-            }
+        } else {
+            mimetype = C_DEFAULT_MIMETYPE;
         }
-        else {
-            cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
+        if (mimetype.toLowerCase().startsWith("text")
+            && (mimetype.toLowerCase().indexOf("charset") == -1)) {
+            mimetype += "; charset=" + cms.getRequestContext().getEncoding();
         }
+        cms.getRequestContext().getResponse().setContentType(mimetype);
     }
 
     /**
@@ -679,5 +686,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
             }
         }
+    }
+    // Gridnine AB Aug 1, 2002
+    public static String getEncoding() {
+        return c_encoding;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/02/05 09:07:02 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/01/08 09:04:22 $
+* Version: $Revision: 1.47.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.47 $ $Date: 2002/02/05 09:07:02 $
+ * @version $Revision: 1.47.2.1 $ $Date: 2003/01/08 09:04:22 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -93,6 +93,11 @@ public class CmsRequestContext implements I_CmsConstants {
     private Vector m_links;
 
     /**
+     * Flag to indicate that this request is event controlled.
+     */
+    private boolean m_eventControlled = false;
+
+    /**
      * In export mode this vector is used to store all dependencies this request
      * may have. It is saved to the database and if one of the dependencies changes
      * the request will be exported again.
@@ -108,7 +113,10 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * The name of the root, e.g. /site_a/vfs
      */
-    private String m_siteRoot = C_DEFAULT_SITE+C_ROOTNAME_VFS;
+    private String m_siteRoot = C_DEFAULT_SITE + C_ROOTNAME_VFS;
+
+    // Gridnine AB Aug 1, 2002
+    private String m_encoding = null;
 
     /**
      * The default constructor.
@@ -121,14 +129,14 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * adds a link for the static export.
      */
-    public void addLink(String link){
+    public void addLink(String link) {
         m_links.add(link);
     }
 
     /**
      * returns all links that the templatemechanism has registered.
      */
-    public Vector getLinkVector(){
+    public Vector getLinkVector() {
         return m_links;
     }
 
@@ -136,14 +144,14 @@ public class CmsRequestContext implements I_CmsConstants {
      * adds a dependency.
      * @param dependency. The rootpath of the resource.
      */
-    public void addDependency(String rootName){
+    public void addDependency(String rootName) {
         m_dependencies.add(rootName);
     }
 
     /**
      * returns all dependencies the templatemechanism has registered.
      */
-    public Vector getDependencies(){
+    public Vector getDependencies() {
         return m_dependencies;
     }
 
@@ -156,8 +164,14 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public CmsFolder currentFolder() throws CmsException {
         // truncate the filename from the pathinformation
-        String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
-        return (m_rb.readFolder(currentUser(), currentProject(), getSiteRoot(folderName), ""));
+        String folderName =
+            getUri().substring(0, getUri().lastIndexOf("/") + 1);
+        return (
+            m_rb.readFolder(
+                currentUser(),
+                currentProject(),
+                getSiteRoot(folderName),
+                ""));
     }
     /**
      * Returns the current group of the current user.
@@ -165,7 +179,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the current group of the current user.
      */
     public CmsGroup currentGroup() {
-        return(m_currentGroup);
+        return (m_currentGroup);
     }
     /**
      * Returns the current project of the current user.
@@ -181,17 +195,26 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the current user object.
      */
     public CmsUser currentUser() {
-        return(m_user);
+        return (m_user);
+    }
+    /**
+     * Gets the name of the requested file without any path-information.
+     *
+     * @return the requested filename.
+     */
+    public String getFileUri() {
+        String uri = m_req.getRequestedResource();
+        uri = uri.substring(uri.lastIndexOf("/") + 1);
+        return uri;
     }
    /**
-    * Gets the name of the requested file without any path-information.
+    * Gets the name of the parent folder of the requested file
     *
     * @return the requested filename.
     */
-    public String getFileUri() {
-        String uri = m_req.getRequestedResource();
-        uri=uri.substring(uri.lastIndexOf("/")+1);
-        return uri;
+    public String getFolderUri() {
+        String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
+        return folderName;
     }
     /**
      * Gets the current request, if availaible.
@@ -199,7 +222,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the current request, if availaible.
      */
     public I_CmsRequest getRequest() {
-        return( m_req );
+        return (m_req);
     }
     /**
      * Gets the current response, if availaible.
@@ -207,7 +230,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the current response, if availaible.
      */
     public I_CmsResponse getResponse() {
-        return( m_resp );
+        return (m_resp);
     }
     /**
      * Gets the Session for this request.
@@ -218,8 +241,9 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      */
     public I_CmsSession getSession(boolean value) {
-        HttpSession session = ((HttpServletRequest)m_req.getOriginalRequest()).getSession(value);
-        if(session != null) {
+        HttpSession session =
+            ((HttpServletRequest) m_req.getOriginalRequest()).getSession(value);
+        if (session != null) {
             return (I_CmsSession) new CmsSession(session);
         } else {
             return null;
@@ -238,11 +262,34 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the path to the requested resource.
      */
     public String getUri() {
+
+        if (m_fakeUri != null) return m_fakeUri;
         if( m_req != null ) {
             return( m_req.getRequestedResource() );
         } else {
-            return( C_ROOT );
+            return (C_ROOT);
         }
+    }
+
+    /** A faked URI for getUri(), this is required to enable a cascade of elements that use the XMLTemplate mechanism */
+    private String m_fakeUri = null;
+
+    /**
+     * Set the value that is returned by getUri()
+     * to the provided String.
+     * <p>
+     * This is required in a context where
+     * a cascade of included XMLTemplates are combined with JSP or other
+     * Templates that use the ResourceLoader interface.
+     * You need to fake the URI because the ElementCache always
+     * uses cms.getRequestContext().getUri() even if you called
+     * CmsXmlLauncher.generateOutput() with a differnt file name.
+     *
+     * @param value The value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
+     * @since 5.0 beta 1
+     */
+    public void setUri(String value) {
+        m_fakeUri = value;
     }
     /**
      * Initializes this RequestContext.
@@ -257,8 +304,15 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      * @exception CmsException if operation was not successful.
      */
-    void init(I_CmsResourceBroker rb, I_CmsRequest req, I_CmsResponse resp,
-              String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache)
+    void init(
+        I_CmsResourceBroker rb,
+        I_CmsRequest req,
+        I_CmsResponse resp,
+        String user,
+        String currentGroup,
+        int currentProjectId,
+        boolean streaming,
+        CmsElementCache elementCache)
         throws CmsException {
         m_rb = rb;
         m_req = req;
@@ -268,7 +322,7 @@ public class CmsRequestContext implements I_CmsConstants {
 
         try {
             m_user = m_rb.readUser(null, null, user);
-        } catch (CmsException ex){
+        } catch (CmsException ex) {
         }
         // if no user found try to read webUser
         if (m_user == null) {
@@ -276,14 +330,14 @@ public class CmsRequestContext implements I_CmsConstants {
         }
 
         // check, if the user is disabled
-        if( m_user.getDisabled() == true ) {
+        if (m_user.getDisabled() == true) {
             m_user = null;
         }
 
         // set current project, group and streaming proerties for this request
         try {
             setCurrentProject(currentProjectId);
-        } catch(CmsException exc) {
+        } catch (CmsException exc) {
             // there was a problem to set the needed project - using the online one
             setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
@@ -292,30 +346,35 @@ public class CmsRequestContext implements I_CmsConstants {
         m_elementCache = elementCache;
 
         // Analyze the user's preferred languages coming with the request
-        if(req != null) {
-            try{
-                HttpServletRequest httpReq = (HttpServletRequest)req.getOriginalRequest();
+        if (req != null) {
+            try {
+                HttpServletRequest httpReq =
+                    (HttpServletRequest) req.getOriginalRequest();
                 String accLangs = null;
-                if(httpReq != null){
+                if (httpReq != null) {
                     accLangs = httpReq.getHeader("Accept-Language");
                 }
-                if(accLangs != null) {
+                if (accLangs != null) {
                     StringTokenizer toks = new StringTokenizer(accLangs, ",");
-                    while(toks.hasMoreTokens()) {
+                    while (toks.hasMoreTokens()) {
                         // Loop through all languages and cut off trailing extensions
                         String current = toks.nextToken().trim();
-                        if(current.indexOf("-") > -1) {
-                            current = current.substring(0, current.indexOf("-"));
+                        if (current.indexOf("-") > -1) {
+                            current =
+                                current.substring(0, current.indexOf("-"));
                         }
-                        if(current.indexOf(";") > -1) {
-                            current = current.substring(0, current.indexOf(";"));
+                        if (current.indexOf(";") > -1) {
+                            current =
+                                current.substring(0, current.indexOf(";"));
                         }
                         m_language.addElement(current);
 
                     }
                 }
-            }catch(UnsupportedOperationException e){
+            } catch (UnsupportedOperationException e) {
             }
+            // Gridnine AB Aug 1, 2002
+            detectEncoding();
         }
     }
     /**
@@ -325,9 +384,8 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      * @exception CmsException if operation was not successful.
      */
-    public boolean isAdmin()
-        throws CmsException {
-        return( m_rb.isAdmin(m_user, m_currentProject) );
+    public boolean isAdmin() throws CmsException {
+        return (m_rb.isAdmin(m_user, m_currentProject));
     }
     /**
      * Determines if the users current group is the projectmanager-group.
@@ -338,9 +396,8 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      * @exception CmsException if operation was not successful.
      */
-    public  boolean isProjectManager()
-        throws CmsException {
-        return( m_rb.isProjectManager(m_user, m_currentProject) );
+    public boolean isProjectManager() throws CmsException {
+        return (m_rb.isProjectManager(m_user, m_currentProject));
     }
     /**
      * Sets the current group of the current user.
@@ -349,16 +406,22 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      * @exception CmsException if operation was not successful.
      */
-    public void setCurrentGroup(String groupname)
-        throws CmsException {
+    public void setCurrentGroup(String groupname) throws CmsException {
 
         // is the user in that group?
-        if(m_rb.userInGroup(m_user, m_currentProject, m_user.getName(), groupname)) {
+        if (m_rb
+            .userInGroup(
+                m_user,
+                m_currentProject,
+                m_user.getName(),
+                groupname)) {
             // Yes - set it to the current Group.
-            m_currentGroup = m_rb.readGroup(m_user, m_currentProject, groupname);
+            m_currentGroup =
+                m_rb.readGroup(m_user, m_currentProject, groupname);
         } else {
             // No - throw exception.
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname,
+            throw new CmsException(
+                "[" + this.getClass().getName() + "] " + groupname,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -368,15 +431,13 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param projectId the id of the project to be set as current project.
      * @exception CmsException if operation was not successful.
      */
-    public CmsProject setCurrentProject(int projectId)
-        throws CmsException  {
-        CmsProject newProject = m_rb.readProject(m_user,
-                                                   m_currentProject,
-                                                   projectId);
-        if( newProject != null ) {
+    public CmsProject setCurrentProject(int projectId) throws CmsException {
+        CmsProject newProject =
+            m_rb.readProject(m_user, m_currentProject, projectId);
+        if (newProject != null) {
             m_currentProject = newProject;
         }
-        return( m_currentProject );
+        return (m_currentProject);
     }
 
     /**
@@ -399,8 +460,10 @@ public class CmsRequestContext implements I_CmsConstants {
      * @exception CmsException if the output stream was already used previously.
      */
     public void setStreaming(boolean b) throws CmsException {
-        if((m_streaming != b) && getResponse().isOutputWritten()) {
-            throw new CmsException("[CmsRequestContext] Cannot switch streaming mode, if output stream is used previously.", CmsException.C_STREAMING_ERROR);
+        if ((m_streaming != b) && getResponse().isOutputWritten()) {
+            throw new CmsException(
+                "[CmsRequestContext] Cannot switch streaming mode, if output stream is used previously.",
+                CmsException.C_STREAMING_ERROR);
         }
         m_streaming = b;
     }
@@ -439,13 +502,13 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param resourcename
      * @return String The resourcename with its site root
      */
-    public String getSiteRoot(String resourcename){
-        if(resourcename.startsWith("///")){
+    public String getSiteRoot(String resourcename) {
+        if (resourcename.startsWith("///")) {
             return resourcename.substring(2);
-        } else if (resourcename.startsWith("//")){
-            return C_DEFAULT_SITE+resourcename.substring(1);
+        } else if (resourcename.startsWith("//")) {
+            return C_DEFAULT_SITE + resourcename.substring(1);
         } else {
-            return m_siteRoot+resourcename;
+            return m_siteRoot + resourcename;
         }
     }
 
@@ -454,7 +517,7 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      * @return String The site name
      */
-    public String getSiteName(){
+    public String getSiteName() {
         return C_DEFAULT_SITE;
     }
 
@@ -462,7 +525,129 @@ public class CmsRequestContext implements I_CmsConstants {
      * Sets the name of the current site root
      * of the virtual file system
      */
-    public void setContextTo(String name){
-        m_siteRoot = C_DEFAULT_SITE+name;
+    public void setContextTo(String name) {
+        m_siteRoot = C_DEFAULT_SITE + name;
+    }
+
+    /**
+     * Detects current content encoding to be used in HTTP response
+     * based on requested resource or session state.
+     */
+    //Gridnine AB Aug 13, 2002
+    public void detectEncoding() {
+        m_encoding = null;
+        String requestedResource = null;
+        try {
+            // try to get content encoding for requested resource
+            // or for its parents if any
+            try {
+                requestedResource = m_req.getRequestedResource();
+                String resName = getSiteRoot(requestedResource);
+                while (resName != null) {
+                    try {
+                        m_encoding =
+                            m_rb.readProperty(m_user, m_currentProject,
+                                resName, C_PROPERTY_CONTENT_ENCODING);
+                    } catch (CmsException ce) {}
+                    if (m_encoding != null) {
+                        break;
+                    }
+                    CmsResource res = m_rb.getParentResource(m_user, m_currentProject, resName);
+                    if (res == null) {
+                        break;
+                    }
+                    resName = getSiteRoot(res.getAbsolutePath());
+                }
+            } catch (Throwable t) {;}
+            if ((m_encoding == null) || "".equals(m_encoding.trim())) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+                    "[" + getClass().getName() + "] can't get encoding property "
+                    + C_PROPERTY_CONTENT_ENCODING + " or original XML encoding for resource "
+                    + requestedResource + ", try to get it from session");
+                I_CmsSession session = getSession(false);
+                if (session != null) {
+                    m_encoding =
+                        (String) session.getValue(
+                            I_CmsConstants.C_SESSION_CONTENT_ENCODING);
+                }
+                /*
+                if ((m_encoding == null) || "".equals(m_encoding.trim())) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+                        "no encoding stored in session, try to use default for current language");
+                    try {
+                        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+                        m_encoding = lang.getEncoding();
+                    } catch (Throwable t) {;}
+                }
+                */
+            }
+            /*
+            if (!java.nio.charset.Charset.isSupported(m_encoding)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[" + getClass().getName() + "] resource=" + req.getRequestedResource() + ",  encoding " + m_encoding + " doesn't supported");
+                m_encoding = OpenCms.getEncoding();
+            }
+            */
+            if (m_encoding == null) {
+                // no encoding found - use default one
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "no encoding found - use default one");
+                m_encoding = OpenCms.getEncoding();
+            }
+        } catch (Throwable t) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "an error [" + t + "] has occured while determining content encoding - use default one");
+            m_encoding = OpenCms.getEncoding();
+        }
+        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["
+            + getClass().getName() + "] resource=" + requestedResource
+            + ",  encoding=" + m_encoding);
+    }
+
+    /**
+     * Returns the current content encoding to be used in HTTP response
+     */
+    // Gridnine AB Aug 1, 2002
+    public String getEncoding() {
+        return m_encoding;
+    }
+
+    /**
+     * Sets the current content encoding to be used in HTTP response
+     */
+    // Gridnine AB Aug 1, 2002
+    public void setEncoding(String encoding) {
+        setEncoding(encoding, false);
+    }
+
+    /**
+     * Sets the current content encoding to be used in HTTP response
+     * and store it in session if it is available
+     */
+    // Gridnine AB Aug 6, 2002
+    public void setEncoding(String encoding, boolean storeInSession) {
+        m_encoding = encoding;
+        if (!storeInSession) {
+            return;
+        }
+        I_CmsSession session = getSession(false);
+        if (session != null) {
+            session.putValue(
+                I_CmsConstants.C_SESSION_CONTENT_ENCODING,
+                m_encoding);
+        }
+    }
+
+    /**
+     * Mark this request context as event controlled.
+     * @param true if the request is event controlled, false otherwise.
+     */
+    public void setEventControlled(boolean value) {
+        m_eventControlled = value;
+    }
+
+    /**
+     * Check if this request context is event controlled.
+     * @return true if the request context is event controlled, false otherwise.
+     */
+    public boolean isEventControlled() {
+        return m_eventControlled;
     }
 }

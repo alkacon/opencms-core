@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/08 09:04:22 $
+* Version: $Revision: 1.27.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.27.2.1 $ $Date: 2003/01/08 09:04:22 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -546,7 +546,8 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         try {
             ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
+            //A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
+			A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, I_CmsXmlParser.C_XML_ENCODING);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

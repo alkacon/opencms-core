@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2002/05/17 11:16:06 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/01/08 09:04:24 $
+* Version: $Revision: 1.1.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2002/05/17 11:16:06 $
+ * @version $Revision: 1.1.4.1 $ $Date: 2003/01/08 09:04:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -129,7 +129,9 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
                 int maxpage = ((filteredLinks.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+                //Gridnine AB Aug 8, 2002
+                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                    cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
                 xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);

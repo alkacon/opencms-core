@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/08/01 14:19:13 $
-* Version: $Revision: 1.329 $
+* Date   : $Date: 2003/01/08 09:04:22 $
+* Version: $Revision: 1.329.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.329 $ $Date: 2002/08/01 14:19:13 $
+ * @version $Revision: 1.329.2.1 $ $Date: 2003/01/08 09:04:22 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6534,8 +6534,15 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         if( isAdmin(currentUser, currentProject) ) {
             CmsUser user;
             CmsGroup group;
-
-            user=readUser(currentUser,currentProject,username);
+            try{
+                user = readUser(currentUser, currentProject, username);
+            } catch (CmsException e){
+                if (e.getType() == CmsException.C_NO_USER){
+                    user = readWebUser(currentUser, currentProject, username);
+                } else {
+                    throw e;
+                }
+            }
             //check if the user exists
             if (user != null) {
                 group=readGroup(currentUser,currentProject,groupname);

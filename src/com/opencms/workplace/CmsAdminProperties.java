@@ -1,8 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.12 $
-*
+* Date   : $Date: 2003/01/08 09:04:24 $
+* Version: $Revision: 1.12.6.1 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -41,7 +40,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.12 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.12.6.1 $ $Date: 2003/01/08 09:04:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -112,7 +111,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
             }
             else {
                 try {
-                    cms.createPropertydefinition(name, resTypeName, 0); //TODO: type
+                    cms.createPropertydefinition(name, resTypeName);
                     templateSelector = "";
                 }
                 catch(CmsException e) {
@@ -204,13 +203,17 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
         templateFile.setData(C_TAG_RESTYPE, resType.getResourceTypeName());
 
         // TODO: this escape function doesn't handle properly multiple blancs
+        //Gridnine AB Aug 8, 2002
         templateFile.setData(C_TAG_RESTYPE + "_esc",
-                Encoder.escapeWBlanks(resType.getResourceTypeName()));
+                Encoder.escapeWBlanks(resType.getResourceTypeName(),
+                cms.getRequestContext().getEncoding()));
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
         for(int z = 0;z < properties.size();z++) {
             CmsPropertydefinition propdef = (CmsPropertydefinition)properties.elementAt(z);
             templateFile.setData("PROPERTY_NAME", propdef.getName());
-            templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName()));
+            //Gridnine AB Aug 8, 2002
+            templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName(),
+                cms.getRequestContext().getEncoding()));
             output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject));
         }
         return output.toString();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2001/09/21 06:49:40 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/01/08 09:04:25 $
+* Version: $Revision: 1.1.6.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2001/09/21 06:49:40 $
+ * @version $Revision: 1.1.6.1 $ $Date: 2003/01/08 09:04:25 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -197,8 +197,9 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
         xmlFile.setData(C_PROJECTLIST_OWNER, project.getOwnerName());
         xmlFile.setData("publishdate", Utils.getNiceDate(project.getPublishingDate()));
         xmlFile.setData("publishedby", project.getPublishedByName());
-
-        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName()));
+        //Gridnine AB Aug 8, 2002
+        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName(),
+            cms.getRequestContext().getEncoding()));
         xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");
         xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(C_PROJECTLIST_STATE_UNLOCKED));
     }

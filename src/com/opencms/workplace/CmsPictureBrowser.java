@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2002/04/05 13:15:00 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/01/08 09:04:24 $
+* Version: $Revision: 1.32.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.32 $ $Date: 2002/04/05 13:15:00 $
+ * @version $Revision: 1.32.4.1 $ $Date: 2003/01/08 09:04:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -133,7 +133,9 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 int maxpage = ((filteredPics.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+                //Gridnine AB Aug 8, 2002
+                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                    cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
                 xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);

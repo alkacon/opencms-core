@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/08/02 12:12:57 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/01/08 09:04:22 $
+* Version: $Revision: 1.46.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2002/08/02 12:12:57 $
+ * @version $Revision: 1.46.2.1 $ $Date: 2003/01/08 09:04:22 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -375,8 +375,23 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 
             // was the file changed?
             if (file != null) {
-                // create the current digest-content for the file
-                String digestContent = com.opencms.util.Encoder.escape(new String(m_digest.digest(file.getContents())));
+                    // create the current digest-content for the file
+                    // encoding project:
+                    String digestContent;
+                    try {
+                        digestContent =
+                            com.opencms.util.Encoder.escape(
+                                new String(
+                                    m_digest.digest(file.getContents()),
+                                    m_cms.getRequestContext().getEncoding()),
+                                m_cms.getRequestContext().getEncoding());
+                    } catch (UnsupportedEncodingException e) {
+                        digestContent =
+                            com.opencms.util.Encoder.escape(
+                                new String(
+                                    m_digest.digest(file.getContents())),
+                                m_cms.getRequestContext().getEncoding());
+                    }
                 if (!currentChecksum.equals(digestContent)) {
                     // the file was changed, the checksums are different
                     wrongChecksum.addElement(currentFile);
@@ -1525,7 +1540,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
         Node checksum = newModule.getOwnerDocument().createElement("checksum");
         file.appendChild(checksum);
         name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
-        checksum.appendChild(newModule.getOwnerDocument().createTextNode(com.opencms.util.Encoder.escape( (String) resourceCodes.elementAt(i))));
+        checksum.appendChild(newModule.getOwnerDocument().createTextNode(com.opencms.util.Encoder.escape( (String)resourceCodes.elementAt(i), m_cms.getRequestContext().getEncoding())));
     }
 
     // append the files to the module-entry
@@ -1588,11 +1603,8 @@ private void saveRegistry() throws CmsException {
         // get the file
         File xmlFile = new File(m_regFileName);
 
-        // get a buffered writer
-        BufferedWriter xmlWriter = new BufferedWriter(new FileWriter(xmlFile));
-
-        // parse the registry-xmlfile and store it.
-        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, xmlWriter);
+        BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(xmlFile));
+        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, I_CmsXmlParser.C_XML_ENCODING);
 
         // reinit the modules-hashtable
         init();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/01/08 09:04:25 $
+* Version: $Revision: 1.41.6.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2001/10/05 07:33:07 $
+ * @version $Revision: 1.41.6.1 $ $Date: 2003/01/08 09:04:25 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -127,7 +127,9 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             String message = (String)cms.getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
             if(message != null) {
                 cms.getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-                xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + Encoder.escape(message) + "'));");
+                //Gridnine AB Aug 8, 2002
+                xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + Encoder.escape(message,
+                    cms.getRequestContext().getEncoding()) + "'));");
             }
         }
 

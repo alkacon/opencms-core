@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2001/12/20 15:43:33 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/08 09:04:24 $
+* Version: $Revision: 1.4.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2001/12/20 15:43:33 $
+ * @version $Revision: 1.4.4.1 $ $Date: 2003/01/08 09:04:24 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -497,13 +497,17 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(res.getAbsolutePath())) {
+                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
-                                    + "=" + Encoder.escape(curfolder));
+                                    + "=" + Encoder.escape(curfolder,
+                                    cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MEND, this);
                         }
                         else {
+                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
-                                    + "=" + Encoder.escape(res.getAbsolutePath()));
+                                    + "=" + Encoder.escape(res.getAbsolutePath(),
+                                    cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PEND, this);
                         }
                     }
@@ -520,13 +524,17 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(res.getAbsolutePath())) {
+                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
-                                    + "=" + Encoder.escape(curfolder));
+                                    + "=" + Encoder.escape(curfolder,
+                                    cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MCROSS, this);
                         }
                         else {
+                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
-                                    + "=" + Encoder.escape(res.getAbsolutePath()));
+                                    + "=" + Encoder.escape(res.getAbsolutePath(),
+                                    cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PCROSS, this);
                         }
                     }

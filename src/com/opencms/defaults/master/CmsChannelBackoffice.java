@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/08 09:04:22 $
+* Version: $Revision: 1.10.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -254,7 +254,9 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         template.setData("channelId", ""+cd.getChannelId());
         template.setData("resourceid", ""+cd.getId());
         template.setData("channelName", cd.getChannelName());
-        template.setData("title", Encoder.escape(cd.getTitle()));
+        //Gridnine AB Aug 8, 2002
+        template.setData("title", Encoder.escape(cd.getTitle(),
+            cms.getRequestContext().getEncoding()));
         template.setData("parentName", cd.getParentName());
         template.setData("error", error);
 
@@ -271,7 +273,9 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId", idvalue);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title));
+                //Gridnine AB Aug 8, 2002
+                template.setData("title", Encoder.escape(title,
+                    cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
                 template.setData("error", error);
@@ -281,7 +285,9 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId", idvalue);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title));
+                //Gridnine AB Aug 8, 2002
+                template.setData("title", Encoder.escape(title,
+                    cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
                 template.setData("error", error);
@@ -304,7 +310,9 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId", idvalue);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title));
+                //Gridnine AB Aug 8, 2002
+                template.setData("title", Encoder.escape(title,
+                    cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
                 template.setData("error", error);
@@ -315,7 +323,9 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("channelId",  idvalue);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
-                template.setData("title", Encoder.escape(title));
+                //Gridnine AB Aug 8, 2002
+                template.setData("title", Encoder.escape(title,
+                    cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
                 template.setData("error", error);
