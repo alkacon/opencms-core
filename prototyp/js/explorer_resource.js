@@ -28,12 +28,13 @@ function initialize_resources() {
 
     vi.iconPath="pics/";
 
-    vi.resource[0]=new res("image",vi.iconPath+"ic_file_image.gif");
+    vi.resource[0]=new res("folder",vi.iconPath+"ic_file_folder.gif");
     vi.resource[1]=new res("text",vi.iconPath+"ic_file_plain.gif");
     vi.resource[2]=new res("script",vi.iconPath+"ic_file_script.gif");
     vi.resource[3]=new res("binary",vi.iconPath+"ic_file_binary.gif");
     vi.resource[4]=new res("page",vi.iconPath+"ic_file_page.gif");
-    vi.resource[5]=new res("folder",vi.iconPath+"ic_file_folder.gif");
+vi.resource[5]=new res("image",vi.iconPath+"ic_file_image.gif");
+    
     vi.resource[6]=new res("newspage",vi.iconPath+"ic_file_newspage.gif");
 
 /*
@@ -55,22 +56,22 @@ function initialize_resources() {
     );
 */
 
-    addMenuEntry(0,"image","http://www.framfab.de","_top","1222211111111");
-    addMenuEntry(0,"11aaAabbbba","http://www.framfab.de","","1222211111111");
-    addMenuEntry(0,"blaAh","","","1222211111111");
-    addMenuEntry(0,"blaAh","","","1111111111111");
-    addMenuEntry(0,"blaAh","","","1111111111111");
-    addMenuEntry(0,"blaAh","","","1111111111111");
-    addMenuEntry(0,"blaAh","","","1111111111111");
+    addMenuEntry(0,"image","http://www.framfab.de","_top","2222222222222");
+    addMenuEntry(0,"11aaAabbbba","http://www.framfab.de","","2222222222222");
+    addMenuEntry(0,"-","","","2222222222222");
+    addMenuEntry(0,"blaAh","","","2222222222222");
+    addMenuEntry(0,"blaAh","","","2222222222222");
+    addMenuEntry(0,"blaAh","","","2222222222222");
+    addMenuEntry(0,"blaAh","","","2222222222222");
 
-    addMenuEntry(1,"text","http://www.framfab.de","_top","1111111111111");
-    addMenuEntry(1,"11aaAabbbba","http://www.framfab.de","","1111111111111");
-    addMenuEntry(1,"blaAh","","","1111111111111");
-    addMenuEntry(1,"blaAh","","","1111111111111");
-    addMenuEntry(1,"blaAh","","","1111111111111");
-    addMenuEntry(1,"blaAh","","","1111111111111");
-    addMenuEntry(1,"blaAh","","","1111111111111");
-    addMenuEntry(1,"blaAh","","","1111111111111");
+    addMenuEntry(1,"text","http://www.framfab.de","_top","2222222222222");
+    addMenuEntry(1,"11aaAabbbba","http://www.framfab.de","","2222222222222");
+    addMenuEntry(1,"blaAh","","","2222222222222");
+    addMenuEntry(1,"blaAh","","","2222222222222");
+    addMenuEntry(1,"blaAh","","","2222222222222");
+    addMenuEntry(1,"blaAh","","","2222222222222");
+    addMenuEntry(1,"blaAh","","","2222222222222");
+    addMenuEntry(1,"blaAh","","","2222222222222");
     
     addMenuEntry(2,"script","http://www.framfab.de","_top","1111111111111");
     addMenuEntry(2,"11Aaaabbbba","http://www.framfab.de","","1111111111111");
@@ -109,7 +110,7 @@ function initialize_resources() {
     addMenuEntry(5,"blaAh","","","1111111111111");
     
     addMenuEntry(6,"newspage","http://www.framfab.de","_top","1111111111111");
-    addMenuEntry(6,"11aAabbbba","http://www.framfab.de","","1111111111111");
+    addMenuEntry(6,"-","http://www.framfab.de","","1111111111111");
     addMenuEntry(6,"blaAh","","","1111111111111");
     addMenuEntry(6,"blaAh","","","1111111111111");
     addMenuEntry(6,"blaAh","","","1111111111111");
