@@ -35,6 +35,7 @@ createPropertydefinition Keywords compatiblePlain
 createPropertydefinition module compatiblePlain
 createPropertydefinition Description binary
 createPropertydefinition Keywords binary
+createPropertydefinition Description image
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
