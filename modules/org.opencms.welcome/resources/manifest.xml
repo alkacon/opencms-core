@@ -400,6 +400,36 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>release/notes_6.0b2.html</source>
+			<destination>release/notes_6.0b2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>005d31c9-a1cf-11d9-87af-1559aed72023</uuidresource>
+			<datelastmodified>Thu, 31 Mar 2005 10:26:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Mar 2005 10:24:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.06]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[6.0 b 2 notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[6.0 beta 2 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>release/upgrade.html</source>
 			<destination>release/upgrade.html</destination>
 			<type>xmlpage</type>
