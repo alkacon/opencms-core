@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/26 10:06:58 $
+* Date   : $Date: 2001/07/26 12:13:17 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2001/07/26 10:06:58 $
+ * @version $Revision: 1.20 $ $Date: 2001/07/26 12:13:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -83,7 +83,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         // read the parameters
         String foldername = (String)parameters.get(C_PARA_FOLDER);
         if(foldername != null) {
-            int index = foldername.indexOf("/", 8);
+            int index = foldername.indexOf("/", 6);
             if(index != foldername.lastIndexOf("/") ){
                 foldername = foldername.substring(0,index);
                 parameters.put(C_PARA_FOLDER, foldername);

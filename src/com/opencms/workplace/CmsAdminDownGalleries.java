@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2001/07/16 18:24:16 $
+* Date   : $Date: 2001/07/26 12:13:17 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.14 $ $Date: 2001/07/16 18:24:16 $
+ * @version $Revision: 1.15 $ $Date: 2001/07/26 12:13:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -80,6 +80,11 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         // read the parameters
         String foldername = (String)parameters.get(C_PARA_FOLDER);
         if(foldername != null) {
+            int index = foldername.indexOf("/", 10);
+            if(index != foldername.lastIndexOf("/") ){
+                foldername = foldername.substring(0,index);
+                parameters.put(C_PARA_FOLDER, foldername);
+            }
 
             // need the foldername in the session in case of an exception in the dialog
             session.putValue(C_PARA_FOLDER, foldername);
@@ -106,7 +111,6 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
                 CmsFolder folder = cms.createFolder(superfolder, galleryname);
-                cms.lockResource(folder.getAbsolutePath());
                 cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                 cms.chgrp(folder.getAbsolutePath(), group);
                 int flag = folder.getAccessFlags();
@@ -205,7 +209,6 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
                             CmsFile file = cms.createFile(foldername, filename, filecontent, C_TYPE_PLAIN_NAME);
                             if(title != null) {
                                 String filepath = file.getAbsolutePath();
-                                cms.lockResource(filepath);
                                 cms.writeProperty(filepath, C_PROPERTY_TITLE, title);
                             }
                             try {
@@ -340,5 +343,17 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         prefs = ((prefs & C_FILELIST_TYPE) == 0) ? prefs : (prefs - C_FILELIST_TYPE);
         prefs = ((prefs & C_FILELIST_SIZE) == 0) ? prefs : (prefs - C_FILELIST_SIZE);
         return prefs;
+    }
+
+    public Object onLoad(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        Hashtable parameters = (Hashtable) userObj;
+        String folder = (String)parameters.get("folder");
+
+        if(folder != null) {
+            String servletUrl = cms.getRequestContext().getRequest().getServletUrl() + "/";
+            return "window.top.body.admin_content.location.href='" + servletUrl + "system/workplace/action/explorer_files.html?mode=listonly&folder=" + folder + "'";
+        } else {
+            return "";
+        }
     }
 }
