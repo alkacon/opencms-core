@@ -27,10 +27,13 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<mappings>
+				<mapping element="String" mapto="property:Title" />
+			</mappings>
 			<validationrules>
 				<rule element="String" regex="!.*err.*" />
 				<rule element="String" regex="!.*warn.*" type="warning" />
-				<rule element="Color" regex="#([a-f]|[A-F]|[0-9]){6}" />
+				<rule element="Color" regex="#([a-f]|[A-F]|[0-9]){6}" message="A valid HTML color value (e.g. #ffffff) is required" />
 				<rule element="Locale" regex="de|en" />
 			</validationrules>
 		</xsd:appinfo>

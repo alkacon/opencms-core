@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/12/05 15:35:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -199,7 +199,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
         Element element = root.addElement(getElementName());
         // get the default value from the content handler
-        String defaultValue = document.getContentDefinition().getContentHandler().getDefaultValue(cms, this, locale);
+        String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, this, locale);
         if (defaultValue != null) {
             try {
                 I_CmsXmlContentValue value = createValue(document, element, locale);

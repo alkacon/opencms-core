@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValidationVisitor.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
  * Date   : $Date: 2004/12/06 13:20:39 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,44 +32,48 @@
 package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import org.apache.commons.logging.Log;
 
 /**
- * Visitor implementation that provides validation for all visited values.<p> 
+ * Visitor implementation that resolves the content mappings for all the visited values.<p> 
  * 
  * This class is used when {@link org.opencms.xml.content.CmsXmlContent#validate(CmsObject)} 
- * is called validate a XML content object.<p>
+ * is called to resolve the mappings of a XML content object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.5.4
  */
-class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
+class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static Log m_log = OpenCms.getLog(CmsXmlContentValidationVisitor.class);
+    private static Log m_log = OpenCms.getLog(CmsXmlContentMappingVisitor.class);
 
     /** The initialized OpenCms user context (required for VFS access). */
     CmsObject m_cms;
+
+    /** The XML content the mappings are resolved for. */
+    CmsXmlContent m_content;
 
     /** The error handler instance that stores the errors and warnings found. */
     CmsXmlContentErrorHandler m_errorHandler;
 
     /**
-     * Creates a new validation node visitor.<p> 
+     * Creates a new error handler node visitor.<p> 
      * 
      * @param cms the initialized OpenCms user context (required for VFS access)
+     * @param content the XML content to resolve the mappings for
      */
-    public CmsXmlContentValidationVisitor(CmsObject cms) {
+    public CmsXmlContentMappingVisitor(CmsObject cms, CmsXmlContent content) {
 
-        // start with a new instance of the error handler
-        m_errorHandler = new CmsXmlContentErrorHandler();
-        // store reference to the provided CmsObject
+        // store references
         m_cms = cms;
+        m_content = content;
     }
 
     /**
@@ -91,9 +95,10 @@ class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
             m_log.debug("Visiting " + value.getPath());
         }
 
-        m_errorHandler = value.getContentDefinition().getContentHandler().resolveValidation(
-            m_cms,
-            value,
-            m_errorHandler);
+        try {
+            value.getContentDefinition().getContentHandler().resolveMapping(m_cms, m_content, value);
+        } catch (CmsException e) {
+            m_log.error("Unable to resolve mapping for value " + value.getPath(), e);
+        }
     }
 }

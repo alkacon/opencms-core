@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -138,7 +138,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         element.addElement(CmsXmlPage.NODE_CONTENT);
 
         // get the default value from the content handler
-        String defaultValue = document.getContentDefinition().getContentHandler().getDefaultValue(cms, this, locale);
+        String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, this, locale);
         if (defaultValue != null) {
             try {
                 I_CmsXmlContentValue value = createValue(document, element, locale);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/06 12:34:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -320,7 +320,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         
         // get preview uri from content handler
-        String previewUri = m_content.getContentDefinition().getContentHandler().getPreviewUri(getCms(), m_content, getParamTempfile());     
+        String previewUri = m_content.getContentDefinition().getContentHandler().getPreview(getCms(), m_content, getParamTempfile());     
         
         // create locale request parameter
         StringBuffer param = new StringBuffer(8);
@@ -604,7 +604,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 for (int j=0; j<elementCount; j++) {
                     I_CmsXmlContentValue value = elementSequence.getValue(j);
                     I_CmsXmlWidget widget = 
-                        m_content.getContentDefinition().getContentHandler().getEditorWidget(value);    
+                        m_content.getContentDefinition().getContentHandler().getWidget(value);    
                     
                     // create label and help bubble cells
                     result.append("<tr>");
@@ -702,7 +702,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 for (int j=0; j<elementCount; j++) {
                     I_CmsXmlContentValue value = elementSequence.getValue(j);
                     I_CmsXmlWidget widget = 
-                        m_content.getContentDefinition().getContentHandler().getEditorWidget(value);
+                        m_content.getContentDefinition().getContentHandler().getWidget(value);
                     result.append(widget.getDialogHtmlEnd(getCms(), this, value));
                 }           
                 
@@ -801,7 +801,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
             CmsFile file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCms(), file);
-            return content.getContentDefinition().getContentHandler().getPreviewUri(getCms(), m_content, getParamResource()) != null;
+            return content.getContentDefinition().getContentHandler().getPreview(getCms(), m_content, getParamResource()) != null;
         } catch (Exception e) {
             // error reading or unmarshalling, no preview available
             return false;
@@ -830,7 +830,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
                 I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                 I_CmsXmlWidget widget = 
-                    contentDefinition.getContentHandler().getEditorWidget(value);
+                    contentDefinition.getContentHandler().getWidget(value);
                 
                 widget.setEditorValue(getCms(), getJsp().getRequest().getParameterMap(), this, value);
             }
@@ -1090,7 +1090,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             for (int i=0; i<values.size(); i++) {
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)values.get(i);
                 try {
-                    I_CmsXmlWidget widget = m_content.getContentDefinition().getContentHandler().getEditorWidget(value);
+                    I_CmsXmlWidget widget = m_content.getContentDefinition().getContentHandler().getWidget(value);
                     types.add(widget);
                 } catch (CmsXmlException e) {
                     // should usually not happen

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/05 17:29:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -61,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -71,6 +70,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
+
+    /** Constant for the "message" appinfo attribute name. */
+    public static final String APPINFO_ATTR_MESSAGE = "message";
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
@@ -129,8 +131,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
 
+    /** The messages for the error rules. */
+    protected Map m_validationErrorMessages;
+
     /** The validation rules that cause an error (as defined in the annotations). */
     protected Map m_validationErrorRules;
+
+    /** The messages for the warning rules. */
+    protected Map m_validationWarningMessages;
 
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map m_validationWarningRules;
@@ -144,9 +152,64 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#analyzeAppInfo(org.dom4j.Element, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
      */
-    public synchronized void analyzeAppInfo(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
+    public String getDefault(CmsObject Cms, I_CmsXmlSchemaType type, Locale locale) {
+
+        String defaultValue = (String)m_defaultValues.get(type.getElementName());
+        if (defaultValue != null) {
+            // this value uses a special default mapping
+            // TODO: add more "magic" default value names, e.g. key lookup etc.
+            if ("${currenttime}".equals(defaultValue)) {
+                return String.valueOf(System.currentTimeMillis());
+            }
+
+            // if no "magic" name matches, just return the string set in the appinfo
+            return defaultValue;
+        }
+
+        // default implementation currently just uses the "getDefault" mehod of the given value
+        return type.getDefault(locale);
+    }
+
+    /**
+     * Returns the mapping defined for the given element name.<p>
+     * 
+     * @param elementName the element name to use
+     * @return the mapping defined for the given element name
+     */
+    public String getMapping(String elementName) {
+
+        return (String)m_elementMappings.get(elementName);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
+     */
+    public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
+
+        return m_previewLocation;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public I_CmsXmlWidget getWidget(I_CmsXmlContentValue value) {
+
+        // try the specific widget settings first
+        I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getElementName());
+        if (result != null) {
+            return result;
+        }
+
+        // use default widget mappings
+        return OpenCms.getXmlContentTypeManager().getDefaultWidget(value.getTypeName());
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#initialize(org.dom4j.Element, org.opencms.xml.CmsXmlContentDefinition)
+     */
+    public synchronized void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
     throws CmsXmlException {
 
         if (appInfoElement == null) {
@@ -177,61 +240,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
-     */
-    public String getDefaultValue(CmsObject Cms, I_CmsXmlSchemaType type, Locale locale) {
-
-        String defaultValue = (String)m_defaultValues.get(type.getElementName());
-        if (defaultValue != null) {
-            // this value uses a special default mapping
-            // TODO: add more "magic" default value names, e.g. key lookup etc.
-            if ("${currenttime}".equals(defaultValue)) {
-                return String.valueOf(System.currentTimeMillis());
-            }
-
-            // if no "magic" name matches, just return the string set in the appinfo
-            return defaultValue;
-        }
-
-        // default implementation currently just uses the "getDefault" mehod of the given value
-        return type.getDefault(locale);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorWidget(org.opencms.xml.types.I_CmsXmlContentValue)
-     */
-    public I_CmsXmlWidget getEditorWidget(I_CmsXmlContentValue value) {
-
-        // try the specific widget settings first
-        I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getElementName());
-        if (result != null) {
-            return result;
-        }
-
-        // use default widget mappings
-        return OpenCms.getXmlContentTypeManager().getDefaultWidget(value.getTypeName());
-    }
-
-    /**
-     * Returns the mapping defined for the given element name.<p>
-     * 
-     * @param elementName the element name to use
-     * @return the mapping defined for the given element name
-     */
-    public String getMapping(String elementName) {
-
-        return (String)m_elementMappings.get(elementName);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreviewUri(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
-     */
-    public String getPreviewUri(CmsObject cms, CmsXmlContent content, String resourcename) {
-
-        return m_previewLocation;
-    }
-
-    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
      */
     public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
@@ -244,16 +252,33 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         content.setConversion(contentConversion);
         // correct the HTML structure 
         file = content.correctXmlStructure(cms);
+        content.setFile(file);
         // resolve the file mappings
-        content.resolveAppInfo(cms);
+        content.resolveMappings(cms);
 
         return file;
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveAppInfo(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveMapping(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException {
+    public void resolveMapping(CmsObject cms, CmsXmlContent content, I_CmsXmlContentValue value) throws CmsException {
+
+        // TODO: this implememtation does not handle multiple mappings to a key,
+        // e.g. it may be possible for several nested schema to map somehting to the "Title" property
+        // in the current implementation the result (i.e. which mappings "wins") is undefined
+        
+        if (!value.isSimpleType()) {
+            // no mappings for a nested schema are possible
+            // note that the sub-elemenets of the nested schema ARE mapped by the node visitor,
+            // it's just the nested schema value itself that does not support mapping
+            return;
+        }
+
+        if (value.getIndex() > 1) {
+            // this implementation currently just supports mapping of the first element 
+            return;
+        }
 
         // get the original VFS file from the content
         CmsFile file = content.getFile();
@@ -261,71 +286,54 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             throw new CmsXmlException("File not available to resolve element mappings");
         }
 
-        // get filename and locale
+        // get filename
         String filename = cms.getSitePath(content.getFile());
-        Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cms, filename).get(0);
 
-        List typeSequence = content.getContentDefinition().getTypeSequence();
-        Iterator i = typeSequence.iterator();
-        while (i.hasNext()) {
+        // get the mapping for the element name
+        String mapping = getMapping(value.getElementName());
 
-            // walk through all the possible values in the XML content definition
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            String nodeName = type.getElementName();
-            int indexCount = content.getIndexCount(nodeName, locale);
-            // ensure there's at last one value available in the XML content
-            if (indexCount > 0) {
+        if (CmsStringUtil.isNotEmpty(mapping)) {
 
-                // get the mapping for the node name
-                String mapping = getMapping(nodeName);
+            // get the string value of the current node
+            String stringValue = value.getStringValue(cms);
 
-                if (CmsStringUtil.isNotEmpty(mapping)) {
+            if (mapping.startsWith(C_MAPTO_PROPERTY)) {
 
-                    // this value is mapped (the mapping is set in the XML schema)                    
-                    I_CmsXmlContentValue value = content.getValue(nodeName, locale);
-                    // get the string value of the current node
-                    String stringValue = value.getStringValue(cms);
+                // this is a property mapping
+                String property = mapping.substring(C_MAPTO_PROPERTY.length());
+                // just store the string value in the selected property
+                cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
 
-                    if (mapping.startsWith(C_MAPTO_PROPERTY)) {
+            } else if (mapping.startsWith(C_MAPTO_ATTRIBUTE)) {
 
-                        // this is a property mapping
-                        String property = mapping.substring(C_MAPTO_PROPERTY.length());
-                        // just store the string value in the selected property
-                        cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
-
-                    } else if (mapping.startsWith(C_MAPTO_ATTRIBUTE)) {
-
-                        // this is an attribute mapping                        
-                        String attribute = mapping.substring(C_MAPTO_ATTRIBUTE.length());
-                        switch (C_ATTRIBUTES_LIST.indexOf(attribute)) {
-                            case 0: // datereleased
-                                long date;
-                                date = Long.valueOf(stringValue).longValue();
-                                if (date == 0) {
-                                    date = CmsResource.DATE_RELEASED_DEFAULT;
-                                }
-                                file.setDateReleased(date);
-                                break;
-                            case 1: // dateexpired
-                                date = Long.valueOf(stringValue).longValue();
-                                if (date == 0) {
-                                    date = CmsResource.DATE_EXPIRED_DEFAULT;
-                                }
-                                file.setDateExpired(date);
-                                break;
-                            default:
-                        // TODO: handle invalid mapto values                                
+                // this is an attribute mapping                        
+                String attribute = mapping.substring(C_MAPTO_ATTRIBUTE.length());
+                switch (C_ATTRIBUTES_LIST.indexOf(attribute)) {
+                    case 0: // datereleased
+                        long date;
+                        date = Long.valueOf(stringValue).longValue();
+                        if (date == 0) {
+                            date = CmsResource.DATE_RELEASED_DEFAULT;
                         }
-                    }
+                        file.setDateReleased(date);
+                        break;
+                    case 1: // dateexpired
+                        date = Long.valueOf(stringValue).longValue();
+                        if (date == 0) {
+                            date = CmsResource.DATE_EXPIRED_DEFAULT;
+                        }
+                        file.setDateExpired(date);
+                        break;
+                    default: // TODO: handle invalid / other mappings                                
                 }
             }
         }
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#validateValue(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveValidation(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
      */
-    public CmsXmlContentErrorHandler validateValue(
+    public CmsXmlContentErrorHandler resolveValidation(
         CmsObject cms,
         I_CmsXmlContentValue value,
         CmsXmlContentErrorHandler errorHandler) {
@@ -335,13 +343,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             errorHandler = new CmsXmlContentErrorHandler();
         }
 
-        if (! value.isSimpleType()) {
+        if (!value.isSimpleType()) {
             // no vaildation for a nested schema is possible
             // note that the sub-elemenets of the nested schema ARE validated by the node visitor,
             // it's just the nested schema value itself that does not support validation
             return errorHandler;
         }
-        
+
         // validate the error rules
         errorHandler = validateValue(cms, value, errorHandler, m_validationErrorRules, false);
         // validate the warning rules
@@ -395,6 +403,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to add the rule to 
      * @param regex the validation rule regular expression
+     * @param message the message in case validation fails (may be null)
      * @param isWarning if true, this rule is used for warnings, otherwise it's an error
      * 
      * @throws CmsXmlException in case an unknown element name is used
@@ -403,6 +412,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         CmsXmlContentDefinition contentDefinition,
         String elementName,
         String regex,
+        String message,
         boolean isWarning) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
@@ -411,8 +421,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if (isWarning) {
             m_validationWarningRules.put(elementName, regex);
+            if (message != null) {
+                m_validationWarningMessages.put(elementName, message);
+            }
         } else {
             m_validationErrorRules.put(elementName, regex);
+            if (message != null) {
+                m_validationErrorMessages.put(elementName, message);
+            }
         }
     }
 
@@ -465,7 +481,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         boolean matchResult,
         boolean isWarning) {
 
-        // TODO: Allow customized error messages based on localization keys
+        String message = null;
+        if (isWarning) {
+            message = (String)m_validationWarningMessages.get(value.getElementName());
+        } else {
+            message = (String)m_validationErrorMessages.get(value.getElementName());
+        }
+
+        if (message != null) {
+            // TODO: Allow customized error messages based on localization keys
+            return message;
+        }
+
         StringBuffer result = new StringBuffer(64);
         if (isWarning) {
             result.append("Bad value ");
@@ -495,7 +522,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_elementMappings = new HashMap();
         m_elementWidgets = new HashMap();
         m_validationErrorRules = new HashMap();
+        m_validationErrorMessages = new HashMap();
         m_validationWarningRules = new HashMap();
+        m_validationWarningMessages = new HashMap();
         m_defaultValues = new HashMap();
         m_previewLocation = null;
     }
@@ -622,9 +651,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String regex = element.attributeValue(APPINFO_ATTR_REGEX);
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            String message = element.attributeValue(APPINFO_ATTR_MESSAGE);
             if ((elementName != null) && (regex != null)) {
                 // add a validation ruls for the element
-                addValidationRule(contentDefinition, elementName, regex, APPINFO_ATTR_TYPE_WARNING.equals(type));
+                addValidationRule(contentDefinition, elementName, regex, message, APPINFO_ATTR_TYPE_WARNING
+                    .equals(type));
             }
         }
     }
@@ -655,7 +686,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             errorHandler.addError(value, e.getMessage());
             return errorHandler;
         }
-        
+
         String regex = (String)rules.get(value.getElementName());
         if (regex == null) {
             // no customized rule, check default XML schema validation rules
@@ -685,7 +716,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // no error found, check default XML schema validation rules
         return validateValue(cms, value, valueStr, errorHandler, isWarning);
     }
-    
+
     /**
      * Checks the default XML schema vaildation rules.<p>
      * 

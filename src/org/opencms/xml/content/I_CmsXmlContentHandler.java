@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -70,16 +70,6 @@ public interface I_CmsXmlContentHandler {
     String C_MAPTO_PROPERTY = "property:";
 
     /**
-     * Analyzes the "appinfo" node in a XML content definition.<p>
-     * 
-     * @param appInfoElement the "appinfo" element node to analyze
-     * @param contentDefinition the XML content definition that XML content handler belongs to
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    void analyzeAppInfo(Element appInfoElement, CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
-
-    /**
      * Returns the default String value for the given XML content schema type object in the given XML content.<p> 
      * 
      * If a schema type does not have a default value, this method must return <code>null</code>.
@@ -92,7 +82,20 @@ public interface I_CmsXmlContentHandler {
      * 
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
      */
-    String getDefaultValue(CmsObject cms, I_CmsXmlSchemaType type, Locale locale);
+    String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale);
+
+    /**
+     * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 
+     * 
+     * If <code>null</code> is returned, no preview is possible for contents using this handler.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param content the XML content to display the preview URI for
+     * @param resourcename the name in the VFS of the resource that is currently edited
+     * 
+     * @return the preview URI for the given XML content value object to be displayed in the editor
+     */
+    String getPreview(CmsObject cms, CmsXmlContent content, String resourcename);
 
     /**
      * Returns the editor widget that should be used for the given XML content value.<p>
@@ -106,20 +109,18 @@ public interface I_CmsXmlContentHandler {
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    I_CmsXmlWidget getEditorWidget(I_CmsXmlContentValue value) throws CmsXmlException;
+    I_CmsXmlWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
-     * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 
+     * Initializes this content handler for the given XML content definition by
+     * analyzing the "appinfo" node.<p>
      * 
-     * If <code>null</code> is returned, no preview is possible.<p>
+     * @param appInfoElement the "appinfo" element root node to analyze
+     * @param contentDefinition the XML content definition that XML content handler belongs to
      * 
-     * @param cms the current OpenCms user context
-     * @param content the XML content to display the preview URI for
-     * @param resourcename the name in the VFS of the resource that is currently edited
-     * 
-     * @return the preview URI for the given XML content value object to be displayed in the editor
+     * @throws CmsXmlException if something goes wrong
      */
-    String getPreviewUri(CmsObject cms, CmsXmlContent content, String resourcename);
+    void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
 
     /**
      * Prepares the given XML content to be written to the OpenCms VFS.<p>
@@ -132,37 +133,38 @@ public interface I_CmsXmlContentHandler {
      * @param content the XML content to be written
      * @param file the resource the XML content in it's current state was unmarshalled from 
      * 
-     * @return the file to write to the OpenCms VFS, this will replace the parameter file in the VFS
+     * @return the file to write to the OpenCms VFS, this will be an updated vresion of the parameter file
      * 
      * @throws CmsException in case something goes wrong
      */
     CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
 
     /**
-     * Resolves the "appinfo" schema node of the XML content definition according 
+     * Resolves the value mappings of the given XML content value, according 
      * to the rules of this XML content handler.<p>
      * 
      * @param cms the current OpenCms user context
      * @param content the XML content to resolve the mappings for
+     * @param value the value to resolve the mappings for
      * 
      * @throws CmsException if something goes wrong
      */
-    void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException;
+    void resolveMapping(CmsObject cms, CmsXmlContent content, I_CmsXmlContentValue value) throws CmsException;
 
     /**
      * Performs a validation of the given XML content value, and saves all errors or warnings found in 
      * the provided XML content error handler.<p> 
      * 
-     * The handler parameter is optional, if <code>null</code> is given a new error handler 
+     * The errorHandler parameter is optional, if <code>null</code> is given a new error handler 
      * instance must be created.<p>
      * 
      * @param cms the current OpenCms user context
-     * @param value the value to get the default for
+     * @param value the value to resolve the validation rules for
      * @param errorHandler (optional) an error handler instance that contains previous error or warnings
      * 
      * @return an error handler that contains all errors and warnings currently found
      */
-    CmsXmlContentErrorHandler validateValue(
+    CmsXmlContentErrorHandler resolveValidation(
         CmsObject cms,
         I_CmsXmlContentValue value,
         CmsXmlContentErrorHandler errorHandler);

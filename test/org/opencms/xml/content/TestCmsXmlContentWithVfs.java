@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/05 15:35:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,12 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
@@ -49,6 +53,7 @@ import org.opencms.xml.types.CmsXmlStringValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -60,7 +65,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -104,6 +109,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -548,7 +554,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
 
         // make sure the selected widgets are of the configured "non-standard" type
-        I_CmsXmlWidget widget = definition.getContentHandler().getEditorWidget(
+        I_CmsXmlWidget widget = definition.getContentHandler().getWidget(
             xmlcontent.getValue("Title", Locale.ENGLISH));
         assertNotNull(widget);
         assertEquals(CmsXmlBooleanWidget.class.getName(), widget.getClass().getName());
@@ -621,6 +627,64 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("/sites/default/index.html", link.getTarget());
         assertTrue(link.isInternal());
         assertEquals("/index.html", vfsValue.getStringValue(cms));
+    }
+
+    
+    /**
+     * Tests the element mappings from the appinfo node.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testMappings() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing mapping of values in the XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String iso = "ISO-8859-1";
+        
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        String resourcename = "/mappingtext.html";
+        // create a file in the VFS with this content (required for mappings to work)
+        cms.createResource(
+            resourcename, 
+            CmsResourceTypeXmlContent.C_RESOURCE_TYPE_ID, 
+            content.getBytes(iso), 
+            Collections.EMPTY_LIST);
+
+        CmsFile file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+        
+        CmsProperty titleProperty;        
+        titleProperty = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_TITLE, false);
+        assertSame(titleProperty, CmsProperty.getNullProperty());
+        
+        String titleStr = "This must be the Title";
+        I_CmsXmlContentValue value;
+        value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
+        value.setStringValue(cms, titleStr);
+
+        file.setContents(xmlcontent.toString().getBytes(iso));
+        cms.writeFile(file);
+        
+        titleProperty = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_TITLE, false);
+        assertEquals(titleStr, titleProperty.getValue());
     }
 
     /**
@@ -805,7 +869,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(2, errorHandler.getErrors().size());
         assertEquals(3, errorHandler.getWarnings().size());
     }
-
+    
     /**
      * Extended test for the validation of the value elements.<p>
      * 
@@ -814,7 +878,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     public void testValidationExtended() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Estended test for the validation of values in the XML content");
+        echo("Extended test for the validation of values in the XML content");
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
@@ -907,6 +971,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertTrue(errorHandler.hasErrors());
         assertFalse(errorHandler.hasWarnings());
         assertEquals(1, errorHandler.getErrors().size());
+        
+        // test custom error message
+        assertEquals("A valid HTML color value (e.g. #ffffff) is required", errorHandler.getErrors().get(value.getPath()));
         
         value.setStringValue(cms, "#ffffff");
         xmlcontent.validateXmlStructure(resolver); 

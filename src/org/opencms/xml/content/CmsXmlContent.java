@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/05 15:35:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
@@ -74,7 +73,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -327,16 +326,15 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
-     * Resolves the information in the optional "appinfo" schema node according to the rules of the XML content handler that 
-     * has been configured for the XML content definition of this XML content.<p>
+     * Resolves the mappings for all values of this XML content.<p>
      * 
-     * @param cms an initialized CmsObject
-     * @throws CmsException if something goes wrong
+     * @param cms the current users OpenCms context
      */
-    public void resolveAppInfo(CmsObject cms) throws CmsException {
-
-        // call the appinfo resolver of the configured XML content handler
-        m_contentDefinition.getContentHandler().resolveAppInfo(cms, this);
+    public void resolveMappings(CmsObject cms) {
+        
+        // iterate through all initialized value nodes in this XML content
+        CmsXmlContentMappingVisitor visitor = new CmsXmlContentMappingVisitor(cms, this);
+        visitAllValuesWith(visitor);
     }
 
     /**
@@ -350,7 +348,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         return visitor.getErrorHandler();
     }
-
+    
     /**
      * Visists all values of this XML content with the given value visitor.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/05 17:29:34 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/06 13:20:39 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -438,7 +438,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // analyze the app info node with the selected XML content handler
-        contentHandler.analyzeAppInfo(appInfoElement, result);
+        contentHandler.initialize(appInfoElement, result);
         result.m_contentHandler = contentHandler;
 
         result.freeze();
