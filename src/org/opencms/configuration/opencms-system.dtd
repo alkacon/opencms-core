@@ -15,6 +15,7 @@
 	versionhistory,
 	resourceinit?,
 	requesthandlers?,
+	passwordhandler,
 	sites,
 	runtimeproperties? )>
 
@@ -65,6 +66,16 @@
 <!ELEMENT requesthandlers (requesthandler*)>
 <!ELEMENT requesthandler EMPTY>
 <!ATTLIST requesthandler class CDATA #REQUIRED>
+
+<!--
+# Password handler:
+# Provides method for password encryption and password validation.
+# See the JavaDoc of interface org.opencms.security.I_CmsPasswordHandler for more details.
+-->
+<!ELEMENT passwordhandler (encoding, digest-type)>
+<!ATTLIST passwordhandler class CDATA #REQUIRED>
+
+<!ELEMENT digest-type (#PCDATA)>
 
 <!--
 # Scheduler settings:

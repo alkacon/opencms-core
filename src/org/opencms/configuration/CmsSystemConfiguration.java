@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/14 08:17:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
@@ -169,7 +170,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The "server" attribute. */
     protected static final String A_SERVER = "server";   
-           
+
+    /** The node name for the password handler. */
+    protected static final String N_PASSWORDHANDLER = "passwordhandler";
+
+    /** The node name for the password encoding. */
+    protected static final String N_PASSWORDENCODING = "encoding";
+    
+    /** The node name for the digest type. */
+    protected static final String N_DIGESTTYPE = "digest-type";
+    
     /** The list of jobs for the scheduler. */
     private List m_configuredJobs;
     
@@ -203,6 +213,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The runtime properties. */
     private Map m_runtimeProperties;
 
+    /** The password handler. */
+    private I_CmsPasswordHandler m_passwordHandler;
      
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -297,7 +309,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         
         m_scheduleManager = new CmsScheduleManager(m_configuredJobs);   
     } 
-    
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -370,7 +381,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add request handler classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, "addRequestHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" +  N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, 0, A_CLASS);   
-        
+
+        // add password handler creation rule
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, A_CLASS, CmsConfigurationException.class);
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_PASSWORDENCODING, "inputEncoding");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_DIGESTTYPE, "digestType");
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
+
         // add site configuration rule        
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManager.class);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
@@ -499,6 +516,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());            
         }
         
+        // password handler
+        Element passwordhandlerElement = systemElement.addElement(N_PASSWORDHANDLER)
+            .addAttribute(A_CLASS, m_passwordHandler.getClass().getName());
+        passwordhandlerElement.addElement(N_PASSWORDENCODING).addText(m_passwordHandler.getInputEncoding());
+        passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
+        
         // create <sites> node 
         Element sitesElement = systemElement.addElement(N_SITES);
         sitesElement.addElement(N_WORKPLACE_SERVER).addText(m_siteManager.getWorkplaceServer());
@@ -572,6 +595,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public List getResourceInitHandlers() {
         return m_resourceInitHandlers;
+    }
+
+    /**
+     * Returns the configured password handler.<p>
+     * 
+     * @return the configured password handler
+     */
+    public I_CmsPasswordHandler getPasswordHandler() {
+        return m_passwordHandler;
     }
     
     /**
@@ -647,7 +679,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             OpenCms.getLog(this).debug("Mail settings set " + m_mailSettings);
         }          
     }
-    
+
+    /**
+     * Sets the password handler class.<p>
+     * 
+     * @param passwordHandler the password handler to set
+     */
+    public void setPasswordHandler(I_CmsPasswordHandler passwordHandler) {
+        m_passwordHandler = passwordHandler;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Password handler     : " + passwordHandler.getClass().getName() + " instanciated");
+        }
+    }    
+
     /**
      * Sets the temporary file project id.<p>
      * 
