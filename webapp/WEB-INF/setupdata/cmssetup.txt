@@ -131,7 +131,6 @@ createDefaultProject "Offline" "The Offline Project"
 setSiteRoot "/sites/default/"
 
 # Import the default modules
-importModuleFromDefault "org.opencms.default.zip"
 importModuleFromDefault "org.opencms.welcome.zip"
 
 # The setup is finished
