@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/05 16:52:03 $
- * Version: $Revision: 1.204 $
+ * Date   : $Date: 2000/12/05 19:17:28 $
+ * Version: $Revision: 1.205 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.204 $ $Date: 2000/12/05 16:52:03 $
+ * @version $Revision: 1.205 $ $Date: 2000/12/05 19:17:28 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4839,15 +4839,21 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 				CmsException.C_NO_ACCESS);
 		}
 		String returnValue = null;
+		
 		returnValue = (String)m_propertyCache.get(property +
 					Integer.toString(res.getResourceId()) +","+ Integer.toString(res.getType()));
+		
 		if (returnValue == null){
 			returnValue = m_dbAccess.readProperty(property,res.getResourceId(),res.getType());
-			if (returnValue != null){
-				m_propertyCache.put(property +Integer.toString(res.getResourceId()) +
-							","+ Integer.toString(res.getType()), returnValue);
+			
+			if (returnValue == null) {
+				returnValue="";
 			}
-		}	
+			m_propertyCache.put(property +Integer.toString(res.getResourceId()) +
+							","+ Integer.toString(res.getType()), returnValue);
+			
+		}
+		System.err.println("");
 		return returnValue;
 	}
 	/**
