@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/10/25 14:18:21 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/10/25 14:20:54 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.file;
  
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
-import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
@@ -73,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
