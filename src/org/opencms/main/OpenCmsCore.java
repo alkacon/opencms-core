@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/10 09:32:47 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/11/11 20:56:51 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,10 +100,10 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * @since 5.1
  */
-public class OpenCmsCore {
+public final class OpenCmsCore {
     
     /** Default encoding */
     private static final String C_DEFAULT_ENCODING = "ISO-8859-1";
@@ -203,6 +203,9 @@ public class OpenCmsCore {
     
     /** The name of the OpenCms server */
     private String m_serverName;
+
+    /** The session manager */
+    private OpenCmsSessionManager m_sessionManager;
     
     /** The session storage for all active users */
     private CmsCoreSession m_sessionStorage;
@@ -238,57 +241,14 @@ public class OpenCmsCore {
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
      */
-    protected OpenCmsCore() throws CmsInitException {
+    private OpenCmsCore() throws CmsInitException {
         synchronized (this) {
             if (m_instance != null && (m_instance.getRunLevel() > 0)) {
                 throw new CmsInitException("OpenCms already initialized!");
             } 
+            m_instance = this;
             initMembers();
-            m_instance = setRunLevel(this, 1);
-        }
-    }
-    
-    /**
-     * Protected constructor that will initialize the singleton OpenCms instance with runlevel 2.<p>
-     * 
-     * @param configuration the OpenCms configuration
-     * @throws CmsInitException in case of errors during the initialization
-     */
-    protected OpenCmsCore(ExtendedProperties configuration) throws CmsInitException {
-        synchronized (this) {
-            synchronized (configuration) {
-                if (m_instance != null && (m_instance.getRunLevel() > 1)) {
-                    throw new CmsInitException("OpenCms already initialized!");
-                } else {
-                    initMembers();
-                    m_instance = setRunLevel(m_instance, 2);
-                    try {
-                        m_instance.initConfiguration(configuration);                        
-                    } catch (Exception e) {
-                        m_instance = null;
-                    }                    
-                }                
-            }
-        }
-    }
-
-    /**
-     * Protected constructor that will initialize the singleton OpenCms instance with runlevel 3.<p>
-     * 
-     * @param context the current servlet context
-     * @throws CmsInitException in case of errors during the initialization
-     */
-    protected OpenCmsCore(ServletContext context) throws CmsInitException {     
-        synchronized (this) {   
-            synchronized (context) {
-                if (m_instance != null && (m_instance.getRunLevel() > 1)) {
-                    throw new CmsInitException("OpenCms already initialized!");
-                } else {
-                    initMembers();
-                    m_instance = setRunLevel(m_instance, 3);
-                    m_instance.initContext(context);
-                }
-            }     
+            setRunLevel(1);
         }
     }
         
@@ -305,11 +265,11 @@ public class OpenCmsCore {
                 new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this all we need
-        }
+            }
         }
         return m_instance;
     }
-
+    
     /**
      * Add a cms event listener that listens to all events.<p>
      *
@@ -898,10 +858,30 @@ public class OpenCmsCore {
     }
 
     /**
-     * @return Returns the serverName.
+     * Returns the OpenCms server name.<p>
+     * 
+     * @return the OpenCms server name
      */
     protected String getServerName() {
         return m_serverName;
+    }
+    
+    /**
+     * Returns the session manager.<p>
+     * 
+     * @return the session manager
+     */
+    public OpenCmsSessionManager getSessionManager() {
+        return m_sessionManager;
+    }
+
+    /**
+     * Returns the OpenCms session storage.<p>
+     * 
+     * @return the OpenCms session storage
+     */
+    public CmsCoreSession getSessionStorage() {
+        return m_sessionStorage;
     }
 
     /**
@@ -1585,65 +1565,10 @@ public class OpenCmsCore {
             }
         }
         setRuntimeProperty("site.labeled.folders", labelSiteFolders);
-
-        // initialize static export variables
-        m_exportProperties = new CmsStaticExportManager();
         
         // initializes the cron manager
         // TODO enable the cron manager
         //m_cronManager = new CmsCronManager();
-        
-        // set if the static export is enabled or not
-        m_exportProperties.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString("staticexport.enabled", "false")));
-
-        // set the default value for the "export" property
-        m_exportProperties.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
-                
-        // set the export suffixes
-        String[] exportSuffixes = configuration.getStringArray("staticexport.export_suffixes");
-        if (exportSuffixes == null) {
-            exportSuffixes = new String[0];
-        }
-        m_exportProperties.setExportSuffixes(exportSuffixes);
-                
-        // set the path for the export
-        m_exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
-
-        // replace the "magic" names                 
-        String servletName = configuration.getString("servlet.mapping"); 
-        String contextName = "/" + CmsBase.getWebAppName(); 
-        if ("/ROOT".equals(contextName)) {
-            contextName = "";
-        }
-        
-        // set the "magic" names in the extended properties
-        configuration.setProperty("CONTEXT_NAME", contextName);
-        configuration.setProperty("SERVLET_NAME", servletName);
-                
-        // get the export prefix variables for rfs and vfs
-        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
-        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
-                                        
-        // set the export prefix variables for rfs and vfs
-        m_exportProperties.setRfsPrefix(rfsPrefix);
-        m_exportProperties.setVfsPrefix(vfsPrefix);    
-                        
-        // set if links in the export should be relative or not
-        m_exportProperties.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false)); 
-
-        // initialize "exportname" folders
-        m_exportProperties.setExportnames();
-        
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (m_exportProperties.isStaticExportEnabled()?"enabled":"disabled"));
-            if (m_exportProperties.isStaticExportEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + m_exportProperties.getExportPropertyDefault());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + m_exportProperties.getExportPath());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + m_exportProperties.getRfsPrefix());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
-            }
-        }        
         
         // set the property whether siblings should get published if a file gets published directly
         String directPublishSiblings = configuration.getString("workplace.directpublish.siblings", "false");
@@ -1740,6 +1665,61 @@ public class OpenCmsCore {
         } catch (Exception exc) {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc));
         }
+        
+        // initialize static export variables
+        m_exportProperties = new CmsStaticExportManager();
+        
+        // set if the static export is enabled or not
+        m_exportProperties.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString("staticexport.enabled", "false")));
+
+        // set the default value for the "export" property
+        m_exportProperties.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
+                
+        // set the export suffixes
+        String[] exportSuffixes = configuration.getStringArray("staticexport.export_suffixes");
+        if (exportSuffixes == null) {
+            exportSuffixes = new String[0];
+        }
+        m_exportProperties.setExportSuffixes(exportSuffixes);
+                
+        // set the path for the export
+        m_exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
+
+        // replace the "magic" names                 
+        String servletName = configuration.getString("servlet.mapping"); 
+        String contextName = "/" + CmsBase.getWebAppName(); 
+        if ("/ROOT".equals(contextName)) {
+            contextName = "";
+        }
+        
+        // set the "magic" names in the extended properties
+        configuration.setProperty("CONTEXT_NAME", contextName);
+        configuration.setProperty("SERVLET_NAME", servletName);
+                
+        // get the export prefix variables for rfs and vfs
+        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
+        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
+                                        
+        // set the export prefix variables for rfs and vfs
+        m_exportProperties.setRfsPrefix(rfsPrefix);
+        m_exportProperties.setVfsPrefix(vfsPrefix);    
+                        
+        // set if links in the export should be relative or not
+        m_exportProperties.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false)); 
+
+        // initialize "exportname" folders
+        m_exportProperties.setExportnames();
+        
+        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (m_exportProperties.isStaticExportEnabled()?"enabled":"disabled"));
+            if (m_exportProperties.isStaticExportEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + m_exportProperties.getExportPropertyDefault());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + m_exportProperties.getExportPath());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + m_exportProperties.getRfsPrefix());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
+            }
+        }                       
 
         // initalize the session storage
         m_sessionStorage = new CmsCoreSession();
@@ -2161,22 +2141,13 @@ public class OpenCmsCore {
     /**       
      * Sets the init level of this OpenCmsCore object instance.<p>
      * 
-     * @param currentInstance the current instance
      * @param level the level to set
-     * @return the upgraded OpenCmsCore object with the new runlevel
      */
-    private OpenCmsCore setRunLevel(OpenCmsCore currentInstance, int level) {
+    private void setRunLevel(int level) {
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Changing runlevel from " + m_runLevel + " to " + level);
         }          
         m_runLevel = level;
-        if (currentInstance != null) {
-            m_basePath = currentInstance.getBasePath();
-            m_log = currentInstance.getLog();
-            m_memoryMonitor = currentInstance.getMemoryMonitor();
-            m_configuration = currentInstance.getConfiguration();
-        }
-        return this;
     }
 
     /**       
@@ -2192,6 +2163,15 @@ public class OpenCmsCore {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
         }
         m_runtimeProperties.put(key, value);
+    }
+
+    /**
+     * Sets the session manager.<p>
+     * 
+     * @param sessionManager the session manager to set
+     */
+    protected void setSessionManager(OpenCmsSessionManager sessionManager) {
+        m_sessionManager = sessionManager;
     }
     
     /**
@@ -2354,5 +2334,47 @@ public class OpenCmsCore {
             }
         }
     }    
+    
+    /**
+     * Upgrades to runlevel 2.<p>
+     * 
+     * @param configuration the configuration
+     * @return the initialized OpenCmsCore
+     */
+    protected synchronized OpenCmsCore upgradeRunlevel(ExtendedProperties configuration) {
+        if ((m_instance != null) && (getRunLevel() == 2)) {
+            // instance already in runlevel 2
+            return m_instance;
+        }        
+        setRunLevel(2);
+        try {
+            m_instance.initConfiguration(configuration);                        
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+            m_instance = null;
+        }                  
+        return m_instance;
+    }
+
+    /**
+     * Upgrades to runlevel 3.<p>
+     * 
+     * @param context the context
+     * @return the initialized OpenCmsCore
+     */
+    protected synchronized OpenCmsCore upgradeRunlevel(ServletContext context) {
+        if ((m_instance != null) && (getRunLevel() == 3)) {
+            // instance already in runlevel 3
+            return m_instance;
+        }
+        try {
+            setRunLevel(3);
+            m_instance.initContext(context);
+        } catch (CmsInitException e) {
+            e.printStackTrace(System.err);
+            m_instance = null;
+        }        
+        return m_instance;
+    }
 
 }

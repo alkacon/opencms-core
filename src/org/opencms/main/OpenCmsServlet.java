@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/11 20:56:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -145,11 +145,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     public synchronized void init(ServletConfig config) throws ServletException {
         super.init(config);
-        try {
-            new OpenCmsCore(config.getServletContext());
-        } catch (CmsInitException e) {
-            // log output will be provided by OpenCms
-        }        
+        // upgrade the runlevel
+        OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());            
         // add this as handler for 404 requests
         OpenCmsCore.getInstance().addRequestHandler(this);
     }

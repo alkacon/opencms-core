@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/11 16:48:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/11 20:56:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,13 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
+import org.opencms.main.OpenCmsSessionManager;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.PrintfFormat;
 
+import com.opencms.core.CmsCoreSession;
 import com.opencms.core.CmsException;
 import com.opencms.defaults.CmsMail;
 import com.opencms.file.CmsFile;
@@ -65,7 +68,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2003/11/11 16:48:42 $
+ * @version $Revision: 1.11 $ $Date: 2003/11/11 20:56:51 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -269,24 +272,27 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     private long getKeySize(Map map, int depth) {
 
         long keySize = 0;  
-                
-        for (Iterator i = map.values().iterator(); i.hasNext();) {
+        
+        Object[] values = map.values().toArray();                
+        for (int i=0, s=values.length; i<s; i++) {
             
-            Object obj = i.next();
+            Object obj = values[i];
             
             if (obj instanceof Map && depth < C_MAX_DEPTH) {
                 keySize += getKeySize((Map)obj, depth+1);
                 continue;
             }
         }
+        values = null;
         
-        for (Iterator i = map.keySet().iterator(); i.hasNext();) {
+        Object[] keys = map.keySet().toArray();           
+        for (int i=0, s=keys.length; i<s; i++) {
             
-            Object obj = i.next();
+            Object obj = keys[i];
             
             if (obj instanceof String) {
-                String s = (String)obj;
-                keySize += (s.length() * 2);
+                String st = (String)obj;
+                keySize += (st.length() * 2);
             }
         }
         
@@ -348,9 +354,10 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     private long getValueSize(Map mapValue, int depth) {
       
         long totalSize = 0;
-        for (Iterator i = mapValue.values().iterator(); i.hasNext();) {
+        Object[] values = mapValue.values().toArray();
+        for (int i=0, s=values.length; i<s; i++) {
             
-            Object obj = i.next();
+            Object obj = values[i];
 
             if (obj instanceof CmsAccessControlList) {
                 obj = ((CmsAccessControlList)obj).getPermissionMap();
@@ -386,9 +393,10 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     private long getValueSize(List listValue, int depth) {
         
         long totalSize = 0;
-        for (Iterator i = listValue.iterator(); i.hasNext();) {
+        Object[] values = listValue.toArray();        
+        for (int i=0, s=values.length; i<s; i++) {
             
-            Object obj = i.next();
+            Object obj = values[i];
 
             if (obj instanceof CmsAccessControlList) {
                 obj = ((CmsAccessControlList)obj).getPermissionMap();
@@ -558,14 +566,22 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             + "Memory maximum heap size: " + maxMemory + " mb\n" 
             + "Memory current heap size: " + totalMemory + " mb\n\n" 
             + "Memory currently used   : " + usedMemory + " mb (" + usage + "%)\n"
-            + "Memory currently unused : " + freeMemory + " mb\n\n";
+            + "Memory currently unused : " + freeMemory + " mb\n\n\n";
 
         if (warning) {
-            content += "*** Please take action NOW to ensure that no OutOfMemoryException occurs.\n\n";
+            content += "*** Please take action NOW to ensure that no OutOfMemoryException occurs.\n\n\n";
         }
         
-        content += "\nCurrent size of the caches:\n\n";
+        OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
+        CmsCoreSession cs = OpenCmsCore.getInstance().getSessionStorage();
+        content += "Current status of the sessions:\n\n";
+        content += "Logged in users          : " + cs.getLoggedInUsers().size() + "\n";
+        content += "Currently active sessions: " + sm.getCurrentSessions() + "\n";
+        content += "Total created sessions   : " + sm.getTotalSessions() + "\n\n\n";
+        sm = null;
+        cs = null;
         
+        content += "Current status of the caches:\n\n";        
         List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
         Collections.sort(keyList);
         long totalSize = 0;
@@ -584,7 +600,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
                     + "Limit: " + form.sprintf(getLimit(obj)) + "   "
                     + "Size: " + form.sprintf(Long.toString(size)) + "\n";
         }
-        content += "Memory monitored        : " + totalSize / 1048576 + "mb\n\n";
+        content += "\nTotal size of cache memory monitored: " + totalSize / 1048576 + " mb\n\n";
         
         String from = m_emailSender;
         String[] to = m_emailReceiver;        
@@ -640,9 +656,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
                 
         if (warning) {
             OpenCms.getLog(this).warn(memStatus);
-        } else {
-            long totalSize = 0;
-            for (Iterator keys = m_monitoredObjects.keySet().iterator(); keys.hasNext();) {
+        } else {            
+            
+            List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
+            Collections.sort(keyList);
+            long totalSize = 0;            
+            for (Iterator keys = keyList.iterator(); keys.hasNext();) {
                 
                 String key = (String)keys.next();
                 Object obj = m_monitoredObjects.get(key);
@@ -662,6 +681,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             }
             memStatus += " " + "monitored: " + totalSize / 1048576 + " mb";
             OpenCms.getLog(this).debug(memStatus);
+            
+            OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
+            CmsCoreSession cs = OpenCmsCore.getInstance().getSessionStorage();
+            OpenCms.getLog(this).debug(", Sessions users: " + cs.getLoggedInUsers().size() + " current: " + sm.getCurrentSessions() + " total: " + sm.getTotalSessions());
+            sm = null;
+            cs = null;            
         }                
     }
     

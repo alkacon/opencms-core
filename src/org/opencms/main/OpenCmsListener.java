@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/11 20:56:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import javax.servlet.ServletContextListener;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class OpenCmsListener implements ServletContextListener {
@@ -56,11 +56,8 @@ public class OpenCmsListener implements ServletContextListener {
             System.err.println("Real path  : " + event.getServletContext().getRealPath("/"));
         }  
         
-        try {
-            new OpenCmsCore(event.getServletContext());
-        } catch (CmsInitException e) {
-            // log output will be provided by OpenCms
-        }
+        // upgrade the runlevel
+        OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());            
     }
 
     /**

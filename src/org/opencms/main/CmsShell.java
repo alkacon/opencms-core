@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2003/11/10 08:12:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/11 20:56:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $ $Date: 2003/11/10 08:12:57 $
+ * @version $Revision: 1.8 $ $Date: 2003/11/11 20:56:50 $
  */
 public class CmsShell {
 
@@ -98,7 +98,8 @@ public class CmsShell {
         try {
             
             // first initialize runlevel 1 to set all path information
-            m_openCms = new OpenCmsCore();
+            // m_openCms = new OpenCmsCore();
+            m_openCms = OpenCmsCore.getInstance();
             basePath = m_openCms.setBasePath(basePath);
             
             String propsPath = CmsBase.getPropertiesPath(true);
@@ -106,7 +107,8 @@ public class CmsShell {
             ExtendedProperties conf = CmsSetupUtils.loadProperties(propsPath);
             
             // now upgrade to runlevel 2
-            m_openCms = new OpenCmsCore(conf);
+            // m_openCms = new OpenCmsCore(conf);
+            m_openCms = m_openCms.upgradeRunlevel(conf);
 
             m_echo = false;
             m_exitCalled = false;
