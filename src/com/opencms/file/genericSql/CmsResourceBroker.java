@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/25 10:27:57 $
-* Version: $Revision: 1.284 $
+* Date   : $Date: 2001/10/31 07:50:27 $
+* Version: $Revision: 1.285 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.284 $ $Date: 2001/10/25 10:27:57 $
+ * @version $Revision: 1.285 $ $Date: 2001/10/31 07:50:27 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4342,27 +4342,37 @@ public void setCmsObjectForStaticExport(CmsObject cms){
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 int versionId = 0;
+                long publishDate = System.currentTimeMillis();
                 if(m_enableHistory){
                     versionId = m_dbAccess.getBackupVersionId();
                     // get the version_id for the currently published version
                     if(versionId > 1){
                         versionId--;
                     }
+                    try{
+                        publishDate = m_dbAccess.readBackupProject(versionId).getPublishingDate();
+                    } catch (CmsException e){
+                        // nothing to do
+                    }
+                    if(publishDate == 0){
+                        publishDate = System.currentTimeMillis();
+                    }
                 }
                 for(int i = 0; i < publishModules.size(); i++){
                     // call the publishProject method of the class with parameters:
-                    // project_id, version_id, m_enableHistory and the vector changedModuleMasters
+                    // cms, m_enableHistory, project_id, version_id, publishDate, subId,
+                    // the vector changedResources and the vector changedModuleMasters
                     try{
                         Object theModule = Class.forName((String)publishModules.elementAt(i)).newInstance();
                         // The changed masters are added to the vector changedModuleMasters, so after the last module
                         // was published the vector contains the changed masters of all published modules
-                        changedModuleMasters = (Vector)theModule.getClass().getMethod("publishProject",
-                                    new Class[] {Integer.class, Integer.class, Boolean.class, Vector.class}).invoke(theModule,
-                                    new Object[] {new Integer(id), new Integer(versionId), new Boolean(m_enableHistory),
-                                    changedModuleMasters});
+                        theModule.getClass().getMethod("publishProject",
+                                    new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class}).invoke(theModule,
+                                    new Object[] {cms, new Boolean(m_enableHistory), new Integer(id), new Integer(versionId), new Long(publishDate),
+                                    changedResources, changedModuleMasters});
                     } catch(Exception ex){
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish resources of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish data of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
                         }
                     }
                 }
