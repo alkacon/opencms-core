@@ -41,7 +41,7 @@ addFileExtension js script
 createProject  "__setupproj" "The project to setup the cms" Administrators Administrators
 setCurrentProject 2
 copyResourceToProject "/"
-importResources "c:/work41/opencms/workplace/" "/"
+importResources "c:/work41/opencms/workplace/"
 publishProject "2"
 writeExportPath "c:/work41/"
 exit
