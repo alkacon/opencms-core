@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/16 09:09:33 $
-* Version: $Revision: 1.281 $
+* Date   : $Date: 2001/10/22 14:32:28 $
+* Version: $Revision: 1.282 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.281 $ $Date: 2001/10/16 09:09:33 $
+ * @version $Revision: 1.282 $ $Date: 2001/10/22 14:32:28 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -445,13 +445,13 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException
 {
-    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath());
+    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName());
     if (access != null) {
             return access.booleanValue();
     } else {
     if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
             (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
-        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(), new Boolean(false));
+        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName(), new Boolean(false));
         return false;
     }
 
@@ -469,12 +469,12 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
             throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
         }
         if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
-            m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(), new Boolean(false));
+            m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName(), new Boolean(false));
             return false;
         }
 
     }
-    m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(), new Boolean(true));
+    m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName(), new Boolean(true));
     return true;
     }
 }
@@ -4291,14 +4291,17 @@ public void setCmsObjectForStaticExport(CmsObject cms){
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param id The id of the project to be published.
-     * @return a vector of changed resources.
+     * @return CmsPublishedResources The object includes the vectors of changed resources.
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public synchronized Vector publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
 
         CmsProject publishProject = readProject(currentUser, currentProject, id);
+        CmsPublishedResources allChanged = new CmsPublishedResources();
         Vector changedResources = null;
+        Vector changedModuleMasters = null;
+
         // check the security
         if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
             (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED) && (id != C_PROJECT_ONLINE_ID)) {
@@ -4314,6 +4317,33 @@ public void setCmsObjectForStaticExport(CmsObject cms){
             }
             try{
                 changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject), m_enableHistory);
+                // now publish the module masters
+                Vector publishModules = new Vector();
+                int versionId = 0;
+                if(m_enableHistory){
+                    versionId = m_dbAccess.getBackupVersionId();
+                    // get the version_id for the currently published version
+                    if(versionId > 1){
+                        versionId--;
+                    }
+                }
+                for(int i = 0; i < publishModules.size(); i++){
+                    // call the publishProject method of the class with parameters:
+                    // project_id, version_id, m_enableHistory and the vector changedModuleMasters
+                    try{
+                        Object theModule = Class.forName((String)publishModules.elementAt(i)).newInstance();
+                        // The changed masters are added to the vector changedModuleMasters, so after the last module
+                        // was published the vector contains the changed masters of all published modules
+                        changedModuleMasters = (Vector)theModule.getClass().getMethod("publishProject",
+                                    new Class[] {Integer.class, Integer.class, Boolean.class, Vector.class}).invoke(theModule,
+                                    new Object[] {new Integer(id), new Integer(versionId), new Boolean(m_enableHistory),
+                                    changedModuleMasters});
+                    } catch(Exception ex){
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish resources of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
+                        }
+                    }
+                }
             } catch (CmsException e){
                 throw e;
             } finally {
@@ -4330,7 +4360,9 @@ public void setCmsObjectForStaticExport(CmsObject cms){
                     try{
                         m_projectCache.remove(id);
                     } catch (Exception e){
-                        A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE,"Could not remove project "+id+" from cache");
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE,"Could not remove project "+id+" from cache");
+                        }
                     }
                     //deleteProject(currentUser, currentProject, id);
                 }
@@ -4356,7 +4388,9 @@ public void setCmsObjectForStaticExport(CmsObject cms){
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
         }
-        return changedResources;
+        allChanged.setChangedResources(changedResources);
+        allChanged.setChangedModuleMasters(changedModuleMasters);
+        return allChanged;
     }
 
     /**
@@ -4691,23 +4725,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
     catch (CmsException exc)
     {
         // the resource was not readable
-        if (exc.getType() == CmsException.C_RESOURCE_DELETED)
-        {
-            //resource deleted
-            throw exc;
-        }
-        else
-        // NO NEED TO READ FROM ONLINE PROJECT
-         //   if (currentProject.equals(onlineProject(currentUser, currentProject)))
-         //   {
-                // this IS the onlineproject - throw the exception
-                throw exc;
-          /*  }
-            else
-            {
-                // try to read the resource in the onlineproject
-                cmsFile = m_dbAccess.readFile(onlineProject(currentUser, currentProject).getId(), onlineProject(currentUser, currentProject).getId(), filename);
-            } */
+        throw exc;
     }
     if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
     {
@@ -6090,6 +6108,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                                    int versionId, String filename) throws CmsException {
         CmsBackupResource backupFile = null;
         CmsFile offlineFile = null;
+        int state = C_STATE_CHANGED;
         // read the backup file
         backupFile = readFileForHist(currentUser, currentProject, versionId, filename);
         // try to read the owner and the group
@@ -6106,13 +6125,16 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // group can not be read, set the groupid of current user
         }
         offlineFile = readFile(currentUser, currentProject, filename);
+        if(offlineFile.getState() == C_STATE_NEW){
+            state = C_STATE_NEW;
+        }
         if (backupFile != null && offlineFile != null){
             CmsFile newFile = new CmsFile(offlineFile.getResourceId(), offlineFile.getParentId(),
                                       offlineFile.getFileId(), offlineFile.getResourceName(),
                                       backupFile.getType(), backupFile.getFlags(),
                                       ownerId, groupId,
                                       currentProject.getId(), backupFile.getAccessFlags(),
-                                      C_STATE_CHANGED, offlineFile.isLockedBy(),
+                                      state, offlineFile.isLockedBy(),
                                       backupFile.getLauncherType(), backupFile.getLauncherClassname(),
                                       offlineFile.getDateCreated(), offlineFile.getDateLastModified(),
                                       currentUser.getId(), backupFile.getContents(),
