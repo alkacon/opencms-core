@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/16 13:57:20 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2004/12/17 13:08:00 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -773,7 +773,7 @@ public class CmsObject {
      * Returns all child resources of a resource, that is the resources
      * contained in a folder.<p>
      * 
-     * With the {@link CmsResourceFilter} provided as parameter
+     * With the <code>{@link CmsResourceFilter}</code> provided as parameter
      * you can control if you want to include deleted, invisible or 
      * time-invalid resources in the result.<p>
      * 
@@ -817,7 +817,7 @@ public class CmsObject {
     /**
      * Returns all file resources contained in a folder.<p>
      * 
-     * With the {@link CmsResourceFilter} provided as parameter
+     * With the <code>{@link CmsResourceFilter}</code> provided as parameter
      * you can control if you want to include deleted, invisible or 
      * time-invalid resources in the result.<p>
      * 
@@ -860,7 +860,7 @@ public class CmsObject {
     /**
      * Returns all folder resources contained in a folder.<p>
      * 
-     * With the {@link CmsResourceFilter} provided as parameter
+     * With the <code>{@link CmsResourceFilter}</code> provided as parameter
      * you can control if you want to include deleted, invisible or 
      * time-invalid resources in the result.<p>
      * 
@@ -901,14 +901,14 @@ public class CmsObject {
     /**
      * Reads a property object from a resource specified by a property name.<p>
      * 
-     * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
      * @param resourcename the name of resource where the property is attached to.
      * @param property the property name.
      * @param search if true, the property is searched on all parent folders of the resource. 
      *      if it's not found attached directly to the resource.
      * 
-     * @return the required property, or {@link CmsProperty#getNullProperty()} if the property was not found.
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found.
      * 
      * @throws CmsException if something goes wrong.
      */    
@@ -933,7 +933,7 @@ public class CmsObject {
      * @param search if true, the properties of all parent folders of the resource 
      *      are merged with the resource properties.
      * 
-     * @return a list of {@link CmsProperty} objects.
+     * @return a list of <code>{@link CmsProperty}</code> objects.
      * 
      * @throws CmsException if something goes wrong.
      */    
@@ -1018,7 +1018,7 @@ public class CmsObject {
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
      *  
      * In case you do not need the file content, 
-     * use {@link #readResource(String)} instead.<p>
+     * use <code>{@link #readResource(String)}</code> instead.<p>
      *
      * @param resourcename the name of the resource to read (full path).
      *
@@ -1039,7 +1039,7 @@ public class CmsObject {
      * using the specified resource filter.<p>
      * 
      * In case you do not need the file content, 
-     * use {@link #readResource(String, CmsResourceFilter)} instead.<p>
+     * use <code>{@link #readResource(String, CmsResourceFilter)}</code> instead.<p>
      * 
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -1065,12 +1065,13 @@ public class CmsObject {
      * Reads a resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * A resource may be of type {@link CmsFile} or {@link CmsFolder}. In case of
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>. In case of
      * a file, the resource will not contain the binary file content. Since reading 
      * the binary content is a cost-expensive database operation, it's recommended 
      * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use {@link CmsFile#upgrade(CmsResource, CmsObject)}.<p> 
+     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
      * @param resourcename the name of the resource to read (full path).
      *
@@ -1091,12 +1092,13 @@ public class CmsObject {
      * Reads a resource from the VFS,
      * using the specified resource filter.<p>
      *
-     * A resource may be of type {@link CmsFile} or {@link CmsFolder}. In case of
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>. In case of
      * a file, the resource will not contain the binary file content. Since reading 
      * the binary content is a cost-expensive database operation, it's recommended 
      * to work with resources if possible, and only read the file content when absolutly
      * required. To "upgrade" a resource to a file, 
-     * use {@link CmsFile#upgrade(CmsResource, CmsObject)}.<p> 
+     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -1127,7 +1129,8 @@ public class CmsObject {
      * Checks the availability of a resource in the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * A resource may be of type {@link CmsFile} or {@link CmsFolder}.<p>
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>.<p>
      * 
      * This method also takes into account the user permissions, so if 
      * the given resource exists, but the current user has not the required 
@@ -1148,7 +1151,8 @@ public class CmsObject {
      * Checks the availability of a resource in the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * A resource may be of type {@link CmsFile} or {@link CmsFolder}.<p>  
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>.<p>  
      *
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -1261,9 +1265,9 @@ public class CmsObject {
      * Adjusts the absolute resource root path for the current site.<p> 
      * 
      * The full root path of a resource is always available using
-     * {@link CmsResource#getRootPath()}. From this name this method cuts 
+     * <code>{@link CmsResource#getRootPath()}</code>. From this name this method cuts 
      * of the current site root using 
-     * {@link CmsRequestContext#removeSiteRoot(String)}.<p>
+     * <code>{@link CmsRequestContext#removeSiteRoot(String)}</code>.<p>
      * 
      * @param resource the resource to get the adjusted site root path for.
      * 
@@ -1360,7 +1364,7 @@ public class CmsObject {
     /**
      * Checks if the current user has management access to the project.<p>
      *
-     * Please note: This is NOT the same as the {@link CmsObject#isProjectManager()} 
+     * Please note: This is NOT the same as the <code>{@link CmsObject#isProjectManager()}</code> 
      * check. If the user has management access to a project depends on the
      * project settings.<p>
      *
@@ -1376,7 +1380,7 @@ public class CmsObject {
     /**
      * Checks if the current user is a member of the project manager group.<p>
      *
-     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()} 
+     * Please note: This is NOT the same as the <code>{@link CmsObject#isManagerOfProject()}</code>
      * check. If the user is a member of the project manager group, 
      * he can create new projects.<p>
      *
@@ -1393,7 +1397,7 @@ public class CmsObject {
     
     //-----------------------------------------------------------------------------------
     // Permission related methods:
-    private int warning1;
+    // private int warning1;
 
     
     
@@ -1567,8 +1571,8 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource.<p>
      * 
-     * @param resource the resource that will be accessed.
-     * @param requiredPermissions the set of required permissions.
+     * @param resource the resource to check the permissions for.
+     * @param requiredPermissions the set of permissions to check for.
      * 
      * @return <code>true</code> if the required permissions are satisfied.
      * 
@@ -1581,10 +1585,10 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource.<p>
      * 
-     * @param resource the resource that will be accessed.
-     * @param requiredPermissions the set of required permissions.
+     * @param resource the resource to check the permissions for.
+     * @param requiredPermissions the set of permissions to check for.
      * @param checkLock if <code>true</code>, a lock for the current user is required for 
-     *      all write operations, if false it's ok to write as long as the resource
+     *      all write operations, if <code>false</code> it's ok to write as long as the resource
      *      is not locked by another user.
      * @param filter the resource filter to use.
      * 
@@ -1598,7 +1602,7 @@ public class CmsObject {
     
 
     /**
-     * Lookup and reads the user or group with the given UUID.<p>
+     * Lookups and reads the user or group with the given UUID.<p>
      *   
      * @param principalId the uuid of a user or group.
      * 
@@ -1610,7 +1614,7 @@ public class CmsObject {
     }
 
     /**
-     * Lookup and reads the user or group with the given name.<p>
+     * Lookups and reads the user or group with the given name.<p>
      * 
      * @param principalName the name of the user or group.
      * 
@@ -1665,8 +1669,7 @@ public class CmsObject {
     
     //-----------------------------------------------------------------------------------
     // Task related methods:
-
-    private int warning2;     
+    // private int warning2;     
     
     
     
@@ -1675,11 +1678,11 @@ public class CmsObject {
     
     
     /**
-     * Reads log entries for a project.
+     * Reads all task log entries for a project.
      *
      * @param projectId the id of the project for which the tasklog will be read.
      * 
-     * @return a list of new TaskLog objects.
+     * @return a list of TaskLog objects.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -1692,14 +1695,14 @@ public class CmsObject {
     /**
       * Creates a new task.<p>
       * 
-      * @param projectid the Id of the current project task of the user.
-      * @param agentName the User who will edit the task.
-      * @param roleName a Usergroup for the task.
-      * @param taskname a Name of the task.
+      * @param projectid the id of the current project task of the user.
+      * @param agentName the user who will edit the task.
+      * @param roleName a usergroup for the task.
+      * @param taskname a name of the task.
       * @param tasktype the type of the task.
-      * @param taskcomment a description of the task.
+      * @param taskcomment a description of the task, which is written as task log entry.
       * @param timeout the time when the task must finished.
-      * @param priority the Id for the priority of the task.
+      * @param priority the id for the priority of the task.
       * 
       * @return the created task.
       * 
@@ -1712,11 +1715,20 @@ public class CmsObject {
     /**
       * Creates a new task.<p>
       * 
-      * @param agentName the User who will edit the task.
-      * @param roleName a Usergroup for the task.
+      * This is just a more limited version of the 
+      * <code>{@link #createTask(int, String, String, String, String, int, long, int)}</code>
+      * method, where: <br>
+      * <ul>
+      * <il>the project id is the current project id.</il>
+      * <il>the task type is the standard task type <b>1</b>.</il>
+      * <il>with no comments</il>
+      * </ul><p>
+      * 
+      * @param agentName the user who will edit the task.
+      * @param roleName a usergroup for the task.
       * @param taskname the name of the task.
       * @param timeout the time when the task must finished.
-      * @param priority the Id for the priority of the task.
+      * @param priority the id for the priority of the task.
       * 
       * @return the created task.
       * 
@@ -1729,7 +1741,7 @@ public class CmsObject {
     
     
     /**
-     * Accept a task from the Cms.<p>
+     * Updates the state of the given task as accepted by the current user.<p>
      *
      * @param taskId the id of the task to accept.
      *
@@ -1743,8 +1755,11 @@ public class CmsObject {
     
     /**
      * Reactivates a task.<p>
+     * 
+     * Setting its state to <code>{@link I_CmsConstants#C_TASK_STATE_STARTED}</code> and
+     * the percentage to <b>zero</b>.<p>
      *
-     * @param taskId the Id of the task to reactivate.
+     * @param taskId the id of the task to reactivate.
      *
      * @throws CmsException if something goes wrong.
      */
@@ -1766,10 +1781,10 @@ public class CmsObject {
     }
     
     /**
-     * Set a parameter for a task.<p>
+     * Sets a parameter for a task.<p>
      *
-     * @param taskid the Id of the task.
-     * @param parname the ame of the parameter.
+     * @param taskid the id of the task.
+     * @param parname the name of the parameter.
      * @param parvalue the value of the parameter.
      * 
      * @throws CmsException if something goes wrong.
@@ -1806,7 +1821,7 @@ public class CmsObject {
     /**
      * Writes a new user tasklog for a task.<p>
      *
-     * @param taskId the id of the task .
+     * @param taskId the id of the task.
      * @param comment the description for the log.
      * @param taskType the type of the tasklog, user task types must be greater than 100.
      * 
@@ -1835,7 +1850,7 @@ public class CmsObject {
      *
      * @param taskid the task for which the tasklog will be read.
      * 
-     * @return a Vector of new TaskLog objects.
+     * @return a list of TaskLog objects.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -1846,25 +1861,44 @@ public class CmsObject {
     /**
      * Reads all tasks for a project.<p>
      *
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul><p>
+     *
      * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param tasktype the type of task you want to read.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
      * 
-     * @return vector of tasks for the project.
+     * @return a list of tasks for the project.
      * 
      * @throws CmsException if operation was not successful.
      */
     public List readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
+        
         return (m_securityManager.readTasksForProject(m_context, projectId, tasktype, orderBy, sort));
     }
 
     /**
      * Reads all tasks for a role in a project.<p>
      *
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values for this parameter are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul><p>
+     *
      * @param projectId the id of the Project in which the tasks are defined.
      * @param roleName the role who has to process the task.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param tasktype the type of task you want to read.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
      * 
@@ -1879,9 +1913,18 @@ public class CmsObject {
     /**
      * Reads all tasks for a user in a project.<p>
      *
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values for this parameter are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul>
+     *
      * @param projectId the id of the Project in which the tasks are defined.
      * @param userName the user who has to process the task.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param tasktype the type of task you want to read.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
      * 
@@ -1894,7 +1937,7 @@ public class CmsObject {
     }
     
     /**
-     * Reads the original agent of a task from the Cms.<p>
+     * Reads the original agent of a task.<p>
      *
      * @param task the task to read the original agent from.
      * 
@@ -1948,7 +1991,7 @@ public class CmsObject {
     /**
      * Ends a task.<p>
      *
-     * @param taskid the ID of the task to end.
+     * @param taskid the id of the task to end.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1971,7 +2014,7 @@ public class CmsObject {
     
 
     /**
-     * Gets a parameter value for a task.<p>
+     * Returns the value of the given parameter for the given task.<p>
      *
      * @param taskid the id of the task.
      * @param parname the name of the parameter.
@@ -1985,7 +2028,7 @@ public class CmsObject {
     }
 
     /**
-     * Get the template task id fo a given taskname.<p>
+     * Returns the template task id for a given taskname.<p>
      *
      * @param taskname the name of the task.
      * 
@@ -2014,9 +2057,18 @@ public class CmsObject {
     /**
       * Reads all given tasks from a user for a project.<p>
       *
+      * The <code>tasktype</code> parameter will filter the tasks.
+      * The possible values for this parameter are:<br>
+      * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+      * </ul>
+      *
       * @param projectId the id of the project in which the tasks are defined.
       * @param ownerName the owner of the task.
-      * @param taskType the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+      * @param taskType the type of task you want to read.
       * @param orderBy specifies how to order the tasks.
       * @param sort sorting of the tasks.
       * 
@@ -2029,7 +2081,7 @@ public class CmsObject {
     }        
     
     /**
-     * Set a new name for a task.<p>
+     * Sets a new name for a task.<p>
      *
      * @param taskId the id of the task.
      * @param name the new name of the task.
@@ -2042,10 +2094,14 @@ public class CmsObject {
     
     //-----------------------------------------------------------------------------------
     // Miscellaneous methods:
-    private int warning3;     
+    // private int warning3;     
 
     /**
      * Imports an import-resource (folder or zipfile).<p>
+     *
+     * It is important that a <code>manifest.xml</code> is present in the 
+     * given folder or the root path inside the zip file, if not a 
+     * <code>CmsException<code> is thrown.
      *
      * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
      * @param importPath the name (absolute Path) of the folder in which should be imported.
@@ -2059,7 +2115,7 @@ public class CmsObject {
     }
         
     /**
-     * Returns the parameters of a resource in the table of all published template resources.<p>
+     * Returns the parameters of a resource in the list of all published template resources.<p>
      * 
      * @param rfsName the rfs name of the resource.
      * 
@@ -2098,9 +2154,15 @@ public class CmsObject {
     /**
      * Returns a list of all currently logged in users.<p>
      * 
-     * This method is can only be executed by administrators.<p>
+     * The returned list is a list of <code>Hashtable</code>s, 
+     * with some basic information about each user, like:<br>
+     * <ul>
+     * <li>The user name, at key <code>{@link I_CmsConstants#C_SESSION_USERNAME}</code></il>
+     * <li>The current project for that user, at key 
+     *      <code>{@link I_CmsConstants#C_SESSION_PROJECT}</code></il>
+     * </ul> <p>
      * 
-     * @return a vector of users that are currently logged in.
+     * @return a list of users that are currently logged in.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -2117,7 +2179,7 @@ public class CmsObject {
     }
     
     /**
-     * Deletes all entries in the published resource table.<p>
+     * Deletes all published resource entries.<p>
      * 
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
      * 
@@ -2128,7 +2190,7 @@ public class CmsObject {
     }
     
     /**
-     * Deletes an entry in the published resource table.<p>
+     * Deletes a published resource entry.<p>
      * 
      * @param resourceName The name of the resource to be deleted in the static export.
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
@@ -2143,7 +2205,7 @@ public class CmsObject {
     /**
      * Validates the HTML links in the unpublished files of the specified
      * publish list, if a file resource type implements the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
      * 
      * @param publishList an OpenCms publish list.
      * @param report a report to write the messages to.
@@ -2159,7 +2221,7 @@ public class CmsObject {
     }
 
     /**
-     * Inserts an entry in the published resource table.<p>
+     * Writes a published resource entry.<p>
      * 
      * This is done during static export.<p>
      * 
@@ -2177,8 +2239,13 @@ public class CmsObject {
     /**
      * Fires a CmsEvent.<p>
      *
+     * The event will be given to all registered <code>{@link I_CmsEventListener}</code>s.<p>
+     * 
      * @param type The type of the event.
      * @param data A data object that contains data used by the event listeners.
+     * 
+     * @see OpenCms#addCmsEventListener(I_CmsEventListener)
+     * @see OpenCms#addCmsEventListener(I_CmsEventListener, int[])
      */
     private void fireEvent(int type, Object data) {
         
@@ -2204,7 +2271,7 @@ public class CmsObject {
 
     //-----------------------------------------------------------------------------------
     // Deprecated methods
-    private int warning4;
+    // private int warning4;
     
     /**
      * Reads a resource from the VFS,
@@ -2216,7 +2283,7 @@ public class CmsObject {
      *
      * @throws CmsException if something goes wrong.
      *
-     * @deprecated use {@link #readResource(String, CmsResourceFilter)} instead.
+     * @deprecated use <code>{@link #readResource(String, CmsResourceFilter)}</code> instead.
      */
     public CmsResource readFileHeader(String resourcename) throws CmsException {
 
@@ -2231,7 +2298,7 @@ public class CmsObject {
      * 
      * @throws CmsException if something goes wrong.
      * 
-     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead.
+     * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
     public void deleteProperty(String resourcename, String key) throws CmsException {
         CmsProperty property = new CmsProperty();
@@ -2249,7 +2316,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      * 
-     * @deprecated use {@link #writePropertyObjects(String, List)} instead.
+     * @deprecated use <code>{@link #writePropertyObjects(String, List)}</code> instead.
      */
     public void writeProperties(String resourceName, Map properties) throws CmsException {
         writePropertyObjects(resourceName, CmsProperty.toList(properties));
@@ -2264,7 +2331,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      * 
-     * @deprecated use {@link #writePropertyObjects(String, List)} instead.
+     * @deprecated use <code>{@link #writePropertyObjects(String, List)}</code> instead.
      */
     public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
         writePropertyObjects(name, CmsProperty.setAutoCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
@@ -2279,7 +2346,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      * 
-     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead.
+     * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
     public void writeProperty(String resourceName, String key, String value) throws CmsException {
         CmsProperty property = new CmsProperty();
@@ -2299,7 +2366,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      * 
-     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead.
+     * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
     public void writeProperty(String name, String key, String value, boolean addDefinition) throws CmsException {
         CmsProperty property = new CmsProperty();
@@ -2319,7 +2386,7 @@ public class CmsObject {
      * 
      * @throws CmsException in case there where problems reading the properties.
      * 
-     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead.
+     * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
      */
     public Map readProperties(String resource) throws CmsException {
         List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), false);
@@ -2337,7 +2404,7 @@ public class CmsObject {
      * 
      * @throws CmsException in case there where problems reading the properties.
      * 
-     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead.
+     * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
      */
     public Map readProperties(String resource, boolean search) throws CmsException {
         List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), search);
@@ -2410,11 +2477,11 @@ public class CmsObject {
     
     //-----------------------------------------------------------------------------------
     // User management related methods: 
-    private int warning5;
+    // private int warning5;
 
     
     /**
-     * Adds a user to the Cms by import.<p>
+     * Creates a new user by import.<p>
      * 
      * @param id the id of the user.
      * @param name the new name for the user.
@@ -2423,8 +2490,8 @@ public class CmsObject {
      * @param firstname the firstname of the user.
      * @param lastname the lastname of the user.
      * @param email the email of the user.
-     * @param flags the flags for a user (e.g. C_FLAG_ENABLED).
-     * @param additionalInfos a Hashtable with additional infos for the user. These
+     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param additionalInfos a <code>Map</code> with additional infos for the user. These
      *                      infos may be stored into the Usertables (depending on the implementation).
      * @param address the address of the user.
      * @param type the type of the user.
@@ -2442,7 +2509,7 @@ public class CmsObject {
      *
      * @param groupname the name of the group.
      * 
-     * @return group the parent group or null.
+     * @return group the parent group or <code>null</code>.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -2451,13 +2518,13 @@ public class CmsObject {
     }  
     
     /**
-     * Adds a user to the OpenCms user table.<p>
+     * Creates a new user.<p>
      * 
-     * @param name the new name for the user.
+     * @param name the name for the new user.
      * @param password the password for the user.
      * @param group the default groupname for the user.
      * @param description the description for the user.
-     * @param additionalInfos a Hashtable with additional infos for the user.
+     * @param additionalInfos a <code>Map</code> with additional infos for the user.
      * 
      * @return the newly created user.
      * 
@@ -2480,18 +2547,19 @@ public class CmsObject {
     }
 
     /**
-     * Adds a web user to the OpenCms user table.<p>
+     * Creates a new web user.<p>
      * 
      * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.
+     * functions controlled by the OpenCms.<br>
+     * 
      * Moreover, a web user can be created by any user, the intention being that
      * a "Guest" user can create a personalized account for himself.<p>
      *
-     * @param name the name for the user.
+     * @param name the name for the new web user.
      * @param password the password for the user.
      * @param group the default groupname for the user.
      * @param description the description for the user.
-     * @param additionalInfos a Hashtable with additional infos for the user.
+     * @param additionalInfos a <code>Map</code> with additional infos for the user.
      * 
      * @return the newly created user.
      * 
@@ -2502,7 +2570,7 @@ public class CmsObject {
     }
     
     /**
-     * Adds a new group to the Cms.<p>
+     * Creates a new user group.<p>
      * 
      * @param name the name of the new group.
      * @param description the description of the new group.
@@ -2518,7 +2586,7 @@ public class CmsObject {
     }
 
     /**
-     * Changes the type of the user.<p>
+     * Changes the type of a user given its id.<p>
      *
      * @param userId The id of the user to change.
      * @param userType The new type of the user.
@@ -2530,7 +2598,7 @@ public class CmsObject {
     }
 
     /**
-     * Changes the type of the user.<p>
+     * Changes the type of a user given its name.<p>
      *
      * @param username The name of the user to change.
      * @param userType The new type of the user.
@@ -2542,7 +2610,12 @@ public class CmsObject {
     }    
     
     /**
-     * Updates the user information.<p>
+     * Updates the user information. <p>
+     * 
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
      *
      * @param user the user to be written.
      *
@@ -2557,6 +2630,11 @@ public class CmsObject {
      * 
      * Only a web user can be updated this way.<p>
      *
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
+     *
      * @param user the user to be written.
      *
      * @throws CmsException if operation was not successful.
@@ -2566,7 +2644,7 @@ public class CmsObject {
     }    
     
     /**
-     * Deletes a user from the Cms.<p>
+     * Deletes a user.<p>
      *
      * @param userId the id of the user to be deleted.
      *
@@ -2577,7 +2655,7 @@ public class CmsObject {
     }
 
     /**
-     * Deletes a user from the Cms.<p>
+     * Deletes a user.<p>
      * 
      * @param username the name of the user to be deleted.
      *
@@ -2588,7 +2666,7 @@ public class CmsObject {
     }
 
     /**
-     * Deletes a web user from the Cms.<p>
+     * Deletes a web user<p>
      *
      * @param userId the id of the user to be deleted.
      *
@@ -2601,7 +2679,7 @@ public class CmsObject {
     /**
      * Returns all users.<p>
      *
-     * @return a Vector of all users.
+     * @return a list of all users.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -2636,12 +2714,12 @@ public class CmsObject {
     }
 
     /**
-     * Returns a user in the Cms.
+     * Returns a user given its name and type.
      *
      * @param username the name of the user to be returned.
      * @param type the type of the user.
      * 
-     * @return a user in the Cms.
+     * @return the user with the given name and type.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -2650,34 +2728,39 @@ public class CmsObject {
     }
 
     /**
-     * Returns a user in the Cms, if the password is correct.
+     * Returns a user, if the password is correct.<p>
+     * 
+     * If the user/pwd pair is not valid a <code>CmsException</code> is thrown.<p>
      *
      * @param username the name of the user to be returned.
      * @param password the password of the user to be returned.
      * 
-     * @return a user in the Cms.
+     * @return the validated user.
      *
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readUser(String username, String password) throws CmsException {
+
         return m_securityManager.readUser(m_context, username, password);
     }
 
     /**
      * Returns a webuser.<p>
      *
-     * @param username The username of the webuser that is to be read.
+     * @param username the username of the webuser that is to be read.
      * 
      * @return the webuser.
      *
      * @throws CmsException if operation was not succesful.
-    */
+     */
     public CmsUser readWebUser(String username) throws CmsException {
         return m_securityManager.readWebUser(m_context, username);
     }
 
     /**
-     * Returns a web user object if the password for the user is correct.<p>
+     * Returns a web user if the password for the user is correct.<p>
+     *
+     * If the user/pwd pair is not valid a <code>CmsException</code> is thrown.<p>
      *
      * @param username the username of the user that is to be read.
      * @param password the password of the user that is to be read.
@@ -2696,7 +2779,7 @@ public class CmsObject {
      *
      * @param groupname the name of the group.
      * 
-     * @return groups a Vector of all child groups or null.
+     * @return groups a list of all child groups or <code>null</code>.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -2707,11 +2790,9 @@ public class CmsObject {
     /**
      * Returns all child groups of a group.<p>
      * 
-     * This method also returns all sub-child groups of the current group.<p>
-     *
      * @param groupname the name of the group.
      * 
-     * @return groups a Vector of all child groups or null.
+     * @return groups a list of all child groups or <code>null</code>.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -2731,10 +2812,11 @@ public class CmsObject {
     }
     
     /**
-     * Sets a new parent-group for an already existing group in the Cms.<p>
+     * Sets a new parent-group for an already existing group.<p>
      *
-     * @param groupName the name of the group that should be written to the Cms.
-     * @param parentGroupName the name of the parentGroup to set, or null if the parent
+     * @param groupName the name of the group that should be updated.
+     * @param parentGroupName the name of the parent group to set, 
+     *                      or <code>null</code> if the parent
      *                      group should be deleted.
      * 
      * @throws CmsException  if operation was not successfull.
@@ -2756,7 +2838,7 @@ public class CmsObject {
     }
 
     /**
-     * Resets the password for a specified user.<p>
+     * Sets the password for a specified user.<p>
      *
      * @param username the name of the user.
      * @param oldPassword the old password.
@@ -2774,7 +2856,7 @@ public class CmsObject {
      * @param username the name of the user to test.
      * @param groupname the name of the group to test.
      * 
-     * @return <code>true</code>, if the user is in the group; <code>else</code> false otherwise.
+     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
      *
      * @throws CmsException if operation was not successful
      */
@@ -2783,7 +2865,12 @@ public class CmsObject {
     }
     
     /**
-     * Writes an already existing group to the Cms.<p>
+     * Writes an already existing group.<p>
+     *
+     * The group id has to be a valid OpenCms group id.<br>
+     * 
+     * The group with the given id will be completely overriden
+     * by the given data.<p>
      *
      * @param group the group that should be written to the Cms.
      * 
@@ -2795,7 +2882,8 @@ public class CmsObject {
         
     /**
      * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * new passwords, which are defined by a Class configured in 
+     * the opencms.properties file.<p>
      * 
      * If this method throws no exception the password is valid.<p>
      *
@@ -2832,7 +2920,7 @@ public class CmsObject {
     }
 
     /**
-     * Reads a group of the Cms based on its id.<p>
+     * Reads a group based on its id.<p>
      *
      * @param groupId the id of the group to be read.
      * 
@@ -2845,7 +2933,7 @@ public class CmsObject {
     }
 
     /**
-     * Reads a group of the Cms based on its name.<p>
+     * Reads a group based on its name.<p>
      * 
      * @param groupName the name of the group to be read.
      * 
@@ -2862,7 +2950,7 @@ public class CmsObject {
      *
      * @param type the type of the users.
      * 
-     * @return vector of all users of the given type.
+     * @return a list of all users of the given type.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -2871,7 +2959,7 @@ public class CmsObject {
     }
 
     /**
-     * Gets all users of a group.<p>
+     * Returns all users of a given group.<p>
      *
      * @param groupname the name of the group to get all users for.
      * 
@@ -2885,11 +2973,11 @@ public class CmsObject {
     
 
     /**
-     * Reads the project manager group of a project.<p>
+     * Returns the project manager group of a project.<p>
      *
      * @param project the project.
      * 
-     * @return the managergroup of the project.
+     * @return the manager group of the project.
      */
     public CmsGroup readManagerGroup(CmsProject project) {
         return m_securityManager.readManagerGroup(m_context, project);
@@ -2908,11 +2996,11 @@ public class CmsObject {
     }    
 
     /**
-     * Gets all groups to which a given user directly belongs.<p>
+     * Returns all groups to which a given user directly belongs.<p>
      *
      * @param username the name of the user to get all groups for.
      * 
-     * @return a Vector of all groups of a user.
+     * @return a list of all groups of a user.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -2921,9 +3009,9 @@ public class CmsObject {
     }
     
     /**
-     * Returns all groups in the Cms.<p>
+     * Returns all groups.<p>
      *
-     * @return a Vector of all groups in the Cms.
+     * @return a list of all groups.
      *
      * @throws CmsException if operation was not successful
      */
@@ -2932,11 +3020,11 @@ public class CmsObject {
     }
 
     /**
-     * Returns the groups of a Cms user.<p>
+     * Returns all the groups the given user, directly or indirectly, belongs to.<p>
      *
      * @param username the name of the user.
      * 
-     * @return a vector of Cms groups.
+     * @return a list of groups.
      * 
      * @throws CmsException if operation was not succesful.
      */
@@ -2945,12 +3033,12 @@ public class CmsObject {
     }
     
     /**
-     * Returns the groups of a Cms user filtered by the specified IP address.<p>
+     * Returns the groups of a user filtered by the specified IP address.<p>
      *
      * @param username the name of the user.
-     * @param remoteAddress the IP address to filter the groups in the result vector.
+     * @param remoteAddress the IP address to filter the groups in the result list.
      * 
-     * @return a vector of Cms groups filtered by the specified IP address.
+     * @return a list of groups filtered by the specified IP address.
      * 
      * @throws CmsException if operation was not succesful.
      */
@@ -3036,7 +3124,7 @@ public class CmsObject {
     
     //-----------------------------------------------------------------------------------
     // Project methods:
-    private int warning6; 
+    // private int warning6; 
 
     /**
      * Publishes the current project, printing messages to a shell report.<p>
@@ -3044,6 +3132,8 @@ public class CmsObject {
      * @return the publish history id of the published project.
      * 
      * @throws Exception if something goes wrong.
+     * 
+     * @see CmsShellReport
      */
     public CmsUUID publishProject() throws Exception {
 
@@ -3053,7 +3143,7 @@ public class CmsObject {
     /**
      * Publishes the current project.<p>
      *
-     * @param report an instance of I_CmsReport to print messages.
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages.
      * 
      * @return the publish history id of the published project.
      * 
@@ -3067,7 +3157,7 @@ public class CmsObject {
     /**
      * Publishes the resources of a specified publish list.<p>
      * 
-     * @param report an instance of I_CmsReport to print messages.
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages.
      * @param publishList a publish list.
      * 
      * @return the publish history id of the published project.
@@ -3101,10 +3191,10 @@ public class CmsObject {
     /**
      * Direct publishes a specified resource.<p>
      * 
-     * @param report an instance of I_CmsReport to print messages.
-     * @param directPublishResource a CmsResource that gets directly published; 
-     *                          or null if an entire project gets published.
-     * @param directPublishSiblings if a CmsResource that should get published directly is 
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages.
+     * @param directPublishResource a <code>{@link CmsResource}</code> that gets directly published; 
+     *                          or <code>null</code> if an entire project gets published.
+     * @param directPublishSiblings if a <code>{@link CmsResource}</code> that should get published directly is 
      *                          provided as an argument, all eventual siblings of this resource 
      *                          get publish too, if this flag is <code>true</code>.
      * 
@@ -3123,7 +3213,7 @@ public class CmsObject {
     }
 
     /**
-     * Publishes a single resource.<p>
+     * Publishes a single resource, printing messages to a shell report.<p>
      * 
      * The siblings of the resource will not be published.<p>
      *
@@ -3132,6 +3222,8 @@ public class CmsObject {
      * @return the publish history id of the published project.
      * 
      * @throws Exception if something goes wrong.
+     * 
+     * @see CmsShellReport
      */
     public CmsUUID publishResource(String resourcename) throws Exception {
 
@@ -3170,7 +3262,7 @@ public class CmsObject {
     
     
     /**
-     * Reads a project of a given task from the Cms.
+     * Reads a project of a given task.<p>
      *
      * @param task the task for which the project will be read.
      * 
@@ -3183,7 +3275,7 @@ public class CmsObject {
     }
 
     /**
-     * Reads a project from the Cms.
+     * Reads the project with the given id.<p>
      *
      * @param id the id of the project.
      * 
@@ -3196,7 +3288,7 @@ public class CmsObject {
     }
     
     /**
-     * Reads a project from the Cms.<p>
+     * Reads the project with the given name.<p>
      *
      * @param name the name of the project.
      * 
@@ -3226,7 +3318,7 @@ public class CmsObject {
      * 
      * @param publishHistoryId unique int ID to identify each publish task in the publish history.
      * 
-     * @return a List of CmsPublishedResource objects.
+     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -3248,6 +3340,8 @@ public class CmsObject {
     /**
      * Deletes a project.<p>
      *
+     * All resources inside the project have to be be reset to their online state.<p>
+     * 
      * @param id the id of the project to delete.
      *
      * @throws CmsException if operation was not successful.
@@ -3257,7 +3351,7 @@ public class CmsObject {
     }    
     
     /**
-     * Checks if the user can access the project.<p>
+     * Checks if the user can access a given project.<p>
      *
      * @param projectId the id of the project.
      * 
@@ -3272,11 +3366,11 @@ public class CmsObject {
     /**
      * Creates a backup of the published project.<p>
      *
-     * @param projectId The id of the project in which the resource was published.
-     * @param versionId The version of the backup.
-     * @param publishDate The date of publishing.
+     * @param projectId the id of the project in which the resource was published.
+     * @param versionId the version of the backup.
+     * @param publishDate the date of publishing.
      *
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful.
      */
     public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
         CmsProject backupProject = m_securityManager.readProject(projectId);
@@ -3343,7 +3437,7 @@ public class CmsObject {
     /**
      * Returns all projects which the current user can access.<p>
      *
-     * @return a list of objects of type <code>CmsProject</code>.
+     * @return a list of objects of type <code>{@link CmsProject}</code>.
      *
      * @throws CmsException if operation was not successful.
      */
