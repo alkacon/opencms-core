@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/06/28 14:38:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/28 16:26:13 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.4
  * 
@@ -337,7 +337,7 @@ public final class CmsLockManager extends Object {
         // inevitably result in an infinite loop...
 
         try {
-            List path = driverManager.readPath(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+            List path = driverManager.readPath(context, resourcename, CmsResourceFilter.ALL);
             resource = (CmsResource)path.get(path.size() - 1);
             resource.setRootPath(resourcename);
         } catch (CmsException e) {
@@ -421,12 +421,12 @@ public final class CmsLockManager extends Object {
 
         if (!forceUnlock && (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId())) {
             // the resource is locked by another user
-            throw new CmsLockException("Unable to unlock resource, resource is locked by another user and/or in another project", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+            throw new CmsLockException("Unable to unlock '" + context.removeSiteRoot(resourcename) + "', resource is locked by another user and/or in another project", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
         }
 
         if (!forceUnlock && (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || (getParentFolderLock(resourcename) != null))) {
             // sub-resources of a locked folder can't be unlocked
-            throw new CmsLockException("Unable to unlock resource due to an inherited lock of a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
+            throw new CmsLockException("Unable to unlock '" + context.removeSiteRoot(resourcename) + "', the lock is inherited from a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }
 
         // remove the lock and clean-up stuff

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.387 $
+ * Date   : $Date: 2004/06/28 16:26:12 $
+ * Version: $Revision: 1.388 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.387 $ $Date: 2004/06/28 11:18:10 $
+ * @version $Revision: 1.388 $ $Date: 2004/06/28 16:26:12 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -233,12 +233,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /** Indicates a resource was filtered during permission check. */
     public static final int PERM_FILTERED = 2;   
     
+    /** Indicates a resource was not locked for a write / control operation */
+    public static final int PERM_NOTLOCKED = 3;
+    
     /** Indicates allowed permissions. */
     private static final Integer PERM_ALLOWED_INTEGER = new Integer(PERM_ALLOWED);
     
     /** Indicates denied permissions. */
     private static final Integer PERM_DENIED_INTEGER = new Integer(PERM_DENIED); 
     
+    /** Indicates a resource was not locked */
+    private static final Integer PERM_NOTLOCKED_INTEGER = new Integer(PERM_NOTLOCKED); 
+        
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
 
@@ -1750,6 +1756,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // write-acces  was granted - write the file without setting state = changed
             m_vfsDriver.writeResource(context.currentProject(), restoredFile, C_NOTHING_CHANGED);
+
             m_vfsDriver.writeContent(
                 context.currentProject(), 
                 restoredFile.getContentId(), 
@@ -2052,7 +2059,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
      * 
      * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
-     * @see #checkPermissions(CmsResource, CmsPermissionSet, int) 
+     * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, int) 
      */
     public int hasPermissions(
         CmsRequestContext context, 
@@ -2066,7 +2073,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // if not, throw a CmsResourceNotFoundException
         if (!filter.isValid(context, resource)) {
             return PERM_FILTERED;
-        }  
+        }           
 
         // checking the filter is less cost intensive then checking the cache,
         // this is why basic filter results are not cached
@@ -2092,20 +2099,20 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
         
+        // check lock status 
         if (requiredPermissions.requiresWritePermission()
         || requiredPermissions.requiresControlPermission()) {
             // check lock state only if required
             CmsLock lock = getLock(context, resource);
-            // if the resource is not locked by the current user, write and control is rejected
-            // read is still possible            
-            if (checkLock || !lock.isNullLock()) {            
+            // if the resource is not locked by the current user, write and control 
+            // access must case a permission error that must not be cached
+            if (checkLock || !lock.isNullLock()) {
                 if (!context.currentUser().getId().equals(lock.getUserId())) {
-                    denied |= I_CmsConstants.C_PERMISSION_WRITE;
-                    denied |= I_CmsConstants.C_PERMISSION_CONTROL;
-                }
+                    return PERM_NOTLOCKED;
+                }                
             }
-        }
-
+        }   
+        
         CmsPermissionSet permissions;        
         if (isAdmin) {
             // if the current user is administrator, anything is allowed
@@ -2165,7 +2172,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsVfsResourceNotFoundException if the required resource is not readable
      * 
      * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
-     * @see #checkPermissions(CmsResource, CmsPermissionSet, int)
+     * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, int)
      */
     public void checkPermissions(
         CmsRequestContext context, 
@@ -2178,29 +2185,35 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // get the permissions
         int permissions = hasPermissions(context, resource, requiredPermissions, checkLock, filter);
         if (permissions != 0) {
-            checkPermissions(resource, requiredPermissions, permissions);
+            checkPermissions(context, resource, requiredPermissions, permissions);
         }
     }    
     
     /**
-     * Applies the permission check result of a previous call to {@link #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)}.<p>
+     * Applies the permission check result of a previous call 
+     * to {@link #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)}.<p>
      * 
      * @param context the current request context
      * @param resource the resource on which permissions are required
      * @param requiredPermissions the set of permissions required to access the resource
+     * @param context the current request context
      * 
      * @throws CmsSecurityException if the required permissions are not satisfied
      * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
+     * @throws CmsLockException if the lock status is not as required
      * 
      * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
      * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
      */    
-    private void checkPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, int permissions) throws CmsSecurityException, CmsVfsResourceNotFoundException {
+    private void checkPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, int permissions) 
+    throws CmsSecurityException, CmsVfsResourceNotFoundException, CmsLockException {
         switch (permissions) {
             case PERM_FILTERED:
-                throw new CmsVfsResourceNotFoundException("Resource not found '" + resource.getName() + "'");
+                throw new CmsVfsResourceNotFoundException("Resource not found '" + context.getSitePath(resource) + "'");
             case PERM_DENIED:
-                throw new CmsSecurityException("Denied access to resource '" + resource.getName() + "', required permissions are " + requiredPermissions.getPermissionString(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+                throw new CmsSecurityException("Denied access to resource '" + context.getSitePath(resource) + "', required permissions are " + requiredPermissions.getPermissionString(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            case PERM_NOTLOCKED:
+                throw new CmsLockException("Resource '" + context.getSitePath(resource) + "' not locked to current user!", CmsLockException.C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER);
             case PERM_ALLOWED:
             default:
                 return;                
@@ -2509,7 +2522,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             updateContextDates(context, resource);
         }
         // now apply permissions
-        checkPermissions(resource, I_CmsConstants.C_READ_ACCESS, perms);
+        checkPermissions(context, resource, I_CmsConstants.C_READ_ACCESS, perms);
 
         if (resource.isFolder() && !(resource instanceof CmsFolder)) {
             // upgrade to folder object type if required 
@@ -5952,7 +5965,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // context dates need to be updated even if filter was applied
             updateContextDates(context, file);
         }
-        checkPermissions(file, I_CmsConstants.C_READ_ACCESS, perms);
+        checkPermissions(context, file, I_CmsConstants.C_READ_ACCESS, perms);
 
         // access to all subfolders was granted - return the file.
         return file;
@@ -6104,7 +6117,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // context dates need to be updated even if filter was applied
             updateContextDates(context, folder);
         }
-        checkPermissions(folder, I_CmsConstants.C_READ_ACCESS, perms);    
+        checkPermissions(context, folder, I_CmsConstants.C_READ_ACCESS, perms);    
 
         // access was granted - return the folder.
         if (!filter.isValid(context, folder)) {

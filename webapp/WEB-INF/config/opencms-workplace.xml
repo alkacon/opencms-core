@@ -39,9 +39,9 @@
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d aaaa aaaa dddd" order="60"/>
@@ -75,9 +75,9 @@
 						<property name="Description"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
@@ -118,9 +118,9 @@
 						<property name="export"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
@@ -155,9 +155,9 @@
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
@@ -197,9 +197,9 @@
 						<property name="export"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
@@ -237,9 +237,9 @@
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
@@ -276,9 +276,9 @@
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
@@ -311,9 +311,9 @@
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>

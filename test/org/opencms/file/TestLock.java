@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2004/06/28 14:38:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/28 16:26:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -76,6 +76,7 @@ public class TestLock extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         
         suite.addTest(new TestLock("testLockRequired"));
+        suite.addTest(new TestLock("testLockInherit"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -91,6 +92,31 @@ public class TestLock extends OpenCmsTestCase {
         return wrapper;
     }     
     
+    /**
+     * Tests an inherited lock in a resource delete scenario.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockInherit() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing inherited lock delete scenario");
+        
+        String source = "/folder1/index.html";
+        String folder = "/folder1/";
+        storeResources(cms, source);        
+
+        // first delete the resource
+        cms.lockResource(source);
+        cms.deleteResource(source, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+       
+        // now lock the folder
+        cms.lockResource(folder);
+        
+        // make sure the deleted file has an inherited lock
+        assertLock(cms, source, CmsLock.C_TYPE_INHERITED);
+    }
+        
     /**
      * Ensures that a lock is required for all write/control operations.<p>
      * 
@@ -260,6 +286,6 @@ public class TestLock extends OpenCmsTestCase {
         cms.unlockResource(source);
         
         // make sure original resource is still unchanged
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
     }      
 }

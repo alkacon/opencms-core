@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2004/06/28 16:26:13 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * 
  * @since 5.1
  */
@@ -339,12 +339,8 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoLastModified = (preferences & I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED) > 0;
         boolean showDateCreated = (preferences & I_CmsWpConstants.C_FILELIST_DATE_CREATED) > 0;
         boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
-        
-        // TODO: get those values from the user preferences
-        //boolean showDateReleased = (preferences & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0;
-        //boolean showDateExpired = (preferences & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0;
-        boolean showDateReleased = true;
-        boolean showDateExpired = true;
+        boolean showDateReleased = (preferences & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0;
+        boolean showDateExpired = (preferences & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0;
 
         // now get the entries for the filelist
         List resources = getRessources(getSettings().getExplorerResource());
