@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 13:19:11 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/06/08 13:45:13 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/06/08 13:19:11 $
+ * @version $Revision: 1.28 $ $Date: 2000/06/08 13:45:13 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -550,7 +550,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 												  CmsProject currentProject, 
 												  String name, String resourcetype)
         throws CmsException {
-     return null;
+        return m_dbAccess.readPropertydefinition(name, this.getResourceType(currentUser, 
+    																		currentProject, 
+																		    resourcetype));
+            
     }
 
       
@@ -1263,7 +1266,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   CmsResource resource) 
         throws CmsException {
         // TODO: implement this!
-        return null;
+         return m_dbAccess.readGroup(resource.getGroupId()) ;
     }
 							
 	/**
