@@ -209,7 +209,7 @@ PACKAGE BODY opencmsresource IS
       OPEN curFolder FOR select * from cms_resources where resource_id = -1;
     END IF;
     RETURN curFolder;
-  END readFolderAcc;  
+  END readFolderAcc;
 --------------------------------------------------------------------------------------------------------------
 -- returns a folder with foldername = pFolderName
 -- for project with project_id = pProjectId or for online-project
@@ -310,7 +310,7 @@ PACKAGE BODY opencmsresource IS
     -- first read the file-header either from the project or from the onlineProject
     curResource := readFileHeader(pUserId, pProjectId, pOnlineProjectId, pFileName);
     FETCH curResource INTO recFileHeader;
-    -- now create the cursor for the file including the file_content    
+    -- now create the cursor for the file including the file_content
     IF recFileHeader.resource_id IS NOT NULL THEN
       OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
                            where r.resource_id = recFileHeader.resource_id
@@ -333,15 +333,15 @@ PACKAGE BODY opencmsresource IS
     -- first read the file-header either from the project or from the onlineProject
     curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
     FETCH curResource INTO recFile;
-    -- now create the cursor for the file including the file_content    
+    -- now create the cursor for the file including the file_content
     IF recFile.resource_id IS NOT NULL THEN
       IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
 	    userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
-      END IF;    
+      END IF;
       IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
-      END IF;    
+      END IF;
       curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
     ELSE
       -- error: open the cursor with a select that returns no rows
@@ -364,8 +364,8 @@ PACKAGE BODY opencmsresource IS
   BEGIN
     curProject := opencmsProject.onlineProject(pProjectId);
     FETCH curProject INTO recProject;
-    CLOSE curProject;   
-    vOnlineProjectId := recProject.project_id; 
+    CLOSE curProject;
+    vOnlineProjectId := recProject.project_id;
     -- first read the file
     curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProjectId, pFileName);
     FETCH curResource INTO recFile;
@@ -395,7 +395,7 @@ PACKAGE BODY opencmsresource IS
         IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
          -- error: no access for this file
          userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
-        END IF;        
+        END IF;
         curResource := readFileNoAccess(pUserId, vOnlineProjectId, vOnlineProjectId, pFileName);
       END IF;
     END IF;
@@ -505,16 +505,20 @@ PACKAGE BODY opencmsresource IS
       select vFileId, file_content from cms_files where file_id = pResource.file_id;
     END IF;
     vNewResourceId := getNextId(opencmsConstants.C_TABLE_RESOURCES);
-
-    insert into cms_resources
+    BEGIN
+      insert into cms_resources
           (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, group_id,
            project_id, file_id, access_flags, state, locked_by, launcher_type, launcher_classname,
            date_created, date_lastmodified, resource_size, resource_lastmodified_by)
-    values
+      values
           (vNewResourceId, pParentId, pFileName, pResource.resource_type, pResource.resource_flags,
            pResource.user_id, pResource.group_id, pProjectId, vFileId, pResource.access_flags, vState,
            pResource.locked_by, pResource.launcher_type, pResource.launcher_classname,
            pResource.date_created, sysdate, pResource.resource_size, pUserId);
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        userErrors.raiseUserError(userErrors.C_FILE_EXISTS);
+    END;
     commit;
     OPEN oResource FOR select r.*, f.file_content from cms_resources r, cms_files f
                               where r.resource_id = vNewResourceId
@@ -705,23 +709,27 @@ PACKAGE BODY opencmsresource IS
 	curFolder := readFolder(pUserId, pProjectId, vFolderName);
 	FETCH curFolder INTO recFolder;
 	CLOSE curFolder;
-	IF opencmsAccess.accessCreate(pUserId, pProjectId, recFolder.resource_id) = 1 THEN
-	  -- write-access was granted - copy the file and the metainfos
-	  curFile := readFile(pUserId, pProjectId, recOnlineProject.project_id, pSource);
-      FETCH curFile INTO recFile;
-      CLOSE curFile;
-      IF recFile.resource_id IS NOT NULL THEN
-        createFile(pProjectId, recOnlineProject.project_id, recFile, pUserId, recFolder.resource_id, vFolderName||vFileName, 'TRUE', curNewResource);
-        FETCH curNewResource INTO recNewResource;
-        CLOSE curNewResource;
-	    -- copy the metainfos
-	    opencmsProperty.writeProperties(pUserId, pProjectId, recNewResource.resource_id, recNewResource.resource_type,
-	                                    opencmsProperty.readAllProperties(pUserId, pProjectId, recFile.resource_name));
+	IF recFolder.resource_id IS NOT NULL THEN
+	  IF opencmsAccess.accessCreate(pUserId, pProjectId, recFolder.resource_id) = 1 THEN
+	    -- write-access was granted - copy the file and the metainfos
+	    curFile := readFile(pUserId, pProjectId, recOnlineProject.project_id, pSource);
+        FETCH curFile INTO recFile;
+        CLOSE curFile;
+        IF recFile.resource_id IS NOT NULL THEN
+          createFile(pProjectId, recOnlineProject.project_id, recFile, pUserId, recFolder.resource_id, vFolderName||vFileName, 'TRUE', curNewResource);
+          FETCH curNewResource INTO recNewResource;
+          CLOSE curNewResource;
+	      -- copy the metainfos
+	      opencmsProperty.writeProperties(pUserId, pProjectId, recNewResource.resource_id, recNewResource.resource_type,
+	                                      opencmsProperty.readAllProperties(pUserId, pProjectId, recFile.resource_name));
+        ELSE
+          userErrors.raiseUserError(userErrors.C_NOT_FOUND);
+        END IF;
       ELSE
-        userErrors.raiseUserError(userErrors.C_NOT_FOUND);
+        userErrors.raiseUserError(userErrors.C_NO_ACCESS);
       END IF;
     ELSE
-      userErrors.raiseUserError(userErrors.C_NO_ACCESS);
+      userErrors.raiseUserError(userErrors.C_NOT_FOUND);
     END IF;
   END copyFile;
 ----------------------------------------------------------------------------------------------
