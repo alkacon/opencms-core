@@ -11,12 +11,11 @@
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-	<title><%= wp.key("button.htmllist") %></title>
 </head>
 
-<frameset rows="280,*" framespacing="0">
-    <frame <%= wp.getFrameSource("gallery_fs", cms.link("html_fs_head.jsp" + params)) %> style="border-bottom: 1px solid Window;">
-    <frame <%= wp.getFrameSource("preview_fs", cms.link("html_fs_preview.jsp" + params)) %> style="border-top: 1px solid Window;">    
+<frameset rows="25,*" border="0" frameborder="0" framespacing="0">
+    <frame <%= wp.getFrameSource("gallery_buttonbar", cms.link("html_buttonbar.jsp" + params)) %> noresize="noresize" scrolling="no" style="border-top: 1px solid WindowFrame;">
+    <frame <%= wp.getFrameSource("gallery_preview", cms.link("html_preview.jsp" + params)) %> scrolling="auto">
 </frameset>
 
 <body>

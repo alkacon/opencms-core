@@ -9,25 +9,21 @@
 	CmsGalleryLinks wp = new CmsGalleryLinks(pageContext, request, response);
 	
 %><%= wp.htmlStart(null) %>
-	<style type="text/css">
-		a { text-decoration: none; color: #000; }
-		a:hover { text-decoration: underline; color: #000088; }
-		
-		td.list { white-space: nowrap; padding-left: 2px; }
-		
-		td.headline { padding: 1px; white-space: nowrap; background-color:ThreeDFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; }
-	</style>
-	
+	<link rel="stylesheet" type="text/css" href="gallery.css">
 	<script type="text/javascript">
 	<!--
 		function validateGalleryPath() {
 			top.gallery_fs.gallery_head.displayGallery();
-			top.gallery_preview.location.href="galleries/link_preview.jsp?resourcepath="+top.gallery_fs.gallery_head.previewUri;
+			var field_id = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_FIELDID %>.value;
+			var dialogmode = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_DIALOGMODE %>.value;
+			top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("link_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>="+field_id+"&<%= wp.PARAM_DIALOGMODE %>="+dialogmode+"&resourcepath="+top.gallery_fs.gallery_head.previewUri;
+			top.preview_fs.gallery_preview.location.href="<%=wp.getJsp().link("link_preview.jsp")%>?resourcepath="+top.gallery_fs.gallery_head.previewUri;
 		}
 		
 		function preview(uri) {
 			top.gallery_fs.gallery_head.previewUri = uri;
-			top.gallery_preview.location.href="link_preview.jsp?resourcepath="+uri;			
+			top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("link_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>=<%= wp.getParamFieldId() %>&<%= wp.PARAM_DIALOGMODE %>=<%= wp.getParamDialogMode() %>&resourcepath="+uri;
+			top.preview_fs.gallery_preview.location.href="<%=wp.getJsp().link("link_preview.jsp")%>?resourcepath="+uri;					
 		}												
 	//-->
 	</script>
@@ -37,9 +33,9 @@
 <table border="0" cellpadding="0" cellspacing="0" class="maxwidth">
 <tr>
 	<td class="headline">&nbsp;</td>
-	<td class="headline maxwidth"><%= wp.key("label.title") %></td>
-	<td class="headline"><%= wp.key("label.name") %></td>
-	<td class="headline"><%= wp.key("input.linkto") %></td>	
+	<td class="headline" width="50%"><%= wp.key("label.title") %></td>
+	<td class="headline" width="20%"><%= wp.key("label.name") %></td>
+	<td class="headline" width="30%"><%= wp.key("input.linkto") %></td>	
 </tr>
 <%= wp.buildGalleryItems() %>
 </table>

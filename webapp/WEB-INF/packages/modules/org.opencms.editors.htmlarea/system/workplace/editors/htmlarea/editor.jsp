@@ -69,6 +69,9 @@ default:
 // the content as escaped string
 var __content = "<%= wp.getParamContent() %>";
 
+// Workplacepath
+var workplacePath="<%= cms.link("/system/workplace/") %>";
+
 // dialog windows
 var dialogElementWindow = null;
 var dialogPropertyWindow = null;
@@ -207,6 +210,26 @@ function buttonAction(para) {
 		_form.target = "_self";
 		_form.submit();
         break;	
+	case 14:
+		openWindow = window.open(workplacePath + "commons/galleries/img_fs.jsp", "PicBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;
+	case 15:
+		openWindow = window.open(workplacePath + "commons/galleries/download_fs.jsp", "DowloadBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;
+	case 16:
+		openWindow = window.open(workplacePath + "commons/galleries/link_fs.jsp", "LinkBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;
+	case 17:
+		openWindow = window.open(workplacePath + "commons/galleries/html_fs.jsp", "PicBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;			
     }
 }
 
@@ -475,6 +498,11 @@ config.registerButton("oc-chars", "<%= wp.key("button.specialchars") %>", __edit
 config.registerButton("oc-anchor", "<%= wp.key("button.anchor") %>", __editor.imgURL("../../buttons/anchor.gif"), false, function(e) { buttonAction(11); });
 config.registerButton("oc-link", "<%= wp.key("button.linkto") %>", __editor.imgURL("../../buttons/link.gif"), false, function(e) { buttonAction(12); });
 
+config.registerButton("imagegallery", "<%= wp.key("button.imagelist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/imagegallery.gif"), false, function(e) { buttonAction(14); });
+config.registerButton("downloadgallery", "<%= wp.key("button.downloadlist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/downloadgallery.gif"), false, function(e) { buttonAction(15); });
+config.registerButton("linkgallery", "<%= wp.key("button.linklist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/linkgallery.gif"), false, function(e) { buttonAction(16); });
+config.registerButton("htmlgallery", "<%= wp.key("button.htmllist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/htmlgallery.gif"), false, function(e) { buttonAction(17); });
+
 
 <%
 
@@ -505,6 +533,23 @@ if (options.showElement("option.links", displayOptions)) {
 if (options.showElement("option.images", displayOptions)) {
 	insertButtons.append(", \"separator\", \"insertimage\"");
 }
+// determine if the image gallery button should be shown
+if (options.showElement("gallery.image", displayOptions) || options.showElement("gallery.download", displayOptions) || options.showElement("gallery.externlink", displayOptions) || options.showElement("gallery.html", displayOptions)) {
+	insertButtons.append(", \"separator\"");
+	if (options.showElement("gallery.image", displayOptions)) {
+		insertButtons.append(", \"imagegallery\"");
+	}
+	if (options.showElement("gallery.download", displayOptions)) {
+		insertButtons.append(", \"downloadgallery\"");
+	}
+	if (options.showElement("gallery.externlink", displayOptions)) {
+		insertButtons.append(", \"linkgallery\"");
+	}
+	if (options.showElement("gallery.html", displayOptions)) {
+		insertButtons.append(", \"htmlgallery\"");
+	}	
+}
+
 // determine if the insert special characters button should be shown
 if (options.showElement("option.specialchars", displayOptions)) {
 	insertButtons.append(", \"separator\", \"oc-chars\"");

@@ -823,6 +823,19 @@ The version of HtmlArea is 3.0 RC1.</p>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
+		</file>		
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/downloadgallery.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/downloadgallery.gif</destination>
+			<type>image</type>
+			<uuidresource>cb5f502c-4533-11d9-87a5-c7e56ee39fab</uuidresource>
+			<datelastmodified>Fri, 03 Dec 2004 15:01:14 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Dec 2004 15:01:14 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/editors/htmlarea/images/opencms/exit.gif</source>
@@ -837,6 +850,45 @@ The version of HtmlArea is 3.0 RC1.</p>
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/htmlgallery.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/htmlgallery.gif</destination>
+			<type>image</type>
+			<uuidresource>cb667c1f-4533-11d9-87a5-c7e56ee39fab</uuidresource>
+			<datelastmodified>Fri, 03 Dec 2004 15:01:14 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Dec 2004 15:01:14 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/imagegallery.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/imagegallery.gif</destination>
+			<type>image</type>
+			<uuidresource>cb6d8102-4533-11d9-87a5-c7e56ee39fab</uuidresource>
+			<datelastmodified>Fri, 03 Dec 2004 15:01:14 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Dec 2004 15:01:14 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/linkgallery.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/linkgallery.gif</destination>
+			<type>image</type>
+			<uuidresource>cb74acf5-4533-11d9-87a5-c7e56ee39fab</uuidresource>
+			<datelastmodified>Fri, 03 Dec 2004 15:01:14 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Dec 2004 15:01:14 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>				
 		<file>
 			<source>system/workplace/resources/editors/htmlarea/images/opencms/publish.gif</source>
 			<destination>system/workplace/resources/editors/htmlarea/images/opencms/publish.gif</destination>

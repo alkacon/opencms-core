@@ -68,14 +68,14 @@
 			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif" reference="folder">
 				<newresource page="gallery" uri="newresource.jsp?newresourcetype=imagegallery" order="10"/>
 			</explorertype>
+			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif" reference="folder">
+				<newresource page="gallery" uri="newresource.jsp?newresourcetype=downloadgallery" order="20"/>
+			</explorertype>
 			<explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="folder">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=linkgallery" order="20"/>
+				<newresource page="gallery" uri="newresource.jsp?newresourcetype=linkgallery" order="30"/>
 			</explorertype>
 			<explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="folder">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=htmlgallery" order="30"/>
-			</explorertype>
-			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif" reference="folder">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=downloadgallery" order="40"/>
+				<newresource page="gallery" uri="newresource.jsp?newresourcetype=htmlgallery" order="40"/>
 			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
 				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500"/>

@@ -12,7 +12,7 @@
 <head>
 </head>
 
-<frameset rows="70,*" border="0" frameborder="0" framespacing="0">
+<frameset rows="50,*" border="0" frameborder="0" framespacing="0">
     <frame <%= wp.getFrameSource("gallery_head", cms.link("link_head.jsp" + params)) %> noresize="noresize" scrolling="no" style="border-bottom: 1px solid WindowFrame;">
     <frame <%= wp.getFrameSource("gallery_list", cms.link("link_list.jsp" + params)) %> scrolling="auto" style="border-bottom: 1px solid Menu;">
 </frameset>

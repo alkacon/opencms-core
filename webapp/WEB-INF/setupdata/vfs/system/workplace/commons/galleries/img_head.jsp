@@ -1,6 +1,7 @@
 <%@ page import="org.opencms.jsp.*, 
 					  org.opencms.workplace.CmsWorkplaceManager,
 					  org.opencms.main.OpenCms, 
+					  org.opencms.util.CmsStringUtil,
 					  org.opencms.workplace.explorer.CmsExplorerTypeSettings,
 					  org.opencms.workplace.commons.*,
 					  org.opencms.workplace.explorer.CmsNewResource,
@@ -19,12 +20,17 @@
 	var previewUri = null;
 	function displayGallery() {
 		var mainForm = document.forms["main"];
-		if (mainForm.gallerypath.options != null) {
+		<% if (wp.galleriesExists()) { %>
+			if (mainForm.gallerypath.value != '<%= wp.getParamGalleryPath() %>') {
+				if (mainForm.<%= wp.PARAM_PAGE %> != null) {
+					mainForm.<%= wp.PARAM_PAGE %>.options[0].selected = true;
+				}
+			}
 			mainForm.submit();
-		} else {
+		<% } else { %>
 			alert("<%=wp.key("error.reason.picnogallery")%>");
 			top.window.close();			
-		}
+		<% } %>
 	}
 	
 	// displays initial gallery item list in list frame (needed when popup is loaded the first time)
@@ -38,26 +44,22 @@
 	}
 	
 	function upload() {
-		var currentfolder = document.main.gallerypath.options[document.main.gallerypath.selectedIndex].value;
-		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri())%>?<%=CmsNewResourceUpload.PARAM_REDIRECTURL%>=/system/workplace/commons/galleries/img_head.jsp&<%=CmsNewResourceUpload.PARAM_TARGETFRAME%>=gallery_list&<%=CmsNewResource.PARAM_CURRENTFOLDER%>="+currentfolder;
+		var currentfolder = document.main.gallerypath.value;
+		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri())%>?<%=CmsNewResourceUpload.PARAM_REDIRECTURL%>=<%=wp.C_PATH_DIALOGS%>galleries/img_list.jsp&<%=CmsNewResourceUpload.PARAM_TARGETFRAME%>=gallery_list&<%=CmsNewResource.PARAM_CURRENTFOLDER%>="+currentfolder;
 	}
 //-->
 </script>
 
 </head>
 
-<body style="background-color: ThreeDFace; margin: 0; padding: 2px;">
+<body style="background-color: ThreeDFace; margin: 0; padding: 2px;" <%= CmsStringUtil.isEmpty(wp.getParamGalleryPath())==true?"onload=\"displayGallery();\"":"" %>>
 
-<form name="main" action="<%= cms.link("img_fs_sub.jsp") %>" target="gallery_fs" method="post" class="nomargin">
+<form name="main" action="<%= cms.link("img_fs_head.jsp") %>" target="gallery_fs" method="post" class="nomargin">
 <input type="hidden" name="<%= wp.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
 <input type="hidden" name="<%= wp.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
-
 <table border="0" cellpadding="1" cellspacing="0" width="100%">
 <tr>
-	<td colspan="2"><%= wp.key("button.imagelist") %></td>
-</tr>
-<tr>
-	<td colspan="2"><%= wp.buildGallerySelectBox() %></td>
+	<td colspan="2"><%= wp.galleriesExists()==true?"":wp.key("error.reason.picnogallery") %><%= wp.buildGallerySelectBox() %></td>
 </tr>
 <tr>
 	<td class="maxwidth">

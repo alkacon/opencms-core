@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryDownloads.java,v $
- * Date   : $Date: 2004/11/29 09:09:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/03 15:07:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -53,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.2
  */
@@ -94,44 +93,10 @@ public class CmsGalleryDownloads extends CmsGallery {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
-                    boolean deleteable = false;
                     String title = getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamResourcePath(), res.getName());      
                     String description = getJsp().property(I_CmsConstants.C_PROPERTY_DESCRIPTION, getParamResourcePath());
                     String keywords = getJsp().property(I_CmsConstants.C_PROPERTY_KEYWORDS, getParamResourcePath());
                     String lastmodified = getSettings().getMessages().getDateTime(res.getDateLastModified());
-                    CmsLock lock = getCms().getLock(res);
-                    // may delete resource only if this is unlocked or the lock owner is the current user
-                    if (lock.getType() == CmsLock.C_TYPE_UNLOCKED || lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
-                        deleteable = true;
-                    } 
-                    html.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow\">");
-                    html.append("<tr align=\"left\">");
-                    html.append(buttonBarStartTab(0, 0));  
-                    html.append(button("javascript:link('"+getJsp().link(getParamResourcePath())+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0));
-                    if (deleteable) {
-                        html.append(button("javascript:deleteResource(\'" + getParamResourcePath() + "\');", null, "deletecontent", "title.delete", 0));
-                    } else {
-                        html.append(button(null, null, "deletecontent_in", "", 0));
-                    }
-                    html.append(buttonBarSeparator(5, 5));
-                    
-                    html.append("<td nowrap><b>");
-                    html.append(key("input.title"));
-                    html.append("</b>&nbsp;</td>");
-                    html.append("<td width=\"80%\">");
-                    html.append("<input name=\"title\" value=\"");
-                    html.append(title);
-                    html.append("\" style=\"width: 95%\">");
-                    html.append("</td>\r\n"); 
-                    html.append("<td nowrap><b>");
-                    html.append(key("target"));
-                    html.append("</b>&nbsp;</td>");
-                    html.append("<td>\r\n");
-                    html.append(buildLinkTargetSelectBox());
-                    html.append("</td>");
-                    html.append(buttonBar(HTML_END));
-                    html.append(buttonBarHorizontalLine());
-                    html.append("<br>");
                     html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     // Name
                     html.append("<tr align=\"left\">");
@@ -139,51 +104,23 @@ public class CmsGalleryDownloads extends CmsGallery {
                     html.append(key("label.name"));
                     html.append("</b></td>");
                     html.append("<td width=\"65%\"><a href=\"#\" onclick=\"");
-                    html.append("javascript:window.open('"+getJsp().link(getCms().getSitePath(res))+"','_preview','width=550, height=700, resizable=yes, top=70, left=150')");
+                    html.append("javascript:window.open('"+getJsp().link(getCms().getSitePath(res))+"','_preview','')");
                     html.append("\">");
                     html.append(res.getName());
                     html.append("</a></td>");
                     html.append("</tr>");
                     // Title
-                    html.append("<tr align=\"left\">");
-                    html.append("<td><b>");
-                    html.append(key("input.title"));
-                    html.append("</b></td>");
-                    html.append("<td>");
-                    html.append(title);
-                    html.append("</td>");
-                    html.append("</tr>");
+                    html.append(previewRow(key("input.title"), title));                    
                     // last modified
-                    html.append("<tr align=\"left\">");
-                    html.append("<td><b>");
-                    html.append(key("input.datelastmodified"));
-                    html.append("</b></td>");
-                    html.append("<td>");
-                    html.append(lastmodified);
-                    html.append("</td>");
-                    html.append("</tr>");
+                    html.append(previewRow(key("input.datelastmodified"), lastmodified));                                               
                     // Description if exists
                     if (CmsStringUtil.isNotEmpty(description)) {
-                        html.append("<tr align=\"left\">");
-                        html.append("<td><b>");
-                        html.append(key("input.description"));
-                        html.append("</b></td>");
-                        html.append("<td>");
-                        html.append(description);
-                        html.append("</td>");
-                        html.append("</tr>");
+                        html.append(previewRow(key("input.description"), description));                        
                     }
                     // Keywords if exists
                     if (CmsStringUtil.isNotEmpty(keywords)) {
-                        html.append("<tr align=\"left\">");
-                        html.append("<td><b>");
-                        html.append(key("input.keywords"));
-                        html.append("</td>");
-                        html.append("<td>");
-                        html.append(keywords);
-                        html.append("</td>");
-                        html.append("</tr>");
-                    }
+                        html.append(previewRow(key("input.keywords"), keywords));                        
+                    }                    
                     html.append("</table>");                    
                 }
             }
@@ -192,6 +129,7 @@ public class CmsGalleryDownloads extends CmsGallery {
         }
         return html.toString();
     }   
+        
     
     /**
      * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()

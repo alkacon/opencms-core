@@ -1,0 +1,6 @@
+<tr>
+	<td class="headline">&nbsp;</td>
+	<td class="headline" width="50%"><%= wp.key("label.title") %></td>
+	<td class="headline" width="40%"><%= wp.key("label.name") %></td>
+	<td class="headline" style="text-align: right;" width="10%"><%= wp.key("label.size") %></td>	
+</tr>
