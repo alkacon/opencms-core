@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2002/09/02 07:45:46 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/10/11 15:13:44 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,8 @@ import javax.servlet.http.*;
  * Template class for displaying OpenCms workplace administration module administration.
  *
  * Creation date: (29.10.00 10:28:08)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
+ * @author Thomas Weckert
  */
 public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsConstants {
     private final String C_FROM = "from";
@@ -311,12 +312,16 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
         String name = (String)table.get(C_MODULE_PACKETNAME);
         String modulePath = "/system/modules/" + name + "/";
+        
+        // set the module version
         String version = (String)table.get(C_VERSION);
         try {
             int v = Integer.parseInt(version);
             reg.setModuleVersion(name, v);
-        }catch(Exception e) {
         }
+        catch(Exception e) {
+        }    
+        
         try {
             reg.setModuleNiceName(name, (String)table.get(C_MODULENAME));
             reg.setModuleDescription(name, (String)table.get(C_DESCRIPTION));
@@ -397,6 +402,17 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             Vector paraTyp = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_TYP);
             Vector paraVal = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_VAL);
             reg.setModuleParameterdef(name, paraNames, paraDesc, paraTyp, paraVal);
+            
+            // set the module type
+            // there is no GUI element to select the module type yet. as a quick-n-dirty hack, we can
+            // determine it's type by checking whether we have a module property "additionalresources"    
+            
+            String moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+            String additionalResources = reg.getModuleParameterString( name, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+            if (additionalResources!=null && !additionalResources.equals("")) {
+                moduleType = CmsRegistry.C_MODULE_TYPE_ADVANCED;
+            }  
+            reg.setModuleType( name, moduleType );            
 
         }catch(CmsException e) {
              if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
