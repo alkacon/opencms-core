@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.19 Bela Tegeuse - XX June 2001
+* Accessrights in element cache now checks all groups the user is in.
+
 OpenCms 4.3.18 Bela Tegeuse - 08 June 2001
 ! Added the proxy cache in the element cache mode.
 
