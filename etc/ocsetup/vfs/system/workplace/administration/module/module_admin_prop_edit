@@ -141,7 +141,7 @@
 
 <nameentry>
 <![CDATA[
-	<input type="text" class="textfeld5" name="NAME" id="NAME" style="width='350px'" width="350px" size="35">
+	<input type="text" class="textfeld5" name="NAME" id="NAME" style="width='350px'" width="350px" size="35" value="]]><PROCESS>paranameok</PROCESS><![CDATA[">
 ]]>
 </nameentry>
 
@@ -151,15 +151,15 @@
 ]]>
 </deletebutton>
 
-<TEMPLATE name="errornoname">
+<TEMPLATE name="errornew">
 <![CDATA[
-]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.createreason" suggestion="module.error.empty" ref="module_create.html?step=fromerrorpage" >no details</ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="module.error.parametertitle" message="module.error.parametermessage" reason="module.error.parameterreason" suggestion="module.error.empty" ref="module_admin_prop_edit.html?step=fromerrorpage" >no details</ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="errorexists">
+<TEMPLATE name="errorold">
 <![CDATA[
-]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.existsreason" suggestion="module.error.existsugg" ref="module_create.html?step=fromerrorpage" >no details</ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="module.error.parametertitle" message="module.error.parametermessage" reason="module.error.parameterreason" suggestion="module.error.empty" ref="module_admin_prop_edit.html?prop=dummy&amp;step=fromerrorpage" >no details</ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
