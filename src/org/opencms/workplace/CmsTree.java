@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/10/16 10:44:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/10/21 07:49:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -210,6 +210,8 @@ public class CmsTree extends CmsWorkplace {
         String preSelection = getSettings().getTreeSite(getTreeType());
         if (preSelection == null) {           
             preSelection = CmsSiteManager.getCurrentSite(getCms()).getSiteRoot();
+            // set the tree site to avoid discrepancies between selector and tree
+            getSettings().setTreeSite(getTreeType(), preSelection);
         }  
 
         List sites = CmsSiteManager.getAvailableSites(getCms(), true);
@@ -257,19 +259,27 @@ public class CmsTree extends CmsWorkplace {
         String targetFolder = getTargetFolder();
         String startFolder = getStartFolder();
         
-        // change the site root for channel tree window
         boolean restoreSiteRoot = false;
         if ("channelselector".equals(getTreeType())) {
+            // change the site root for channel tree window
             restoreSiteRoot = true;
             getCms().getRequestContext().saveSiteRoot();
             getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
         } else if (getSettings().getTreeSite(getTreeType()) != null) {
+            // change the site root for popup window with site selector
             restoreSiteRoot = true;
             getCms().getRequestContext().saveSiteRoot();
-            if (newTree()) {
+            if (newTree() && targetFolder == null) {
                 targetFolder = "/";
             }
             getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
+            try {
+                // check presence of target folder
+                getCms().readFolder(targetFolder);
+            } catch (CmsException e) {
+                // target folder not found, set it to "/"
+                targetFolder = "/";
+            }
         }
       
         StringBuffer result = new StringBuffer(2048);
@@ -430,12 +440,14 @@ public class CmsTree extends CmsWorkplace {
         String resource = request.getParameter("resource");
         setTreeType(request.getParameter("type"));
         String treeSite = request.getParameter("treesite");
+        
         String currentResource;
         if (getTreeType() == null) {
             currentResource = getSettings().getExplorerResource();
         } else {
             currentResource = getSettings().getTreeResource(getTreeType());
         }
+        
         String lastknown = request.getParameter("lastknown");
         // both "resource" and "lastknown" must be folders
         if (resource != null) {
