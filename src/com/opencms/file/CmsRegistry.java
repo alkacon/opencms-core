@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/08/25 14:53:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/28 11:53:17 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/08/25 14:53:35 $
+ * @version $Revision: 1.4 $ $Date: 2000/08/28 11:53:17 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -58,7 +58,6 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	 *  A hashtable with shortcuts into the dom-structure for each module.
 	 */
 	private Hashtable m_modules;
-
 
 /**
  * Creates a new CmsRegistry. The regFileName is the path to the registry-file in
@@ -93,6 +92,37 @@ public CmsRegistry(String regFileName) throws CmsException {
 	} catch (Exception exc) {
 		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
 	}
+}
+/**
+ * Checks, if the dependencies are fullfilled.
+ * @param module the dom-element describing the new module.
+ * @returns, if the dependencies are fullfilled, or not.
+ */
+private Vector checkDependencies(Element module) throws CmsException {
+	Vector retValue = new Vector();
+	try {
+		Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
+		NodeList deps = dependencies.getElementsByTagName("dependency");
+		for (int i = 0; i < deps.getLength(); i++) {
+			String name = ((Element) deps.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+			int minVersion = Integer.parseInt(((Element) deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
+			int maxVersion = Integer.parseInt(((Element) deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
+
+			// get the version of the needed repository
+			int currentVersion = getModuleVersion(name);
+
+			if( currentVersion == -1 ) {
+				retValue.addElement(name + " dosen't exists");
+			} else if( currentVersion < minVersion ) {
+				retValue.addElement(name + " version is not high enougth" );
+			} else if( ( maxVersion != C_ANY_VERSION ) && (currentVersion > maxVersion) ) {
+				retValue.addElement(name + " version is to high");
+			}
+		}
+	} catch (Exception exc) {
+		throw new CmsException("Could not check the dependencies", CmsException.C_REGISTRY_ERROR, exc);
+	}
+	return retValue;
 }
 	/**
 	 *  Checks if the type of the value is correct.
@@ -227,8 +257,8 @@ private String getModuleData(String module, String dataName) {
 public int getModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) {
 	try {
 		Element module = getModuleElement(modulename);
-		Element repository = (Element) (module.getElementsByTagName("dependencies").item(0));
-		NodeList deps = repository.getElementsByTagName("dependency");
+		Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
+		NodeList deps = dependencies.getElementsByTagName("dependency");
 		for (int i = 0; i < deps.getLength(); i++) {
 			modules.addElement(((Element) deps.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
 			minVersions.addElement(((Element) deps.item(i)).getElementsByTagName("minversion").item(0).getFirstChild().getNodeValue());
@@ -810,6 +840,19 @@ private boolean hasAccess() {
 	return true;
 }
 /**
+ *  Checks for files that already exist in the system but should be replaced by the module.
+ *
+ *  @param moduleZip The name of the zip-file to import.
+ *  @returns The complete paths to the resources that have conflicts.
+ */
+public Vector importGetConflictingFileNames(String moduleZip) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
+	}
+	// TODO: getConflictingFileNames
+	return new Vector();
+}
+/**
  *  Imports a module. This method is synchronized, so only one module can be imported at on time.
  *
  *  @param moduleZip the name of the zip-file to import from.
@@ -821,22 +864,35 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
 	}
-	// TODO: check the dependencies
-
-	// TODO: import the module...
-
-	// TODO: import the module data into the registry
-	Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
 	Element newModule = getModuleElementFromImport(moduleZip);
+	String newModuleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+
+	// exists the module already?
+	if (moduleExists(newModuleName)) {
+		throw new CmsException("The module " + newModuleName + " exists already", CmsException.C_REGISTRY_ERROR);
+	}
+	Vector dependencies = checkDependencies(newModule);
+
+	// are there any dependencies no fullfilled?
+	if (dependencies.size() != 0) {
+		throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
+	}
+
+	// TODO: import the module into the vfs
+
+	// import the module data into the registry
+	Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
 	// set the import-date
 	Node uploadDate = newModule.getOwnerDocument().createElement("uploaddate");
 	uploadDate.appendChild(newModule.getOwnerDocument().createTextNode(System.currentTimeMillis() + ""));
 	newModule.appendChild(uploadDate);
 
-	// TOTDO: set the import-user
+	// TODO: set the import-user
 	Node uploadBy = newModule.getOwnerDocument().createElement("uploadedby");
 	uploadBy.appendChild(newModule.getOwnerDocument().createTextNode("U.Nknown"));
 	newModule.appendChild(uploadBy);
+
+	// TODO: store the resources-names that are depending to the module
 
 	// append the module data to the registry
 	Node newNode = getXmlParser().importNode(m_xmlReg, newModule);
@@ -866,6 +922,15 @@ private void init() throws Exception {
 		// store the shortcuts to the modules
 		m_modules.put(moduleName, module);
 	}
+}
+/**
+ * Checks if the module exists already in the repository.
+ * 
+ * @parameter String the name of the module.
+ * @return true if the module exists, else false.
+ */
+public boolean moduleExists(String modulename) {
+	return m_modules.containsKey(modulename);
 }
 /**
  *  Saves the registry and stores it to the registry-file.

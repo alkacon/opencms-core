@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistryDummy.java,v $
- * Date   : $Date: 2000/08/25 14:53:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/28 11:53:17 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,10 +35,11 @@ import com.opencms.core.*;
  * This class implements a dumy registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/08/25 14:53:35 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/28 11:53:17 $
  * 
  */
 public class CmsRegistryDummy implements I_CmsRegistry {
+
 	public CmsRegistryDummy(String Registryfile) {
 		
 	}
@@ -53,7 +54,7 @@ public class CmsRegistryDummy implements I_CmsRegistry {
 /**
  *  Checks for files that already exist in the system but should be replaced by the module.
  *
- *  @param moduleZip the name of the zip-file to import.
+ *  @param moduleZip The name of the zip-file to import.
  *  @returns The complete paths to the resources that have conflicts.
  */
 public Vector getConflictingFileNames(String moduleZip) throws CmsException {
@@ -469,12 +470,30 @@ public int getViews(Vector views, Vector urls) {
 	return 0;
 }
 /**
+ *  Checks for files that already exist in the system but should be replaced by the module.
+ *
+ *  @param moduleZip the name of the zip-file to import.
+ *  @returns The complete paths to the resources that have conflicts.
+ */
+public Vector importGetConflictingFileNames(String moduleZip) throws CmsException {
+	return new Vector();
+}
+/**
  *  Imports a module.
  *
  *  @param moduleZip the filename to import from
  *  @param exclusion a Vector with resource-names that should be excluded from this import.
  */
 public void importModule(String moduleZip, Vector exclusion) throws CmsException {
+}
+/**
+ * Checks if the module exists already in the repository.
+ * 
+ * @parameter String the name of the module.
+ * @return true if the module exists, else false.
+ */
+public boolean moduleExists(String modulename) {
+	return false;
 }
 /**
  * Sets a parameter for a module.

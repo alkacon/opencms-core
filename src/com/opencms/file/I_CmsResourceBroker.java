@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/25 14:53:35 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2000/08/28 11:53:17 $
+ * Version: $Revision: 1.102 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.101 $ $Date: 2000/08/25 14:53:35 $
+ * @version $Revision: 1.102 $ $Date: 2000/08/28 11:53:17 $
  * 
  */
 
@@ -997,13 +997,6 @@ public interface I_CmsResourceBroker {
 	 * @return The Configurations of the properties-file.
 	 */
 	public Configurations getConfigurations(CmsUser currentUser, CmsProject currentProject);
-	/**
-	 *  Checks for files that already exist in the system but should be replaced by the module.
-	 *
-	 *  @param moduleZip The name of the zip-file to import.
-	 *  @returns The complete paths to the resources that have conflicts.
-	 */
-	public Vector getConflictingFileNames(String moduleZip) throws CmsException;
 	/**
 	 * Returns the list of groups to which the user directly belongs to<P/>
 	 * 
@@ -2430,14 +2423,6 @@ public interface I_CmsResourceBroker {
 	 */
 	public Hashtable restoreSession(String oldSessionId) 
 		throws CmsException;
-/**
- * Sets a parameter for a module.
- * 
- * @param modulname String the name of the module.
- * @param parameter String the name of the parameter.
- * @param the value for the parameter in the module.
- */
-void setModuleParameterDouble(String modulname, String parameter, double value);
 	 /**
 	  * Set a new name for a task
 	  * 
