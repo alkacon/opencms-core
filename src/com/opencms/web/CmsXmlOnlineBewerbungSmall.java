@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
  * Author : $Author: a.schouten $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/16 20:00:47 $
+ * Version: $Revision: 1.8 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: a.schouten $
- * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/03/16 20:00:47 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -226,9 +226,10 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 				mailInfo.put(C_HASH_URL,"nicht angegeben");
 				mailInfo.put(C_HASH_IP,req.getRemoteAddr());				
 				// write in database
-				String link=startWorkflow(cms,mailInfo);
+				// String link=startWorkflow(cms,mailInfo);
+				String link = "";
 				mailInfo.put(C_HASH_LINK,link);
-				writeInDatabase(mailInfo);
+				// writeInDatabase(mailInfo);
 				// this is nessesary because of "nicht angegeben" must be send
 				// or displayed if the user has nothing entered.
 				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
@@ -263,6 +264,23 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 					CmsXmlMailThread mailToApplicant=new CmsXmlMailThread(mailTable);
 					mailToApplicant.start();
 				}
+				
+				// create task
+				String recname = (String)mailInfo.get(C_HASH_SURNAME);
+				String recemail = (String)mailInfo.get(C_HASH_EMAIL);
+				// String co = (String)mailInfo.get(C_HASH_CO);
+				// String text = (String)mailInfo.get(C_HASH_TEXT);
+				long timeout = System.currentTimeMillis()+ 241920000;
+				
+				String taskname = "Messekontakt von " + recname;
+				String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
+				taskcomment += "Firma: " + co + "<BR>\n";
+				taskcomment += "Text: " + text + "<BR>\n";
+				
+				A_CmsTask newtask = cms.createTask("a.kandzior", "Users", taskname, taskcomment, timeout, 1);
+				cms.writeTaskLog(newtask.getId(), taskcomment, 100);
+				// end of creating task
+				
 				return startProcessing(cms, datablock, elementName, parameters, "Answer");
 			}
 		}
