@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.4.4 Gom Jabbar   - 26 September 2001
+OpenCms 4.4.4 Gom Jabbar    - 27 September 2001
 * Bugfix in PL/SQL-packages 
 
 OpenCms 4.5.11 Gom Jabbar   - 24 September 2001
