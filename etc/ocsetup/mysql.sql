@@ -51,6 +51,7 @@ create table CMS_PROJECTS               (PROJECT_ID int not null,
                                          PROJECT_PUBLISHDATE datetime,
                                          PROJECT_PUBLISHED_BY int not null,
                                          PROJECT_TYPE int not null,
+					 PARENT_ID int DEFAULT 0,
                                          primary key(PROJECT_ID), 
                                          key(PROJECT_NAME, PROJECT_CREATEDATE),
                                          unique(PROJECT_NAME, PROJECT_CREATEDATE));
