@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/18 12:44:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/18 15:56:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,9 +51,11 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -63,7 +65,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor {
@@ -73,6 +75,14 @@ public class CmsXmlContentEditor extends CmsEditor {
     
     /** Action for new file creation. */
     public static final int ACTION_NEW = 151;
+    
+    /** The content object to edit. */
+    CmsXmlContent m_content;
+    /** The structure of the content object to edit. */
+    CmsXmlContentDefinition m_contentDefinition;
+    
+    /** File object used to read and write contents. */
+    private CmsFile m_file;
     
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
@@ -100,7 +110,23 @@ public class CmsXmlContentEditor extends CmsEditor {
         
         if (getParamNewLink() != null) {
             setParamAction(EDITOR_ACTION_NEW);
-        }
+        } else {
+            try {
+                m_file = getCms().readFile(this.getParamResource(), CmsResourceFilter.ALL);
+                m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+                m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));              
+            } catch (CmsException e) {
+                // error during initialization
+                try {
+                    showErrorPage(this, e, "read");
+                } catch (JspException exc) {
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(exc);
+                    }
+                }
+            }
+        }   
 
         // set the action for the JSP switch 
         if (EDITOR_SAVE.equals(getParamAction())) {
@@ -258,45 +284,40 @@ public class CmsXmlContentEditor extends CmsEditor {
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
     public void actionSave() throws JspException {
-        CmsFile editFile = null;
-        try {
-            editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);            
+        try {            
             // ensure all chars in the content are valid for the selected encoding
             String decodedContent = CmsEncoder.adjustHtmlEncoding(decodeContent(getParamContent()), getFileEncoding());
+             
+            Locale locale = getElementLocale();             
             
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(decodedContent, getFileEncoding(), new CmsXmlEntityResolver(getCms()));
-            CmsXmlContentDefinition contentDefinition = content.getContentDefinition(new CmsXmlEntityResolver(getCms()));
-            
-            int todo = 0;
-            // TODO: figure out the locale selected by the user
-            Locale locale = (Locale)content.getLocales().get(0);             
-            
-            List typeSequence = contentDefinition.getTypeSequence();            
+            List typeSequence = m_contentDefinition.getTypeSequence();            
             Iterator i = typeSequence.iterator();
             while (i.hasNext()) {
                                                 
                 I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)i.next();                
                 String name = schemaType.getNodeName();
-                int count = content.getIndexCount(name, locale);
+                int count = m_content.getIndexCount(name, locale);
                 for (int j=0; j<count; j++) {
 
-                    I_CmsXmlContentValue value = content.getValue(name, locale, j);
+                    I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());
-                    widget.setEditorValue(getCms(), content, getJsp().getRequest().getParameterMap(), this, value);
+                    widget.setEditorValue(getCms(), m_content, getJsp().getRequest().getParameterMap(), this, value);
                 }               
             }
-            decodedContent = content.toString();
+            decodedContent = m_content.toString();
             
             
             try {
-                editFile.setContents(decodedContent.getBytes(getFileEncoding()));
+                m_file.setContents(decodedContent.getBytes(getFileEncoding()));
             } catch (UnsupportedEncodingException e) {
                 throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }        
             // the file content might have been modified during the write operation
-            CmsFile writtenFile = getCms().writeFile(editFile);
+            m_file = getCms().writeFile(m_file);
+            m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+            m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));
             try {
-                decodedContent = new String(writtenFile.getContents(), getFileEncoding());
+                decodedContent = new String(m_file.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
                 throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }
@@ -337,42 +358,46 @@ public class CmsXmlContentEditor extends CmsEditor {
             // redirect to the workplace explorer view 
             sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         }
+    }
+    
+    /**
+     * Returns the current element locale.<p>
+     * 
+     * @return the current element locale
+     */
+    public Locale getElementLocale() {
+        
+        int todo = 0;
+        // TODO: figure out the locale selected by the user
+        return (Locale)m_content.getLocales().get(0);
     }    
     
     /**
-     * Generates HTML form for the XML content editor.<p> 
+     * Generates the HTML form for the XML content editor.<p> 
      * 
      * @return the HTML that generates the form for the XML editor
      */
-    public String getXmlEditor() {
+    public String getXmlEditorForm() {
         
         StringBuffer result = new StringBuffer(128);
 
         try {
-            String fileName = getParamResource();
-            CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
             
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCms(), file);
-            CmsXmlContentDefinition contentDefinition = content.getContentDefinition(new CmsXmlEntityResolver(getCms()));
-
-            int todo = 0;
-            // TODO: figure out the locale selected by the user
-            Locale locale = (Locale)content.getLocales().get(0);
-
+            Locale locale = getElementLocale();
             result.append("<table class=\"xmlTable\">\n");
             
-            List typeSequence = contentDefinition.getTypeSequence();            
+            List typeSequence = m_contentDefinition.getTypeSequence();            
             Iterator i = typeSequence.iterator();
             while (i.hasNext()) {
                                                 
                 I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();                
                 String name = type.getNodeName();
-                int count = content.getIndexCount(name, locale);
+                int count = m_content.getIndexCount(name, locale);
                 for (int j=0; j<count; j++) {
 
-                    I_CmsXmlContentValue value = content.getValue(name, locale, j);
+                    I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());                    
-                    result.append(widget.getEditorWidget(getCms(), content, this, contentDefinition, value));
+                    result.append(widget.getEditorWidget(getCms(), m_content, this, m_contentDefinition, value));
                 }               
             }
             
@@ -385,4 +410,38 @@ public class CmsXmlContentEditor extends CmsEditor {
                 
         return result.toString();
     }
+    
+    /**
+     * Generates the HTML for the end of the html editor form page.<p>
+     * 
+     * @return the HTML for the end of the html editor form page
+     */
+    public String getXmlEditorHtmlEnd() {
+        
+        StringBuffer result = new StringBuffer(128);
+        try {
+            Locale locale = getElementLocale();
+            
+            List typeSequence = m_contentDefinition.getTypeSequence();            
+            Iterator i = typeSequence.iterator();
+            while (i.hasNext()) {
+                                                
+                I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();                
+                String name = type.getNodeName();
+                int count = m_content.getIndexCount(name, locale);
+                for (int j=0; j<count; j++) {
+    
+                    I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
+                    I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());                    
+                    result.append(widget.getEditorHtmlEnd(getCms(), m_content, this, m_contentDefinition, value));
+                }               
+            }
+        } catch (Throwable t) {
+            OpenCms.getLog(this).error("Error in XML editor", t);
+        }
+        return result.toString();
+    }
+    
+    
+    
 }

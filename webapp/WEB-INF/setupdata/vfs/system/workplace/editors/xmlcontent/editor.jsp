@@ -390,11 +390,14 @@ for (var i=0; i<textAreas.length; i++) {
 
 
 		<div style="width: 100%; height: 100%; overflow: auto;">
-		<%= wp.getXmlEditor() %>
+		<%= wp.getXmlEditorForm() %>
 		</div>
 	
 
 </form>
+
+<%= wp.getXmlEditorHtmlEnd() %>
+
 </body>
 </html><%
 }

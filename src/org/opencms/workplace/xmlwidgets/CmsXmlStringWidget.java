@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/10/18 14:42:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/18 15:56:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,19 +38,16 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-
-
 /**
  * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue}.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
 
-      
     /**
      * Creates a new editor widget.<p>
      */
@@ -68,7 +65,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         CmsXmlContentEditor editor,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
-           
+
         String id = getParameterName(value);
         
         StringBuffer result = new StringBuffer(128);
@@ -86,8 +83,6 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\">");
         result.append("</td>");
-
-        //result.append(getHelpText(editor, contentDefinition, value.getNodeName()));
         
         result.append("</tr>\n");
         
