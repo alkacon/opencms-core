@@ -11,9 +11,9 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/13 12:27:37 $
  */
-class CmsAccessProjectMySql implements I_CmsAccessProject {
+class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
     /**
      * This is the connection object to the database
@@ -104,12 +104,18 @@ class CmsAccessProjectMySql implements I_CmsAccessProject {
 	/**
      * SQL Command for reading projects.
      */    
-    private static final String C_PROJECT_GET_BY_USER = "Select * from PROJECTS where " + C_USER_ID + " = ?";
+    private static final String C_PROJECT_GET_BY_USER = "Select * from PROJECTS where " + 
+														C_USER_ID + " = ? and " + 
+														C_PROJECT_FLAGS + " = " + 
+														C_PROJECT_STATE_UNLOCKED;
 	
 	/**
      * SQL Command for reading projects.
      */    
-    private static final String C_PROJECT_GET_BY_GROUP = "Select * from PROJECTS where " + C_GROUP_ID + " = ?";
+    private static final String C_PROJECT_GET_BY_GROUP = "Select * from PROJECTS where " + 
+														 C_GROUP_ID + " = ? and " +
+														 C_PROJECT_FLAGS + " = " + 
+														 C_PROJECT_STATE_UNLOCKED;
 	
 	/**
      * Constructor, creartes a new CmsAccessProject object and connects it to the

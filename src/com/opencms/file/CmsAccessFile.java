@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/11 16:34:00 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/13 12:27:37 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -416,7 +416,6 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	  	 while (e.hasMoreElements()) {
 		   mountpoint=(String)e.nextElement();
            accessFile=(I_CmsAccessFile)m_mountpointStorage.get(mountpoint);
-           System.err.println(accessFile.toString());
            // publish the project data that is a attached to this specific mountpoint
            resources=accessFile.publishProject(project,onlineProject);
            // collect all the publishing information

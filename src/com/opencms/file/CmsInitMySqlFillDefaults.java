@@ -9,7 +9,7 @@ import com.opencms.core.*;
  * anonymous user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/07 18:46:09 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/13 12:27:37 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -91,7 +91,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			I_CmsAccessFile accessFile = new CmsAccessFile(mountedAccessModules);
 			
 			// create the root-folder
-			accessFile.createFolder(user, project, C_ROOT, C_ACCESS_DEFAULT_FLAGS);
+			accessFile.createFolder(user, project, C_ROOT, 0);
 									
 			I_CmsRbFile fileRb = new CmsRbFile(accessFile);
 

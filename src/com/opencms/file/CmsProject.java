@@ -7,7 +7,7 @@ import com.opencms.core.*;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/17 17:25:36 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/13 12:27:38 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	
@@ -93,6 +93,17 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	 */
 	public int getFlags() {
 		return(m_flags);
+	}
+	
+	/**
+	 * Sets the state of this project.<BR/>
+	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
+	 * C_PROJECT_STATE_ARCHIVE.
+	 * 
+	 * @param flags The flag to bes set.
+	 */
+	void setFlags(int flags) {
+		m_flags = flags;
 	}
 	
 	/**

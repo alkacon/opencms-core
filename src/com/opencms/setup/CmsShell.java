@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/01/12 16:35:08 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/13 12:27:38 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -616,7 +616,7 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	public void createProject(String name, String description, String groupname) {
 		try {
-			m_cms.createProject(name, description, groupname, C_FLAG_ENABLED);
+			m_cms.createProject(name, description, groupname);
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		
@@ -962,14 +962,14 @@ public class CmsShell implements I_CmsConstants {
 	 * Returns the default group of the current user.
 	 */
 	public void userDefaultGroup() {
-		System.out.println(m_cms.getRequestContext().userDefaultGroup());
+		System.out.println(m_cms.getRequestContext().currentUser().getDefaultGroup());
 	}
 
 	/**
 	 * Returns the current group of the current user.
 	 */
 	public void userCurrentGroup() {
-		System.out.println(m_cms.getRequestContext().userCurrentGroup());
+		System.out.println(m_cms.getRequestContext().currentGroup());
 	}
 	
 	/**
@@ -977,7 +977,7 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	public void setUserCurrentGroup(String groupname) {
 		try {
-			m_cms.getRequestContext().setUserCurrentGroup(groupname);
+			m_cms.getRequestContext().setCurrentGroup(groupname);
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}
@@ -987,7 +987,7 @@ public class CmsShell implements I_CmsConstants {
 	 * Returns the current project for the user.
 	 */
 	public void getCurrentProject() {
-		System.out.println(m_cms.getRequestContext().getCurrentProject());
+		System.out.println(m_cms.getRequestContext().currentProject());
 	}
 	
 	/**
@@ -1111,6 +1111,63 @@ public class CmsShell implements I_CmsConstants {
 	public void readFile(String filename) {
 		try {
 			System.out.println(m_cms.readFile(filename));
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Publishes a project.
+	 * 
+	 * @param name The name of the project to be published.
+	 */
+	public void publishProject(String name) {
+		try {
+			Vector resources = m_cms.publishProject(name);
+			for( int i = 0; i < resources.size(); i++ ) {
+				System.out.println( (String)resources.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param filename The complete path of the file to be read.
+	 */
+	public void readFileHeader(String filename) {
+		try {
+			m_cms.readFileHeader(filename);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Renames the file to the new name.
+	 * 
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (No path information allowed).
+	 */		
+	public void renameFile(String oldname, String newname) {
+		try {
+			m_cms.renameFile(oldname, newname);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Deletes the file.
+	 * 
+	 * @param filename The complete path of the file.
+	 */	
+	public void deleteFile(String filename) {
+		try {
+			m_cms.deleteFile(filename);
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}

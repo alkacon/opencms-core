@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/01/13 12:13:39 $ 
+ * @version $Revision: 1.25 $ $Date: 2000/01/13 12:27:37 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -143,22 +143,22 @@ public abstract class A_CmsObject {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param groupname the name of the group to be set.
-	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 abstract public A_CmsProject createProject(String name, String description, 
-												String groupname, int flags)
+												String groupname)
 		 throws CmsException;
 	
 	/**
 	 * Publishes a project.
 	 * 
 	 * @param name The name of the project to be published.
+	 * @return A Vector of resources, that were changed.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsProject publishProject(String name)
+	abstract public Vector publishProject(String name)
 		throws CmsException;
 	
 	/**
@@ -292,6 +292,21 @@ public abstract class A_CmsObject {
 	 * for this resource.
 	 */
 	abstract public A_CmsResource readFileHeader(String folder, String filename)
+		throws CmsException;
+	
+	/**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param filename The complete path of the file to be read.
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	abstract public A_CmsResource readFileHeader(String filename)
 		throws CmsException;
 	
 	/**

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/01/12 16:35:08 $
+ * @version $Revision: 1.20 $ $Date: 2000/01/13 12:27:38 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -105,6 +105,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		A_CmsProject testProject = readProject(currentUser, currentProject, projectname);
 		
+		// is the project unlocked?
+		if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
+			return(false);
+		}
+		
 		// is the current-user admin, or the owner of the project?
 		if( (currentProject.getOwnerId() == currentUser.getId()) || 
 			isAdmin(currentUser, currentProject) ) {
@@ -154,13 +159,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param groupname the name of the group to be set.
-	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									   String name, String description, String groupname,
-									   int flags)
+									   String name, String description, String groupname)
 		 throws CmsException {
 		 if( isAdmin(currentUser, currentProject) || 
 			 isProjectLeader(currentUser, currentProject)) {
@@ -172,8 +175,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 // read the needed group from the cms
 			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
 			 
-			 return( m_projectRb.createProject(name, description, task, 
-											   currentUser, group, C_FLAG_ENABLED ) );
+			 return( m_projectRb.createProject(name, description, task, currentUser, 
+											   group, C_PROJECT_STATE_UNLOCKED ) );
 		} else {
 			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
 				CmsException.C_NO_ACCESS);
@@ -231,15 +234,39 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the project to be published.
+	 * @return A Vector of files, that were changed in the onlineproject.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject publishProject(A_CmsUser currentUser, 
-									   A_CmsProject currentProject,
-									   String name)
+	public Vector publishProject(A_CmsUser currentUser,
+								 A_CmsProject currentProject,
+								 String name)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// read the project that should be published.
+		A_CmsProject publishProject = m_projectRb.readProject(name);
+		
+		if( isAdmin(currentUser, currentProject) || 
+			isProjectLeader(currentUser, currentProject) || 
+			(currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			 
+			 // publish the project
+			 Vector resources = m_fileRb.publishProject(publishProject, 
+														onlineProject(currentUser, 
+																	  currentProject) );
+			 
+			 // TODO: copy the metainfos for the resources
+			 
+			 // the project-state will be set to "published"
+			 // the project must be written to the cms.
+			 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
+			 m_projectRb.writeProject(publishProject);
+			 
+			 // return the changed resources.
+			 return(resources);			 
+		} else {
+			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	// Metainfos, Metadefinitions
@@ -1463,9 +1490,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		A_CmsProject online = onlineProject(currentUser, currentProject);
 		
 		// is the current project the onlineproject?
-		// and is the current user the owner of the project?		
+		// and is the current user the owner of the project?
+		// and is the current project state UNLOCKED?
 		if( (!currentProject.equals( online ) ) &&
-			 (currentProject.getOwnerId() == currentUser.getId() ) ) {
+			(currentProject.getOwnerId() == currentUser.getId()) &&
+			(currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
 			// is offlineproject and is owner
 			
 			// read the online-resource
@@ -1499,8 +1528,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		} else {
 			// no changes on the onlineproject!
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
+			throw new CmsException(currentProject.getName(), CmsException.C_NO_ACCESS);
 		}
 	}
 		
@@ -1537,6 +1565,40 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	 }
 
+	 /**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent. <br>
+	 * 
+	 * A file header can be read from an offline project or the online project.
+	 *  
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public A_CmsResource readFileHeader(A_CmsUser currentUser, 
+										 A_CmsProject currentProject, String filename)
+		 throws CmsException {
+		 A_CmsResource cmsFile = m_fileRb.readFileHeader(currentProject, filename);
+		 if( accessRead(currentUser, currentProject, cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file-header.
+			return(cmsFile);
+		} else {
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
+		}
+     }
+	 
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
@@ -1573,6 +1635,28 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
 				CmsException.C_NO_ACCESS);
 		}
+	}
+	
+    /**
+     * Publishes a specified project to the online project. <br>
+     * This is done by copying all resources of the specified project to the online
+     * project.
+     *
+     * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user is the owner of the project</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @return Vector of all resource names that are published.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector publishProject(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException {
+		return null; // TODO: implement this!
 	}
 	
 	/**
@@ -1843,6 +1927,141 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	 }
 
+	 /**
+	 * Writes a file to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who own this file.
+	 * @param currentProject The project in which the resource will be used.
+	 * @param file The name of the file to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFile(A_CmsUser currentUser, A_CmsProject currentProject, 
+						  CmsFile file)
+		throws CmsException {
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, (A_CmsResource)file) ) {
+				
+			// write-acces  was granted - write the file.
+			m_fileRb.writeFile(currentProject, 
+							   onlineProject(currentUser, currentProject), file );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	/**
+	 * Renames the file to a new name. <br>
+	 * 
+	 * Rename can only be done in an offline project. To rename a file, the following
+	 * steps have to be done:
+	 * <ul>
+	 * <li> Copy the file with the oldname to a file with the new name, the state 
+	 * of the new file is set to NEW (2). 
+	 * <ul>
+	 * <li> If the state of the original file is UNCHANGED (0), the file content of the 
+	 * file is read from the online project. </li>
+	 * <li> If the state of the original file is CHANGED (1) or NEW (2) the file content
+	 * of the file is read from the offline project. </li>
+	 * </ul>
+	 * </li>
+	 * <li> Set the state of the old file to DELETED (3). </li> 
+	 * </ul>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */		
+	public void renameFile(A_CmsUser currentUser, A_CmsProject currentProject, 
+					       String oldname, String newname)
+		throws CmsException {
+		
+		// check, if the new name is a valid filename
+		validFilename(newname);
+		
+		// read the old file
+		A_CmsResource file = m_fileRb.readFileHeader(currentProject, oldname);
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, file) ) {
+				
+			// write-acces  was granted - rename the file.
+			m_fileRb.renameFile(currentProject, 
+								onlineProject(currentUser, currentProject), oldname, newname );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	/**
+	 * Deletes a file in the Cms.<br>
+	 *
+     * A file can only be deleteed in an offline project. 
+     * A file is deleted by setting its state to DELETED (3). <br> 
+     * 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callinUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path of the file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void deleteFile(A_CmsUser currentUser, A_CmsProject currentProject,
+						   String filename)
+		throws CmsException {
+		
+		// read the old file
+		A_CmsResource file = m_fileRb.readFileHeader(currentProject, filename);
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, file) ) {
+				
+			// write-acces  was granted - delete the file.
+			// and the metainfos
+			m_metadefRb.deleteAllMetainformations((A_CmsResource)file);			
+			m_fileRb.deleteFile(currentProject, filename);
+								
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
 	/**
 	 * Checks, if the user may read this resource.
 	 * 
@@ -1892,7 +2111,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return wether the user has access, or not.
 	 */
 	private boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
-								A_CmsResource resource) 
+								 A_CmsResource resource) 
 		throws CmsException	{
 		
 		// check, if this is the onlineproject
@@ -1916,6 +2135,66 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// is the resource locked?
 				if(resource.isLocked()) {
 					// resource locked, no creation allowed
+					return(false);					
+				}
+				
+				// read next resource
+				if(resource.getParent() != null) {
+					resource = m_fileRb.readFolder(currentProject, resource.getParent());
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
+	}
+	
+	/**
+	 * Checks, if the user may write this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessWrite(A_CmsUser currentUser, A_CmsProject currentProject,
+								A_CmsResource resource) 
+		throws CmsException	{
+		
+		// check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+			// no access to the project!
+			return(false);
+		}
+		
+		// check, if the resource is locked by the current user
+		if(resource.isLockedBy() != currentUser.getId()) {
+			// resource is not locked by the current user, no writing allowed
+			return(false);					
+		}
+		
+		// read the parent folder
+		resource = m_fileRb.readFolder(currentProject, resource.getParent());
+		
+		// check the rights and if the resource is not locked
+		do {
+			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+				
+				// is the resource locked?
+				if(resource.isLocked()) {
+					// resource locked, no writing allowed
 					return(false);					
 				}
 				

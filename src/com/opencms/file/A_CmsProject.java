@@ -5,7 +5,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/17 17:25:36 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/13 12:27:37 $
  */
 abstract public class A_CmsProject
 {
@@ -39,6 +39,15 @@ abstract public class A_CmsProject
 	 */
 	abstract public int getFlags();
 
+	/**
+	 * Sets the state of this project.<BR/>
+	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
+	 * C_PROJECT_STATE_ARCHIVE.
+	 * 
+	 * @param flags The flag to bes set.
+	 */
+	abstract void setFlags(int flags);
+	
 	/**
 	 * Returns the id of this project.
 	 * 

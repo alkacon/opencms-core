@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/01/12 16:35:08 $
+ * @version $Revision: 1.19 $ $Date: 2000/01/13 12:27:38 $
  */
 interface I_CmsResourceBroker {
 
@@ -77,13 +77,11 @@ interface I_CmsResourceBroker {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param group the group to be set.
-	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									   String name, String description, String group,
-									   int flags)
+									   String name, String description, String group)
 		 throws CmsException;
 	
 	/**
@@ -111,12 +109,12 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the project to be published.
+	 * @return a vector of changed resources.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject publishProject(A_CmsUser currentUser, 
-												A_CmsProject currentProject,
-												String name)
+	public Vector publishProject(A_CmsUser currentUser, A_CmsProject currentProject,
+								 String name)
 		throws CmsException;
 
 	// Metainfos, Metadefinitions
@@ -812,6 +810,32 @@ interface I_CmsResourceBroker {
 							 String filename)
 		throws CmsException;
 
+	 /**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent. <br>
+	 * 
+	 * A file header can be read from an offline project or the online project.
+	 *  
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public A_CmsResource readFileHeader(A_CmsUser currentUser, 
+										 A_CmsProject currentProject, String filename)
+		 throws CmsException;
+
+							 
     /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified 
@@ -1052,6 +1076,114 @@ interface I_CmsResourceBroker {
 						
          throws CmsException;
 	 
+	 /**
+	 * Writes a file to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who own this file.
+	 * @param currentProject The project in which the resource will be used.
+	 * @param file The name of the file to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFile(A_CmsUser currentUser, A_CmsProject currentProject, 
+						  CmsFile file)
+		throws CmsException ;
+							
+	/**
+	 * Renames the file to a new name. <br>
+	 * 
+	 * Rename can only be done in an offline project. To rename a file, the following
+	 * steps have to be done:
+	 * <ul>
+	 * <li> Copy the file with the oldname to a file with the new name, the state 
+	 * of the new file is set to NEW (2). 
+	 * <ul>
+	 * <li> If the state of the original file is UNCHANGED (0), the file content of the 
+	 * file is read from the online project. </li>
+	 * <li> If the state of the original file is CHANGED (1) or NEW (2) the file content
+	 * of the file is read from the offline project. </li>
+	 * </ul>
+	 * </li>
+	 * <li> Set the state of the old file to DELETED (3). </li> 
+	 * </ul>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */		
+	public void renameFile(A_CmsUser currentUser, A_CmsProject currentProject, 
+					       String oldname, String newname)
+		throws CmsException;
+	
+	/**
+	 * Deletes a file in the Cms.<br>
+	 *
+     * A file can only be deleteed in an offline project. 
+     * A file is deleted by setting its state to DELETED (3). <br> 
+     * 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callinUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path of the file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void deleteFile(A_CmsUser currentUser, A_CmsProject currentProject,
+						   String filename)
+		throws CmsException;
+	
+    /**
+     * Publishes a specified project to the online project. <br>
+     * This is done by copying all resources of the specified project to the online
+     * project.
+     *
+     * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user is the owner of the project</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @return Vector of all resource names that are published.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector publishProject(A_CmsUser currentUser, A_CmsProject currentProject)
+        throws CmsException;
+							
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 

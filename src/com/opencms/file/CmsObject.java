@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/01/13 12:13:39 $ 
+ * @version $Revision: 1.21 $ $Date: 2000/01/13 12:27:37 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -182,28 +182,29 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param groupname the name of the group to be set.
-	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(String name, String description, 
-									   String groupname, int flags)
+									   String groupname)
 		 throws CmsException {
 		 return( c_rb.createProject(m_context.currentUser(), 
 									m_context.currentProject(), name, description, 
-									groupname, flags ) );
+									groupname) );
 	 }
 	
 	/**
 	 * Publishes a project.
 	 * 
 	 * @param name The name of the project to be published.
+	 * @return A Vector of resources, that were changed.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject publishProject(String name)
+	public Vector publishProject(String name)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		 return( c_rb.publishProject(m_context.currentUser(), 
+									 m_context.currentProject(), name) );
 	}
 	
 	/**
@@ -363,7 +364,28 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsResource readFileHeader(String folder, String filename)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readFileHeader(m_context.currentUser(), 
+									m_context.currentProject(), 
+									folder + filename ) );
+	}
+	
+	/**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param filename The complete path of the file to be read.
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public A_CmsResource readFileHeader(String filename)
+		throws CmsException { 
+		return( c_rb.readFileHeader(m_context.currentUser(), 
+									m_context.currentProject(), 
+									filename ) );
 	}
 	
 	/**
@@ -380,7 +402,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void writeFile(CmsFile file) 
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.writeFile(m_context.currentUser(), m_context.currentProject(), file);
 	}
 	
 	/**
@@ -452,7 +474,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */		
 	public void renameFile(String oldname, String newname)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.renameFile(m_context.currentUser(), m_context.currentProject(), 
+						oldname, newname);
 	}
 	
 	/**
@@ -466,7 +489,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void deleteFile(String filename)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), 
+						filename);
 	}
 	
 	/**
