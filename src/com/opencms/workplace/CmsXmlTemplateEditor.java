@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.136 $
+* Date   : $Date: 2004/06/06 08:58:53 $
+* Version: $Revision: 1.137 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.136 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.137 $ $Date: 2004/06/06 08:58:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -443,15 +443,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             title = cms.readProperty(file, C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
-            }
-
-            // We don't want the user to go on and create any temporary
-            // files, if he has insufficient rights. Check this now.
-            if (!cms.hasPermissions(file, I_CmsConstants.C_WRITE_ACCESS)) {
-                throw new CmsSecurityException("Insufficient rights for editing the file " + file, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-            }
-            if (!cms.hasPermissions(bodyElementFilename, I_CmsConstants.C_WRITE_ACCESS)) {
-                throw new CmsSecurityException("Insufficient rights for editing the file " + bodyElementFilename, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
             }
 
             // Okay. All values are initialized. Now we can create

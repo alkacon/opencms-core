@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/06/04 15:42:07 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2004/06/06 08:58:42 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.70 $
- * $Date: 2004/06/04 15:42:07 $
+ * $Revision: 1.71 $
+ * $Date: 2004/06/06 08:58:42 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -737,7 +737,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_cms.getRequestContext().saveSiteRoot();
         m_cms.setContextToCos();
         try {
-            return m_cms.hasPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_READ_ACCESS); 
+            return m_cms.hasPermissions(m_channel, I_CmsConstants.C_READ_ACCESS); 
             // TODO: remove this later
             // m_cms.accessRead();
         } catch(CmsException exc) {
@@ -757,7 +757,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_cms.setContextToCos();
         try {
             // return m_cms.accessWrite(cms.readPath(m_channel));
-            return m_cms.hasPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_WRITE_ACCESS);
+            return m_cms.hasPermissions(m_channel, I_CmsConstants.C_WRITE_ACCESS);
         } catch(CmsException exc) {
             // there was a cms-exception - no write-access!
             return false;
@@ -924,7 +924,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         // get folders of this rootFolder
         Vector subFolders = new Vector();
         try{
-            subFolders = cms.getResourcesInFolder(rootFolder, CmsResourceFilter.DEFAULT);
+            subFolders.addAll(cms.getResourcesInFolder(rootFolder, CmsResourceFilter.ONLY_VISIBLE));
         } catch (CmsException e){
             // if the folder could not be found it might be deleted, so don't throw this exception
             if(e.getType() != CmsException.C_NOT_FOUND){

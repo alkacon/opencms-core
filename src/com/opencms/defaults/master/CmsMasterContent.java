@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/06/04 15:42:07 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/06/06 08:58:42 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.56 $
- * $Date: 2004/06/04 15:42:07 $
+ * $Revision: 1.57 $
+ * $Date: 2004/06/06 08:58:42 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -914,7 +914,7 @@ public abstract class CmsMasterContent
         String siteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
-            subChannels = cms.getResourcesInFolder(channel, CmsResourceFilter.DEFAULT);
+            subChannels.addAll(cms.getResourcesInFolder(channel, CmsResourceFilter.ONLY_VISIBLE));
 
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
@@ -961,7 +961,7 @@ public abstract class CmsMasterContent
             String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();           
             cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
             //Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
-            Vector subChannels = cms.getResourcesInFolder(rootChannel, CmsResourceFilter.DEFAULT);
+            Vector subChannels = new Vector(cms.getResourcesInFolder(rootChannel, CmsResourceFilter.ONLY_VISIBLE));
             int offset = rootChannel.length()-1;
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
