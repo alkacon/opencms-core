@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/06 14:46:21 $
- * Version: $Revision: 1.262 $
+ * Date   : $Date: 2003/10/06 14:49:55 $
+ * Version: $Revision: 1.263 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.262 $ $Date: 2003/10/06 14:46:21 $
+ * @version $Revision: 1.263 $ $Date: 2003/10/06 14:49:55 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5390,6 +5390,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
         return m_backupDriver.readBackupProject(tagId);
+    }
+    
+    /** 
+     * Reads the backed up properties of a backup resource.<p>
+     * 
+     * @param resource the backup resource
+     * @return a Map with all backed up properties
+     * @throws CmsException if something goes wrong
+     */
+    public Map readBackupProperties(CmsBackupResource resource) throws CmsException {
+        return m_backupDriver.readBackupProperties(resource);
     }
 
     /**

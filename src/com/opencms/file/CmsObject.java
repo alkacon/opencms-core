@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/06 13:47:58 $
-* Version: $Revision: 1.425 $
+* Date   : $Date: 2003/10/06 14:45:58 $
+* Version: $Revision: 1.426 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.425 $
+ * @version $Revision: 1.426 $
  */
 public class CmsObject {
 
@@ -2424,7 +2424,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void importResources(String importFile, String importPath, I_CmsReport report) throws CmsException {
-        
+
         report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
 
@@ -2671,7 +2671,7 @@ public class CmsObject {
         // TODO: check if useful/neccessary
         // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         clearcache();
-        
+
         synchronized (m_driverManager) {            
             try {
                 m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource);
@@ -2683,7 +2683,6 @@ public class CmsObject {
                 // TODO: check if useful/neccessary
                 // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
                 clearcache();
-                
                 success = true;
             } catch (Exception e) {
                 String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
@@ -2972,6 +2971,17 @@ public class CmsObject {
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
         return (m_driverManager.readBackupProject(tagId));
+    }
+    
+    /** 
+     * Reads the backed up properties of a backup resource.<p>
+     * 
+     * @param resource the backup resource
+     * @return a Map with all backed up properties
+     * @throws CmsException if something goes wrong
+     */
+    public Map readBackupProperties(CmsBackupResource resource) throws CmsException {
+        return m_driverManager.readBackupProperties(resource);
     }
 
     /**
