@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/03/25 16:35:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/06 09:13:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexController {
     
@@ -81,41 +81,17 @@ public class CmsFlexController {
     /** The CmsResource that was initialized by the original request, required for URI actions */    
     private CmsResource m_resource;   
     
+    /** Indicates if the respose should be streamed */
+    private boolean m_streaming;
+    
     /** Exception that was caught during inclusion of sub elements */
     private Throwable m_throwable;
     
     /** URI of a VFS resource that caused the exception */
     private String m_throwableResourceUri;
     
-    /** Indicates if the respose should be streamed */
-    private boolean m_streaming;
-    
     /** Indicates if the request is the top request */
     private boolean m_top;
-    
-    /**
-     * Returns <code>true</code> if the generated output of the response should 
-     * be written to the stream directly.<p>
-     * 
-     * @return <code>true</code> if the generated output of the response should be written to the stream directly
-     */
-    public boolean isStreaming() {
-        return m_streaming;
-    }
-    
-    /**
-     * Returns <code>true</code> if this controller was generated as top level controller.<p>
-     * 
-     * If a resource (e.g. a JSP) is processed and it's content is included in 
-     * another resource, then this will be <code>false</code>.   
-     * 
-     * @return <code>true</code> if this controller was generated as top level controller
-     * @see org.opencms.loader.I_CmsResourceLoader#dump(CmsObject, CmsResource, String, java.util.Locale, HttpServletRequest, HttpServletResponse)
-     * @see org.opencms.jsp.CmsJspActionElement#getContent(String)
-     */
-    public boolean isTop() {
-        return m_top;
-    }
     
     /**
      * Default constructor.<p>
@@ -210,9 +186,13 @@ public class CmsFlexController {
     /**
      * Checks if the request has the "If-Modified-Since" header set, and if so,
      * if the header date value is equal to the provided last modification date.<p>
-     *  
+     * 
+     * The "expires" information is automatically also checked since if a page recently
+     * expired, the date of last modification is set to the expiration date.<p>
+     * 
      * @param req the request to set the "If-Modified-Since" date header from
      * @param dateLastModified the date to compare the header with
+     *  
      * @return <code>true</code> if the header is set and the header date is equal to the provided date
      */
     public static boolean isNotModifiedSince(HttpServletRequest req, long dateLastModified) {
@@ -235,6 +215,19 @@ public class CmsFlexController {
     }
     
     /**
+     * Sets the "expires" date header for a given http request.<p>
+     * 
+     * @param res the reponse to set the "expires" date header for
+     * @param dateExpires the date to set (if this is not in the future, it is ignored)
+     */    
+    public static void setDateExpiresHeader(HttpServletResponse res, long dateExpires) {
+        if ((dateExpires > System.currentTimeMillis())
+        && (dateExpires != CmsResource.DATE_EXPIRED_DEFAULT)) {
+            res.setDateHeader(I_CmsConstants.C_HEADER_EXPIRES, dateExpires);
+        }
+    }    
+    
+    /**
      * Sets the "last modified" date header for a given http request.<p>
      * 
      * @param res the reponse to set the "last modified" date header for
@@ -249,7 +242,6 @@ public class CmsFlexController {
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
         }        
     }
-    
     
     /**
      * Clears all data of this controller.<p>
@@ -326,6 +318,15 @@ public class CmsFlexController {
     }
     
     /**
+     * Returns the combined "expires" date for all resources read during this request.<p>
+     * 
+     * @return the combined "expires" date for all resources read during this request
+     */
+    public long getDateExpires() {
+        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(m_flexContextInfoList.size()-1)).getDateExpires();
+    }       
+    
+    /**
      * Returns the combined "last modified" date for all resources read during this request.<p>
      * 
      * @return the combined "last modified" date for all resources read during this request
@@ -379,6 +380,30 @@ public class CmsFlexController {
      */
     public HttpServletResponse getTopResponse() {
         return m_res;
+    }
+    
+    /**
+     * Returns <code>true</code> if the generated output of the response should 
+     * be written to the stream directly.<p>
+     * 
+     * @return <code>true</code> if the generated output of the response should be written to the stream directly
+     */
+    public boolean isStreaming() {
+        return m_streaming;
+    }
+    
+    /**
+     * Returns <code>true</code> if this controller was generated as top level controller.<p>
+     * 
+     * If a resource (e.g. a JSP) is processed and it's content is included in 
+     * another resource, then this will be <code>false</code>.   
+     * 
+     * @return <code>true</code> if this controller was generated as top level controller
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(CmsObject, CmsResource, String, java.util.Locale, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.jsp.CmsJspActionElement#getContent(String)
+     */
+    public boolean isTop() {
+        return m_top;
     }
     
     
@@ -448,17 +473,22 @@ public class CmsFlexController {
     }
     
     /**
-     * Updates the "last modified" date for all resources read during this request with the given value.<p>
+     * Updates the "last modified" date and the "expires" date 
+     * for all resources read during this request with the given values.<p>
      * 
-     * The currently stored value is only updated with the new value if
+     * The currently stored value for "last modified" is only updated with the new value if
      * the new value is either larger (i.e. newer) then the stored value,
      * or if the new value is less then zero, which indicates that the "last modified"
      * optimization can not be used because the element is dynamic.<p>
      * 
+     * The stored "expires" value is only updated if the new value is smaller
+     * then the stored value.<p>
+     * 
      * @param dateLastModified the value to update the "last modified" date with
+     * @param dateExpires the value to update the "expires" date with
      */
-    public void updateDateLastModified(long dateLastModified) {
-        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(m_flexContextInfoList.size()-1)).updateDateLastModified(dateLastModified);         
+    public void updateDates(long dateLastModified, long dateExpires) {
+        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(m_flexContextInfoList.size()-1)).updateDates(dateLastModified, dateExpires);         
     }
 
     /**

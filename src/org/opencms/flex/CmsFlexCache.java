@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/04/01 09:22:39 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/06 09:13:22 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -503,58 +503,31 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     CmsFlexCacheEntry get(CmsFlexCacheKey key) {
         if (! isEnabled()) {
+            // cache is disabled
             return null;
-        }
-        if (DEBUG > 0) {
-            System.err.println("FlexCache: Trying to get entry for resource " + key.m_resource);
         }
         Object o = m_keyCache.get(key.m_resource);
         if (o != null) {
+            // found a matching key in the cache
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
             String variation = v.m_key.matchRequestKey(key);
             
-            if (DEBUG > 0) {
-                if (variation != null) {
-                    CmsFlexCacheEntry e = (CmsFlexCacheEntry)v.m_map.get(variation);
-                    if (e != null) {
-                        System.err.println("FlexCache: Found entry for variation " + variation);
-                    } else {
-                        System.err.println("FlexCache: Did not find entry for variation " + variation);
-                    }
-                } else {
-                    System.err.println("FlexCache: Found nothing because resource is not cachable for this request!");
-                }
-            }
             if (variation == null) {
+                // requested resource is not cacheable
                 return null;
             }
-            if (v.m_key.m_timeout < 0) {
-                // No timeout for this resource is specified
-                return (CmsFlexCacheEntry)v.m_map.get(variation);
-            } else {
-                // Check for possible timeout of entry
-                CmsFlexCacheEntry e = (CmsFlexCacheEntry)v.m_map.get(variation);
-                if (e == null) {
-                    return null;
-                }
-                if (DEBUG > 1) {
-                    System.err.println("FlexCache: Checking timeout for resource " + key.m_resource);
-                }
-                if (e.getDateExpires() < key.m_timeout) {
-                    if (DEBUG > 1) {
-                        System.err.println("FlexCache: Resource has reached timeout, removing from cache!");
-                    }
-                    this.m_variationCache.remove(e);
-                    return null;
-                }
-                if (DEBUG > 1) {
-                    System.err.println("FlexCache: Resource timeout not reached!");
-                }
-                return e;
+            CmsFlexCacheEntry e = (CmsFlexCacheEntry)v.m_map.get(variation);
+            if (e == null) {
+                // no cache entry available for variation
+                return null;
             }
-        } else if (DEBUG > 0) {
-            System.err.println("FlexCache: Did not find any entry for resource");
-            return null;
+            if (e.getDateExpires() < key.m_timeout) {
+                // cache entry avaiable but expired, remove entry
+                this.m_variationCache.remove(e);
+                return null;
+            }
+            // return the found cache entry
+            return e;
         } else {
             return null;
         }
@@ -1004,9 +977,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param theCacheEntry the entry to cache
      */
     private void put(CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry) {
+        
         Object o = m_keyCache.get(key.m_resource);
         if (key.m_timeout > 0) {
-            theCacheEntry.setDateExpires(key.m_timeout);
+            theCacheEntry.setDateExpiresToNextTimeout(key.m_timeout);
         }
         if (o != null) {
             // We already have a variation map for this resource

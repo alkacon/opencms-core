@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/06 09:13:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexCacheKey {
     
@@ -247,9 +247,8 @@ public class CmsFlexCacheKey {
       * while the parameter key should have been constructed from the request.<p>
       *
       * A short example how this works:
-      * If the resource key is "cache=groups" and the request is done from a guest user
-      * (which always belongs to the default group "guests"),
-      * the constructed variation will be "groups=(guests)".<p>
+      * If the cache key is "cache=user" and the request is done from a guest user
+      * the constructed variation will be "user=(guest)".<p>
       * 
       * @param key the key to match this key with
       * @return null if not cachable, or the Variation String if cachable

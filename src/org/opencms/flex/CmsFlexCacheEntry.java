@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/04/01 09:22:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/06 09:13:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.flex;
 
 import org.opencms.cache.I_CmsLruCacheObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
@@ -68,7 +69,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -119,7 +120,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public CmsFlexCacheEntry() {
         m_elements = new ArrayList(C_INITIAL_CAPACITY_LISTS);
-        m_dateExpires = -1;
+        m_dateExpires = CmsResource.DATE_EXPIRED_DEFAULT;
         m_dateLastModified = -1;
         // base memory footprint of this object with all referenced objects
         m_byteSize = 1024;
@@ -233,9 +234,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * Returns the expiration date of this cache entry,
      * this is set to the time when the entry becomes invalid.<p>
      * 
-     * If this is <code>-1</code> then there is no expiration date
-     * set for this flex cache entry.<p>
-     *
      * @return the expiration date value for this resource
      */ 
     public long getDateExpires() {
@@ -361,7 +359,22 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     }
     
     /**
-     * Sets an expiration date for this cache entry,
+     * Sets the expiration date of this Flex cache entry exactly to the 
+     * given time.<p>
+     * 
+     * @param dateExpires the time to expire this cache entry
+     */
+    public synchronized void setDateExpires(long dateExpires) {
+        
+        m_dateExpires = dateExpires;
+        if (DEBUG > 2) {
+            long now = System.currentTimeMillis();
+            System.err.println("FlexCacheEntry: New entry expiration=" + m_dateExpires + " now=" + now + " remaining=" + (m_dateExpires - now));
+        }
+    }     
+    
+    /**
+     * Sets an expiration date for this cache entry to the next timeout,
      * which indicates the time this entry becomes invalid.<p>
      *
      * The timeout parameter represents the minute - intervall in which the cache entry
@@ -372,7 +385,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @param timeout the timeout value to be set
      */
-    public synchronized void setDateExpires(long timeout) {
+    public synchronized void setDateExpiresToNextTimeout(long timeout) {
+        
         if (timeout < 0 || ! m_completed) {
             return;
         }
@@ -380,10 +394,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
         long timeoutMinutes = timeout * 60000;
-        m_dateExpires = now - (daytime % timeoutMinutes) + timeoutMinutes;
-        if (DEBUG > 2) {
-            System.err.println("FlexCacheEntry: New entry expiration=" + m_dateExpires + " now=" + now + " remaining=" + (m_dateExpires - now));
-        }
+        setDateExpires(now - (daytime % timeoutMinutes) + timeoutMinutes);
     } 
     
     /**

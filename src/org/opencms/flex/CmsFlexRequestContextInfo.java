@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestContextInfo.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/06 09:13:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.flex;
 
+import org.opencms.file.CmsResource;
+
 /**
  * Contains information about the OpenCms request context required by the 
  * Flex implementation.<p>
@@ -41,7 +43,7 @@ package org.opencms.flex;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexRequestContextInfo {
      
@@ -55,7 +57,51 @@ public class CmsFlexRequestContextInfo {
      * Public constructor.<p>
      */
     public CmsFlexRequestContextInfo() {
-        // noop
+        // by default the expiration date is the max long value
+        m_dateExpires = CmsResource.DATE_EXPIRED_DEFAULT;
+    }
+    
+    /**
+     * Returns the "expires" date for this context.<p>
+     * 
+     * @return the "expires" date for this context
+     */    
+    public long getDateExpires() {
+        return m_dateExpires;
+    }
+    
+    /**
+     * Returns the "last modified" date for this context.<p>
+     * 
+     * @return the "last modified" date for this context
+     */
+    public long getDateLastModified() {
+        return m_dateLastModified;
+    }
+    
+    /**
+     * Merges this context info with the values from the other context info.<p>
+     *  
+     * @param other the context info to merge with
+     */
+    public void merge(CmsFlexRequestContextInfo other) {
+        updateDateLastModified(other.getDateLastModified());
+        updateDateExpires(other.getDateExpires());
+    }
+    
+    /**
+     * Updates the "expires" date for this context with the given value.<p>
+     * 
+     * @param dateExpires the value to update the "expires" date with
+     */
+    public void updateDateExpires(long dateExpires) {
+        if (dateExpires > System.currentTimeMillis()) {
+            if (dateExpires < m_dateExpires) {
+                m_dateExpires = dateExpires;
+            }
+        } else {
+            updateDateLastModified(dateExpires);
+        }
     }
     
     /**
@@ -75,41 +121,31 @@ public class CmsFlexRequestContextInfo {
     }
     
     /**
-     * Updates the "expires" date for this context with the given value.<p>
+     * Updates both the "last modified" and the "expires" date
+     * for this context with the given values.<p>
      * 
-     * @param dateExpires the value to update the "last modified" date with
+     * @param dateLastModified the value to update the "last modified" date with
+     * @param dateExpires the value to update the "expires" date with
      */
-    public void updateDateExpires(long dateExpires) {
-        if ((m_dateExpires > -1) && (dateExpires < m_dateExpires)) {
-            m_dateExpires = dateExpires;
-        }         
-    }
+    public void updateDates(long dateLastModified, long dateExpires) {
+        updateDateLastModified(dateLastModified);
+        updateDateExpires(dateExpires);
+    }    
     
     /**
-     * Returns the "last modified" date for this context.<p>
+     * Updates the "last modified" date for this context as well as the
+     * "expires" date with the values from a given resource.<p>
      * 
-     * @return the "last modified" date for this context
-     */
-    public long getDateLastModified() {
-        return m_dateLastModified;
-    }
-    
-    /**
-     * Returns the "expires" date for this context.<p>
+     * The "expires" date is the calculated from the given date values 
+     * of resource release and expiration and also the current time.<p>
      * 
-     * @return the "expires" date for this context
-     */    
-    public long getDateExpires() {
-        return m_dateExpires;
-    }
-    
-    /**
-     * Merges this context info with the values from the other context info.<p>
-     *  
-     * @param other the context info to merge with
+     * @param resource the resource to use for updating the context values
      */
-    public void merge(CmsFlexRequestContextInfo other) {
-        updateDateLastModified(other.getDateLastModified());
-        updateDateExpires(other.getDateExpires());
+    public void updateFromResource(CmsResource resource) {
+        // first set the last modification date
+        updateDateLastModified(resource.getDateLastModified());
+        // now use both release and expiration date from the resource to update the expires info
+        updateDateExpires(resource.getDateReleased());
+        updateDateExpires(resource.getDateExpired());
     }
 }

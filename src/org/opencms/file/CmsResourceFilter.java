@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2004/06/05 10:11:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/06 09:13:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,21 @@ package org.opencms.file;
 import org.opencms.main.I_CmsConstants;
 
 /**
+ * Provides filters for resource result sets obtained from requests to the VFS.<p>
+ * 
+ * Using the constant filters provided by this class
+ * you can control "special" behaviour 
+ * of access to the VFS. For example, in the "Offline" project 
+ * there can be deleted files, by using this filter you can control
+ * if deleted files should be included in a result set or not.<p> 
+ * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.4 $
+ * @since 5.3.5
  */
-public class CmsResourceFilter {
+public final class CmsResourceFilter {
     
     /** 
      * Filter to display all resources.<p>
@@ -49,10 +60,10 @@ public class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul>
      */
-    public static CmsResourceFilter ALL = new CmsResourceFilter(true, true, false);
+    public static CmsResourceFilter ALL = new CmsResourceFilter(true, true, true);
     
     /** 
-     * Default Filter to display resources.<p>
+     * Default filter to display resources for the online project.<p>
      * 
      * This filter uses the following rules:
      * <ul>
@@ -61,7 +72,7 @@ public class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static CmsResourceFilter DEFAULT = new CmsResourceFilter(false, false, false);
+    public static CmsResourceFilter DEFAULT = new CmsResourceFilter(false, false, true);
       
     /** 
      * Filter to display resources ignoring the release and expiration dates.<p>
@@ -73,7 +84,7 @@ public class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static CmsResourceFilter IGNORE_EXPIRATION = new CmsResourceFilter(false, true, false);
+    public static CmsResourceFilter IGNORE_EXPIRATION = new CmsResourceFilter(false, true, true);
 
     /** 
      * Filter to display only visible resources.<p>
@@ -85,23 +96,26 @@ public class CmsResourceFilter {
      * <li>Excludes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static CmsResourceFilter ONLY_VISIBLE = new CmsResourceFilter(true, true, true);
+    public static CmsResourceFilter ONLY_VISIBLE = new CmsResourceFilter(true, true, false);
+    
+    /** The cache id for this filter */
+    private String m_cacheId;
     
     /** Flag for filtering deleted resources */
     private boolean m_includeDeleted;
     
+    /** Flag to filter resources with the visible permission */
+    private boolean m_includeInvisible;
+    
     /** Flag for filtering resources before relase date and after expiration date */
     private boolean m_includeUnreleased;
     
-    /** Flag to filter resources with the visible permission */
-    private boolean m_includeVisiblePermission;    
     
     /**
-     * Creates a new CmsResourceFilter.<p>
+     * Hides the public contructor.<p>
      */
-    public CmsResourceFilter() {
-        
-        this (false, false, false);
+    private CmsResourceFilter() {
+        // noop
     }
     
     /**
@@ -109,19 +123,35 @@ public class CmsResourceFilter {
      * 
      * @param includeDeleted flag for filtering deleted resources
      * @param includeUnreleased flag for filtering resources before relase date and after expiration date
-     * @param includeVisiblePermission flag to filter resources with the visible permission
+     * @param includeInvisible flag to filter resources with the visible permission
      */
-    public CmsResourceFilter(boolean includeDeleted, boolean includeUnreleased, boolean includeVisiblePermission) {
+    private CmsResourceFilter(boolean includeDeleted, boolean includeUnreleased, boolean includeInvisible) {
         
         m_includeDeleted = includeDeleted;
         m_includeUnreleased = includeUnreleased;
-        m_includeVisiblePermission = includeVisiblePermission;       
+        m_includeInvisible = includeInvisible;
+        
+        m_cacheId = String.valueOf(
+            (m_includeDeleted?1:0) +
+            (m_includeUnreleased?2:0) +
+            (m_includeInvisible?4:0)
+        );
+    }
+    
+    /**
+     * Returns the unique cache id for this filter.<p>
+     * 
+     * @return the unique cache id for this filter
+     */
+    public String getCacheId() {
+        
+        return m_cacheId;
     }
 
     /**
      * Check if deleted resources should be filtered.<p>
      * 
-     * @return true if deleted resources should be included, false otherwiese.
+     * @return true if deleted resources should be included, false otherwiese
      */
     public boolean includeDeleted() {
         
@@ -129,23 +159,23 @@ public class CmsResourceFilter {
     }
     
     /**
+     * Check if the visible permission should be ignored for resources.<p>
+     * 
+     * @return true if the visible permission should be ignored for resources
+     */
+    public boolean includeInvisible() {
+        
+        return m_includeInvisible;
+    }
+    
+    /**
      * Check if resources before release date and after expireing date should be filtered.<p>
      * 
-     * @return true if resources before release date and after expireing date should be included, false otherwiese.
+     * @return true if resources before release date and after expireing date should be included, false otherwiese
      */
     public boolean includeUnreleased() {
         
         return m_includeUnreleased;
-    }
-    
-    /**
-     * Check if resources with the visible permission should be filtered.<p>
-     * 
-     * @return true if resources with the visible permission should be included, false otherwiese.
-     */
-    public boolean includeVisiblePermission() {
-        
-        return m_includeVisiblePermission;
     }
  
     /**

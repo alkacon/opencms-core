@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/04/05 11:05:21 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/06 09:13:22 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,21 +59,21 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
+    
+    /** Internal DEBUG flag. Set to 9 for maximum verbosity. */
+    private static final int DEBUG = 0;    
+    
+    /** The external target that will be included by the RequestDispatcher, needed if this is not a dispatcher to a cms resource */    
+    private String m_extTarget = null;
         
     /** The "real" RequestDispatcher, used when a true include (to the file system) is needed. */    
     private RequestDispatcher m_rd = null;
     
     /** The OpenCms VFS target that will be included by the RequestDispatcher. */    
     private String m_vfsTarget = null;    
-    
-    /** The external target that will be included by the RequestDispatcher, needed if this is not a dispatcher to a cms resource */    
-    private String m_extTarget = null;
-    
-    /** Internal DEBUG flag. Set to 9 for maximum verbosity. */
-    private static final int DEBUG = 0;    
 
     /** 
      * Creates a new instance of CmsFlexRequestDispatcher.<p>
@@ -110,25 +110,6 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         ServletResponse res
     ) throws ServletException, IOException {
         m_rd.forward(req, res);
-    }
-    
-    /**
-     * Include an external (non-OpenCms) file using the standard dispatcher.<p>
-     * 
-     * @param req the servlet request
-     * @param res the servlet response
-     * @throws ServletException in case something goes wrong
-     * @throws IOException in case something goes wrong
-     */
-    private void includeExternal(
-        ServletRequest req, 
-        ServletResponse res
-    ) throws ServletException, IOException {
-        // This is an external include, probably to a JSP page, dispatch with system dispatcher
-        if (DEBUG > 0) {
-            System.err.println("FlexDispatcher: Dispatching to external target " + m_extTarget);
-        }
-        m_rd.include(req, res);
     }
     
     /** 
@@ -224,7 +205,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         if (DEBUG > 0) {
                             System.err.println("FlexDispatcher: Loading file from cache for " + m_vfsTarget);
                         }
-                        controller.updateDateLastModified(entry.getDateLastModified());
+                        controller.updateDates(entry.getDateLastModified(), entry.getDateExpires());
                         entry.service(w_req, w_res);
                     } catch (CmsException e) {
                         Throwable t;
@@ -321,15 +302,17 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     if (w_res.getCmsCacheKey().m_timeout > 0) {
                         // cache entry has a timeout, set last modified to time of last creation
                         entry.setDateLastModifiedToPreviousTimeout(w_res.getCmsCacheKey().m_timeout);
-                        controller.updateDateLastModified(entry.getDateLastModified());
+                        entry.setDateExpiresToNextTimeout(w_res.getCmsCacheKey().m_timeout);
+                        controller.updateDates(entry.getDateLastModified(), entry.getDateExpires());
                     } else {
                         // no timeout, use last modified date from files in VFS
                         entry.setDateLastModified(controller.getDateLastModified());
+                        entry.setDateExpires(controller.getDateExpires());
                     }
                     cache.put(w_res.getCmsCacheKey(), entry, variation);                        
                 } else {
                     // result can not be cached, do not use "last modified" optimization
-                    controller.updateDateLastModified(-1);
+                    controller.updateDates(-1, controller.getDateExpires());
                 }
             }
             
@@ -352,5 +335,24 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             // pop req/res from controller stack
             controller.pop();               
         } 
+    }
+    
+    /**
+     * Include an external (non-OpenCms) file using the standard dispatcher.<p>
+     * 
+     * @param req the servlet request
+     * @param res the servlet response
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
+     */
+    private void includeExternal(
+        ServletRequest req, 
+        ServletResponse res
+    ) throws ServletException, IOException {
+        // This is an external include, probably to a JSP page, dispatch with system dispatcher
+        if (DEBUG > 0) {
+            System.err.println("FlexDispatcher: Dispatching to external target " + m_extTarget);
+        }
+        m_rd.include(req, res);
     }
 }
