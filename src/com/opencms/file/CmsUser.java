@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/09/18 07:24:48 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -76,9 +76,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
 
     /** The Id of this user */
     private CmsUUID m_id;
-
-    /** The ip address of the last login of this user */
-    private String m_lastip;
 
     /** The last login of this user */
     private long m_lastlogin;
@@ -123,7 +120,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_email = "";
         m_firstname = "";
         m_flags = I_CmsConstants.C_FLAG_ENABLED;
-        m_lastip = null;
         m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;            
         m_lastname = "";
         m_password = "";
@@ -184,9 +180,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_address = address;
         m_section = section;
         m_type = type;
-
-        // TODO: initialize this with parameter
-        m_lastip = null;
     }
     
     /**
@@ -367,15 +360,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public String getLastname() {
         return m_lastname;
-    }
-
-    /**
-     * Returns the ip address of the last login of this user.<p>
-     * 
-     * @return the ip address of the last login
-     */
-    public String getLastRemoteAddress() {
-        return m_lastip;
     }
 
     /**
@@ -575,15 +559,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setLastname(String lastname) {
         m_lastname = lastname;
-    }
-
-    /**
-     * Sets the ip address of the last login.<p>
-     * 
-     * @param address the ip address of the last login
-     */
-    public void setLastRemoteAddress(String address) {
-        m_lastip = address;
     }
 
     /**
