@@ -232,22 +232,23 @@ PACKAGE BODY opencmsAccess IS
     recResource cms_resources%ROWTYPE;
     vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
+    vProjectId cms_resources.project_id%TYPE;
   BEGIN
     IF pResourceId IS NULL THEN
       RETURN 0;
     END IF;
-    -- NOT accessProject => false
-    IF accessProject(pUserID, pProjectID) = 0 THEN
-      RETURN 0;
-    END IF;
     BEGIN
-      select resource_name into vNextPath
+      select resource_name, project_id into vNextPath, vProjectId
            from cms_resources
            where resource_id = pResourceID;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vNextPath := NULL;
-    END;
+    END;    
+    -- NOT accessProject => false
+    IF accessProject(pUserID, vProjectID) = 0 THEN
+      RETURN 0;
+    END IF;
     vNextResource := pResourceID;
     -- for resource and all super resources
     WHILE vNextPath IS NOT NULL LOOP
@@ -300,7 +301,7 @@ PACKAGE BODY opencmsAccess IS
         vNextPath := null;
         vNextResource := null;
         vLockedBy := null;
-    END;  
+    END;
 -- the following check is disabled because there are problems
     -- not locked by user => false
     IF vLockedBy != pUserId THEN
@@ -361,7 +362,7 @@ PACKAGE BODY opencmsAccess IS
     RETURN 0;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
-      RETURN 0;      
+      RETURN 0;
   END accessOther;
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for owner return boolean
@@ -384,7 +385,7 @@ PACKAGE BODY opencmsAccess IS
     RETURN 0;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
-      RETURN 0;  
+      RETURN 0;
   END accessOwner;
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for group return boolean
@@ -403,7 +404,7 @@ PACKAGE BODY opencmsAccess IS
     RETURN 0;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
-      RETURN 0;      
+      RETURN 0;
   END accessGroup;
 ---------------------------------------------------------------------------------------------------
 END;
