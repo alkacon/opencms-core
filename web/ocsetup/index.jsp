@@ -4,7 +4,7 @@ boolean isInitialized = false;
 boolean wizardEnabled = false;
 
 /* next page to be accessed */
-String nextPage = "database_connection.jsp";
+String nextPage = "content_encoding.jsp";
 	
 /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />

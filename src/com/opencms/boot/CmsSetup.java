@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2002/12/17 12:12:37 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/01/31 13:10:37 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -970,5 +970,21 @@ public class CmsSetup {
 
         return "";
     }    
+
+    /**
+     * Returns the defaultContentEncoding.
+     * @return String
+     */
+    public String getDefaultContentEncoding() {
+        return this.getExtProperty("defaultContentEncoding");
+    }
+
+    /**
+     * Sets the defaultContentEncoding.
+     * @param defaultContentEncoding The defaultContentEncoding to set
+     */
+    public void setDefaultContentEncoding(String defaultContentEncoding) {
+        this.setExtProperty("defaultContentEncoding", defaultContentEncoding);
+    }
 
 }
