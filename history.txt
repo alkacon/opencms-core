@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.33 Chusuk       - xx January 2001
+OpenCms 4.5.33 Chusuk       - 30 January 2001
 * Change current project to online project after publishing a temporary project.
 - Addind mechanism of redirect to the correct ressource based on the current project
   for showing preview of ressources from explorer-view.
