@@ -58,7 +58,7 @@ import java.lang.reflect.*;
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
-
+private static int C_NOT_LOCKED = -1;
 
 /**
  * gets the backoffice url of the module by using the cms object
@@ -743,15 +743,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			}
 
 		try {
-			id = (String) cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class}).invoke(entryObject, new Object[] {cms});
-		} catch (InvocationTargetException ite) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an InvocationTargetException!");
-			}
-		} catch (NoSuchMethodException nsm) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId method was not found!");
-			}
+      id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
 		} catch (Exception e) {
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
@@ -781,15 +773,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		}
 		//get the unique id belonging to an entry
 		try {
-			id = (String) cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class}).invoke(entryObject, new Object[] {cms});
-		} catch (InvocationTargetException ite) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an InvocationTargetException!");
-			}
-		} catch (NoSuchMethodException nsm) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId method was not found!");
-			}
+     id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
 		} catch (Exception e) {
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
@@ -801,13 +785,13 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			template.setData("uniqueid", id);
 
 		//set the lockstates for the actual entry
-		setLockstates(template, cdClass, entryObject);
+		setLockstates(cms, template, cdClass, entryObject, parameters);
 
 		//insert single table row in template
 		template.setData("entry", entry);
 
 		// processed row from template
-		singleRow = template.getProcessedDataValue("singlerow", this);
+		singleRow = template.getProcessedDataValue("singlerow", this, parameters);
 		allEntrys += (template.getDataValue("tablerowbegin")) + singleRow + (template.getDataValue("tablerowend"));
 	}
 
@@ -846,6 +830,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//get the class of the content definition
 	Class cdClass = getContentDefinitionClass();
+  int actUserId = cms.getRequestContext().currentUser().getId();
 
 	//get (stored) id parameter
 	String id = (String) parameters.get("id");
@@ -870,19 +855,20 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		//lock dialog, displays the title of the entry to be changed in lockstate
 		templateSelector = "lock";
 		Integer idInteger = null;
-		String ls = "";
+		int ls = -1;
 		try {
 			idInteger = Integer.valueOf(id);
 		} catch (Exception e) {
-			ls = "";
+			ls = -1;
 
 			//access content definition object specified by id through reflection
 			String title = "no title";
 			Object o = null;
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-				Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-				ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+       ls = ((A_CmsContentDefinition) o).getLockstate();
+				/*Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
+				ls = (int) getLockstateMethod.invoke(o, new Object[0]); */
 			} catch (Exception exc) {
 				exc.printStackTrace();
 			}
@@ -894,16 +880,14 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		if (idInteger != null) {
 			o = getContentDefinition(cms, cdClass, idInteger);
 			try {
-				Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-				ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+        ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-				Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-				ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+        ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -918,15 +902,17 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
 		//get the dialog from the langauge file and set it in the template
-		if (ls.equals("lock")) {
+		if (ls != C_NOT_LOCKED && ls != actUserId) {
+      // "lock"
 			template.setData("locktitle", lang.getLanguageValue("messagebox.title.unlock"));
 			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.unlock"));
 		}
-		if (ls.equals("nolock")) {
+		if (ls == C_NOT_LOCKED) {
+      // "nolock"
 			template.setData("locktitle", lang.getLanguageValue("messagebox.title.lock"));
 			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lock"));
 		}
-		if (ls.equals("lockuser")) {
+		if (ls == actUserId) {
 			template.setData("locktitle", lang.getLanguageValue("messagebox.title.lockchange"));
 			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lockchange"));
 		}
@@ -945,19 +931,18 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 		//access content definition constructor by reflection
 		Integer idInteger = null;
-		String ls = "";
+		int ls = C_NOT_LOCKED;
 		try {
 			idInteger = Integer.valueOf(id);
 		} catch (Exception e) {
-			ls = "";
+      ls = C_NOT_LOCKED;
 
 			//access content definition object specified by id through reflection
 			String title = "no title";
 			Object o = null;
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-				Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-				ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+        ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception exce) {
 				exce.printStackTrace();
 			}
@@ -968,23 +953,20 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		if (idInteger != null) {
 			o = getContentDefinition(cms, cdClass, idInteger);
 			try {
-				Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-				ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+        ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-				Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-				ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+        ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		try {
-			Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-			ls = (String) getLockstateMethod.invoke(o, new Object[0]);
+      ls = ((A_CmsContentDefinition) o).getLockstate();
 		} catch (Exception e) {
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
@@ -993,11 +975,10 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 		//show the possible cases of a lockstate in the template
 		//and change lockstate in content definition (and in DB or VFS)
-		if (ls.equals("lockuser")) {
-			//steal lock (userlock -> lock)
+		if (ls == actUserId) {
+			//steal lock (userlock -> nolock)
 			try {
-				Method setLockstateMethod = (Method) cdClass.getMethod("setLockstate", new Class[] {String.class});
-				setLockstateMethod.invoke(o, new Object[] {"lock"});
+        ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
 			} catch (Exception e) {
 				if (A_OpenCms.isLogging()) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
@@ -1006,8 +987,6 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			//write to DB
 			try {
         ((A_CmsContentDefinition) o).write(cms);   // reflection is not neccessary!
-				/*Method writeMethod = (Method) cdClass.getMethod("write", new Class[] {CmsObject.class});
-				writeMethod.invoke(o, new Object[] {cms});*/
 			} catch (Exception e) {
 				if (A_OpenCms.isLogging()) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
@@ -1015,11 +994,10 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			}
 			templateSelector = "done";
 		} else {
-			if (ls.equals("lock")) {
-				//unlock (lock -> nolock)
+			if ((ls != C_NOT_LOCKED) && (ls != actUserId)) {
+				//unlock (lock -> userlock)
 				try {
-					Method setLockstateMethod = (Method) cdClass.getMethod("setLockstate", new Class[] {String.class});
-					setLockstateMethod.invoke(o, new Object[] {"nolock"});
+          ((A_CmsContentDefinition) o).setLockstate(actUserId);
 				} catch (Exception e) {
 					if (A_OpenCms.isLogging()) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
@@ -1027,8 +1005,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				}
 				//write to DB
 				try {
-					Method writeMethod = (Method) cdClass.getMethod("write", new Class[] {CmsObject.class});
-					writeMethod.invoke(o, new Object[] {cms});
+          ((A_CmsContentDefinition) o).write(cms);
 				} catch (Exception e) {
 					if (A_OpenCms.isLogging()) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
@@ -1036,10 +1013,9 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				}
 				templateSelector = "done";
 			} else {
-				//lock (nolock -> lock)
+				//lock (nolock -> userlock)
 				try {
-					Method setLockstateMethod = (Method) cdClass.getMethod("setLockstate", new Class[] {String.class});
-					setLockstateMethod.invoke(o, new Object[] {"lock"});
+          ((A_CmsContentDefinition) o).setLockstate(actUserId);
 				} catch (Exception e) {
 					if (A_OpenCms.isLogging()) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
@@ -1047,8 +1023,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				}
 				//write to DB/VFS
 				try {
-					Method writeMethod = (Method) cdClass.getMethod("write", new Class[] {CmsObject.class});
-					writeMethod.invoke(o, new Object[] {cms});
+          ((A_CmsContentDefinition) o).write(cms);
 				} catch (Exception e) {
 					if (A_OpenCms.isLogging()) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
@@ -1166,12 +1141,15 @@ public abstract String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlCont
  *set the lockstates in the list output
  */
 
-private void setLockstates(CmsXmlWpTemplateFile template, Class cdClass, Object entryObject) {
+private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class cdClass, Object entryObject, Hashtable parameters) {
 
 	//init lock state vars
 	String la = "false";
 	Object laObject = new Object();
-	String ls = "";
+	int ls = -1;
+  String lockString = null;
+  int actUserId = cms.getRequestContext().currentUser().getId();
+  String isLockedBy = null;
 
 	//is the content definition object (i.e. the table entry) lockable?
 	try {
@@ -1209,19 +1187,7 @@ private void setLockstates(CmsXmlWpTemplateFile template, Class cdClass, Object 
 		//...get the lockstate of an entry
 		try {
 			//get the method lockstate
-			Method lsMethod = cdClass.getMethod("getLockstate", new Class[] {});
-			//get returned object
-			Object lsObject = lsMethod.invoke(entryObject, null);
-			//caste the object to string
-			ls = (String) lsObject;
-		} catch (InvocationTargetException ite) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an Invocation target exception!");
-			}
-		} catch (NoSuchMethodException nsm) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Requested method getLockstate was not found!");
-			}
+      ls = ((A_CmsContentDefinition) entryObject).getLockstate();
 		} catch (Exception e) {
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception!");
@@ -1229,18 +1195,26 @@ private void setLockstates(CmsXmlWpTemplateFile template, Class cdClass, Object 
 		}
 		try {
 			//show the possible cases of a lockstate in the template
-			if (ls.equals("lockuser")) {
-				ls = template.getDataValue("lockuser");
-				template.setData("lockedby", ls);
+			if (ls == actUserId) {
+        // lockuser
+        isLockedBy = cms.getRequestContext().currentUser().getName();
+        template.setData("isLockedBy", isLockedBy);   // set current users name in the template
+				lockString = template.getProcessedDataValue("lockuser", this, parameters);
+				template.setData("lockedby", lockString);
 				template.setData("backofficecontextmenue", "backofficelockuser");
 			} else {
-				if (ls.equals("lock")) {
-					ls = template.getDataValue("lock");
-					template.setData("lockedby", ls);
+				if (ls != C_NOT_LOCKED) {
+          // lock
+          // set the name of the user who locked the file in the template ...
+          isLockedBy = cms.readUser(ls).getName();
+          template.setData("isLockedBy", isLockedBy);
+					lockString = template.getProcessedDataValue("lock", this, parameters);
+					template.setData("lockedby", lockString);
 					template.setData("backofficecontextmenue", "backofficelock");
 				} else {
-					ls = template.getDataValue("nolock");
-					template.setData("lockedby", ls);
+          // nolock
+					lockString = template.getProcessedDataValue("nolock", this, parameters);
+					template.setData("lockedby", lockString);
 					template.setData("backofficecontextmenue", "backofficenolock");
 				}
 			}

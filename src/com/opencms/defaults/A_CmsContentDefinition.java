@@ -111,8 +111,8 @@ public static Vector getFilterMethods(CmsObject cms) {
  * the isLockable method with true.
  * @returns a String with the lockstate
  */
-public String getLockstate() {
-	return null;
+public int getLockstate() {
+	return -1;
 }
 /**
  * gets the unique Id of a content definition instance
@@ -142,7 +142,7 @@ public static boolean isLockable() {
  * if you have overwritten the isLockable method with true.
  * @sets the lockstate for the actual entry
  */
-public void setLockstate(String lockstate) {
+public void setLockstate(int lockstate) {
 
 }
 /**
