@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.32 Bela Tegeuse - ?? July 2001
+OpenCms 4.3.32 Bela Tegeuse - 23 July 2001
 ! Added a ecmascript-engine to the OpenCms-shell. You can start it with like this:
   cmsshell -mode=ecmascript
 ! It is now possible to switch off the lock dialogs in the user start settings.
