@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/23 11:53:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -129,7 +129,15 @@ public class CmsTree extends CmsWorkplace {
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(locale);
         
         retValue.append("function initTreeResources() {\n");
-        retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
+        retValue.append("\tinitResources(\"");
+        retValue.append(encoding);
+        retValue.append("\", \"");
+        retValue.append(C_PATH_WORKPLACE);
+        retValue.append("\", \"");
+        retValue.append(skinUri);
+        retValue.append("\", \"");
+        retValue.append(servletUrl);
+        retValue.append("\");\n");
         
         // get all available resource types
         List allResTypes = OpenCms.getResourceManager().getResourceTypes();
@@ -138,7 +146,6 @@ public class CmsTree extends CmsWorkplace {
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             int curTypeId = type.getTypeId();
             String curTypeName = type.getTypeName();
-            String curTypeLocalName = messages.key("fileicon."+curTypeName);
             // get the settings for the resource type
             CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(curTypeName);
             // determine if this resource type is editable for the current user
@@ -155,8 +162,15 @@ public class CmsTree extends CmsWorkplace {
             }
             if (permissions.getPermissionString().indexOf("+w") != -1) {
                 // user is allowed to write this resource type
-                retValue.append("\taddResourceType(");
-                retValue.append(curTypeId + ", \"" + curTypeName + "\",\t\"" + curTypeLocalName + "\",\t\"filetypes/" + curTypeName + ".gif\");\n");
+                retValue.append("\taddResourceType(");               
+                retValue.append(curTypeId);
+                retValue.append(", \"");
+                retValue.append(curTypeName);
+                retValue.append("\",\t\"");
+                retValue.append(messages.key(typeSettings.getKey()));
+                retValue.append("\",\t\"filetypes/");
+                retValue.append(typeSettings.getIcon());
+                retValue.append("\");\n");
             }
         }       
 
