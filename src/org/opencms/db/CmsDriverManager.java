@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/01/31 15:01:09 $
- * Version: $Revision: 1.471 $
+ * Date   : $Date: 2005/02/01 13:51:22 $
+ * Version: $Revision: 1.472 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.471 $ $Date: 2005/01/31 15:01:09 $
+ * @version $Revision: 1.472 $ $Date: 2005/02/01 13:51:22 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7600,9 +7600,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @throws CmsException if operation was not succesful
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
-
+       
         // prevent the admin to be set disabled!
-        if (isAdmin(dbc)) {
+        if (user.getName().equals(OpenCms.getDefaultUsers().getUserAdmin())) {
             user.setEnabled();
         }
         m_userDriver.writeUser(dbc, user);
