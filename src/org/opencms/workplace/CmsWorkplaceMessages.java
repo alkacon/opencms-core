@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/07/09 16:40:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
-
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +49,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -62,9 +60,6 @@ public class CmsWorkplaceMessages {
     
     /** Localized message access object for the default workplace. */
     private CmsMessages m_messages;
-    
-    /** CmsObject provided with the constructor. */
-    private CmsObject m_cms;
     
     /** Locale for the selected language. */
     private Locale m_locale;
@@ -88,12 +83,10 @@ public class CmsWorkplaceMessages {
     /**
      * Constructor for creating a new messages object
      * initialized with the provided locale.<p>
-     *
-     * @param cms for accessing system resources
+     * 
      * @param locale the locale to initialize 
      */
-    public CmsWorkplaceMessages(CmsObject cms, Locale locale) {
-        m_cms = cms;
+    public CmsWorkplaceMessages(Locale locale) {
         m_locale = locale;
         m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);   
         // initialize the static encodings map if required
@@ -122,7 +115,7 @@ public class CmsWorkplaceMessages {
                 System.err.println("CmsWorkplaceMessages(): collecting static module messages");
             }
             synchronized (this) {    
-                m_moduleMessages = collectModuleMessages(m_cms, m_locale);
+                m_moduleMessages = collectModuleMessages(m_locale);
                 m_allModuleMessages.put(m_locale, m_moduleMessages);
             }            
         } else {
@@ -137,13 +130,13 @@ public class CmsWorkplaceMessages {
      * "my.module.name.workplace" and be located in the classpath so that the resource loader
      * can find it.<p>
      * 
-     * @param cms for accessing system resources
      * @param locale the selected locale
+     * 
      * @return an initialized set of module messages
      */
-    private synchronized Set collectModuleMessages(CmsObject cms, Locale locale) {
+    private synchronized Set collectModuleMessages(Locale locale) {
         HashSet bundles = new HashSet();
-        Enumeration en = cms.getRegistry().getModuleNames();
+        Enumeration en = OpenCms.getRegistry().getModuleNames();
         if (en != null) {
             while (en.hasMoreElements()) {
                 String bundleName = ((String)en.nextElement()) + ".workplace";

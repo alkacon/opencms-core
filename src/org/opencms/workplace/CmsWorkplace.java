@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2004/07/09 16:40:26 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  * 
  * @since 5.1
  */
@@ -268,7 +268,7 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
   
         // initialize messages and also store them in settings
-        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, settings.getUserSettings().getLocale());
+        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(settings.getUserSettings().getLocale());
         settings.setMessages(messages);    
                         
         // switch to users preferred site      
