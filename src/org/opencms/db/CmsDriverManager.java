@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/03 15:12:00 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2003/08/04 08:41:28 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.128 $ $Date: 2003/08/03 15:12:00 $
+ * @version $Revision: 1.129 $ $Date: 2003/08/04 08:41:28 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4888,7 +4888,7 @@ public class CmsDriverManager extends Object {
         CmsResource cmsFile = readFileHeader(context, filename);
 
         // check if the user has read access
-        checkPermissions(context, cmsFile, I_CmsConstants.C_WRITE_ACCESS);
+        checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
 
         // access to all subfolders was granted - return the file-history.
         return m_backupDriver.readAllBackupFileHeaders(cmsFile.getId());
