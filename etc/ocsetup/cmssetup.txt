@@ -38,7 +38,7 @@ addFileExtension jpg image
 addFileExtension gif image
 addFileExtension js script
 setCurrentProject 2
-importResources "workplace/"
+importResources "ocsetup/vfs"
 publishProject "2"
 writeExportPath "export/"
 exit

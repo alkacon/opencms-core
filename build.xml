@@ -16,6 +16,12 @@
     <property name="build.lib"                  value="${build.webinf}/lib"/>
     <property name="build.oclib"                value="${build.webinf}/oclib"/>
 
+    <property name="db.url"                     value="jdbc:mysql://localhost:3306/opencms"/>
+    <property name="db.setupurl"                value="jdbc:mysql://localhost:3306/mysql"/>
+    <property name="db.user"                    value="root"/>
+    <property name="db.password"                value=""/>
+    <property name="db.driver"                  value="org.gjt.mm.mysql.Driver"/>
+
 
     <target name="prepare">
         <mkdir dir="${build.classes}"/>
@@ -89,6 +95,37 @@
             warfile="${build.home}/${app.name}.war"
             webxml="${build.webinf}/web.xml"
             basedir="${build.web}"
+            />
+    </target>
+    
+    <target name="setup" depends="copy">
+        <sql 
+            classpath="${build.inputlib.mysql}"
+            driver="${db.driver}"
+            url="${db.setupurl}"
+            userid="${db.user}"
+            password="${db.password}"
+            autocommit="true"
+            onerror="continue"
+            >drop database opencms</sql>
+        <sql 
+            classpath="${build.inputlib.mysql}"
+            driver="${db.driver}"
+            url="${db.setupurl}"
+            userid="${db.user}"
+            password="${db.password}"
+            autocommit="true"
+            onerror="continue"
+            >create database opencms</sql>
+        <sql 
+            classpath="${build.inputlib.mysql}"
+            driver="${db.driver}"
+            url="${db.url}"
+            userid="${db.user}"
+            password="${db.password}"
+            autocommit="true"
+            onerror="continue"
+            src="${build.webinf}/ocsetup/mysql.sql"
             />
     </target>
     
