@@ -37,6 +37,7 @@ createPropertydefinition Keywords script 0
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
+addFileExtension class binary
 addFileExtension txt plain
 addFileExtension html plain
 addFileExtension htm plain
