@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/28 11:07:27 $
- * Version: $Revision: 1.431 $
+ * Date   : $Date: 2004/10/28 12:58:28 $
+ * Version: $Revision: 1.432 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.431 $ $Date: 2004/10/28 11:07:27 $
+ * @version $Revision: 1.432 $ $Date: 2004/10/28 12:58:28 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5489,63 +5489,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         return returnValue;
     }
 
-
-    /**
-     * Reads all sub-resources (including deleted resources) of a specified folder 
-     * by traversing the sub-tree in a depth first search.<p>
-     * 
-     * The specified folder is not included in the result list.
-     * 
-     * @param context the current request context
-     * @param resourcename the resource name
-     * @param resourceType &lt;0 if files and folders should be read, 0 if only folders should be read, &gt;0 if only files should be read
-     * @return a list with all sub-resources
-     * @throws CmsException if something goes wrong
-     */
-    public List readAllSubResourcesInDfs(CmsRequestContext context, String resourcename, int resourceType) throws CmsException {
-        List result = new ArrayList();
-        Vector unvisited = new Vector();
-        CmsFolder currentFolder = null;
-        Enumeration unvisitedFolders = null;
-        boolean isFirst = true;
-
-        currentFolder = readFolder(context, null, resourcename, CmsResourceFilter.ALL);
-        unvisited.add(currentFolder);
-
-        while (unvisited.size() > 0) {
-            // visit all unvisited folders
-            unvisitedFolders = unvisited.elements();
-            while (unvisitedFolders.hasMoreElements()) {
-                currentFolder = (CmsFolder)unvisitedFolders.nextElement();
-
-                // remove the current folder from the list of unvisited folders
-                unvisited.remove(currentFolder);
-
-                if (!isFirst && resourceType <= CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
-                    // add the current folder to the result list
-                    result.add(currentFolder);
-                }
-
-                if (resourceType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
-                    // add all sub-files in the current folder to the result list
-                    result.addAll(readChildResources(context, currentFolder, CmsResourceFilter.ALL, false, true));
-                }
-
-                // add all sub-folders in the current folder to the list of unvisited folders
-                // to visit them in the next iteration                        
-                unvisited.addAll(readChildResources(context, currentFolder, CmsResourceFilter.ALL, true, false));
-
-                if (isFirst) {
-                    isFirst = false;
-                }
-            }
-        }
-
-        // TODO the calculated resource list should be cached
-
-        return result;
-    }
-
     /**
      * Reads a file from the history of the Cms.<p>
      * 
@@ -5633,7 +5576,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 currentResource = readResource(context, null, currentProjectResource, CmsResourceFilter.ALL);
 
                 if (currentResource.isFolder()) {
-                    resources.addAll(readAllSubResourcesInDfs(context, currentProjectResource, resourceType));
+                    resources.addAll(readResources(context, currentResource, CmsResourceFilter.DEFAULT, true));
                 } else {
                     resources.add(currentResource);
                 }
@@ -6811,10 +6754,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void updateExportPoints(I_CmsReport report) {
 
         try {
-            // export points are always written with the "export" user permissions
-            CmsRequestContext context = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport()).getRequestContext();
-            context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
-
             // read the export points and return immediately if there are no export points at all         
             Set exportPoints = new HashSet();
             exportPoints.addAll(OpenCms.getExportPoints());
@@ -6845,8 +6784,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
 
                 try {
-                    List resources = readAllSubResourcesInDfs(context, currentExportPoint, -1);
-                    updateContextDates(context, resources);
+                    boolean readTree = true;
+                    CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
+                    List resources = m_vfsDriver.readResourceTree(
+                        I_CmsConstants.C_PROJECT_ONLINE_ID, 
+                        currentExportPoint, 
+                        filter.getType(), 
+                        filter.getState(), 
+                        filter.getModifiedAfter(), 
+                        filter.getModifiedBefore(),
+                        (readTree ? I_CmsConstants.C_READMODE_INCLUDE_TREE : I_CmsConstants.C_READMODE_EXCLUDE_TREE)
+                        | (filter.excludeType() ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0) | (filter.excludeState() ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0)
+                    );
 
                     Iterator j = resources.iterator();
                     while (j.hasNext()) {
@@ -6873,7 +6822,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     }
                 }
             }
-        } catch (CmsException e) {
+        } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error updating export points", e);
             }
