@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/13 14:02:59 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.22 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.23 $ $Date: 2003/01/13 14:02:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -823,17 +823,28 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
         // get all users
         Vector users = cms.getUsers();
         int retValue = -1;
+		String firsname;
+		String lastname;
+		String username;
+		String nameToShow;
 
         // fill the names and values
         for(int z = 0;z < users.size();z++) {
-            String name = ((CmsUser)users.elementAt(z)).getName();
-            names.addElement(name);
-            values.addElement(name);
+			firsname = ((CmsUser)users.elementAt(z)).getFirstname();
+			//Changed by Le (comundus GmbH)
+			lastname = ((CmsUser)users.elementAt(z)).getLastname();
+            username = ((CmsUser)users.elementAt(z)).getName();
+			nameToShow = username + "   -   " + firsname + " " + lastname;
+			//***
+            names.addElement(nameToShow);
+            values.addElement(username);
         }
         if(users.size() > 0) {
             retValue = 0; // preselect first user
         }
         return new Integer(retValue);
+
+
     }
 
     /**
