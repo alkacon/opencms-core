@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/19 13:30:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/05/20 10:45:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/19 13:30:07 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/20 10:45:32 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -96,7 +95,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             }
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, null);
         }
@@ -121,36 +120,25 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      */
     public byte[] readFileContent(int projectId, int fileId) throws CmsException {
         //System.out.println("PL/SQL: readFileContent");
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         ResultSet res = null;
         byte[] returnValue = null;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        String usedPool;
-        String usedStatement;
-        if (projectId == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-
         try {
             // read fileContent from database
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_FILE_READ" + usedStatement));
-            statement.setInt(1, fileId);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_FILE_READ");
+            stmt.setInt(1, fileId);
+            res = stmt.executeQuery();
             if (res.next()) {
                 returnValue = m_SqlQueries.getBytes(res, m_SqlQueries.get("C_RESOURCES_FILE_CONTENT"));
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".readFileContent/1]" + fileId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + ".readFileContent/2] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return returnValue;
@@ -211,10 +199,10 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 nextStatement.close();
                 conn.setAutoCommit(true);
             } catch (IOException e) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
             m_SqlQueries.closeAll(null, nextStatement, null);

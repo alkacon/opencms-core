@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 10:17:18 $
-* Version: $Revision: 1.284 $
+* Date   : $Date: 2003/05/20 10:45:32 $
+* Version: $Revision: 1.285 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.284 $ $Date: 2003/05/20 10:17:18 $ *
+ * @version $Revision: 1.285 $ $Date: 2003/05/20 10:45:32 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -1452,7 +1452,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Get the template task id fo a given taskname.
      *
-     * @param taskName Name of the TAsk
+     * @param taskName Name of the Task
      *
      * @return id from the task template
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/19 13:30:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/05/20 10:45:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/05/19 13:30:07 $
+ * @version $Revision: 1.8 $ $Date: 2003/05/20 10:45:32 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1827,7 +1827,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -1875,7 +1875,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -1923,7 +1923,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -1972,7 +1972,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2018,7 +2018,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2068,7 +2068,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2113,7 +2113,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2170,7 +2170,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (SQLException e) {
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2209,7 +2209,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
             e.printStackTrace();
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2251,7 +2251,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
             // just throw this exception
             throw exc;
         } catch (Exception exc) {
-            throw new CmsException("readFolder " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2297,7 +2297,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
             // just throw this exception
             throw exc;
         } catch (Exception exc) {
-            throw new CmsException("readFolder " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2340,7 +2340,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
             // just throw this exception
             throw exc;
         } catch (Exception exc) {
-            throw new CmsException("readFolder " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -2406,7 +2406,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         } catch (SQLException e) {
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }

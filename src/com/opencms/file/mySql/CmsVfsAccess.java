@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/20 10:17:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/20 10:45:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Encoder;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/20 10:17:18 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/20 10:45:32 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -78,26 +77,27 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
      */
     protected void clearFilesTable() throws CmsException {
-        PreparedStatement statementSearch = null;
-        PreparedStatement statementDestroy = null;
+        PreparedStatement stmtSearch = null;
+        PreparedStatement stmtDestroy = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statementSearch = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_GET_LOST_ID"));
-            res = statementSearch.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmtSearch = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_GET_LOST_ID");
+            res = stmtSearch.executeQuery();
             // delete the lost fileId's
-            statementDestroy = con.prepareStatement(m_SqlQueries.get("C_FILE_DELETE"));
+            stmtDestroy = m_SqlQueries.getPreparedStatement(conn, "C_FILE_DELETE");
             while (res.next()) {
-                statementDestroy.setInt(1, res.getInt(m_SqlQueries.get("C_FILE_ID")));
-                statementDestroy.executeUpdate();
-                statementDestroy.clearParameters();
+                stmtDestroy.setInt(1, res.getInt(m_SqlQueries.get("C_FILE_ID")));
+                stmtDestroy.executeUpdate();
+                stmtDestroy.clearParameters();
             }
         } catch (SQLException e) {
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statementSearch, res);
+            m_SqlQueries.closeAll(null, stmtDestroy, null);
+            m_SqlQueries.closeAll(conn, stmtSearch, res);           
         }
     }
 
