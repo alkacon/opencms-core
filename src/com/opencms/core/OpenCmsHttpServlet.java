@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/11/23 13:22:49 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/12/06 09:10:57 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2001/11/23 13:22:49 $
+ * @version $Revision: 1.21 $ $Date: 2001/12/06 09:10:57 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -609,18 +609,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         // Initialize the logging
         A_OpenCms.initializeServletLogging(m_configurations);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Server Info: " + config.getServletContext().getServerInfo());
-            String jdkinfo = System.getProperty("java.vm.name") + " ";
-            jdkinfo += System.getProperty("java.vm.version") + " ";
-            jdkinfo += System.getProperty("java.vm.info") + " ";
-            jdkinfo += System.getProperty("java.vm.vendor") + " ";
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] JDK Info: " + jdkinfo);
-
-            String osinfo = System.getProperty("os.name") + " ";
-            osinfo += System.getProperty("os.version") + " ";
-            osinfo += System.getProperty("os.arch") + " ";
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
         }
 
         // initialize the redirect information

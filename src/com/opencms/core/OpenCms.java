@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/11/16 09:36:34 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2001/12/06 09:10:57 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.68 $ $Date: 2001/11/16 09:36:34 $
+ * @version $Revision: 1.69 $ $Date: 2001/12/06 09:10:57 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -161,6 +161,19 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     OpenCms(Configurations conf) throws Exception {
         // invoke the ResourceBroker via the initalizer
         try {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
+                String jdkinfo = System.getProperty("java.vm.name") + " ";
+                jdkinfo += System.getProperty("java.vm.version") + " ";
+                jdkinfo += System.getProperty("java.vm.info") + " ";
+                jdkinfo += System.getProperty("java.vm.vendor") + " ";
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] JDK Info: " + jdkinfo);
+
+                String osinfo = System.getProperty("os.name") + " ";
+                osinfo += System.getProperty("os.version") + " ";
+                osinfo += System.getProperty("os.arch") + " ";
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
+            }
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
             }
