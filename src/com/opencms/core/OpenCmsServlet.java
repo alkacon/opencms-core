@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.1 $ $Date: 2000/01/06 11:52:08 $  
+* @version $Revision: 1.2 $ $Date: 2000/01/11 11:26:51 $  
 * 
 */
 
@@ -144,6 +144,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             out.println("<br>"+cms.getRequestContext().currentUser());
             CmsFile file=m_opencms.initResource(cms);
             out.println("<br><br><h2>"+new String(file.getContents())+"</h2>");
+            out.println("<br><br>");
         } catch (CmsException e) {
             out.println("<br>"+e.toString());
             errorHandling(req,res,e);

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/01/10 18:15:04 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/11 11:26:51 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -671,7 +671,7 @@ import com.opencms.core.*;
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
-                        // check if this resource is marked as deleted
+                         // check if this resource is marked as deleted
                         if (file.getState() == C_STATE_DELETED) {
                             throw new CmsException(CmsException.C_NOT_FOUND);  
                         }
@@ -788,7 +788,7 @@ import com.opencms.core.*;
                 // check if the file content for this file is already existing in the
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
-                if (file.getState() != C_STATE_CHANGED) {
+                if (file.getState() == C_STATE_UNCHANGED) {
                     // read file content form the online project
                    synchronized (m_statementFileRead) {
                         m_statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
@@ -965,7 +965,7 @@ import com.opencms.core.*;
             } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-             return readFolder(project,foldername);
+         return readFolder(project,foldername);
      }
      
      /**
@@ -1023,6 +1023,10 @@ import com.opencms.core.*;
                                                res.getLong(C_DATE_CREATED),
                                                res.getLong(C_DATE_LASTMODIFIED)
                                                );
+                        // check if this resource is marked as deleted
+                        if (folder.getState() == C_STATE_DELETED) {
+                            throw new CmsException(CmsException.C_NOT_FOUND);  
+                        }
                    }else {
                  throw new CmsException(CmsException.C_NOT_FOUND);  
                }
@@ -1061,7 +1065,7 @@ import com.opencms.core.*;
                 //ACCESS_FLAGS
                 m_statementResourceUpdate.setInt(5,folder.getAccessFlags());
                 //STATE
-                m_statementResourceUpdate.setInt(6,folder.getState());
+                m_statementResourceUpdate.setInt(6,C_STATE_CHANGED);
                 //LOCKED_BY
                 m_statementResourceUpdate.setInt(7,folder.isLockedBy());
                 //LAUNCHER_TYPE
@@ -1098,6 +1102,28 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
          throws CmsException {
+         
+         // the current implementation only deletes empty folders
+         // check if the folder has any files in it
+         Vector files=getFilesInFolder(project,foldername);
+         if (files.size()==0) {
+             // check if the folder has any folders in it
+             Vector folders=getSubFolders(project,foldername);
+             if (folders.size()==0) {
+                 //this folder is empty, delete it
+                 try { 
+                 synchronized ( m_statementResourceRemove) {
+                   // mark the folder as deleted       
+                    m_statementResourceRemove.setInt(1,C_STATE_DELETED);
+                    m_statementResourceRemove.setString(2,absoluteName(foldername));
+                    m_statementResourceRemove.setInt(3,project.getId());
+                    m_statementResourceRemove.executeUpdate();               
+                  }
+                } catch (SQLException e){
+                 throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                }        
+             }
+         }
      }
 	
 	/**
@@ -1137,7 +1163,10 @@ import com.opencms.core.*;
                                                res.getLong(C_DATE_CREATED),
                                                res.getLong(C_DATE_LASTMODIFIED)
                                                );
-               folders.addElement(folder);
+               // check if this folder is marked as deleted
+               if (folder.getState() != C_STATE_DELETED) {
+                folders.addElement(folder);
+               }
              }
 
          } catch (SQLException e){
@@ -1187,7 +1216,10 @@ import com.opencms.core.*;
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
+               // check if this file is marked as deleted
+               if (file.getState() != C_STATE_DELETED) {
                      files.addElement(file);
+               }
              }
 
          } catch (SQLException e){

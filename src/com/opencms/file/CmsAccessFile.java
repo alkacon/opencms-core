@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/10 18:15:04 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/11 11:26:51 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -344,6 +344,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 */	
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
          throws CmsException {
+         getFilesystem(foldername).deleteFolder(project,foldername,force);
      }
 	
 	/**

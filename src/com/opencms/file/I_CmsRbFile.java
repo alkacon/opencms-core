@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/10 18:15:04 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/11 11:26:51 $
  */
  interface I_CmsRbFile {
 	
@@ -545,6 +545,7 @@ import com.opencms.core.*;
 	 * 
 	 * @param user The user who wants to lock the file.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param resource The complete path to the resource to lock.
 	 * @param force If force is true, a existing locking will be oberwritten.
 	 * 
@@ -552,8 +553,10 @@ import com.opencms.core.*;
 	 * It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void lockResource(A_CmsUser user,A_CmsProject project, String resource,
-                         boolean force)
+	public void lockResource(A_CmsUser user,
+                             A_CmsProject project, 
+                             A_CmsProject onlineProject,String resource,
+                             boolean force)
 		throws CmsException;
 
     
@@ -574,12 +577,17 @@ import com.opencms.core.*;
 	 * <li>the resource is not locked by another user</li>
 	 * </ul>
 	 * 
+	 * @param user The user who wants to lock the file.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param resource The complete path to the resource to lock.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void unlockResource(A_CmsProject project, String resource)
+	public void unlockResource(A_CmsUser user,
+                               A_CmsProject project,
+                               A_CmsProject onlineProject,
+                               String resource)
 		throws CmsException;
 
     
@@ -598,13 +606,13 @@ import com.opencms.core.*;
      *	 
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
-	 * @param resource The name of the resource.
+	 * @param resourcename The name of the resource.
 	 * 
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public void copyResourceToProject(A_CmsProject project,
                                       A_CmsProject onlineProject,
-                                      String resource)
+                                      String resourcename)
         throws CmsException;
     
     /**

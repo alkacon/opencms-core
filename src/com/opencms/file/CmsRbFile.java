@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/10 18:15:04 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/11 11:26:51 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -507,7 +507,7 @@ import com.opencms.core.*;
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
 	public void chmod(A_CmsProject project,
-                      A_CmsProject OnlineProject,
+                      A_CmsProject onlineProject,
                       String filename, int flags)
 		throws CmsException {
         CmsResource resource = null;
@@ -523,9 +523,9 @@ import com.opencms.core.*;
         resource.setAccessFlags(flags);
         //update file
         if (filename.endsWith("/")) {   
-            //writeFolder(project,(CmsFolder)resource);
+            writeFolder(project,(CmsFolder)resource);
         } else {
-            //writeFileHeader(project,(CmsFile)resource);
+            writeFileHeader(project,onlineProject,(CmsFile)resource);
         }
      }
 	
@@ -559,6 +559,7 @@ import com.opencms.core.*;
 		throws CmsException {
          CmsResource resource = null;
         
+         
         // check if its a file or a folder
         if (filename.endsWith("/")) {          
             //read the folder
@@ -572,7 +573,7 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            //writeFileHeader(project,(CmsFile)resource);
+           writeFileHeader(project,onlineProject,(CmsFile)resource);
         }
      }
 
@@ -619,10 +620,9 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            //writeFileHeader(project,(CmsFile)resource);
+            writeFileHeader(project,onlineProject,(CmsFile)resource);
         }
      }
-
 	
 	/**
 	 * Locks a resource.<br>
@@ -644,6 +644,7 @@ import com.opencms.core.*;
 	 * 
 	 * @param user The user who wants to lock the file.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param resource The complete path to the resource to lock.
 	 * @param force If force is true, a existing locking will be oberwritten.
 	 * 
@@ -651,7 +652,10 @@ import com.opencms.core.*;
 	 * It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void lockResource(A_CmsUser user,A_CmsProject project, String resourcename, boolean force)
+	public void lockResource(A_CmsUser user,
+                             A_CmsProject project,
+                             A_CmsProject onlineProject,
+                             String resourcename, boolean force)
 		throws CmsException{
         CmsResource resource = null;
         
@@ -675,7 +679,7 @@ import com.opencms.core.*;
         if (resourcename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            //writeFileHeader(project,(CmsFile)resource);
+            writeFileHeader(project,onlineProject,(CmsFile)resource);
         }
      }
 	
@@ -697,15 +701,48 @@ import com.opencms.core.*;
 	 * <li>the resource is not locked by another user</li>
 	 * </ul>
 	 * 
+	 * @param user The user who wants to lock the file.
 	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource to lock.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resourcename The complete path to the resource to lock.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void unlockResource(A_CmsProject project, String resource)
+	public void unlockResource(A_CmsUser user,
+                               A_CmsProject project,
+                               A_CmsProject onlineProject,
+                               String resourcename)
         throws CmsException {
-        // to be implemented
-    }
+       
+        CmsResource resource = null;
+
+        // check if its a file or a folder
+        if (resourcename.endsWith("/")) {          
+            //read the folder
+            resource = readFolder(project,resourcename);
+        } else {
+            resource = (CmsFile)readFileHeader(project,resourcename);
+        }
+        // check if the resource is already locked, otherwise do nothing
+        if (resource.isLocked()){
+           
+            // check if the resource is locked by the actual user
+            if (resource.isLockedBy()==user.getId()) {
+                
+                // unlock the resouece
+                resource.setLocked(C_UNKNOWN_ID);
+                //update resource
+                if (resourcename.endsWith("/")) {   
+                    writeFolder(project,(CmsFolder)resource);
+                } else {
+                    writeFileHeader(project,onlineProject,(CmsFile)resource);
+                }
+            } else {
+                 throw new CmsException(CmsException.C_NO_ACCESS); 
+            }
+        }
+      }
+ 
     
       /**
      * Copies a resource from the online project to a new, specified project.<br>
