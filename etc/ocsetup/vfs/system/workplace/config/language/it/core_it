@@ -370,6 +370,8 @@
                 <othertype>Altro Tipo</othertype>
                 <page>Pagina</page>
                 <plain>Testo</plain>
+                <jsp>JSP</jsp>
+                <velocity>Template Velocity</velocity>
                 <script>Script</script>
                 <upload>Carica nuovo File</upload>
                 <XMLTemplate>Template XML</XMLTemplate>

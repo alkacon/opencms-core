@@ -372,6 +372,8 @@
                 <othertype>Other Type</othertype>
                 <page>Page</page>
                 <plain>Text</plain>
+                <jsp>JSP</jsp>
+                <velocity>Velocity Template</velocity>
                 <script>Script</script>
                 <upload>Upload new File</upload>
                 <XMLTemplate>XML Template</XMLTemplate>
