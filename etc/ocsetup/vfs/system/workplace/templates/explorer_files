@@ -191,10 +191,11 @@ function show_help()
 <COLUMN_ACCESS><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.access" /><![CDATA[</p></td>]]></COLUMN_ACCESS>
 <COLUMN_LOCKED><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.locked" /><![CDATA[</p></td>]]></COLUMN_LOCKED>
 
-<COLUMN_PIC_VALUE><![CDATA[<td>1</td>]]></COLUMN_PIC_VALUE>
+<COLUMN_PIC_VALUE><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_file_plain.gif</METHOD><![CDATA[" border=0 width=16 height=16></a></td>]]></COLUMN_PIC_VALUE>
 <COLUMN_LOCK_VALUE><PROCESS>LOCK_VALUE</PROCESS></COLUMN_LOCK_VALUE>
-<COLUMN_LOCK_VALUE_NOLOCK><![CDATA[<td>no</td>]]></COLUMN_LOCK_VALUE_NOLOCK>
-<COLUMN_LOCK_VALUE_OWN><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_OWN>
+<COLUMN_LOCK_VALUE_NOLOCK><![CDATA[<td></td>]]></COLUMN_LOCK_VALUE_NOLOCK>
+<COLUMN_LOCK_VALUE_OWN><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lockuser.gif</METHOD><![CDATA[" alt="]]><PROCESS>LOCKEDBY</PROCESS><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_OWN>
+<COLUMN_LOCK_VALUE_USER><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" alt="]]><PROCESS>LOCKEDBY</PROCESS><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_USER>
 <COLUMN_NAME_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug"><a href="]]><PROCESS>LINK_VALUE</PROCESS><![CDATA[" class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA[">]]><PROCESS>NAME_VALUE</PROCESS><![CDATA[</a></p></td>]]></COLUMN_NAME_VALUE>
 <COLUMN_TITLE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>TITLE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_TITLE_VALUE>
 <COLUMN_TYPE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>TYPE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_TYPE_VALUE>

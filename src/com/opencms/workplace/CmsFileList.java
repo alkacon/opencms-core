@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/01 17:30:40 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/02 09:55:23 $
  */
 public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
@@ -91,8 +91,20 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
     /** The access value column */
     private final static String C_ACCESS_VALUE="ACCESS_VALUE";
 
-    /** The access value column */
+    /** The lockedby value column */
     private final static String C_LOCKED_VALUE="LOCKED_VALUE";
+
+    /** The lockedby value column */
+    private final static String C_LOCKED_VALUE_NOLOCK="COLUMN_LOCK_VALUE_NOLOCK";
+    
+    /** The lockedby value column */
+    private final static String C_LOCKED_VALUE_OWN="COLUMN_LOCK_VALUE_OWN";
+    
+    /** The lockedby value column */
+    private final static String C_LOCKED_VALUE_USER="COLUMN_LOCK_VALUE_USER";
+    
+    /** The lockedby key */  
+    private final static String C_LOCKEDBY = "LOCKEDBY";
     
     /** The style for unchanged files or folders */
     private final static String C_STYLE_UNCHANGED="dateingeaendert";
@@ -185,12 +197,62 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
             folders=cms.getSubFolders(currentFolder);
             files=cms.getFilesInFolder(currentFolder);
             
+            // go through all folders
+            enum=folders.elements();
+            while (enum.hasMoreElements()) {
+                folder=(CmsFolder)enum.nextElement(); 
+                // Set output style class according to the project and state of the file.
+                template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));        
+                // set the lock icon if nescessary
+                template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),this));  
+                // set the folder name
+                template.setXmlData(C_NAME_VALUE,folder.getName());     
+                // set the link
+                template.setXmlData(C_LINK_VALUE,"explorer_files.html?folder="+folder.getAbsolutePath());    
+                // set the folder title
+                String title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
+                if (title==null) {
+                    title="";
+                }
+                template.setXmlData(C_TITLE_VALUE,title);   
+                // set the folder type 
+                A_CmsResourceType type=cms.getResourceType(folder.getType());
+                template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
+                // get the folder date
+                long time=folder.getDateLastModified();
+                template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
+                // get the folder size
+                template.setXmlData(C_SIZE_VALUE,"");   
+                // get the folder state
+                template.setXmlData(C_STATE_VALUE,getState(cms,folder,lang));  
+                // get the owner of the folder
+                A_CmsUser owner = cms.readOwner(folder);
+                template.setXmlData(C_OWNER_VALUE,owner.getName());
+                // get the group of the folder
+                A_CmsGroup group = cms.readGroup(folder);
+                template.setXmlData(C_GROUP_VALUE,group.getName());
+                // get the access flags
+                int access=folder.getAccessFlags();
+                template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
+                // get the locked by
+                int lockedby = folder.isLockedBy();
+                if (lockedby == C_UNKNOWN_ID) {
+                    template.setXmlData(C_LOCKED_VALUE,"");
+                } else {
+                    template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(folder.getAbsolutePath()).getName());
+                }
+                    
+                // as a last step, check which colums must be displayed and add the file
+                // to the output.
+                template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
+                output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,this));                
+            }
+            
+            
             // go through all files 
             enum=files.elements();
             while (enum.hasMoreElements()) {
-                file=(CmsFile)enum.nextElement();
-    
-                
+                file=(CmsFile)enum.nextElement(); 
                 // Set output style class according to the project and state of the file.
                 template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
                 // set the lock icon if nescessary
@@ -238,8 +300,6 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
                 template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
                 output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,this));                
             }
-            
-            
             return output.toString();
      }            
     
@@ -413,7 +473,21 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
                                               CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output = new StringBuffer();
-         output.append("COLUMN_LOCK_VALUE_OWN");
+         // still HACK here
+         // the file is locked
+         if (file.isLocked()) {
+           int locked=file.isLockedBy();
+           // it is locked by the actuel user
+             if (cms.getRequestContext().currentUser().getId()==locked) {
+                template.setXmlData(C_LOCKEDBY,lang.getLanguageValue("explorer.lockedby")+cms.getRequestContext().currentUser().getName());
+                output.append(C_LOCKED_VALUE_OWN);
+            } else {
+                template.setXmlData(C_LOCKEDBY,lang.getLanguageValue("explorer.lockedby")+cms.lockedBy(file.getAbsolutePath()).getName());
+                output.append(C_LOCKED_VALUE_USER);
+            }
+         } else {
+            output.append(C_LOCKED_VALUE_NOLOCK);
+         }
          return output.toString();
      }
      
