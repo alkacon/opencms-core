@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/06/16 13:35:44 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -124,6 +124,7 @@ public class CmsDbAccess {
      * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
+     * @throws CmsException if somethong goes wrong
      */
     public void insert(CmsObject cms, CmsMasterContent content,
                        CmsMasterDataSet dataset)
