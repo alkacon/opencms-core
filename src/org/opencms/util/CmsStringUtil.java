@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/01/28 09:25:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/01/28 09:55:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -124,6 +124,7 @@ public final class CmsStringUtil {
 
         source = CmsStringUtil.substitute(source, "\\", "\\\\");
         source = CmsStringUtil.substitute(source, "\"", "\\\"");
+        source = CmsStringUtil.substitute(source, "\'", "\\\'");
         source = CmsStringUtil.substitute(source, "\r\n", "\\n");
         source = CmsStringUtil.substitute(source, "\n", "\\n");
         return source;
@@ -413,7 +414,7 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, char delimiter) {
         return splitAsList(source, delimiter, false);
     }
-    
+
     /**
      * Splits a String into substrings along the provided char delimiter and returns
      * the result as a List of Substrings.<p>
@@ -455,7 +456,7 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, String delimiter) {
         return splitAsList(source, delimiter, false);
     }
-    
+
     /**
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as List of Substrings.<p>
