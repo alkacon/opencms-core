@@ -1,136 +1,122 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="toolbar">
-			<tr height="28">
-				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="28"></td>
-				<td align="left" width="20"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="28"></td>
-				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-					<tr height="20"> 
-						<%
-						if (options.showElement("button.customized")) {%>
-							<td width="26" align="center" class="tbl"><%= wp.buttonActionDirectEdit("bu55", "doEditHTML(55)") %></td><%
-						}
-						%>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';" onMouseUp="bu2.className='over';doEditHTML(2);"><img name="bu2" src="<%= wp.getPicsUri() %>bu_save_exit.gif" width="20" height="20" alt="<%= wp.key("button.saveclose") %>"></a></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';" onMouseUp="bu3.className='over';doEditHTML(3);"><img name="bu3" src="<%= wp.getPicsUri() %>bu_save.gif" width="20" height="20" alt="<%= wp.key("button.save") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu4.className='over';" onMouseOut="bu4.className='norm';" onMouseDown="bu4.className='push';" onMouseUp="bu4.className='over';doEditHTML(4);"><img name="bu4" src="<%= wp.getPicsUri() %>bu_undo.gif" width="20" height="20" alt="<%= wp.key("button.undo") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu5.className='over';" onMouseOut="bu5.className='norm';" onMouseDown="bu5.className='push';" onMouseUp="bu5.className='over';doEditHTML(5);"><img name="bu5" src="<%= wp.getPicsUri() %>bu_redo.gif" width="20" height="20" alt="<%= wp.key("button.redo") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif<%= wp.getPicsUri() %>" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu6.className='over';" onMouseOut="bu6.className='norm';" onMouseDown="bu6.className='push';" onMouseUp="bu6.className='over';doEditHTML(6);"><img name="bu6" src="<%= wp.getPicsUri() %>bu_search.gif" width="20" height="20" alt="<%= wp.key("button.search") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu9.className='over';" onMouseOut="bu9.className='norm';" onMouseDown="bu9.className='push';" onMouseUp="bu9.className='over';doEditHTML(9);"><img name="bu9" src="<%= wp.getPicsUri() %>bu_cut.gif" width="20" height="20" alt="<%= wp.key("button.cut") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu10.className='over';" onMouseOut="bu10.className='norm';" onMouseDown="bu10.className='push';" onMouseUp="bu10.className='over';doEditHTML(10);"><img name="bu10" src="<%= wp.getPicsUri() %>bu_copy.gif" width="20" height="20" alt="<%= wp.key("button.copy") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu11.className='over';" onMouseOut="bu11.className='norm';" onMouseDown="bu11.className='push';" onMouseUp="bu11.className='over';doEditHTML(11);"><img name="bu11" src="<%= wp.getPicsUri() %>bu_paste.gif" width="20" height="20" alt="<%= wp.key("button.paste") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu40.className='over';" onMouseOut="bu40.className='norm';" onMouseDown="bu40.className='push';doEditHTML(40);"><img name="bu40" src="<%= wp.getPicsUri() %>bu_table.gif" width="20" height="20" alt="<%= wp.key("button.table") %>"></a></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu90.className='over';" onMouseOut="bu90.className='norm';" onMouseDown="bu90.className='push';doEditHTML(51);"><img name="bu90" src="<%= wp.getPicsUri() %>bu_table_tr.gif" width="20" height="20" alt="<%= wp.key("button.tablerow") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu91.className='over';" onMouseOut="bu91.className='norm';" onMouseDown="bu91.className='push';doEditHTML(52);"><img name="bu91" src="<%= wp.getPicsUri() %>bu_table_td.gif" width="20" height="20" alt="<%= wp.key("button.tablecell") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu50.className='over';" onMouseOut="bu50.className='norm';" onMouseDown="bu50.className='push';doEditHTML(50);"><img name="bu50" src="<%= wp.getPicsUri() %>bu_link.gif" width="20" height="20" alt="<%= wp.key("button.linkto") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu42.className='over';" onMouseOut="bu42.className='norm';" onMouseDown="bu42.className='push';" onMouseUp="bu42.className='over';doEditHTML(42);"><img name="bu42" src="<%= wp.getPicsUri() %>bu_image.gif" width="20" height="20" alt="<%= wp.key("button.image") %>"></a></td>
-						<%					
-						if (options.showElement("gallery.image")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu43.className='over';" onMouseOut="bu43.className='norm';" onMouseDown="bu43.className='push';doEditHTML(43);"><img name="bu43" src="<%= wp.getPicsUri() %>bu_imagegallery.gif" width="20" height="20" alt="<%= wp.key("button.imagelist") %>"></td><%
-						}
-						if (options.showElement("gallery.download")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu44.className='over';" onMouseOut="bu44.className='norm';" onMouseDown="bu44.className='push';doEditHTML(44);"><img name="bu44" src="<%= wp.getPicsUri() %>bu_downloadgallery.gif" width="20" height="20" alt="<%= wp.key("button.downloadlist") %>"></td><%
-						}
-						if (options.showElement("gallery.externlink")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu92.className='over';" onMouseOut="bu92.className='norm';" onMouseDown="bu92.className='push';window.open('<%= cms.link("/system/workplace/action/linkbrowser.html") %>?initial=true','LinkBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');"><img name="bu92" src="<%= wp.getPicsUri() %>bu_linkgallery.gif" width="20" height="20" alt="<%= wp.key("button.linklist") %>"></td><%
-						}
-						if (options.showElement("gallery.html")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu93.className='over';" onMouseOut="bu93.className='norm';" onMouseDown="bu93.className='push';window.open('<%= cms.link("/system/workplace/action/htmlbrowser.html") %>?initial=true','HtmlBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');"><img name="bu93" src="<%= wp.getPicsUri() %>bu_htmlgallery.gif" width="20" height="20" alt="<%= wp.key("button.htmllist") %>"></td><%
-						}
-						%>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<%			
-						if (options.showElement("button.print")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu15.className='over';" onMouseOut="bu15.className='norm';" onMouseDown="bu15.className='push';" onMouseUp="bu15.className='over';doEditHTML(15);"><img name="bu15" src="<%= wp.getPicsUri() %>bu_print.gif" width="20" height="20" alt="<%= wp.key("button.print") %>"></td>
-							<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td><%
-						}
-						%>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu47.className='over';" onMouseOut="bu47.className='norm';" onMouseDown="bu47.className='push';" onMouseUp="bu47.className='over';doEditHTML(47);"><img name="bu47" src="<%= wp.getPicsUri() %>bu_details.gif" width="20" height="20" alt="<%= wp.key("button.toggledetails") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu48.className='over';" onMouseOut="bu48.className='norm';" onMouseDown="bu48.className='push';doEditHTML(48);"><img name="bu48" src="<%= wp.getPicsUri() %>bu_specialchar.gif" width="20" height="20" alt="<%= wp.key("button.specialchars") %>"></td>
-						<%
-							if (wp.isHelpEnabled()) {%>								
-								<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-								<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className='over';" onMouseOut="bu16.className='norm';" onMouseDown="bu16.className='push';treewin=opensmallwin(workplacePath + 'help/<%= wp.getSettings().getLanguage() %>/<%= wp.key("help.pageeditor") %>', '<%= wp.key("button.help") %>', 600, 450);treewin.focus();"><img name="bu16" src="<%= wp.getPicsUri() %>bu_help.gif" width="20" height="20" alt="<%= wp.key("button.help") %>"></td>									
-						<%  } %>						
-						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';" onMouseUp="bu1.className='over';confirmExitHTML();"><img name="bu1" src="<%= wp.getPicsUri() %>bu_exit.gif" width="20" height="20" alt="<%= wp.key("button.close") %>"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
-					</tr>
-				</table></td>
-			</tr>
-			<tr>
-				<td colspan="3" height="4" width="100%" background="<%= wp.getPicsUri() %>bu_sep_horizontal.gif"><img src="<%= wp.getPicsUri() %>empty.gif" width="1" height="4"></td>
-			</tr>
-			<tr height="28">
-				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="28"></td>
-				<td align="left" width="20"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="28"></td>
-				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-					<tr height="20"> 
-						<td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="return ParagraphStyle_onchange()" size="1"><option selected value="Normal">Normal</select></td>
-						<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
-						<%			
-						if (options.showElement("font.face")) {%>
-							<td><%= wp.buildSelectFonts("class=\"textfeld\" name=\"FONTFACE\" width=\"120\" onchange=\"doEditHTML(22);\"") %></td>
-							<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td><%
-						} else {%>
-							<td><input type="hidden" name="FONTFACE"></td>
-							<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td><%
-						}
-						if (options.showElement("font.size")) {%>
-							<td><select class="textfeld" name="FONTSIZE" id="FONTSIZE" width="40" style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></td>
-							<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td><%
-						} else {%>
-							<td><input type="hidden" name="FONTSIZE"></td><%
-						}
-						%>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu24.className='over';" onMouseOut="bu24.className='norm';" onMouseDown="bu24.className='push';" onMouseUp="bu24.className='over';doEditHTML(24);"><img name="bu24" src="<%= wp.getPicsUri() %>bu_bold.gif" width="20" height="20" alt="<%= wp.key("button.bold") %>"></a></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu25.className='over';" onMouseOut="bu25.className='norm';" onMouseDown="bu25.className='push';" onMouseUp="bu25.className='over';doEditHTML(25);"><img name="bu25" src="<%= wp.getPicsUri() %>bu_italic.gif" width="20" height="20" alt="<%= wp.key("button.italic") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu26.className='over';" onMouseOut="bu26.className='norm';" onMouseDown="bu26.className='push';" onMouseUp="bu26.className='over';doEditHTML(26);"><img name="bu26" src="<%= wp.getPicsUri() %>bu_underline.gif" width="20" height="20" alt="<%= wp.key("button.underline") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu31.className='over';" onMouseOut="bu31.className='norm';" onMouseDown="bu31.className='push';" onMouseUp="bu31.className='over';doEditHTML(31);"><img name="bu31" src="<%= wp.getPicsUri() %>bu_left.gif" width="20" height="20" alt="<%= wp.key("button.alignleft") %>"></a></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu32.className='over';" onMouseOut="bu32.className='norm';" onMouseDown="bu32.className='push';" onMouseUp="bu32.className='over';doEditHTML(32);"><img name="bu32" src="<%= wp.getPicsUri() %>bu_center.gif" width="20" height="20" alt="<%= wp.key("button.aligncenter") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu33.className='over';" onMouseOut="bu33.className='norm';" onMouseDown="bu33.className='push';" onMouseUp="bu33.className='over';doEditHTML(33);"><img name="bu33" src="<%= wp.getPicsUri() %>bu_right.gif" width="20" height="20" alt="<%= wp.key("button.alignright") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu34.className='over';" onMouseOut="bu34.className='norm';" onMouseDown="bu34.className='push';" onMouseUp="bu34.className='over';doEditHTML(34);"><img name="bu34" src="<%= wp.getPicsUri() %>bu_bullist.gif" width="20" height="20" alt="<%= wp.key("button.ul") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu35.className='over';" onMouseOut="bu35.className='norm';" onMouseDown="bu35.className='push';" onMouseUp="bu35.className='over';doEditHTML(35);"><img name="bu35" src="<%= wp.getPicsUri() %>bu_numlist.gif" width="20" height="20" alt="<%= wp.key("button.ol") %>"></td>
-						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu36.className='over';" onMouseOut="bu36.className='norm';" onMouseDown="bu36.className='push';" onMouseUp="bu36.className='over';doEditHTML(36);"><img name="bu36" src="<%= wp.getPicsUri() %>bu_indent.gif" width="20" height="20" alt="<%= wp.key("button.indentin") %>"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu37.className='over';" onMouseOut="bu37.className='norm';" onMouseDown="bu37.className='push';" onMouseUp="bu37.className='over';doEditHTML(37);"><img name="bu37" src="<%= wp.getPicsUri() %>bu_outdent.gif" width="20" height="20" alt="<%= wp.key("button.indentout") %>"></td>
-						<%			
-						if (options.showElement("font.color") || options.showElement("bg.color")) {%>
-							<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td><%
-						}
-						if (options.showElement("font.color")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu38.className='over';" onMouseOut="bu38.className='norm';" onMouseDown="bu38.className='push';doEditHTML(38);"><img name="bu38" src="<%= wp.getPicsUri() %>bu_color_text.gif" width="20" height="20" alt="<%= wp.key("button.fontcolor") %>"></td><%
-						}
-						if (options.showElement("bg.color")) {%>
-							<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu39.className='over';" onMouseOut="bu39.className='norm';" onMouseDown="bu39.className='push';doEditHTML(39);"><img name="bu39" src="<%= wp.getPicsUri() %>bu_color_fill.gif" width="20" height="20" alt="<%= wp.key("button.color") %>"></td><%
-						}
-						%>
-						<td width="100%">&nbsp;</td>
-					</tr>
-				</table></td>
-			</tr>
-		</table></td>
-	</tr>
-	<tr>
-		<td width=100% height=100%><OBJECT
-			CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" 
-			ID="EDIT_HTML"
-			WIDTH="100%"
-			height="100%"
-			VIEWASTEXT>
-			<param name=Scrollbars value=true>
-			<param name=ShowBorders value=true>
-		</OBJECT>
-		<!-- DEInsertTableParam Object -->
-		<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
-		</object>
-		<!-- DEGetBlockFmtNamesParam Object -->
-		<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
-		</object></td>
-	</tr>
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<%
+if (options.showElement("button.customized")) {%>
+	<td><%= wp.buttonActionDirectEdit("doEditHTML(55);") %></td><%
+}
+%>
+<%= wp.button("javascript:doEditHTML(2);", null, "bu_save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(3);", null, "bu_save", "button.save", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(4);", null, "bu_undo", "button.undo", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(5);", null, "bu_redo", "button.redo", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(6);", null, "bu_search", "button.search", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(9);", null, "bu_cut", "button.cut", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(10);", null, "bu_copy", "button.copy", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(11);", null, "bu_paste", "button.paste", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(40);", null, "bu_table", "button.table", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(51);", null, "bu_table_tr", "button.tablerow", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(52);", null, "bu_table_td", "button.tablecell", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(50);", null, "bu_link", "button.linkto", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(42);", null, "bu_image", "button.image", buttonStyle) %>
+<%					
+if (options.showElement("gallery.image")) {%>
+	<%= wp.button("javascript:doEditHTML(43);", null, "bu_imagegallery", "button.imagelist", buttonStyle) %><%
+}
+if (options.showElement("gallery.download")) {%>
+	<%= wp.button("javascript:doEditHTML(44);", null, "bu_downloadgallery", "button.downloadlist", buttonStyle) %><%
+}
+if (options.showElement("gallery.externlink")) {%>
+	<%= wp.button("javascript:LinkBrowser=opensmallwin('" + cms.link("/system/workplace/action/linkbrowser.html") + "?initial=true', 'LinkBrowser', 550, 500);LinkBrowser.focus();", null, "bu_linkgallery", "button.linklist", buttonStyle) %><%
+}
+if (options.showElement("gallery.html")) {%>
+	<%= wp.button("javascript:HtmlBrowser=opensmallwin('" + cms.link("/system/workplace/action/htmlbrowser.html") + "?initial=true', 'HtmlBrowser', 550, 500);HtmlBrowser.focus();", null, "bu_htmlgallery", "button.htmllist", buttonStyle) %><%
+}
+%>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%			
+if (options.showElement("button.print")) {%>
+	<%= wp.button("javascript:doEditHTML(15);", null, "bu_print", "button.print", buttonStyle) %>
+	<%= wp.buttonBarSeparator(5, 5) %><%
+}
+%>
+<%= wp.button("javascript:doEditHTML(47);", null, "bu_details", "button.toggledetails", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(48);", null, "bu_specialchar", "button.specialchars", buttonStyle) %>
+<%
+if (wp.isHelpEnabled()) {%>								
+	<%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getSettings().getLanguage() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "bu_help", "button.help", buttonStyle) %><%
+} %>
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:confirmExitHTML();", null, "bu_exit", "button.close", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBarHorizontalLine() %>
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="return ParagraphStyle_onchange()" size="1"><option selected value="Normal">Normal</select></td>
+<%= wp.buttonBarSpacer(5) %>
+<%			
+if (options.showElement("font.face")) {%>
+	<td><%= wp.buildSelectFonts("class=\"textfeld\" name=\"FONTFACE\" width=\"120\" onchange=\"doEditHTML(22);\"") %></td><%
+} else {%>
+	<input type="hidden" name="FONTFACE"><%
+} %>
+<%= wp.buttonBarSpacer(5) %>
+<%
+if (options.showElement("font.size")) {%>
+	<td><select class="textfeld" name="FONTSIZE" id="FONTSIZE" width="40" style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></td>
+	<%= wp.buttonBarSpacer(5) %><%
+} else {%>
+	<input type="hidden" name="FONTSIZE"><%
+}
+%>
+<%= wp.button("javascript:doEditHTML(24);", null, "bu_bold", "button.bold", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(25);", null, "bu_italic", "button.italic", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(26);", null, "bu_underline", "button.underline", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(31);", null, "bu_left", "button.alignleft", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(32);", null, "bu_center", "button.aligncenter", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(33);", null, "bu_right", "button.alignright", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(34);", null, "bu_bullist", "button.ul", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(35);", null, "bu_numlist", "button.ol", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEditHTML(36);", null, "bu_indent", "button.indentin", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(37);", null, "bu_outdent", "button.indentout", buttonStyle) %>
+<%			
+if (options.showElement("font.color") || options.showElement("bg.color")) {%>
+	<%= wp.buttonBarSeparator(5, 5) %><%
+}
+if (options.showElement("font.color")) {%>
+	<%= wp.button("javascript:doEditHTML(38);", null, "bu_color_text", "button.fontcolor", buttonStyle) %><%
+}
+if (options.showElement("bg.color")) {%>
+	<%= wp.button("javascript:doEditHTML(39);", null, "bu_color_fill", "button.color", buttonStyle) %><%
+}
+%>
+<%= wp.buttonBar(wp.HTML_END) %>
+</td>
+<tr>
+<tr>
+	<td style="width: 100%; height: 100%;"><OBJECT
+		CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" 
+		ID="EDIT_HTML"
+		WIDTH="100%"
+		height="100%"
+		VIEWASTEXT>
+		<param name="Scrollbars" value="true">
+		<param name="ShowBorders" value="true">
+	</OBJECT>
+	<!-- DEInsertTableParam Object -->
+	<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
+	</object>
+	<!-- DEGetBlockFmtNamesParam Object -->
+	<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
+	</object>

@@ -93,6 +93,7 @@ function doNsEdit(para) {
     {
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
         document.EDITOR.action.value = "save";
+        document.EDITOR.target = "_self";
         document.EDITOR.submit();
         break;
     }
@@ -165,4 +166,15 @@ function closeDialog() {
 	if (dialogWindow) {
 		window.dialogWindow.close();
 	}
+}
+
+function opensmallwin(url, name, w, h) {
+   	encodedurl = encodeURI(url);
+   	smallwindow = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+   	if(smallwindow != null) {
+   		if (smallwindow.opener == null) {
+	   		smallwindow.opener = self;
+    	}
+	}
+    return smallwindow;
 }

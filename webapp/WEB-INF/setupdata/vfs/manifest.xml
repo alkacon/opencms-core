@@ -13433,62 +13433,6 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/buttons/elements.gif</source>
-		<destination>system/workplace/skins/modern/editors/buttons/elements.gif</destination>
-		<type>image</type>
-		<uuidresource>9abf32a7-4671-11d8-802e-8e9b78ad363a</uuidresource>
-		<uuidcontent>9abf32a8-4671-11d8-802e-8e9b78ad363a</uuidcontent>
-		<datelastmodified>1074071474000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1074071474000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/buttons/elements_in.gif</source>
-		<destination>system/workplace/skins/modern/editors/buttons/elements_in.gif</destination>
-		<type>image</type>
-		<uuidresource>9acb198a-4671-11d8-802e-8e9b78ad363a</uuidresource>
-		<uuidcontent>9acb198b-4671-11d8-802e-8e9b78ad363a</uuidcontent>
-		<datelastmodified>1074071474000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1074071474000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/buttons/properties.gif</source>
-		<destination>system/workplace/skins/modern/editors/buttons/properties.gif</destination>
-		<type>image</type>
-		<uuidresource>9ad7006d-4671-11d8-802e-8e9b78ad363a</uuidresource>
-		<uuidcontent>9ad7006e-4671-11d8-802e-8e9b78ad363a</uuidcontent>
-		<datelastmodified>1074071475000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1074071475000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/buttons/properties_in.gif</source>
-		<destination>system/workplace/skins/modern/editors/buttons/properties_in.gif</destination>
-		<type>image</type>
-		<uuidresource>9ae09d60-4671-11d8-802e-8e9b78ad363a</uuidresource>
-		<uuidcontent>9ae09d61-4671-11d8-802e-8e9b78ad363a</uuidcontent>
-		<datelastmodified>1074071475000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1074071475000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file> 
-	<file>
 		<destination>system/workplace/skins/modern/editors/ledit</destination>
 		<type>folder</type>
 		<uuidresource>db188f73-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
@@ -13520,20 +13464,6 @@
 		<type>folder</type>
 		<uuidresource>db247660-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
 		<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-		<datelastmodified>1070899320000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899320000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/ledit/pics/bg_grau_2.gif</source>
-		<destination>system/workplace/skins/modern/editors/ledit/pics/bg_grau_2.gif</destination>
-		<type>image</type>
-		<uuidresource>db293158-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>db293159-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
 		<datelastmodified>1070899320000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1070899320000</datecreated>
@@ -13711,53 +13641,11 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/ledit/pics/bu_sep_vertical.gif</source>
-		<destination>system/workplace/skins/modern/editors/ledit/pics/bu_sep_vertical.gif</destination>
-		<type>image</type>
-		<uuidresource>db6c072d-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>db6c072e-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899320000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899320000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/ledit/pics/bu_tb_start.gif</source>
-		<destination>system/workplace/skins/modern/editors/ledit/pics/bu_tb_start.gif</destination>
-		<type>image</type>
-		<uuidresource>db6e5126-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>db6e5127-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899320000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899320000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
 		<source>system/workplace/skins/modern/editors/ledit/pics/bu_undo.gif</source>
 		<destination>system/workplace/skins/modern/editors/ledit/pics/bu_undo.gif</destination>
 		<type>image</type>
 		<uuidresource>db730c1f-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
 		<uuidcontent>db730c20-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899320000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899320000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/ledit/pics/empty.gif</source>
-		<destination>system/workplace/skins/modern/editors/ledit/pics/empty.gif</destination>
-		<type>image</type>
-		<uuidresource>db77ee28-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>db77ee29-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
 		<datelastmodified>1070899320000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1070899320000</datecreated>
@@ -13825,20 +13713,6 @@
 		<type>folder</type>
 		<uuidresource>db8d4b09-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
 		<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-		<datelastmodified>1070899320000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899320000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/msdhtml/pics/bg_grau_2.gif</source>
-		<destination>system/workplace/skins/modern/editors/msdhtml/pics/bg_grau_2.gif</destination>
-		<type>image</type>
-		<uuidresource>db922d11-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>db922d12-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
 		<datelastmodified>1070899320000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1070899320000</datecreated>
@@ -14128,20 +14002,6 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_newbody.gif</source>
-		<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_newbody.gif</destination>
-		<type>image</type>
-		<uuidresource>dbef19de-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>dbef19df-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899321000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899321000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
 		<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_numlist.gif</source>
 		<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_numlist.gif</destination>
 		<type>image</type>
@@ -14295,34 +14155,6 @@
 		<properties/>
 		<accesscontrol/>
 	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_sep_horizontal.gif</source>
-		<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_sep_horizontal.gif</destination>
-		<type>image</type>
-		<uuidresource>dc2396ca-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>dc2396cb-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899321000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899321000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-	<properties/>
-	<accesscontrol/>
-</file>
-<file>
-	<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_sep_vertical.gif</source>
-	<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_sep_vertical.gif</destination>
-	<type>image</type>
-	<uuidresource>dc2851c3-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-	<uuidcontent>dc2851c4-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-	<datelastmodified>1070899321000</datelastmodified>
-	<userlastmodified>Admin</userlastmodified>
-	<datecreated>1070899321000</datecreated>
-	<usercreated>Admin</usercreated>
-	<flags>0</flags>
-	<properties/>
-	<accesscontrol/>
-</file>
 <file>
 	<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_specialchar.gif</source>
 	<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_specialchar.gif</destination>
@@ -14421,20 +14253,62 @@
 	<properties/>
 	<accesscontrol/>
 </file>
-<file>
-	<source>system/workplace/skins/modern/editors/msdhtml/pics/empty.gif</source>
-	<destination>system/workplace/skins/modern/editors/msdhtml/pics/empty.gif</destination>
-	<type>image</type>
-	<uuidresource>dc49bcbb-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>dc49bcbc-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899322000</datelastmodified>
+	<file>
+		<source>system/workplace/skins/modern/editors/msdhtml/pics/elements.gif</source>
+		<destination>system/workplace/skins/modern/editors/msdhtml/pics/elements.gif</destination>
+		<type>image</type>
+		<uuidresource>3df3e0eb-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>3df3e0ec-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184622000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899322000</datecreated>
+		<datecreated>1074184276000</datecreated>
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
 	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/msdhtml/pics/elements_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/msdhtml/pics/elements_in.gif</destination>
+		<type>image</type>
+		<uuidresource>3dffeede-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>3dffeedf-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184622000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074184276000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/msdhtml/pics/properties.gif</source>
+		<destination>system/workplace/skins/modern/editors/msdhtml/pics/properties.gif</destination>
+		<type>image</type>
+		<uuidresource>3e0bd4c1-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>3e0bd4c2-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184623000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074184277000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/msdhtml/pics/properties_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/msdhtml/pics/properties_in.gif</destination>
+		<type>image</type>
+		<uuidresource>3e17bba4-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>3e17bba5-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184623000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074184277000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file> 
 	<file>
 		<destination>system/workplace/skins/modern/editors/msdhtml/scripts</destination>
 		<type>folder</type>
@@ -14517,20 +14391,6 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/simple/pics/bg_grau_2.gif</source>
-		<destination>system/workplace/skins/modern/editors/simple/pics/bg_grau_2.gif</destination>
-		<type>image</type>
-		<uuidresource>dc63fbad-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>dc63fbae-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899322000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899322000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
 		<source>system/workplace/skins/modern/editors/simple/pics/bu_exit.gif</source>
 		<destination>system/workplace/skins/modern/editors/simple/pics/bu_exit.gif</destination>
 		<type>image</type>
@@ -14578,34 +14438,6 @@
 		<type>image</type>
 		<uuidresource>dc722ca1-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
 		<uuidcontent>dc722ca2-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899322000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899322000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/simple/pics/bu_sep_vertical.gif</source>
-		<destination>system/workplace/skins/modern/editors/simple/pics/bu_sep_vertical.gif</destination>
-		<type>image</type>
-		<uuidresource>dc770eaa-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>dc770eab-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070899322000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1070899322000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/simple/pics/bu_tb_start.gif</source>
-		<destination>system/workplace/skins/modern/editors/simple/pics/bu_tb_start.gif</destination>
-		<type>image</type>
-		<uuidresource>dc7bc9a3-2997-11d8-96b2-c6eb9ef4138f</uuidresource>
-		<uuidcontent>dc7bc9a4-2997-11d8-96b2-c6eb9ef4138f</uuidcontent>
 		<datelastmodified>1070899322000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1070899322000</datecreated>
@@ -14696,20 +14528,6 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/simplehtml/pics/bg_grau_2.gif</source>
-		<destination>system/workplace/skins/modern/editors/simplehtml/pics/bg_grau_2.gif</destination>
-		<type>image</type>
-		<uuidresource>d904bf5c-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
-		<uuidcontent>d904bf5d-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
-		<datelastmodified>1073573700000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1073572074000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
 		<source>system/workplace/skins/modern/editors/simplehtml/pics/bu_exit.gif</source>
 		<destination>system/workplace/skins/modern/editors/simplehtml/pics/bu_exit.gif</destination>
 		<type>image</type>
@@ -14729,20 +14547,6 @@
 		<type>image</type>
 		<uuidresource>d9773060-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
 		<uuidcontent>d9773061-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
-		<datelastmodified>1073573700000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1073572075000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/workplace/skins/modern/editors/simplehtml/pics/bu_newbody.gif</source>
-		<destination>system/workplace/skins/modern/editors/simplehtml/pics/bu_newbody.gif</destination>
-		<type>image</type>
-		<uuidresource>d9c5c5ab-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
-		<uuidcontent>d9c5c5ac-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
 		<datelastmodified>1073573700000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1073572075000</datecreated>
@@ -14794,61 +14598,61 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/simplehtml/pics/bu_sep_horizontal.gif</source>
-		<destination>system/workplace/skins/modern/editors/simplehtml/pics/bu_sep_horizontal.gif</destination>
+		<source>system/workplace/skins/modern/editors/simplehtml/pics/elements.gif</source>
+		<destination>system/workplace/skins/modern/editors/simplehtml/pics/elements.gif</destination>
 		<type>image</type>
-		<uuidresource>da3131cf-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
-		<uuidcontent>da3131d0-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
-		<datelastmodified>1073573700000</datelastmodified>
+		<uuidresource>475b6817-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>475b6818-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184637000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1073572076000</datecreated>
+		<datecreated>1074184292000</datecreated>
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/simplehtml/pics/bu_sep_vertical.gif</source>
-		<destination>system/workplace/skins/modern/editors/simplehtml/pics/bu_sep_vertical.gif</destination>
+		<source>system/workplace/skins/modern/editors/simplehtml/pics/elements_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/simplehtml/pics/elements_in.gif</destination>
 		<type>image</type>
-		<uuidresource>da3d17b2-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
-		<uuidcontent>da3d17b3-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
-		<datelastmodified>1073573700000</datelastmodified>
+		<uuidresource>4765050a-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>4765050b-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184637000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1073572076000</datecreated>
+		<datecreated>1074184292000</datecreated>
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/simplehtml/pics/bu_tb_start.gif</source>
-		<destination>system/workplace/skins/modern/editors/simplehtml/pics/bu_tb_start.gif</destination>
+		<source>system/workplace/skins/modern/editors/simplehtml/pics/properties.gif</source>
+		<destination>system/workplace/skins/modern/editors/simplehtml/pics/properties.gif</destination>
 		<type>image</type>
-		<uuidresource>da6a6951-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
-		<uuidcontent>da6a6952-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
-		<datelastmodified>1073573700000</datelastmodified>
+		<uuidresource>47735ced-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>47735cee-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184637000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1073572077000</datecreated>
+		<datecreated>1074184292000</datecreated>
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/editors/simplehtml/pics/empty.gif</source>
-		<destination>system/workplace/skins/modern/editors/simplehtml/pics/empty.gif</destination>
+		<source>system/workplace/skins/modern/editors/simplehtml/pics/properties_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/simplehtml/pics/properties_in.gif</destination>
 		<type>image</type>
-		<uuidresource>da84810a-41e6-11d8-bd9f-f6ae2f613c97</uuidresource>
-		<uuidcontent>da84810b-41e6-11d8-bd9f-f6ae2f613c97</uuidcontent>
-		<datelastmodified>1073573700000</datelastmodified>
+		<uuidresource>477cd2d0-4778-11d8-8ca2-a867b6df432b</uuidresource>
+		<uuidcontent>477cd2d1-4778-11d8-8ca2-a867b6df432b</uuidcontent>
+		<datelastmodified>1074184638000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1073572077000</datecreated>
+		<datecreated>1074184292000</datecreated>
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file>
+	</file> 
 	<file>
 		<destination>system/workplace/skins/modern/editors/simplehtml/scripts</destination>
 		<type>folder</type>

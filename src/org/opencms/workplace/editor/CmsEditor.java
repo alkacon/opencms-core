@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/01/15 08:35:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/16 15:43:44 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
@@ -245,7 +245,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return a button for the OpenCms editor
      */
-    public String button(String href, String target, String image, String label, int type) {
+    public final String button(String href, String target, String image, String label, int type) {
         return button(href, target, image, label, type, getPicsUri());    
     }
     

@@ -4,6 +4,7 @@
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
 <link rel=stylesheet type="text/css" href="<%= wp.getEditorResourceUri() %>format.css">
+
 <script type="text/javascript">
 
 	// which button is clicked
@@ -224,6 +225,17 @@ End Sub
 			window.dialogWindow.close();
 		}
 	}
+	
+	function opensmallwin(url, name, w, h) {
+    	encodedurl = encodeURI(url);
+    	smallwindow = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+    	if(smallwindow != null) {
+       		if (smallwindow.opener == null) {
+         		smallwindow.opener = self;
+        	}
+		}
+	    return smallwindow;
+	}
 //-->
 </script>
 
@@ -246,63 +258,10 @@ End Sub
 
 </head>
 
-<body background="<%= wp.getPicsUri() %>bg_grau2.gif" bgproperties="fixed" scroll="no" onload="setText(); initStyles();" onunload="closeDialog();" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0">
-<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%" class="toolbar">
-<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
-	<tr>
-		<td valign="top"><table width=100% cellspacing="0" cellpadding="0" border="0" class="toolbar">
-			<tr height="28">
-				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="30"></td>
-				<td align="left" width="20"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="28"></td>
-				<td align="left"><table border="0" cellspacing="0" cellpadding="0">
-					<tr height="20">
-						<td><%= wp.key("input.editor") %>:&nbsp;&nbsp;</td>
-						<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"doTemplSubmit(1);\"") %></td>
-						<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td>						
-						<%
-							
-							if (!options.showElement("selector.body")) {%>
-								<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>"><input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>"><%
-							}
-							
-							if (options.showElement("selector.body")) {%>
-								<td><%= wp.key("input.body") %>:&nbsp;&nbsp;</td>
-								<td><%= wp.buildSelectBodyLanguage("class=\"textfeld\" name=\"bodylanguage\" width=\"150\" onchange=\"doTemplSubmit(3);\"") %></td>
-								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="3" height="1"></td>
-								<td><%= wp.buildSelectBodyName("class=\"textfeld\" name=\"bodyname\" width=\"150\" onchange=\"doTemplSubmit(3);\"") %></td>
-								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
-							}
-														
-									
-						
-						%>
-						<%= wp.button("javascript:doTemplSubmit(4);", null, "elements", "editor.dialog.elements.button", 0, wp.getSkinUri() + "editors/buttons/") %>
-						<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td>
-						<%= wp.button("javascript:doTemplSubmit(5);", null, "properties", "editor.dialog.properties.button", 0, wp.getSkinUri() + "editors/buttons/") %>				
-						<td width="20" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="20" height="28"></td>
-						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu05.className='over';" onMouseOut="bu05.className='norm';" onMouseDown="bu05.className='push';doTemplSubmit(2);"><img name="bu05" src="<%= wp.getPicsUri() %>bu_preview.gif" width="20" height="20" alt="<%= wp.key("button.preview") %>"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
-					</tr> 
-				</table></td>
-			</tr>
-		</table></td>
-	</tr>
-	<tr>
-		<td height="4" width="100%" background="<%= wp.getPicsUri() %>bu_sep_horizontal.gif"><img src="<%= wp.getPicsUri() %>empty.gif" width="1" height="4"></td>
-	</tr>
-	<tr>
-		<td>
-		<%
-			if (CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormode()))) {
-				%><%@ include file="form_ns.txt" %><%
-			} else {
-				if ("edit".equals(wp.getParamEditormode())) {
-					%><%@ include file="form_text.txt" %><%
-				} else {
-					%><%@ include file="form_html.txt" %><%
-				}
-			}
+<body class="buttons-head" unselectable="on" onload="setText(); initStyles();" onunload="closeDialog();">
 
-		%>
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
 <input type="hidden" name="content">
 <input type="hidden" name="action" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
@@ -313,8 +272,50 @@ End Sub
 <input type="hidden" name="oldbodyname" value="<%= wp.getParamBodyname() %>">
 <input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
-</form>
 
+	<tr>
+		<td>
+
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+
+<%= wp.buttonBarLabel("input.editor") %>
+<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"doTemplSubmit(3);\"") %></td>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%
+if (options.showElement("selector.body")) {
+	out.println(wp.buttonBarLabel("input.body"));
+	out.println("<td>" + wp.buildSelectBodyLanguage("name=\"bodylanguage\" width=\"150\" onchange=\"doTemplSubmit(3);\"") + "</td>");
+	out.println(wp.buttonBarSpacer(2));
+	out.println("<td>" + wp.buildSelectBodyName("name=\"bodyname\" width=\"150\" onchange=\"doTemplSubmit(3);\"") + "</td>");
+	out.println(wp.buttonBarSeparator(5, 5));
+} else { %>
+	<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>"><input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
+<%
+}
+%>
+<%= wp.button("javascript:doTemplSubmit(4);", null, "elements", "editor.dialog.elements.button", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>						
+<%= wp.button("javascript:doTemplSubmit(5);", null, "properties", "editor.dialog.properties.button", buttonStyle) %>				
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:doTemplSubmit(2);", null, "bu_preview", "button.preview", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBarHorizontalLine() %>
+
+<%
+if (CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormode()))) {
+	%><%@ include file="form_ns.txt" %><%
+} else {
+	if ("edit".equals(wp.getParamEditormode())) {
+		%><%@ include file="form_text.txt" %><%
+	} else {
+		%><%@ include file="form_html.txt" %><%
+	}
+}
+%>
+	
+</form>
 
 <form name="ELEMENTS" action="dialogs/elements.html" target="DIALOG" method="post">
 <input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
@@ -329,6 +330,7 @@ End Sub
 <input type="hidden" name="usetempfileproject" value="true">
 </form>
 
+</td></tr>
 </table>
 
 <script type="text/javascript">

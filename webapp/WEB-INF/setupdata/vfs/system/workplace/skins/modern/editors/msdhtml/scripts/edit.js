@@ -122,6 +122,7 @@ function doNsEdit(para)
     {
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
         document.EDITOR.action.value = "save";
+        document.EDITOR.target = "_self";
         document.EDITOR.submit();
         break;
     }
@@ -169,6 +170,7 @@ function doEdit(para)
     {
         doSubmit();
         document.EDITOR.action.value = "save";
+        document.EDITOR.target = "_self";
         document.EDITOR.submit();
         break;
     }

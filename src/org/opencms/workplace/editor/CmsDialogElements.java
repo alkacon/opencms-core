@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/15 08:35:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/16 15:43:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -213,8 +213,6 @@ public class CmsDialogElements extends CmsDialog {
             page.setContent(getCms(), getParamDeleteElement(), getParamBodylanguage(), "");
             // write the temporary file
             getCms().writeFile(page.write(file));
-            // set the parameter value back to null
-            setParamDeleteElement(null);
         } catch (CmsException e) {
             // ignore this exception
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/01/16 15:43:44 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.1
  */
@@ -1164,6 +1164,21 @@ public abstract class CmsWorkplace {
         }   
         result.append("</td>\n");
         return result.toString();   
+    }
+    
+    /**
+     * Generates a horizontal button bar separator line with maximum width.<p>
+     * 
+     * @return a horizontal button bar separator line
+     */
+    public String buttonBarHorizontalLine() {
+        StringBuffer result = new StringBuffer(256); 
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\">\n");
+        result.append("<tr>\n");
+        result.append("\t<td class=\"horseparator\" ><img src=\"" + getSkinUri() + "tree/empty.gif\" border=\"0\" width=\"1\" height=\"1\" alt=\"\"></td>\n");
+        result.append("</tr>\n");
+        result.append("</table>\n");
+        return result.toString();
     }
     
     /**

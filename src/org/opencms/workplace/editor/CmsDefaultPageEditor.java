@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/15 08:35:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/01/16 15:43:44 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -356,12 +356,11 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     /**
      * Builds the html to display the special action button for the direct edit mode of the editor.<p>
      * 
-     * @param nameValue the attribute value of the "name" attribute of the &lt;img&gt; tag
      * @param jsFunction the JavaScript function which will be executed on the mouseup event 
      * @return the html to display the special action button
      */
-    public String buttonActionDirectEdit(String nameValue, String jsFunction) {
-        StringBuffer retValue = new StringBuffer(256);
+    public String buttonActionDirectEdit(String jsFunction) {
+        //StringBuffer retValue = new StringBuffer(256);
         // get the action class from the OpenCms runtime property
         I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
         String url;
@@ -370,35 +369,43 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         if (actionClass != null) {
             // get button parameters and state from action class
             url = actionClass.getButtonUrl(getJsp(), getParamResource());
-            name = key(actionClass.getButtonName());
+            name = actionClass.getButtonName();
             active = actionClass.isButtonActive(getJsp(), getParamResource());
         } else {
             // action class not defined, display inactive button
-            url = getSkinUri() + "buttons/publish_in.gif";
-            name = key("explorer.context.publish");
+            url = getSkinUri() + "buttons/publish_in";
+            name = "explorer.context.publish";
         }
+        String image = url.substring(url.lastIndexOf("/") + 1);
+        if (url.endsWith(".gif")) {
+            image = image.substring(0, image.length() - 4);
+        }
+        
         if (active) {
             // create the link for the button
-            retValue.append("<a href=\"#\" onMouseOver=\"" + nameValue + ".className='over';\" ");
-            retValue.append("onMouseOut=\"" + nameValue + ".className='norm';\" onMouseDown=\"" + nameValue + ".className='push';\" ");
-            retValue.append("onMouseUp=\"" + nameValue + ".className='over';" + jsFunction + ";\">");
+            return button("javascript:" + jsFunction, null, image, name, 0, url.substring(0, url.lastIndexOf("/") + 1));
+            //retValue.append("<a href=\"#\" onMouseOver=\"" + nameValue + ".className='over';\" ");
+            //retValue.append("onMouseOut=\"" + nameValue + ".className='norm';\" onMouseDown=\"" + nameValue + ".className='push';\" ");
+            //retValue.append("onMouseUp=\"" + nameValue + ".className='over';" + jsFunction + ";\">");
+        } else {
+            return button(null, null, image, name + "_in", 0, url.substring(0, url.lastIndexOf("/") + 1));
         }
         
-        // build the button html
-        retValue.append("<img src=\"" + url + "\" ");
-        retValue.append("width=\"20\" height=\"20\" ");
-        if (nameValue != null) {
-            retValue.append("name=\"" + nameValue + "\" ");
-        }
-        retValue.append("alt=\"" + name + "\" ");
-        retValue.append("title=\"" + name + "\">");
-        
-        if (active) {
-            // close the link
-            retValue.append("</a>");
-        }
-        
-        return retValue.toString();
+//        // build the button html
+//        retValue.append("<img src=\"" + url + "\" ");
+//        retValue.append("width=\"20\" height=\"20\" ");
+//        if (nameValue != null) {
+//            retValue.append("name=\"" + nameValue + "\" ");
+//        }
+//        retValue.append("alt=\"" + name + "\" ");
+//        retValue.append("title=\"" + name + "\">");
+//        
+//        if (active) {
+//            // close the link
+//            retValue.append("</a>");
+//        }
+//        
+//        return retValue.toString();
     }
     
     /**

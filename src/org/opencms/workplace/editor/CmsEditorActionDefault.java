@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/12 10:06:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/16 15:43:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
@@ -113,7 +113,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             // show disabled button if not active
             button += "_in";
         }
-        return jsp.link(button) + ".gif";
+        return jsp.link(button);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/15 16:03:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/16 15:43:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
@@ -68,7 +68,7 @@ public class CmsDialogProperty extends CmsProperty {
     public static final int ACTION_EDIT = 500;
     
     /** Stores the property names which should be listed in the edit form */
-    public static final String[] PROPERTIES = {"Title", "Keywords", "Description", };
+    public static final String[] PROPERTIES = {I_CmsConstants.C_PROPERTY_TITLE, I_CmsConstants.C_PROPERTY_KEYWORDS, I_CmsConstants.C_PROPERTY_DESCRIPTION };
     
     /**
      * Public constructor with JSP action element.<p>

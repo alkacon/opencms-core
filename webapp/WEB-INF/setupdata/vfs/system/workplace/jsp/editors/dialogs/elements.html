@@ -49,6 +49,12 @@ if (<%= refreshOpener %>) {
 	window.opener.doTemplSubmit(3);
 }
 
+<%
+if ("true".equals(refreshOpener)) {
+	wp.setParamDeleteElement(null);
+}
+%>
+
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>

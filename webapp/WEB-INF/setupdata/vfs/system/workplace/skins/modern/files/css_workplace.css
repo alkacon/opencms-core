@@ -89,6 +89,13 @@ span.separator {
     border-right: 1px solid #ffffff;
 }
 
+/* Button - Horizontal Separator line */
+.horseparator {
+    width: 100%;
+    background-color: #ffffff;
+    border-top: 1px solid #777777;
+}
+
 /* Button - Text button wrapper  */
 span.txtbutton {
     display: block;
