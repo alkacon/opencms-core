@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/17 07:08:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getStructureId(),
             resource.getResourceId(),
             resource.getParentStructureId(),
-            resource.getName(),
+            resource.getRootPath(),
             resource.getTypeId(),
             resource.getFlags(),
             resource.getProjectLastModified(),
@@ -71,10 +71,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getSiblingCount(),
             resource.getDateReleased(),
             resource.getDateExpired());
-        
-        if (resource.hasFullResourceName()) {
-            setRootPath(resource.getRootPath());
-        }
     }
 
     /**
@@ -82,7 +78,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param parentId the id of this resources parent folder
-     * @param name the filename of this resouce
+     * @param path the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
@@ -99,7 +95,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         CmsUUID structureId,
         CmsUUID resourceId,
         CmsUUID parentId,
-        String name,
+        String path,
         int type,
         int flags,
         int projectId,
@@ -116,7 +112,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             structureId,
             resourceId,
             parentId,
-            name,
+            path,
             type,
             flags,
             projectId,
@@ -142,7 +138,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getStructureId(),
             getResourceId(),
             getParentStructureId(),
-            getName(),
+            getRootPath(),
             getTypeId(),
             getFlags(),
             getProjectLastModified(),
@@ -157,10 +153,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         
         if (isTouched()) {
             clone.setDateLastModified(getDateLastModified());
-        }
-        
-        if (hasFullResourceName()) {
-            clone.setRootPath(getRootPath());            
         }
         
         return clone;        

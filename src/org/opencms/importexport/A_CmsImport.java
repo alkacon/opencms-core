@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/08/17 07:09:06 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -250,18 +250,18 @@ public abstract class A_CmsImport implements I_CmsImport {
                     CmsResource resource = new CmsResource(
                         new CmsUUID(), // structure ID is always a new UUID
                         target.getResourceId(), 
-                        CmsUUID.getNullUUID(), 
-                        CmsResource.getName(key), 
+                        CmsUUID.getNullUUID(),
+                        key,
                         target.getTypeId(), 
-                        0, // TODO: pass flags from import 
-                        m_cms.getRequestContext().currentProject().getId(), 
-                        I_CmsConstants.C_STATE_NEW,
-                        target.getDateCreated(), 
+                        0, 
+                        m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
+                        I_CmsConstants.C_STATE_NEW, 
+                        target.getDateCreated(),
                         target.getUserCreated(), 
                         target.getDateLastModified(), 
                         target.getUserLastModified(), 
                         CmsResource.DATE_RELEASED_DEFAULT, 
-                        CmsResource.DATE_EXPIRED_DEFAULT,
+                        CmsResource.DATE_EXPIRED_DEFAULT, 
                         1,
                         0
                     );

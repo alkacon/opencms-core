@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/17 07:09:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
@@ -58,7 +57,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.4
  * 
@@ -334,13 +333,13 @@ public final class CmsLockManager extends Object {
     private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) {
         CmsResource resource = null;
 
-        // reading resources using readFileHeader while the lock state is checked would
-        // inevitably result in an infinite loop...
-
         try {
-            List path = driverManager.readPath(context, resourcename, CmsResourceFilter.ALL);
-            resource = (CmsResource)path.get(path.size() - 1);
-            resource.setRootPath(resourcename);
+            // reading resources using readFileHeader while the lock state is checked would
+            // inevitably result in an infinite loop...
+            resource = driverManager.getVfsDriver().readFileHeader(
+                context.currentProject().getId(), 
+                resourcename, 
+                true);
         } catch (CmsException e) {
             resource = null;
         }

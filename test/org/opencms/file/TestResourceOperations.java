@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2004/08/11 10:50:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/17 07:09:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.CmsException;
 import org.opencms.test.OpenCmsTestCase;
 
 import junit.extensions.TestSetup;
@@ -40,11 +41,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit tests for copy operation.<p>
+ * Unit tests for basic resource operations without test import.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -66,8 +67,15 @@ public class TestResourceOperations extends OpenCmsTestCase {
         
         TestSuite suite = new TestSuite();
         suite.setName(TestResourceOperations.class.getName());
-        
-        suite.addTest(new TestResourceOperations("testCreateResources"));
+
+        suite.addTest(new TestResourceOperations("testGetFolderPath"));
+        suite.addTest(new TestResourceOperations("testGetName"));
+        suite.addTest(new TestResourceOperations("testGetParentFolder"));
+        suite.addTest(new TestResourceOperations("testGetPathLevel"));
+        suite.addTest(new TestResourceOperations("testGetPathPart"));
+        suite.addTest(new TestResourceOperations("testIsFolder"));
+        suite.addTest(new TestResourceOperations("testGetFolderPath"));
+        suite.addTest(new TestResourceOperations("testResourceNames"));
         suite.addTest(new TestResourceOperations("testCreateReadFile"));
         suite.addTest(new TestResourceOperations("testPublishFile"));
         suite.addTest(new TestResourceOperations("testCreateSibling"));
@@ -85,6 +93,140 @@ public class TestResourceOperations extends OpenCmsTestCase {
         
         return wrapper;
     }     
+    
+    /**
+     * Tests the static "getFolderPath" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGetFolderPath() throws Throwable {
+        
+        echo("Testing testGetFolderPath");
+        
+        assertEquals(CmsResource.getFolderPath("/system/def/file.html"), "/system/def/");
+        
+        assertEquals(CmsResource.getFolderPath("/system/def/"), "/system/def/");
+    }
+    
+    /**
+     * Tests the static "getName" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGetName() throws Throwable {
+        
+        echo("Testing testGetName");
+        
+        assertEquals(CmsResource.getName("/system/workplace/"), "workplace/");
+    }
+    
+    /**
+     * Tests the static "getParentFolder" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGetParentFolder() throws Throwable {
+        
+        echo("Testing testGetParentFolder");
+        
+        assertEquals(CmsResource.getParentFolder("/system/workplace/"), "/system/");
+    }
+    
+    /**
+     * Tests the static "getPathLevel" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGetPathLevel() throws Throwable {
+        
+        echo("Testing testGetPathLevel");
+        
+        assertEquals(CmsResource.getPathLevel("/"), 0);
+        
+        assertEquals(CmsResource.getPathLevel("/foo/"), 1);
+        
+        assertEquals(CmsResource.getPathLevel("/foo/bar/"), 2);
+    }
+    
+    /**
+     * Tests the static "getPathPart" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGetPathPart() throws Throwable {
+        
+        echo("Testing testGetPathPart");
+        
+        assertEquals(CmsResource.getPathPart("/foo/bar/", 0), "/");
+        assertEquals(CmsResource.getPathPart("/foo/bar/", 1), "/foo/");
+        assertEquals(CmsResource.getPathPart("/foo/bar/", 2), "/foo/bar/");
+        // TODO: CW - unexpected behaviour ???
+        assertEquals(CmsResource.getPathPart("/foo/bar/", -1), "/foo/bar/");
+        assertEquals(CmsResource.getPathPart("/foo/bar/", -2), "/foo/");
+    }
+    
+    /**
+     * Tests the static "isFolder" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testIsFolder() throws Throwable {
+        
+        echo("Testing testIsFolder");
+    }
+
+    /**
+     * Tests the check for valid resource names.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testResourceNames() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing invalid resource names");
+        
+        CmsException exc;
+        
+        // resource name must not contain blanks
+        exc = null;
+        try {
+            cms.createResource("/Resource Name", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        } catch (CmsException e) {
+            exc = e;
+        }
+
+        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME));
+        
+        // resource name must not contain leading blanks
+        exc = null;
+        try {
+            cms.createResource("/ ResourceName", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        } catch (CmsException e) {
+            exc = e;
+        }
+
+        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME));
+        
+        // resource name must not contain trailing blanks
+        exc = null;
+        try {
+            cms.createResource("/ResourceName ", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        } catch (CmsException e) {
+            exc = e;
+        }
+
+        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME));
+        
+        // resource name must not contain other characters 
+        exc = null;
+        try {
+            cms.createResource("/Resource#Name", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        } catch (CmsException e) {
+            exc = e;
+        }
+
+        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME)); 
+    }
     
     /**
      * Tests the "createResource" operation.<p>
@@ -106,7 +248,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         cms.createResource("/folder1/resource3", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);        
         
         // ensure first created resource is a folder
-        assertIsFolder(cms, "/folder1");
+        assertIsFolder(cms, "/folder1/");
         
         // ensure second created resource is a plain text file
         assertResourceType(cms, "/resource2", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
@@ -198,5 +340,6 @@ public class TestResourceOperations extends OpenCmsTestCase {
         // check the sibling count
         assertSiblingCount(cms, "/resource4", 2);
         assertSiblingCount(cms, "/sibling1", 2);
-    }   
+    }
+ 
 }

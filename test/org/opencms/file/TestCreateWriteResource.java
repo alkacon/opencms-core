@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2004/08/12 11:02:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/17 07:09:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -51,10 +50,10 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
@@ -62,7 +61,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      */    
     public TestCreateWriteResource(String arg0) {
         super(arg0);
-    }
+    }  
     
     /**
      * Test suite for this test class.<p>
@@ -97,6 +96,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         
         return wrapper;
    }
+   
+
    
    /**
     * Test the create resource method for a folder.<p>
@@ -323,17 +324,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),            
-            "test1",
+            CmsUUID.getNullUUID(),
+            resourcename,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
+            cms.getRequestContext().currentUser().getId(),
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             -1
@@ -380,17 +381,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),            
-            "test1",
+            CmsUUID.getNullUUID(),
+            resourcename,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
+            cms.getRequestContext().currentUser().getId(),
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             -1
@@ -438,17 +439,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),            
-            "test1.html",
+            CmsUUID.getNullUUID(),
+            resourcename,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
+            cms.getRequestContext().currentUser().getId(),
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length
@@ -500,17 +501,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(), 
-            "test1.html",
+            CmsUUID.getNullUUID(),
+            resourcename,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
+            cms.getRequestContext().currentUser().getId(),
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length
@@ -584,16 +585,16 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getStructureId(),
             file.getResourceId(),
             CmsUUID.getNullUUID(),
-            CmsResource.getName(resourcename2),
+            resourcename2,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
+            cms.getRequestContext().currentUser().getId(),
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length
@@ -637,16 +638,16 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getStructureId(),
             file.getResourceId(),
             CmsUUID.getNullUUID(),
-            CmsResource.getName(resourcename1),
+            resourcename1,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
+            cms.getRequestContext().currentUser().getId(),
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length

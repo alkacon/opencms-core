@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/11 16:54:44 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2004/08/17 07:06:41 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.85 $ $Date: 2004/08/11 16:54:44 $
+ * @version $Revision: 1.86 $ $Date: 2004/08/17 07:06:41 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -206,11 +206,11 @@ public interface I_CmsVfsDriver {
      * 
      * @param projectId the ID of the current project
      * @param includeDeleted true if should be read even if it's state is deleted
-     * @param resourceId the id of the file
+     * @param structureId the id of the file
      * @return CmsFile the file
      * @throws CmsException if something goes wrong
      */
-    CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID resourceId) throws CmsException;
+    CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID structureId) throws CmsException;
 
     /**
      * Reads a file header specified by it's structure ID.<p>
@@ -225,15 +225,14 @@ public interface I_CmsVfsDriver {
 
     /**
      * Reads a file header specified by it's resource name and parent ID.<p>
-     *
      * @param projectId the Id of the project in which the resource will be used
-     * @param parentId the id of the parent folder
      * @param filename the name of the file
      * @param includeDeleted true if already deleted files are included
+     *
      * @return the read file.
      * @throws CmsException if operation was not succesful
      */
-    CmsFile readFileHeader(int projectId, CmsUUID parentId, String filename, boolean includeDeleted) throws CmsException;
+    CmsFile readFileHeader(int projectId, String filename, boolean includeDeleted) throws CmsException;
 
     /**
      * Reads all files that are either new, changed or deleted.<p>
@@ -268,14 +267,13 @@ public interface I_CmsVfsDriver {
 
     /**
      * Reads a folder specified by it's resource name and parent ID.<p>
-     *
      * @param projectId the project in which the resource will be used
-     * @param parentId the id of the parent folder
      * @param foldername the name of the folder to be read
+     *
      * @return The read folder.
      * @throws CmsException if operation was not succesful
      */
-    CmsFolder readFolder(int projectId, CmsUUID parentId, String foldername) throws CmsException;
+    CmsFolder readFolder(int projectId, String foldername) throws CmsException;
 
     /**
      * Reads all folders that are new, changed or deleted.<p>

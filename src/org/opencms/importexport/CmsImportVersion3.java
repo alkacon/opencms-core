@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/08/17 07:09:06 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -472,14 +472,6 @@ public class CmsImportVersion3 extends A_CmsImport {
             if (uuidresource != null) {
                 newUuidresource = new CmsUUID(uuidresource);
             }
-            // extract the name of the resource form the destination
-            String resname = destination;
-            if (resname.endsWith("/")) {
-                resname = resname.substring(0, resname.length() - 1);
-            }
-            if (resname.lastIndexOf("/") > 0) {
-                resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
-            }
 
             // convert to xml page if wanted
             if (m_convertToXmlPage 
@@ -504,8 +496,8 @@ public class CmsImportVersion3 extends A_CmsImport {
             CmsResource resource = new CmsResource(
                 newUuidstructure, 
                 newUuidresource, 
-                CmsUUID.getNullUUID(), 
-                resname, 
+                CmsUUID.getNullUUID(),
+                destination,
                 resType, 
                 new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/12 11:02:41 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/08/17 07:10:09 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.3.5
  */
@@ -911,6 +911,26 @@ public class OpenCmsTestCase extends TestCase {
             
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
+        }
+    }
+
+    /**
+     * Tests if the given exceptions are equal (or both null).<p>
+     * 
+     * @param e1 first exception to compare
+     * @param e2 second exception to compare
+     */
+    public void assertEquals(CmsException e1, CmsException e2) {
+        if (e1 == null && e2 == null) {
+            return;
+        } 
+        
+        if ((e1 == null && e2 != null) || (e1 != null && e2 == null)) {
+            fail ("Exceptions not equal (not both null)");
+        }
+        
+        if (!(e1.getClass().equals(e2.getClass()) || !(e1.getType() == e2.getType()))) {
+            fail("Exception " + e1.toString() + " does not equal " + e2.toString());
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/08/17 07:09:06 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -549,30 +549,27 @@ public class CmsImportVersion2 extends A_CmsImport {
             }             
             
             // extract the name of the resource form the destination
-            String resname=destination;
-            if (resname.endsWith("/")) {
-                resname=resname.substring(0, resname.length()-1);            
-            } 
-            if (resname.lastIndexOf("/")>0) {
-                resname=resname.substring(resname.lastIndexOf("/")+1, resname.length());
+            String targetName=destination;
+            if (targetName.endsWith("/")) {
+                targetName=targetName.substring(0, targetName.length()-1);            
             }
             
             // create a new CmsResource                         
             CmsResource resource=new CmsResource(
                 newUuidstructure, 
                 newUuidresource,
-                CmsUUID.getNullUUID(), 
-                resname, 
-                resourceTypeId,
-                0, 
-                m_cms.getRequestContext().currentProject().getId(),
+                CmsUUID.getNullUUID(),
+                targetName,
+                resourceTypeId, 
+                0,
+                m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW,
                 lastmodified,
                 curUser,
-                lastmodified, curUser, 
-                CmsResource.DATE_RELEASED_DEFAULT,
-                CmsResource.DATE_EXPIRED_DEFAULT,                     
-                1, 
+                lastmodified,
+                curUser, CmsResource.DATE_RELEASED_DEFAULT, 
+                CmsResource.DATE_EXPIRED_DEFAULT,
+                1,                     
                 size
             );
                         
@@ -581,7 +578,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
                 m_linkStorage.put(m_importPath + destination, new String(content));
                 m_linkPropertyStorage.put(m_importPath + destination, properties);
-                res.setRootPath(m_cms.getRequestContext().addSiteRoot(m_importPath + destination));                
                 res = resource;
             } else {                                                                                                       
                 //  import this resource in the VFS                         

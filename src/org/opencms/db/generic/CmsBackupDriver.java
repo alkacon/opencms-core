@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2004/08/17 07:07:32 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.98 $ $Date: 2004/08/12 11:01:30 $
+ * @version $Revision: 1.99 $ $Date: 2004/08/17 07:07:32 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -97,7 +97,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
         CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
-        String resourceName = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_NAME"));
+        String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
         int projectID = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID")); 
@@ -128,7 +128,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             resourceId, 
             parentId, 
             contentId, 
-            resourceName, 
+            resourcePath, 
             resourceType,
             resourceFlags, 
             projectID, 
@@ -689,7 +689,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(1, tagId);
             res = stmt.executeQuery();
             while (res.next()) {
-                projectResources.addElement(res.getString("RESOURCE_NAME"));
+                projectResources.addElement(res.getString("RESOURCE_PATH"));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1127,7 +1127,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getParentStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getName());
+            stmt.setString(4, resource.getRootPath());
             stmt.setInt(5, resource.getState());
             stmt.setLong(6, resource.getDateReleased());
             stmt.setLong(7, resource.getDateExpired());

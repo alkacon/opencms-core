@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/08/17 07:09:06 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -435,7 +435,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                     // import the resource               
                     CmsResource res = importResource(
                         source,
-                        destination,
+                        translatedName,
                         resType,
                         uuidresource,
                         datelastmodified,
@@ -631,37 +631,35 @@ public class CmsImportVersion4 extends A_CmsImport {
                 new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource, 
                 CmsUUID.getNullUUID(),
-                // newUuidcontent, 
-                resname, 
-                resType, 
+                destination,
+                resType,
                 new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 
-                I_CmsConstants.C_STATE_NEW,
-                datecreated, 
+                I_CmsConstants.C_STATE_NEW, 
+                datecreated,
                 newUsercreated, 
                 datelastmodified, 
                 newUserlastmodified, 
-                datereleased,
+                datereleased, 
                 dateexpired,
-                1, 
+                1,
                 size
             );
              
             if (C_RESOURCE_TYPE_LINK_ID == resType) {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
-                m_linkStorage.put(m_importPath + destination, new String(content));
-                m_linkPropertyStorage.put(m_importPath + destination, properties);                
+                m_linkStorage.put(/* m_importPath + */destination, new String(content));
+                m_linkPropertyStorage.put(/* m_importPath + */destination, properties);                
                 res = resource;
-                res.setRootPath(m_cms.getRequestContext().addSiteRoot(m_importPath + destination));
             } else {             
                 // import this resource in the VFS   
-                res = m_cms.importResource(m_importPath + destination, resource, content, properties);
+                res = m_cms.importResource(/* m_importPath + */destination, resource, content, properties);
             }
 
             if (res != null) {
                 if (C_RESOURCE_TYPE_PAGE_ID == resType) {
-                    m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
+                    m_importedPages.add(/* I_CmsConstants.C_FOLDER_SEPARATOR + */destination);
                 }
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             }          

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/08/17 07:08:50 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -74,9 +74,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
     private boolean m_isTouched;
-
-    /** The name of this resource. */
-    private String m_name;
 
     /** The id of the parent's strcuture database record. */
     private CmsUUID m_parentId;
@@ -110,11 +107,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /**
      * Constructor, creates a new CmsRecource object.<p>
-     *
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param parentId the id of this resources parent folder
-     * @param name the filename of this resouce
+     * @param rootPath the root path to the resource
      * @param type the type of this resource
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
@@ -132,7 +128,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID structureId,
         CmsUUID resourceId,
         CmsUUID parentId,
-        String name,
+        String rootPath,
         int type,
         int flags,
         int projectId,
@@ -149,8 +145,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_parentId = parentId;
-        // m_contentId = contentId;
-        m_name = name;
+        m_rootPath = rootPath;
         m_typeId = type;
         m_flags = flags;
         m_projectLastModified = projectId;
@@ -164,7 +159,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateReleased = dateReleased;
         m_dateExpired = dateExpired;
         m_isTouched = false;
-        m_rootPath = null;
     }
 
     /**
@@ -302,7 +296,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static boolean isFolder(String resource) {
 
-        return ((resource != null) && (resource.charAt(resource.length() - 1) == '/'));
+        return ((resource != null) && (!"".equals(resource)) && (resource.charAt(resource.length() - 1) == '/'));
     }
 
     /**
@@ -316,7 +310,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_structureId,
             m_resourceId,
             m_parentId,
-            m_name,
+            m_rootPath,
             m_typeId,
             m_flags,
             m_projectLastModified,
@@ -332,10 +326,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         
         if (isTouched()) {
             clone.setDateLastModified(m_dateLastModified);
-        }
-        
-        if (hasFullResourceName()) {
-            clone.setRootPath(m_rootPath);            
         }
         
         return clone;
@@ -433,8 +423,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the name of this resource
      */
     public String getName() {
-
-        return m_name;
+        // TODO: CW inconsistent behaviour:
+        // static getName returns folder name with trailing "/", this method without !
+        String name = getName(m_rootPath);
+        if (name.endsWith("/")) {
+            return name.substring(0, name.length()-1);
+        } else {
+            return name;
+        }
     }
 
     /**
@@ -484,10 +480,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see CmsRequestContext#removeSiteRoot(String) 
      */
     public String getRootPath() {
-
-        if (m_rootPath == null) {
-            throw new RuntimeException("Full resource name not set for CmsResource " + getName());
-        }
         return m_rootPath;
     }
 
@@ -551,17 +543,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public CmsUUID getUserLastModified() {
 
         return m_userLastModified;
-    }
-
-    /**
-     * Checks whether the current state of this resource contains the full resource
-     * path including the site root or not.<p>
-     * 
-     * @return true if the current state of this resource contains the full resource path
-     */
-    public boolean hasFullResourceName() {
-
-        return m_rootPath != null;
     }
 
     /**
@@ -742,8 +723,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
         result.append("[");
         result.append(this.getClass().getName());
-        result.append(", name: ");
-        result.append(m_name);
+        result.append(", path: ");
+        result.append(m_rootPath);
         result.append(", structure id ");
         result.append(m_structureId);
         result.append(", resource id: ");

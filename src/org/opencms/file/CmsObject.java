@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/11 16:55:50 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/08/17 07:08:50 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  */
 public class CmsObject {
 
@@ -1107,7 +1107,8 @@ public class CmsObject {
      */
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.readResource(m_context, addSiteRoot(resourcename), filter);
+        return m_driverManager.readResource(m_context, 
+            addSiteRoot(resourcename), filter);
     }
 
     /**
@@ -3235,7 +3236,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), filter));
+        return m_driverManager.readPath(m_context.currentProject().getId(), m_context.addSiteRoot(path), filter);
     }        
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/08/17 07:09:28 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.report.I_CmsReport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2004/06/21 11:45:41 $
+ * @version $Revision: 1.19 $ $Date: 2004/08/17 07:09:28 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -243,8 +242,11 @@ public class CmsHtmlLinkValidator extends Object {
 
             try {
                 // ... if the linked resource exists in the online project
-                m_driverManager.readFileHeaderInProject(I_CmsConstants.C_PROJECT_ONLINE_ID, link, CmsResourceFilter.ALL);
-
+                m_driverManager.getVfsDriver().readFileHeader(
+                    I_CmsConstants.C_PROJECT_ONLINE_ID, 
+                    link, 
+                    true);
+                
                 // ... and if the linked resource in the online project won't get deleted if it gets actually published
                 if (offlineFileLookup.containsKey(link)) {
                     unpublishedResource = (CmsResource) offlineFileLookup.get(link);

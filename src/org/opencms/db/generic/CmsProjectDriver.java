@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.181 $
+ * Date   : $Date: 2004/08/17 07:07:32 $
+ * Version: $Revision: 1.182 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.181 $ $Date: 2004/08/12 11:01:30 $
+ * @version $Revision: 1.182 $ $Date: 2004/08/17 07:07:32 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -150,13 +150,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProjectResource(int, java.lang.String, java.lang.Object)
      */
-    public void createProjectResource(int projectId, String resourceName, Object reservedParam) throws CmsException {
+    public void createProjectResource(int projectId, String resourcePath, Object reservedParam) throws CmsException {
         // do not create entries for online-project
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            readProjectResource(projectId, resourceName, reservedParam);
+            readProjectResource(projectId, resourcePath, reservedParam);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -177,7 +177,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             // write new resource to the database
             stmt.setInt(1, projectId);
-            stmt.setString(2, resourceName);
+            stmt.setString(2, resourcePath);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -413,7 +413,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT            
         );
-        onlineRootFolder.setRootPath("/");
 
         m_driverManager.getVfsDriver().createResource(
             online, 
@@ -426,7 +425,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             CmsDriverManager.C_UPDATE_ALL);
         m_driverManager.getProjectDriver().createProjectResource(
             online.getId(), 
-            onlineRootFolder.getName(), 
+            onlineRootFolder.getRootPath(), 
             null);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -459,7 +458,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             CmsDriverManager.C_UPDATE_ALL);        
         m_driverManager.getProjectDriver().createProjectResource(
             setup.getId(), 
-            offlineRootFolder.getName(), 
+            offlineRootFolder.getRootPath(), 
             null);
     }
 
@@ -572,7 +571,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             try {
                 // read the folder online
                 onlineFolder = m_driverManager.readFolder(context, currentFolder.getStructureId(), CmsResourceFilter.ALL);
-                onlineFolder.setRootPath(currentFolder.getRootPath());
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error reading resource " + currentFolder.toString(), e);
@@ -663,7 +661,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the file header online
                     onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), true);
-                    onlineFileHeader.setRootPath(offlineFileHeader.getRootPath());
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error reading resource " + offlineFileHeader.toString(), e);
@@ -755,7 +752,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the file header online                   
                     onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), false);
-                    onlineFileHeader.setRootPath(offlineFileHeader.getRootPath());                    
 
                     // reset the labeled link flag before writing the online file
                     int flags = offlineFileHeader.getFlags();
@@ -980,13 +976,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (!publishedResourceIds.contains(offlineFileHeader.getResourceId())) {    
                 // read the file content offline
                 offlineFile = m_driverManager.getVfsDriver().readFile(offlineProject.getId(), false, offlineFileHeader.getStructureId());
-                offlineFile.setRootPath(offlineFileHeader.getRootPath());
                 
                 // create the file online              
                 newFile = (CmsFile)offlineFile.clone();
                 newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                newFile.setRootPath(offlineFileHeader.getRootPath());                
-                
+               
                 m_driverManager.getVfsDriver().createResource(
                     onlineProject, 
                     newFile, 
@@ -1007,7 +1001,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineFileHeader.getName());
 
                 newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
-                newFile.setRootPath(offlineFileHeader.getRootPath());                
             }
         } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1038,19 +1031,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // create the folder online
                     newFolder = (CmsFolder) offlineFolder.clone();
                     newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                    newFolder.setRootPath(offlineFolder.getRootPath());
 
                     onlineFolder = m_driverManager.getVfsDriver().createResource(
                         onlineProject, 
                         newFolder, 
                         null);
 
-                    onlineFolder.setRootPath(offlineFolder.getRootPath());
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         try {
                             onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), newFolder.getStructureId());
-                            onlineFolder.setRootPath(offlineFolder.getRootPath());
                             m_driverManager.getVfsDriver().publishResource(onlineProject, onlineFolder, offlineFolder, false);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1071,13 +1061,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the folder online
                     onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), offlineFolder.getStructureId());
-                    onlineFolder.setRootPath(offlineFolder.getRootPath());
                 } catch (CmsVfsResourceNotFoundException e) {
                     try {
                         //onlineFolder = m_driverManager.getVfsDriver().createFolder(onlineProject, offlineFolder, offlineFolder.getParentStructureId());
                         onlineFolder = m_driverManager.getVfsDriver().createResource(onlineProject, offlineFolder, null);
                         onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        onlineFolder.setRootPath(offlineFolder.getRootPath());
                         m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
                     } catch (CmsException e1) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1490,7 +1478,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectResource(int, java.lang.String, java.lang.Object)
      */
-    public String readProjectResource(int projectId, String resourcename, Object reservedParam) throws CmsException {
+    // TODO: CW rename this since it only checks if a resource/project id is available
+    // - but the returned resourcePath is already available when method is called
+    public String readProjectResource(int projectId, String resourcePath, Object reservedParam) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -1509,13 +1499,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             // select resource from the database
             stmt.setInt(1, projectId);
-            stmt.setString(2, resourcename);
+            stmt.setString(2, resourcePath);
             res = stmt.executeQuery();
 
             if (res.next()) {
-                resName = res.getString("RESOURCE_NAME");
+                resName = res.getString("RESOURCE_PATH");
             } else {
-                throw new CmsException("[" + this.getClass().getName() + ".readProjectResource] " + resourcename, CmsException.C_NOT_FOUND);
+                throw new CmsException("[" + this.getClass().getName() + ".readProjectResource] " + resourcePath, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1541,7 +1531,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
 
             while (res.next()) {
-                result.add(res.getString("RESOURCE_NAME"));
+                result.add(res.getString("RESOURCE_PATH"));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1776,7 +1766,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (res.next()) {
                 structureId = new CmsUUID(res.getString("STRUCTURE_ID"));
                 resourceId = new CmsUUID(res.getString("RESOURCE_ID"));                
-                rootPath = res.getString("RESOURCE_NAME");
+                rootPath = res.getString("RESOURCE_PATH");
                 resourceState = res.getInt("RESOURCE_STATE");
                 resourceType = res.getInt("RESOURCE_TYPE");
                 siblingCount = res.getInt("SIBLING_COUNT");
