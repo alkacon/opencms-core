@@ -120,6 +120,75 @@ OLE_TRISTATE_UNCHECKED =          0
 OLE_TRISTATE_CHECKED =            1
 OLE_TRISTATE_GRAY =               2
 
+<!-- Define Arrays for the context menue -->
+
+var MENU_SEPARATOR = ""; 
+var ContextMenu = new Array();
+var GeneralContextMenu = new Array();
+var TableContextMenu = new Array();
+var AbsPosContextMenu = new Array();
+
+<!--  Constructor for custom object that represents an item on the context menu -->
+
+function ContextMenuItem(string, cmdId) {
+  this.string = string;
+  this.cmdId = cmdId;
+}
+
+<!-- Displays the Context menue, taken from the MS example editor -->
+
+function ShowContextMenu() {
+  var menuStrings = new Array();
+  var menuStates = new Array();
+  var state;
+  var i
+  var idx = 0;
+
+  // Rebuild the context menu. 
+  ContextMenu.length = 0;
+
+  // Always show general menu
+  for (i=0; i<GeneralContextMenu.length; i++) {
+    ContextMenu[idx++] = GeneralContextMenu[i];
+  }
+
+  // Is the selection inside a table? Add table menu if so
+  if (document.all.EDIT_HTML.QueryStatus(DECMD_INSERTROW) != DECMDF_DISABLED) {
+    for (i=0; i<TableContextMenu.length; i++) {
+      ContextMenu[idx++] = TableContextMenu[i];
+    }
+  }
+
+   // Set up the actual arrays that get passed to SetContextMenu
+  for (i=0; i<ContextMenu.length; i++) {
+    menuStrings[i] = ContextMenu[i].string;
+    if (menuStrings[i] != MENU_SEPARATOR) {
+      state = document.all.EDIT_HTML.QueryStatus(ContextMenu[i].cmdId);
+    } else {
+      state = DECMDF_ENABLED;
+    }
+    if (state == DECMDF_DISABLED || state == DECMDF_NOTSUPPORTED) {
+      menuStates[i] = OLE_TRISTATE_GRAY;
+    } else if (state == DECMDF_ENABLED || state == DECMDF_NINCHED) {
+      menuStates[i] = OLE_TRISTATE_UNCHECKED;
+    } else { // DECMDF_LATCHED
+      menuStates[i] = OLE_TRISTATE_CHECKED;
+    }
+  }
+    // Set the context menu
+  document.all.EDIT_HTML.SetContextMenu(menuStrings, menuStates);
+}
+
+<!-- Do the Action when a Context menu entry is selected. Taken from the MS example editor -->
+
+function ContextMenuAction(itemIndex) {
+  
+  if (ContextMenu[itemIndex].cmdId == DECMD_INSERTTABLE) {
+    InsertTable();
+  } else {
+    document.all.EDIT_HTML.ExecCommand(ContextMenu[itemIndex].cmdId, OLECMDEXECOPT_DODEFAULT);
+  }
+}
 
 function DisplayChanged()
 {
@@ -241,10 +310,20 @@ function doEditHTML(para)
 		DECMD_OUTDENT_onclick();
 		break;
 	case 38:
-		DECMD_SETFORECOLOR_onclick();
+	    ColorSelected=-1;
+	    SelColor=-1;
+	    CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
+		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=100");
+        SelColorWindow.opener = self;
+		//DECMD_SETFORECOLOR_onclick();
 		break;
     case 39:
-		DECMD_SETBACKCOLOR_onclick();
+		ColorSelected=-1;
+	    SelColor=-1;
+	    CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
+		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=100");
+        SelColorWindow.opener = self;
+		//DECMD_SETBACKCOLOR_onclick();
 		break;
 	case 40:
 		InsertTable();
@@ -267,6 +346,20 @@ function doEditHTML(para)
 function setText()
 {
 	document.EDITOR.EDIT_HTML.DocumentHTML = unescape(text);
+    GeneralContextMenu[0] = new ContextMenuItem("cut", DECMD_CUT);
+    GeneralContextMenu[1] = new ContextMenuItem("copy", DECMD_COPY);
+    GeneralContextMenu[2] = new ContextMenuItem("paste", DECMD_PASTE);
+    TableContextMenu[0] = new ContextMenuItem(MENU_SEPARATOR, 0);
+    TableContextMenu[1] = new ContextMenuItem("insertrow", DECMD_INSERTROW);
+    TableContextMenu[2] = new ContextMenuItem("deleterow", DECMD_DELETEROWS);
+    TableContextMenu[3] = new ContextMenuItem(MENU_SEPARATOR, 0);
+    TableContextMenu[4] = new ContextMenuItem("insertcol", DECMD_INSERTCOL);
+    TableContextMenu[5] = new ContextMenuItem("deletecol", DECMD_DELETECOLS);
+    TableContextMenu[6] = new ContextMenuItem(MENU_SEPARATOR, 0);
+    TableContextMenu[7] = new ContextMenuItem("insertcell", DECMD_INSERTCELL);
+    TableContextMenu[8] = new ContextMenuItem("deletecell", DECMD_DELETECELLS);
+    TableContextMenu[9] = new ContextMenuItem("mergecell", DECMD_MERGECELLS);
+    TableContextMenu[10] = new ContextMenuItem("splitcell", DECMD_SPLITCELL);
 	EDITOR.EDIT_HTML.focus();
 }
 
@@ -342,7 +435,7 @@ function MENU_FILE_SAVEAS_onclick()
 //=======================================================
 function ParagraphStyle_onchange() 
 {	 
-  document.EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, parseInt("1"));
+  document.EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, EDITOR.BLOCK.value);
   EDITOR.EDIT_HTML.focus();
 }
 function FontName_onchange()
@@ -407,9 +500,41 @@ function DECMD_OUTDENT_onclick()
   EDITOR.EDIT_HTML.ExecCommand(DECMD_OUTDENT,OLECMDEXECOPT_DODEFAULT);
   EDITOR.EDIT_HTML.focus();
 }
+
+<!-- Function to set the ForegroundColor with the data received set by the "selcolor" dialog --> 
+ 
+ function setFGColor(arr)
+  {
+  if (arr != -1) 
+    {
+     if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
+     {
+	  document.all.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR, OLECMDEXECOPT_DODEFAULT, arr);
+	 }
+      //window.clearInterval(CheckFGCol);
+      SelColor=-1; 
+  	}
+  }
+  
+<!-- Function to set the BackgroundColor with the data received set by the "selcolor" dialog --> 
+ 
+ function setBGColor(arr)
+  {
+  if (arr != -1) 
+    {
+     if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
+     {
+     document.all.EDIT_HTML.ExecCommand(DECMD_SETBACKCOLOR, OLECMDEXECOPT_DODEFAULT, arr);
+     }
+     //window.clearInterval(CheckBGCol);
+     SelColor=-1;
+  	}
+  }
+
+
 function DECMD_SETFORECOLOR_onclick()
 {
-  var arr = showModalDialog( "../templates/selcolor.htm",
+  var arr = showModalDialog( "edit_html_selcolor.html",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:30em" );
 
@@ -433,16 +558,16 @@ function DECMD_SETBACKCOLOR_onclick()
 }
 function InsertTable()
 {
-  var pVar = ObjTableInfo;
+  var pVar = document.all.ObjTableInfo;
   var args = new Array();
   var arr = null;
      
   // Display table information dialog
-  args["NumRows"] = ObjTableInfo.NumRows;
-  args["NumCols"] = ObjTableInfo.NumCols;
-  args["TableAttrs"] = ObjTableInfo.TableAttrs;
-  args["CellAttrs"] = ObjTableInfo.CellAttrs;
-  args["Caption"] = ObjTableInfo.Caption;
+  args["NumRows"] = document.all.ObjTableInfo.NumRows;
+  args["NumCols"] = document.all.ObjTableInfo.NumCols;
+  args["TableAttrs"] = document.all.ObjTableInfo.TableAttrs;
+  args["CellAttrs"] = document.all.ObjTableInfo.CellAttrs;
+  args["Caption"] = document.all.ObjTableInfo.Caption;
   
   arr = null;
     
@@ -455,15 +580,15 @@ function InsertTable()
     // Initialize table object
     for ( elem in arr ) {
       if ("NumRows" == elem && arr["NumRows"] != null) {
-        ObjTableInfo.NumRows = arr["NumRows"];
+        document.all.ObjTableInfo.NumRows = arr["NumRows"];
       } else if ("NumCols" == elem && arr["NumCols"] != null) {
-        ObjTableInfo.NumCols = arr["NumCols"];
+        document.all.ObjTableInfo.NumCols = arr["NumCols"];
       } else if ("TableAttrs" == elem) {
-        ObjTableInfo.TableAttrs = arr["TableAttrs"];
+        document.all.ObjTableInfo.TableAttrs = arr["TableAttrs"];
       } else if ("CellAttrs" == elem) {
-        ObjTableInfo.CellAttrs = arr["CellAttrs"];
+        document.all.CellAttrs = arr["CellAttrs"];
       } else if ("Caption" == elem) {
-        ObjTableInfo.Caption = arr["Caption"];
+        document.all.ObjTableInfo.Caption = arr["Caption"];
       }
     }
     
