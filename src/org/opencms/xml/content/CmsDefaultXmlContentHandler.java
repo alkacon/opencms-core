@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/01 12:23:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/02 08:30:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -146,9 +146,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveElementMappings(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveAppInfo(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.CmsXmlContentDefinition)
      */
-    public void resolveElementMappings(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
+    public void resolveAppInfo(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
     throws CmsException {
 
         // get the original VFS file from the content

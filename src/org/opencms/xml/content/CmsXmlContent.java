@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/01 12:23:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/02 08:30:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -175,16 +175,16 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
-     * Resolves the element mappings according to the rules of the XML content handler that 
-     * has been configured for the XML content definition.<p>
+     * Resolves the information in the optional "appinfo" schema node according to the rules of the XML content handler that 
+     * has been configured for the XML content definition of this XML content.<p>
      * 
      * @param cms an initialized CmsObject
      * @throws CmsException if something goes wrong
      */
-    public void resolveElementMappings(CmsObject cms) throws CmsException {
+    public void resolveAppInfo(CmsObject cms) throws CmsException {
 
-        // call the element mapping resolver of the configured XML content handler
-        m_contentDefinition.getContentHandler().resolveElementMappings(cms, this, m_contentDefinition);
+        // call the appinfo resolver of the configured XML content handler
+        m_contentDefinition.getContentHandler().resolveAppInfo(cms, this, m_contentDefinition);
     }
 
     /**

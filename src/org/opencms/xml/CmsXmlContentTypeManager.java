@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/11/01 12:23:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/02 08:30:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -237,17 +237,17 @@ public class CmsXmlContentTypeManager {
      * and that instance will be cached and re-used for all operations.<p> 
      * 
      * @param className the name of the XML content handler to return
-     * @param contentDefinitionName the name of the XML content definition that handler belongs to
+     * @param schemaLocation the schema location of the XML content definition that handler belongs to
      *  
      * @return the XML content handler class
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    public I_CmsXmlContentHandler getContentHandler(String className, String contentDefinitionName) throws CmsXmlException {
+    public I_CmsXmlContentHandler getContentHandler(String className, String schemaLocation) throws CmsXmlException {
 
         // create a unique key for the content deinition / class name combo
-        StringBuffer buffer = new StringBuffer(64);
-        buffer.append(contentDefinitionName);
+        StringBuffer buffer = new StringBuffer(128);
+        buffer.append(schemaLocation);
         buffer.append('#');
         buffer.append(className);
         String key = buffer.toString();

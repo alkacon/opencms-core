@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/01 12:23:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/02 08:30:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -86,7 +86,8 @@ public interface I_CmsXmlContentHandler {
     void freeze();
 
     /**
-     * Resolves the element mappings of this XML content class.<p>
+     * Resolves the "appinfo" schema node of the XML content definition according 
+     * to the rules of this XML content handler.<p>
      * 
      * @param cms the current OpenCms user context
      * @param content the XML content to resolve the mappings for
@@ -94,6 +95,6 @@ public interface I_CmsXmlContentHandler {
      * 
      * @throws CmsException if something goes wrong
      */
-    void resolveElementMappings(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
+    void resolveAppInfo(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
     throws CmsException;
 }

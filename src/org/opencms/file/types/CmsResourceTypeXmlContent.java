@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/02 08:30:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5
  */
@@ -210,7 +210,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
         // correct the HTML structure 
         resource = xmlContent.correctXmlStructure(cms);        
         // resolve the file mappings
-        xmlContent.resolveElementMappings(cms);        
+        xmlContent.resolveAppInfo(cms);        
         // now write the file
         return super.writeFile(cms, securityManager, resource);
     }

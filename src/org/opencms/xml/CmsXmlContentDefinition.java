@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/01 12:23:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/02 08:30:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -377,7 +377,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                     if (appinfo.getName().equals("handler")) {
                         String className = appinfo.attributeValue("class");
                         if (className != null) {
-                            contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(className, name);
+                            contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(className, schemaLocation);
                         }
                     }
                 }
