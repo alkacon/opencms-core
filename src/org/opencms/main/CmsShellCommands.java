@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/05 16:05:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.core.CmsCronEntry;
+import com.opencms.core.CmsCronTable;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -73,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $ $Date: 2003/09/05 12:22:25 $ 
+ * @version $Revision: 1.9 $ $Date: 2003/09/05 16:05:59 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -2880,6 +2882,22 @@ class CmsShellCommands {
         }
     }
 
+    /**
+     * Starts a new cron job with the given index.<p>
+     * 
+     * @param index the job index within the cron table
+     */
+    public void startCronJob(String no) {
+        try {
+            int index = Integer.parseInt(no);
+            CmsCronTable cronTable = new CmsCronTable(m_cms.readCronTable());
+            CmsCronEntry cronJob = cronTable.get(index);
+            OpenCmsCore.getInstance().startScheduleJob(cronJob);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }    
+    } 
+        
     /**
      * Sets the name of the current site root
      * of the content objects system
