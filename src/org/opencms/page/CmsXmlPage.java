@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/04/28 22:23:26 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/04/29 09:41:19 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,18 @@
 
 package org.opencms.page;
 
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.staticexport.CmsLink;
-import org.opencms.staticexport.CmsLinkProcessor;
-import org.opencms.staticexport.CmsLinkTable;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsSystemInfo;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteMatcher;
+import org.opencms.staticexport.CmsLink;
+import org.opencms.staticexport.CmsLinkProcessor;
+import org.opencms.staticexport.CmsLinkTable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -63,7 +64,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.SAXValidator;
 import org.dom4j.io.XMLWriter;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -77,7 +80,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsXmlPage {
     
@@ -697,7 +700,6 @@ public class CmsXmlPage {
      */
     public OutputStream write(OutputStream out, String encoding) throws CmsXmlPageException {        
         try {
-
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setEncoding(encoding);
             
@@ -723,4 +725,40 @@ public class CmsXmlPage {
     public CmsFile write(String encoding) throws CmsXmlPageException {        
         return write(m_file, encoding);
     }
+    
+    
+    /**
+     * Validated if the xml structure of the xmlpage does match the dtd.<p>
+     * 
+     * This is nescessary, as someone could have edited the xml controlcode of the page and
+     * modified the xml structure there.
+     * 
+     * @throws CmsXmlPageException if the validation fails
+     */
+    public void validate() throws CmsXmlPageException  {
+
+        // Modifiy the path to the dtd. The xmlpage only contains the relative path to the
+        // dtd inside of opencms. To validate the xmlstructure, the complete path is required.
+         
+        CmsSiteMatcher workplace = OpenCms.getSiteManager().getWorkplaceSiteMatcher();                
+        CmsSystemInfo systemInfo = OpenCms.getSystemInfo();
+        String path = workplace.getUrl() + systemInfo.getOpenCmsContext();          
+     
+        m_document.addDocType(C_DOCUMENT_NODE, "", path+C_DOCUMENT_TYPE);
+        
+        // create a new validator and validate the xml structure
+        SAXValidator validator = new SAXValidator();
+        validator.setErrorHandler(new CmsXmlPageValidationErrorHandler());
+        try {
+            // validate the document
+            validator.validate(m_document);                        
+        } catch (SAXException e) {
+            // there was an validation error, so throw an exception
+            throw new CmsXmlPageException("XML validation error " +e.getMessage());
+        } finally {
+           // clean up some memory
+           validator = null;
+        }           
+    }
+    
 }

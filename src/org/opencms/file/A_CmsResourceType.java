@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/03/22 16:33:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/29 09:41:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -266,4 +266,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException {
         cms.doUnlockResource(resourcename);
     }
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     */
+    public void writeFile(CmsObject cms, CmsFile file) throws CmsException {
+        cms.doWriteFile(file);
+    }
+    
 }

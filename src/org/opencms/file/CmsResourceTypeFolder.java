@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/03/22 16:33:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/29 09:41:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -681,6 +681,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         */
     }
 
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     */
+    public void writeFile(CmsObject cms, CmsFile file) throws CmsException {
+        // nothing has to do there as it is not a file
+        // TODO: throw an exception?
+    }
+    
     /**
      * Checks if there are at least one character in the resourcename.<p>
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/28 22:20:30 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/04/29 09:41:19 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsObject {
 
@@ -1347,6 +1347,18 @@ public class CmsObject {
         m_driverManager.unlockResource(m_context, addSiteRoot(resource));
     }
 
+    /**
+     * Writes a file to the VFS.<p>
+     *
+     * @param file the file to write.
+     *
+     * @throws CmsException if resourcetype is set to folder. The CmsException will also be thrown,
+     * if the user has not the rights write the file.
+     */
+    protected void doWriteFile(CmsFile file) throws CmsException {    
+        m_driverManager.writeFile(m_context, file);
+    }
+    
     /**
     * Writes a resource and its properties to the VFS.<p>
     *
@@ -3669,7 +3681,8 @@ public class CmsObject {
      * if the user has not the rights write the file.
      */
     public void writeFile(CmsFile file) throws CmsException {
-        m_driverManager.writeFile(m_context, file);
+        getResourceType(file.getType()).writeFile(this, file);
+        //m_driverManager.writeFile(m_context, file);
     }
 
     /**
