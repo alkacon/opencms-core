@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.182 $
+* Date   : $Date: 2001/09/06 13:20:17 $
+* Version: $Revision: 1.183 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.182 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.183 $ $Date: 2001/09/06 13:20:17 $
  */
 public interface I_CmsConstants {
 
@@ -303,6 +303,13 @@ public interface I_CmsConstants {
      * go back to the previos one.
      */
     static final int C_PROJECT_STATE_ARCHIVE = 2;
+
+    /**
+     * This constant defines a project that is invisible.
+     * The project is invisible for users. It is needed
+     * for creating and editing temporary files
+     */
+    static final int C_PROJECT_STATE_INVISIBLE = 3;
 
     /**
      * This id will be returned for resources with no id.
