@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2002/12/13 09:16:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/12/16 13:16:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0 rc 1
  */
@@ -79,27 +79,11 @@ public class CmsHtmlReport implements I_CmsReport {
     
     /** Flag to indicate if exception should be displayed long or short */
     private boolean m_showExceptionStackTracke = true; 
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#addSeperator(java.lang.String)
-     */
-    public void addSeperator(String message) {
-        this.println(m_messages.key(message), C_FORMAT_HEADLINE);        
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#addSeperator(java.lang.String, java.lang.String)
-     */
-    public void addSeperator(String message, String info) {
-        StringBuffer buf = new StringBuffer(m_messages.key(message));
-        if (info != null) buf.append(info);
-        this.println(new String(buf), C_FORMAT_HEADLINE);        
-    }
 
     /**
-     * @see com.opencms.report.I_CmsReport#addSeperator()
+     * @see com.opencms.report.I_CmsReport#println()
      */
-    public void addSeperator() {
+    public void println() {
         this.print(C_LINEBREAK);
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/12/12 19:02:07 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2002/12/16 13:15:26 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.61 $ $Date: 2002/12/12 19:02:07 $
+ * @version $Revision: 1.62 $ $Date: 2002/12/16 13:15:26 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -621,9 +621,9 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
             }
         }
         // at last we have to get the links from all new imported pages for the  linkmanagement
-        m_report.addSeperator(I_CmsReport.C_LINK_CHECK_BEGIN);
+        m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         updatePageLinks();
-        m_report.addSeperator(I_CmsReport.C_LINK_CHECK_END);
+        m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }

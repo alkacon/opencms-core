@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2002/12/12 19:06:38 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/16 13:18:55 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.report.CmsHtmlReport;
+import com.opencms.report.I_CmsReport;
 import com.opencms.util.Utils;
 
 /**
@@ -49,7 +50,7 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
 
     private CmsObject m_cms;
 
-    private CmsHtmlReport m_report;
+    private I_CmsReport m_report;
 
     private I_CmsSession m_session;
 
@@ -77,7 +78,9 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
         try {
 
             // import the database
+            m_report.println(m_report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);            
             m_cms.importResources(m_existingFile, C_ROOT, m_report);
+            m_report.println(m_report.key("report.import_db_end"), I_CmsReport.C_FORMAT_HEADLINE);            
         }
         catch(CmsException e) {
             m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));

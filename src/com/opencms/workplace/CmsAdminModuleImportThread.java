@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2002/12/12 19:06:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/12/16 13:18:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends Thread {
@@ -55,7 +55,7 @@ public class CmsAdminModuleImportThread extends Thread {
     private Vector m_projectFiles;
     private I_CmsRegistry m_registry;
     private CmsObject m_cms;
-    private CmsHtmlReport m_report;
+    private I_CmsReport m_report;
     
     /** DEBUG flag */
     private static final boolean DEBUG = false;    
@@ -99,7 +99,8 @@ public class CmsAdminModuleImportThread extends Thread {
                 I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
             m_cms.getRequestContext().setCurrentProject(project.getId());
 
-            m_report.addSeperator(I_CmsReport.C_MODULE_IMPORT_BEGIN, " <i>" + moduleName + "</i>");
+            m_report.print(m_report.key("report.import_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
 
             // copy the resources to the project
             for(int i = 0;i < m_projectFiles.size();i++) {
@@ -108,13 +109,13 @@ public class CmsAdminModuleImportThread extends Thread {
             // import the module
             m_registry.importModule(m_moduleName, m_conflictFiles, m_report);   
 
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_BEGIN);            
+            m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);            
             // now unlock and publish the project
             m_cms.unlockProject(project.getId());
             m_cms.publishProject(project.getId(), m_report);                
 
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_END);
-            m_report.addSeperator(I_CmsReport.C_MODULE_IMPORT_END);
+            m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(m_report.key("report.import_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
             
             if (DEBUG) System.err.println("CmsAdminModuleImportThread() finished");            
         }

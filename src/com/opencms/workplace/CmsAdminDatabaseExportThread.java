@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseExportThread.java,v $
-* Date   : $Date: 2002/12/12 19:06:38 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/12/16 13:18:55 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.report.CmsHtmlReport;
+import com.opencms.report.I_CmsReport;
 import com.opencms.util.Utils;
 
 /**
@@ -66,7 +67,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
     private long m_contentAge;
 
     // the object to send the information to the workplace.
-    private CmsHtmlReport m_report;
+    private I_CmsReport m_report;
 
     /**
      * Export the VFS (Virtual File System) resources.
@@ -116,7 +117,9 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
             if(m_moduledataExport){
                 m_cms.exportModuledata(m_fileName, m_exportPaths, m_exportModules);
             } else {
+                m_report.println(m_report.key("report.export_db_begin"), I_CmsReport.C_FORMAT_HEADLINE); 
                 m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata, m_contentAge, m_report);
+                m_report.println(m_report.key("report.export_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
         catch(CmsException e) {

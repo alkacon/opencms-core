@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/12/16 13:15:37 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.35 $ $Date: 2002/12/13 17:38:13 $
+ * @version $Revision: 1.36 $ $Date: 2002/12/16 13:15:37 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -235,8 +235,8 @@ public class CmsStaticExport implements I_CmsConstants{
                 
                 boolean doExport = (exportLinks.size() > 0);
                 if (doExport) {
-                    m_report.addSeperator(I_CmsReport.C_STATIC_EXPORT_BEGIN, " " + exportLinks.size());
-                                
+                    m_report.print(m_report.key("report.static_export_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                    m_report.println(" " + exportLinks.size(), I_CmsReport.C_FORMAT_HEADLINE);                                
                     for(int i=0; i < exportLinks.size(); i++) {
                         String aktLink = (String)exportLinks.elementAt(i);
                         exportLink(aktLink, exportLinks, true);
@@ -248,9 +248,9 @@ public class CmsStaticExport implements I_CmsConstants{
                             "[CmsStaticExport] all done.");
                 }   
                 if (doExport) {             
-                    m_report.addSeperator(I_CmsReport.C_STATIC_EXPORT_END);
+                    m_report.println(m_report.key("report.static_export_end"), I_CmsReport.C_FORMAT_HEADLINE);
                 } else {
-                    m_report.addSeperator(I_CmsReport.C_STATIC_EXPORT_NONE);                    
+                    m_report.println(m_report.key("report.static_export_none"), I_CmsReport.C_FORMAT_HEADLINE);                    
                 }
             }catch(NullPointerException e){
                 m_report.println(e);

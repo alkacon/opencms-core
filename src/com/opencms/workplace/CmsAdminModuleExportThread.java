@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExportThread.java,v $
- * Date   : $Date: 2002/12/12 19:06:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/12/16 13:18:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleExportThread extends Thread {
@@ -51,7 +51,7 @@ public class CmsAdminModuleExportThread extends Thread {
     private CmsObject m_cms;
     private String[] m_resources;
     private String m_filename;
-    private CmsHtmlReport m_report;
+    private I_CmsReport m_report;
 
     /** DEBUG flag */
     private static final boolean DEBUG = false;
@@ -89,12 +89,13 @@ public class CmsAdminModuleExportThread extends Thread {
             if (DEBUG) System.err.println("CmsAdminModuleExportThread() started");
             String moduleName = m_moduleName.replace('\\', '/');
 
-            m_report.addSeperator(I_CmsReport.C_MODULE_EXPORT_BEGIN, " <i>" + moduleName + "</i>");
+            m_report.print(m_report.key("report.export_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
 
             // export the module
             m_registry.exportModule(m_moduleName, m_resources, m_filename, m_report);
 
-            m_report.addSeperator(I_CmsReport.C_MODULE_EXPORT_END);
+            m_report.println(m_report.key("report.export_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
             if (DEBUG) System.err.println("CmsAdminModuleExportThread() finished");
         }

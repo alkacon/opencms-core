@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2002/12/12 19:06:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2002/12/16 13:18:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author: Hanjo Riege
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends Thread {
@@ -56,7 +56,7 @@ public class CmsAdminModuleDeleteThread extends Thread {
     private Vector m_projectFiles;
     private I_CmsRegistry m_registry;
     private CmsObject m_cms;
-    private CmsHtmlReport m_report;
+    private I_CmsReport m_report;
 
     /** DEBUG flag */
     private static final boolean DEBUG = false;
@@ -101,7 +101,8 @@ public class CmsAdminModuleDeleteThread extends Thread {
                 I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);            
             m_cms.getRequestContext().setCurrentProject(project.getId());
 
-            m_report.addSeperator(I_CmsReport.C_MODULE_DELETE_BEGIN, " <i>" + moduleName + "</i>");
+            m_report.print(m_report.key("report.delete_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
 
             // copy the resources to the project
             for(int i = 0;i < m_projectFiles.size();i++) {
@@ -110,13 +111,13 @@ public class CmsAdminModuleDeleteThread extends Thread {
             // import the module
             m_registry.deleteModule(m_moduleName, m_conflictFiles, m_report);
 
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_BEGIN);
+            m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             // now unlock and publish the project
             m_cms.unlockProject(project.getId());
             m_cms.publishProject(project.getId(), m_report);
 
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_END);
-            m_report.addSeperator(I_CmsReport.C_MODULE_DELETE_END);
+            m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(m_report.key("report.delete_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
             if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() finished");
         }

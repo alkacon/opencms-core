@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2002/12/12 19:06:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2002/12/16 13:18:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,9 +64,9 @@ public class CmsAdminPublishProjectThread extends Thread {
 
     public void run() {
         try {
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_BEGIN);
+            m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             m_cms.publishProject(m_projectId, m_report);
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_END);
+            m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
         }
         catch(CmsException e) {
             m_report.println(e);

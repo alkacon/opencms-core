@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResourceThread.java,v $
- * Date   : $Date: 2002/12/13 09:16:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/12/16 13:18:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,9 +60,9 @@ public class CmsPublishResourceThread extends Thread {
 
     public void run() {
         try {
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_RESOURCE_BEGIN);
+            m_report.println(m_report.key("report.publish_resource_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             m_cms.publishResource(m_resourceName, false, m_report);
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_RESOURCE_END);
+            m_report.println(m_report.key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
         }
         catch(CmsException e) {
             m_report.println(e);

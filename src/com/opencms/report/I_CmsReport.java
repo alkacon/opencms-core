@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/I_CmsReport.java,v $
- * Date   : $Date: 2002/12/13 09:16:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/12/16 13:16:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,30 +36,9 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface I_CmsReport {
-
-    // some statics for the most often used locale keys
-    public static final String C_DB_IMPORT_BEGIN = "report.import_db_begin";
-    public static final String C_DB_IMPORT_END = "report.import_db_end";
-    public static final String C_DB_EXPORT_BEGIN = "report.export_db_begin";
-    public static final String C_DB_EXPORT_END = "report.export_db_end";
-    public static final String C_MODULE_IMPORT_BEGIN = "report.import_module_begin";
-    public static final String C_MODULE_IMPORT_END = "report.import_module_end";
-    public static final String C_MODULE_EXPORT_BEGIN = "report.export_module_begin";
-    public static final String C_MODULE_EXPORT_END = "report.export_module_end";
-    public static final String C_MODULE_DELETE_BEGIN = "report.delete_module_begin";
-    public static final String C_MODULE_DELETE_END = "report.delete_module_end";
-    public static final String C_PUBLISH_PROJECT_BEGIN = "report.publish_project_begin";
-    public static final String C_PUBLISH_PROJECT_END = "report.publish_project_end";
-    public static final String C_PUBLISH_RESOURCE_BEGIN = "report.publish_resource_begin";
-    public static final String C_PUBLISH_RESOURCE_END = "report.publish_resource_end";
-    public static final String C_STATIC_EXPORT_BEGIN = "report.static_export_begin";
-    public static final String C_STATIC_EXPORT_END = "report.static_export_end";
-    public static final String C_STATIC_EXPORT_NONE = "report.static_export_none";
-    public static final String C_LINK_CHECK_BEGIN = "report.check_links_begin";
-    public static final String C_LINK_CHECK_END = "report.check_links_end";   
 
     // soms statics to indicate the formatting
     public static final int C_FORMAT_DEFAULT = 0;
@@ -72,32 +51,9 @@ public interface I_CmsReport {
     public static final String C_BUNDLE_NAME = "com.opencms.report.report";
         
     /**
-     * Adds a predefined localized seperator.<p>
-     * 
-     * A separator basically is a "headline" for the report output.
-     * For each major action usually a begin and an end separator is 
-     * added to the report.<p>
-     * 
-     * @param message indicates which (localized) seperator should be used
+     * Adds a line break to the report.<p>
      */
-    public void addSeperator(String message);
-
-    /**
-     * Adds a predefined localized seperator with some additional information.<p>
-     * 
-     * A separator basically is a "headline" for the report output.
-     * For each major action usually a begin and an end separator is 
-     * added to the report.<p>
-     * 
-     * @param message indicates which seperator should be used
-     * @param info an optional String that can contain additional information to be added
-     */
-    public void addSeperator(String message, String info);
-
-    /**
-     * Adds the standard seperator, which is just a line break.<p>
-     */
-    public void addSeperator();
+    public void println();
 
     /**
      * Prints a String to the report.<p>
