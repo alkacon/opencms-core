@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/16 11:25:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/01/18 13:39:28 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -154,14 +154,24 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 						templateSelector = "errornoname";
 					}
 				}else{
-					// create the module (first test if we are in a project including /system/
 					tryToCreateFolder(cms, "/system/", "modules");
+					// create the module (first test if we are in a project including /system/
 					try{
 						cms.createFolder("/system/modules/", packetname);
-					}catch(Exception e){
-						//couldn't create Module 
-						templateDocument.setData("details", Utils.getStackTrace(e));
-						return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
+					}catch(CmsException e){
+						if (e.getType() != e.C_FILE_EXISTS){
+							//couldn't create Module
+							templateDocument.setData("details", Utils.getStackTrace(e));
+							return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
+						}else{
+							try{
+								cms.readFolder("/system/modules/" + packetname + "/");
+							}catch(CmsException ex){
+								// Folder exist but is deleted
+								templateDocument.setData("details", "Sorry, you have to publish this Project and create a new one.\n" + Utils.getStackTrace(e));
+								return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
+							}
+						}
 					}
 					
 					long createDateLong = 0;
