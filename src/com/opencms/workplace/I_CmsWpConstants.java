@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/05/24 12:51:10 $
-* Version: $Revision: 1.110 $
+* Date   : $Date: 2002/07/24 16:22:15 $
+* Version: $Revision: 1.111 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,14 +35,14 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.110 $ $Date: 2002/05/24 12:51:10 $
+ * @version $Revision: 1.111 $ $Date: 2002/07/24 16:22:15 $
  */
 
 public interface I_CmsWpConstants {
 
 
     /** Constant for the current language */
-    public final static String C_CURRENT_LANGUAGE = "de";
+    public final static String C_CURRENT_LANGUAGE = "uk";
 
 
     /** Parameter for creating projects: copy content to project */
