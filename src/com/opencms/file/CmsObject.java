@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/11 13:30:23 $
-* Version: $Revision: 1.310 $
+* Date   : $Date: 2003/07/11 13:53:07 $
+* Version: $Revision: 1.311 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.310 $
+ * @version $Revision: 1.311 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1712,51 +1712,42 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
     return m_driverManager.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
 }
 
-/**
-* Returns a List with the complete sub tree of a given folder that have set the given property.<p>
-*
-* <B>Security:</B>
-* All users are granted.
-*
-* @param folder the folder to get the subresources from
-* @param propertyDefinition the name of the propertydefinition to check
-* @return List with all resources
-*
-* @throws CmsException if operation was not succesful
-*/
-public List getResourcesWithProperty(String folder,String propertyDefinition)
-    throws CmsException {
-    return m_driverManager.getResourcesWithProperty(m_context.currentUser(), 
-                                                          m_context.currentProject(),
-                                                          addSiteRoot(folder),propertyDefinition);                                
-  }
+    /**
+    * Returns a List with the complete sub tree of a given folder that have set the given property.<p>
+    *
+    * <B>Security:</B>
+    * All users are granted.
+    *
+    * @param folder the folder to get the subresources from
+    * @param propertyDefinition the name of the propertydefinition to check
+    * @return List with all resources
+    *
+    * @throws CmsException if operation was not succesful
+    */
+    public List getResourcesWithProperty(String folder, String propertyDefinition) throws CmsException {
+        return m_driverManager.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder), propertyDefinition);
+    }
 
+    /**
+    * Returns a List with all sub resources of a given folder that have benn modified
+    * in a given time range.<p>
+    * 
+    * The rertuned list is sorted descending (newest resource first).
+    *
+    * <B>Security:</B>
+    * All users are granted.
+    *
+    * @param folder the folder to get the subresources from
+    * @param starttime the begin of the time range
+    * @param endtime the end of the time range
+    * @return List with all resources
+    *
+    * @throws CmsException if operation was not succesful 
+    */
+    public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
+        return m_driverManager.getResourcesInTimeRange(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder), starttime, endtime);
+    }
 
-/**
-* Returns a List with all sub resources of a given folder that have benn modified
-* in a given time range.<p>
-* 
-* The rertuned list is sorted descending (newest resource first).
-*
-* <B>Security:</B>
-* All users are granted.
-*
-* @param folder the folder to get the subresources from
-* @param starttime the begin of the time range
-* @param endtime the end of the time range
-* @return List with all resources
-*
-* @throws CmsException if operation was not succesful 
-*/
-public List getResourcesInTimeRange(String folder, long starttime, long endtime) 
-    throws CmsException {                       
-            
-    return m_driverManager.getResourcesInTimeRange(m_context.currentUser(), 
-                                                    m_context.currentProject(),
-                                                    addSiteRoot(folder),starttime,
-                                                    endtime);                                
-
-}
 /**
  * This method can be called, to determine if the file-system was changed in the past.
  * <br>
@@ -2407,15 +2398,15 @@ protected void doMoveResource(String source, String destination) throws CmsExcep
 }
 
 
-	/**
+/**
 	 * Publishes a project.<p>
-	 *
+ *
 	 * @param id the id of the project to be published
 	 * @throws CmsException if operation was not successful
-	 */
-	public void publishProject(int id) throws CmsException {
-	    publishProject(id, new CmsShellReport());
-	}
+ */
+public void publishProject(int id) throws CmsException {
+    publishProject(id, new CmsShellReport());
+}
 
     /**
      * Publishes a project.<p>
@@ -3994,31 +3985,31 @@ public Vector getLoggedInUsers() throws CmsException {
     }
 }
 
-	/**
-	 * Changes the project-id of a resource to the new project
+/**
+ * Changes the project-id of a resource to the new project
 	 * for publishing the resource directly.<p>
-	 *
+ *
 	 * @param projectId The new project-id
-	 * @param resourcename The name of the resource to change
+ * @param resourcename The name of the resource to change
 	 * @throws CmsException if something goes wrong
-	 */
-	public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
-	    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename), true);
-	    I_CmsResourceType rt = getResourceType(res.getType());
-	    rt.changeLockedInProject(this, projectId, resourcename);
-	}
+ */
+public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
+    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename), true);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.changeLockedInProject(this, projectId, resourcename);
+}
 
-	/**
-	 * Changes the project-id of a resource to the new project
+/**
+ * Changes the project-id of a resource to the new project
 	 * for publishing the resource directly.<p>
-	 *
+ *
 	 * @param projectId The new project-id
-	 * @param resourcename The name of the resource to change
+ * @param resourcename The name of the resource to change
 	 * @throws CmsException if something goes wrong
-	 */
-	protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
-	    m_driverManager.changeLockedInProject(projectId, addSiteRoot(resourcename), m_context.currentUser());
-	}
+ */
+protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
+    m_driverManager.changeLockedInProject(projectId, addSiteRoot(resourcename), m_context.currentUser());
+}
 
     /**
      * Returns the name of a resource with the complete site root name,

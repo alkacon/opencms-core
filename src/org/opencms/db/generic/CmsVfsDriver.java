@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/11 13:31:20 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/07/11 13:53:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/07/11 13:31:20 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/11 13:53:07 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1059,7 +1059,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // stmt.executeQuery();
             
 			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_DELETE_BY_PROJECTID");
-			stmt.setInt(1, project.getId());
+            stmt.setInt(1, project.getId());
 			stmt.executeUpdate();
             
 			m_sqlManager.closeAll(null, stmt, null);
@@ -1170,11 +1170,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_ID_DELETE");
             // stmt.setString(1, resource.getId().toString());
             // stmt.executeUpdate();
-
-			// delete the file content
-			stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_FILE_CONTENT_DELETE");
-			stmt.setString(1, resource.getFileId().toString());
-			stmt.executeUpdate();
+            
+            // delete the file content
+            stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_FILE_CONTENT_DELETE");
+            stmt.setString(1, resource.getFileId().toString());
+            stmt.executeUpdate();
 			            
             m_sqlManager.closeAll(null, stmt, null);
 
@@ -2681,14 +2681,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     	removeFile(currentProject, file.getId());          
     }
 
-	/**
+    /**
 	 * Removes a folder and its subfolders physically in the database.<p>
 	 * The contents of the folders must have been already deleted
-	 *
+     *
 	 * @param currentProject the current project
 	 * @param folder the folder
 	 * @throws CmsException if something goes wrong
-	 */ 
+     */
     public void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException {
         // the current implementation only deletes empty folders
         // check if the folder has any files in it
@@ -2722,14 +2722,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
     }
 
-	/**
+    /**
 	 * Removes a single folder physically in the database.<p>
 	 * The folder is removed without deleting its subresources.
-	 * 
+     *
 	 * @param currentProject the current project
 	 * @param structureId the structure id of the folder
 	 * @throws CmsException if something goes wrong
-	 */
+     */
     public void removeFolder(CmsProject currentProject, CmsUUID structureId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2742,7 +2742,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             
 			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_BY_STRUCTUREID");
 			stmt.setString(1, structureId.toString());
-			stmt.executeUpdate();
+            stmt.executeUpdate();
             
 			m_sqlManager.closeAll(null, stmt, null);
 			
@@ -3662,38 +3662,37 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     * @throws CmsException if operation was not succesful
     * @see org.opencms.db.I_CmsVfsDriver#getResourcesInTimeRange(int currentProject, long startime, long endtime)
     */
-    public List getResourcesInTimeRange(int projectId, long starttime, long endtime) 
-        throws CmsException {       
-        List result= new ArrayList();
-        
+    public List getResourcesInTimeRange(int projectId, long starttime, long endtime) throws CmsException {
+        List result = new ArrayList();
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        
+
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_TIMERANGE");
-            stmt.setTimestamp(1,new Timestamp(starttime));
-            stmt.setTimestamp(2,new Timestamp(endtime));
+            stmt.setTimestamp(1, new Timestamp(starttime));
+            stmt.setTimestamp(2, new Timestamp(endtime));
             res = stmt.executeQuery();
             String lastResourcename = "";
 
-            while (res.next()) {                
-                    CmsResource resource = createCmsResourceFromResultSet(res, projectId);
-                      if (!resource.getName().equalsIgnoreCase(lastResourcename)) {
-                          result.add(resource);
-                      }
-                      lastResourcename = resource.getName();
-                  }
-            } catch (SQLException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-            } catch (Exception exc) {
-                throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-            } finally {
-                 m_sqlManager.closeAll(conn, stmt, res);
+            while (res.next()) {
+                CmsResource resource = createCmsResourceFromResultSet(res, projectId);
+                if (!resource.getName().equalsIgnoreCase(lastResourcename)) {
+                    result.add(resource);
+                }
+                lastResourcename = resource.getName();
             }
-       
-        return result;        
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception exc) {
+            throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return result;
     }
     
 }
