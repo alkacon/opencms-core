@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/08/22 13:22:51 $
- * Version: $Revision: 1.11 $Selector
+ * Date   : $Date: 2001/01/04 17:00:15 $
+ * Version: $Revision: 1.12 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.11 $ $Date: 2000/08/22 13:22:51 $
+ * @version $Revision: 1.12 $ $Date: 2001/01/04 17:00:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -422,7 +422,9 @@ private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupNam
 							theUser.setAddress(street);
 							theUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
 							theUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
-							
+							if ((C_USER_ADMIN.equals(theUser.getName()))&&(!selectedGroups.contains(C_GROUP_ADMIN))){
+								throw new CmsException("cant remove Admin from "+C_GROUP_ADMIN,CmsException.C_NOT_ADMIN);	
+							}
 							if (disabled && selectedGroups.contains(C_GROUP_ADMIN)) {
 								throw new CmsException("disabled admin", CmsException.C_NOT_ADMIN);	
 							}
