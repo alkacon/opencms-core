@@ -15,13 +15,14 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/14 10:18:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/14 14:19:06 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
     
-      /** Definition of the Datablock RADIOSIZE */ 
+     /** Definition of the Datablock RADIOSIZE */ 
      private final static String C_RADIOSIZE="RADIOSIZE";
+     
      /** Vector containing all names of the radiobuttons */
      private Vector m_names = null;
      
@@ -62,13 +63,17 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 session.putValue(C_PARA_FILE,filename);
             } else if (step.equals("2")) {
                 // step 2 - create the file
+                // get folder- and filename
                 foldername=(String)session.getValue(C_PARA_FILELIST);
                 if (foldername==null) {
                    foldername=cms.getRequestContext().currentFolder().getAbsolutePath();
                 }   
                 filename=(String)session.getValue(C_PARA_FILE);
                 type=(String)cms.getRequestContext().getRequest().getParameter("type");
+                // create the new file
                 cms.createFile(foldername,filename,new byte[0],type);
+                // lock the new file
+                cms.lockResource(foldername+filename);
                 session.removeValue(C_PARA_FILE);
                 // TODO: ErrorHandling
                 
@@ -83,8 +88,10 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
             session.removeValue(C_PARA_FILE);
         }
 
+        // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         
+        // set the size of the radiobox entrys
         getResources(cms,null,null,null,null);
         if (m_names != null) { 
              xmlTemplateDocument.setXmlData(C_RADIOSIZE,new Integer(m_names.size()).toString());

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/13 12:27:37 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/14 14:19:06 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -118,7 +118,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
                              A_CmsProject onlineProject,
                              String filename)
          throws CmsException {
-     
+         //System.err.println("###read file "+filename);
          return getFilesystem(filename).readFile(project,onlineProject,filename);
      }
 	
@@ -137,6 +137,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 public CmsFile readFileHeader(A_CmsProject project, String filename)
          throws CmsException {
          
+         //System.err.println("###read file header"+filename);
          return getFilesystem(filename).readFileHeader(project,filename);
      }
 	
@@ -310,7 +311,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 */
 	 public CmsFolder readFolder(A_CmsProject project, String foldername)
          throws CmsException {
-         
+         //System.err.println("###read folder "+foldername);
          return getFilesystem(foldername).readFolder(project,foldername);
       }
 	

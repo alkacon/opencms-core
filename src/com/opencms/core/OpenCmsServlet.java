@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.14 $ $Date: 2000/02/04 09:38:38 $  
+* @version $Revision: 1.15 $ $Date: 2000/02/14 14:19:06 $  
 * 
 */
 
@@ -133,7 +133,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);
             CmsFile file=m_opencms.initResource(cms); 
-            System.err.println(file.toString());
             m_opencms.setResponse(cms,file);
             m_opencms.showResource(cms,file);
             updateUser(cms,cmsReq,cmsRes);
@@ -283,14 +282,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                                 if (e.getType() == CmsException.C_NO_ACCESS){
                                     // authentification failed, so display a login screen
                                     requestAuthorization(req, res);
-                                    System.err.println("HTTPn authentifcation login required");
+                                    System.err.println("HTTP authentifcation login required");
                                 } else {
                                     throw e;               
                                 }                                                                                                    
 			    			 }
                         }
                  }
-            }
+            } 
        } catch (CmsException e) {
             errorHandling(req,res,e);
        }
