@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/03/02 21:53:04 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,12 +65,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.24 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.25 $ $Date: 2004/03/02 21:53:04 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -326,7 +326,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             return Integer.toString(((CmsLruCache)obj).getMaxCacheCosts());
         }
         if (obj instanceof LRUMap) { 
-            return Integer.toString(((LRUMap)obj).getMaximumSize());
+            return Integer.toString(((LRUMap)obj).maxSize());
         }
         return "-";
     }

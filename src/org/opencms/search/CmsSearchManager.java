@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/26 07:14:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/03/02 21:53:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 
@@ -135,7 +135,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/02/26 07:14:15 $
+ * @version $Revision: 1.12 $ $Date: 2004/03/02 21:53:04 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
