@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.3 Bela Tegeuse - 02 April 2001
+
+* Bugfix in zip-Import.
+* Bugfix in generic navigation.
+
 OpenCms 4.3.2 Bela Tegeuse - 29 March 2001
 
 ! Zip-files can now be extracted when uploading a file.
