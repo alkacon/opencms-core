@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/11 15:23:18 $
- * Version: $Revision: 1.442 $
+ * Date   : $Date: 2004/11/11 16:29:28 $
+ * Version: $Revision: 1.443 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.442 $ $Date: 2004/11/11 15:23:18 $
+ * @version $Revision: 1.443 $ $Date: 2004/11/11 16:29:28 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1574,30 +1574,40 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         validFilename(name);
 
         try {
-            propertyDefinition = m_vfsDriver.readPropertyDefinition(
-                runtimeInfo,
-                name,
-                context.currentProject().getId(),
-                mappingtype);
-        } catch (CmsException e) {
-            propertyDefinition = m_vfsDriver.createPropertyDefinition(
-                runtimeInfo,
-                context.currentProject().getId(),
-                name,
-                mappingtype);
-        }
+            try {
+                propertyDefinition = m_vfsDriver.readPropertyDefinition(
+                    runtimeInfo,
+                    name,
+                    context.currentProject().getId(),
+                    mappingtype);
+            } catch (CmsException e) {
+                propertyDefinition = m_vfsDriver.createPropertyDefinition(
+                    runtimeInfo,
+                    context.currentProject().getId(),
+                    name,
+                    mappingtype);
+            }
+    
+            try {
+                m_vfsDriver.readPropertyDefinition(runtimeInfo, name, I_CmsConstants.C_PROJECT_ONLINE_ID, mappingtype);
+            } catch (CmsException e) {
+                m_vfsDriver.createPropertyDefinition(runtimeInfo, I_CmsConstants.C_PROJECT_ONLINE_ID, name, mappingtype);
+            }
+    
+            try {
+                m_backupDriver.readBackupPropertyDefinition(runtimeInfo, name, mappingtype);
+            } catch (CmsException e) {
+                m_backupDriver.createBackupPropertyDefinition(runtimeInfo, name, mappingtype);
+            }
+        } finally {
 
-        try {
-            m_vfsDriver.readPropertyDefinition(runtimeInfo, name, I_CmsConstants.C_PROJECT_ONLINE_ID, mappingtype);
-        } catch (CmsException e) {
-            m_vfsDriver.createPropertyDefinition(runtimeInfo, I_CmsConstants.C_PROJECT_ONLINE_ID, name, mappingtype);
-        }
-
-        try {
-            m_backupDriver.readBackupPropertyDefinition(runtimeInfo, name, mappingtype);
-        } catch (CmsException e) {
-            m_backupDriver.createBackupPropertyDefinition(runtimeInfo, name, mappingtype);
-        }
+            // fire an event that a property of a resource has been deleted
+            OpenCms.fireCmsEvent(
+                new CmsEvent(
+                    I_CmsEventListener.EVENT_PROPERTY_DEFINITION_CREATED, 
+                    Collections.singletonMap("propertyDefinition", propertyDefinition)));
+            
+        }            
 
         return propertyDefinition;
     } 
