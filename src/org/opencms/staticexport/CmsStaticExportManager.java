@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/08 18:21:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -172,35 +172,37 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (publishedResources != null) {
                     // get list published resources
                     Vector resources = publishedResources.getChangedVfsResources();
-                    // get a guest user cms context
-                    CmsObject cms = OpenCms.getGuestCmsObject();
-                    // iterate list of published resources
-                    Iterator i = resources.iterator();
-                    while (i.hasNext()) {
-                        String vfsName = (String)i.next();
-                        // get the link name for the published file 
-                        String rfsName = getRfsName(cms, vfsName);                        
-                        if (rfsName.startsWith(getRfsPrefix())) {     
-                            // this file could have been exported
-                            if (CmsResource.isFolder(rfsName)) {
-                                rfsName += C_EXPORT_DEFAULT_FILE;
+                    if (resources != null) {
+                        // get a guest user cms context
+                        CmsObject cms = OpenCms.getGuestCmsObject();
+                        // iterate list of published resources
+                        Iterator i = resources.iterator();
+                        while (i.hasNext()) {
+                            String vfsName = (String)i.next();
+                            // get the link name for the published file 
+                            String rfsName = getRfsName(cms, vfsName);                        
+                            if (rfsName.startsWith(getRfsPrefix())) {     
+                                // this file could have been exported
+                                if (CmsResource.isFolder(rfsName)) {
+                                    rfsName += C_EXPORT_DEFAULT_FILE;
+                                }
+                                String exportFileName = getExportPath() + rfsName.substring(getRfsPrefix().length());
+                                File exportFile = new File(exportFileName);
+                                try {
+                                    // check if export file exists, if so delete it
+                                    if (exportFile.exists() && exportFile.canWrite()) {
+                                        exportFile.delete();
+                                        // write log message
+                                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
+                                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "Deleted exported rfs file '" + rfsName + "'");
+                                        }
+                                    }    
+                                } catch (Throwable t) {
+                                    // ignore, nothing to do about this
+                                }      
                             }
-                            String exportFileName = getExportPath() + rfsName.substring(getRfsPrefix().length());
-                            File exportFile = new File(exportFileName);
-                            try {
-                                // check if export file exists, if so delete it
-                                if (exportFile.exists() && exportFile.canWrite()) {
-                                    exportFile.delete();
-                                    // write log message
-                                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
-                                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "Deleted exported rfs file '" + rfsName + "'");
-                                    }
-                                }    
-                            } catch (Throwable t) {
-                                // ignore, nothing to do about this
-                            }      
-                        }
-                    } 
+                        } 
+                    }
                 }
                 // caches must also be flushed after publish, so no break here
             case I_CmsEventListener.EVENT_CLEAR_CACHES:

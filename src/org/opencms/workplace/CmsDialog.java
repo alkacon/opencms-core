@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/08/19 12:04:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/08 18:21:28 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -53,6 +53,15 @@ public class CmsDialog extends CmsWorkplace {
     public static final int ACTION_DEFAULT = 0;
     public static final int ACTION_CONFIRMED = 1;
     public static final int ACTION_WAIT = 2;
+    
+    // note: action values 90 - 99 are reserved for reports
+    public static final int ACTION_REPORT_BEGIN  = 90;
+    public static final int ACTION_REPORT_UPDATE = 91;
+    public static final int ACTION_REPORT_END    = 92;
+    
+    public static final String REPORT_BEGIN  = "reportbegin";
+    public static final String REPORT_UPDATE = "reportupdate";
+    public static final String REPORT_END    = "reportend";    
     
     public static final int BUTTON_OK = 0;
     public static final int BUTTON_CANCEL = 1;
@@ -69,6 +78,7 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_ERRORSTACK = "errorstack";
     public static final String PARAM_TITLE = "title";
     public static final String PARAM_MESSAGE = "message";
+    public static final String PARAM_THREAD = "thread";
 
     private String m_paramAction;
     private String m_paramResource;
