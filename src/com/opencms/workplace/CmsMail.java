@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/09/27 17:24:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/09/28 10:30:15 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.io.*;
  * This class is used to send a mail, it uses Threads to send it.
  *
  * @author $Author: mla $
- * @version $Name:  $ $Revision: 1.12 $ $Date: 2000/09/27 17:24:08 $
+ * @version $Name:  $ $Revision: 1.13 $ $Date: 2000/09/28 10:30:15 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -213,21 +213,13 @@ public CmsMail(CmsObject cms, String from, String[] to, String[] cc, String[] bc
 {
 	this(cms, from, to, bcc, subject, content, type);
 
-	Vector v = new Vector(cc.length);
+	Vector v = new Vector();
 	for (int i = 0; i < cc.length; i++)
 	{
-		if (cc[i] == null)
-		{
-			continue;
-		}
-		if (cc[i].equals(""))
-		{
-			continue;
-		}
-		if (cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1)
-		{
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + cc[i], CmsException.C_BAD_NAME);
-		}
+		if (cc[i] == null) continue;
+		if (cc[i].equals("")) continue;
+		if (cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1) continue;
+		
 		v.addElement(cc[i]);
 	}
 	String users[] = new String[v.size()];
@@ -257,21 +249,12 @@ public CmsMail(CmsObject cms, String from, String[] to, String[] cc, String[] bc
 public CmsMail(CmsObject cms, String from, String[] to, String[] bcc, String subject, String content, String type) throws CmsException
 {
 	this(cms, from, to, subject, content, type);
-	Vector v = new Vector(bcc.length);
+	Vector v = new Vector();
 	for (int i = 0; i < bcc.length; i++)
 	{
-		if (bcc[i] == null)
-		{
-			continue;
-		}
-		if (bcc[i].equals(""))
-		{
-			continue;
-		}
-		if (bcc[i].indexOf("@") == -1 || bcc[i].indexOf(".") == -1)
-		{
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + bcc[i], CmsException.C_BAD_NAME);
-		}
+		if (bcc[i] == null) continue;
+		if (bcc[i].equals("")) continue;
+		if (bcc[i].indexOf("@") == -1 || bcc[i].indexOf(".") == -1) continue;
 		v.addElement(bcc[i]);
 	}
 	String users[] = new String[v.size()];

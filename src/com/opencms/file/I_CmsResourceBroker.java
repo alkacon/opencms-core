@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/28 09:16:18 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2000/09/28 10:30:13 $
+ * Version: $Revision: 1.118 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.117 $ $Date: 2000/09/28 09:16:18 $
+ * @version $Revision: 1.118 $ $Date: 2000/09/28 10:30:13 $
  * 
  */
 
@@ -2736,6 +2736,21 @@ public void newSiteProjectsRecord(CmsUser currentUser, CmsProject currentProject
 	public void unlockResource(CmsUser currentUser,CmsProject currentProject,
 							   String resourcename)
 		throws CmsException;
+/**
+ * Insert the method's description here.
+ * Creation date: (28-09-2000 11:57:27)
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @param siteId int
+ * @param name java.lang.String
+ * @param description java.lang.String
+ * @param categoryId int
+ * @param languageId int
+ * @param countryId int
+ * @param url java.lang.String
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public void updateSite(CmsUser currentUser, CmsProject currentProject, int siteId, String name, String description, int categoryId, int languageId, int countryId, String url) throws com.opencms.core.CmsException;
 	/**
 	 * Checks if a user is member of a group.<P/>
 	 *  

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/28 09:16:20 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2000/09/28 10:30:14 $
+ * Version: $Revision: 1.142 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.141 $ $Date: 2000/09/28 09:16:20 $
+ * @version $Revision: 1.142 $ $Date: 2000/09/28 10:30:14 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5698,6 +5698,35 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 				CmsException.C_NO_ACCESS);
 		}
 	}
+/**
+ * Update a site
+ *
+ * Only a adminstrator can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * Only users, which are in the group "administrators" are granted.
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @param siteId int
+ * @param name java.lang.String
+ * @param description java.lang.String
+ * @param categoryId int
+ * @param languageId int
+ * @param countryId int
+ * @param url java.lang.String
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public void updateSite(CmsUser currentUser, CmsProject currentProject, int siteId, String name, String description, int categoryId, int languageId, int countryId, String url) throws com.opencms.core.CmsException
+{
+	if (isAdmin(currentUser, currentProject))
+	{
+		m_dbAccess.updateSite(siteId, name, description, categoryId, languageId, countryId, url);
+	}
+	else
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + siteId, CmsException.C_NO_ACCESS);
+	}
+}
 	/**
 	 * Checks if a user is member of a group.<P/>
 	 *  

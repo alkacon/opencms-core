@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/09/28 09:16:18 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2000/09/28 10:30:13 $
+ * Version: $Revision: 1.123 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.122 $ $Date: 2000/09/28 09:16:18 $ 
+ * @version $Revision: 1.123 $ $Date: 2000/09/28 10:30:13 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -2110,6 +2110,26 @@ public void unlockProject(int id) throws CmsException {
  */
 public void unlockResource(String resource) throws CmsException {
 	m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
+}
+/**
+ * Updates a site
+ *
+ * Only a adminstrator can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * Only users, which are in the group "administrators" are granted.
+ * @param siteId int
+ * @param name java.lang.String
+ * @param description java.lang.String
+ * @param categoryId int
+ * @param languageId int
+ * @param countryId int
+ * @param url java.lang.String
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public void updateSite(int siteId, String name, String description, int categoryId, int languageId, int countryId, String url) throws com.opencms.core.CmsException
+{
+	m_rb.updateSite(m_context.currentUser(), m_context.currentProject(), siteId, name, description, categoryId, languageId, countryId, url);
 }
 /**
  * Tests, if a user is member of the given group.

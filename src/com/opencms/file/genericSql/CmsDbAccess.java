@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/28 09:16:18 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2000/09/28 10:30:14 $
+ * Version: $Revision: 1.145 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.144 $ $Date: 2000/09/28 09:16:18 $ * 
+ * @version $Revision: 1.145 $ $Date: 2000/09/28 10:30:14 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -6370,6 +6370,50 @@ public void updateLockstate(CmsResource res) throws CmsException {
 		}
 		return retValue;
 	}
+/**
+ * Updates a site
+ * Creation date: (28-09-2000 11:34:24)
+ * @param siteId int
+ * @param name java.lang.String
+ * @param description java.lang.String
+ * @param categoryId int
+ * @param languageId int
+ * @param countryId int
+ * @param url java.lang.String
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public void updateSite(int siteId, String name, String description, int categoryId, int languageId, int countryId, String url) throws com.opencms.core.CmsException
+{
+	PreparedStatement site = null;
+	PreparedStatement siteUrl = null;
+	try
+	{
+		site = m_pool.getPreparedStatement(m_cq.C_SITE_UPDATESITE_KEY);
+		site.setString(1, name);
+		site.setString(2, description);
+		site.setInt(3, categoryId);
+		site.setInt(4, languageId);
+		site.setInt(5, countryId);
+ 		site.setInt(6, siteId);
+		
+		siteUrl = m_pool.getPreparedStatement(m_cq.C_SITEURLS_UPDATESITEURLS_KEY);
+		siteUrl.setString(1, url);
+		siteUrl.setInt(2, siteId);
+	
+		site.executeUpdate();
+		siteUrl.executeUpdate();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	finally
+	{
+		if (site != null) m_pool.putPreparedStatement(m_cq.C_SITE_UPDATESITE_KEY, site);
+		if (siteUrl != null) m_pool.putPreparedStatement(m_cq.C_SITEURLS_UPDATESITEURLS_KEY, siteUrl);
+	}
+
+}
 	protected void updateTaskPar(int parid, String parname, String parvalue) 
 		throws CmsException {
 		
