@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/21 23:33:42 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/02/24 11:17:00 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlXercesParser;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayInputStream;
@@ -46,6 +47,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -59,8 +62,6 @@ import java.util.zip.ZipFile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 ;
 
@@ -71,7 +72,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.69 $ $Date: 2003/02/21 23:33:42 $
+ * @version $Revision: 1.70 $ $Date: 2003/02/24 11:17:00 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -85,10 +86,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      */
     public static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
     
-    /**
-     * The content generated from a DOM document is stored in this StringBuffer
-     */
-    private StringBuffer m_content = new StringBuffer("");
 
     /**
      * The import-file to load resources from
@@ -963,7 +960,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             	content = content.substring(content.indexOf(">")+1);
             	content = "<?xml version=\"1.0\" encoding=\""+encoding+"\"?>" + content; 
         	}
-        }       
+        }    
         return content;
     }
     
@@ -980,7 +977,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         for (int i=0; i<rules.length; i++) {
             String actRule = rules[i];
             // cut String "/default/vfs/" from rule
-            actRule = com.opencms.flex.util.CmsStringSubstitution.substitute(actRule, "/default/vfs","");
+            actRule = com.opencms.flex.util.CmsStringSubstitution.substitute(actRule, "/default/vfs", "");
             // divide rule into search and replace parts and delete regular expressions
             StringTokenizer ruleT = new StringTokenizer(actRule, "#");
             ruleT.nextToken();
@@ -1014,6 +1011,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         if (found == true) { 
             InputStream in = new ByteArrayInputStream(content.getBytes());
             try {
+                // create DOM document
                 Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
                 // get all "edittemplate" nodes to check their content
                 NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
@@ -1022,14 +1020,16 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     for (int k=0; k<m_webAppNames.size(); k++) {
                         editString = CmsStringSubstitution.substitute(editString, 
                             CmsStringSubstitution.escapePattern((String)m_webAppNames.get(k)),
-                            CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));
-                        editNodes.item(i).getFirstChild().setNodeValue(editString);
-                    }               
+                            CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));                       
+                    }
+                    editNodes.item(i).getFirstChild().setNodeValue(editString);               
                 }
-                // fill StringBuffer with XML content
-                m_content = new StringBuffer("");
-                printNode(contentXml.getFirstChild().getOwnerDocument());                   
-                content = m_content.toString();
+                // convert XML document back to String
+                CmsXmlXercesParser parser = new CmsXmlXercesParser();
+                Writer out = new StringWriter();
+                parser.getXmlText(contentXml, out);
+                content = out.toString();               
+                
             }
             catch(Exception exc) {
             }
@@ -1037,68 +1037,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         return content;
     }   
     
-    
-    /**
-     * Recursive method to generate a Stringbuffer from a DOM document.<p>
-     * 
-     * @param node the document node
-     */
-    public void printNode(Node node) {
-        if ( node == null ) {
-            return;
-        }
-        int type = node.getNodeType();
-        // generate output depending on node type
-        switch ( type ) {
-        case Node.DOCUMENT_NODE:
-            m_content.append("<?xml version=\"1.0\" encoding=\""+m_cms.getRequestContext().getEncoding()+"\"?>\n");
-            printNode(((Document)node).getDocumentElement());
-            break;
-    
-        case Node.ELEMENT_NODE:
-            m_content.append("<");
-            m_content.append(node.getNodeName());
-            // append node attributes
-            NamedNodeMap attrs = node.getAttributes();
-            for ( int i = 0; i < attrs.getLength(); i++ ) {
-                m_content.append(" ");
-                m_content.append(attrs.item(i).getNodeName());
-                m_content.append("=\"");
-                m_content.append(attrs.item(i).getNodeValue());
-                m_content.append("\"");
-            }
-            m_content.append(">");
-            // check for child nodes and call recursion
-            NodeList children = node.getChildNodes();
-            if ( children != null ) {
-                int len = children.getLength();
-                for ( int i = 0; i < len; i++ ) {
-                    printNode(children.item(i));
-                }
-            }
-            break;
-        case Node.TEXT_NODE:
-            m_content.append(node.getNodeValue());
-            break;
-        case Node.CDATA_SECTION_NODE:
-            m_content.append("<![CDATA[");
-            m_content.append(node.getNodeValue());
-            m_content.append("]]>");
-            break;
-        case Node.COMMENT_NODE:
-            m_content.append("<!-- ");
-            m_content.append(node.getNodeValue());
-            m_content.append(" //-->");
-            break;            
-        }
-        // end of recursion, append end tags
-        if ( type == Node.ELEMENT_NODE ) {
-            m_content.append("</");
-            m_content.append(node.getNodeName());
-            m_content.append('>');
-     
-        }
-    }
     
     /**
      * Method to replace a subString with replaceItem.<p>
