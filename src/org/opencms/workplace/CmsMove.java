@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/08 10:54:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/08 12:29:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -139,7 +139,7 @@ public class CmsMove extends CmsDialog {
                 getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST);
             } else  {
                 // "false" returned, display "please wait" screen
-                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "wait.jsp");
+                getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "wait.jsp");
             }    
         } catch (CmsException e) {
             // prepare common message part
@@ -150,12 +150,12 @@ public class CmsMove extends CmsDialog {
             if ((e.getType() == CmsException.C_FILE_EXISTS)) {
                 // file copy but file already exists, show confirmation dialog
                 setParamMessage(message + key("confirm.message.copy"));
-                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "confirmation.jsp");        
+                getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "confirmation.jsp");        
             } else {                
                 // error during copy, show error dialog
                 setParamErrorstack(e.getStackTraceAsString());
                 setParamMessage(message + key("error.message." + getParamDialogtype()));
-                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "error.html");
+                getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "error.html");
             }
         }
     }

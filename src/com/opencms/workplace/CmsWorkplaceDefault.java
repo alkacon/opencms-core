@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/07/08 12:29:29 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -53,7 +55,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.56 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.57 $ $Date: 2003/07/08 12:29:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -580,4 +582,34 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     public Object userName(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         return Utils.getFullName(cms.getRequestContext().currentUser());
     }
+    
+
+    /**
+     * Returns the explorer file URI (required for compatibility to the JSP workplace).<p>
+     *
+     * @param cms for accessing system resources.
+     * @param tagcontent additional parameter passed to the method <em>(not used here)</em>.
+     * @param doc reference to the A_CmsXmlContent object of the initiating XML document <em>(not used here)</em>.
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String the explorer file URI
+     * @throws CmsException if something goes wring
+     */
+    public Object explorerFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        return CmsWorkplaceAction.getExplorerFileUri(cms);
+    }    
+    
+    /**
+     * Returns the explorer file URI with the full path, including context 
+     * (required for compatibility to the JSP workplace).<p>
+     *
+     * @param cms for accessing system resources.
+     * @param tagcontent additional parameter passed to the method <em>(not used here)</em>.
+     * @param doc reference to the A_CmsXmlContent object of the initiating XML document <em>(not used here)</em>.
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String the explorer file URI
+     * @throws CmsException if something goes wring
+     */
+    public Object explorerFileFullUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        return CmsWorkplaceAction.getExplorerFileFullUri(cms);
+    }        
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/07/08 09:20:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/08 12:29:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace;
 
 import com.opencms.file.CmsObject;
+import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,23 +43,32 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
 public class CmsWorkplaceAction { 
     
-    /** Path to the XML workplace */    
-    public static final String C_XML_WORKPLACE_URI = "/system/workplace/action/index.html";
-    
     /** Path to the JSP workplace */    
-    public static final String C_JSP_WORKPLACE_URI = "/system/workplace/jsp/top_fs.html";
+    public static final String C_PATH_JSP_WORKPLACE = "/system/workplace/jsp/";
+    
+    /** Path to the XML workplace */    
+    public static final String C_PATH_XML_WORKPLACE = "/system/workplace/action/";
+   
+    /** Path to the JSP workplace frame loader file */    
+    public static final String C_JSP_WORKPLACE_URI = C_PATH_JSP_WORKPLACE + "top_fs.html";
+    
+    /** Path to the XML workplace frame loader file */    
+    public static final String C_XML_WORKPLACE_URI = C_PATH_XML_WORKPLACE + "index.html";   
     
     /** Path to th JSP common dialog elements */
-    public static final String C_JSP_WORKPLACE_COMMONS_PATH = "/system/workplace/jsp/common/";
+    public static final String C_PATH_JSP_WORKPLACE_COMMONS = "/system/workplace/jsp/common/";
+    
+    /** File name of explorer file list loader (same for JSP and XML) */
+    public static final String C_FILE_WORKPLACE_FILELIST = "explorer_files.html";
     
     /** Path to the JSP explorer */
-    public static final String C_JSP_WORKPLACE_FILELIST = "../jsp/explorer_files.html";
+    public static final String C_JSP_WORKPLACE_FILELIST = "../jsp/" + C_FILE_WORKPLACE_FILELIST;
         
     /**
      * Constructor is private since there must be no intances of this class.<p>
@@ -139,6 +149,21 @@ public class CmsWorkplaceAction {
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
         if (settings == null) return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
         return C_JSP_WORKPLACE_FILELIST;        
+    }  
+    
+    /**
+     * Returns the full uri (absoluth path with servlet context) of the file explorer.<p>
+     * 
+     * @param cms the current cms context
+     * @return the uri of the file explorer
+     */    
+    public static String getExplorerFileFullUri(CmsObject cms) {              
+        HttpSession session = extractSession(cms);
+        String link = C_PATH_XML_WORKPLACE + C_FILE_WORKPLACE_FILELIST;
+        if (session == null) return LinkSubstitution.getLinkSubstitution(cms, link);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) return LinkSubstitution.getLinkSubstitution(cms, link);
+        return LinkSubstitution.getLinkSubstitution(cms, C_PATH_JSP_WORKPLACE + C_FILE_WORKPLACE_FILELIST);        
     }    
         
     /**

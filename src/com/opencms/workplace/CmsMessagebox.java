@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/08 12:29:29 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsXmlContent;
@@ -43,7 +45,7 @@ import org.w3c.dom.Node;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.13 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/08 12:29:29 $
  */
 
 public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -80,6 +82,12 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement,I_Cm
         String messageButton2 = n.getAttribute(C_MESSAGE_BUTTON2);
         String messageLink1 = n.getAttribute(C_MESSAGE_LINK1);
         String messageLink2 = n.getAttribute(C_MESSAGE_LINK2);
+        if ("explorer_files.html".equals(messageLink1)) {
+            messageLink1 = CmsWorkplaceAction.getExplorerFileUri(cms);
+        }
+        if ("explorer_files.html".equals(messageLink2)) {
+            messageLink2 = CmsWorkplaceAction.getExplorerFileUri(cms);
+        }     
         if(n.hasChildNodes()) {
             helpfilename = n.getFirstChild();
             helpname = helpfilename.getNodeValue();
