@@ -1,6 +1,5 @@
 package com.opencms.launcher;
 
-import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 
@@ -11,7 +10,7 @@ import javax.servlet.http.*;
  * Classes for each customized launcher have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/13 13:37:31 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/13 17:51:00 $
  */
 public interface I_CmsLauncher { 
     
@@ -24,13 +23,11 @@ public interface I_CmsLauncher {
 	/**
 	 * Start launch method called by the OpenCms system to show a resource	 
 	 *  
-	 * @param openCms A_CmsObject Object for accessing system resources
+	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
-	 * @param req Actual HttpServletRequest
-     * @param resp Actual HttpServletResponse
      * @exception CmsException
 	 */
-    public void initlaunch(A_CmsObject openCms, CmsFile file, HttpServletRequest req, HttpServletResponse resp) throws CmsException;
+    public void initlaunch(A_CmsObject cms, CmsFile file) throws CmsException;
 	
     /**
      * Gets the ID that indicates the type of the launcher.
