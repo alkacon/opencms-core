@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<WP_RADIO>	
+	<radiobuttons>
+		<entry><![CDATA[<tr>
+		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>name</PROCESS><![CDATA[ name=]]><PROCESS>name</PROCESS><![CDATA[ value="a"</td>
+		<td align=middle width=10%><IMG name="a" src="" border=0 width=16 heigth=16</td>
+		<td align=left>a</td>
+		</tr>]]>
+		</entry>
+	</radiobuttons>	
+</WP_RADIO>
+
+
