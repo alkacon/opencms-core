@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/06/17 16:24:54 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/03 14:34:53 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,13 +36,12 @@ import com.opencms.flex.util.CmsUUID;
 import org.opencms.security.I_CmsPrincipal;
 
 
- /**
- * Describes the Cms user object and the methods to access it.
+/**
+ * Describes the Cms user object and the methods to access it.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2003/06/17 16:24:54 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/03 14:34:53 $
  */
-
 public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
 
     /**
@@ -91,7 +90,6 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      */
     private String m_section=null;
 
-
     /**
      * The flags of the user.
      */
@@ -122,12 +120,16 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      */
     private String m_address = "";
 
-
     /**
      * The last login of the user.
      */
     private long m_lastlogin = C_UNKNOWN_LONG;
 
+	/**
+	 * The ip address of the last login
+	 */
+	private String m_lastip = null;
+	
     /**
      * Defines if the user is a webuser or a systemuser.
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
@@ -135,25 +137,38 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      */
     private int m_type = C_UNKNOWN_INT;
 
-
      /**
-     * Constructor, creates a new Cms user object.
+     * Creates a new Cms user object.<p>
      *
-     * @param id The id of the new user.
-     * @param name The name of the new user.
-     * @param description The description of the new user.
+     * @param id the id of the new user
+     * @param name the name of the new user
+     * @param description the description of the new user
      */
     public CmsUser(CmsUUID id, String name,String description) {
         m_id=id;
         m_name=name;
         m_description= description;
     }
+    
     /**
-     * Constructor, creates a new Cms user object.
+     * Creates a new CmsUser object.<p>
      *
-     * @param id The id of the new user.
-     * @param name The name of the new user.
-     * @param description The description of the new user.
+     * @param id the id of the new user
+     * @param name the name of the new user
+     * @param password the password of the user
+     * @param recoveryPassword the recovery password
+     * @param description the description of the new user
+     * @param firstname the first name
+     * @param lastname the last name
+     * @param email the email address
+     * @param lastlogin time stamp 
+     * @param lastused time stamp (deprecated)
+     * @param flags flags
+     * @param additionalInfo user related information
+     * @param defaultGroup default group of the user
+     * @param address the address
+     * @param section (deprecated)
+     * @param type the type of this user
      */
     public CmsUser (CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname,
                     String lastname, String email, long lastlogin, long lastused, int flags,
@@ -177,12 +192,15 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
         m_address = address;
         m_section = section;
         m_type = type;
+        
+        // TODO: initialize this with parameter
+        m_lastip = null;
     }
+    
     /**
-    * Clones the CmsResource by creating a new CmsUser Object.
-    * @return Cloned CmsUser.
-    */
-    public Object clone() {
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() {
         CmsUser user= new CmsUser(m_id,new String(m_name),new String(m_password),new String(m_recoveryPassword),
                                   new String (m_description),new String(m_firstname),
                                   new String(m_lastname),new String(m_email),m_lastlogin,
@@ -192,25 +210,29 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     }
     
     /**
-     * Compares the given object with this user.<p>
-     *
-     * @return true if the object is equal, false otherwise
-     */
-    public boolean equals(Object obj) {
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
         // check if the object is a CmsUser object
         if (! (obj instanceof CmsUser)) return false;
         // same ID than the current user?
         return (((CmsUser)obj).getId().equals(m_id)); 
     }
+    
+    /**
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+    	return m_id.hashCode();
+    }
 
     /**
-     * Returns the complete Hashtable with additional information about the user. <BR/>
-     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+     * Returns the complete Hashtable with additional information about the user.<p>
+     * Additional infos are for example emailadress, adress or surname...
      *
      * The additional infos must be requested via the CmsObject.
      *
-     *
-     * Returns additional information about the user.
+     * @return additional information about the user.
      *
      */
     public Hashtable getAdditionalInfo() {
@@ -242,39 +264,43 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     }
     
     /**
-     * Gets the address.
+     * Gets the address.<p>
      *
      * @return the USER_ADDRESS, or null.
      */
     public String getAddress() {
          return m_address;
     }
+    
     /**
-     * Returns the default group object of this user.
+     * Returns the default group object of this user.<p>
      *
      * @return Default Group of the user
      */
     public CmsGroup getDefaultGroup() {
         return m_defaultGroup;
     }
+    
      /**
-     * Gets the defaultgroup id.
+     * Gets the defaultgroup id.<p>
      *
      * @return the USER_DEFAULTGROUP_ID, or null.
      */
     public CmsUUID getDefaultGroupId() {
         return m_defaultGroupId;
     }
+    
     /**
-     * Gets the description of this user.
+     * Gets the description of this user.<p>
      *
      * @return the description of this user.
      */
     public String getDescription() {
         return m_description;
     }
+    
     /**
-     * Decides, if this user is disabled.
+     * Decides, if this user is disabled.<p>
      *
      * @return USER_FLAGS == C_FLAG_DISABLED
      */
@@ -285,106 +311,130 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
         }
         return disabled;
     }
+    
     /**
-     * Gets the email.
+     * Gets the email.<p>
      *
      * @return the USER_EMAIL, or null.
      */
     public String getEmail() {
         return m_email;
     }
+    
     /**
-     * Gets the firstname.
+     * Gets the firstname.<p>
      *
      * @return the USER_FIRSTNAME, or null.
      */
     public String getFirstname() {
-        return m_firstname ;
+        return m_firstname;
     }
-     /**
-     * Gets the flags.
+    
+    /**
+     * Gets the flags.<p>
      *
      * @return the USER_FLAGS, or C_UNKNOWN_INT.
      */
     public int getFlags() {
         return m_flags;
     }
+    
     /**
-     * Gets the id of this user.
+     * Gets the id of this user.<p>
      *
      * @return the id of this user.
      */
     public CmsUUID getId() {
         return m_id;
     }
+    
     /**
-     * Gets the lastlogin.
+     * Gets the lastlogin.<p>
      *
      * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
      */
     public long getLastlogin() {
         return m_lastlogin;
     }
+    
     /**
-     * Gets the lastname.
+     * Gets the ip address of the last login.<p>
+     * 
+	 * @return the ip address of the last login
+	 */
+	public String getLastRemoteAddress() {
+    	return m_lastip;
+    }
+    
+    /**
+     * Gets the lastname.<p>
      *
      * @return the USER_SURNAME, or null.
      */
     public String getLastname() {
         return m_lastname;
     }
+    
     /**
-     * Gets the lastlogin.
+     * Gets the lastlogin.<p>
      *
      * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
+     * @deprecated use getLastlogin only
      */
     public long getLastUsed() {
         return m_lastused;
     }
+    
     /**
-     * Gets the login-name of the user.
+     * Gets the login-name of the user.<p>
      *
      * @return the login-name of the user.
      */
     public String getName() {
         return m_name;
     }
+    
     /**
-     * Gets the password.
+     * Gets the password.<p>
      *
      * @return the USER_PASSWORD, or null.
      */
     public String getPassword() {
         return m_password;
     }
+    
     /**
-     * Gets the recovery password.
+     * Gets the recovery password.<p>
      *
      * @return the USER_RECOVERY_PASSWORD, or null.
      */
     public String getRecoveryPassword() {
         return m_recoveryPassword;
     }
+    
     /**
-     * Gets the section of the user.
+     * Gets the section of the user.<p>
      *
      * @return the USER_SECTION, or null.
+     * @deprecated will be removed without substitution
      */
     public String getSection() {
         return m_section;
     }
-     /**
+    
+    /**
      * Gets the type of the user (webuser or a systemuser).
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
-     * C_USER_TYPE_WEBUSER for webuser.
+     * C_USER_TYPE_WEBUSER for webuser.<p>
      *
      * @return the type, or C_UNKNOWN_INT.
      */
     public int getType() {
         return m_type;
     }
-     /**
-     * Sets additional information about the user. <BR/>
+    
+    /**
+     * Sets additional information about the user. <p>
      * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
      *
      *
@@ -395,28 +445,33 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     public void setAdditionalInfo(String key, Object obj)  {
         m_additionalInfo.put(key,obj);
     }
-     /**
-     * Sets the  complete Hashtable with additional information about the user. <BR/>
+    
+    /**
+     * Sets the  complete Hashtable with additional information about the user. <p>
      * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
      *
      * This method has package-visibility for security-reasons.
      * It is required to because of the use of two seprate databases for user data and
      * additional user data.
+     * 
+     * @param additionalInfo user-related additional information
      *
      */
     void setAdditionalInfo(Hashtable additionalInfo) {
         m_additionalInfo=additionalInfo;
     }
-     /**
-     * Sets the address.
+    
+    /**
+     * Sets the address.<p>
      *
      * @param value The user adress.
      */
     public void setAddress(String value) {
         m_address = value;
     }
+    
     /**
-     * Sets the default group object of this user.
+     * Sets the default group object of this user.<p>
      *
      * @param defaultGroup The default group of this user.
      */
@@ -424,100 +479,124 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
         m_defaultGroup = defaultGroup;
         m_defaultGroupId = defaultGroup.getId();
     }
+    
     /**
-     * Sets the description of this user.
+     * Sets the description of this user.<p>
      *
-     * @param the description of this user.
+     * @param value the description of this user.
      */
     public void setDescription(String value) {
         m_description = value;
     }
+    
     /**
-     * Disables the user flags by setting them to C_FLAG_DISABLED.
+     * Disables the user flags by setting them to C_FLAG_DISABLED.<p>
      */
     public void  setDisabled() {
         setFlags(C_FLAG_DISABLED);
     }
+    
     /**
-     * Sets the email.
+     * Sets the email.<p>
      *
-     * @param The new email adress.
+     * @param value The new email adress.
      */
     public void setEmail(String value) {
         m_email = value;
     }
+    
     /**
-     * Enables the user flags by setting them to C_FLAG_ENABLED.
+     * Enables the user flags by setting them to C_FLAG_ENABLED.<p>
      */
     public void  setEnabled() {
         setFlags(C_FLAG_ENABLED);
     }
+    
     /**
-     * Sets the firstname.
+     * Sets the firstname.<p>
      *
-     * @param the USER_FIRSTNAME.
+     * @param firstname the USER_FIRSTNAME.
      */
     public void setFirstname(String firstname) {
         m_firstname = firstname;
     }
+    
     /**
-     * Sets the flags.
+     * Sets the flags.<p>
      *
      * @param value The new user flags.
      */
      void setFlags(int value) {
          m_flags = value;
      }
+     
     /**
-     * Sets the lastlogin.
+     * Sets the lastlogin.<p>
      *
      * @param value The new user section.
      */
     public void setLastlogin(long value) {
         m_lastlogin = value;
     }
+    
     /**
-     * Gets the lastname.
+     * Sets the ip address of the last login.<p>
+     * 
+	 * @param address the ip address of the last login
+	 */
+	public void setLastRemoteAddress(String address) {
+    	m_lastip = address;
+    }
+    
+    /**
+     * Gets the lastname.<p>
      *
-     * @return the USER_SURNAME, or null.
+     * @param lastname the last name of the user
      */
     public void setLastname(String lastname) {
         m_lastname = lastname;
     }
+    
     /**
-     * Sets the lastlogin.
+     * Sets the lastlogin.<p>
      *
-     * @param value The new user section.
+     * @param value the time stamp
+     * @deprecated use setLastlogin only
      */
     void setLastUsed(long value) {
         m_lastused = value;
     }
+    
     /**
-     * Sets the password.
+     * Sets the password.<p>
      *
-     * @param The new password.
+     * @param value The new password.
      */
     public void setPassword(String value) {
         m_password = value;
     }
-     /**
-     * Sets the section of the user.
+    
+    /**
+     * Sets the section of the user.<p>
      *
      * @param value The new user section.
+     * @deprecated will be removed without substitution
      */
     public void setSection(String value) {
         m_section = value;
     }
+    
     /**
-     * Sets the typ.
+     * Sets the typ.<p>
      *
      * @param value The new user typ.
      */
      void setType(int value) {
          m_type = value;
      }
+     
     /**
-     * Returns a string-representation for this object.
+     * Returns a string-representation for this object.<p>
      * This can be used for debugging.
      *
      * @return string-representation for this object.
@@ -536,5 +615,4 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
         output.append(m_description);
         return output.toString();
     }
-    
 }

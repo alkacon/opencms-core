@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/03 13:29:45 $
-* Version: $Revision: 1.295 $
+* Date   : $Date: 2003/07/03 14:34:53 $
+* Version: $Revision: 1.296 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.295 $
+ * @version $Revision: 1.296 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2300,7 +2300,7 @@ protected void doLockResource(String resource, boolean force) throws CmsExceptio
  */
 public String loginUser(String username, String password) throws CmsException {
     // login the user
-    CmsUser newUser = m_driverManager.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
+    CmsUser newUser = m_driverManager.loginUser(m_context.currentUser(), m_context.currentProject(), username, password, m_context.getRemoteAddress());
     // init the new user
     init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
@@ -2321,7 +2321,7 @@ public String loginUser(String username, String password) throws CmsException {
  */
 public String loginWebUser(String username, String password) throws CmsException {
     // login the user
-    CmsUser newUser = m_driverManager.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
+    CmsUser newUser = m_driverManager.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password, m_context.getRemoteAddress());
     // init the new user
     init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
     // return the user-name

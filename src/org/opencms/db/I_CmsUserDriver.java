@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/25 16:24:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/03 14:35:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/25 16:24:21 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/03 14:35:41 $
  * @since 5.1
  */
 public interface I_CmsUserDriver {
@@ -290,9 +290,49 @@ public interface I_CmsUserDriver {
     
     
     CmsGroup readGroup(String groupName) throws CmsException;
+    
+	/**
+	 * Reads a user from the database.<p>
+	 *
+	 * @param id the id of the user
+	 * @return the user object
+	 * @throws CmsException if something goes wrong.
+	 */
     CmsUser readUser(CmsUUID id) throws CmsException;
+    
+	/**
+	 * Reads a user from the database.<p>
+	 *
+	 * @param name the name of the user
+	 * @param type the type of the user
+	 * @return the read user
+	 * @throws CmsException if something goes wrong.
+	 */    
     CmsUser readUser(String name, int type) throws CmsException;
-    CmsUser readUser(String name, String password, int type) throws CmsException;
+
+	/**
+	 * Reads a user from the database, only if the password is correct.<p>
+	 *
+	 * @param name the name of the user
+	 * @param password the password of the user
+	 * @param type the type of the user
+	 * @return the read user
+	 * @throws CmsException if something goes wrong
+	 */    	
+	CmsUser readUser(String name, String password, int type) throws CmsException;
+	    
+	/**
+	 * Reads a user from the database, only if the password is correct.<p>
+	 *
+	 * @param name the name of the user
+	 * @param password the password of the user
+	 * @param remoteAddress the remote address of the request
+	 * @param type the type of the user
+	 * @return the read user
+	 * @throws CmsException if something goes wrong
+	 */    
+    CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException;
+    
     void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException;
     void removeUserFromGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
     void setPassword(String userName, String password) throws CmsException;

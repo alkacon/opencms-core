@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/07/03 14:34:53 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.75 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.76 $ $Date: 2003/07/03 14:34:53 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -138,31 +138,23 @@ public class CmsRequestContext implements I_CmsConstants {
     }
     
     /**
-     * Initializes this RequestContext.
+     * Initializes this RequestContext.<p>
      *
-     * @param req the CmsRequest.
-     * @param resp the CmsResponse.
-     * @param user the current user for this request.
-     * @param currentGroup the current group for this request.
-     * @param currentProjectId the id of the current project for this request.
-     * @param streaming <code>true</code> if streaming should be enabled for this response, <code>false</code> otherwise.
-     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
+     * @param driverManager the driver manager
+     * @param req the CmsRequest
+     * @param resp the CmsResponse
+     * @param user the current user for this request
+     * @param currentGroup the current group for this request
+     * @param currentProjectId the id of the current project for this request
+     * @param streaming <code>true</code> if streaming should be enabled for this response, <code>false</code> otherwise
+     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled
      * @param directoryTranslator Translator for directories (file with full path)
      * @param fileTranslator Translator for new file names (without path)
      * @throws CmsException if operation was not successful.
      */
-    void init(
-        CmsDriverManager driverManager,
-        I_CmsRequest req,
-        I_CmsResponse resp,
-        String user,
-        String currentGroup,
-        int currentProjectId,
-        boolean streaming,
-        CmsElementCache elementCache,
-        CmsResourceTranslator directoryTranslator,
-        CmsResourceTranslator fileTranslator)
-    throws CmsException {
+    void init (CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator)
+    	throws CmsException {
+
         m_driverManager = driverManager;
         m_req = req;
         m_resp = resp;
@@ -235,7 +227,9 @@ public class CmsRequestContext implements I_CmsConstants {
     }
 
     /**
-     * Adds a link for the static export.
+     * Adds a link for the static export.<p>
+     * 
+     * @param link the link to add
      */
     public void addLink(String link) {
         m_links.add(link);
@@ -243,6 +237,8 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Returns all links that the template mechanism has registered.
+     * 
+     * @return all registered links
      */
     public Vector getLinkVector() {
         return m_links;
@@ -251,7 +247,7 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Adds a dependency.
      * 
-     * @param dependency. The rootpath of the resource.
+     * @param rootName The root name of the resource
      */
     public void addDependency(String rootName) {
         m_dependencies.add(rootName);
@@ -259,6 +255,8 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Returns all dependencies the templatemechanism has registered.
+     * 
+     * @return all registered dependencies
      */
     public Vector getDependencies() {
         return m_dependencies;
@@ -315,6 +313,18 @@ public class CmsRequestContext implements I_CmsConstants {
         String uri = m_req.getRequestedResource();
         uri = uri.substring(uri.lastIndexOf("/") + 1);
         return uri;
+    }
+    
+    /**
+     * Gets the remote ip address.<p>
+     * 
+	 * @return the ip addresss as string
+	 */
+	public String getRemoteAddress() {
+    	if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP))
+			return ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
+    	else
+    		return null;
     }
     
    /**
@@ -376,10 +386,10 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public String getUri() {
         if (m_uri != null) return m_uri;
-        if( m_req != null ) {
-            return( m_req.getRequestedResource() );
+        if (m_req != null) {
+            return m_req.getRequestedResource();
         } else {
-            return (C_ROOT);
+            return C_ROOT;
         }
     }
 
@@ -450,10 +460,11 @@ public class CmsRequestContext implements I_CmsConstants {
     }
 
     /**
-     * Sets the current project for the user.
+     * Sets the current project for the user.<p>
      *
-     * @param projectId the id of the project to be set as current project.
-     * @throws CmsException if operation was not successful.
+     * @param projectId the id of the project to be set as current project
+     * @return the CmsProject instance
+     * @throws CmsException if operation was not successful
      */
     public CmsProject setCurrentProject(int projectId) throws CmsException {
         CmsProject newProject =
@@ -524,7 +535,7 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Returns the name of the current site root, e.g. /default/vfs
      *
-     * @param resourcename
+     * @param resourcename the resource name
      * @return String The resourcename with its site root
      */
     public String getSiteRoot(String resourcename) {
@@ -572,6 +583,8 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Sets the name of the current site root
      * of the virtual file system
+     * 
+     * @param name the name of the site root
      */
     public void setContextTo(String name) {
         StringBuffer strBuf = new StringBuffer();
@@ -625,6 +638,8 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Returns the current content encoding to be used in HTTP response
+     * 
+     * @return the encoding
      */
     public String getEncoding() {
         return m_encoding;
@@ -632,6 +647,8 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Sets the current content encoding to be used in HTTP response
+     * 
+     * @param encoding the encoding
      */
     public void setEncoding(String encoding) {
         setEncoding(encoding, false);
@@ -640,6 +657,9 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Sets the current content encoding to be used in HTTP response
      * and store it in session if it is available
+     * 
+     * @param encoding the encoding
+     * @param storeInSession flag to store the encoding
      */
     public void setEncoding(String encoding, boolean storeInSession) {
         m_encoding = encoding;
@@ -657,7 +677,7 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Mark this request context as event controlled.<p>
      * 
-     * @param true if the request is event controlled, false otherwise
+     * @param value true if the request is event controlled, false otherwise
      */
     public void setEventControlled(boolean value) {
         m_eventControlled = value;
@@ -675,7 +695,7 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Mark this request context to update the session or not.<p>
      *
-     * @param true if this request context will update the session, false otherwise
+     * @param value true if this request context will update the session, false otherwise
      */
     public void setUpdateSessionEnabled(boolean value) {
         m_updateSession = value;

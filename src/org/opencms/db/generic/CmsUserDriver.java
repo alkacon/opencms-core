@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/03 14:35:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/03 14:35:25 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1069,6 +1069,20 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             m_sqlManager.closeAll(conn, stmt, res);
         }
     }
+
+	/**
+	 * Reads a user from the cms, only if the password is correct.<p>
+	 *
+	 * @param name the name of the user
+	 * @param password the password of the user
+	 * @param the remote address of the request
+	 * @param type the type of the user
+	 * @return the read user
+	 * @throws throws CmsException if something goes wrong
+	 */
+	public CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException {
+		return readUser(name, password, type);
+	}
 
     /**
      * Sets the password, only if the user knows the recovery-password.
