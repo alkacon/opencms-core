@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/07/18 12:44:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.launcher.I_CmsLauncher;
 
 import java.io.IOException;
 
@@ -52,56 +51,19 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
-public class CmsPageLoader implements I_CmsLauncher, I_CmsResourceLoader {   
+public class CmsPageLoader implements I_CmsResourceLoader {   
     
+    /** The id of this loader */
+    public static final int C_RESOURCE_LOADER_ID = 8;
+               
     /**
-     * @see com.opencms.launcher.I_CmsLauncher#getLauncherId()
+     * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
      */
-    public int getLauncherId() {
-        return C_TYPE_PAGE;
-    }
-
-    /**
-     * @see com.opencms.launcher.I_CmsLauncher#clearCache()
-     */
-    public void clearCache() {
-        // NOOP      
-    }
-
-    /**
-     * @see com.opencms.launcher.I_CmsLauncher#initlaunch(com.opencms.file.CmsObject, com.opencms.file.CmsFile, java.lang.String, com.opencms.core.A_OpenCms)
-     */
-    public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-        String absolutePath = cms.readAbsolutePath(file);
-        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY);
-        
-        if (templateProp == null) {
-            // no template property defined, throw exception
-            throw new CmsException("Property '" + I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY + "' undefined for page file " + absolutePath, CmsException.C_LAUNCH_ERROR);
-        }
-        
-        CmsFile templateFile = null;
-        try {
-            templateFile = (CmsFile)cms.readFile(templateProp);
-        } catch (CmsException e) {
-            throw new CmsException("Template '" + templateProp + "' unreadable for page file " + absolutePath, CmsException.C_LAUNCH_ERROR);            
-        }
-        
-        if (templateFile.getLauncherType() == C_TYPE_JSP) {
-            A_OpenCms.getLoaderManager().getLauncher(C_TYPE_JSP).initlaunch(cms, templateFile, (String)null, openCms);
-        } else {
-            A_OpenCms.getLoaderManager().getLauncher(C_TYPE_XML).initlaunch(cms, file, (String)null, openCms);
-        }
-    }
-
-    /**
-     * @see com.opencms.launcher.I_CmsLauncher#setOpenCms(com.opencms.core.A_OpenCms)
-     */
-    public void setOpenCms(A_OpenCms openCms) {
-        // NOOP   
+    public int getLoaderId() {
+        return C_RESOURCE_LOADER_ID;
     }
 
     /**
@@ -119,7 +81,10 @@ public class CmsPageLoader implements I_CmsLauncher, I_CmsResourceLoader {
     }
 
     /**
-     * @see com.opencms.flex.I_CmsResourceLoader#getResourceLoaderInfo()
+     * Return a String describing the ResourceLoader,
+     * which is <code>"The OpenCms default resource loader for pages"</code><p>
+     * 
+     * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
         return "The OpenCms default resource loader for pages";
@@ -128,14 +93,56 @@ public class CmsPageLoader implements I_CmsLauncher, I_CmsResourceLoader {
     /**
      * @see com.opencms.flex.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        throw new RuntimeException("load() not a supported operation for resources of this type");  
+    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {        
+        CmsFile templateFile = null;
+        try {
+            templateFile = getTemplateFile(cms, file);
+        } catch (CmsException e) {
+            throw new ServletException(e.getMessage(), e);            
+        }        
+        if (templateFile.getLauncherType() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
+            A_OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).load(cms, templateFile, req, res);
+        } else {
+            A_OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).load(cms, file, req, res);
+        }
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
+     */
+    public void export(CmsObject cms, CmsFile file) throws CmsException {  
+        CmsFile templateFile = getTemplateFile(cms, file);  
+        if (templateFile.getLauncherType() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
+            A_OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile);
+        } else {
+            A_OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, file);
+        }     
+    }    
 
     /**
      * @see com.opencms.flex.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        throw new RuntimeException("service() not a supported operation for resources of this type");  
+        throw new RuntimeException("service() not a supported operation for resources of type " + this.getClass().getName());  
+    }    
+    
+    /**
+     * Reads the template file for the selected page.<p>
+     * 
+     * @param cms the current cms context
+     * @param file the requested file
+     * @return the template file for the selected page
+     * @throws CmsException if something goes wrong
+     */
+    private CmsFile getTemplateFile(CmsObject cms, CmsFile file) throws CmsException {        
+        String absolutePath = cms.readAbsolutePath(file);        
+        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY);       
+
+        if (templateProp == null) {
+            // no template property defined, throw exception
+            throw new CmsException("Property '" + I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY + "' undefined for page file " + absolutePath);
+        }        
+
+        return (CmsFile)cms.readFile(templateProp);
     }    
 }

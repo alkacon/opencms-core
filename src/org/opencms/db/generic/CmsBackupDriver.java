@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/18 08:22:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/07/18 08:22:42 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/18 19:03:49 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -97,7 +97,6 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int state = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
-        String launcherClass = m_driverManager.getResourceType(resourceType).getLauncherClass();
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
@@ -114,7 +113,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             content = new byte[0];
         }
 
-        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* CmsUUID.getNullUUID(), "", */ projectID, 0, state, launcherType, launcherClass, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, 0, state, launcherType, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**

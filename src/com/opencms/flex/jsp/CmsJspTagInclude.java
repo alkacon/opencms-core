@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/07/18 16:10:52 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,14 @@
  
 package com.opencms.flex.jsp;
 
+import org.opencms.loader.CmsXmlTemplateLoader;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.flex.cache.CmsFlexController;
-import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -54,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -344,7 +345,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
             if (isPageTarget || isNewPageTarget) {
                 // save target as "element replace" parameter for body loader
-                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target, true);  
+                addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
                 target = C_BODYLOADER_URI;                   
             }
             // for other cases setting of "target" is fine 
@@ -352,7 +353,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // body attribute is set: this is a sub-element in a XML mastertemplate
             if (target.equals(controller.getCmsObject().getRequestContext().getUri())) {
                 // target can be ignored, set body attribute as "element replace" parameter  
-                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + bodyAttribute, true);
+                addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + bodyAttribute, true);
                 // redirect target to body loader
                 target = C_BODYLOADER_URI;                
             } else {
@@ -362,7 +363,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                         target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
                     }              
                     // save target as "element replace" parameter  
-                    addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target, true);  
+                    addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
                     target = C_BODYLOADER_URI;                     
                 }
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/18 12:44:46 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 package com.opencms.file;
 
+import org.opencms.loader.I_CmsResourceLoader;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -35,7 +37,6 @@ import com.opencms.core.CmsExportResponse;
 import com.opencms.core.CmsStaticExportProperties;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.OpenCms;
-import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
 import com.opencms.util.Utils;
@@ -58,7 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.48 $ $Date: 2003/07/18 12:44:46 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/18 19:03:49 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -614,19 +615,18 @@ public class CmsStaticExport implements I_CmsConstants{
             
             CmsFile file = m_cms.readFile(link);
             
-            int launcherId = file.getLauncherType();
-            String startTemplateClass = file.getLauncherClassname();
-            I_CmsLauncher launcher = A_OpenCms.getLoaderManager().getLauncher(launcherId);
-            if(launcher == null){
-                throw new CmsException("Could not launch file " + link + ". Launcher for requested launcher ID "
-                            + launcherId + " could not be found.");
+            int loaderId = file.getLauncherType();
+            I_CmsResourceLoader loader = A_OpenCms.getLoaderManager().getLoader(loaderId);
+            if(loader == null){
+                throw new CmsException("Could not export file " + link + ". Loader for requested loader ID "
+                            + loaderId + " could not be found.");
             }
             ((CmsExportRequest)cmsForStaticExport.getRequestContext().getRequest()).setRequestedResource(link);
             cmsForStaticExport.getRequestContext().addDependency(file.getResourceName());
             // Encoding project:
             // make new detection of current encoding because we have changed the requested resource
             cmsForStaticExport.getRequestContext().initEncoding();
-            launcher.initlaunch(cmsForStaticExport, file, startTemplateClass, null);
+            loader.export(cmsForStaticExport, file);
 
             // we need the links on the page for the further export
             Vector linksToAdd = cmsForStaticExport.getRequestContext().getLinkVector();

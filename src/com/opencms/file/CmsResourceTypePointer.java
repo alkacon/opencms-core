@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.13 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package com.opencms.file;
 
+import org.opencms.loader.CmsPointerLoader;
+
 import com.opencms.core.CmsException;
-import com.opencms.launcher.CmsLinkLauncher;
-import com.opencms.launcher.I_CmsLauncher;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -56,9 +56,9 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.1 $
  */
-public class CmsResourceTypeLink extends A_CmsResourceType {
+public class CmsResourceTypePointer extends A_CmsResourceType {
 
     /** The type id of this resource */
     public static final int C_RESOURCE_TYPE_ID = 2;
@@ -82,19 +82,12 @@ public class CmsResourceTypeLink extends A_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-        
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
-     */
-    public String getLauncherClass() {
-        return CmsLinkLauncher.class.getName();
-    }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
-    public int getLauncherType() {
-        return I_CmsLauncher.C_TYPE_LINK;
+    public int getLoaderId() {
+        return CmsPointerLoader.C_RESOURCE_LOADER_ID;
     } 
     
     /**

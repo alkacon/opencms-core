@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/18 18:20:37 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.69 $ $Date: 2003/07/18 18:20:37 $
+ * @version $Revision: 1.70 $ $Date: 2003/07/18 19:03:49 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -931,7 +931,7 @@ public class CmsDriverManager extends Object {
 
         // write-acces  was granted - write the file.
         resource.setType(type.getResourceType());
-        resource.setLauncherType(type.getLauncherType());
+        resource.setLauncherType(type.getLoaderId());
         m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -1741,7 +1741,6 @@ public class CmsDriverManager extends Object {
                 com.opencms.core.I_CmsConstants.C_STATE_NEW,
                 CmsUUID.getNullUUID(),
                 targetResource.getLauncherType(),
-                targetResource.getLauncherClassname(),
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
                 System.currentTimeMillis(),
@@ -2518,7 +2517,7 @@ public class CmsDriverManager extends Object {
         // fetch the ID of the resource
         int resourceID = m_vfsDriver.fetchResourceID(context.currentProject(), theResourceName, -1);
         if (resourceID > 0) {
-            vfsLinks = m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resourceID, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
+            vfsLinks = m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resourceID, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
         } else {
             vfsLinks = new ArrayList(0);
         }
@@ -4033,7 +4032,6 @@ public class CmsDriverManager extends Object {
         }
     }
 
- 
     /**
       * Imports a resource.
       *
@@ -4153,6 +4151,7 @@ public class CmsDriverManager extends Object {
             throw new CmsException("[" + getClass().getName() + "] importResources", CmsException.C_NO_ACCESS);
         }
     }
+
 
     /**
      * Increment the VFS link counter for a resource. 
@@ -4424,7 +4423,7 @@ public class CmsDriverManager extends Object {
         // names of the link resources
         ArrayList linkResources = new ArrayList();
 
-        int fetchedLinkCount = m_vfsDriver.fetchAllVfsLinks(context.currentProject(), linkIDs, linkContents, linkResources, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
+        int fetchedLinkCount = m_vfsDriver.fetchAllVfsLinks(context.currentProject(), linkIDs, linkContents, linkResources, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
 
         if (CmsAdminVfsLinkManagement.DEBUG) {
             System.err.println("[" + getClass().getName() + "] found " + fetchedLinkCount + " VFS links in project " + context.currentProject().getName());
@@ -4478,7 +4477,7 @@ public class CmsDriverManager extends Object {
 
         for (int i = 0; i < targetCount; i++) {
             String currentTarget = (String) targetResources.get(i);
-            int targetID = m_vfsDriver.fetchResourceID(context.currentProject(), currentTarget, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
+            int targetID = m_vfsDriver.fetchResourceID(context.currentProject(), currentTarget, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
             targetIDs[i] = targetID;
 
             if (targetID > 0) {
@@ -4636,7 +4635,7 @@ public class CmsDriverManager extends Object {
      */
     public void lockResource(CmsRequestContext context, String resourcename, boolean forceLock) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename);
-
+        
         if (forceLock || resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             // unlock any possible direct locked sub resources
             unlockResource(context, resourcename, true);
@@ -7223,7 +7222,6 @@ public class CmsDriverManager extends Object {
                     state,
                     offlineFile.isLockedBy(),
                     backupFile.getLauncherType(),
-                    backupFile.getLauncherClassname(),
                     offlineFile.getDateCreated(),
                     backupFile.getUserCreated(),
                     offlineFile.getDateLastModified(),
@@ -7726,7 +7724,6 @@ public class CmsDriverManager extends Object {
                     I_CmsConstants.C_STATE_UNCHANGED,
                     offlineFile.isLockedBy(),
                     onlineFile.getLauncherType(),
-                    onlineFile.getLauncherClassname(),
                     offlineFile.getDateCreated(),
                     context.currentUser().getId(),
                     offlineFile.getDateLastModified(),
@@ -7823,7 +7820,7 @@ public class CmsDriverManager extends Object {
         } else {
             resources = (List) new ArrayList();
         }
-
+        
         // add the resource itself to the list of all resource that get now unlocked
         resources.add(resourcename);
                 
@@ -7832,9 +7829,9 @@ public class CmsDriverManager extends Object {
             currentResourceName = (String) i.next();
             currentResource = readFileHeader(context, currentResourceName);
 
-        // unlock the resource if it is locked by the current user
+            // unlock the resource if it is locked by the current user
             CmsLock lock = m_lockDispatcher.getLock(context, currentResource.getFullResourceName());
-        CmsUUID lockUserId = lock.getUserId();
+            CmsUUID lockUserId = lock.getUserId();
         
             // either the unlocking has to be forced,
             // or the user who unlocks the resource has to match the user who currently locked the resource
@@ -7844,18 +7841,18 @@ public class CmsDriverManager extends Object {
                     checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS);
                 }
                                 
-            // unlock the resource
+                // unlock the resource
                 currentResource.setLocked(CmsUUID.getNullUUID());
-            // update resource
+                // update resource
                 m_vfsDriver.updateLockstate(currentResource, context.currentProject().getId());            
-            // update the lock dispatcher
-            m_lockDispatcher.removeResource(lock.getResourceName());
+                // update the lock dispatcher
+                m_lockDispatcher.removeResource(lock.getResourceName());
             }            
         }
-
-            // update the cache
-            clearResourceCache();
-        }
+        
+        // update the cache
+        clearResourceCache();        
+    }
 
     /**
      * When a project is published this method aktualises the online link table.

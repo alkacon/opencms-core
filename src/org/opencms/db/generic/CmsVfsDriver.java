@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/18 18:20:37 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2003/07/18 18:20:37 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/18 19:03:49 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -193,7 +193,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
         CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
-        String launcherClass = m_driverManager.getResourceType(resourceType).getLauncherClass();
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         long structureDateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_STRUCTURE_DATE_LASTMODIFIED")).getTime();
@@ -227,7 +226,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         long newDateLastModified = (structureDateLastModified > dateLastModified) ? structureDateLastModified : dateLastModified;
         CmsUUID newUserLastModified = (structureDateLastModified > dateLastModified) ? structureUserLastModified : userLastModified;
 
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, launcherClass, dateCreated, userCreated, newDateLastModified, newUserLastModified, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, newDateLastModified, newUserLastModified, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -245,7 +244,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
         CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
-        String launcherClass = m_driverManager.getResourceType(resourceType).getLauncherClass();
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         long structureDateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_STRUCTURE_DATE_LASTMODIFIED")).getTime();
@@ -274,7 +272,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         long newDateLastModified = (structureDateLastModified > dateLastModified) ? structureDateLastModified : dateLastModified;
         CmsUUID newUserLastModified = (structureDateLastModified > dateLastModified) ? structureUserLastModified : userLastModified;
         
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, launcherClass, dateCreated, userCreated, newDateLastModified, newUserLastModified, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, newDateLastModified, newUserLastModified, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -332,7 +330,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
         CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
-        String launcherClass = m_driverManager.getResourceType(resourceType).getLauncherClass();
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         long structureDateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_STRUCTURE_DATE_LASTMODIFIED")).getTime();
@@ -358,7 +355,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         long newDateLastModified = (structureDateLastModified > dateLastModified) ? structureDateLastModified : dateLastModified;
         CmsUUID newUserLastModified = (structureDateLastModified > dateLastModified) ? structureUserLastModified : userLastModified;
                      
-        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, 0, newState, lockedBy, launcherType, launcherClass, dateCreated, userCreated, newDateLastModified, newUserLastModified, resourceSize, lockedInProject, vfsLinkType);
+        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, newDateLastModified, newUserLastModified, resourceSize, lockedInProject, vfsLinkType);
         
         return newResource;
     }
@@ -514,8 +511,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
             CmsUUID.getNullUUID(),
-            resourceType.getLauncherType(),
-            resourceType.getLauncherClass(),
+            resourceType.getLoaderId(),
             0,
             user.getId(),
             0,
@@ -2153,7 +2149,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        String queryName = null, query = null;
+        String queryName = null;
 
         if (includeUnchanged && onlyProject)
             queryName = "C_RESOURCES_READ_FILES_BY_PROJECT";

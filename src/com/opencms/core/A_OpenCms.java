@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/07/18 12:44:46 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -443,17 +443,6 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param file The requested document.
      */
     abstract void setResponse(CmsObject cms, CmsFile file);
-
-    /**
-     * Selects the appropriate launcher for a given file by analyzing the
-     * file's launcher id and calls the initlaunch() method to initiate the
-     * generating of the output.<p>
-     *
-     * @param cms CmsObject containing all document and user information
-     * @param file CmsFile object representing the selected file.
-     * @throws CmsException In case of problems acessing the resource.
-     */
-    public abstract void showResource(CmsObject cms, CmsFile file) throws CmsException;
 
     /**
      * Starts a schedule job with a correct instantiated CmsObject.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/07/18 12:44:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.loader;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.launcher.I_CmsLauncher;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,12 +45,12 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsLoaderManager {
 
-    private I_CmsLauncher[] m_loaders;
+    private I_CmsResourceLoader[] m_loaders;
 
     /**
      * Collects all available resource loaders from the registry at startup.<p>
@@ -66,17 +65,17 @@ public class CmsLoaderManager {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Launcher package     : " + this.getClass().getPackage());
         }
 
-        m_loaders = new I_CmsLauncher[16];
+        m_loaders = new I_CmsResourceLoader[16];
         String loaderName = null;
         Iterator i = loaders.iterator();
         while (i.hasNext()) {
             try {
                 loaderName = (String)i.next();
-                I_CmsLauncher loaderInstance = (I_CmsLauncher)Class.forName(loaderName).newInstance();
-                loaderInstance.setOpenCms(openCms);                
+                I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(loaderName).newInstance();
+                loaderInstance.init(openCms);                
                 addLoader(loaderInstance);
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Launcher loaded      : " + loaderName + " with id " + loaderInstance.getLauncherId());
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Launcher loaded      : " + loaderName + " with id " + loaderInstance.getLoaderId());
                 }                
             } catch (Throwable e) {
                 // loader class not found, ignore class
@@ -92,21 +91,11 @@ public class CmsLoaderManager {
     /**
      * Returns the loader class instance for the given loader id.<p>
      * 
-     * @param launcherId the id of the launcher to return
+     * @param id the id of the launcher to return
      * @return the loader class instance for the given loader id
      */
-    public I_CmsLauncher getLauncher(int launcherId) {
-        return (I_CmsLauncher)m_loaders[launcherId];
-    }
-
-    /**
-     * Clears all loader caches.<p>
-     */
-    public void clearCaches() {
-        for (int i=0; i<m_loaders.length; i++) {
-            I_CmsLauncher l = m_loaders[i];
-            if (l != null) l.clearCache();
-        }
+    public I_CmsResourceLoader getLoader(int id) {
+        return m_loaders[id];
     }
 
     /**
@@ -114,10 +103,10 @@ public class CmsLoaderManager {
      *
      * @param loader the loader to add
      */
-    private void addLoader(I_CmsLauncher loader) {
-        int pos = loader.getLauncherId();
+    private void addLoader(I_CmsResourceLoader loader) {
+        int pos = loader.getLoaderId();
         if (pos > m_loaders.length) {
-            I_CmsLauncher[] buffer = new I_CmsLauncher[pos * 2];
+            I_CmsResourceLoader[] buffer = new I_CmsResourceLoader[pos * 2];
             System.arraycopy(m_loaders, 0, buffer, 0, m_loaders.length);
             m_loaders = buffer;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXMLTemplate.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package com.opencms.file;
 import org.opencms.loader.CmsXmlTemplateLoader;
 
 import com.opencms.core.CmsException;
-import com.opencms.launcher.I_CmsLauncher;
 
 import java.util.Map;
 
@@ -42,7 +41,7 @@ import java.util.Map;
  * Describes the resource type "XMLTemplate".
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
 
@@ -65,19 +64,12 @@ public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-            
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
-     */
-    public String getLauncherClass() {
-        return CmsXmlTemplateLoader.class.getName();
-    }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
-    public int getLauncherType() {
-        return I_CmsLauncher.C_TYPE_XML;
+    public int getLoaderId() {
+        return CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID;
     }     
 
     /**

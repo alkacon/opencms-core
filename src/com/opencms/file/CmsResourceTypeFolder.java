@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/18 18:20:37 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -73,19 +73,12 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-           
+    
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
-    public String getLauncherClass() {
-        return I_CmsConstants.C_UNKNOWN_LAUNCHER;
-    }
-
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
-     */
-    public int getLauncherType() {
-        return I_CmsConstants.C_UNKNOWN_LAUNCHER_ID;
+    public int getLoaderId() {
+        return -1;
     }     
 
     /**
@@ -95,12 +88,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         StringBuffer output = new StringBuffer();
         output.append("[ResourceType]:");
         output.append(getResourceTypeName());
-        output.append(" , Id=");
+        output.append(", Id=");
         output.append(getResourceType());
-        output.append(" , launcherType=");
-        output.append(getLauncherType());
-        output.append(" , launcherClass=");
-        output.append(getLauncherClass());
+        output.append(", LoaderId=");
+        output.append(getLoaderId());
         return output.toString();
     }
 
@@ -202,12 +193,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         validResourcename(destination);
 
         getAllResources(cms, source, allSubFiles, allSubFolders);
+        
         if (!destination.endsWith("/")) {
             destination = destination + "/";
         }
+        
         if (!destination.startsWith("/")) {
             destination = "/" + destination;
         }
+        
         // first the folder
         cms.doCopyFolder(source, destination, lockCopy);
         
@@ -219,6 +213,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination, false);
             }
         }
+        
         // now all the little files
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
@@ -227,6 +222,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false);
             }
         }
+        
         if (C_BODY_MIRROR) {
             // copy the content bodys
             try {
@@ -299,6 +295,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
         // finally the folder
         cms.doDeleteFolder(folder);
+        
         if (C_BODY_MIRROR) {
             // delete the corresponding folder in C_VFS_PATH_BODIES
             String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
@@ -361,28 +358,19 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         return file;
     }
 
-
     /**
-     * Imports a resource to the cms.<p>
-     *
-     * @param the current cms object
-     * @param resource the resource to be imported
-     * @param content the content of the resource
-     * @param properties the properties of the resource
-     * @param destination the name of the resource destinaition
-     * @return the imported CmsResource
-     * @throws CmsException if operation was not successful
+     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, com.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
      */
     public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
         CmsResource importedResource = null;
         if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
-         destination += I_CmsConstants.C_FOLDER_SEPARATOR;
+            destination += I_CmsConstants.C_FOLDER_SEPARATOR;
 
         boolean changed = true;
         int resaccess = 0;
         //try to create the resource
         try {
-            importedResource = cms.doImportResource(resource,  content, properties,  destination);
+            importedResource = cms.doImportResource(resource, content, properties, destination);
             if (importedResource != null) {
                 changed = false;
             }
@@ -390,53 +378,52 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // an exception is thrown if the folder already exists
         }
         if (changed) {
-         changed = false;
-         //the resource exists, check if properties has to be updated
-         importedResource = cms.readFolder(destination);
-         Map oldProperties = cms.readProperties(cms.readAbsolutePath(importedResource));
-         if (oldProperties == null) {
-             oldProperties = new HashMap();
-         }
-         if (properties == null) {
-             properties = new Hashtable();
-         }
-         if (properties.size() > 0) {
-             // if no properties are to be imported we do not need to check the old properties
-             if (oldProperties.size() != properties.size()) {
-                 changed = true;
-             } else {
-                 // check each of the properties
-                 Iterator i = properties.keySet().iterator();
-                 while (i.hasNext()) {
-                     String curKey = (String)i.next();
-                     String value = (String)properties.get(curKey);
-                     String oldValue = (String)oldProperties.get(curKey);
-                     if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {
-                         changed = true;
-                         break;
-                     }
-                 }
-             }
-         }
-         // check changes of the resourcetype
-         if (importedResource.getType() != getResourceType()) {
-             changed = true;
-         }
-         // update the folder if something has changed
-         if (changed) {
-             lockResource(cms, cms.readAbsolutePath(importedResource), true);
-             cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), resaccess, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new byte[0]);
-         }
-     }
+            changed = false;
+            //the resource exists, check if properties has to be updated
+            importedResource = cms.readFolder(destination);
+            Map oldProperties = cms.readProperties(cms.readAbsolutePath(importedResource));
+            if (oldProperties == null) {
+                oldProperties = new HashMap();
+            }
+            if (properties == null) {
+                properties = new Hashtable();
+            }
+            if (properties.size() > 0) {
+                // if no properties are to be imported we do not need to check the old properties
+                if (oldProperties.size() != properties.size()) {
+                    changed = true;
+                } else {
+                    // check each of the properties
+                    Iterator i = properties.keySet().iterator();
+                    while (i.hasNext()) {
+                        String curKey = (String)i.next();
+                        String value = (String)properties.get(curKey);
+                        String oldValue = (String)oldProperties.get(curKey);
+                        if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            // check changes of the resourcetype
+            if (importedResource.getType() != getResourceType()) {
+                changed = true;
+            }
+            // update the folder if something has changed
+            if (changed) {
+                lockResource(cms, cms.readAbsolutePath(importedResource), true);
+                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), resaccess, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new byte[0]);
+            }
+        }
 
-     return importedResource;
+        return importedResource;
     }
-
 
     /**
      * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {
+    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {        
         if (C_BODY_MIRROR) {
             // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
             try {
@@ -561,7 +548,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#unlockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {
+    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {       
         if (C_BODY_MIRROR) {
             // first unlock the folder in the C_VFS_PATH_BODIES path if it exists.
             try {

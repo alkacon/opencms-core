@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package com.opencms.file;
 import org.opencms.loader.CmsDumpLoader;
 
 import com.opencms.core.CmsException;
-import com.opencms.launcher.I_CmsLauncher;
 
 import java.util.Map;
 
@@ -43,7 +42,7 @@ import java.util.Map;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
 
@@ -66,19 +65,12 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-        
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
-     */
-    public String getLauncherClass() {
-        return CmsDumpLoader.class.getName();
-    }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
-    public int getLauncherType() {
-        return I_CmsLauncher.C_TYPE_DUMP;
+    public int getLoaderId() {
+        return CmsDumpLoader.C_RESOURCE_LOADER_ID;
     }      
     
     /**

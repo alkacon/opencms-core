@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/16 08:38:03 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2003/07/16 08:38:03 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/18 19:03:49 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -92,8 +92,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             accessFlags,
             state,
             lockedByUser,
-            I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
-            I_CmsConstants.C_UNKNOWN_LAUNCHER,
+            -1,
             dateCreated,
             createdByUser,
             dateLastModified,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2003/07/14 20:12:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.loader.CmsJspLoader;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.launcher.I_CmsLauncher;
 
 import java.util.Map;
 
@@ -44,7 +43,7 @@ import java.util.Map;
  * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -55,7 +54,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public static final String C_RESOURCE_TYPE_NAME = "jsp";
     
     /**
-     * @see com.opencms.file.I_CmsResourceType#getResourceType()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
     public int getResourceType() {
         return C_RESOURCE_TYPE_ID;
@@ -67,19 +66,12 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-           
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
-     */
-    public String getLauncherClass() {
-        return CmsJspLoader.class.getName();
-    }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#getLauncherType()
      */
-    public int getLauncherType() {
-        return I_CmsLauncher.C_TYPE_JSP;
+    public int getLoaderId() {
+        return CmsJspLoader.C_RESOURCE_LOADER_ID;       
     } 
         
     /**

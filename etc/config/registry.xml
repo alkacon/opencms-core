@@ -4,7 +4,7 @@
         <resourcetype>
             <class>com.opencms.file.CmsResourceTypeFolder</class>
             <class>com.opencms.file.CmsResourceTypePage</class>
-            <class>com.opencms.file.CmsResourceTypeLink</class>
+            <class>com.opencms.file.CmsResourceTypePointer</class>
             <class>com.opencms.file.CmsResourceTypePlain</class>
             <class>com.opencms.file.CmsResourceTypeXMLTemplate</class>
             <class>com.opencms.file.CmsResourceTypeBinary</class>
@@ -16,7 +16,7 @@
         <resourceloader>
             <class>org.opencms.loader.CmsXmlTemplateLoader</class>
             <class>org.opencms.loader.CmsDumpLoader</class>
-            <class>com.opencms.launcher.CmsLinkLauncher</class>
+            <class>com.opencms.loader.CmsPointerLauncher</class>
             <class>org.opencms.loader.CmsJspLoader</class>
             <class>org.opencms.loader.CmsPageLoader</class>
         </resourceloader>        

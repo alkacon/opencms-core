@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
  * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,29 +49,26 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Dump loader for binary or other unprocessed resource types.<p>
- * 
- * This loader is also used to deliver static sub-elements of pages processed 
- * by other loaders.<p>
+ * Loader "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
-public class CmsDumpLoader implements I_CmsResourceLoader {
+public class CmsPointerLoader implements I_CmsResourceLoader {
     
     /** The id of this loader */
-    public static final int C_RESOURCE_LOADER_ID = 1;    
+    public static final int C_RESOURCE_LOADER_ID = 4;    
     
-    /** The CmsFlexCache used to store generated cache entries in */
-    // private static CmsFlexCache m_cache;
-    
-    /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
-    private static final int DEBUG = 0;
+    /**
+     * The html-code for returning the export file for external links
+     */
+    private static String C_EXPORT_PREFIX = "<html>\n<head>\n<meta http-equiv="+'"'+"refresh"+'"'+" content="+'"'+"0; url=";
+    private static String C_EXPORT_SUFFIX = '"'+">\n</head>\n<body></body>\n</html>";
     
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
-    public CmsDumpLoader() {
+    public CmsPointerLoader() {
         // NOOP
     }
     
@@ -91,23 +88,18 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for unprocessed files"</code><p>
+     * which is <code>"The OpenCms default resource loader for pointers"</code><p>
      * 
      * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
-        return "The OpenCms default resource loader for unprocessed files";
+        return "The OpenCms default resource loader for pointers";
     }
     
-    /** 
-     * Initialize the ResourceLoader,
-     * not much done here, only the FlexCache is initialized for dump elements.<p>
-     *
-     * @param openCms an OpenCms object to use for initalizing
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#init(com.opencms.core.A_OpenCms)
      */
     public void init(A_OpenCms openCms) {
-        // m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);  
-              
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");        
     }
@@ -116,35 +108,46 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException {                   
-        service(cms, file, req, res);        
+    throws ServletException, IOException {        
+        String pointer = new String(file.getContents());
+        if (pointer == null || "".equals(pointer.trim())) {
+            throw new ServletException("Invalid pointer file " + file.getResourceName());
+        }
+        if (pointer.startsWith("/")) {
+            try {
+                CmsFile target = cms.readFile(pointer);
+                A_OpenCms.getLoaderManager().getLoader(target.getType()).load(cms, target, req, res);
+            } catch (CmsException e) {
+                throw new ServletException("Could not load pointed file from " + file.getResourceName());
+            }
+        } else {
+            res.sendRedirect(pointer);
+        }
     }   
     
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
      */
     public void export(CmsObject cms, CmsFile file) throws CmsException {
-        try {    
+        try {
+            String pointer = new String(file.getContents());        
             OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
-            responsestream.write(file.getContents());
+            responsestream.write(C_EXPORT_PREFIX.getBytes());
+            responsestream.write(pointer.getBytes());
+            responsestream.write(C_EXPORT_SUFFIX.getBytes());
             responsestream.close();
         } catch (Throwable t) {
             if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
-            }         
+            }        
         }        
-    }
-        
+    }    
+    
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
-     */
+     */ 
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
     throws ServletException, IOException {
-        try {
-            res.getOutputStream().write(cms.readFile(cms.readAbsolutePath(file)).getContents());
-        }  catch (CmsException e) {
-            if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
-            throw new ServletException("Error in CmsDumpLoader while processing " + cms.readAbsolutePath(file), e);    
-        }
+        throw new RuntimeException("service() not a supported operation for resources of type " + this.getClass().getName());  
     }
  }

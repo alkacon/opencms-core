@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/18 16:15:28 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2003/07/18 16:15:28 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/18 19:03:49 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -60,7 +60,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     * @param state the state of this resource
     * @param lockedByUser the user id of the user who has locked this resource
     * @param launcherType the launcher that is used to process this recource
-    * @param launcherClassname the name of the java class invoked by the launcher
     * @param dateCreated the creation date of this resource
     * @param createdByUser the id of the user who created this resource
     * @param dateLastModified the date of the last modification of the resource
@@ -83,7 +82,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         int state,
         CmsUUID lockedByUser,
         int launcherType,
-        String launcherClassname,
         long dateCreated,
         CmsUUID createdByUser,
         long dateLastModified,
@@ -107,7 +105,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             state, 
             lockedByUser, 
             launcherType, 
-            launcherClassname, 
             dateCreated, 
             createdByUser, 
             dateLastModified, 
@@ -142,7 +139,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             this.getState(),
             this.isLockedBy(),
             this.getLauncherType(),
-            new String(this.getLauncherClassname()),
             this.getDateCreated(),
             this.getUserCreated(),
             this.getDateLastModified(),

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/18 18:20:37 $
-* Version: $Revision: 1.248 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.249 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.248 $ $Date: 2003/07/18 18:20:37 $
+ * @version $Revision: 1.249 $ $Date: 2003/07/18 19:03:49 $
  */
 public interface I_CmsConstants {
 
@@ -492,16 +492,6 @@ public interface I_CmsConstants {
      * This value will be returned for long's withaout a value.
      */
     int C_UNKNOWN_LONG = -1;
-
-    /**
-     * This is the id for an undefined launcher.
-     */
-    int C_UNKNOWN_LAUNCHER_ID = -1;
-
-    /**
-     * This is the classname for an undefined launcher.
-     */
-    String C_UNKNOWN_LAUNCHER = "UNKNOWN";
 
     /**
      * This is the defintion for a filesystem mountpoint.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/18 18:20:37 $
-* Version: $Revision: 1.113 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.114 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.113 $ $Date: 2003/07/18 18:20:37 $
+ * @version $Revision: 1.114 $ $Date: 2003/07/18 19:03:49 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -649,8 +649,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                                  newUuidcontent,resname,resType,
                                                  new Integer(0).intValue(),m_cms.getRequestContext().currentProject().getId(),
                                                  0,I_CmsConstants.C_STATE_NEW,curUser,
-                                                 m_cms.getResourceType(resType).getLauncherType(),
-                                                 m_cms.getResourceType(resType).getLauncherClass(),
+                                                 m_cms.getResourceType(resType).getLoaderId(),
                                                  lastmodified,curUser,lastmodified,
                                                  curUser,size,m_cms.getRequestContext().currentProject().getId(),
                                                  I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
@@ -778,8 +777,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                                  newUuidcontent,resname,resType,
                                                  new Integer(flags).intValue(),m_cms.getRequestContext().currentProject().getId(),
                                                  0,I_CmsConstants.C_STATE_NEW,curUser,
-                                                 m_cms.getResourceType(resType).getLauncherType(),
-                                                 m_cms.getResourceType(resType).getLauncherClass(),
+                                                 m_cms.getResourceType(resType).getLoaderId(),
                                                  datelastmodified,newUserlastmodified,datecreated,
                                                  newUsercreated,size,m_cms.getRequestContext().currentProject().getId(),
                                                  I_CmsConstants.C_VFS_LINK_TYPE_MASTER);

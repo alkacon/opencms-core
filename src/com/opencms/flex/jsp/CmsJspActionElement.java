@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/07/18 12:44:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,11 @@
 
 package com.opencms.flex.jsp;
 
+import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
+import org.opencms.loader.CmsPointerLoader;
+import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.loader.I_CmsResourceLoader;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -43,10 +47,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsJspTemplate;
 import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.flex.util.CmsMessages;
-import com.opencms.launcher.CmsDumpLauncher;
-import com.opencms.launcher.CmsLinkLauncher;
-import com.opencms.launcher.CmsXmlLauncher;
-import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.util.Utils;
 
@@ -80,7 +80,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.0 beta 2
  */
@@ -703,11 +703,11 @@ public class CmsJspActionElement {
      */
     public String getContent(String target) {
         try {
-            I_CmsLauncher launcher = null;
+            I_CmsResourceLoader loader = null;
             target = toAbsolute(target);
             try {
                 CmsResource resource = getCmsObject().readFileHeader(target);
-                launcher = A_OpenCms.getLoaderManager().getLauncher(resource.getLauncherType());
+                loader = A_OpenCms.getLoaderManager().getLoader(resource.getLauncherType());
             } catch (java.lang.ClassCastException e) {
                 // no loader omplementation found
                 return "??? " + e.getMessage() + " ???";
@@ -716,21 +716,21 @@ public class CmsJspActionElement {
                 return "??? " + e.getMessage() + " ???";
             }
             try {
-                if (launcher instanceof CmsJspLoader) {
+                if (loader instanceof CmsJspLoader) {
                     // jsp page
                     CmsJspTemplate template = new CmsJspTemplate();
                     byte[] res = template.getContent(getCmsObject(), target, null, null);
                     return new String(res, getRequestContext().getEncoding());
-                } else if (launcher instanceof CmsXmlLauncher) {
+                } else if (loader instanceof CmsXmlTemplateLoader) {
                     // XmlTemplate page (will not work if file does not use the standard XmlTemplate class)
                     CmsXmlTemplate template = new CmsXmlTemplate();
                     byte[] res = template.getContent(getCmsObject(), target, null, null);
                     return new String(res, getRequestContext().getEncoding());
-                } else if (launcher instanceof CmsDumpLauncher) {
+                } else if (loader instanceof CmsDumpLoader) {
                     // static page
                     CmsFile file = getCmsObject().readFile(target);
                     return new String(file.getContents(), getRequestContext().getEncoding());
-                } else if (launcher instanceof CmsLinkLauncher) {
+                } else if (loader instanceof CmsPointerLoader) {
                     // link
                     CmsFile file = getCmsObject().readFile(target);
                     return new String(file.getContents());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/18 18:20:37 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -54,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -80,17 +79,10 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
-    public String getLauncherClass() {
-        return CmsXmlTemplateLoader.class.getName();
-    }
-
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
-     */
-    public int getLauncherType() {
-        return I_CmsLauncher.C_TYPE_XML;
+    public int getLoaderId() {
+        return CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID;
     }     
 
     /**
@@ -100,12 +92,10 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         StringBuffer output = new StringBuffer();
         output.append("[ResourceType]:");
         output.append(getResourceTypeName());
-        output.append(" , Id=");
+        output.append(", Id=");
         output.append(getResourceType());
-        output.append(" , launcherType=");
-        output.append(getLauncherType());
-        output.append(" , launcherClass=");
-        output.append(getLauncherClass());
+        output.append(", LoaderId=");
+        output.append(getLoaderId());
         return output.toString();
     }
     
@@ -534,35 +524,26 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     }
 
     /**
-     * Imports a resource to the cms.<p>
-     *
-     * @param the current cms object
-     * @param resource the resource to be imported
-     * @param content the content of the resource
-     * @param properties the properties of the resource
-     * @param destination the name of the resource destinaition
-     * @return the imported CmsResource
-     * @throws CmsException if operation was not successful
+     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, com.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
      */
     public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
         CmsResource importedResource = null;
         boolean changed = true;
 
-       try {
-            importedResource = cms.doImportResource(resource,  content, properties,  destination);
+        try {
+            importedResource = cms.doImportResource(resource, content, properties, destination);
             changed = (importedResource == null);
         } catch (CmsException e) {
             // an exception is thrown if the resource already exists
         }
         if (changed) {
-        // if the resource already exists it must be updated
+            // if the resource already exists it must be updated
             lockResource(cms, destination, true);
             cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
         }
         return importedResource;
-        }
-    
+    }
     
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.loader;
 
+import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -67,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -89,9 +90,9 @@ public interface I_CmsResourceLoader {
     String C_LOADER_EXCEPTION_PREFIX = "Resource loader error in file";         
                
     /** 
-     * Initialize the ResourceLoader.
+     * Initialize the ResourceLoader.<p>
      *
-     * @param openCms An A_OpenCms object to use for initalizing.
+     * @param openCms the systems A_OpenCms object
      */
     void init(com.opencms.core.A_OpenCms openCms);
     
@@ -104,7 +105,14 @@ public interface I_CmsResourceLoader {
      * @return a String describing the ResourceLoader
      */
     String getResourceLoaderInfo();
-            
+    
+    /**
+     * Returns the id of the ResourceLoader.<p>
+     * 
+     * @return the id of the ResourceLoader
+     */
+    int getLoaderId();
+      
     /**
      * Basic top-page processing method for a I_CmsResourceLoader,
      * this method is called if the page is called as a sub-element 
@@ -123,6 +131,16 @@ public interface I_CmsResourceLoader {
      */
     void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException;
+    
+    /**
+     * Exports the contents of the requested file and it's subfiles.<p>
+     * 
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param file the requested OpenCms VFS resource
+     * @throws CmsException in case of errors during export
+     */
+    void export(CmsObject cms, CmsFile file) 
+    throws CmsException;
     
     /**
      * Does the job of including the requested resource, 

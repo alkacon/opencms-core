@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/18 16:15:28 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.67 $ $Date: 2003/07/18 16:15:28 $
+ * @version $Revision: 1.68 $ $Date: 2003/07/18 19:03:49 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -135,11 +135,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      private int m_launcherType;
 
      /**
-      * The Java class thas is invoked by the launcher to process this resource.
-      */
-     private String m_launcherClassname;
-
-     /**
       * The id of the user who created this resource
       */
      private CmsUUID m_createdByUser;
@@ -171,8 +166,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param accessFlags the access flags of this resource
      * @param state the state of this resource
      * @param lockedByUser the user id of the user who has locked this resource
-     * @param launcherType the launcher that is require to process this recource
-     * @param launcherClassname the name of the Java class invoked by the launcher
+     * @param launcherType the launcher that is require to process this recource     
      * @param dateCreated the creation date of this resource
      * @param createdByUser the user who created this resource
      * @param dateLastModified the date of the last modification of the resource
@@ -194,7 +188,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        int state, 
        CmsUUID lockedByUser, 
        int launcherType, 
-       String launcherClassname, 
        long dateCreated, 
        CmsUUID createdByUser,
        long dateLastModified, 
@@ -213,7 +206,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        m_projectId=projectId;
        m_accessFlags=accessFlags;
        m_launcherType=launcherType;
-       m_launcherClassname=launcherClassname;
        m_state=state;
        m_lockedByUserId=lockedByUser;
        m_dateCreated=dateCreated;
@@ -245,7 +237,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_state,
             m_lockedByUserId,
             m_launcherType,
-            m_launcherClassname,
             m_dateCreated,
             m_createdByUser,
             m_dateLastModified,
@@ -359,14 +350,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          return m_resourceFlags;
       }
      
-    /**
-     * Gets the launcher class name of this resource.<p>
-     *
-     * @return the launcher class name of this resource
-     */
-     public String getLauncherClassname() {
-         return m_launcherClassname;
-     }
      /**
      * Gets the launcher type id of this resource.<p>
      *
@@ -671,14 +654,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
           m_resourceFlags=flags;
       }
 
-     /**
-     * Sets the launcher class name of this resource.<p>
-     *
-     * @param name the launcher class name to set
-     */
-     void setLauncherClassname(String name) {
-      m_launcherClassname=name;
-         }
      /**
      * Sets the launcher type id of this resource.<p>
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/18 18:20:37 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -55,16 +55,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#getResourceType()
      */
     public abstract int getResourceType();
-
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
-     */
-    public abstract String getLauncherClass();
     
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
-    public abstract int getLauncherType();
+    public abstract int getLoaderId();
 
     /**
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
@@ -189,31 +184,29 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, com.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
      */
     public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
         CmsResource importedResource = null;
-        
-      boolean changed = true;
 
-      try {          
-          importedResource = cms.doImportResource(resource,  content, properties,  destination);
-          changed = (importedResource == null);
-      } catch (CmsException e) {
-          // an exception is thrown if the resource already exists
-      }
+        boolean changed = true;
 
-      if (changed) {
-          // if the resource already exists it must be updated
-          lockResource(cms, destination, true);
-          cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
-          importedResource = cms.readFileHeader(destination);
-      }
+        try {
+            importedResource = cms.doImportResource(resource, content, properties, destination);
+            changed = (importedResource == null);
+        } catch (CmsException e) {
+            // an exception is thrown if the resource already exists
+        }
 
-      return importedResource;
+        if (changed) {
+            // if the resource already exists it must be updated
+            lockResource(cms, destination, true);
+            cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
+            importedResource = cms.readFileHeader(destination);
+        }
+
+        return importedResource;
     }
-
-
 
     /**
      * @see java.lang.Object#toString()
@@ -222,12 +215,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         StringBuffer output = new StringBuffer();
         output.append("[ResourceType]:");
         output.append(getResourceTypeName());
-        output.append(" , Id=");
+        output.append(", Id=");
         output.append(getResourceType());
-        output.append(" , launcherType=");
-        output.append(getLauncherType());
-        output.append(" , launcherClass=");
-        output.append(getLauncherClass());
+        output.append(", LoaderId=");
+        output.append(getLoaderId());
         return output.toString();
     }
 }

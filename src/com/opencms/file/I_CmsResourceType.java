@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/18 18:20:37 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/18 19:03:49 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+ 
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
@@ -43,27 +43,20 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public interface I_CmsResourceType {
-
-    /**
-     * Returns the name of the the {@link com.opencms.launcher.I_CmsLauncher} of this resource type.<p> 
-     *
-     * @return the name of the launcher class
-     */
-    String getLauncherClass();
-
-    /**
-     * Returns the launcher type id needed for this resource type.<p>
-     *
-     * @return the launcher type id for this resource type
-     */
-    int getLauncherType();
+    
+     /**
+      * Returns the launcher type id needed for this resource type.<p>
+      *
+      * @return the launcher type id for this resource type
+      */
+     int getLoaderId();
 
     /**
      * Returns the name for this resource type.<p>
      *
      * @return the name for this resource type
      */
-    String getResourceTypeName();
+     String getResourceTypeName();
 
     /**
      * Returns the type id of this resource type.<p>
@@ -84,7 +77,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
-
+        
     /**
      * Locks a resource.<p>
      *
@@ -104,7 +97,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException;
-
+    
     /**
      * Copies a Resource.
      *
@@ -154,7 +147,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     void undeleteResource(CmsObject cms, String resourcename) throws CmsException;
-
+            
     /**
      * Change the timestamp of a resource.<p>
      * 
@@ -175,7 +168,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     void chtype(CmsObject cms, String resourcename, int newtype) throws CmsException;
-
+    
     /**
      * Replaces the content and properties of a resource.<p>
      * 
@@ -253,5 +246,4 @@ public interface I_CmsResourceType {
      * @throws CmsException if operation was not successful
      */
     CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destinition) throws CmsException;
-
 }

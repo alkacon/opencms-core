@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/18 19:03:49 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.42 $
- * $Date: 2003/07/18 14:11:18 $
+ * $Revision: 1.43 $
+ * $Date: 2003/07/18 19:03:49 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -216,12 +216,10 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
                                      CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
                                      0,
-                                     /* m_cms.getRequestContext().currentUser().getId(), */
-                                     /* m_cms.getRequestContext().currentGroup().getId(), */
                                      m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
                                      1,
                                      m_cms.getRequestContext().currentUser().getId(), I_CmsConstants.C_UNKNOWN_ID,
-                                     "", System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
+                                     System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
                                      0, m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
         m_properties = new Hashtable();
