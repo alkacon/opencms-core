@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/10 15:00:16 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/09/11 12:22:26 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2003/09/10 15:00:16 $
+ * @version $Revision: 1.51 $ $Date: 2003/09/11 12:22:26 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -128,7 +128,7 @@ public interface I_CmsVfsDriver {
      * @return file The created file.
      * @throws CmsException if operation was not successful
      */    
-    CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException;
+    CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType) throws CmsException;
     
     /**
      * Writes the content of a file.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/10 15:00:16 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2003/09/11 12:22:26 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,15 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
+import com.opencms.flex.CmsEvent;
+import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.util.SqlHelper;
@@ -60,6 +63,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -74,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.119 $ $Date: 2003/09/10 15:00:16 $
+ * @version $Revision: 1.120 $ $Date: 2003/09/11 12:22:26 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -312,25 +316,33 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * Creates a new file from an given CmsFile object and a new filename.
+     * Creates a new file from an given CmsFile object and a new filename.<p>
+     * 
+     * <b>The CmsFile object requires it's full resource name to be set!</b>
+     * Pls. refer to {@link com.opencms.file.CmsResource#getFullResourceName()}.
      *
      * @param project The project in which the resource will be used.
      * @param file The file to be written to the Cms.
      * @param userId The Id of the user who changed the resourse.
      * @param parentId The parentId of the resource.
      * @param filename The complete new name of the file (including pathinformation).
-     *
      * @return file The created file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException if something goes wrong
+     * @throws RuntimeException if the file has not it's full resource name set
+     * @see com.opencms.file.CmsResource#getFullResourceName()
+     * @see com.opencms.file.CmsResource#setFullResourceName(String)
      */
     public CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException {
-        // int vfsLinkType = I_CmsConstants.C_UNKNOWN_ID;
         int newState = 0;
         CmsUUID modifiedByUserId = null, createdByUserId = null, newStructureId = null;
         long dateModified = 0, dateCreated = 0;
         Connection conn = null;
         PreparedStatement stmt = null;
+        
+        // validate if the file has it's full resource name set
+        if (!file.hasFullResourceName()) {
+            throw new RuntimeException("Full resource name not set for CmsFile " + file.getResourceName());
+        }        
 
         // validate the resource name
         if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
@@ -354,8 +366,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
  
             dateModified = dateCreated;            
             modifiedByUserId = createdByUserId;
-
-
         }
 
         // check if the resource already exists
@@ -363,16 +373,20 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         newStructureId = file.getId();
         try {
             res = readFileHeader(project.getId(), parentId, filename, true);
+            res.setFullResourceName(file.getFullResourceName());
             if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now
                 // but we have to reuse its id in order to avoid orphanes in the online project
                 newStructureId = res.getId();
-                newState = I_CmsConstants.C_STATE_CHANGED;
+                newState = I_CmsConstants.C_STATE_CHANGED;                            
                 
-                // remove the existing file
+                // remove the existing file and it's properties 
+                List modifiedResources = getAllVfsLinks(project, res);
+                modifiedResources.add(res);
+                deleteAllProperties(project.getId(), res);                
                 removeFile(project, res);
-                // the properties of the removed file are deleted 
-                // during the next publishing process!                           
+                
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
             }
@@ -450,6 +464,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * Creates a new link from an given CmsResource object and a new filename.<p>
      * 
+     * <b>The CmsResource object requires it's full resource name to be set!</b>
+     * Pls. refer to {@link com.opencms.file.CmsResource#getFullResourceName()}.
+     * 
      * @param project the project where to create the link
      * @param resource the link prototype
      * @param userId the id of the user creating the link
@@ -457,12 +474,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @param filename the name of the link
      * @return a valid link resource
      * @throws CmsException if something goes wrong
+     * @throws RuntimeException if the resource has not it's full resource name set
      */
     public CmsResource createVfsLink(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException {
-
         Connection conn = null;
         PreparedStatement stmt = null;
         int newState = 0;
+        
+        // validate if the file has it's full resource name set
+        if (!resource.hasFullResourceName()) {
+            throw new RuntimeException("Full resource name not set for CmsResource " + resource.getResourceName());
+        }
         
         // validate the resource name
         if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
@@ -481,16 +503,20 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID newStructureId = resource.getId();
         try {
             res = readFileHeader(project.getId(), parentId, filename, true);
+            res.setFullResourceName(resource.getFullResourceName());
             if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now
                 // but we have to reuse its id in order to avoid orphanes in the online project
                 newStructureId = res.getId();
                 newState = I_CmsConstants.C_STATE_CHANGED;
                 
-                // remove the existing file
+                // remove the existing file and it's properties
+                List modifiedResources = getAllVfsLinks(project, res);
+                modifiedResources.add(res);
+                deleteAllProperties(project.getId(), res);                
                 removeFile(project, parentId, filename);
-                // the properties of the removed file are deleted 
-                // during the next publishing process!                           
+
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
             }
@@ -600,28 +626,24 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * Creates a new file with the given content and resourcetype.
+     * Creates a new file with the given content and resourcetype.<p>
      *
      * @param user The user who wants to create the file.
      * @param project The project in which the resource will be used.
      * @param filename The complete name of the new file (including pathinformation).
      * @param flags The flags of this resource.
-     * @param parentId The parentId of the resource.
+     * @param parentFolder The parent folder of the resource.
      * @param contents The contents of the new file.
      * @param resourceType The resourceType of the new file.
-     *
      * @return file The created file.
-     *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
-        
-        // TODO VFS links: refactor all upper methods to support the VFS link type param
-           
+    public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
+                  
         CmsFile newFile = new CmsFile(
             new CmsUUID(),
             new CmsUUID(),
-            parentId,
+            parentFolder.getId(),
             new CmsUUID(),
             filename,
             resourceType.getResourceType(),
@@ -636,8 +658,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             contents.length,
             1, 
             contents);
-    
-        return createFile(project, newFile, user.getId(), parentId, filename);          
+            
+        newFile.setFullResourceName(parentFolder.getFullResourceName() + newFile.getResourceName());    
+        return createFile(project, newFile, user.getId(), parentFolder.getId(), filename);          
     }
 
     /**
@@ -1132,7 +1155,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         String resourceName = resource.getFullResourceName();
         
         // add folder separator to folder name if it is not present
-        if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID  && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+        if (resource.isFolder() && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
     

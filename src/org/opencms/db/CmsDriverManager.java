@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/10 15:23:04 $
- * Version: $Revision: 1.206 $
+ * Date   : $Date: 2003/09/11 12:22:26 $
+ * Version: $Revision: 1.207 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.206 $ $Date: 2003/09/10 15:23:04 $
+ * @version $Revision: 1.207 $ $Date: 2003/09/11 12:22:26 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1117,10 +1117,9 @@ public class CmsDriverManager extends Object {
             return;
         }
 
-
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-        
+
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1129,38 +1128,36 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
-
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink = true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount()>1) {
-                    copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount() > 1) {
+                    copyAsLink = true;
                 }
             }
         }
-
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        
+
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         properties = readProperties(context, source, null, false);
-        
+
         if (copyAsLink) {
-        // create a copy of the source file in the destination parent folder      
+            // create a copy of the source file in the destination parent folder      
             newResource = createVfsLink(context, destination, source, properties, false);
         } else {
             // create a new resource in the destination folder
@@ -1171,14 +1168,14 @@ public class CmsDriverManager extends Object {
                 // reset "labeled" link flag
                 flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
-            
+
             // create the file
-            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
+            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder, sourceFile.getContents(), getResourceType(sourceFile.getType()));
             newResource.setFullResourceName(destination);
 
             // copy the properties
             m_vfsDriver.writeProperties(properties, context.currentProject().getId(), newResource, newResource.getType());
-            m_propertyCache.clear();             
+            m_propertyCache.clear();
 
             // copy the access control entries
             ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceAceId(), false).listIterator();
@@ -1187,20 +1184,20 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-                        
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
-            
-            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
-        
-        if (lockCopy) {
+
+            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
+
+            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
+
+            if (lockCopy) {
                 lockResource(context, destination);
-        }
+            }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-        
+
         List modifiedResources = (List) new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
@@ -1466,7 +1463,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsFile createFile(CmsRequestContext context, String newFileName, byte[] contents, String type, Map propertyinfos) throws CmsException {
+    public CmsFile createFile(CmsRequestContext context, String newFileName, byte[] contents, String type, Map propertyinfos) throws CmsException {           
 
         // extract folder information
         String folderName = newFileName.substring(0, newFileName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newFileName.length()) + 1);
@@ -1481,13 +1478,13 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createFile() " + resourceName, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
-        CmsFolder cmsFolder = readFolder(context, folderName);
+        CmsFolder parentFolder = readFolder(context, folderName);
 
         // check if the user has write access to the destination folder
-        checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS);
+        checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // create and return the file.
-        CmsFile newFile = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, cmsFolder.getId(), contents, getResourceType(type));
+        CmsFile newFile = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, parentFolder, contents, getResourceType(type));
         newFile.setFullResourceName(newFileName);        
 
         // write the metainfos
@@ -1889,7 +1886,8 @@ public class CmsDriverManager extends Object {
             }
         }
         
-        // write the link
+        // setting the full resource name twice here looks crude but is essential!
+        linkResource.setFullResourceName(linkName);
         linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
         linkResource.setFullResourceName(linkName);
         
