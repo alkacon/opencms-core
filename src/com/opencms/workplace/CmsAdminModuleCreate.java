@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/02/01 09:51:54 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -92,7 +92,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsRequestContext reqCont = cms.getRequestContext();
+        //CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String step = (String)parameters.get(C_STEP);
@@ -112,7 +112,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
             templateDocument.setData(C_DATE, dateFormat.format(new Date()));
         }
         else {
-            if("OK".equals(step)) {
+            if("OK".equals(step) || "Ok".equals(step)) {
                 String packetname = (String)parameters.get(C_PACKETNAME);
                 String modulename = (String)parameters.get(C_MODULENAME);
                 String version = (String)parameters.get(C_VERSION);
