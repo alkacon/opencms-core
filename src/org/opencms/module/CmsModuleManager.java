@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/03 11:33:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -359,6 +359,11 @@ public class CmsModuleManager {
      */
     public synchronized void initialize(CmsObject adminCms) {
 
+        if (((adminCms == null) && (OpenCms.getRunLevel() > 1)) || ((adminCms != null) && !adminCms.isAdmin())) {
+            // null admin cms only allowed during test cases
+            throw new RuntimeException("Admin permissions are required to initialize the module manager");
+        }
+        
         Iterator it;
         
         it = m_modules.keySet().iterator();
