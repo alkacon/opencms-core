@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/10/18 12:44:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/18 13:04:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,19 +39,16 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-
-
 /**
  * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue}.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
 
-      
     /**
      * Creates a new editor widget.<p>
      */
@@ -69,7 +66,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         CmsXmlContentEditor editor,
         CmsXmlContentDefinition contentDefintion,
         I_CmsXmlContentValue value) throws CmsXmlException {
-           
+
         String id = getParameterName(value);
         int idHash = id.hashCode();
         if (idHash < 0) {
@@ -79,6 +76,8 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
         result.append(getMessage(editor, contentDefintion, value.getNodeName()));
+        result.append(": </td>");
+        
         result.append(": </td>");
         
         result.append("<td>");
@@ -95,7 +94,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         result.append("');\">");       
         result.append("</td>");         
         
-        result.append("<td colspan=\"3\" class=\"xmlTd\"><input class=\"xmlInput\" value=\"");        
+        result.append("<td class=\"xmlTd\"><input class=\"xmlInput maxwidth\" value=\"");
         result.append(value.getStringValue(cms, document));
         result.append("\" name=\"");
         result.append(id);

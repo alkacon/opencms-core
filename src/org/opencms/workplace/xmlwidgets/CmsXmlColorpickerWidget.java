@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlColorpickerWidget.java,v $
- * Date   : $Date: 2004/10/18 12:44:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/18 13:04:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
@@ -59,7 +59,6 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
 
         // empty constructor is required for class registration
     }
-
 
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorWidget(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
@@ -76,12 +75,13 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
         result.append(getMessage(editor, contentDefintion, value.getNodeName()));
-        result.append(": </td><td colspan=\"2\" class=\"xmlTd\">");
+        result.append(": </td><td class=\"xmlTd\">");
         String colorValue = castValue.getStringValue(cms, document);
         String id = getParameterName(value);
         
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");       
         result.append("<input type=\"text\"");
-        result.append(" class=\"xmlInput\" name=\"");
+        result.append(" class=\"xmlInputSmall\" name=\"");
         result.append(id);
         result.append("\" value=\"");
         result.append(colorValue);        
@@ -89,14 +89,11 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("');\"");
         result.append(" style=\"background-color: ");
-        result.append(colorValue);
+        result.append(checkColor(colorValue));
         result.append("; color: ");
         result.append(getInputFontColor(colorValue));
-        result.append(";\">");
-        
-        result.append("</td><td>");
-        
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(";\"></td>");
+             
         result.append(editor.buttonBarSpacer(1));
         result.append(editor.button("javascript:showColorPicker('" + id + "');", null, "color_fill", "button.color", editor.getSettings().getUserSettings().getEditorButtonStyle()));
         result.append("</tr></table>");
@@ -125,6 +122,26 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
             }
             value.setStringValue(cms, document, String.valueOf(castColorValue));
         }
+    }
+    
+    /**
+     * Check the stored color value to prevent display issues in the generated HTML ouput.<p>
+     * 
+     * @param color the color value to check
+     * @return the checked color value
+     */
+    private String checkColor(String color) {
+        if (color != null) {
+            if (color.indexOf("#") == -1) {
+                // add the "#" to the color string
+                color = "#" + color;
+            }
+            int colLength = color.length();
+            if (colLength == 4 || colLength == 7) {
+                return color;    
+            }
+        }
+        return "#FFFFFF";
     }
     
     /**

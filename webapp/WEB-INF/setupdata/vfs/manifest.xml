@@ -11511,6 +11511,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/calendar.gif</source>
+			<destination>system/workplace/resources/buttons/calendar.gif</destination>
+			<type>image</type>
+			<uuidresource>b676bfd8-20e7-11d9-be6c-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file> 
+		<file>
 			<source>system/workplace/resources/buttons/center.gif</source>
 			<destination>system/workplace/resources/buttons/center.gif</destination>
 			<type>image</type>
@@ -11731,6 +11744,19 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/buttons/folder.gif</source>
+			<destination>system/workplace/resources/buttons/folder.gif</destination>
+			<type>image</type>
+			<uuidresource>9dfe0914-20de-11d9-bbae-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file> 
 		<file>
 			<source>system/workplace/resources/buttons/goto.gif</source>
 			<destination>system/workplace/resources/buttons/goto.gif</destination>

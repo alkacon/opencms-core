@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2004/10/18 12:44:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/18 13:04:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -61,7 +61,6 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
 
         // empty constructor is required for class registration
     }
-
 
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorWidget(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
@@ -78,7 +77,10 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
         result.append(getMessage(editor, contentDefintion, value.getNodeName()));
-        result.append(": </td><td colspan=\"2\" class=\"xmlTd\"><input class=\"xmlInput\" value=\"");
+        result.append(": </td><td class=\"xmlTd\">");
+        
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
+        result.append("<input class=\"xmlInputSmall\" value=\"");
         String dateTimeValue = "";
         if (castValue.getDateTimeValue() > 0) {
             dateTimeValue = editor.getCalendarLocalizedTime(castValue.getDateTimeValue());
@@ -89,19 +91,20 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         result.append(dateTimeValue);
         result.append("\" name=\"");
         result.append(id);
-        result.append("\"></td>");
-
-        result.append("<td>&nbsp;<img src=\"");
-        result.append(editor.getResourceUri());
-        result.append("ic_timer.gif\" id=\"");
+        result.append("\" id=\"");
         result.append(id);
-        result.append(".calendar\"");
-        result.append(" alt=\"");
-        result.append(editor.key("calendar.input.choosedate"));
-        result.append("\" title=\"");
-        result.append(editor.key("calendar.input.choosedate"));
-        result.append("\" border=\"0\">");
-
+        result.append("\"></td><td>");
+        
+        
+        
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"");
+        result.append(id);
+        result.append(".calendar\"><tr>");
+        result.append(editor.buttonBarSpacer(1));
+        result.append(editor.button("#", null, "calendar", "calendar.input.choosedate", editor.getSettings().getUserSettings().getEditorButtonStyle()));
+        result.append("</tr></table>");
+        result.append("</td></tr></table>");
+        
         result.append(editor.calendarInit(id, id + ".calendar", "cR", false, false, true, null, true));
 
         result.append("</td></tr>\n");

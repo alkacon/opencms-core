@@ -1,6 +1,7 @@
 <%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
+	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*,
 	java.util.*"
 	buffer="none"
@@ -67,14 +68,67 @@ default:
 <style type="text/css">
 <!--
 .xmlTable { width:100%; }
-.xmlTd    { width:100%; height: 22px; }
+.xmlTd    { width: 100%; height: 22px; }
 .xmlLabel { font-family:verdana, sans-serif; font-size:11px; font-weight:bold; height: 22px; white-space: nowrap; }
-.xmlInput { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; width: 100%; }
+.xmlInput { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; }
+.xmlInputSmall { width: 200px; }
+.xmlInputMedium { width: 400px; }
 -->
 </style>
 
+<%= wp.calendarIncludes() %>
+
+<script type="text/javascript" src="<%= wp.getSkinUri() %>commons/tree.js"></script>
+
 <script type="text/javascript">
 <!--
+
+// VFS FILE SELECTOR START
+<%= CmsTree.initTree(wp.getCms(), wp.getEncoding(), wp.getSkinUri()) %>
+        
+var treewin = null;
+var treeForm = null;
+var treeField = null;
+var treeDoc = null;
+
+function openTreeWin(formName, fieldName, curDoc) {
+	var paramString = "?type=vfslink&includefiles=true";
+
+	treewin = openWin(vr.contextPath + vr.workplacePath + "views/explorer/tree_fs.jsp" + paramString, "opencms", 300, 450);
+	treeForm = formName;
+	treeField = fieldName;
+	treeDoc = curDoc;
+}
+
+function openWin(url, name, w, h) {
+	var newwin = window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+	if(newwin != null) {
+		if (newwin.opener == null) {
+			newwin.opener = self;
+		}
+	}
+	newwin.focus();
+	return newwin;
+}
+
+function setFormValue(filename) {
+	var curForm;
+	var curDoc;
+	if (treeDoc != null) {
+		curDoc = treeDoc;
+	} else {
+		curDoc = win.files;
+	}
+	if (treeForm != null) {
+		curForm = curDoc.forms[treeForm];	
+	} else {
+		curForm = curDoc.forms[0];
+	}
+	if (curForm.elements[treeField]) {
+		curForm.elements[treeField].value = filename;	
+	}
+}
+// VFS FILE SELECTOR END
 
 
 // COLORPICKER START
@@ -113,8 +167,12 @@ function setColor(color) {
 }
 
 function cutHexChar(fieldValue, defaultValue) {
-	if (fieldValue != null && fieldValue.charAt(0) == "#") {
-		return fieldValue.slice(1);
+	if (fieldValue != null) {
+		if (fieldValue.charAt(0) == "#") {
+			return fieldValue.slice(1);
+		} else {
+			return fieldValue;
+		}
 	} else {
 		return defaultValue;
 	}
@@ -216,6 +274,17 @@ function init() {
 	initHtmlArea();
 }
 
+function exit() {
+	if (treewin != null) {
+		// close the file selector window
+		window.treewin.close();
+		treewin = null;
+		treeForm = null;
+		treeField = null;
+		treeDoc = null;
+	}
+}
+
 function submit(form) {	
 	submitHtmlArea(form);
 }
@@ -223,7 +292,6 @@ function submit(form) {
 //-->
 </script>
 
-<%= wp.calendarIncludes() %>
 
 <script type="text/javascript">
    _editor_url = "<%= wp.getSkinUri() + "editors/htmlarea/" %>";
@@ -287,7 +355,7 @@ for (var i=0; i<textAreas.length; i++) {
 </script>
 
 </head>
-<body class="buttons-head" unselectable="on" onload="init();">
+<body class="buttons-head" unselectable="on" onload="init();" onunload="exit();">
 
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
 <input type="hidden" name="<%= wp.PARAM_CONTENT %>" value="<%= wp.getParamContent() %>">
