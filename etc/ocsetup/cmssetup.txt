@@ -1,13 +1,5 @@
 echo on
 login Admin admin
-addResourceType plain 1 ""
-addResourceType XMLTemplate 3 ""
-addResourceType page 3 ""
-addResourceType binary 1 ""
-addResourceType image 1 ""
-addResourceType script 1 ""
-addResourceType link 4 ""
-addResourceType pdfpage 5 ""
 createPropertydefinition Title plain 0
 createPropertydefinition Title page 0
 createPropertydefinition Title XMLTemplate 0
