@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.26 $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2004/02/26 11:35:35 $
+ * @version $Revision: 1.27 $ $Date: 2004/03/12 16:00:48 $
  */
 public class CmsSynchronize {
 
@@ -78,11 +78,11 @@ public class CmsSynchronize {
     /** Filname of the synclist file on the server FS */
     static final String C_SYNCLIST_FILENAME = "#synclist.txt";
 
-    /** The path in the server FS where the resources have to be synchronized */
-    private String m_synchronizePath = null;
+    /** The path in the "real" file system where the resources have to be synchronized to */
+    private String m_destinationPathInRfs = null;
 
-    /** The path in the VFS where the resources have to be synchronized */
-    private String m_resourcePath = null;
+    /** The source path in the OpenCms VFS where the resources have to be synchronized from */
+    private String m_sourcePathInVfs = null;
 
     /** The CmsObject */
     private CmsObject m_cms;
@@ -110,11 +110,10 @@ public class CmsSynchronize {
      * synchronisation process.<p>
      *
      * @param cms the current CmsObject
-     * @param resourcePath the folder of the VFS to synchronize
      * @param report the report to write the output to
      * @throws CmsException if something goes wrong
      */
-    public CmsSynchronize(CmsObject cms, String resourcePath, I_CmsReport report) throws CmsException {
+    public CmsSynchronize(CmsObject cms, I_CmsReport report) throws CmsException {
         m_cms = cms;
         m_report = report;
         m_count = 1;
@@ -122,19 +121,19 @@ public class CmsSynchronize {
         // has to be generatetd. 
         // This has only made once.
         if (m_synchronizeModifications == null) {
-            m_synchronizeModifications = cms.getRegistry().getSynchronizeModifications();
+            m_synchronizeModifications = OpenCms.getSystemInfo().getSynchronizeSettings().getSynchronizeModifications();
         }
 
-        m_synchronizePath = m_cms.getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PATH);
-        //check if the synchronize path in the FS ends with a seperator. If so, remove it
-        if (m_synchronizePath.endsWith(File.separator)) {
-            m_synchronizePath = m_synchronizePath.substring(0, m_synchronizePath.length() - 1);
+        m_destinationPathInRfs = OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs();
+        // check if the synchronize path in the FS ends with a seperator. If so, remove it
+        if (m_destinationPathInRfs.endsWith(File.separator)) {
+            m_destinationPathInRfs = m_destinationPathInRfs.substring(0, m_destinationPathInRfs.length() - 1);
         }
 
-        m_resourcePath = resourcePath;
+        m_sourcePathInVfs = OpenCms.getSystemInfo().getSynchronizeSettings().getSourcePathInVfs();
         // do the synchronization only if the synchonization folders in the VFS
         // and the FS are valid
-        if ((m_resourcePath != null) && (m_synchronizePath != null)) {
+        if ((m_sourcePathInVfs != null) && (m_destinationPathInRfs != null)) {
             // get the sync from the previous run list
             m_syncList = readSyncList();
             // create the sync list for this run
@@ -142,11 +141,11 @@ public class CmsSynchronize {
             // create the error sync list
             m_errorList = new HashMap();
             // synchronice the VFS and the FS
-            syncVfsFs(m_resourcePath);
+            syncVfsFs(m_sourcePathInVfs);
             // remove files from the FS
-            removeFromFs(m_synchronizePath);
+            removeFromFs(m_destinationPathInRfs);
             // add new files from the FS
-            copyFromFs(m_resourcePath);
+            copyFromFs(m_sourcePathInVfs);
             // write the sync list
             writeSyncList();
             // free mem
@@ -334,7 +333,7 @@ public class CmsSynchronize {
             for (int i = 0; i < res.length; i++) {                
                 // get the relative filename
                 String resname = res[i].getAbsolutePath();
-                resname = resname.substring(m_synchronizePath.length(), resname.length());
+                resname = resname.substring(m_destinationPathInRfs.length(), resname.length());
                 // translate the folder seperator if nescessary
                 resname = resname.replace(File.separatorChar, '/');
                 // now check if this resource was already processed, by looking 
@@ -710,60 +709,53 @@ public class CmsSynchronize {
      */
     private HashMap readSyncList() throws CmsException {
         HashMap syncList = new HashMap();
-        String line = "";
-        StringTokenizer tok;
 
-        // check the registry if the sync process was run on this computer before.
-        // if not, do NOT read the sync list form the server fielsysten, otherweise
-        // all entries in the synchronization folder would be deleted.
-        String syncrun = m_cms.getRegistry().getSystemValue("syncrun");
-        if (syncrun != null) {
-            //the sync list file in the server fs
-            File syncListFile;
-            syncListFile = new File(m_synchronizePath, C_SYNCLIST_FILENAME);
-            // try to read the sync list file if it is there
-            if (syncListFile.exists()) {
-                // prepare the streams to write the data
-                FileReader fIn = null;
-                LineNumberReader lIn = null;
-                try {
-                    fIn = new FileReader(syncListFile);
-                    lIn = new LineNumberReader(fIn);
-                    // read one line from the file
+        // the sync list file in the server fs
+        File syncListFile;
+        syncListFile = new File(m_destinationPathInRfs, C_SYNCLIST_FILENAME);
+        // try to read the sync list file if it is there
+        if (syncListFile.exists()) {
+            // prepare the streams to write the data
+            FileReader fIn = null;
+            LineNumberReader lIn = null;
+            try {
+                fIn = new FileReader(syncListFile);
+                lIn = new LineNumberReader(fIn);
+                // read one line from the file
+                String line = lIn.readLine();
+                while (line != null) {
                     line = lIn.readLine();
-                    while (line != null) {
-                        line = lIn.readLine();
-                        // extract the data and create a CmsSychroizedList object
-                        //  from it
-                        if (line != null) {
-                            tok = new StringTokenizer(line, ":");
-                            if (tok != null) {
-                                String resName = tok.nextToken();
-                                String tranResName = tok.nextToken();
-                                long modifiedVfs = new Long(tok.nextToken()).longValue();
-                                long modifiedFs = new Long(tok.nextToken()).longValue();
-                                CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
-                                syncList.put(translate(resName), sync);
-                            }
+                    // extract the data and create a CmsSychroizedList object
+                    //  from it
+                    if (line != null) {
+                        StringTokenizer tok = new StringTokenizer(line, ":");
+                        if (tok != null) {
+                            String resName = tok.nextToken();
+                            String tranResName = tok.nextToken();
+                            long modifiedVfs = new Long(tok.nextToken()).longValue();
+                            long modifiedFs = new Long(tok.nextToken()).longValue();
+                            CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
+                            syncList.put(translate(resName), sync);
                         }
+                    }
+                }
+            } catch (IOException e) {
+                throw new CmsException(e.getMessage());
+            } finally {
+                // close all streams that were used
+                try {
+                    if (lIn != null) {
+                        lIn.close();
+                    }
+                    if (fIn != null) {
+                        fIn.close();
                     }
                 } catch (IOException e) {
-                    throw new CmsException(e.getMessage());
-                } finally {
-                    // close all streams that were used
-                    try {
-                        if (lIn != null) {
-                            lIn.close();
-                        }
-                        if (fIn != null) {
-                            fIn.close();
-                        }
-                    } catch (IOException e) {
-                        // ignore
-                    }
+                    // ignore
                 }
             }
         }
+
         return syncList;
     }
 
@@ -777,7 +769,7 @@ public class CmsSynchronize {
     private void writeSyncList() throws CmsException {
         // the sync list file in the server fs
         File syncListFile;
-        syncListFile = new File(m_synchronizePath, C_SYNCLIST_FILENAME);
+        syncListFile = new File(m_destinationPathInRfs, C_SYNCLIST_FILENAME);
 
         // prepare the streams to write the data
         FileOutputStream fOut = null;
@@ -799,9 +791,6 @@ public class CmsSynchronize {
         } catch (IOException e) {
             throw new CmsException(e.getMessage());
         } finally {
-            // update the registry and mark that the sync process has run at least
-            // one time
-            m_cms.getRegistry().setSystemValue("syncrun", "true");
             // close all streams that were used
             try {
                 pOut.flush();
@@ -825,7 +814,7 @@ public class CmsSynchronize {
      * @return the corresponding file in the FS
      */
     private File getFileInFs(String res) {
-        String path = m_synchronizePath + res.substring(0, res.lastIndexOf("/"));
+        String path = m_destinationPathInRfs + res.substring(0, res.lastIndexOf("/"));
         String fileName = res.substring(res.lastIndexOf("/") + 1);
         return new File(path, fileName);
     }
@@ -843,7 +832,7 @@ public class CmsSynchronize {
         }
         // translate the folder seperator if nescessary
         resname = resname.replace(File.separatorChar, '/');
-        return resname.substring(m_synchronizePath.length());
+        return resname.substring(m_destinationPathInRfs.length());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/02/26 11:35:35 $
-* Version: $Revision: 1.135 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.136 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.135 $ $Date: 2004/02/26 11:35:35 $
+ * @version $Revision: 1.136 $ $Date: 2004/03/12 16:00:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -253,7 +253,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // get the temporary file projectid
         int tempProject = 0;
         try{
-            tempProject = Integer.parseInt(cms.getRegistry().getSystemValue("tempfileproject"));
+            tempProject = OpenCms.getWorkplaceManager().getTempFileProjectId();
         }catch(Exception e){
             throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
         }

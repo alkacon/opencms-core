@@ -1,0 +1,65 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (vfs)>
+
+<!--
+# <vfs> configuration:
+#
+# The configuration of the 'virtual file system' is done here.
+-->
+
+<!ELEMENT vfs (
+	resourceloaders, 
+	resourcetypes,
+	translations? )>
+
+<!ELEMENT resourceloaders (loader+)>
+<!ELEMENT loader (param*)>
+<!ATTLIST loader class CDATA #REQUIRED>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+
+<!ELEMENT resourcetypes (type+)>
+<!ELEMENT type (param*)>
+<!ATTLIST type class CDATA #REQUIRED>
+
+<!ELEMENT translations (filetranslations?, foldertranslations?)>
+
+<!ELEMENT translation (#PCDATA)>
+
+<!--
+# Filename translation is used when creating new files to automatically 
+# replace chars not allowed in the OpenCms VFS into allowed ones.
+# This is done using Perl5 regular search & replace expression translation rules.
+# One of the most important uses is e.g. replacement of space with "_".
+# So if a user uploads a file "my file.txt" the name will be translated to "my_file.txt".
+# All of the translation rules are applied to the filename in the given order.
+#
+# By setting the "enabled" attibute to "false" you can disable filename translation.
+# It is enabled by default. It's recommended to leave this enabled.
+#
+# Filename translation is only applied to: 
+#   - File uploads (the name of the uploaded file is translated)
+#   - Zip-File uploads (all filenames in the Zip are translated)
+-->
+
+<!ELEMENT filetranslations (translation*)>
+<!ATTLIST filetranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# Folder translation can be used to maintain compatibility with older
+# OpenCms installations, e.g. with version before the 5.0 (beta 2) release.
+# This is done using Perl5 regular search & replace expression rules.
+# All read and write access to a OpenCms VFS folder that matches one of given
+# translation rules is automatically translated to the new name.
+# Translation is stopped after the first match was found.
+#
+# The attribute "enabled" controls if folder translation is enabled.
+# The default is "not enabled". Use this feature only if you have specific 
+# reasons because it might hurt performance.
+-->
+
+<!ELEMENT foldertranslations (translation*)>
+<!ATTLIST foldertranslations enabled (TRUE|true|FALSE|false) #REQUIRED>

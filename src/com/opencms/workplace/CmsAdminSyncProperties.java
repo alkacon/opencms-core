@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
     private final String C_SYNCPATH = "syncpath";
     private final String C_SYNCRESOURCES = "syncresources";
     private final String C_ADDFOLDER = "addfolder";
-    private final String C_CURPROJECT = "currentProject";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -78,22 +77,16 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
         }
 
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsRegistry reg = cms.getRegistry();
         CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(reqCont, true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
-        String projectName = new String();
         String syncPath = new String();
         String allResources = new String();
-        Vector folders = new Vector();
-        String projectId = new String();
-        int numRes = 0;
 
         // clear session values on first load
         String step = (String)parameters.get(C_STEP);
-        projectId = (String)parameters.get(C_SYNCPROJECT);
-        syncPath = (String)parameters.get(C_SYNCPATH);
+        syncPath = (String)parameters.get(C_SYNCPATH);        
         allResources = (String)parameters.get(C_SYNCRESOURCES);
 
         if(step == null) {
@@ -101,56 +94,46 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
             // and get the id of the current project
             if(session.getValue(C_STEP) == null){
                 // remove all session values
-                session.removeValue(C_SYNCPROJECT);
                 session.removeValue(C_SYNCPATH);
                 session.removeValue(C_SYNCRESOURCES);
                 session.removeValue(C_ADDFOLDER);
                 session.removeValue("lasturl");
-                // get the id of the current project when the dialog is opened.
-                // when changing the project in the dialog the currentProject is set
-                // because of the folder-tree that is used to choose resources.
-                // when leaving the dialog the currentProject is reset to the original project.
-                session.putValue(C_CURPROJECT, reqCont.currentProject().getId() + "");
                 session.putValue(C_STEP, "nextstep");
             }
         } else {
             if("OK".equalsIgnoreCase(step)) {
-                projectId = (String)parameters.get(C_SYNCPROJECT);
                 syncPath = (String)parameters.get(C_SYNCPATH);
                 allResources = (String)parameters.get(C_SYNCRESOURCES);
                 // the form has just been submitted, store the data in the session
-                if(((projectId == null) || projectId.equals("")) ||
-                    ((syncPath == null) || syncPath.equals("")) ||
+                if(((syncPath == null) || syncPath.equals("")) ||
                     ((allResources == null) || allResources.equals(""))) {
                     templateSelector = "datamissing";
                 } else {
                     // all the required data has been entered
-                    session.putValue(C_SYNCPROJECT, projectId);
                     session.putValue(C_SYNCPATH, syncPath);
                     session.putValue(C_SYNCRESOURCES, allResources);
                     // 'allResources' has the "form res1;res2;...resk;"
                     // this is because the simpler 'getParameterValues' method doesn't work with Silverstream
-                    folders = parseResources(allResources);
-                    numRes = folders.size();
-                    for(int i = 0;i < numRes;i++) {
-                        // modify the foldername if nescessary (the root folder is always given
-                        // as a nice name)
-                        if(lang.getLanguageValue("title.rootfolder").equals(folders.elementAt(i))) {
-                            folders.setElementAt("/", i);
-                        }
+                    Vector folders = parseResources(allResources);
+                    if (folders.size() >= 1) {
+                        allResources = (String)folders.elementAt(0);
                     }
-                    checkRedundancies(folders);
-                    numRes = folders.size(); // could have been changed
+                    
+                    // modify the foldername if nescessary (the root folder is always given
+                    // as a nice name)
+                    if(lang.getLanguageValue("title.rootfolder").equals(allResources)) {
+                        allResources = "/";
+                    }
+
+                    // numRes = folders.size(); // could have been changed
                     // check if all the resources are writeable
                     // if not, return a message
                     Vector notWriteable = new Vector();
-                    for(int i = numRes - 1;i >= 0;i--) {
-                        String theFolder = (String)folders.elementAt(i);
-                        if(!checkWriteable(cms, theFolder, Integer.parseInt(projectId))) {
-                            notWriteable.addElement(theFolder);
-                            templateSelector = "errorsyncproperties";
-                        }
+                    if(!checkWriteable(cms, allResources, cms.getRequestContext().currentProject().getId())) {
+                        notWriteable.addElement(allResources);
+                        templateSelector = "errorsyncproperties";
                     }
+
                     if("errorsyncproperties".equals(templateSelector)){
                         // at least one of the choosen folders was not writeable
                         templateDocument.setData("details", "The following folders were not writeable:"
@@ -158,130 +141,56 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     }
                 }
                 if(templateSelector == null || "".equals(templateSelector)){
-                    // create the Hashtable for the resources
-                    Hashtable hashResources = new Hashtable();
-                    numRes = folders.size();
-                    for(int i = 0;i < numRes;i++) {
-                        String key = C_SYNCHRONISATION_RESOURCETAG+(i+1);
-                        String value = (String)folders.elementAt(i);
-                        hashResources.put(key, value);
-                    }
-                    // get the project name
-                    CmsProject theProject = cms.readProject(Integer.parseInt(projectId));
-                    projectName = theProject.getName();
+
                     // now update the registry
-                    reg.setSystemValue(C_SYNCHRONISATION_PROJECT, projectName);
-                    reg.setSystemValue(C_SYNCHRONISATION_PATH, syncPath);
-                    reg.setSystemValues(C_SYNCHRONISATION_RESOURCE, hashResources);
+                    OpenCms.getSystemInfo().getSynchronizeSettings().setDestinationPathInRfs(syncPath);
+                    OpenCms.getSystemInfo().getSynchronizeSettings().setSourcePathInVfs(allResources);
+
                     templateSelector = "done";
-                    // if the currentProject was changed in the dialog reset it
-                    // to the original currentProject
-                    int curProjectId = Integer.parseInt((String)session.getValue(C_CURPROJECT));
-                    if (curProjectId != reqCont.currentProject().getId()){
-                        reqCont.setCurrentProject(cms.readProject(curProjectId));
-                    }
+                    
                     // remove the values from the session
-                    session.removeValue(C_CURPROJECT);
                     session.removeValue(C_STEP);
                 }
             } else if("fromerrorpage".equals(step)) {
                 // after an error fill in the data from the session into the template
-                templateDocument.setData(C_SYNCPROJECT, (String)session.getValue(C_SYNCPROJECT));
+                templateDocument.setData(C_SYNCPROJECT, "" + cms.getRequestContext().currentProject().getId());
                 templateDocument.setData(C_SYNCPATH, (String)session.getValue(C_SYNCPATH));
                 templateDocument.setData(C_ADDFOLDER, "");
                 templateDocument.setData(C_SYNCRESOURCES, (String)session.getValue(C_SYNCRESOURCES));
                 templateSelector = "";
             } else if("cancel".equals(step)){
-                // if the currentProject was changed in the dialog
-                // reset to the original currentProject
-                int curProjectId = Integer.parseInt((String)session.getValue(C_CURPROJECT));
-                if (curProjectId != reqCont.currentProject().getId()){
-                    reqCont.setCurrentProject(cms.readProject(curProjectId));
-                }
                 // remove the values from the session
-                session.removeValue(C_CURPROJECT);
                 session.removeValue(C_STEP);
                 templateSelector = "done";
             }
         }
         // if there are still values in the session (like after an error), use them
-        if((projectId == null) || ("".equals(projectId))) {
-            projectId = (String)session.getValue(C_SYNCPROJECT);
-        }
         if((syncPath == null) || ("".equals(syncPath))) {
             syncPath = (String)session.getValue(C_SYNCPATH);
         }
         if((allResources == null) || ("".equals(allResources))) {
             allResources = (String)session.getValue(C_SYNCRESOURCES);
         }
-        // try to read the values from the registry file and check if they are
-        // available in the VFS
-        if((projectId == null) || ("".equals(projectId))) {
-            projectName = reg.getSystemValue(C_SYNCHRONISATION_PROJECT);
-            int countAccessible = 0;
-            if((projectName != null) && (!"".equals(projectName))){
-                // does this is an accessible project or
-                // if there is more than one project with this name
-                Vector allProjects = cms.getAllAccessibleProjects();
-                for (int i = 0; i < allProjects.size(); i++){
-                    CmsProject nextProject = (CmsProject)allProjects.elementAt(i);
-                    if(projectName.equals(nextProject.getName())){
-                        countAccessible++;
-                        projectId = nextProject.getId()+"";
-                    }
-                }
-                if ((countAccessible == 0) || (countAccessible > 1)){
-                    projectId = "";
-                }
-            } else {
-                projectId = "";
-            }
-        }
-
         if((syncPath == null) || ("".equals(syncPath))) {
-            syncPath = reg.getSystemValue(C_SYNCHRONISATION_PATH);
+            syncPath = OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs();
             if(syncPath == null){
                 syncPath = "";
             }
         }
         if((allResources == null) || ("".equals(allResources))) {
-            allResources = "";
-            if (!((projectId == null) || ("".equals(projectId)))){
-                Hashtable resources = reg.getSystemValues(C_SYNCHRONISATION_RESOURCE);
-                numRes = resources.size();
-                if (numRes > 0){
-                    allResources = new String();
-                    for (int i=1; i < numRes+1; i++) {
-                        String path = (String)resources.get(C_SYNCHRONISATION_RESOURCETAG+i);
-                        // try to read this resource from the project
-                        try{
-                            cms.readFileHeader(path, Integer.parseInt(projectId), false);
-                            allResources = allResources + path + ";";
-                        } catch (CmsException exc){
-                        }
-                    }
-                    // remove the last semikolon
-                    if (allResources.endsWith(";")){
-                        allResources = allResources.substring(0,allResources.lastIndexOf(";"));
-                    }
-                }
+            allResources = OpenCms.getSystemInfo().getSynchronizeSettings().getSourcePathInVfs();   
+            if (allResources == null) {
+                allResources = "";
+            }
+            // remove the last semikolon
+            if (allResources.endsWith(";")){
+                allResources = allResources.substring(0,allResources.lastIndexOf(";"));
             }
         }
 
-        if(!"done".equals(templateSelector)){
-            // Check if the user requested a project change in the dialog
-            // and set the currentProject
-            if(projectId != null && !("".equals(projectId))) {
-                if(!(Integer.parseInt(projectId) == reqCont.currentProject().getId())) {
-                    reqCont.setCurrentProject(cms.readProject(Integer.parseInt(projectId)));
-                }
-            }
-        }
-
-        templateDocument.setData(C_SYNCPROJECT, projectId);
+        templateDocument.setData(C_SYNCPROJECT, "" + cms.getRequestContext().currentProject().getId());
         templateDocument.setData(C_SYNCRESOURCES, allResources);
         templateDocument.setData(C_SYNCPATH, syncPath);
-        session.putValue(C_SYNCPROJECT, projectId);
         session.putValue(C_SYNCPATH, syncPath);
         session.putValue(C_SYNCRESOURCES, allResources);
 
@@ -301,57 +210,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
      */
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
-    }
-
-    /**
-     * Gets all groups, that may work for a project.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @throws CmsException
-     */
-
-    public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
-        // get all projects
-        Vector projects = cms.getAllAccessibleProjects();
-        int retValue = -1;
-        CmsProject curProject = cms.getRequestContext().currentProject();
-        String defaultProject = curProject.getId()+"";
-        
-        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        String enteredProject = (String)session.getValue(C_SYNCPROJECT);        
-        if(enteredProject != null && !"".equals(enteredProject)) {
-            // if an error has occurred before, take the previous entry of the user
-            defaultProject = enteredProject;
-        }
-
-        // fill the names and values
-        int n = 0;
-        for(int z = 0;z < projects.size();z++) {
-            CmsProject loopProject = (CmsProject)projects.elementAt(z);
-            if(!loopProject.isOnlineProject()) {
-                String loopProjectName = loopProject.getName();
-                String loopProjectId = loopProject.getId() + "";
-                
-                if(defaultProject.equals(loopProjectId)) {
-                    retValue = n;
-                    cms.getRequestContext().setCurrentProject(cms.readProject(Integer.parseInt(loopProjectId)));
-                }
-                
-                names.addElement(loopProjectName);
-                values.addElement(loopProjectId);
-                n++;
-            }
-        }
-        
-       return new Integer(retValue);
     }
 
     /**

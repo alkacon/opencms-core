@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2004/03/08 12:31:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,12 +28,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.configuration;
 
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.digester.Digester;
 
@@ -43,7 +47,6 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.xml.sax.SAXException;
 
-
 /**
  * Dummy class for configuration testing.<p>
  * 
@@ -52,13 +55,23 @@ import org.xml.sax.SAXException;
  */
 public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
+    /** The name of the DTD for this configuration */
+    private static final String C_CONFIGURATION_DTD_NAME = "opencms-tests.dtd";
+    
+    /** The name of the default XML file for this configuration */
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-tests.xml";
+    
+    /** Test content 1 */
     private String m_content1;
+    
+    /** Test content 2 */
     private String m_content2;
     
     /**
      * The public contructor is hidden to prevent generation of instances of this class.<p> 
      */
     public CmsTestConfiguration() {
+        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Empty constructor called on " + this);
         }  
@@ -83,14 +96,10 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
-        // add factory create method for "real" instance creation
-        digester.addFactoryCreate("*/tests", CmsTestConfiguration.class);
-        // add action methods
+        // add test rules
         digester.addCallMethod("*/tests/test", "addTest", 2);
         digester.addCallParam("*/tests/test", 0, A_NAME);
         digester.addCallParam("*/tests/test", 1);
-        // add the configured object to the calling configuration after the node has been processed
-        digester.addSetNext("*/tests", "addConfiguration");
     }
 
     /**
@@ -98,8 +107,12 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      */
     public Element generateXml(Element parent) {
         Element testElement = parent.addElement("tests");
-        testElement.addElement("test").addAttribute(A_NAME, "test1").addText(m_content1);
-        testElement.addElement("test").addAttribute(A_NAME, "test2").addText(m_content2);
+        if (m_content1 != null) {
+            testElement.addElement("test").addAttribute(A_NAME, "test1").addText(m_content1);
+        }
+        if (m_content2 != null) {
+            testElement.addElement("test").addAttribute(A_NAME, "test2").addText(m_content2);
+        }
         return testElement;
     }
     
@@ -119,24 +132,39 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
         CmsConfigurationManager manager = new CmsConfigurationManager();
 
         // get URL of test input resource
-        URL inputUrl = ClassLoader.getSystemResource("org/opencms/configuration/opencms.xml");
+        URL inputUrl = ClassLoader.getSystemResource("org/opencms/configuration/");
         
         // now digest the XML
         manager.loadXmlConfiguration(inputUrl);
+       
+        List allConfigurations = new ArrayList();
+        allConfigurations.add(manager);
+        allConfigurations.addAll(manager.getConfigurations());
         
-        System.out.println("Vfs configuration instance: " + manager.getConfiguration(CmsVfsConfiguration.class));
-        System.out.println("Import/export configuration instance: " + manager.getConfiguration(CmsImportExportConfiguration.class));
-        
-        // gernerate XML document for the configuration
-        Document doc = manager.generateXml();
-                               
-        // output the document
-        XMLWriter writer;        
-        OutputFormat format = OutputFormat.createPrettyPrint();
-        format.setIndentSize(4);
-        format.setTrimText(false);
-        format.setEncoding("UTF-8");
-        writer = new XMLWriter(System.out, format);
-        writer.write(doc);        
-    }       
+        Iterator i = allConfigurations.iterator();
+        while (i.hasNext()) {
+            I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
+            System.out.println("\n\nConfiguration instance: " + config + ":\n");
+            
+            // gernerate XML document for the configuration
+            Document doc = manager.generateXml(config);
+                                   
+            // output the document
+            XMLWriter writer;        
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            format.setIndentSize(4);
+            format.setTrimText(false);
+            format.setEncoding("UTF-8");
+            writer = new XMLWriter(System.out, format);
+            writer.write(doc);                 
+            
+        }   
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
+     */
+    public String getDtdFilename() {
+        return C_CONFIGURATION_DTD_NAME;
+    }    
 }

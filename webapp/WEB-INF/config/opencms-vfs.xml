@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
+
+<opencms>	
+	<vfs>
+		<resourceloaders>
+			<loader class="com.opencms.legacy.CmsXmlTemplateLoader" />
+			<loader class="org.opencms.loader.CmsDumpLoader" />
+			<loader class="org.opencms.loader.CmsPointerLoader" />
+			<loader class="org.opencms.loader.CmsJspLoader" />
+			<loader class="org.opencms.loader.CmsXmlPageLoader" />
+		</resourceloaders>
+		<resourcetypes>
+			<type class="org.opencms.file.CmsResourceTypeXMLTemplate" />
+			<type class="org.opencms.file.CmsResourceTypeFolder" />
+			<type class="org.opencms.file.CmsResourceTypePlain" />
+			<type class="org.opencms.file.CmsResourceTypePointer" />
+			<type class="org.opencms.file.CmsResourceTypeBinary" />
+			<type class="org.opencms.file.CmsResourceTypeImage" />
+			<type class="org.opencms.file.CmsResourceTypeJsp" />
+			<type class="org.opencms.file.CmsResourceTypeXmlPage" />
+		</resourcetypes>
+		<translations>
+			<filetranslations enabled="true">
+				<translation>s#[\s]+#_#g</translation>
+				<translation>s#\\#/#g</translation>
+				<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
+				<translation>s#!+#x#g</translation>
+			</filetranslations>
+			<foldertranslations enabled="false"/>
+		</translations>
+	</vfs>
+</opencms>

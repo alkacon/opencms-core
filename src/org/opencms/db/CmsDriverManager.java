@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/08 12:32:11 $
- * Version: $Revision: 1.336 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.337 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -71,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.336 $ $Date: 2004/03/08 12:32:11 $
+ * @version $Revision: 1.337 $ $Date: 2004/03/12 16:00:48 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2006,32 +2007,28 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Creates a project for the temporary files.<p>
+     * Creates the project for the temporary files.<p>
      *
      * Only the users which are in the admin or projectleader-group are granted.
      *
-     * @param cms the current cms object
      * @param context the current request context
      * @return the new tempfile project
      * @throws CmsException if something goes wrong
      */
-    public CmsProject createTempfileProject(CmsObject cms, CmsRequestContext context) throws CmsException {
-        String name = "tempFileProject";
-        String description = "Project for temporary files";
+    public CmsProject createTempfileProject(CmsRequestContext context) throws CmsException {
         if (isAdmin(context)) {
             // read the needed groups from the cms
             CmsGroup group = readGroup(OpenCms.getDefaultUsers().getGroupUsers());
             CmsGroup managergroup = readGroup(OpenCms.getDefaultUsers().getGroupAdministrators());
 
             // create a new task for the project
-            CmsTask task = createProject(context, name, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-            CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, null);
+            CmsTask task = createProject(context, CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+            CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME, CmsWorkplaceManager.C_TEMP_FILE_PROJECT_DESCRIPTION, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, null);
             m_projectDriver.createProjectResource(tempProject.getId(), "/", null);
-            cms.getRegistry().setSystemValue("tempfileproject", "" + tempProject.getId());
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
             return tempProject;
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 

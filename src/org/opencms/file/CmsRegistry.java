@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/03/08 12:33:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1430,29 +1430,11 @@ public class CmsRegistry extends A_CmsXmlContent {
     }
 
     /**
-     * Returns the configured locale handler class.<p>
-     * 
-     * @return the configured locale handler class
-     */
-    public List getLocaleHandler() {
-        return getSystemSubNodes("localehandler");
-    }
-    
-    /**
-     * Returns a list of all configured resource init classes.<p>
-     *
-     * @return a list of all configured resource init classes
-     */
-    public List getResourceInit() {
-        return getSystemSubNodes("resourceinit");
-    }
-
-    /**
      * Returns a list of all configured synchronize modification classes.<p>
      *
      * @return a list of all configured synchronize modification classes
      */
-    public List getSynchronizeModifications() {
+    private List getSynchronizeModifications() {
         return getSystemSubNodesClasses("synchronizemodifications");
     }
 
@@ -2379,7 +2361,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @param value the value to be set
      * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setSystemValue(String dataName, String value) throws CmsSecurityException {
+    private void setSystemValue(String dataName, String value) throws CmsSecurityException {
         if (!hasAccess()) {
             throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
@@ -2410,7 +2392,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @param values the values to set
      * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setSystemValues(String dataName, Hashtable values) throws CmsSecurityException {
+    private void setSystemValues(String dataName, Hashtable values) throws CmsSecurityException {
         if (!hasAccess()) {
             throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/03/08 12:32:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,9 @@
  */
 package org.opencms.main;
 
+import org.opencms.configuration.CmsMailSettings;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 
 
 import java.io.File;
@@ -49,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -78,6 +80,9 @@ public class CmsSystemInfo {
     /** The  abolute path to the OpenCms log file (in the "real" file system) */
     private String m_logFileRfsPath;
     
+    /** The settings for the internal OpenCms email service */
+    private CmsMailSettings m_mailSettings;
+    
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */
     private String m_openCmsContext;
     
@@ -89,6 +94,9 @@ public class CmsSystemInfo {
     
     /** The startup time of this OpenCms instance */
     private long m_startupTime;
+    
+    /** The settings for the synchronization */
+    private CmsSynchronizeSettings m_synchronizeSettings;
     
     /** Indicates if the version history is enabled */
     private boolean m_versionHistoryEnabled;
@@ -109,7 +117,7 @@ public class CmsSystemInfo {
     private String m_webApplicationRfsPath;
     
     /** The OpenCms web application "WEB-INF" path (in the "real" file system) */
-    private String m_webInfRfsPath;    
+    private String m_webInfRfsPath;
     
     /**
      * Creates a new system info container.<p>
@@ -233,6 +241,15 @@ public class CmsSystemInfo {
     }    
     
     /**
+     * Returns the settings for the internal OpenCms email service.<p>
+     * 
+     * @return the settings for the internal OpenCms email service
+     */
+    public CmsMailSettings getMailSettings() {
+        return m_mailSettings;
+    }
+    
+    /**
      * Returns the OpenCms request context, e.g. "/opencms/opencms".<p>
      * 
      * The OpenCms context will always start with a "/" and never have a trailing "/".
@@ -285,6 +302,15 @@ public class CmsSystemInfo {
      */
     public String getServletPath() {
         return m_servletPath;
+    }
+    
+    /**
+     * Returns the current settings for the synchronization.<p>
+     * 
+     * @return the current settings for the synchronization
+     */
+    public CmsSynchronizeSettings getSynchronizeSettings() {
+        return m_synchronizeSettings;
     }
     
     /**
@@ -360,6 +386,15 @@ public class CmsSystemInfo {
      */
     public boolean isVersionHistoryEnabled() {
         return m_versionHistoryEnabled;
+    }
+    
+    /**
+     * Sets the settings for the synchronization.<p>
+     * 
+     * @param synchronizeSettings the settings for the synchronization to set
+     */
+    public void setSynchronizeSettings(CmsSynchronizeSettings synchronizeSettings) {
+        m_synchronizeSettings = synchronizeSettings;
     }
     
     /** 
@@ -439,6 +474,15 @@ public class CmsSystemInfo {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileRfsPath);
         }        
+    }
+    
+    /**
+     * Sets the settings for the internal OpenCms email service.<p>
+     * 
+     * @param mailSettings the settings for the internal OpenCms email service to set
+     */
+    protected void setMailSettings(CmsMailSettings mailSettings) {
+        m_mailSettings = mailSettings;
     }
     
     /**

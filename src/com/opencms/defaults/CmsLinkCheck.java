@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/02/27 14:25:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -287,7 +287,10 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
 
         Hashtable newLinkchecktable = new Hashtable();
         // get the values for email from the registry
+        // TODO: check REGISTRY "checklink"  
+        int warning = 0;
         Hashtable emailValues = cms.getRegistry().getSystemValues("checklink");
+        // Hashtable emailValues = new Hashtable();
         // get templateFile this way because there is no actual file if
         // method is called from scheduler ...
         CmsXmlTemplateFile template = getOwnTemplateFile(cms, (String)emailValues.get("mailtemplate"), "", null, "");

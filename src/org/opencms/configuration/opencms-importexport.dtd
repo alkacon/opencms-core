@@ -1,0 +1,97 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (importexport)>
+
+<!--
+# <importexport> configuration:
+#
+# In this node the import and export options are configured.
+# If you are installing a fresh OpenCms system without migrating
+# content from old OpenCms versions, you usually do not need any special 
+# configuration. 
+-->
+<!ELEMENT importexport (
+	importexporthandlers, 
+	import )>
+
+<!--
+# List of import / export handlers.
+# When content is imported, the manifest.xml is analyzed and the 
+# appropriate handler for the import format is selected. 
+-->
+<!ELEMENT importexporthandlers (importexporthandler+)>
+<!ELEMENT importexporthandler EMPTY>
+<!ATTLIST importexporthandler class CDATA #REQUIRED>
+
+<!-- 
+# <import> node options.
+# There are several options to ensure backward compatibility.
+-->
+<!ELEMENT import (overwrite?, convert?, oldwebappurl?, importversions+, immutables*, principaltranslations*, ignoredproperties*)>
+
+<!--
+# If this flag is set to "false" then imports > v2 (that should have resource UUIDs
+# in the manifest) will move colliding resources to /system/lost-found/. Otherwise
+# colliding resources will be overwritten. v1 and v2 imports (without resource 
+# UUIDs in the manifest) are forced to overwrite colliding  resources, no matter 
+# how this flag is set.
+-->
+<!ELEMENT overwrite (#PCDATA)>
+
+<!--
+# This flag controls if editabled content of older versions is automatically
+# conterted to the current version upon import. For example, content of type 
+# "page" from 5.0 is converted into "xmlpage" in 6.0.
+-->
+<!ELEMENT convert (#PCDATA)>
+
+<!--
+# Convert file content from 4.x to 5.x style during import
+# This is needed for the correct content conversion of the import.
+# Enter the URL of the OpenCms web application from which the content was exported,
+# e.g. http://localhost:8080/opencms/opencms/ for a standard local Tomcat installation.
+-->
+<!ELEMENT oldwebappurl (#PCDATA)>
+
+<!--
+# List of import class names. 
+# This is only required if you must import OpenCms content created with older OpenCms 
+# versions. The format of the export has changed with new 
+# OpenCms versions being released. Each export file has a "stamp" in the 
+# manifest.xml that signals which export version of OpenCms was used.
+# In order to import resources from older installations, you must enabled
+# the corrospondig classes in this configuration node.
+-->
+<!ELEMENT importversions (importversion+)>
+<!ELEMENT importversion EMPTY>
+<!ATTLIST importversion class CDATA #REQUIRED>
+
+<!--
+# Import immutable resources:
+# Certain system resources should usually not be changed and be "immutable" 
+# during an import. This is especially true for the main folders in the /system/ 
+# directory as locking and changing these will take very long during the import.
+# Changes to these folders usually happen only accidentally and so should not be imported
+# to another system.
+-->
+<!ELEMENT immutables (resource*)>
+<!ELEMENT resource EMPTY>
+<!ATTLIST resource uri CDATA #REQUIRED>
+
+<!--
+# Import principal (ie. user/group) name translation:
+# In case the user names in the import differ from the user names configured 
+# in the importing system, you can use this feature to translate the names from the 
+# import to other names in your system.
+-->
+<!ELEMENT principaltranslations (principaltranslation*)>
+<!ELEMENT principaltranslation EMPTY>
+<!ATTLIST principaltranslation type (USER|user|GROUP|group) #REQUIRED from CDATA #REQUIRED to CDATA #REQUIRED>
+
+<!--
+# List of properties which are ignored (ie. not imported) when resources are imported. 
+-->
+<!ELEMENT ignoredproperties (property*)>
+<!ELEMENT property EMPTY>
+<!ATTLIST property name CDATA #REQUIRED>

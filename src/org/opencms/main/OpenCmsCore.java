@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/08 12:32:32 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.cron.CmsCronEntry;
@@ -65,6 +66,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringSubstitution;
@@ -77,6 +79,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 import javax.servlet.ServletContext;
@@ -104,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.102 $
+ * @version $Revision: 1.103 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -134,7 +137,7 @@ public final class OpenCmsCore {
     private String m_authenticationFormURI;
 
     /** Member variable to store instances to modify resources */
-    private List m_checkFile;
+    private List m_resourceInitHandlers;
 
     /** The cron table to use with the scheduler */
     private CmsCronTable m_cronTable;
@@ -391,7 +394,7 @@ public final class OpenCmsCore {
         }
 
         // test if this file has to be checked or modified
-        Iterator i = m_checkFile.iterator();
+        Iterator i = m_resourceInitHandlers.iterator();
         while (i.hasNext()) {
             try {
                 file = ((I_CmsResourceInit)i.next()).initResource(file, cms, req, res);
@@ -1129,15 +1132,25 @@ public final class OpenCmsCore {
         }        
         
         // load the XML configuration
-        CmsConfigurationManager configurationManager = new CmsConfigurationManager();        
-        configurationManager.loadXmlConfiguration(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/opencms.xml"));
+        CmsConfigurationManager configurationManager = new CmsConfigurationManager();
+        // first generate the base URL for all configurations 
+        URL baseUrl = (new File(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"))).toURL();
+        configurationManager.loadXmlConfiguration(baseUrl);
+        
+        // get the system configuration
+        CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
+        // set version history information        
+        getSystemInfo().setVersionHistorySettings(systemConfiguration.isVersionHistoryEnabled(), systemConfiguration.getVersionHistoryMaxCount());
+        // set mail configuration
+        getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
+        // set synchronize configuration
+        getSystemInfo().setSynchronizeSettings(new CmsSynchronizeSettings());       
+        m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         
         // get the VFS configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_loaderManager = vfsConfiguation.getLoaderManager();        
         List resourceTypes = vfsConfiguation.getResourceTypes();
-        // set version history information        
-        getSystemInfo().setVersionHistorySettings(vfsConfiguation.isVersionHistoryEnabled(), vfsConfiguation.getVersionHistoryMaxCount());
         
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)configurationManager.getConfiguration(CmsImportExportConfiguration.class);
@@ -1227,29 +1240,6 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Password validation  : " + m_passwordValidatingClass);
         }
 
-        // initialize "resourceinit" registry classes
-        try {
-            List resourceInitClasses = OpenCms.getRegistry().getResourceInit();
-            Iterator i = resourceInitClasses.iterator();
-            while (i.hasNext()) {
-                String currentClass = (String)i.next();
-                try {
-                    m_checkFile.add(Class.forName(currentClass).newInstance());
-                    if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).info(". Resource init class  : " + currentClass + " instanciated");
-                    }
-                } catch (Exception e1) {
-                    if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).warn(". Resource init class  : non-critical error " + e1.toString());
-                    }
-                }
-            }
-        } catch (Exception e2) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Resource init class  : non-critical error " + e2.toString());
-            }
-        }
-
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = configuration.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
@@ -1289,11 +1279,13 @@ public final class OpenCmsCore {
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
         
-        // initialize the workplace manager
+        // initialize the workplace manager        
         m_workplaceManager.initialize(adminCms);
         
         // initialize the locale manager
-        m_localeManager = CmsLocaleManager.initialize(configuration, adminCms);
+        m_localeManager = systemConfiguration.getLocaleManager();
+        m_localeManager.initialize(adminCms);
+        
         // initialize the site manager
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
         // initialize the search manager
@@ -1453,34 +1445,6 @@ public final class OpenCmsCore {
         } else {
             getLog(CmsLog.CHANNEL_INIT).error(". Session manager     : NOT initialized");
         }
-        
-        // initialize 1 instance per class listed in the startup node          
-        try {
-            Hashtable startupNode = OpenCms.getRegistry().getSystemValues("startup");
-            if (startupNode != null) {
-                for (int i = 1; i <= startupNode.size(); i++) {
-                    String currentClass = (String)startupNode.get("class" + i);
-                    try {
-                        Class.forName(currentClass).newInstance();
-                        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                            getLog(CmsLog.CHANNEL_INIT).info(". Startup class init   : " + currentClass + " instanciated");
-                        }
-                    } catch (Exception e1) {
-                        if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                            getLog(CmsLog.CHANNEL_INIT).warn(". Startup class init   : non-critical error " + e1.toString());
-                        }
-                    }
-                }
-            }
-        } catch (Exception e2) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Startup class init   : non-critical error " + e2.toString());
-            }
-        }
-
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Startup class init   : finished");
-        }        
     }
     
     /**
@@ -1489,7 +1453,7 @@ public final class OpenCmsCore {
     protected synchronized void initMembers() {
         m_log = new CmsLog();
         m_passwordValidatingClass = "";
-        m_checkFile = new ArrayList();
+        m_resourceInitHandlers = new ArrayList();
         m_eventListeners = new HashMap();
         m_requestHandlers = new HashMap();
         m_systemInfo = new CmsSystemInfo();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.60 $ $Date: 2004/03/12 16:00:48 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {
@@ -82,7 +82,10 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRegistry registry = cms.getRegistry();
+        int warning = 0;
+        // TODO: check REGISTRY "extendedNavigation"  
         boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
+        // boolean extendedNavigation = false;
 
         // clear the session on first call
         String initial = (String) parameters.get("initial");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.configuration;
 
 import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.ObjectCreationFactory;
 
 import org.dom4j.Element;
 
@@ -42,10 +41,13 @@ import org.dom4j.Element;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
-public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfigurationParameterHandler {
+public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandler {
     
     /** The "class" attribute */
     String A_CLASS = "class";
+
+    /** The "count" attribute */
+    String A_COUNT = "count";
     
     /** The "destination" attribute */
     String A_DESTINATION = "destination";
@@ -67,9 +69,12 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
 
     /** The "order" attribute */
     String A_ORDER = "order";
-
-    /** The "count" attribute */
-    String A_COUNT = "count";
+    
+    /** The "password" attribute */
+    String A_PASSWORD = "password";
+    
+    /** The "protocol" attribute */
+    String A_PROTOCOL = "protocol";
     
     /** The "to" attribute */
     String A_TO = "to";    
@@ -80,6 +85,9 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
     /** The "uri" attribute */
     String A_URI = "uri";
     
+    /** The "user" attribute */
+    String A_USER = "user";
+    
     /** Individual export point node */
     String N_EXPORTPOINT = "exportpoint";
     
@@ -88,6 +96,9 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
     
     /** The "param" node name for generic parameters */
     String N_PARAM = "param";   
+    
+    /** An individual property node */
+    String N_PROPERTY = "property";
         
     /** An individual resource node */
     String N_RESOURCE = "resource";
@@ -97,9 +108,6 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
     
     /** Workplace views master node */
     String N_VIEWS = "views";
-    
-    /** An individual property node */
-    String N_PROPERTY = "property";
     
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>
@@ -117,9 +125,51 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
     Element generateXml(Element parent);
     
     /**
-     * Usually called after the digester factory object creation method is called.<p>  
+     * Returns the name of the DTD file for this XML configuration.<p>
      * 
-     * @see ObjectCreationFactory#createObject(org.xml.sax.Attributes)
+     * @return the name of the DTD file for this XML configuration
+     * @see #getDtdSystemLocation()
+     * @see #getDtdUrlPrefix()
      */
-    void initialize();
+    String getDtdFilename();
+    
+    /**
+     * Returns the system location of the DTD file for this XML configuration.<p>
+     * 
+     * If this is not <code>null</code>, then the DTD is not read through the
+     * web URL, but an internal name resolution is added that resolves the 
+     * system id of the DTD to 
+     * <code>{@link #getDtdSystemLocation()} + {@link #getDtdUrlPrefix()}</code>.<p>
+     * 
+     * @return the system location of the DTD file for this XML configuration
+     * @see #getDtdUrlPrefix()
+     * @see #getDtdFilename()
+     */
+    String getDtdSystemLocation();
+    
+    /**
+     * Returns the system id prefix of the DTD file for this XML configuration.<p>
+     * 
+     * The full system id for the DTD is calculated lile this:
+     * <code>{@link #getDtdSystemLocation()} + {@link #getDtdUrlPrefix()}</code>.<p>
+     *  
+     * @return the system id prefix of the DTD file for this XML configuration
+     * @see #getDtdSystemLocation()
+     * @see #getDtdFilename()
+     */
+    String getDtdUrlPrefix();
+    
+    /**
+     * Returns the name of the XML input file for this configuration.<p>
+     * 
+     * @return the name of the XML input file for this configuration
+     */
+    String getXmlFileName();
+    
+    /**
+     * Sets the name of the XML input file for this configuration.<p>
+     * 
+     * @param fileName the name of the XML input file for this configuration
+     */
+    void setXmlFileName(String fileName);
 }

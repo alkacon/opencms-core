@@ -85,13 +85,6 @@ function selectAll(theList) {
                     <tr><td class=dialogtxt>
                         <table border=0 cellspacing=4 width=100% height=200px>
                             <tr>
-                                <td class=formular width=10%>]]><LABEL value="label.projectname" /><![CDATA[:</td>
-                                <td class=dialogtxt>
-                                    ]]><SELECT class="textfeld" name="syncproject" width="150" method="getProjects" onchange="javascript:document.SYNCPROP.submit()"/><![CDATA[
-                                </td>
-                                <td class=formular>&nbsp;</td>
-                            </tr>
-                            <tr>
                                 <td class=formular>&nbsp;</td>
                                 <td class=dialogtxt>
                                 <input type="text" name="selectallfolders" class="textfeld3" size=31 value="" onSubmit="">

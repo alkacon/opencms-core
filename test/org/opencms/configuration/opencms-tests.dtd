@@ -1,0 +1,14 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (tests)>
+
+<!-- 
+# <tests> configuration:
+#
+# This configuration is only for testing purposes.
+-->
+
+<!ELEMENT tests (test*)>
+<!ELEMENT test (#PCDATA)>
+<!ATTLIST test name CDATA #REQUIRED>

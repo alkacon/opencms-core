@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,11 +60,17 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
+    
+    /** The name of the temp file project */
+    public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
+    
+    /** The description of the temp file project */
+    public static final String C_TEMP_FILE_PROJECT_DESCRIPTION = "The project for temporary Workplace files";
     
     /** Indicates if auto-locking of resources is enabled or disabled */
     private boolean m_autoLockResources;
@@ -107,6 +113,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The configured workplace views */
     private List m_views;
+        
+    /** The temporary file project used by the editors */
+    private CmsProject m_tempFileProject;    
     
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -126,6 +135,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_fileMaxUploadSize = -1;
         m_explorerTypeSettings = new ArrayList();
         m_explorerTypeSettingsMap = new HashMap();
+    }
+    
+    /**
+     * Returns the id of the temporary file project required by the editors.<p>
+     * 
+     * @return the id of the temporary file project required by the editors
+     */
+    public int getTempFileProjectId() {
+        if (m_tempFileProject != null) {
+            return m_tempFileProject.getId();
+        } else {
+            return -1;
+        }
     }
     
     /**
@@ -397,6 +419,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         while (i.hasNext()) {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
             settings.createAccessControlList(cms);
+        }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : vfs access initialized");
+        }
+        try {
+            // read the temporary file project
+            m_tempFileProject = cms.readProject(C_TEMP_FILE_PROJECT_NAME);
+        } catch (CmsException e) {
+            // during initial setup of OpenCms the temp file project does not yet exist...
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Workplace temporary file project does not yet exist!");
+            }
         }
     }
     

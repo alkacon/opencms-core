@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/08 12:32:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.synchronize.CmsSynchronize;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
@@ -76,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsObject {
 
@@ -759,14 +758,13 @@ public class CmsObject {
     }
 
     /**
-     * Creates a new project for the temporary files.
+     * Creates the project for the temporary workplace files.<p>
      *
-     * @return the new project for temporary files
-     * @throws CmsException if operation was not successful.
+     * @return the created project for the temporary workplace files
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createTempfileProject() throws CmsException {
-        CmsProject newProject = m_driverManager.createTempfileProject(this, m_context);
-        return (newProject);
+        return m_driverManager.createTempfileProject(m_context);
     }
 
     /**
@@ -3566,18 +3564,6 @@ public class CmsObject {
     public void setTimeout(int taskId, long timeout) throws CmsException {
         m_driverManager.setTimeout(m_context, taskId, timeout);
     }
-
-    /**
-     * Synchronize resources from the VFS with the "real" filessystem on the server.<p>
-     *
-     * @param resourceName the name (absolute Path) of the resource to be synchronized
-     * @param report the report to write the output to
-     * @throws CmsException if something goes wrong
-     */
-    public void syncFolder(String resourceName, I_CmsReport report) throws CmsException {
-        new CmsSynchronize(this, resourceName, report);
-    }
-
 
     /**
      * Change the timestamp of a resource.<p>

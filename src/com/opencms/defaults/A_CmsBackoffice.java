@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -2090,6 +2090,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
     private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
         // Is there an unlock extension installed? 
+        // TODO: check REGISTRY "unlockextension"  
+        int warning = 0;
         Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
         if (h != null) {
             // Unlock extension found, try generate in instance and use this instead of the default

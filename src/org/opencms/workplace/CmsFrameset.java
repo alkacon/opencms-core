@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/03/11 09:47:14 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.1
  */
@@ -349,7 +349,7 @@ public class CmsFrameset extends CmsWorkplace {
      * @return true if the user has enabled synchronization
      */
     public boolean isSyncEnabled() {
-        return null != getCms().getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PROJECT);
+        return OpenCms.getSystemInfo().getSynchronizeSettings().isSyncEnabled();
     }
 
     /**

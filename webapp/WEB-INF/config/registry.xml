@@ -3,13 +3,6 @@
 	<system>
 
 		<!-- system (new) -->
-		<localehandler>
-			<class>org.opencms.i18n.CmsDefaultLocaleHandler</class>
-		</localehandler>		
-		<resourceinit />
-		<smtpserver>my.smtp.server</smtpserver>
-		<smtpserver2>alternative.smtp.server</smtpserver2>
-		<defaultmailsender>nobody@nowhere.com</defaultmailsender>
 		<tempfileproject></tempfileproject>
 
 		

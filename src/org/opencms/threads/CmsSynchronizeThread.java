@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,38 +31,32 @@
 
 package org.opencms.threads;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
-
-import org.opencms.file.CmsObject;
-
-import java.util.Iterator;
-import java.util.Vector;
+import org.opencms.synchronize.CmsSynchronize;
 
 /**
  * Synchronizes a VFS folder with a folder form the "real" file system.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.10
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
 
     private Throwable m_error;
-    private Vector m_resources;
 
     /**
      * Creates the synchronize Thread.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param resources the VFS resources to include in the synchronization
      */
-    public CmsSynchronizeThread(CmsObject cms, Vector resources) {
+    public CmsSynchronizeThread(CmsObject cms) {
         super(cms, "OpenCms: Synchronizing to project " + cms.getRequestContext().currentProject().getName());
-        m_resources = resources;
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
@@ -84,20 +78,14 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
-    public void run() {
-        Iterator i;            
+    public void run() {         
         getReport().println(getReport().key("report.sync_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        getReport().println(getReport().key("report.sync_rfs_folder") + getCms().getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PATH).replace('\\', '/'), I_CmsReport.C_FORMAT_HEADLINE);                
-        i = m_resources.iterator();         
-        while (i.hasNext()) {                        
-            // synchronize the resource
-            String resource = (String)i.next();            
-            try {
-                getReport().println(getReport().key("report.sync_vfs_resource") + resource, I_CmsReport.C_FORMAT_HEADLINE);                
-                getCms().syncFolder(resource, getReport());
-            } catch (CmsException e) {
-                getReport().println(e);
-            }
+        getReport().println(getReport().key("report.sync_rfs_folder") + OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs().replace('\\', '/'), I_CmsReport.C_FORMAT_HEADLINE);                         
+        getReport().println(getReport().key("report.sync_vfs_resource") + OpenCms.getSystemInfo().getSynchronizeSettings().getSourcePathInVfs(), I_CmsReport.C_FORMAT_HEADLINE);                
+        try {
+            new CmsSynchronize(getCms(), getReport());
+        } catch (CmsException e) {
+            getReport().println(e);
         }
         getReport().println(getReport().key("report.sync_end"), I_CmsReport.C_FORMAT_HEADLINE);       
     }

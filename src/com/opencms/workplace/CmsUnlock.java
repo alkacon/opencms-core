@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.55 $ $Date: 2004/03/12 16:00:48 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault {
@@ -69,7 +69,10 @@ public class CmsUnlock extends CmsWorkplaceDefault {
             Hashtable parameters, String templateSelector) throws CmsException {
                 
         // Is there an unlock extension installed? 
+        int warning = 0;
+        // TODO: check REGISTRY "unlockextension"
         Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
+        // Hashtable h = null;
         if (h != null) {
             // Unlock extension found, try generate in instance and use this instead of the default
             if ("true".equals(h.get("enabled"))) {

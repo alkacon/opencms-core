@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1.12
  */
@@ -206,28 +206,16 @@ public abstract class CmsEditor extends CmsDialog {
      * @throws CmsException if something goes wrong
      */
     protected void commitTempFile() throws CmsException {
-        // get the current project id
-        int curProject = getSettings().getProject();
-        // get the temporary file project id
-        int tempProject = 0;
-        try {
-            tempProject = Integer.parseInt(getCms().getRegistry().getSystemValue("tempfileproject"));
-        } catch (Exception e) {
-            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
-        }
-        // set current project to tempfileproject
-        getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProject));
+        switchToTempProject();
         CmsFile tempFile = null;
         Map properties = null;
         try {
             tempFile = getCms().readFile(getParamTempfile());
             properties = getCms().readProperties(getParamTempfile());
-        } catch (CmsException e) {
-            getCms().getRequestContext().setCurrentProject(getCms().readProject(curProject));
-            throw e;
+        } finally {
+            switchToCurrentProject();
         }
         // set current project
-        getCms().getRequestContext().setCurrentProject(getCms().readProject(curProject));
         CmsFile orgFile = getCms().readFile(getParamResource());
         orgFile.setContents(tempFile.getContents());
         getCms().writeFile(orgFile);

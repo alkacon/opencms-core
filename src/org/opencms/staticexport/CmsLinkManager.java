@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsStringSubstitution;
 
 import org.opencms.file.CmsObject;
 
@@ -51,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsLinkManager {
     
@@ -122,7 +123,7 @@ public class CmsLinkManager {
                 // trick to resolve all ../ inside a path
                 path = "." + path;
             }
-            path = drive + CmsLinkManager.getAbsoluteUri(path, "/");
+            path = CmsStringSubstitution.substitute(drive + CmsLinkManager.getAbsoluteUri(path, "/"), "//", "/");            
             path = path.replace('/', File.separatorChar);
         }
         return path;

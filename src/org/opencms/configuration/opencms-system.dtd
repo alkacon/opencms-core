@@ -1,0 +1,54 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (system)>
+
+<!--
+# <system> configuration:
+#
+# This node contains various core runtime options for OpenCms.
+-->
+<!ELEMENT system (
+	internationalization,
+	mail,
+	versionhistory,
+	resourceinit? )>
+
+<!--
+# Version history settings.
+# The OpenCms VFS keeps a version history for old versions of files.
+# This is done as a binary 1:1 copy of the original file (i.e. no "diff").
+# Because of this the database would grow very large if unlimited versions
+# would be stored. The version history is enabled by default. You can
+# enable / disable it with the "enabled" attribute. The "count" attribute
+# controls the number of binary copies that are kept in the database per individual file. 
+# If a file has more versions, the oldest binary content is deleted (you can not re-create this 
+# version anymore). However, the basic information about the old version (i.e. who 
+# did the publish etc.) is still kept in the database.
+-->
+<!ELEMENT versionhistory EMPTY>
+<!ATTLIST versionhistory enabled (TRUE|true|FALSE|false) #REQUIRED count CDATA #REQUIRED>
+
+<!ELEMENT internationalization (localehandler, localesconfigured, localesdefault)>
+
+<!ELEMENT localehandler EMPTY>
+<!ATTLIST localehandler class CDATA #REQUIRED>
+
+<!ELEMENT localesconfigured (locale+)>
+<!ELEMENT localesdefault (locale+)>
+
+<!ELEMENT locale (#PCDATA)>
+
+<!ELEMENT mail (mailfrom, mailhost+)>
+<!ELEMENT mailfrom (#PCDATA)>
+<!ELEMENT mailhost EMPTY>
+<!ATTLIST mailhost 
+	name CDATA #REQUIRED
+	order CDATA #IMPLIED
+	protocol CDATA #IMPLIED
+	user CDATA  #IMPLIED
+	password CDATA #IMPLIED>
+
+<!ELEMENT resourceinit (resourceinithandler*)>
+<!ELEMENT resourceinithandler EMPTY>
+<!ATTLIST resourceinithandler class CDATA #REQUIRED>

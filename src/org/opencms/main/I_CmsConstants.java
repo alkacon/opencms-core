@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.6 $ $Date: 2004/02/26 11:35:34 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/12 16:00:48 $
  */
 public interface I_CmsConstants {
 
@@ -1078,26 +1078,6 @@ public interface I_CmsConstants {
      * wasLoggedIn
      */
     int C_WHATEVER = 3;
-
-    /**
-     * The name of the synchronizationpath-tag in registry.
-     */
-    String C_SYNCHRONISATION_PATH = "syncpath";
-
-    /**
-     * The name of the synchronizationproject-tag in registry.
-     */
-    String C_SYNCHRONISATION_PROJECT = "syncproject";
-
-    /**
-     * The name of the synchronizationresource-tag in registry.
-     */
-    String C_SYNCHRONISATION_RESOURCE = "syncresource";
-
-    /**
-     * The name of the synchronizationresource-tag in registry.
-     */
-    String C_SYNCHRONISATION_RESOURCETAG = "res";
 
     /**
      * The name of the exportpoint source tag in registry.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsProcessedString.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import java.io.UnsupportedEncodingException;
  * a String for returning to the template engine, it really shouldn't
  * make use of this class and return the original String.
  *
- * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.5 $ $Date: 2003/02/02 15:59:53 $
+ * @author Alexander Lucas 
+ * @version $Revision: 1.6 $ $Date: 2004/03/12 16:00:48 $
  */
 public class CmsProcessedString {
 

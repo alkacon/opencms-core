@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
+
+<opencms>    
+    <vfs>
+        <resourceloaders>
+            <loader class="com.opencms.legacy.CmsXmlTemplateLoader">            
+                <param name="elementcache.enabled">true</param>
+            	<param name="elementcache.uri">10000</param>
+            	<param name="elementcache.elements">50000</param>
+            	<param name="elementcache.variants">100</param>
+            </loader>
+            <loader class="org.opencms.loader.CmsDumpLoader" />
+            <loader class="org.opencms.loader.CmsPointerLoader" />
+            <loader class="org.opencms.loader.CmsJspLoader">
+            	<param name="jsp.repository">C:\TEMP\</param>
+            	<param name="jsp.folder">/WEB-INF/jsp/</param>
+            	<param name="jsp.errorpage.committed">true</param>
+            </loader>
+            <loader class="org.opencms.loader.CmsXmlPageLoader" />
+        </resourceloaders>    
+        <resourcetypes>
+            <type class="org.opencms.file.CmsResourceTypeXMLTemplate" />
+            <type class="org.opencms.file.CmsResourceTypeFolder" />
+            <type class="org.opencms.file.CmsResourceTypePlain">
+                <param name="test1">One</param>
+            	<param name="test2">Two</param>
+            </type>
+            <type class="org.opencms.file.CmsResourceTypePointer" />
+            <type class="org.opencms.file.CmsResourceTypeBinary" />
+            <type class="org.opencms.file.CmsResourceTypeImage" />
+            <type class="org.opencms.file.CmsResourceTypeJsp" />
+            <type class="org.opencms.file.CmsResourceTypeXmlPage" />
+        </resourcetypes>     
+        <translations>
+        	<filetranslations enabled="true">
+        		<translation>s#[\s]+#_#g</translation>
+        		<translation>s#\\#/#g</translation>
+        		<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
+        		<translation>s#!+#x#g</translation>
+        	</filetranslations>
+        	<foldertranslations enabled="false">
+        		<translation>s#/default/vfs/content/bodys/(.*)#/system/bodies/$1#</translation>
+        		<translation>s#/default/vfs/pics/system/(.*)#/system/workplace/resources/$1#</translation>
+        		<translation>s#/default/vfs/pics/(.*)#/system/galleries/pics/$1#</translation>
+        		<translation>s#/default/vfs/download/(.*)#/system/galleries/download/$1#</translation>
+        		<translation>s#/default/vfs/externallinks/(.*)#/system/galleries/externallinks/$1#</translation>
+        		<translation>s#/default/vfs/htmlgalleries/(.*)#/system/galleries/htmlgalleries/$1#</translation>
+        		<translation>s#/default/vfs/content/(.*)#/system/modules/org.opencms.default/$1#</translation>
+        		<translation>s#/default/vfs/moduledemos/(.*)#/system/moduledemos/$1#</translation>
+        		<translation>s#/default/vfs/system/workplace/config/language/(.*)#/system/workplace/locales/$1#</translation>
+        		<translation>s#/default/vfs/system/workplace/css/(.*)#/system/workplace/resources/$1#</translation>
+        		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
+        	</foldertranslations>
+        </translations>           
+    </vfs>   
+</opencms>    

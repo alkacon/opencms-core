@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpStylesheet.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Dump the correct stylesheet for the current browser.
  *
- * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.8 $ $Date: 2004/02/22 13:52:27 $
+ * @author Alexander Lucas
+ * @version $Revision: 1.9 $ $Date: 2004/03/12 16:00:48 $
  */
 public class CmsDumpStylesheet extends CmsDumpTemplate {
 

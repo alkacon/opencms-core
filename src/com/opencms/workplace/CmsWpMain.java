@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2004/03/07 19:22:11 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,11 +53,22 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.66 $ $Date: 2004/03/07 19:22:11 $
+ * @version $Revision: 1.67 $ $Date: 2004/03/12 16:00:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsWpMain extends CmsWorkplaceDefault {
+        
+    /**
+     * The name of the tag for sync button.
+     */
+    static final String C_SYNC_BUTTON = "SYNC";
+
+    /**
+     * The name of the tag for disabled sync button.
+     */
+    static final String C_SYNC_BUTTON_DISABLED = "SYNC_DISABLED";
+
     
     public CmsWpMain() {
         super();
@@ -124,16 +135,16 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		}
 
 		// set the sync button to enabled if no entries for synchronisation in registry
-		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "head")) {
-			String syncpath = null;
-			syncpath = cms.getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PROJECT);
-			if (syncpath == null) {
-				xmlTemplateDocument.setData(CmsSyncFolder.C_SYNC_BUTTON, xmlTemplateDocument.getProcessedDataValue(CmsSyncFolder.C_SYNC_BUTTON_DISABLED, this));
-			}
-			else {
-				xmlTemplateDocument.setData(CmsSyncFolder.C_SYNC_BUTTON, xmlTemplateDocument.getProcessedDataValue(CmsSyncFolder.C_SYNC_BUTTON_ENABLED, this));
-			}
-		}
+//		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "head")) {
+//			String syncpath = null;
+//			syncpath = cms.getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PROJECT);
+//			if (syncpath == null) {
+				xmlTemplateDocument.setData(C_SYNC_BUTTON, xmlTemplateDocument.getProcessedDataValue(C_SYNC_BUTTON_DISABLED, this));
+//			}
+//			else {
+//				xmlTemplateDocument.setData(CmsSyncFolder.C_SYNC_BUTTON, xmlTemplateDocument.getProcessedDataValue(CmsSyncFolder.C_SYNC_BUTTON_ENABLED, this));
+//			}
+//		}
 
 		// send message, if this is the foot
 		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "foot")) {

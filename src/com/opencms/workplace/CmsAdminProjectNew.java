@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.93 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.94 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.93 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.94 $ $Date: 2004/03/12 16:00:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -156,8 +156,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         // flag for extended features in the editor, e.g. list of external links
+        int warning = 0;
         CmsRegistry registry = cms.getRegistry();
+        // TODO: check REGISTRY "extendedNavigation"  
         boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
+        // boolean extendedNavigation = false;
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/02/16 15:42:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -195,6 +195,17 @@ public final class CmsStringSubstitution {
         strBuf.append(seconds);
         
         return strBuf.toString();        
+    }
+    
+    /**
+     * Returns false if the provided String is either <code>null</code>
+     * or the empty String <code>""</code>.<p> 
+     * 
+     * @param value
+     * @return
+     */
+    public static boolean isEmpty(String value) {
+        return (value == null) || (value.length() == 0);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/03/10 16:50:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,6 +72,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The "target" attribute */
     protected static final String A_TARGET = "target";
     
+    /** The name of the DTD for this configuration */
+    private static final String C_CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
+    
+    /** The name of the default XML file for this configuration */
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";          
+    
     /** The name of the access control node */
     protected static final String N_ACCESSCONTROL = "accesscontrol";
     
@@ -139,21 +145,18 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      * Public constructor, will be called by configuration manager.<p> 
      */
     public CmsWorkplaceConfiguration() {
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Empty constructor called on " + this);
-        }     
+        setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : initialized");
+        }               
     } 
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
-    public void addXmlDigesterRules(Digester digester) {                        
-        // add factory create method for "real" instance creation
-        digester.addFactoryCreate("*/" + N_WORKPLACE, CmsWorkplaceConfiguration.class);                            
-        // call this method at the end of the workplace configuration
+    public void addXmlDigesterRules(Digester digester) {                                                  
+        // add finish rule
         digester.addCallMethod("*/" + N_WORKPLACE, "initializeFinished");          
-        // add this configuration object to the calling configuration after is has been processed
-        digester.addSetNext("*/" + N_WORKPLACE, "addConfiguration");        
         
         // creation of the import/export manager        
         digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);                         
@@ -236,8 +239,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, 0, A_ORDER);
         
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setIsResourceType");
-      
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setIsResourceType");      
     }
     
     /**
@@ -368,6 +370,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // return the configured node
         return workplaceElement;
     }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
+     */
+    public String getDtdFilename() {
+        return C_CONFIGURATION_DTD_NAME;
+    }
     
     /**
      * Returns the initialized workplace manager.<p>
@@ -376,15 +385,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public CmsWorkplaceManager getWorkplaceManager() {
         return m_workplaceManager;
-    }
-    
-    /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#initialize()
-     */
-    public void initialize() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : starting");
-        }           
     }
     
     /**

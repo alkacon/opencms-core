@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/03/02 21:51:03 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 5.1
  */
@@ -380,16 +380,8 @@ public abstract class CmsWorkplace {
      * @return the path to the workplace static resources
      */
     public String getResourceUri() {
-        if (m_resourceUri != null) {
-            return m_resourceUri;
-        }
-        synchronized (this) {
-            boolean useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
-            if (useVfs) {
-                m_resourceUri = OpenCms.getSystemInfo().getOpenCmsContext() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
-            } else {
-                m_resourceUri = OpenCms.getSystemInfo().getContextPath() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
-            }            
+        if (m_resourceUri == null) {
+            m_resourceUri = OpenCms.getSystemInfo().getContextPath() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;          
         }
         return m_resourceUri;
     }
@@ -1054,15 +1046,9 @@ public abstract class CmsWorkplace {
     protected int switchToTempProject() throws CmsException {
         // store the current project id in member variable
         m_currentProjectId = getSettings().getProject();
-        // get the temporary file project id
-        int tempProject = 0;
-        try {
-            tempProject = Integer.parseInt(getCms().getRegistry().getSystemValue("tempfileproject"));
-        } catch (Exception e) {
-            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
-        }
-        getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProject));
-        return tempProject;
+        int tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+        getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
+        return tempProjectId;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,20 +30,8 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.importexport.CmsExport;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.threads.CmsSynchronizeThread;
-
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
-
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +42,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.10
  */
@@ -99,18 +87,7 @@ public class CmsSynchronizeReport extends CmsReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             default:
-                Vector resources;
-                try {
-                    resources = getSynchronizeResources();
-                } catch (CmsException e) {        
-                    // show error dialog
-                    setParamErrorstack(e.getStackTraceAsString());
-                    setParamMessage(key("error.message." + getParamDialogtype()));
-                    setParamReasonSuggestion(getErrorSuggestionDefault());
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);    
-                    break;                              
-                }
-                CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms(), resources);
+                CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms());
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getId().toString());
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
@@ -140,48 +117,5 @@ public class CmsSynchronizeReport extends CmsReport {
             // add the title for the dialog 
             setParamTitle(key("title.sync"));
         }                 
-    }
-    
-    /**
-     * Returns the list of resources to be synchronized from the OpenCms registry.<p>
-     *  
-     * @return the list of resources to be synchronized from the OpenCms registry
-     * @throws CmsSecurityException in case the user has no write permissions for the project or resources to sync
-     * @throws CmsException in case something goes wrong
-     */
-    private Vector getSynchronizeResources() throws CmsSecurityException, CmsException {        
-        Vector folders = new Vector();
-        Vector files   = new Vector();
-        Hashtable resources;
-        // first read the sync files from the registry
-        resources = getCms().getRegistry().getSystemValues(I_CmsConstants.C_SYNCHRONISATION_RESOURCE);
-        int count = resources.size();
-        for (int i=0; i<count; i++) {
-            String resource = (String)resources.get("res" + (i+1));
-            if (CmsResource.isFolder(resource)) {
-                folders.add(resource);
-            } else {
-                files.add(resource);
-            }
-        }
-        // remove redundant resources
-        CmsExport.checkRedundancies(folders, files);
-        // combine the result 
-        Vector result = new Vector(folders.size() + files.size());
-        result.addAll(folders);
-        result.addAll(files);
-        List projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
-        Iterator i = result.iterator();
-        while (i.hasNext()) {
-            String resource = (String)i.next();
-            if (! getCms().hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
-                // no write access to target folder
-                throw new CmsSecurityException("No write permissions on resource: " + resource, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);                
-            }
-            if (! CmsProject.isInsideProject(projectResources, resource)) {
-                throw new CmsSecurityException("Resource path not in current project: " + resource, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-            }
-        }
-        return result;        
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,57 +44,63 @@ import org.apache.commons.digester.Digester;
 import org.dom4j.Element;
 
 /**
- * Import/Export master configuration class.<p>
+ * Import / export master configuration class.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
 public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
-    /** Identifier for user principals */
-    public static final String C_PRINCIPAL_USER = "USER";
+    /** The name of the DTD for this configuration */
+    private static final String C_CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
+    
+    /** The name of the default XML file for this configuration */
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";       
 
     /** Identifier for group principals */
     public static final String C_PRINCIPAL_GROUP = "GROUP";
+    
+    /** Identifier for user principals */
+    public static final String C_PRINCIPAL_USER = "USER";
+    
+    /** Node that indicates page conversion */
+    protected static final String N_CONVERT = "convert";
+    
+    /** Node that contains a list of properties ignored during import */
+    protected static final String N_IGNOREDPROPERTIES = "ignoredproperties";
+    
+    /** The import immutable resource node */
+    protected static final String N_IMMUTABLES = "immutables";
+
+    /** The node name of the import subconfiguration */
+    protected static final String N_IMPORT = "import";      
+    
+    /** The main configuration node name */
+    protected static final String N_IMPORTEXPORT = "importexport";
 
     /** The node name of an individual import/export handler */
     protected static final String N_IMPORTEXPORTHANDLER = "importexporthandler";
     
     /** Master node for import/export handlers */
     protected static final String N_IMPORTEXPORTHANDLERS = "importexporthandlers";
-
-    /** Master node for import version class names */
-    protected static final String N_IMPORTVERSIONS = "importversions";    
-
-    /** The node name of the import subconfiguration */
-    protected static final String N_IMPORT = "import";      
     
     /** The node name of an individual import version class */
     protected static final String N_IMPORTVERSION = "importversion";   
-    
-    /** The main configuration node name */
-    protected static final String N_IMPORTEXPORT = "importexport";
-    
-    /** The import overwrite node name */    
-    protected static final String N_OVERWRITE = "overwrite";
-    
-    /** The import immutable resource node */
-    protected static final String N_IMMUTABLES = "immutables";
 
-    /** The principal translation node */
-    protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
-    
-    /** An individual principal translation node */
-    protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
-    
-    /** Node that indicates page conversion */
-    protected static final String N_CONVERT = "convert";
+    /** Master node for import version class names */
+    protected static final String N_IMPORTVERSIONS = "importversions";    
     
     /** Node the contains optional URL of old web application */
     protected static final String N_OLDWEBAPPURL = "oldwebappurl";
     
-    /** Node that contains a list of properties ignored during import */
-    protected static final String N_IGNOREDPROPERTIES = "ignoredproperties";
+    /** The import overwrite node name */    
+    protected static final String N_OVERWRITE = "overwrite";
+    
+    /** An individual principal translation node */
+    protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
+
+    /** The principal translation node */
+    protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
     
     /** The configured import/export manager */
     private CmsImportExportManager m_importExportManager;
@@ -103,21 +109,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      * Public constructor, will be called by configuration manager.<p> 
      */
     public CmsImportExportConfiguration() {
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Empty constructor called on " + this);
-        }     
+        setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import configuration : initialized");
+        }
     } 
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
-    public void addXmlDigesterRules(Digester digester) {                        
-        // add factory create method for "real" instance creation
-        digester.addFactoryCreate("*/" + N_IMPORTEXPORT, CmsImportExportConfiguration.class);                            
-        // call this method at the end of the import/export configuration
-        digester.addCallMethod("*/" + N_IMPORTEXPORT, "initializeFinished");          
-        // add this configuration object to the calling configuration after is has been processed
-        digester.addSetNext("*/" + N_IMPORTEXPORT, "addConfiguration");        
+    public void addXmlDigesterRules(Digester digester) {                                                
+        // add finish rule
+        digester.addCallMethod("*/" + N_IMPORTEXPORT, "initializeFinished");   
         
         // creation of the import/export manager        
         digester.addObjectCreate("*/" + N_IMPORTEXPORT, CmsImportExportManager.class);                         
@@ -231,6 +234,13 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         // return the configured node
         return importexportElement;
     }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
+     */
+    public String getDtdFilename() {
+        return C_CONFIGURATION_DTD_NAME;
+    }
     
     /**
      * Returns the initialized import/export manager.<p>
@@ -239,15 +249,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public CmsImportExportManager getImportExportManager() {
         return m_importExportManager;
-    }
-    
-    /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#initialize()
-     */
-    public void initialize() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import configuration : starting");
-        }           
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/03/12 16:00:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -165,13 +165,13 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     }
     
     /** Suffix to append to online cache entries */
-    public static String C_CACHE_OFFLINESUFFIX = " [offline]";
+    public static final String C_CACHE_OFFLINESUFFIX = " [offline]";
  
     /** Suffix to append to online cache entries */
-    public static String C_CACHE_ONLINESUFFIX = " [online]";
+    public static final String C_CACHE_ONLINESUFFIX = " [online]";
     
     /** Suffix to append to workplace cache entries */
-    public static String C_CACHE_WORKPLACESUFFIX = " [workplace]";
+    public static final String C_CACHE_WORKPLACESUFFIX = " [workplace]";
     
     /** Trigger for clearcache event: Clear complete cache */
     public static final int C_CLEAR_ALL = 0;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/03/12 16:00:48 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.58 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.59 $ $Date: 2004/03/12 16:00:48 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -145,7 +145,7 @@ public class CmsXmlWpConfigFile {
     public String getWpPicturePath() throws CmsException {
         if (m_useWpPicturesFromVFSPath == null) {
             // Check registry for setting of workplace images
-            m_useWpPicturesFromVFS = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
+            m_useWpPicturesFromVFS = false;
             m_useWpPicturesFromVFSPath = CmsXmlTemplateLoader.getRequest(m_cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
             if (m_useWpPicturesFromVFS) {
                 m_resourceUri = m_useWpPicturesFromVFSPath;
