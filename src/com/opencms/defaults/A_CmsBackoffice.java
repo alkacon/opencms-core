@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/30 15:48:10 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/10/31 17:09:34 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -158,6 +158,14 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
   * @returns A string with the  setup url.
   */
   public String getSetupUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
+    return "";
+  }
+
+  /**
+  * Gets the preview url of the module. This is the url of the preview page for this module.
+  * @returns A string with the  setup url.
+  */
+  public String getPreviewUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
   }
 
@@ -1153,8 +1161,21 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       String cb = template.getDataValue("nowand");
       template.setData("createbutton", cb);
     } else {
-      String cb = template.getProcessedDataValue("wand", this, parameters);
-      template.setData("createbutton", cb);
+        boolean buttonActiv = true;
+        Boolean isProjectDependend = new Boolean(true);
+        try{
+            isProjectDependend = (Boolean)cdClass.getMethod("isExtendedList", new Class[]{} ).invoke(null, new Object[]{});
+        }catch(Exception e){}
+        if((isProjectDependend.booleanValue()) && (cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId())){
+            buttonActiv = false;
+        }
+        if(buttonActiv){
+            String cb = template.getProcessedDataValue("wand", this, parameters);
+            template.setData("createbutton", cb);
+        }else{
+            String cb = template.getProcessedDataValue("deactivwand", this, parameters);
+            template.setData("createbutton", cb);
+        }
     }
 
     //if getSetupUrl is empty, the module setup button will not be displayed in the template.
@@ -2800,6 +2821,17 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
       // store the modified CD in the session
       session.putValue(this.getContentDefinitionClass().getName(),cd);
+
+        //care about the previewbutten, if getPreviewUrl is empty, the preview button will not be displayed in the template
+        String previewButton = null;
+        try{
+            previewButton = (String)getPreviewUrl(cms, null, null, null);
+        }catch(Exception e){
+        }
+        if(!((previewButton == null) || (previewButton.equals("")))){
+            session.putValue("weShallDisplayThePreviewButton", previewButton +"?id="+cd.getUniqueId(cms));
+        }
+
 
       // check if there was an error found in the input form
       if (!error.equals("")) {
