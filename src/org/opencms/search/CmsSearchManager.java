@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,12 +57,13 @@ import java.util.Map;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.search.Similarity;
 
 /**
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.34 $ $Date: 2005/03/23 22:09:06 $
+ * @version $Revision: 1.35 $ $Date: 2005/03/25 18:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -395,6 +396,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         initAvailableDocumentTypes();
         initSearchIndexes();
+
+        // register the modified default similarity implementation
+        Similarity.setDefault(new CmsSearchSimilarity());
     }
 
     /**
@@ -649,7 +653,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             OpenCms.getLog(this).debug("Unable to close index writer", e);
                         }
                     }
-                }                
+                }
 
                 // switch back to the original project
                 context.setCurrentProject(currentProject);

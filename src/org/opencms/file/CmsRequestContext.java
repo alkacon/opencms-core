@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsRequestContext {
 
@@ -374,8 +374,8 @@ public class CmsRequestContext {
      */
     public String removeSiteRoot(String resourcename) {
 
-        String siteRoot = getAdjustedSiteRoot(resourcename);
-        if ((siteRoot.length() > 0) && resourcename.startsWith(siteRoot)) {
+        String siteRoot = getAdjustedSiteRoot(m_siteRoot, resourcename);
+        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;

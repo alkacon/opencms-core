@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2005/03/24 10:25:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -299,7 +299,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
             System.out.print(res.getPath() + " ");            
-            System.out.println(res.getScore());                
+            System.out.println(res.getScore() + " ");            
+            System.out.println(res.getExcerpt());               
         }
         assertEquals(expected, searchResult.size());
         
@@ -316,7 +317,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
             System.out.print(res.getPath() + " ");            
-            System.out.println(res.getScore());            
+            System.out.println(res.getScore() + " ");            
+            System.out.println(res.getExcerpt());             
         }
         assertEquals(expected, searchResult.size());
         
@@ -373,7 +375,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
             String sitePath = cms.getSitePath(res);
-            System.out.print(sitePath);      
+            System.out.println(sitePath);      
             cms.lockResource(sitePath);
             cms.writePropertyObject(sitePath, descripion);
             // delete potential "search.priority" setting from earlier tests
@@ -440,7 +442,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
             System.out.print(res.getPath() + " ");            
-            System.out.println(res.getScore());            
+            System.out.println(res.getScore() + " ");            
+            System.out.println(res.getExcerpt());              
         }        
         
         // now the search in the offline index - the boosted docs should now be on top
@@ -452,7 +455,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
             System.out.print(res.getPath() + " ");            
-            System.out.println(res.getScore());            
+            System.out.println(res.getScore() + " ");            
+            System.out.println(res.getExcerpt());            
         }
         assertEquals(expected, searchResult.size());
         

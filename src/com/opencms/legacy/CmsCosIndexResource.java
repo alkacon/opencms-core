@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexResource.java,v $
- * Date   : $Date: 2005/03/04 13:42:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.defaults.master.*;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.9 $ $Date: 2005/03/04 13:42:22 $
+ * @version $Revision: 1.10 $ $Date: 2005/03/25 18:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -53,18 +53,16 @@ public class CmsCosIndexResource extends A_CmsIndexResource {
      * Creates a new instance to wrap the given <code>CmsMasterDataSet</code>.<p>
      * 
      * @param ds the data object
-     * @param source the source of the data object
      * @param path access path of the data object
      * @param channel channel of the data object
      * @param contentDefinition content definition of the data object
      */
-    public CmsCosIndexResource(CmsMasterDataSet ds, String source, String path, String channel, String contentDefinition) {
+    public CmsCosIndexResource(CmsMasterDataSet ds, String path, String channel, String contentDefinition) {
         m_data = ds;
         m_id = ds.m_masterId;
         m_name = ds.m_title;
         m_type = ds.m_subId;
         m_mimeType = null;
-        m_source = source;
         m_path = path;
         m_channel = channel;
         m_contentDefinition = contentDefinition;

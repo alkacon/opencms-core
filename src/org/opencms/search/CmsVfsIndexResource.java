@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,13 @@ package org.opencms.search;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
-import org.opencms.search.documents.CmsVfsDocument;
+import org.opencms.search.documents.A_CmsVfsDocument;
 
 /**
  * Contains the data of a VFS Cms resource specified by a Lucene 
  * search result document.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2005/03/04 13:42:37 $
+ * @version $Revision: 1.12 $ $Date: 2005/03/25 18:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -48,37 +48,35 @@ import org.opencms.search.documents.CmsVfsDocument;
 public class CmsVfsIndexResource extends A_CmsIndexResource {
 
     /** 
-     * Creates a new instance to wrap the given <code>CmsResource</code>.<p>
+     * Creates a new instance to wrap the given <code>{@link CmsResource}</code>.<p>
      * 
-     * @param source the source of the data object
      * @param res the data object
      */
-    public CmsVfsIndexResource(String source, CmsResource res) {
+    public CmsVfsIndexResource(CmsResource res) {
 
         m_data = res;
         m_id = res.getResourceId();
         m_name = res.getName();
-        m_source = source;
-        
+
         try {
             I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
             m_type = resourceType.getTypeId();
         } catch (Exception exc) {
             m_type = res.getTypeId();
         }
-        
+
         // TODO: Add check for encoding property or otherwise care about the encoding here
         m_mimeType = OpenCms.getResourceManager().getMimeType(res.getName(), null);
         m_path = res.getRootPath();
     }
-    
+
     /**
      * @see org.opencms.search.A_CmsIndexResource#getDocumentKey(boolean)
      */
     public String getDocumentKey(boolean withMimeType) {
 
         StringBuffer result = new StringBuffer(32);
-        result.append(CmsVfsDocument.C_DOCUMENT_KEY_PREFIX);
+        result.append(A_CmsVfsDocument.C_VFS_DOCUMENT_KEY_PREFIX);
         result.append(getType());
         if (withMimeType) {
             result.append(":");

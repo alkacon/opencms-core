@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,11 @@ import org.apache.lucene.document.Field;
 /**
  * Contains the data of a single item in a search result.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.13 $ $Date: 2005/03/25 18:35:09 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
-
-    /** The score of this search result. */
-    protected int m_score;
 
     /** The creation date of this search result. */
     protected Date m_dateCreated;
@@ -59,20 +56,23 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /** The last modification date of this search result. */
     protected Date m_dateLastModified;
 
-    /** The resource path of this search result. */
-    protected String m_path;
-
-    /** The title of this search result. */
-    protected String m_title;
-
     /** The description of this search result. */
     protected String m_description;
+
+    /** The excerpt of this search result. */
+    protected String m_excerpt;
 
     /** The key words of this search result. */
     protected String m_keyWords;
 
-    /** The excerpt of this search result. */
-    protected String m_excerpt;
+    /** The resource path of this search result. */
+    protected String m_path;
+
+    /** The score of this search result. */
+    protected int m_score;
+
+    /** The title of this search result. */
+    protected String m_title;
 
     /**
      * Creates a new search result.<p>
@@ -141,7 +141,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             if (m_score > score) {
                 return -1;
             }
-            
+
             if (m_score < score) {
                 return 1;
             }
@@ -150,6 +150,56 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
         }
 
         return 0;
+    }
+
+    /**
+     * Returns the date created.<p>
+     *
+     * @return the date created
+     */
+    public Date getDateCreated() {
+
+        return m_dateCreated;
+    }
+
+    /**
+     * Returns the date last modified.<p>
+     *
+     * @return the date last modified
+     */
+    public Date getDateLastModified() {
+
+        return m_dateLastModified;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
+     * Returns the excerpt.<p>
+     *
+     * @return the excerpt
+     */
+    public String getExcerpt() {
+
+        return m_excerpt;
+    }
+
+    /**
+     * Returns the key words.<p>
+     *
+     * @return the key words
+     */
+    public String getKeywords() {
+
+        return m_keyWords;
     }
 
     /**
@@ -189,57 +239,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         return result;
     }
-    
-    /**
-     * Returns the date created.<p>
-     *
-     * @return the date created
-     */
-    public Date getDateCreated() {
 
-        return m_dateCreated;
-    }
-    
-    /**
-     * Returns the date last modified.<p>
-     *
-     * @return the date last modified
-     */
-    public Date getDateLastModified() {
-
-        return m_dateLastModified;
-    }
-    
-    /**
-     * Returns the description.<p>
-     *
-     * @return the description
-     */
-    public String getDescription() {
-
-        return m_description;
-    }
-    
-    /**
-     * Returns the excerpt.<p>
-     *
-     * @return the excerpt
-     */
-    public String getExcerpt() {
-
-        return m_excerpt;
-    }
-    
-    /**
-     * Returns the key words.<p>
-     *
-     * @return the key words
-     */
-    public String getKeywords() {
-
-        return m_keyWords;
-    }
-    
     /**
      * Returns the path.<p>
      *
@@ -249,7 +249,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         return m_path;
     }
-    
+
     /**
      * Returns the score.<p>
      *
@@ -259,7 +259,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         return m_score;
     }
-    
+
     /**
      * Returns the title.<p>
      *
@@ -269,5 +269,5 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         return m_title;
     }
-    
+
 }

@@ -11,7 +11,7 @@
 		<documenttypes>		
 			<documenttype>
 				<name>generic</name>
-				<class>org.opencms.search.documents.CmsVfsDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentGeneric</class>
 				<mimetypes/>
 				<resourcetypes>
 					<resourcetype>*</resourcetype>
@@ -29,7 +29,7 @@
 			</documenttype>
 			<documenttype>
 				<name>image</name>
-				<class>org.opencms.search.documents.CmsVfsDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentGeneric</class>
 				<mimetypes/>
 				<resourcetypes>
 					<resourcetype>image</resourcetype>

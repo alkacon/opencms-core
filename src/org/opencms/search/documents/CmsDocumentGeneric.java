@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentHtml.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentGeneric.java,v $
  * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,59 +31,49 @@
 
 package org.opencms.search.documents;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.extractors.CmsExtractorHtml;
+import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
- * Lucene document factory class to extract index data from a cms resource 
- * containing plain html data.<p>
+ * Lucene document factory class for indexing data from a generic <code>{@link org.opencms.file.CmsResource}</code>.<p> 
  * 
+ * Since the document type is generic, no content extraction is performed for the resource.
+ * However, meta data from the properties and attributes of the resource are indexed.<p>
+ * 
+ * The class is usefull for example to have images appear in the search result if the title of the image 
+ * matched the search query. It's also used if no specifc extraction method is available for a binary document type.<p>
+ * 
+ * @version $Revision: 1.1
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
  */
-public class CmsDocumentHtml extends A_CmsVfsDocument {
+public class CmsDocumentGeneric extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
      * @param name name of the documenttype
      */
-    public CmsDocumentHtml(String name) {
+    public CmsDocumentGeneric(String name) {
 
         super(name);
     }
 
     /**
-     * Returns the raw text content of a given vfs resource containing HTML data.<p>
+     * Just returns an empty extraction result since the content can't be extracted form a generic resource.<p>
      * 
      * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
     throws CmsException {
 
-        CmsResource resource = (CmsResource)indexResource.getData();
-        CmsFile file = readFile(cms, resource);
-
-        try {
-            String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            CmsProperty encProp = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
-            String encoding = encProp.getValue(OpenCms.getSystemInfo().getDefaultEncoding());
-
-            return CmsExtractorHtml.getExtractor().extractText(file.getContents(), encoding);
-        } catch (Exception e) {
-            throw new CmsIndexException("Extracting text from resource "
-                + resource.getRootPath()
-                + " failed: "
-                + e.getMessage(), e);
+        if (resource == null) {
+            throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
         }
+        // just return an empty result set
+        return new CmsExtractionResult("");
     }
 }

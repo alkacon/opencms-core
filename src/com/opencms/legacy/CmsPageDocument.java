@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsPageDocument.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,32 +30,29 @@
  */
 package com.opencms.legacy;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
-import org.opencms.search.documents.CmsVfsDocument;
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.CmsIndexException;
+import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import com.opencms.template.*;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.htmlparser.parserapplications.StringExtractor;
 
 /**
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypePage</code>.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2005/03/23 19:08:22 $
+ * @version $Revision: 1.8 $ $Date: 2005/03/25 18:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
-public class CmsPageDocument extends CmsVfsDocument {
+public class CmsPageDocument extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -69,7 +66,7 @@ public class CmsPageDocument extends CmsVfsDocument {
     /**
      * Gets the raw text content of a cms resource.<p>
      * 
-     * @see org.opencms.search.documents.CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {
 
@@ -87,18 +84,5 @@ public class CmsPageDocument extends CmsVfsDocument {
         }
         
         return new CmsExtractionResult(rawContent);
-    }
-    
-    /**
-     * Creates a new lucene document instance for a resource of type <code>CmsResourceTypePage</code>.<p>
-     * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
-     */
-    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
-                   
-        Document document = super.newInstance(cms, resource, language);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));
-        
-        return document;
     }
 }

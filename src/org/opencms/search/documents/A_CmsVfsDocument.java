@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/24 17:38:20 $
- * Version: $Revision: 1.20 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,18 +53,20 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * Lucene document factory class to extract index data from a vfs resource 
- * of any type derived from <code>CmsResource</code>.<p>
+ * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>, 
+ * just requires a specialized implementation of 
+ * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, A_CmsIndexResource, String)}</code>
+ * for text extraction from the binary document content.<p>
  * 
  * @version $Revision: 1.18 
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public class CmsVfsDocument implements I_CmsDocumentFactory {
+public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /** The vfs prefix for document keys. */
-    public static final String C_DOCUMENT_KEY_PREFIX = "VFS";
+    public static final String C_VFS_DOCUMENT_KEY_PREFIX = "VFS";
 
     /**
      * Name of the documenttype.
@@ -76,28 +78,9 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
      * 
      * @param name name of the documenttype
      */
-    public CmsVfsDocument(String name) {
+    public A_CmsVfsDocument(String name) {
 
         m_name = name;
-    }
-
-    /**
-     * Returns the raw text content of a vfs resource.<p>
-     * 
-     * @param cms the cms object 
-     * @param resource the resource
-     * @param language the language requested
-     * @return the raw text content
-     * @throws CmsException if something goes wrong
-     */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
-    throws CmsException {
-
-        if (resource == null) {
-            throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
-        }
-        // just return an empty result set
-        return new CmsExtractionResult("");
     }
 
     /**
@@ -106,7 +89,8 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     public String getDocumentKey(String resourceType) throws CmsException {
 
         try {
-            return C_DOCUMENT_KEY_PREFIX + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
+            return C_VFS_DOCUMENT_KEY_PREFIX
+                + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
         } catch (Exception exc) {
             throw new CmsException("Instanciation of resource class " + resourceType + " failed", exc);
         }
@@ -133,10 +117,10 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
 
                 int id = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeId();
                 for (Iterator j = mimeTypes.iterator(); j.hasNext();) {
-                    keys.add(C_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
+                    keys.add(C_VFS_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
                 }
                 if (mimeTypes.isEmpty()) {
-                    keys.add(C_DOCUMENT_KEY_PREFIX + id);
+                    keys.add(C_VFS_DOCUMENT_KEY_PREFIX + id);
                 }
             }
         } catch (Exception exc) {
@@ -166,13 +150,16 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 
+        // extract the content
+        I_CmsExtractionResult content = extractContent(cms, resource, language);
+        if (content != null) {
+            document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, content.getContent()));
+        }
+
         StringBuffer meta = new StringBuffer(512);
 
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
             document.add(Field.Keyword(I_CmsDocumentFactory.DOC_TITLE, value));
-            meta.append(value);
-            meta.append(" ");
-            // title is appended twice to meta, effectifly booting the relevance
             meta.append(value);
             meta.append(" ");
         }
@@ -202,18 +189,23 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         document.setBoost(boost);
 
         String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
-        document.add(Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath));
+        Field rootPathField = Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath);
+        // set boost of 0 to root path field, since root path should have no effect on search result score 
+        rootPathField.setBoost(0);
+        document.add(rootPathField);
+        // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
 
-        meta.append(CmsResource.getName(resource.getRootPath()));
-        document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, meta.toString()));
+        String metaInf = meta.toString();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(metaInf)) {
+            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, metaInf));
+        }
 
         document
             .add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, DateField.timeToString(res.getDateCreated())));
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateField.timeToString(res
             .getDateLastModified())));
-
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_SOURCE, resource.getSource()));
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_TYPE, C_VFS_DOCUMENT_KEY_PREFIX));
 
         return document;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/24 10:25:26 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.17 $ $Date: 2005/03/24 10:25:26 $
+ * @version $Revision: 1.18 $ $Date: 2005/03/25 18:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -67,20 +67,20 @@ public interface I_CmsDocumentFactory {
     /** Combined search field for all document "meta" information, that is title, keywords, description and root path. */
     String DOC_META = "meta";
 
-    /** Search field for document path within a site. */
+    /** Contains the document root path in the VFS. */
     String DOC_PATH = "path";
 
     /** Search field for document priority. */
     String DOC_PRIORITY = "priority";
 
-    /** Search field for optimized path searches. */
+    /** Contains a special format of the document root path in the VFS for optimized searches. */
     String DOC_ROOT = "root";
-
-    /** (Internal used) Search field for the document source. */
-    String DOC_SOURCE = "source";
 
     /** Search field for document title. */
     String DOC_TITLE = "title";
+
+    /** Contains the type of the document. */
+    String DOC_TYPE = "type";
 
     /** Value for "high" search priority. */
     String SEARCH_PRIORITY_HIGH_VALUE = "high";

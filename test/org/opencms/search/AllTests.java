@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/AllTests.java,v $
- * Date   : $Date: 2005/03/24 17:38:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/25 18:35:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Comment for <code>AllTests</code>.<p>
+ * Tests for package org.opencms.search.<p> 
  */
 public final class AllTests {
 
