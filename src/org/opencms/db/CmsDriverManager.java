@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/01 16:30:24 $
- * Version: $Revision: 1.392 $
+ * Date   : $Date: 2004/07/02 13:29:57 $
+ * Version: $Revision: 1.393 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.392 $ $Date: 2004/07/01 16:30:24 $
+ * @version $Revision: 1.393 $ $Date: 2004/07/02 13:29:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -544,7 +544,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsResource currentResource = null;
             
             try {
-                currentResource = readResource(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+                currentResource = readResource(context, resourcename, CmsResourceFilter.ALL);
             } catch (CmsVfsResourceNotFoundException e) {
                 // if the resource does exist, e need to either overwrite it,
                 // or create a sibling - this will be handled later
@@ -6447,14 +6447,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         while (!(currentParentId = currentResource.getParentStructureId()).equals(CmsUUID.getNullUUID())) {
             // see if we can find an already cached path for the current parent-ID
-            pathCacheKey = getCacheKey("path", projectId, currentParentId.toString());
+            pathCacheKey = getCacheKey("path" + filter.getCacheId(), projectId, currentParentId.toString());
             if ((cachedPath = (String)m_resourceCache.get(pathCacheKey)) != null) {
                 path = cachedPath + path;
                 break;
             }
 
             // see if we can find a cached parent-resource for the current parent-ID
-            resourceCacheKey = getCacheKey("parent", projectId, currentParentId.toString());
+            resourceCacheKey = getCacheKey("parent" + filter.getCacheId(), projectId, currentParentId.toString());
             if ((currentResource = (CmsResource)m_resourceCache.get(resourceCacheKey)) == null) {
                 currentResource = m_vfsDriver.readFileHeader(projectId, currentParentId, filter.includeDeleted());
                 m_resourceCache.put(resourceCacheKey, currentResource);
@@ -6470,7 +6470,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // cache the calculated path
-        pathCacheKey = getCacheKey("path", projectId, parentId.toString());
+        pathCacheKey = getCacheKey("path" + filter.getCacheId(), projectId, parentId.toString());
         m_resourceCache.put(pathCacheKey, path);
 
         // build the full path of the resource
