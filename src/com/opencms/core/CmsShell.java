@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/25 16:05:10 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/09/27 16:06:09 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.37 $ $Date: 2000/09/25 16:05:10 $
+ * @version $Revision: 1.38 $ $Date: 2000/09/27 16:06:09 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -63,6 +63,19 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			int projectId = Integer.parseInt(id);
 			System.out.println( m_cms.accessProject(projectId) );
+		} catch( Exception exc ) {
+			printException(exc);
+		}		
+	}
+	/**
+	 * Tests if the user can write the resource.
+	 * 
+	 * @param resource the name of the resource.
+	 */
+	public void accessWrite(String resource) {
+		try {
+				CmsResource res = m_cms.readFileHeader(resource);
+				System.out.println( m_cms.accessWrite(res) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		

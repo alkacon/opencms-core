@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/25 10:50:09 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2000/09/27 16:06:12 $
+ * Version: $Revision: 1.139 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.138 $ $Date: 2000/09/25 10:50:09 $
+ * @version $Revision: 1.139 $ $Date: 2000/09/27 16:06:12 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -346,6 +346,7 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
 	}
 	/**
 	 * Checks, if the user may read this resource.
+	 * NOTE: If the ressource is in the project you never have to fallback.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -477,15 +478,13 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
 			return false;
 		}
 
-	  	// check, if the resource is locked by the current user
-		// TODO: Find a way to get this work again!!!!!
-		
-		/*if(resource.isLockedBy() != currentUser.getId()) {
+  	// check, if the resource is locked by the current user
+		if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
 			return(false);					
-		}*/
+		}
 
-		// check the rights vor the current resource
+		// check the rights for the current resource
 		if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
 				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
@@ -594,118 +593,6 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
 			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 				CmsException.C_NO_ACCESS);
 		}
-	}
-	/**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a disc filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param mountpath The physical location this mount point directs to. 
-	 * @param name The name of this mountpoint.
-	 * @param user The default user for this mountpoint.
-	 * @param group The default group for this mountpoint.
-	 * @param type The default resourcetype for this mountpoint.
-	 * @param accessFLags The access-flags for this mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject,
-							  String mountpoint, String mountpath, String name, 
-							  String user, String group, String type, int accessFlags)
-		throws CmsException {
-		if( isAdmin(currentUser, currentProject) ) {
-			
-			// read the folder, to check if it exists.
-			// if it dosen't exist a exception will be thrown
-			readFolder(currentUser, onlineProject(currentUser, currentProject), 
-					   mountpoint, "");
-			
-			// read the resource-type for this mountpoint.			
-			CmsResourceType resType = 
-				getResourceType(currentUser, currentProject, type);
-			
-			// create the new mountpoint
-			CmsMountPoint newMountPoint = 
-				new CmsMountPoint(mountpoint, mountpath, name, 
-								  readUser(currentUser, currentProject, user), 
-								  readGroup(currentUser, currentProject, group), 
-								  onlineProject(currentUser, currentProject), 
-								  resType.getResourceType(), 0, accessFlags,
-								  resType.getLauncherType(), resType.getLauncherClass());
-			
-			// read all mountpoints from propertys
-			Hashtable mountpoints = (Hashtable) 
-									m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
-			
-			// if mountpoints don't exist - create them.
-			if(mountpoints == null) {
-				mountpoints = new Hashtable();
-				m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
-			}
-			
-			// add the new mountpoint
-			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
-			
-			// write the mountpoints back to the properties
-			m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
-			
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
-				CmsException.C_NO_ACCESS);
-		}		
-	}
-	/**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a mysql filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param driver The driver for the db-system. 
-	 * @param connect The connectstring to access the db-system.
-	 * @param name A name to describe the mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
-							  String mountpoint, String driver, String connect,
-							  String name)
-		throws CmsException {
-			if( isAdmin(currentUser, currentProject) ) {
-			
-			// read the folder, to check if it exists.
-			// if it dosen't exist a exception will be thrown
-			readFolder(currentUser, onlineProject(currentUser, currentProject), 
-					   mountpoint, "");
-			
-			// create the new mountpoint			
-			CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
-															  connect, name);
-			
-			// read all mountpoints from propertys
-			Hashtable mountpoints = (Hashtable) 
-									 m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
-			
-			// if mountpoints dosen't exists - create them.
-			if(mountpoints == null) {
-				mountpoints = new Hashtable();
-				m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
-			}
-			
-			// add the new mountpoint
-			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
-			
-			// write the mountpoints back to the properties
-			m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
-			
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
-				CmsException.C_NO_ACCESS);
-		}	
 	}
 	/**
 	 * Adds a CmsResourceTypes.
@@ -1010,7 +897,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				// update the cache
 				m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);   
 			} else {          
-				m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
+				m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true);
 				if (resource.getState()==C_STATE_UNCHANGED) {
 					 resource.setState(C_STATE_CHANGED);
 				}
@@ -1078,7 +965,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				// update the cache
 				m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);      
 			} else {           
-				m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
+				m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true);
 			    if (resource.getState()==C_STATE_UNCHANGED) {
 		            resource.setState(C_STATE_CHANGED);
 	            }
@@ -1144,7 +1031,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				// update the cache
 				m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);  
 			} else {           
-				m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
+				m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true);
 				if (resource.getState()==C_STATE_UNCHANGED) {
 					 resource.setState(C_STATE_CHANGED);
 				}
@@ -1190,7 +1077,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 			resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
 		} 
 		
-		// has the user write-access? and is he owner or admin?
+		// has the user write-access? 
 		if( accessWrite(currentUser, currentProject, resource)) { 
 		 
 			resource.setState(state);
@@ -1200,7 +1087,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				// update the cache
 				m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);   
 			} else {          
-				m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+				m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false);
 				// update the cache
 				m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
 			}
@@ -1253,7 +1140,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 			// write-acces  was granted - write the file.
 			resource.setType(type.getResourceType());
 			resource.setLauncherType(type.getLauncherType());
-			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
+			m_dbAccess.writeFileHeader(currentProject, (CmsFile)resource,true);    
 			if (resource.getState()==C_STATE_UNCHANGED) {
 				resource.setState(C_STATE_CHANGED);
 			}
@@ -1579,8 +1466,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 				file.setGroupId(currentGroup.getId());
 			}
 
-			m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
-									   file,false);
+			m_dbAccess.writeFileHeader(currentProject, file,false);
 
 			m_subresCache.clear();    
 
@@ -2075,21 +1961,6 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 		}
 	}
 	/**
-	 * Deletes a CmsMountPoint. 
-	 * A mountpoint will be deleted.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 */
-	public void deleteMountPoint(CmsUser currentUser, CmsProject currentProject, 
-								 String mountpoint )
-		throws CmsException {
-	}
-	/**
 	 * Deletes a project.
 	 * 
 	 * <B>Security</B>
@@ -2183,7 +2054,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 			m_dbAccess.deleteProperty(property,res.getResourceId(),res.getType());
 			// set the file-state to changed
 		    if(res.isFile()){
-				m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+				m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, true);
 			    if (res.getState()==C_STATE_UNCHANGED) {
 					res.setState(C_STATE_CHANGED);
 	    		}
@@ -2578,22 +2449,6 @@ public Vector getAllManageableProjects(CmsUser currentUser, CmsProject currentPr
 	return (res);
 }
 	/**
-	 * Gets all CmsMountPoints. 
-	 * All mountpoints will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the mountpoints - or null if they doesen't exists.
-	 */
-	public Hashtable getAllMountPoints(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException {
-	 return null;
-	}
-	/**
 	 * Returns a Vector with all I_CmsResourceTypes.
 	 * 
 	 * <B>Security:</B>
@@ -2942,18 +2797,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 		 m_usergroupsCache.put(C_USER+username,allGroups);
 		 }
 		 return allGroups;
-	}
-	/**
-	 * Gets all mountpoint mappings, i.e. system mountpoints and their mounted paths.
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	public Hashtable getMountPointMappings(CmsUser currentUser,  CmsProject currentProject)
-		throws CmsException {
-	 return null;
 	}
 /**
  * Returns the parent group of a group<P/>
@@ -4255,53 +4098,6 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 		return ( (res!=null)? res : new Hashtable());	
 	}
 	 /**
-	 * Reads a file header from the Cms.<BR/>
-	 * The reading excludes the filecontent. <br>
-	 * 
-	 * A file header can be read from an offline project or the online project.
-	 *  
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	 public CmsResource readFileHeader(CmsUser currentUser, 
-										 CmsProject currentProject, int id)
-		 throws CmsException {
-		 CmsResource cmsFile;
-		 // read the resource from the currentProject, or the online-project
-		 try {
-			 // first try to read from cache            
-			 cmsFile=(CmsResource)m_resourceCache.get(id);                
-			 if (cmsFile==null) {
-			    cmsFile = m_dbAccess.readFileHeader(id);
-				m_resourceCache.put(C_FILE+currentProject.getId()+cmsFile.getAbsolutePath(),cmsFile);          
-			 }
-		 } catch(CmsException exc) {
-			 // the resource was not readable
-			 throw exc;
-	     }
-		 
-		 if( accessRead(currentUser, currentProject, cmsFile) ) {
-				
-			// acces to all subfolders was granted - return the file-header.
-			return cmsFile;
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + id, 
-				 CmsException.C_ACCESS_DENIED);
-		}
-	 }
-	 /**
 	 * Reads a file header a previous project of the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
 	 * 
@@ -4622,43 +4418,11 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  * @exception CmsException will be thrown, if the folder couldn't be read. 
  * The CmsException will also be thrown, if the user has not the rights 
  * for this resource.
+ *
+ * @see #readFolder(CmsUser, CmsProject, String)
  */
 public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, String folderName) throws CmsException {
-	CmsFolder cmsFolder;
-	// read the resource from the currentProject, or the online-project
-	try {
-		cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + currentProject.getId() + folder + folderName);
-		if (cmsFolder == null) {
-			cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder + folderName);
-			if (cmsFolder.getState() != C_STATE_DELETED) {
-				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder + folderName, (CmsFolder) cmsFolder);
-			}
-		}
-	} catch (CmsException exc) {
-		// the resource was not readable
-		if (currentProject.equals(onlineProject(currentUser, currentProject))) {
-			// this IS the onlineproject - throw the exception
-			throw exc;
-		} else {
-			// try to read the resource in the onlineproject
-			cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + C_PROJECT_ONLINE_ID + folder + folderName);
-			if (cmsFolder == null) {
-				cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID, folder + folderName);
-				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder + folderName, (CmsFolder) cmsFolder);
-			}
-		}
-	}
-	if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
-
-		// acces to all subfolders was granted - return the folder.
-		if (cmsFolder.getState() == C_STATE_DELETED) {
-			throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
-		} else {
-			return cmsFolder;
-		}
-	} else {
-		throw new CmsException("[" + this.getClass().getName() + "] " + folder + folderName, CmsException.C_ACCESS_DENIED);
-	}
+	return readFolder(currentUser, currentProject, folder + folderName);
 }
 	/**
 	 * Reads all given tasks from a user for a project.
@@ -4831,25 +4595,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		throws CmsException {
 		return(Hashtable) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MIMETYPES);			
 	
-	}
-	/**
-	 * Gets a CmsMountPoint. 
-	 * A mountpoint will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * 
-	 * @return the mountpoint - or null if it doesen't exists.
-	 */
-	public CmsMountPoint readMountPoint(CmsUser currentUser, 
-										  CmsProject currentProject, 
-										  String mountpoint )
-		throws CmsException {
-	 return null;
 	}
 	/**
 	 * Reads the original agent of a task from the OpenCms.
@@ -5513,36 +5258,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		}
 		*/
 	}
-	 /**
-	 * Renames the folder to a new name. <br>
-	 * 
-	 * Rename can only be done in an offline project. To rename a folder, the following
-	 * steps have to be done:
-	 * <ul>
-	 * <li> Copy the folder with the oldname to a folder with the new name, the state 
-	 * of the new folder is set to NEW (2). 
-	 * <li> Set the state of the old file to DELETED (3). </li> 
-	 * </ul>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */		
-	public void renameFolder(CmsUser currentUser, CmsProject currentProject, 
-					       String oldname, String newname)
-		throws CmsException {
-	}
 	/**
 	 * This method loads old sessiondata from the database. It is used 
 	 * for sessionfailover.
@@ -6092,8 +5807,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		// has the user write-access?
 		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
 			// write-acces  was granted - write the file.
-			m_dbAccess.writeFileHeader(currentProject, 
-									  onlineProject(currentUser, currentProject), file,true );
+			m_dbAccess.writeFileHeader(currentProject, file,true );
 			if (file.getState()==C_STATE_UNCHANGED) {
 				file.setState(C_STATE_CHANGED);
 			}
@@ -6211,7 +5925,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 			res.setState(C_STATE_CHANGED);
 		}
 		if(res.isFile()){     
-			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, false);
+			m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, false);
 			// update the cache           
 			m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
 		} else {
@@ -6280,7 +5994,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		m_propertyCache.clear();
 		// set the file-state to changed
 		if(res.isFile()){
-			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+			m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, true);
 			if (res.getState()==C_STATE_UNCHANGED) {
 				res.setState(C_STATE_CHANGED);
 			}

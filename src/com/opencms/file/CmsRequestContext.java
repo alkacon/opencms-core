@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/09/25 10:50:08 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/09/27 16:06:09 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Anders Fugmann
  *
- * @version $Revision: 1.29 $ $Date: 2000/09/25 10:50:08 $
+ * @version $Revision: 1.30 $ $Date: 2000/09/27 16:06:09 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -197,7 +197,6 @@ public CmsFolder currentFolder() throws CmsException {
 		}
 
 		// set current project and group for this request
-		System.out.println("CmsRequestContent.init: currentProjectId = " + currentProjectId);
 		setCurrentProject(currentProjectId);
 		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
 	}
