@@ -2,16 +2,12 @@
 <!--
 
 File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/login/Attic/index,v $
-Date   : $Date: 2003/01/31 19:06:16 $
-Version: $Revision: 1.4 $
+Date   : $Date: 2003/02/16 02:29:29 $
+Version: $Revision: 1.5 $
  
 Template for the OpenCms login screen.
 
-The localization Strings are read from standard Java ResourceBundles. These can be found in the VFS directory 
-"/system/workplace/modules/default/classes". When they are published they will be mirrored to the real file 
-system in the directory "{webapp-dir}/WEB-INF/classes" and thus are accessible to the normal ResourceBundle
-property lookup mechanism. 
-
+The localization Strings are read from the standard workplace Java ResourceBundles. 
 If you make changes to the resources you must restart OpenCms. This is so because the standard Java 
 ResourceBundle mechanism caches all bundles once it has read them and there is no standard way 
 (at last that I know of) to clear this cache. 
