@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/08/11 13:00:46 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -27,6 +27,7 @@ package com.opencms.workplace;
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+ 
 
 import com.opencms.file.*;
 import com.opencms.core.*;
@@ -43,7 +44,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.8 $ $Date: 2000/08/11 13:00:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -69,28 +70,36 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		// get the parameters
-		String folder = (String)parameters.get("selectallfolders");
+		// String folder = (String)parameters.get("selectallfolders");
 		String fileName = (String)parameters.get("filename");
 		String existingFile = (String)parameters.get("existingfile");
 		String action = (String)parameters.get("action");
-
-		// modify the folderaname if nescessary (the root folder is always given
-		// as a nice name)
-		if (folder!= null) {
-			CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
-			if (folder.equals(lang.getLanguageValue("title.rootfolder"))) {
-				folder="/";
-			}
-		}
-		
-		try{
+		String allResources = (String) parameters.get("ALLRES"); 
+		 
+		try {
 			if("export".equals(action)) {
 				// export the database
-				cms.exportResources(cms.readExportPath() + fileName, folder); 
+				Vector resourceNames = parseResources(allResources);
+				String [] exportPaths = new String[resourceNames.size()]; 
+				CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
+				for (int i=0; i<resourceNames.size(); i++) {
+					// modify the foldername if nescessary (the root folder is always given
+					// as a nice name)
+					if (lang.getLanguageValue("title.rootfolder").equals(resourceNames.elementAt(i))) {
+						resourceNames.setElementAt("/",i);
+					} 
+					exportPaths[i] = (String) resourceNames.elementAt(i); 
+				} 
+				
+				boolean includeSystem=false; 
+				if (parameters.get("workplace") != null) {
+					includeSystem=true;
+				}
+				cms.exportResources(cms.readExportPath() + fileName, exportPaths, includeSystem);
 				templateSelector = "done";
-			} else if("import".equals(action)) {
+			} else if ("import".equals(action)) {
 				// import the database
-				cms.importResources(cms.readExportPath() + existingFile, folder); 
+				cms.importResources(cms.readExportPath() + existingFile, C_ROOT); 
 				templateSelector = "done";
 			}
 		}
@@ -153,5 +162,24 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 	 */
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 		return false;
+	}
+	/** Parse the string which holds all resources
+	  *  
+	  * @param resources containts the full pathnames of all the resources, separated by semicolons
+	  * @return A vector with the same resources
+	  */
+	 
+	private Vector parseResources(String resources){
+		 
+		Vector ret = new Vector(); 
+		 
+		if (resources != null) {
+			StringTokenizer resTokenizer = new StringTokenizer(resources,";");
+			while (resTokenizer.hasMoreElements()) {
+				String path = (String) resTokenizer.nextElement();
+				ret.addElement(path);
+			}
+		}  
+		return ret;
 	}
 }
