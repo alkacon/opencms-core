@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/07/15 08:43:10 $
-* Version: $Revision: 1.116 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.117 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 
 package com.opencms.template;
+
+import org.opencms.loader.CmsXmlTemplateLoader;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -59,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.116 $ $Date: 2003/07/15 08:43:10 $
+ * @version $Revision: 1.117 $ $Date: 2003/07/19 01:51:37 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1152,10 +1154,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         String cacheKey = getCacheDirectives(cms, templateName, elementName,
                                 parameters, templateSelector).getCacheKey(cms, parameters);
-        if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
+        if(CmsXmlTemplateLoader.isElementCacheEnabled(cms) && (cacheKey != null) &&
                 (cms.getRequestContext().currentProject().isOnlineProject()) ) {
             boolean exportmode = cms.getMode() == I_CmsConstants.C_MODUS_EXPORT;
-            Hashtable externVarDeps = cms.getVariantDependencies();
+            Hashtable externVarDeps = CmsXmlTemplateLoader.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;
             long now = System.currentTimeMillis();
             // this will be the entry for the extern hashtable
@@ -1223,7 +1225,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // put the alldeps vector in our variant that will be created later
             // in the startproccessing method.
             // Get current element.
-            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
+            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), templateName);
             A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
             // add an empty variant with the vector to the element
@@ -1281,12 +1283,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         byte[] result = null;
 
-        if(cms.getRequestContext().isElementCacheEnabled()) {
+        if(CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
             CmsElementDefinitionCollection mergedElDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
             // We are in element cache mode. Create a new variant instead of a completely processed subtemplate
             CmsElementVariant variant = xmlTemplateDocument.generateElementCacheVariant(this, parameters, elementName, templateSelector);
             // Get current element.
-            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
+            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
             A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
 
@@ -1302,7 +1304,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     if (oldVarDeps != null){
                         String oldVariantEntry = getClass().getName() + "|"+ xmlTemplateDocument.getAbsoluteFilename() +"|"+ key;
                         for(int i=0; i<oldVarDeps.size(); i++){
-                            Vector externEntrys = (Vector)cms.getVariantDependencies().get(oldVarDeps.elementAt(i));
+                            Vector externEntrys = (Vector)CmsXmlTemplateLoader.getVariantDependencies().get(oldVarDeps.elementAt(i));
                             if(externEntrys != null){
                                 externEntrys.removeElement(oldVariantEntry);
                             }
@@ -1315,7 +1317,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // Classic way. Element cache is not activated, so let's genereate the template as usual
             // Try to process the template file
             try {
-                //result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes();
                 result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes(
                     cms.getRequestContext().getEncoding());
             }
@@ -1379,7 +1380,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String templateClass = getTemplateClassName(tagcontent, templateFile, parameterHashtable);
 
         // Name of the subtemplate file.
-        String templateFilename = getTemplateFileName(tagcontent, templateFile, parameterHashtable);
+        String templateFilename = Utils.mergeAbsolutePath(doc.getAbsoluteFilename(), getTemplateFileName(tagcontent, templateFile, parameterHashtable));
 
         // Name of the subtemplate template selector
         String templateSelector = getTemplateSelector(tagcontent, templateFile, parameterHashtable);
@@ -1449,15 +1450,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);
             if(m_cache != null && m_cache.has(subTemplateKey) && (!subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
                 result = m_cache.get(subTemplateKey);
-                if(cms.getRequestContext().isStreaming()) {
-                    try {
-                        cms.getRequestContext().getResponse().getOutputStream().write(result);
-                    } catch(Exception e) {
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while streaming!");
-                        }
-                    }
-                }
             }
         }
 
@@ -1478,15 +1470,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
                 // The anonymous user gets an error String instead of an exception
                 if(isAnonymousUser) {
-                    if(cms.getRequestContext().isStreaming()) {
-                        try {
-                            cms.getRequestContext().getResponse().getOutputStream().write(C_ERRORTEXT.getBytes());
-                        } catch(Exception e2) {
-                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while streaming!");
-                            }
-                        }
-                    }
                     return C_ERRORTEXT;
                 }
                 else {
@@ -1580,7 +1563,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // So if if the Exception occurs becource of the template == null it is no error and
         // we set the readAccessGroup = null (this will happen by getReadingpermittedGroup)
         try {
-            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
+            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
             variantCachesize = elementCache.getVariantCachesize();
 
 //			TODO: fix this later - check how to do this without getReadingpermittedGroup

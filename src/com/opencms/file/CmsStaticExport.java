@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.49 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/19 01:51:37 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -615,7 +615,7 @@ public class CmsStaticExport implements I_CmsConstants{
             
             CmsFile file = m_cms.readFile(link);
             
-            int loaderId = file.getLauncherType();
+            int loaderId = file.getLoaderId();
             I_CmsResourceLoader loader = A_OpenCms.getLoaderManager().getLoader(loaderId);
             if(loader == null){
                 throw new CmsException("Could not export file " + link + ". Loader for requested loader ID "

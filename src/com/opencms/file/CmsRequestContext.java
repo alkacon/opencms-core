@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/16 18:08:55 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.file;
 
+import org.opencms.db.CmsDriverManager;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -37,9 +39,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
-import org.opencms.db.CmsDriverManager;
 import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.template.cache.CmsElementCache;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.80 $ $Date: 2003/07/16 18:08:55 $
+ * @version $Revision: 1.81 $ $Date: 2003/07/19 01:51:37 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -86,13 +86,7 @@ public class CmsRequestContext implements I_CmsConstants {
     /** The current project */
     private CmsProject m_currentProject;
 
-    /** Flag to indicate if this response is streaming or not (legacy, not used by Element or Flex cache) */
-    private boolean m_streaming = true;
-
-    /**
-     * In export mode the links in pages will be stored in this vector
-     * for further processing.
-     */
+    /** In export mode the links in pages will be stored in this vector for further processing */
     private Vector m_links;
 
     /** Flag to indicate that this request is event controlled */
@@ -107,9 +101,6 @@ public class CmsRequestContext implements I_CmsConstants {
      * the request will be exported again.
      */
     private Vector m_dependencies;
-
-    /** Starting point for element cache */
-    private CmsElementCache m_elementCache = null;
 
     /** Current languages */
     private Vector m_language = new Vector();
@@ -146,23 +137,31 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param req the CmsRequest
      * @param resp the CmsResponse
      * @param user the current user for this request
-     * @param currentGroup the current group for this request
-     * @param currentProjectId the id of the current project for this request
-     * @param streaming <code>true</code> if streaming should be enabled for this response, <code>false</code> otherwise
-     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled
+     * @param group the current group for this request
+     * @param projectId the id of the current project for this request
+     * @param site the current site root
      * @param directoryTranslator Translator for directories (file with full path)
      * @param fileTranslator Translator for new file names (without path)
      * @throws CmsException if operation was not successful.
      */
-    void init (CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, String currentSite, boolean streaming, CmsElementCache elementCache, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator)
-    	throws CmsException {
+    void init (
+        CmsDriverManager driverManager, 
+        I_CmsRequest req, 
+        I_CmsResponse resp, 
+        String user, 
+        String group, 
+        int projectId, 
+        String site, 
+        CmsResourceTranslator directoryTranslator, 
+        CmsResourceTranslator fileTranslator
+    ) throws CmsException {
 
         m_driverManager = driverManager;
         m_req = req;
         m_resp = resp;
         m_links = new Vector();
         m_dependencies = new Vector();
-        m_siteRoot = currentSite;
+        m_siteRoot = site;
         
         //CmsProject project = null;
         
@@ -176,21 +175,19 @@ public class CmsRequestContext implements I_CmsConstants {
         }
 
         // check, if the user is disabled
-        if (m_user.getDisabled() == true) {
+        if (m_user.getDisabled()) {
             m_user = null;
         }
 
         // set current project, group and streaming proerties for this request
         try {
-            setCurrentProject(currentProjectId);
+            setCurrentProject(projectId);
         } catch (CmsException exc) {
             // there was a problem to set the needed project - using the online one
             setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
         
-        m_currentGroup = m_driverManager.readGroup(this, currentGroup);
-        m_streaming = streaming;
-        m_elementCache = elementCache;
+        m_currentGroup = m_driverManager.readGroup(this, group);
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
 
@@ -320,13 +317,13 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Gets the remote ip address.<p>
      * 
-	 * @return the ip addresss as string
-	 */
-	public String getRemoteAddress() {
-    	if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP))
-			return ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
-    	else
-    		return null;
+     * @return the ip addresss as string
+     */
+    public String getRemoteAddress() {
+        if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP))
+            return ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
+        else
+            return null;
     }
     
    /**
@@ -475,53 +472,7 @@ public class CmsRequestContext implements I_CmsConstants {
         }
         return (m_currentProject);
     }
-
-    /**
-     * Get the current mode for HTTP streaming.
-     *
-     * @return <code>true</code> if template classes are allowed to stream the
-     *    results to the response output stream theirselves, <code>false</code> otherwise.
-     */
-    public boolean isStreaming() {
-        return m_streaming;
-    }
-
-    /**
-     * Set the current mode for HTTP streaming.<p>
-     * 
-     * Calling this method is only allowed, if the response output stream was
-     * not used before. Otherwise the streaming mode must not be changed.
-     *
-     * @param b <code>true</code> if template classes are allowed to stream the
-     *    results to the response's output stream theirselves, <code>false</code> otherwise.
-     * @throws CmsException if the output stream was already used previously.
-     */
-    public void setStreaming(boolean b) throws CmsException {
-        if ((m_streaming != b) && getResponse().isOutputWritten()) {
-            throw new CmsException(
-                "[CmsRequestContext] Cannot switch streaming mode, if output stream is used previously.",
-                CmsException.C_STREAMING_ERROR);
-        }
-        m_streaming = b;
-    }
-
-    /**
-     * Get the current mode for element cache.
-     *
-     * @return <code>true</code> if element cache is active, <code>false</code> otherwise.
-     */
-    public boolean isElementCacheEnabled() {
-        return (m_elementCache != null);
-    }
-
-    /**
-     * Get the CmsElementCache object. This is the starting point for the element cache area.
-     * @return CmsElementCachee
-     */
-    public CmsElementCache getElementCache() {
-        return m_elementCache;
-    }
-
+    
     /**
      * Get a Vector of all accepted languages for this request.
      * Languages are coded in international shortcuts like "en" or "de".

@@ -16,7 +16,7 @@
         <resourceloader>
             <class>org.opencms.loader.CmsXmlTemplateLoader</class>
             <class>org.opencms.loader.CmsDumpLoader</class>
-            <class>com.opencms.loader.CmsPointerLauncher</class>
+            <class>org.opencms.loader.CmsPointerLoader</class>
             <class>org.opencms.loader.CmsJspLoader</class>
             <class>org.opencms.loader.CmsPageLoader</class>
         </resourceloader>        

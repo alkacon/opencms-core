@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -88,24 +87,18 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.142 $
+ * @version $Revision: 1.143 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
     /** The default mimetype */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
 
-    /** Reference to the CmsElementCache object containing locators for all URIs and elements in cache */
-    private static CmsElementCache c_elementCache = null;
-
     /** The object to store the properties from the opencms.property file for the static export */
     private static CmsStaticExportProperties c_exportProperties = new CmsStaticExportProperties();
 
     /** The name of the class used to validate a new password */
     private static String c_passwordValidatingClass = "";
-
-    /** Hashtable to store the dependencies for all variants of the elementcache */
-    private static Hashtable c_variantDeps = null;
 
     /** List of default file names (for directories, e.g, "index.html") */
     private static String[] m_defaultFilenames = null;
@@ -119,9 +112,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     /** Member variable to store instances to modify resources */
     private List m_checkFile = new ArrayList();
 
-    /** Indicates if the element cache should be enabled by the configurations */
-    private boolean m_enableElementCache = true;
-
     /** Flag to indicate if the startup classes have already been initialized */
     private boolean m_startupClassesInitialized = false;
 
@@ -130,9 +120,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 
     /**  The cron scheduler to schedule the cronjobs */
     private CmsCronScheduler m_scheduler;
-
-    /** Indicates if the streaming should be enabled by the configurations */
-    private boolean m_streaming = true;
 
     /** The cron table to use with the scheduler */
     private CmsCronTable m_table;
@@ -233,11 +220,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             if (C_LOGGING && isLogging(C_OPENCMS_INIT))
                 log(C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
 
-            // Check, if the HTTP streaming should be enabled
-            m_streaming = conf.getBoolean("httpstreaming.enabled", true);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Legacy HTTP streaming: " + (m_streaming ? "enabled" : "disabled"));
-
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
@@ -274,6 +256,31 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
 
+        // try to initialize the flex cache
+        try {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Flex cache init      : starting");
+            // the flexCache has static members that must be initialized with "this" object
+            new com.opencms.flex.cache.CmsFlexCache(this);
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Flex cache init      : finished");
+        } catch (Exception e) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Flex cache init      : non-critical error " + e.toString());
+        }
+        
+        // initialize the loaders
+        try {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". ResourceLoader init  : starting");
+            setLoaderManager(new CmsLoaderManager(this, conf));
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". ResourceLoader init  : finished");
+        } catch (Exception e) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". ResourceLoader init  : non-critical error " + e.toString());
+        }
+        
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = (Boolean)conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
@@ -404,31 +411,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if (m_defaultFilenames == null)
             m_defaultFilenames = new String[0];
 
-        // try to initialize the flex cache
-        try {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Flex cache init      : starting");
-            // the flexCache has static members that must be initialized with "this" object
-            new com.opencms.flex.cache.CmsFlexCache(this);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Flex cache init      : finished");
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Flex cache init      : non-critical error " + e.toString());
-        }
-
-        // try to initialize the launchers.
-        try {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Launcher init        : starting");
-            setLoaderManager(new CmsLoaderManager(this));
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Launcher init        : finished");
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Launcher init        : non-critical error " + e.toString());
-        }
-
         // get the password validating class
         c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
@@ -449,20 +431,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
                 log(C_OPENCMS_INIT, ". User permission init : non-critical error " + e.toString());
         }
 
-        // Check, if the element cache should be enabled
-        m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Element cache        : " + (m_enableElementCache ? "enabled" : "disabled"));
-        if (m_enableElementCache) {
-            try {
-                c_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
-            } catch (Exception e) {
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Element cache        : non-critical error " + e.toString());
-            }
-            c_variantDeps = new Hashtable();
-            c_elementCache.getElementLocator().setExternDependencies(c_variantDeps);
-        }
         // now for the link replacement rules there are up to three rulesets for export online and offline
         try {
             if (C_LOGGING && isLogging(C_OPENCMS_INIT))
@@ -602,15 +570,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     }
 
     /**
-     * Returns the ElementCache used for the online project.<p>
-     * 
-     * @return the ElementCache used for the online project
-     */
-    public static CmsElementCache getOnlineElementCache() {
-        return c_elementCache;
-    }
-
-    /**
      * Returns the Class that is used for the password validation.<p>
      * 
      * @return the Class that is used for the password validation
@@ -626,15 +585,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
     public static CmsStaticExportProperties getStaticExportProperties() {
         return c_exportProperties;
-    }
-
-    /**
-     * Returns the hashtable with the variant dependencies used for the elementcache.<p>
-     * 
-     * @return the hashtable with the variant dependencies used for the elementcache
-     */
-    public static Hashtable getVariantDependencies() {
-        return c_variantDeps;
     }
 
     /**
@@ -941,12 +891,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         int project, 
         CmsCoreSession sessionStorage
     ) throws CmsException {
-
-        if ((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)) {
-            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, currentSite, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
-        } else {
-            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, currentSite, m_streaming, new CmsElementCache(10, 200, 10), sessionStorage, m_directoryTranslator, m_fileTranslator);
-        }
+        cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
     }
 
     /**
@@ -988,6 +933,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * @param cms the curren cms context
      * @param file the requested file
      * @throws CmsException if something goes wrong
+     * @throws ServletException if some other things goes wrong
+     * @throws IOException if io things go wrong
      */
     public void showResource(
         HttpServletRequest req, 
@@ -995,7 +942,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         CmsObject cms, 
         CmsFile file
     ) throws CmsException, ServletException, IOException {
-        I_CmsResourceLoader loader = getLoaderManager().getLoader(file.getLauncherType());
+        I_CmsResourceLoader loader = getLoaderManager().getLoader(file.getLoaderId());
         loader.load(cms, file, req, res);
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/19 01:51:38 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,11 @@
 
 package com.opencms.workplace;
 
+import org.opencms.loader.CmsXmlTemplateLoader;
+
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
 import com.opencms.template.cache.CmsElementCache;
 
 import java.util.Hashtable;
@@ -41,7 +42,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.6 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/19 01:51:38 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
@@ -72,7 +73,7 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // need the element cache
-        CmsElementCache cache = cms.getOnlineElementCache();
+        CmsElementCache cache = CmsXmlTemplateLoader.getOnlineElementCache();
         // any debug action?
         String info = (String)parameters.get("info");
         if(info != null && "dep_out".equals(info)){
@@ -112,10 +113,8 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
      * @throws CmsException if there were errors while accessing project data.
      */
-
     public Boolean isElementcacheAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        CmsRequestContext reqCont = cms.getRequestContext();
-        return new Boolean(reqCont.isAdmin() &&  (reqCont.getElementCache() != null));
+        return new Boolean(cms.getRequestContext().isAdmin() && (CmsXmlTemplateLoader.getElementCache(cms) != null));
     }
 
     /**
@@ -128,7 +127,6 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;

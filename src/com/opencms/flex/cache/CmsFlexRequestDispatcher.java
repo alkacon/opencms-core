@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/19 01:51:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -241,7 +241,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             com.opencms.file.CmsResource resource = null;
             try {
                 resource = cms.readFileHeader(m_vfsTarget);
-                int type = resource.getLauncherType();
+                int type = resource.getLoaderId();
                 if (DEBUG > 0) System.err.println("FlexDispatcher: Loading resource type " + type);
                 loader = A_OpenCms.getLoaderManager().getLoader(type);
             } catch (java.lang.ClassCastException e) {

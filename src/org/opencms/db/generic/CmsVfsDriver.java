@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/19 01:51:37 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -440,7 +440,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setInt(2, file.getType());
                 stmt.setInt(3, file.getFlags());
                 stmt.setString(4, file.getFileId().toString());
-                stmt.setInt(5, file.getLauncherType());
+                stmt.setInt(5, file.getLoaderId());
                 stmt.setTimestamp(6, new Timestamp(dateCreated));
                 stmt.setString(7, createdByUserId.toString());
                 stmt.setTimestamp(8, new Timestamp(dateModified));
@@ -628,7 +628,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(2, folder.getType());
             stmt.setInt(3, folder.getFlags());       
             stmt.setString(4, CmsUUID.getNullUUID().toString());           
-            stmt.setInt(5, folder.getLauncherType());
+            stmt.setInt(5, folder.getLoaderId());
             stmt.setTimestamp(6, new Timestamp(folder.getDateCreated()));
 			stmt.setString(7, user.getId().toString());
             stmt.setTimestamp(8, new Timestamp(dateModified));
@@ -906,7 +906,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
           stmt.setInt(2, newResource.getType());
           stmt.setInt(3, newResource.getFlags());         
           stmt.setString(4, newFileId.toString());          
-          stmt.setInt(5, newResource.getLauncherType());
+          stmt.setInt(5, newResource.getLoaderId());
           stmt.setTimestamp(6, new Timestamp(newResource.getDateCreated()));
           stmt.setString(7, newResource.getUserCreated().toString());
           stmt.setTimestamp(8, new Timestamp(newResource.getDateLastModified()));
@@ -3176,7 +3176,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
             stmt.setInt(1, file.getType());
             stmt.setInt(2, file.getFlags());
-            stmt.setInt(3, file.getLauncherType());
+            stmt.setInt(3, file.getLoaderId());
             stmt.setTimestamp(4, new Timestamp(resourceDateModified));
 			stmt.setString(5, userId.toString());
 			stmt.setInt(6, resourceState);
@@ -3259,7 +3259,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
             stmt.setInt(1, folder.getType());
             stmt.setInt(2, folder.getFlags());
-            stmt.setInt(3, folder.getLauncherType());
+            stmt.setInt(3, folder.getLoaderId());
             stmt.setTimestamp(4, new Timestamp(resourceDateModified));
 			stmt.setString(5, userId.toString());
             // folders do not have content and so they dont have a resource state
@@ -3485,7 +3485,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
             stmt.setInt(1, resource.getType());
             stmt.setInt(2, resource.getFlags());
-            stmt.setInt(3, resource.getLauncherType());
+            stmt.setInt(3, resource.getLoaderId());
             stmt.setTimestamp(4, new Timestamp(resourceDateModified));
 			stmt.setString(5, userId.toString());
 			stmt.setInt(6, resourceState);
@@ -3544,7 +3544,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_RESOURCES");                
                 stmt.setInt(1, offlineResource.getType());
                 stmt.setInt(2, offlineResource.getFlags());
-                stmt.setInt(3, offlineResource.getLauncherType());
+                stmt.setInt(3, offlineResource.getLoaderId());
                 stmt.setTimestamp(4, new Timestamp(offlineResource.getDateLastModified()));
     			stmt.setString(5, offlineResource.getUserLastModified().toString());
     			stmt.setInt(6, I_CmsConstants.C_STATE_UNCHANGED);

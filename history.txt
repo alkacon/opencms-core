@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.486 $
+ * Date   : $Date: 2003/07/19 01:51:38 $
+ * Version: $Revision: 1.487 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,15 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+- Moved all access to the legacy "element cache" from the 
+  CmsRequestContext to the CmsXmlTemplate loader
+- The old resource type "link" is now called "pointer"
+- Added export() methof to launcher interface for static export
+- Improved loading of resources when requested by the user,
+  improved the ResourceLoader interface, added new 
+  package org.opencms.loader and removed all the Launcher classes
+- Removed legacy session failover (was never used anyway)
+- Removed legacy http streaming (was never used anyway)
 - Removed the methods getAbsolutePath(String resourceName),
   getParent(), getPath() and getRootName() of the CmsResource object
 ! Locks in the OpenCms VFS are now managed with CmsLock objects

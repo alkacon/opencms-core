@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.template.cache;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsCacheDirectives;
@@ -91,15 +89,8 @@ public class CmsElementDump extends A_CmsElement {
         // Collect cache directives from subtemplates
         A_CmsCacheDirectives cd = getCacheDirectives();
 
-        // We really don't want to stream here
-        /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
-        cms.getRequestContext().setStreaming(streamable);*/
-        //boolean streamable = false;
-        boolean streamable = cms.getRequestContext().isStreaming();
-
         CmsElementVariant variant = null;
 
-//        Object cacheKey = templateClass.getKey(cms, m_templateName, parameters, null);
         Object cacheKey = cd.getCacheKey(cms, parameters);
 
         // In classic mode, now the cache-control headers of the response
@@ -129,16 +120,6 @@ public class CmsElementDump extends A_CmsElement {
                 // Clear cache and do logging here
                 throw e;
             }
-        }
-        if(streamable) {
-            try {
-                cms.getRequestContext().getResponse().getOutputStream().write(result);
-            }catch(Exception e) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
-                }
-            }
-            result = null;
         }
         return result;
     }

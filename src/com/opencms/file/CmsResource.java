@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.68 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.69 $ $Date: 2003/07/19 01:51:37 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -130,9 +130,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      private CmsUUID m_lockedByUserId;
 
      /**
-      * The type of the launcher which is used to process this resource.
+      * The id of the loader which is used to process this resource.
       */
-     private int m_launcherType;
+     private int m_loaderId;
 
      /**
       * The id of the user who created this resource
@@ -205,7 +205,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        m_resourceFlags=resourceFlags;
        m_projectId=projectId;
        m_accessFlags=accessFlags;
-       m_launcherType=launcherType;
+       m_loaderId=launcherType;
        m_state=state;
        m_lockedByUserId=lockedByUser;
        m_dateCreated=dateCreated;
@@ -236,7 +236,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_accessFlags,
             m_state,
             m_lockedByUserId,
-            m_launcherType,
+            m_loaderId,
             m_dateCreated,
             m_createdByUser,
             m_dateLastModified,
@@ -351,12 +351,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       }
      
      /**
-     * Gets the launcher type id of this resource.<p>
+     * Gets the loader id of this resource.<p>
      *
-     * @return the launcher type id of this resource
+     * @return the loader type id of this resource
      */
-     public int getLauncherType() {
-         return m_launcherType;
+     public int getLoaderId() {
+         return m_loaderId;
      }
      /**
      * Gets the length of the content (i.e. the file size).<p>
@@ -660,7 +660,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param type the launcher type to set
      */
      public void setLauncherType(int type) {
-         m_launcherType=type;
+         m_loaderId=type;
      }
     /**
      * Sets the the user id that locked this resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2003/07/19 01:51:38 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.70 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.71 $ $Date: 2003/07/19 01:51:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1740,7 +1740,7 @@ public class CmsDriverManager extends Object {
                 com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
                 com.opencms.core.I_CmsConstants.C_STATE_NEW,
                 CmsUUID.getNullUUID(),
-                targetResource.getLauncherType(),
+                targetResource.getLoaderId(),
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
                 System.currentTimeMillis(),
@@ -7221,7 +7221,7 @@ public class CmsDriverManager extends Object {
                     backupFile.getAccessFlags(),
                     state,
                     offlineFile.isLockedBy(),
-                    backupFile.getLauncherType(),
+                    backupFile.getLoaderId(),
                     offlineFile.getDateCreated(),
                     backupFile.getUserCreated(),
                     offlineFile.getDateLastModified(),
@@ -7723,7 +7723,7 @@ public class CmsDriverManager extends Object {
                     onlineFile.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
                     offlineFile.isLockedBy(),
-                    onlineFile.getLauncherType(),
+                    onlineFile.getLoaderId(),
                     offlineFile.getDateCreated(),
                     context.currentUser().getId(),
                     offlineFile.getDateLastModified(),

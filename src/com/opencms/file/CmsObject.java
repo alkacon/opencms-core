@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/18 18:20:37 $
-* Version: $Revision: 1.336 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.337 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsSynchronize;
+import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -44,7 +45,6 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
-import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
 
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.336 $
+ * @version $Revision: 1.337 $
  */
 public class CmsObject extends Object {
 
@@ -124,22 +124,32 @@ public class CmsObject extends Object {
      * Initializes the CmsObject for each request.
      *
      * @param driverManager the driver manager to access the database.
-     * @param req the CmsRequest.
-     * @param resp the CmsResponse.
-     * @param user the current user for this request.
-     * @param currentGroup the current group for this request.
-     * @param currentProjectId the current projectId for this request.
-     * @param streaming <code>true</code> if streaming should be enabled while creating the request context, <code>false</code> otherwise.
-     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
+     * @param req the CmsRequest
+     * @param resp the CmsResponse
+     * @param user the current user for this request
+     * @param group the current group for this request
+     * @param projectId the current projectId for this request
+     * @param site the current site root of the user
      * @param directoryTranslator Translator for directories (file with full path)
      * @param fileTranslator Translator for new file names (without path)
      * @throws CmsException if operation was not successful.
      */
-    public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, String currentSite, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
+    public void init(
+        CmsDriverManager driverManager,
+        I_CmsRequest req, 
+        I_CmsResponse resp, 
+        String user, 
+        String group, 
+        int projectId, 
+        String site, 
+        CmsCoreSession sessionStorage, 
+        CmsResourceTranslator directoryTranslator, 
+        CmsResourceTranslator fileTranslator
+    ) throws CmsException {
         m_sessionStorage = sessionStorage;
         m_driverManager = driverManager;
         m_context = new CmsRequestContext();
-        m_context.init(m_driverManager, req, resp, user, currentGroup, currentProjectId, currentSite, streaming, elementCache, directoryTranslator, fileTranslator);
+        m_context.init(m_driverManager, req, resp, user, group, projectId, site, directoryTranslator, fileTranslator);
         try {
             m_linkChecker = new LinkChecker();
         } catch (java.lang.NoClassDefFoundError error) {
@@ -506,13 +516,6 @@ public class CmsObject extends Object {
     public void clearcache() {
         m_driverManager.clearcache();
         System.gc();
-    }
-
-    /**
-     * Clears the element cache.
-     */
-    public void clearElementCache() {
-        this.getOnlineElementCache().clearCache();
     }
 
     /**
@@ -1819,7 +1822,7 @@ public class CmsObject extends Object {
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
 
         CmsObject cmsForStaticExport = new CmsObject();
-        cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         return cmsForStaticExport;
     }
 
@@ -2023,14 +2026,6 @@ public class CmsObject extends Object {
      */
     public Vector getOnlineBrokenLinks() throws CmsException {
         return m_driverManager.getOnlineBrokenLinks();
-    }
-
-    /**
-     * Gets the ElementCache used for the online project.
-     * @return CmsElementCache
-     */
-    public CmsElementCache getOnlineElementCache() {
-        return OpenCms.getOnlineElementCache();
     }
 
     /**
@@ -2364,14 +2359,6 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Gets the hashtable with the variant dependencies used for the elementcache.
-     * @return Hashtable
-     */
-    public Hashtable getVariantDependencies() {
-        return OpenCms.getVariantDependencies();
-    }
-
-    /**
      * Returns a Vector with all resources of the given type that have set the given property to the given value.
      *
      * <B>Security:</B>
@@ -2692,7 +2679,7 @@ public class CmsObject extends Object {
         // login the user
         CmsUser newUser = m_driverManager.loginUser(m_context, username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
         this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
@@ -2714,7 +2701,7 @@ public class CmsObject extends Object {
         // login the user
         CmsUser newUser = m_driverManager.loginWebUser(m_context, username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // return the user-name
         return (newUser.getName());
     }
@@ -2803,8 +2790,8 @@ public class CmsObject extends Object {
             changedResources = publishedResources.getChangedResources();
             changedModuleMasters = publishedResources.getChangedModuleMasters();
 
-            if (getOnlineElementCache() != null) {
-                getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
+            if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
+                CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
             }
 
             clearcache();
@@ -2884,8 +2871,8 @@ public class CmsObject extends Object {
                 success = false;
             }
             if (!success) {
-                if (getOnlineElementCache() != null)
-                    getOnlineElementCache().clearCache();
+                if (CmsXmlTemplateLoader.getOnlineElementCache() != null)
+                    CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
             }
             // set current project to online project if the published project was temporary
             // and the published project is still the current project

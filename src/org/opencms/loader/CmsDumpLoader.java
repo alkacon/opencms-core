@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import source.org.apache.java.util.Configurations;
+
 
 /**
  * Dump loader for binary or other unprocessed resource types.<p>
@@ -55,15 +57,12 @@ import javax.servlet.http.HttpServletResponse;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
     /** The id of this loader */
     public static final int C_RESOURCE_LOADER_ID = 1;    
-    
-    /** The CmsFlexCache used to store generated cache entries in */
-    // private static CmsFlexCache m_cache;
     
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
     private static final int DEBUG = 0;
@@ -103,11 +102,10 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * Initialize the ResourceLoader,
      * not much done here, only the FlexCache is initialized for dump elements.<p>
      *
-     * @param openCms an OpenCms object to use for initalizing
+     * @param openCms the initialized OpenCms object
+     * @param conf the OpenCms configuration 
      */
-    public void init(A_OpenCms openCms) {
-        // m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);  
-              
+    public void init(A_OpenCms openCms, Configurations conf) {
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");        
     }

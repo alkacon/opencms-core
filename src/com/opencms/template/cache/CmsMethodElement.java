@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -100,10 +100,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             // the XmlTemplate implementation is faulty, let assume no caching
             cd = new CmsMethodCacheDirectives(false);
         }
-
-        // streaming
-        boolean streamable = cms.getRequestContext().isStreaming();
-
+        
         // cacheKey with the methodeParameter so we have variantes for each parameter
         String cacheKey = cd.getCacheKey(cms, parameters);
         if (cacheKey != null){
@@ -186,16 +183,6 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
                 variant.add(result);
                 addVariant(cacheKey, variant);
             }
-        }
-        if(streamable) {
-            try {
-                cms.getRequestContext().getResponse().getOutputStream().write(result.getBytes(cms.getRequestContext().getEncoding()));
-            } catch(Exception e) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
-                }
-            }
-            result = null;
         }
         if (result == null) return null;
         try {

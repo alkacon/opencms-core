@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.0 beta 2
  */
@@ -707,7 +707,7 @@ public class CmsJspActionElement {
             target = toAbsolute(target);
             try {
                 CmsResource resource = getCmsObject().readFileHeader(target);
-                loader = A_OpenCms.getLoaderManager().getLoader(resource.getLauncherType());
+                loader = A_OpenCms.getLoaderManager().getLoader(resource.getLoaderId());
             } catch (java.lang.ClassCastException e) {
                 // no loader omplementation found
                 return "??? " + e.getMessage() + " ???";

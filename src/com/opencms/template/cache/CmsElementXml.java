@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.template.cache;
+
+import org.opencms.loader.CmsXmlTemplateLoader;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -90,8 +92,6 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         // Get out own cache directives
         A_CmsCacheDirectives cd = getCacheDirectives();
 
-        boolean streamable = cms.getRequestContext().isStreaming();
-
         CmsElementVariant variant = null;
 
         // Now check, if there is a variant of this element in the cache.
@@ -103,7 +103,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 // this element is too old, delete the cache
                 if(this.hasDependenciesVariants()){
                     // remove all the variants from the extern dep table
-                    cms.getOnlineElementCache().getElementLocator().removeElementFromDependencies(
+                    CmsXmlTemplateLoader.getOnlineElementCache().getElementLocator().removeElementFromDependencies(
                                 mergedElDefs.get(elementName).getDescriptor(), this);
                 }
                 clearVariantCache();
@@ -112,7 +112,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 if((variant != null) && variant.isTimeCritical()
                                      && variant.getNextTimeout() < System.currentTimeMillis()){
                     // the variant is not longer valid, remove it from the extern dependencies
-                    cms.getOnlineElementCache().getElementLocator().removeVariantFromDependencies(
+                    CmsXmlTemplateLoader.getOnlineElementCache().getElementLocator().removeVariantFromDependencies(
                                         m_className +"|" + m_templateName +"|" + cd.getCacheKey(cms, parameters), variant);
                     variant = null;
                 }
@@ -199,16 +199,6 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 // Clear cache and do logging here
                 throw e;
             }
-        }
-        if(streamable) {
-            try {
-                cms.getRequestContext().getResponse().getOutputStream().write(result);
-            } catch(Exception e) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
-                }
-            }
-            result = null;
         }
         return result;
     }

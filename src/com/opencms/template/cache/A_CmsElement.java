@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/07/15 08:43:10 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.template.cache;
+
+import org.opencms.loader.CmsXmlTemplateLoader;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -351,7 +353,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         while(elementNames.hasMoreElements()){
             String name = (String)elementNames.nextElement();
             CmsElementDefinition currentDef = m_elementDefinitions.get(name);
-            A_CmsElement currentEle = cms.getRequestContext().getElementCache().getElementLocator().get(
+            A_CmsElement currentEle = CmsXmlTemplateLoader.getElementCache(cms).getElementLocator().get(
                                     cms, new CmsElementDescriptor(currentDef.getClassName(),
                                                             currentDef.getTemplateName()), parameters);
             currentEle.checkProxySettings(cms, proxySettings, parameters);
@@ -475,21 +477,10 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                                 if(e instanceof CmsException) {
                                     CmsException ce = (CmsException)e;
                                     if(ce.getType() == CmsException.C_ACCESS_DENIED) {
-                                        // This was an access denied exception.
-                                        // If we are streaming, we have to catch it and print an error message
-                                        // If we are not streaming, we can throw it again and force an authorization request
-                                        if(cms.getRequestContext().isStreaming()) {
-                                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
-                                                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Streaming is active, so authentication box cannot be requested.");
-                                            }
-                                            errorMessage = "Access denied";
-                                        } else {
-                                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
-                                            }
-                                            throw ce;
+                                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                            A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
                                         }
+                                        throw ce;
                                     } else {
                                         // Any other CmsException. This may be critical
                                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {

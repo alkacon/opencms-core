@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/07/14 13:28:23 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
 
 package com.opencms.template;
 
+import org.opencms.loader.CmsXmlTemplateLoader;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsRequest;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsStringSubstitution;
@@ -58,7 +59,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2003/07/14 13:28:23 $
+ * @version $Revision: 1.73 $ $Date: 2003/07/19 01:51:37 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
@@ -72,7 +73,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
      * Default constructor.
      */
     public CmsXmlTemplateFile() throws CmsException {
-        if(OpenCms.getOnlineElementCache() == null){
+        if(CmsXmlTemplateLoader.getOnlineElementCache() == null){
             registerTag("ELEMENT", CmsXmlTemplateFile.class, "handleElementTag", C_REGISTER_MAIN_RUN);
         }
     }
@@ -86,7 +87,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
      */
     public CmsXmlTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
-        if(!cms.getRequestContext().isElementCacheEnabled()) {
+        if(!CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
             registerMyTags();
         }
         init(cms, file);
@@ -101,7 +102,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
      */
     public CmsXmlTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
-        if(!cms.getRequestContext().isElementCacheEnabled()) {
+        if(!CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
             registerMyTags();
         }
         init(cms, filename);
@@ -109,7 +110,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
     
     public CmsXmlTemplateFile(CmsObject cms, String filename, String content) throws CmsException {
         super();
-        if(!cms.getRequestContext().isElementCacheEnabled()) {
+        if(!CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
             registerMyTags();
         }
         init(cms, filename, content);
@@ -549,19 +550,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
         OutputStream os = null;
 
-        if(m_cms.getRequestContext().isStreaming()) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Entering streaming mode for file: " + getAbsoluteFilename());
-            }
-            try {
-                os = m_cms.getRequestContext().getResponse().getOutputStream();
-            } catch (Exception e) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-            }
-        } else {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Disabled streaming mode for file: " + getAbsoluteFilename());
-            }
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Disabled streaming mode for file: " + getAbsoluteFilename());
         }
         String datablockName = this.getTemplateDatablockName(templateSelector);
         if(datablockName == null && (templateSelector.toLowerCase().equals("script"))) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,6 +69,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import source.org.apache.java.util.Configurations;
+
 /**
  * The JSP loader which enables the execution of JSP in OpenCms.<p>
  *
@@ -78,7 +80,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -371,9 +373,10 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * Initialize the ResourceLoader,
      * here the configuration for the JSP repository (directories used) is set.
      *
-     * @param openCms An OpenCms object to use for initalizing.
+     * @param openCms the initialized OpenCms object
+     * @param conf the OpenCms configuration 
      */
-    public void init(A_OpenCms openCms) {
+    public void init(A_OpenCms openCms, Configurations conf) {
         m_jspRepository = com.opencms.boot.CmsBase.getBasePath();
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/19 01:51:37 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -587,7 +587,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 stmt.setInt(2, resource.getType());
                 stmt.setInt(3, resource.getFlags());
                 stmt.setString(4, resource.getFileId().toString());
-                stmt.setInt(5, resource.getLauncherType());
+                stmt.setInt(5, resource.getLoaderId());
                 stmt.setTimestamp(6, new Timestamp(publishDate));
     			stmt.setString(7, resource.getUserCreated().toString());
                 stmt.setTimestamp(8, new Timestamp(resource.getDateLastModified()));

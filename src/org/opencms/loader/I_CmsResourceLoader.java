@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.loader;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -43,6 +44,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * This interface describes a resource loader for OpenCms, 
@@ -68,7 +71,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -92,9 +95,10 @@ public interface I_CmsResourceLoader {
     /** 
      * Initialize the ResourceLoader.<p>
      *
-     * @param openCms the systems A_OpenCms object
+     * @param openCms the initialized OpenCms object
+     * @param conf the OpenCms configuration 
      */
-    void init(com.opencms.core.A_OpenCms openCms);
+    void init(A_OpenCms openCms, Configurations conf);
     
     /** Destroy this ResourceLoder */
     void destroy();

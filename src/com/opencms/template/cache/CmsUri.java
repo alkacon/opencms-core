@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/07/15 08:43:10 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/19 01:51:37 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -159,8 +159,6 @@ public class CmsUri implements I_CmsConstants {
         }
 
         I_CmsResponse resp = cms.getRequestContext().getResponse();
-        // set the streaming
-        cms.getRequestContext().setStreaming(cms.getRequestContext().isStreaming() && proxySettings.isStreamable());
         // was there already a cache-control header set?
         if(!resp.containsHeader("Cache-Control")) {
             // only if the resource is cacheable and if the current project is online,

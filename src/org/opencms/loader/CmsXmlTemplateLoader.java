@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/19 01:51:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,6 +70,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import source.org.apache.java.util.Configurations;
+
 /**
  * Implementation of the {@link I_CmsResourceLoader} and 
  * the {@link com.opencms.launcher.I_CmsLauncher} interface for 
@@ -82,7 +84,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -101,6 +103,12 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
     /** The template cache that holds all cached templates */
     protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
+
+    /** The element cache used for the online project */
+    private static CmsElementCache m_elementCache;
+    
+    /** The variant dependencies for the element cache */
+    private static Hashtable m_variantDeps;
 
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
     private static final int DEBUG = 0;
@@ -137,14 +145,31 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }   
     
     /** 
-     * Initialize the ResourceLoader, the OpenCms parameter is
-     * saved here for later access to <code>generateOutput()</code>.<p>
+     * Initialize the ResourceLoader.<p>
      * 
-     * @param openCms used to access <code>generateOutput()</code> later
+     * @param openCms the initialized OpenCms object
+     * @param conf the OpenCms configuration 
      */
-    public void init(A_OpenCms openCms) {
+    public void init(A_OpenCms openCms, Configurations conf) {
+        // Check, if the element cache should be enabled
+        boolean enableElementCache = conf.getBoolean("elementcache.enabled", false);
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Element cache        : " + (enableElementCache ? "enabled" : "disabled"));
+        if (enableElementCache) {
+            try {
+                m_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Element cache        : non-critical error " + e.toString());
+            }
+            m_variantDeps = new Hashtable();
+            m_elementCache.getElementLocator().setExternDependencies(m_variantDeps);
+        } else {
+            m_elementCache = null;
+        }
+        
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");     
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");            
     }
     
     /**
@@ -329,7 +354,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
         
         // Parameters used for element cache
-        boolean elementCacheEnabled = cms.getRequestContext().isElementCacheEnabled();
+        boolean elementCacheEnabled = CmsXmlTemplateLoader.isElementCacheEnabled(cms);
         CmsElementCache elementCache = null;
         CmsUriDescriptor uriDesc = null;
         CmsUriLocator uriLoc = null;
@@ -341,7 +366,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
         if (elementCacheEnabled) {
             // Get the global element cache object
-            elementCache = cms.getRequestContext().getElementCache();
+            elementCache = CmsXmlTemplateLoader.getElementCache(cms);
 
             // Prepare URI Locator
             uriDesc = new CmsUriDescriptor(uri);
@@ -549,6 +574,49 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
         return output;
     }
+
+    /**
+     * Returns the element cache that belongs to the given cms context,
+     * or null if the element cache is not initialized.<p>
+     * 
+     * @param cms the opencms context
+     * @return the element cache that belongs to the given cms context
+     */        
+    public static final CmsElementCache getElementCache(CmsObject cms) {
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            return m_elementCache;
+        } else {        
+            return null;
+        }        
+    }
+    
+    /**
+     * Returns true if the element cache is enabled for the given cms context.<p>
+     * 
+     * @param cms the opencms context
+     * @return true if the element cache is enabled for the given cms context
+     */
+    public static final boolean isElementCacheEnabled(CmsObject cms) {
+        return (m_elementCache != null) && cms.getRequestContext().currentProject().isOnlineProject();            
+    }    
+
+    /**
+     * Returns the variant dependencies of the online element cache.<p>
+     * 
+     * @return the variant dependencies of the online element cache
+     */
+    public static final CmsElementCache getOnlineElementCache() {
+        return m_elementCache;
+    }
+    
+    /**
+     * Returns the hashtable with the variant dependencies used for the elementcache.<p>
+     * 
+     * @return the hashtable with the variant dependencies used for the elementcache
+     */
+    public static final Hashtable getVariantDependencies() {
+        return m_variantDeps;
+    }    
     
     /**
      * Internal utility method for checking and loading a given template file.
@@ -711,7 +779,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     private void writeBytesToResponse(CmsObject cms, byte[] result) throws CmsException {
         try {
             I_CmsResponse resp = cms.getRequestContext().getResponse();
-            if ((!cms.getRequestContext().isStreaming()) && result != null && !resp.isRedirected()) {
+            if ((result != null) && !resp.isRedirected()) {
                 // Only write any output to the response output stream if
                 // the current request is neither redirected nor streamed.
                 OutputStream out = resp.getOutputStream();
