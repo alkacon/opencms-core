@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/08/09 08:25:40 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/10/18 07:31:21 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -817,7 +817,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //get the number of rows
     int rows = tableContent.size();
 
-
     // get the field methods from the content definition
     Vector fieldMethods = new Vector();
     try {
@@ -848,6 +847,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     Method getMethod = null;
     try {
       getMethod = (Method) fieldMethods.elementAt(j);
+
     } catch (Exception e) {
       if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
@@ -856,7 +856,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     try {
       //apply methods on content definition object
       Object fieldEntryObject = null;
+
       fieldEntryObject = getMethod.invoke(entryObject, new Object[0]);
+
           if (fieldEntryObject != null) {
             fieldEntry = fieldEntryObject.toString();
             } else {
@@ -1505,6 +1507,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       returnValue=i;
     }
   }
+  session.putValue("backofficeselectortransfer",values);
+  session.putValue("backofficeselectedtransfer",new Integer(returnValue));
   return new Integer(returnValue);
 }
 
@@ -1638,8 +1642,10 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
       // get all getXVY methods to automatically get the data from the CD
       Vector getMethods=this.getGetMethods(cd);
+
       // get all setXVY methods to automatically set the data into the CD
       Hashtable setMethods=this.getSetMethods(cd);
+
       //set all data from the parameters into the CD
       this.fillContentDefinition(cms,cd,parameters,setMethods);
       //now set all the data from the CD into the template
@@ -1658,6 +1664,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       // now check if one of the exit buttons is used
       returnProcess = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector,
                                                 action,error);
+
     }
     //finally return processed data
     return returnProcess;
@@ -1694,6 +1701,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   // the complete error text displayed on the template
   //String error=null;
   //  check if one of the exit buttons is used
+
+
   if (action!=null) {
     // there was no button selected, so the selectbox was used. Do a check of the input fileds.
     if ((!action.equals("save")) && (!action.equals("saveexit")) && (!action.equals("exit"))){
@@ -1746,16 +1755,21 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     if (((action.equals("save")) || (action.equals("saveexit"))) && (error.equals(""))){
       try {
         // first check if all plausibilization was ok
+
         cd.check(true);
+
         // unlock resource if save&exit was selected
         if (action.equals("saveexit")) {
           cd.setLockstate(-1);
         }
+
         // write the data to the database
         cd.write(cms);
+
       } catch (CmsPlausibilizationException plex) {
         // there was an error during plausibilization, so create an error text
         errorCodes=plex.getErrorCodes();
+
         //loop through all errors
         for (int i=0;i<errorCodes.size();i++) {
           errorCode=(String)errorCodes.elementAt(i);
@@ -1779,6 +1793,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
             }
           }
         }
+
         //check if there is an introtext for the errors
         if (template.hasData("errormsg")) {
           error=template.getProcessedDataValue("errormsg")+error;
@@ -1786,6 +1801,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         template.setData("error",error);
 
       } catch (Exception ex) {
+
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
           A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while saving data to Content Definition "+ex.toString());
         }
@@ -1817,7 +1833,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       } // if (exit || saveexit)
     } // noerror
   } // if (action!=null)
-
   return startProcessing(cms,template,"",parameters,templateSelector);
  }
 
@@ -1830,17 +1845,20 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * @returns Vector of get-methods
    */
   private Vector getGetMethods (A_CmsContentDefinition contentDefinition) {
+
     Vector getMethods=new Vector();
     //get all methods of the CD
     Method[] methods = this.getContentDefinitionClass().getMethods();
     for (int i=0;i<methods.length;i++) {
       Method m=methods[i];
       String name=m.getName().toLowerCase();
+
       //now extract all methods whose name starts with a "get"
       if (name.startsWith("get")) {
         Class[] param = m.getParameterTypes();
         //only take those methods that have no parameter and return a String
         if (param.length==0) {
+
           Class retType=m.getReturnType();
           if (retType.equals(java.lang.String.class)) {
            getMethods.addElement(m);
