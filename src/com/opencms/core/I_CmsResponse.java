@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2004/02/22 13:54:41 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/03/29 08:50:06 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.21 $ $Date: 2004/02/22 13:54:41 $  
+ * @version $Revision: 1.22 $ $Date: 2004/03/29 08:50:06 $  
  */
 public interface I_CmsResponse {
 
@@ -87,10 +87,9 @@ public interface I_CmsResponse {
     boolean isRedirected();
     
     /**
-     * Sets a redirect to send the responst to. 
+     * Sets a redirect to send the response to.<p> 
      * 
-     * @param location The location the response is send to.
-     * @param msg Additional error message.
+     * @param location the location the response is redirected to
      * @throws IOException if something goes wrong
      */
     void sendCmsRedirect(String location) throws IOException;

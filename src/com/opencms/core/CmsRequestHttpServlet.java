@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/03/29 08:50:06 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.48 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.49 $ $Date: 2004/03/29 08:50:06 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -690,7 +690,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         }
 
         // Construct the special input stream we'll read from
-        CmsMultipartInputStreamHandler in = new CmsMultipartInputStreamHandler(m_req.getInputStream(), boundary, length);
+        CmsMultipartInputStreamHandler in = new CmsMultipartInputStreamHandler(m_req.getInputStream(), length);
 
         // Read the first line, should be the first boundary
         String line = in.readLine();

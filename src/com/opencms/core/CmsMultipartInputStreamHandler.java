@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2003/12/19 15:33:12 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/03/29 08:50:06 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,22 +42,20 @@ import javax.servlet.ServletInputStream;
  * @author Alexander Lucas
  * */
 class CmsMultipartInputStreamHandler {
-    ServletInputStream m_in;
-    String m_boundary;
-    int m_totalExpected;
-    int m_totalRead = 0;
-    int m_newLine = 0;
+    
+    private ServletInputStream m_in;
+    private int m_totalExpected;
+    private int m_totalRead = 0;
+    private int m_newLine = 0;
 
     /**
      * Constructor, creates a new CmsMultipartInputStreamHandler
      *
      * @param in An input stream
-     * @param boundary Boundary defintition
      * @param totalExpected Number of bytes expected to be read
      */
-    public CmsMultipartInputStreamHandler(ServletInputStream in, String boundary, int totalExpected) {
+    public CmsMultipartInputStreamHandler(ServletInputStream in, int totalExpected) {
         m_in = in;
-        m_boundary = boundary;
         m_totalExpected = totalExpected;
     }
 
