@@ -506,10 +506,14 @@ PACKAGE BODY opencmsresource IS
     vNewResourceId cms_resources.resource_id%TYPE;
     vTableName VARCHAR2(20);
     vRootFolder NUMBER;
+    vModifiedBy NUMBER := pUserId;
+    vDateModified DATE := sysdate;
   BEGIN
     IF pProjectId = pOnlineProjectId THEN
       vState := pResource.state;
       vTableName := 'CMS_ONLINE_RESOURCES';
+      vModifiedBy := pResource.resource_lastmodified_by;
+      vDateModified := pResource.date_lastmodified;
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
@@ -532,8 +536,8 @@ PACKAGE BODY opencmsresource IS
                       pResource.group_id||', '||pProjectId||', -1, '||pResource.access_flags||', '||vState||', '||
                       pResource.locked_by||', '||pResource.launcher_type||', '''||pResource.launcher_classname||
                       ''', to_date('''||to_char(pResource.date_created,'dd.mm.yyyy hh24:mi:ss')||
-                      ''',''dd.mm.yyyy hh24:mi:ss''), to_date('''||to_char(pResource.date_lastmodified,'dd.mm.yyyy hh24:mi:ss')||
-                      ''',''dd.mm.yyyy hh24:mi:ss''), 0, '||pUserId||')';
+                      ''',''dd.mm.yyyy hh24:mi:ss''), to_date('''||to_char(vDateModified,'dd.mm.yyyy hh24:mi:ss')||
+                      ''',''dd.mm.yyyy hh24:mi:ss''), 0, '||vModifiedBy||')';
     EXCEPTION
     	WHEN DUP_VAL_ON_INDEX THEN
     		RAISE;
@@ -585,11 +589,15 @@ PACKAGE BODY opencmsresource IS
     vNewResourceId cms_resources.resource_id%TYPE;
     vResourceTable VARCHAR2(20);
     vFileTable VARCHAR2(20);
+    vModifiedBy NUMBER := pUserId;
+    vDateModified DATE := sysdate;
   BEGIN
     IF pProjectId = pOnlineProjectId THEN
       vState := pResource.state;
       vResourceTable := 'CMS_ONLINE_RESOURCES';
       vFileTable := 'CMS_ONLINE_FILES';
+      vModifiedBy := pResource.resource_lastmodified_by;
+      vDateModified := pResource.date_lastmodified;
     ELSE
       vResourceTable := 'CMS_RESOURCES';
       vFileTable := 'CMS_FILES';
@@ -624,8 +632,8 @@ PACKAGE BODY opencmsresource IS
                         pResource.group_id||', '||pProjectId||', '||vFileId||', '||pResource.access_flags||', '||
                         vState||', '||pResource.locked_by||', '||pResource.launcher_type||', '''||
                         pResource.launcher_classname||''', to_date('''||to_char(pResource.date_created,'dd.mm.yyyy hh24:mi:ss')||
-                        ''',''dd.mm.yyyy hh24:mi:ss''), to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
-                        ''',''dd.mm.yyyy hh24:mi:ss''), '||pResource.resource_size||', '||pUserId||')';
+                        ''',''dd.mm.yyyy hh24:mi:ss''), to_date('''||to_char(vDateModified,'dd.mm.yyyy hh24:mi:ss')||
+                        ''',''dd.mm.yyyy hh24:mi:ss''), '||pResource.resource_size||', '||vModifiedBy||')';
     EXCEPTION
       WHEN DUP_VAL_ON_INDEX THEN
         RAISE;
@@ -695,12 +703,21 @@ PACKAGE BODY opencmsresource IS
 -- updates the folder pResource
 ----------------------------------------------------------------------------------------------
   PROCEDURE writeFolder(pProjectID IN NUMBER, pResource IN cms_resources%ROWTYPE, pChange IN VARCHAR2) IS
+  BEGIN
+  	writeFolder(pProjectID, pResource, pChange, pResource.resource_lastmodified_by);
+  END;
+----------------------------------------------------------------------------------------------
+-- updates the folder pResource
+----------------------------------------------------------------------------------------------
+  PROCEDURE writeFolder(pProjectID IN NUMBER, pResource IN cms_resources%ROWTYPE, pChange IN VARCHAR2, pUserId IN NUMBER) IS
     vState NUMBER;
     vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
+    vModifiedBy NUMBER := pUserId;
   BEGIN
     IF pProjectID = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
+      vModifiedBy := pResource.resource_lastmodified_by;
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
@@ -724,7 +741,7 @@ PACKAGE BODY opencmsresource IS
                         ' launcher_classname = '''||pResource.launcher_classname||''', '||
                         ' date_lastmodified = to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
                         ''',''dd.mm.yyyy hh24:mi:ss''), '||
-                        ' resource_lastmodified_by = '||pResource.resource_lastmodified_by||', '||
+                        ' resource_lastmodified_by = '||vModifiedBy||', '||
                         ' resource_size = '||pResource.resource_size||', '||
                         ' file_id = '||pResource.file_id||
                         ' where resource_id = '||pResource.resource_id;
@@ -739,13 +756,22 @@ PACKAGE BODY opencmsresource IS
 -- updates the file pResource
 ----------------------------------------------------------------------------------------------
   PROCEDURE writeFileHeader(pProjectID IN NUMBER, pResource IN cms_resources%ROWTYPE, pChange IN VARCHAR2) IS
+  BEGIN
+  	writeFileHeader(pProjectID, pResource, pChange, pResource.resource_lastmodified_by);
+  END;
+----------------------------------------------------------------------------------------------
+-- updates the file pResource
+----------------------------------------------------------------------------------------------
+  PROCEDURE writeFileHeader(pProjectID IN NUMBER, pResource IN cms_resources%ROWTYPE, pChange IN VARCHAR2, pUserId IN NUMBER) IS
     vState NUMBER := pResource.state;
     vNewFileId NUMBER := pResource.file_id;
     vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
+    vModifiedBy NUMBER := pUserId;
   BEGIN
     IF pProjectId = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
+      vModifiedBy := pResource.resource_lastmodified_by;
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
@@ -769,7 +795,7 @@ PACKAGE BODY opencmsresource IS
                         ' launcher_classname = '''||pResource.launcher_classname||''', '||
                         ' date_lastmodified = to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
                         ''',''dd.mm.yyyy hh24:mi:ss''), '||
-                        ' resource_lastmodified_by = '||pResource.resource_lastmodified_by||', '||
+                        ' resource_lastmodified_by = '||vModifiedBy||', '||
                         ' resource_size = '||pResource.resource_size||', '||
                         ' file_id = '||vNewFileId||
                         ' where resource_id = '||pResource.resource_id;
@@ -784,6 +810,13 @@ PACKAGE BODY opencmsresource IS
 -- updates the file pResource including cms_files
 ----------------------------------------------------------------------------------------------
   PROCEDURE writeFile(pProjectID IN NUMBER, pResource IN userTypes.fileRecord, pChange IN VARCHAR2) IS
+  BEGIN
+  	writeFile(pProjectID, pResource, pChange, pResource.resource_lastmodified_by);
+  END;
+----------------------------------------------------------------------------------------------
+-- updates the file pResource including cms_files
+----------------------------------------------------------------------------------------------
+  PROCEDURE writeFile(pProjectID IN NUMBER, pResource IN userTypes.fileRecord, pChange IN VARCHAR2, pUserId IN NUMBER) IS
     curFileHeader userTypes.anyCursor;
     recFileHeader cms_resources%ROWTYPE;
     vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
@@ -806,7 +839,7 @@ PACKAGE BODY opencmsresource IS
     recFileHeader.date_lastmodified := pResource.date_lastmodified;
     recFileHeader.resource_size := pResource.resource_size;
     recFileHeader.resource_lastmodified_by := pResource.resource_lastmodified_by;
-    writeFileHeader(pProjectId, recFileHeader, pChange);
+    writeFileHeader(pProjectId, recFileHeader, pChange, pUserId);
     IF pProjectId = vOnlineProject THEN
       update cms_online_files set file_content = pResource.file_content where file_id = pResource.file_id;
     ELSE
@@ -1073,9 +1106,9 @@ PACKAGE BODY opencmsresource IS
     recResource.state := pState;
     IF opencmsAccess.accessWrite(pUserId, pProjectId, recResource.resource_id) = 1 THEN
       IF substr(pResourceName, -1, 1) = '/' THEN
-        writeFolder(pProjectID, recResource, 'FALSE');
+        writeFolder(pProjectID, recResource, 'FALSE', pUserId);
       ELSE
-        writeFileHeader(pProjectID, recResource, 'FALSE');
+        writeFileHeader(pProjectID, recResource, 'FALSE', pUserId);
       END IF;
     ELSE
       userErrors.raiseUserError(userErrors.C_NO_ACCESS);
