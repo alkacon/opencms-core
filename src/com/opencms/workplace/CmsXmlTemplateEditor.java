@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/21 22:24:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/22 10:31:32 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/21 22:24:32 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/22 10:31:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -611,6 +611,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         try {
             cms.copyFile(file.getAbsolutePath(), temporaryFilename);  
+			cms.chmod(temporaryFilename, 91);
         } catch(CmsException e) {
             ok = false;        
         }
@@ -623,6 +624,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             extendedTempFile = temporaryFilename + loop;
             try {
                 cms.copyFile(file.getAbsolutePath(), extendedTempFile);  
+				cms.chmod(temporaryFilename, 91);
             } catch(Exception e) {
                 // temp file could not be created
                 loop++;

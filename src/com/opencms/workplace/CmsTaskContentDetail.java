@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/21 14:21:02 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/22 10:31:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -148,15 +148,45 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			}
 		}
 			  
+		String agent = "";
+		String group = "";
+		String owner = "";
+		String due = "";
+		String from = "";
+		try {
+			agent = cms.readAgent(task).getName();
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+		try {
+			group = cms.readGroup(task).getName();
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+		try {
+			owner = cms.readOwner(task).getName();
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+		try {
+			due = Utils.getNiceShortDate(timeout);
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+		try {
+			from = Utils.getNiceShortDate(startTime);
+		} catch(Exception exc) {
+			// ignore the exception
+		}
 		// get the processed list.
 		xmlTemplateDocument.setXmlData("style", style);
 		xmlTemplateDocument.setXmlData("priority", priority);
 		xmlTemplateDocument.setXmlData("task", task.getName());
-		xmlTemplateDocument.setXmlData("foruser", cms.readAgent(task).getName());
-		xmlTemplateDocument.setXmlData("forrole", cms.readGroup(task).getName());
-		xmlTemplateDocument.setXmlData("actuator", cms.readOwner(task).getName());
-		xmlTemplateDocument.setXmlData("due", Utils.getNiceShortDate(timeout));
-		xmlTemplateDocument.setXmlData("from", Utils.getNiceShortDate(startTime));
+		xmlTemplateDocument.setXmlData("foruser", agent);
+		xmlTemplateDocument.setXmlData("forrole", group);
+		xmlTemplateDocument.setXmlData("actuator", owner);
+		xmlTemplateDocument.setXmlData("due", due);
+		xmlTemplateDocument.setXmlData("from", from);
 		xmlTemplateDocument.setXmlData("project", projectname);
 		
 		// now setting the buttons

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/20 19:22:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/22 10:31:32 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/02/20 19:22:52 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/22 10:31:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -202,13 +202,18 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
+		int retValue = -1;
 		
 		names.addElement(lang.getLanguageValue("task.label.emptyrole"));
 		values.addElement(lang.getLanguageValue("task.label.emptyrole"));
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			names.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+			if(C_GROUP_USERS.equals(name)) {
+				retValue = z + 1;
+			}
+			names.addElement(name);
 			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 		}
 		
@@ -216,7 +221,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		values.addElement(C_ALL_ROLES);
 
 		// no current group, set index to -1
-        return new Integer(-1);
+        return new Integer(retValue);
     }
 
     /**

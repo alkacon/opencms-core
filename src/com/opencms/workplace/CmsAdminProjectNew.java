@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/22 10:31:32 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/22 10:31:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -134,15 +134,20 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
+		int retValue = -1;
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			names.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+			if(C_GROUP_USERS.equals(name)) {
+				retValue = z;
+			}
+			names.addElement(name);
 			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 		}
 		
 		// no current group, set index to -1
-        return new Integer(-1);
+        return new Integer(retValue);
     }
 
     /**
@@ -164,15 +169,20 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
+		int retValue = -1;
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			names.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+			if(C_GROUP_PROJECTLEADER.equals(name)) {
+				retValue = z;
+			}
+			names.addElement(name);
 			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 		}
 		
 		// no current group, set index to -1
-        return new Integer(-1);
+        return new Integer(retValue);
     }
 
     /**
