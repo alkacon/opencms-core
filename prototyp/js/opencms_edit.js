@@ -63,15 +63,18 @@ var textSetted=null;
 NS = (document.layers)? true:false;
 IE = (document.all)? true:false;
 
+// function for calculating the right dimensions of a HTML textarea
 function getDimensions() {
 	if( NS==true ) {
-		windowWidth = innerWidth-20;
-		windowHeight = innerHeight-20;
+		windowWidth = innerWidth;
+		windowHeight = innerHeight;
 	}
 	else if( IE==true ) {
-		windowWidth = document.body.clientWidth-20;
-		windowHeight = document.body.clientHeight-20;
+		windowWidth = document.body.clientWidth;
+		windowHeight = document.body.clientHeight;
 	}
+	windowWidth = Math.round(windowWidth/8.5);
+	windowHeight = Math.round(windowHeight/19);
 }
 
 
