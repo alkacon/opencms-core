@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/15 09:31:38 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/15 13:53:47 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2003/07/15 09:31:38 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/15 13:53:47 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -118,7 +118,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                       int resourceFlags,
                       int projectId, int accessFlags, int state,
                       CmsUUID lockedByUserId, int launcherType,
-                      String launcherClassname, long dateCreated,
+                      String launcherClassname, long dateCreated, CmsUUID resourceCreatedByUserId,
                       long dateLastModified,
                       CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
 
@@ -128,7 +128,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resourceFlags,
             projectId,accessFlags,state,
             lockedByUserId,launcherType,
-            launcherClassname,dateCreated,
+            launcherClassname,dateCreated,resourceCreatedByUserId,
             dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
 
       // set content and size.
@@ -150,7 +150,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                              /* this.getGroupId(), */this.getProjectId(),
                              this.getAccessFlags(),this.getState(), this.isLockedBy(),
                              this.getLauncherType(), new String(this.getLauncherClassname()),
-                             this.getDateCreated(),this.getDateLastModified(),
+                             this.getDateCreated(),this.getResourceCreatedBy(),this.getDateLastModified(),
                              this.getResourceLastModifiedBy(), newContent, this.getLength(), this.getLockedInProject(), this.getVfsLinkType());
     }
     /**

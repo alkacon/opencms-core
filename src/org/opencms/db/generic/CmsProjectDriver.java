@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/15 09:31:38 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/15 13:53:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.22 $ $Date: 2003/07/15 09:31:38 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/15 13:53:47 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -709,13 +709,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         // create the root-folder for the online project
         CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
-        onlineRootFolder.setGroupId(users.getId());
+        // onlineRootFolder.setGroupId(users.getId());
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, false);        		
 
         // create the folder for the default site for the online project
         CmsFolder onlineDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineRootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE, 0);
-        onlineDefaultFolder.setGroupId(users.getId());
+        // onlineDefaultFolder.setGroupId(users.getId());
         onlineDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineDefaultFolder, false); 
         CmsUUID onlineDefaultId = onlineDefaultFolder.getId();
@@ -728,13 +728,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         // create the folder for the virtual file system for the online project
         CmsFolder onlineVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_VFS, 0);
-        onlineVfsFolder.setGroupId(users.getId());
+        // onlineVfsFolder.setGroupId(users.getId());
         onlineVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineVfsFolder, false);
 
         // create the folder for the context objects system for the online project
         CmsFolder onlineCosFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_COS, 0);
-        onlineCosFolder.setGroupId(users.getId());
+        // onlineCosFolder.setGroupId(users.getId());
         onlineCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineCosFolder, false);
                 
@@ -749,14 +749,14 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         // create the root-folder for the offline project
         //CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
         CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineRootFolder, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT);        
-        setupRootFolder.setGroupId(users.getId());
+        // setupRootFolder.setGroupId(users.getId());
         setupRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, false);
         
         // create the folder for the default site for the offline project
         //CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, setupRootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE, 0);
         CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineDefaultFolder, onlineDefaultFolder.getParentId(), I_CmsConstants.C_DEFAULT_SITE);
-        setupDefaultFolder.setGroupId(users.getId());
+        // setupDefaultFolder.setGroupId(users.getId());
         setupDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, setupDefaultFolder, false);
         //CmsUUID offlineDefaultId = setupDefaultFolder.getId();
@@ -770,14 +770,14 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         // create the folder for the virtual file system for the offline project
         //CmsFolder setupVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, offlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_VFS, 0);
         CmsFolder setupVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineVfsFolder, onlineVfsFolder.getParentId(), I_CmsConstants.C_ROOTNAME_VFS);
-        setupVfsFolder.setGroupId(users.getId());
+        // setupVfsFolder.setGroupId(users.getId());
         setupVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, setupVfsFolder, false);
         
         // create the folder for the context objects system for the offline project
         //CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, offlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_COS, 0);
         CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineCosFolder, onlineCosFolder.getParentId(), I_CmsConstants.C_ROOTNAME_COS);
-        setupCosFolder.setGroupId(users.getId());
+        // setupCosFolder.setGroupId(users.getId());
         setupCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, setupCosFolder, false);
     }

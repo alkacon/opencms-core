@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/07/15 13:53:47 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.59 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/15 13:53:47 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -148,6 +148,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      private String m_launcherClassname;
 
      /**
+      * The id of the user who created this resource
+      */
+     private CmsUUID m_resourceCreatedByUserId;
+     
+     /**
       * The UserId of the user who modified this resource last.
       */
      private CmsUUID m_resourceLastModifiedByUserId;
@@ -155,10 +160,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      /**
       * The projectId of the project where the resource was locked or modified in
       */
-    private int m_lockedInProject;
+     private int m_lockedInProject;
     
-    /** The VFS link type {C_VFS_LINK_TYPE_MASTER|C_VFS_LINK_TYPE_SLAVE} */
-    private int m_vfsLinkType;
+     /** The VFS link type {C_VFS_LINK_TYPE_MASTER|C_VFS_LINK_TYPE_SLAVE} */
+     private int m_vfsLinkType;
     
      /**
       * Constructor, creates a new CmsRecource object.<p>
@@ -253,6 +258,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param launcherType the launcher that is require to process this recource
      * @param launcherClassname the name of the Java class invoked by the launcher
      * @param dateCreated the creation date of this resource
+     * @param resourceCreatedByUserId the user who created this resource
      * @param dateLastModified the date of the last modification of the resource
      * @param resourceLastModifiedByUserId the user who changed the file
      * @param size the file content size of the resource
@@ -273,6 +279,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        int launcherType, 
        String launcherClassname, 
        long dateCreated, 
+       CmsUUID resourceCreatedByUserId,
        long dateLastModified, 
        CmsUUID resourceLastModifiedByUserId, 
        int size, 
@@ -295,6 +302,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        m_state=state;
        m_lockedByUserId=lockedByUserId;
        m_dateCreated=dateCreated;
+       m_resourceCreatedByUserId = resourceCreatedByUserId;
        m_dateLastModified=dateLastModified;
        m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
        m_size=size;
@@ -311,10 +319,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public Object clone() {
         return new CmsResource(m_structureId, m_resourceId,m_parentId,
                                m_fileId, m_resourceName, m_resourceType,
-                               m_resourceFlags, m_userId, m_groupId,
+                               m_resourceFlags, /* m_userId, m_groupId, */
                                m_projectId, m_accessFlags, m_state,
                                m_lockedByUserId, m_launcherType,
-                               m_launcherClassname, m_dateCreated,
+                               m_launcherClassname, m_dateCreated, m_resourceCreatedByUserId, 
                                m_dateLastModified,m_resourceLastModifiedByUserId, 
                                m_size, m_lockedInProject, m_vfsLinkType);
     }
@@ -700,6 +708,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      }
      
     /**
+     * Returns the user id of the user who created this resource.<p>
+     * 
+     * @return the user id
+     */
+    public CmsUUID getResourceCreatedBy() {
+         return m_resourceCreatedByUserId;
+     }
+    /**
      * Returns the user id of the user who made the last change on this resource.<p>
      *
      * @return the user id of the user who made the last change<p>
@@ -834,6 +850,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_parentId = parent;
     }
     
+    /**
+     * Sets the user id of the user who created this resource.
+     * 
+     * @param resourceCreatedByUserId user id
+     */
+    void setResourceCreatedBy(CmsUUID resourceCreatedByUserId){
+        m_resourceCreatedByUserId = resourceCreatedByUserId;
+    }
     /**
      * Sets the user id of the user who changed this resource.<p>
      *

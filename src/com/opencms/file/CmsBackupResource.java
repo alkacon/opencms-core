@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/07/15 09:31:38 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/15 13:53:47 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2003/07/15 09:31:38 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/15 13:53:47 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -57,6 +57,11 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
      */
     private String m_groupName = "";
 
+    /**
+     * The name of the user who created the resource.
+     */
+    private String m_createdByName = "";
+    
     /**
      * The name of the last user who had modified the resource.
      */
@@ -101,7 +106,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
                               String groupName, int projectId, int accessFlags,
                               int state, int launcherType,
                               String launcherClassname, long dateCreated,
-                              long dateLastModified, CmsUUID resourceLastModifiedByUserId,
+                              long dateLastModified, CmsUUID resourceLastModifiedByUserId, 
                               String lastModifiedByName,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
 
         // create the CmsResource.
@@ -110,7 +115,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
               resourceFlags,/* userId,groupId, */
               projectId,accessFlags,state,
               CmsUUID.getNullUUID(),launcherType,
-              launcherClassname,dateCreated,
+              launcherClassname, dateCreated, resourceLastModifiedByUserId /* !!! */,
               dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
 
         // set content and size.
@@ -156,10 +161,10 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
    public CmsBackupResource(int versionId, CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
                             CmsUUID fileId, String resourceName, int resourceType,
                             int resourceFlags, int projectId, int accessFlags,
-                            int state, int launcherType,
-                            String launcherClassname, long dateCreated,
-                            long dateLastModified, CmsUUID resourceLastModifiedByUserId,
-                            String lastModifiedByName,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
+                            int state, int launcherType, String launcherClassname, 
+                            long dateCreated, CmsUUID resourceCreatedByUserId, String createdByName,
+                            long dateLastModified, CmsUUID resourceLastModifiedByUserId, String lastModifiedByName,
+                            byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
 
       // create the CmsResource.
       super(structureId, resourceId, parentId,
@@ -167,7 +172,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
             resourceFlags,
             projectId,accessFlags,state,
             CmsUUID.getNullUUID(),launcherType,
-            launcherClassname,dateCreated,
+            launcherClassname,dateCreated, resourceCreatedByUserId, 
             dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
 
       // set content and size.
@@ -175,6 +180,9 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
 
       // set version id
       m_versionId = versionId;
+      
+      // set createdByName
+      m_createdByName = createdByName;
 
       // set lastModifiedByName
       m_lastModifiedByName = lastModifiedByName;
@@ -196,9 +204,9 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
                                      this.getProjectId(), this.getAccessFlags(),
                                      this.getState(),
                                      this.getLauncherType(), new String(this.getLauncherClassname()),
-                                     this.getDateCreated(),this.getDateLastModified(),
-                                     this.getResourceLastModifiedBy(),
-                                     this.getLastModifiedByName(), newContent, this.getLength(), this.getLockedInProject(), this.getVfsLinkType());
+                                     this.getDateCreated(), this.getResourceCreatedBy(), this.getCreatedByName(), 
+                                     this.getDateLastModified(), this.getResourceLastModifiedBy(), this.getLastModifiedByName(), 
+                                     newContent, this.getLength(), this.getLockedInProject(), this.getVfsLinkType());
     }
     /**
      * Gets the content of this file.
@@ -222,6 +230,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
      * Gets the name of the owner of this resource.
      *
      * @return the name of the owner of this resource.
+     * @deprecated user/group not valid any longer
      */
     public String getOwnerName() {
       return m_ownerName;
@@ -231,11 +240,21 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
      * Gets the name of the group of this resource.
      *
      * @return the name of the group of this resource.
+     * @deprecated user/group not valid any longer
      */
     public String getGroupName() {
       return m_groupName;
     }
 
+    /**
+     * Gets the name of the creator of this resource.
+     * 
+     * @return ther user name of the creator
+     */
+    public String getCreatedByName() {
+        return m_createdByName;
+    }
+    
     /**
      * Gets the name of the user who changed this resource.
      *

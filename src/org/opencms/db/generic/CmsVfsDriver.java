@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/07/15 13:53:47 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/15 13:53:47 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -226,7 +226,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
         }
 
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, userCreated, CmsUUID.getNullUUID(), resProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* userCreated, CmsUUID.getNullUUID(), */ resProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -265,7 +265,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject = projectId;
         }        
 
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, userCreated, CmsUUID.getNullUUID(), resProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* userCreated, CmsUUID.getNullUUID(), */ resProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -300,7 +300,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject = projectId;
         } 
 
-        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, userCreated, CmsUUID.getNullUUID(), resProjectId, 0, state, lockedBy, dateCreated, dateLastModified, userLastModified, lockedInProject);
+        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* userCreated, CmsUUID.getNullUUID(), */ resProjectId, 0, state, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject);
     }
 
     /**
@@ -338,7 +338,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resourceProjectId = lockedInProject = projectId;
         }         
 
-        return new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, userCreated, CmsUUID.getNullUUID(), resourceProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, dateLastModified, userLastModified, resSize, lockedInProject, vfsLinkType);
+        return new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, /* userCreated, CmsUUID.getNullUUID(), */ resourceProjectId, 0, state, lockedBy, launcherType, launcherClass, dateCreated, userCreated, dateLastModified, userLastModified, resSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -476,8 +476,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             filename,
             resourceType.getResourceType(),
             flags,
-            user.getId(),
-            user.getDefaultGroupId(),
+            /* user.getId(),
+            user.getDefaultGroupId(), */
             project.getId(),
             com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
@@ -485,6 +485,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resourceType.getLauncherType(),
             resourceType.getLauncherClass(),
             0,
+            user.getId(),
             0,
             user.getId(),
             contents,
@@ -675,6 +676,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
       * @throws CmsException Throws CmsException if operation was not succesful.
       */
     public CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException {
+        
         CmsFolder newFolder = new CmsFolder(
             new CmsUUID(),
             new CmsUUID(),
@@ -683,13 +685,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             folderName,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             flags,
-            user.getId(),
-            user.getDefaultGroupId(),
+            /* user.getId(),
+            user.getDefaultGroupId(), */
             project.getId(),
             com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
             CmsUUID.getNullUUID(),
             0,
+            user.getId(), 
             0,
             user.getId(), 
             project.getId());

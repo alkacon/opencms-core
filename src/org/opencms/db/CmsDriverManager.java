@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 13:43:48 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/07/15 13:53:47 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2003/07/15 13:43:48 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/15 13:53:47 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1811,8 +1811,8 @@ public class CmsDriverManager extends Object {
                 resourceName,
                 targetResource.getType(),
                 targetResource.getFlags(),
-                context.currentUser().getId(),
-                context.currentUser().getDefaultGroupId(),
+                /* context.currentUser().getId(), */
+                /* context.currentUser().getDefaultGroupId(), */
                 context.currentProject().getId(),
                 com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
                 com.opencms.core.I_CmsConstants.C_STATE_NEW,
@@ -1820,6 +1820,7 @@ public class CmsDriverManager extends Object {
                 targetResource.getLauncherType(),
                 targetResource.getLauncherClassname(),
                 System.currentTimeMillis(),
+                context.currentUser().getId(),
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
                 new byte[0],
@@ -4169,9 +4170,8 @@ public class CmsDriverManager extends Object {
        
 
         // TODO VFS links: refactor all upper methods to support the VFS link type param
-        CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0, owner.getId(), group.getId(), context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+        CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0, /* owner.getId(), group.getId(), */ context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
         //CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-
 
         // create the folder.
         newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getId(), newResource, filecontent, context.currentUser().getId(), isFolder);
@@ -7191,6 +7191,7 @@ public class CmsDriverManager extends Object {
         // read the backup file
         backupFile = readBackupFile(context, versionId, filename);
         // try to read the owner and the group
+        /*
         CmsUUID ownerId = context.currentUser().getId();
         CmsUUID groupId = context.currentUser().getDefaultGroupId();
         try {
@@ -7203,6 +7204,7 @@ public class CmsDriverManager extends Object {
         } catch (CmsException exc) {
             // group can not be read, set the groupid of current user
         }
+        */
         offlineFile = readFile(context, filename);
         if (offlineFile.getState() == I_CmsConstants.C_STATE_NEW) {
             state = I_CmsConstants.C_STATE_NEW;
@@ -7217,8 +7219,8 @@ public class CmsDriverManager extends Object {
                     offlineFile.getResourceName(),
                     backupFile.getType(),
                     backupFile.getFlags(),
-                    ownerId,
-                    groupId,
+                    /* ownerId,
+                    groupId, */
                     context.currentProject().getId(),
                     backupFile.getAccessFlags(),
                     state,
@@ -7226,6 +7228,7 @@ public class CmsDriverManager extends Object {
                     backupFile.getLauncherType(),
                     backupFile.getLauncherClassname(),
                     offlineFile.getDateCreated(),
+                    backupFile.getResourceCreatedBy(),
                     offlineFile.getDateLastModified(),
                     context.currentUser().getId(),
                     backupFile.getContents(),
@@ -7632,13 +7635,14 @@ public class CmsDriverManager extends Object {
                     offlineFolder.getResourceName(),
                     onlineFolder.getType(),
                     onlineFolder.getFlags(),
-                    onlineFolder.getOwnerId(),
-                    onlineFolder.getGroupId(),
+                    /* onlineFolder.getOwnerId(),
+                    onlineFolder.getGroupId(), */
                     context.currentProject().getId(),
                     onlineFolder.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
                     offlineFolder.isLockedBy(),
                     offlineFolder.getDateCreated(),
+                    context.currentUser().getId(),
                     offlineFolder.getDateLastModified(),
                     context.currentUser().getId(),
                     context.currentProject().getId());
@@ -7669,8 +7673,8 @@ public class CmsDriverManager extends Object {
                     offlineFile.getResourceName(),
                     onlineFile.getType(),
                     onlineFile.getFlags(),
-                    onlineFile.getOwnerId(),
-                    onlineFile.getGroupId(),
+                    /* onlineFile.getOwnerId(),
+                    onlineFile.getGroupId(), */
                     context.currentProject().getId(),
                     onlineFile.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
@@ -7678,6 +7682,7 @@ public class CmsDriverManager extends Object {
                     onlineFile.getLauncherType(),
                     onlineFile.getLauncherClassname(),
                     offlineFile.getDateCreated(),
+                    context.currentUser().getId(),
                     offlineFile.getDateLastModified(),
                     context.currentUser().getId(),
                     onlineFile.getContents(),

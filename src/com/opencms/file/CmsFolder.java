@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/15 09:31:38 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/15 13:53:47 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2003/07/15 09:31:38 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/15 13:53:47 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -91,15 +91,16 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     * @param state The state of this resource.
     * @param lockedBy The user id of the user who has locked this resource.
     * @param dateCreated The creation date of this resource.
+    * @param resourceCreatedByUserId the user who created the file
     * @param dateLastModified The date of the last modification of the resource.
-    * @param resourceLastModifiedBy The user who changed the file.
+    * @param resourceLastModifiedByUserId The user who changed the file.
     */
    public CmsFolder(CmsUUID structureId, CmsUUID resourceId,CmsUUID parentId,
                       CmsUUID fileId, String resourceName, int resourceType,
                       int resourceFlags,
                       int projectId, int accessFlags, int state,
-                      CmsUUID lockedByUserId, long dateCreated
-                      ,long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
+                      CmsUUID lockedByUserId, long dateCreated, CmsUUID resourceCreatedByUserId,
+                      long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
 
       // TODO VFS links: refactor all upper methods to support the VFS link type param
       super(structureId, resourceId,parentId,fileId,
@@ -107,7 +108,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resourceFlags,
             projectId,accessFlags,state,
             lockedByUserId,I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
-            I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,
+            I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,resourceCreatedByUserId,
             dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
  }
  
@@ -121,7 +122,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
                              this.getType(), this.getFlags(), /* this.getOwnerId(), */
                              /* this.getGroupId(), */this.getProjectId(),
                              this.getAccessFlags(),this.getState(),this.isLockedBy(),
-                             this.getDateCreated(), this.getDateLastModified(),
+                             this.getDateCreated(), this.getResourceCreatedBy(), this.getDateLastModified(),
                              this.getResourceLastModifiedBy(), this.getLockedInProject());
     }
 }
