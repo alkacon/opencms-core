@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/16 18:24:16 $
+* Date   : $Date: 2001/07/25 13:38:10 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2001/07/16 18:24:16 $
+ * @version $Revision: 1.18 $ $Date: 2001/07/25 13:38:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -110,7 +110,6 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
                     CmsFolder folder = cms.createFolder(superfolder, galleryname);
-                    cms.lockResource(folder.getAbsolutePath());
                     if(title != null) {
                         cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                     }

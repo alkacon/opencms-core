@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/25 08:45:55 $
-  * Version: $Revision: 1.33 $
+  * Date   : $Date: 2001/07/25 13:38:10 $
+  * Version: $Revision: 1.34 $
   *
   * Copyright (C) 2000  The OpenCms Group
   *
@@ -31,7 +31,14 @@
   *  instead of the function show_help every template displayed in the explorer view
   *  must set this variable with top.help_url="..."
   */
- var help_url="2_2_2_2.html";
+ var help_url="ExplorerAnsicht/index.html";
+ 
+  /**
+   *  contains information about the actual help page.
+   *  instead of the function show_help every template displayed in the explorer view
+   *  must set this variable with top.help_url="..."
+   */
+  var openfolderMethod="openthisfolder";
 
  /**
   *  returns the actual help page
@@ -838,7 +845,6 @@ function setOnlineProject(setto){
  *  sets the project the user is in ...
  */
 function setProject(setto){
-//    initHist();
     vr.actProject=setto;
 }
 
@@ -852,7 +858,6 @@ function setDirectory(id, setto){
 
 function enableNewButton(showit){
     vi.newButtonActive=showit;
-//    alert(showit);
 }
 
  /**
@@ -921,6 +926,10 @@ function enableNewButton(showit){
 
  }
 
+ function openthisfolderflat(thisdir){
+    vi.doc.location.href=vi.doc.location.pathname+"?mode=listonly&folder="+vr.actDirectory+thisdir+"/";
+ }
+
  /**
   *  creates content of the main-filelist-frame
   *  chooses which icon to use, which lockedBy icon, which color, etc...
@@ -978,7 +987,7 @@ function enableNewButton(showit){
              "a:hover.kl { color:#FFFFFF; } "+
              "td.inactive{ color:#8c8c8c; } "+
              "/"+"/"+"--></style></head>";
-    var returnplace=window.frames[1].frames[1].frames[1].document.location.href;
+    var returnplace=wo.location.href;
     returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
     returnplace=simpleEscape(returnplace);
 
@@ -1068,7 +1077,7 @@ function enableNewButton(showit){
 
 
          if(vi.check_name){
-             if(vi.liste[i].type==0)wo.writeln("<td nowrap class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
+             if(vi.liste[i].type==0)wo.writeln("<td nowrap class="+ssclass+"><a href=javascript:top." + openfolderMethod + "('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
                  else wo.writeln("<td  nowrap class="+ssclass+"><a href=javascript:top.openwinfull('"+vr.servpath+vr.actDirectory+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
             }
          if(vi.check_title)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].title+"&nbsp;</td>");
@@ -1084,7 +1093,7 @@ function enableNewButton(showit){
      }
      wo.writeln("</tr></table>");
 
- 	for(i=0;i<vi.liste.length;i++){
+    for(i=0;i<vi.liste.length;i++){
          wo.writeln("<div id='men"+i+"' class='km'>");
          wo.writeln("<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor=#777777><tr><td>");
          wo.writeln("<table width=150 CELLPADDING=1 CELLSPACING=0 BORDER=0 class=fk>");
@@ -1094,67 +1103,67 @@ function enableNewButton(showit){
              /* 0:unchanged",1:changed",2:new",3:deleted" */
 
              if(vr.actProject==vr.onlineProject){
-			 	/* online project */
-				if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='i'){
-					if(vi.menus[vi.liste[i].type].items[a].name=="-")
-						wo.writeln("<tr><td><hr size=1></td></tr>");
-					else
-						wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
-				}else{
-					if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='a'){
-						if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-							wo.writeln("<tr><td><hr size=1></td></tr>");
-						} else {
-						if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-						 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-						}
-					}
-				}
-			 }else{
-			 	/* offline project */
-				if(vi.liste[i].project==vr.onlineProject){
-					/* resource is from onlineproject*/
-					if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='i'){
-						if(vi.menus[vi.liste[i].type].items[a].name=="-")
-							wo.writeln("<tr><td><hr size=1></td></tr>");
-						else
-							wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
-					}else{
-						if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='a'){
-							if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-								wo.writeln("<tr><td><hr size=1></td></tr>");
-							} else {
-							if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-							 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-							}
-						}
-					}
-				}else{
-					/* resource is in this project => we have to differ 5 cases */
-					if(vi.liste[i].lockedBy == ''){
-						/* free */
-						display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+2);
-					}else{
-						if(vi.liste[i].lockedInProjectId == vr.actProject){
-							/* locked in this project from ... */
-							if(vi.liste[i].lockedBy == vr.userName){
-								/* ... the actual user */
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+6);
-							}else{
-								/* ... someone else */
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+10);
-							}
-						}else{
-							/* locked in an other project from ... */
-							if(vi.liste[i].lockedBy == vr.userName){
-								/* ... the actual user */
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+14);
-							}else{
-								/* ... someone else */
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+18);
-							}
-						}
-					}
+                /* online project */
+                if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='i'){
+                    if(vi.menus[vi.liste[i].type].items[a].name=="-")
+                        wo.writeln("<tr><td><hr size=1></td></tr>");
+                    else
+                        wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                }else{
+                    if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='a'){
+                        if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                            wo.writeln("<tr><td><hr size=1></td></tr>");
+                        } else {
+                        if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                         else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                        }
+                    }
+                }
+             }else{
+                /* offline project */
+                if(vi.liste[i].project==vr.onlineProject){
+                    /* resource is from onlineproject*/
+                    if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='i'){
+                        if(vi.menus[vi.liste[i].type].items[a].name=="-")
+                            wo.writeln("<tr><td><hr size=1></td></tr>");
+                        else
+                            wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                    }else{
+                        if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='a'){
+                            if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                                wo.writeln("<tr><td><hr size=1></td></tr>");
+                            } else {
+                            if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                             else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                            }
+                        }
+                    }
+                }else{
+                    /* resource is in this project => we have to differ 5 cases */
+                    if(vi.liste[i].lockedBy == ''){
+                        /* free */
+                        display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+2);
+                    }else{
+                        if(vi.liste[i].lockedInProjectId == vr.actProject){
+                            /* locked in this project from ... */
+                            if(vi.liste[i].lockedBy == vr.userName){
+                                /* ... the actual user */
+                                display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+6);
+                            }else{
+                                /* ... someone else */
+                                display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+10);
+                            }
+                        }else{
+                            /* locked in an other project from ... */
+                            if(vi.liste[i].lockedBy == vr.userName){
+                                /* ... the actual user */
+                                display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+14);
+                            }else{
+                                /* ... someone else */
+                                display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+18);
+                            }
+                        }
+                    }
                     if(display == 'i'){
                         if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
                         else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
@@ -1168,13 +1177,13 @@ function enableNewButton(showit){
                             }
                         }
                     }
-				}
+                }
             }
-		}
-		wo.writeln("</table></td></tr></table></div>");
-	}
-	wo.writeln("<br></body></html>");
-	wo.close();
+        }
+        wo.writeln("</table></td></tr></table></div>");
+    }
+    wo.writeln("<br></body></html>");
+    wo.close();
 }
 
 /**
@@ -1183,11 +1192,23 @@ function enableNewButton(showit){
 function dU(doc){
     vi.lastLayer=null;
     vi.locklength=0;
+    vi.doc=doc;
     showCols(vr.viewcfg);
     printList(doc);
     folderOpen(vr.actDirId);
     showTree(explorer_tree,0);
     displayHead(explorer_head);
+}
+
+/**
+ *  do an update (filelist display)
+ */
+function dUL(doc){
+    vi.lastLayer=null;
+    vi.locklength=0;
+    vi.doc=doc;
+    showCols(vr.viewcfg);
+    printList(doc);
 }
 
 /**

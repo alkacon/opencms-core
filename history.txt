@@ -21,6 +21,7 @@ OpenCms 4.3.33 Bela Tegeuse - ?? July 2001
 - When importing resources the group and user data is imported before the resources
 - New cache for resources: when a resource was changed it has to be removed from the cache
   for each project.
+- Updates for new file list in picture-gallery.
 
 OpenCms 4.3.32 Bela Tegeuse - 23 July 2001
 ! Added a ecmascript-engine to the OpenCms-shell. You can start it with like this:

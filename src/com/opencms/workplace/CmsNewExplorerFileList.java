@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/07/23 16:54:19 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/07/25 13:38:10 $
+* Version: $Revision: 1.28 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2001/07/23 16:54:19 $
+ * @version $Revision: 1.28 $ $Date: 2001/07/25 13:38:10 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -158,6 +158,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             }
         }
 
+        // if the parameter mode=listonly is set, only the list will be shown
+        boolean listonly = "listonly".equals(parameters.get("mode"));
+
         // get the checksum
         String checksum = (String)parameters.get("check");
         boolean newTreePlease = true;
@@ -176,6 +179,13 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         StringBuffer content = new StringBuffer();
         content.append("<html> \n<head> \n<script language=JavaScript>\n");
         content.append("function initialize() {\n");
+
+        if(listonly) {
+            content.append(" top.openfolderMethod='openthisfolderflat';\n");
+        } else {
+            content.append(" top.openfolderMethod='openthisfolder';\n");
+        }
+
         // the help_url
         content.append(" top.help_url='ExplorerAnsicht/index.html';\n");
         // the project
@@ -252,7 +262,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         }
 
         //  now the tree, only if changed
-        if(newTreePlease) {
+        if(newTreePlease && (!listonly)) {
             content.append("\n top.rT();\n");
             Vector tree = cms.getFolderTree();
             int startAt = 1;
@@ -332,7 +342,13 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 }
             }
         }
-        content.append(" top.dU(document); \n");
+        if(listonly) {
+            // only show the filelist
+            content.append(" top.dUL(document); \n");
+        } else {
+            // update all frames
+            content.append(" top.dU(document); \n");
+        }
         content.append("}\n");
         content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
 
