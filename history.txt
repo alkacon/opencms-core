@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.5  Gom Jabbar   - XX XXXXX 2001
+OpenCms 4.5.5  Gom Jabbar   - 03 September 2001
 ! Now a ressource can have a group-id that was already deleted.
 ! Now the stylesheet-tag is used again for displaying stylesheets in the 
   HTML-Editor control.
