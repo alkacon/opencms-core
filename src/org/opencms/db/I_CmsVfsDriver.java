@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/25 09:10:43 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/09/03 14:08:37 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2003/08/25 09:10:43 $
+ * @version $Revision: 1.45 $ $Date: 2003/09/03 14:08:37 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -66,7 +66,7 @@ public interface I_CmsVfsDriver {
      * @param resourceId The id of the resource to change
      * @throws CmsException if an error occurs
      */    
-    void changeLockedInProject(int newProjectId, CmsUUID resourceId) throws CmsException;
+    //void changeLockedInProject(int newProjectId, CmsUUID resourceId) throws CmsException;
 
     /**
      * Counts the locked resources in this project.

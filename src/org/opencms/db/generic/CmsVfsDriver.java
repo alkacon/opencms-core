@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/03 11:57:52 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2003/09/03 14:08:37 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.109 $ $Date: 2003/09/03 11:57:52 $
+ * @version $Revision: 1.110 $ $Date: 2003/09/03 14:08:37 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -90,6 +90,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @param resourceId The id of the resource to change
      * @throws CmsException if an error occurs
      */
+    /*
     public void changeLockedInProject(int newProjectId, CmsUUID resourceId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -106,6 +107,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    */
     
     /**
      * Counts the locked resources in this project.
