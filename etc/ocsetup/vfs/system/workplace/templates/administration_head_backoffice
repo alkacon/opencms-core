@@ -6,7 +6,7 @@
 <preview><![CDATA[
 <td class=menu nowrap  valign=top  width = "100%" align = right>
     <a href="#"  
-        onMouseDown="ChPush('bt_docpreview');openwinfull(]]><method name="getServletPath"/><PROCESS>link</PROCESS><![CDATA[, "preview", );" onMouseUp="ChOn('bt_docpreview')" onMouseOver="ChOn('bt_docpreview')" onMouseOut="ChOff('bt_docpreview')">
+        onMouseDown="ChPush('bt_docpreview');openwinfull(']]><method name="getServletPath"/><PROCESS>link</PROCESS><![CDATA[');" onMouseUp="ChOn('bt_docpreview')" onMouseOver="ChOn('bt_docpreview')" onMouseOut="ChOff('bt_docpreview')">
          <img align=top src="]]><method name="picsUrl">bt_docpreview_off.gif</method><![CDATA[" name="bt_docpreview" alt="]]><LABEL value="button.preview"/><![CDATA[" border=0 width=32 heigth=32> 
     </a>
 </td>
