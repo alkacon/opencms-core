@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/08/31 07:31:15 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/09/04 10:55:45 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,8 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/08/31 07:31:15 $
+ * @author Anders Fugmann
+ * @version $Revision: 1.22 $ $Date: 2000/09/04 10:55:45 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -666,6 +667,23 @@ public class CmsShell implements I_CmsConstants {
 	public void getCurrentProject() {
 		System.out.println(m_cms.getRequestContext().currentProject().toString());
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (04-09-2000 12:37:43)
+ */
+public void getCurrentSite()
+{
+	try
+	{
+		int onlineProjectId = m_cms.onlineProject().getId();
+		CmsSite site = m_cms.getSite(onlineProjectId);
+		System.out.println("Site: " + site.toString());
+	}
+	catch (CmsException e)
+	{
+		printException(e);
+	}
+}
 	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
