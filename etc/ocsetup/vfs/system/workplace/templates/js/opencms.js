@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/04/28 13:49:01 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/22 10:32:25 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ function check_textfeld(formular, feld)
 {
 if(document[formular][feld].value=="")
 	{
-		alert('Bitte geben Sie einen Namen an!');
+		alert('Bitte geben Sie einen Namen bzw. Titel an!');
 		document[formular][feld].focus();
 		return false;
 	}
