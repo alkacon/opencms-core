@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/22 17:34:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
@@ -49,7 +50,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -74,6 +75,7 @@ public class TestChacc extends OpenCmsTestCase {
                 
         suite.addTest(new TestChacc("testChaccFileGroup"));
         suite.addTest(new TestChacc("testChaccFileUser"));
+        suite.addTest(new TestChacc("testChaccAddRemove"));
                
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -262,6 +264,84 @@ public class TestChacc extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a folder and a group");
         chaccFolderGroup(this, cms, "/folder2/", cms.readGroup("Guests"), CmsPermissionSet.ACCESS_READ, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);   
-    }  
+    }
     
+    /**
+     * Test the creation and deletion of access control entries and checks permissions of a test user.<p>
+     *  
+     * @throws Throwable if something goes wrong
+     */
+    public void testChaccAddRemove() throws Throwable {
+        
+        echo("Testing adding and removing ACEs on files and folders");
+        
+        CmsObject cms = getCmsObject();
+        cms.createGroup("Testgroup", "A test group", 0, null);
+        CmsGroup testGroup = cms.readGroup("Testgroup");
+        cms.addUser("testuser", "test", testGroup.getName(), "A test user", null);
+        CmsUser testUser = cms.readUser("testuser");
+        
+        CmsProject offline = cms.readProject("Offline");
+        
+        String resName = "/folder2/";
+        
+        cms.lockResource(resName);
+        cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
+        cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_USER, testUser.getName(), "+r+w+v+i");
+        cms.unlockResource(resName);
+        cms.publishProject(); 
+        
+        CmsPermissionSet permissions = new CmsPermissionSet(CmsPermissionSet.PERMISSION_READ
+            | CmsPermissionSet.PERMISSION_VIEW
+            | CmsPermissionSet.PERMISSION_WRITE, 0);
+        
+        
+        // check set permissions for the test user
+        cms.loginUser("testuser", "test");
+        cms.getRequestContext().setCurrentProject(offline);
+        cms.lockResource(resName);
+        assertTrue(cms.hasPermissions(cms.readResource(resName), permissions));
+        assertTrue(cms.hasPermissions(cms.readResource("/folder2/index.html"), permissions));
+        boolean success = false;
+        try {
+            assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
+        } catch (CmsException e) {
+            success = true;
+        }
+        if (! success) {
+            throw new Exception("Test user has permissions +r+v+w set on /folder1/"); 
+        }
+        cms.unlockResource(resName);
+        
+        // switch back to Admin user and remove ACE
+        cms.loginUser("Admin", "admin");       
+        cms.getRequestContext().setCurrentProject(offline);
+        cms.lockResource(resName);
+        cms.rmacc(resName, I_CmsPrincipal.C_PRINCIPAL_USER, testUser.getName());
+        cms.unlockResource(resName);
+        cms.publishProject();         
+        
+        cms.loginUser("testuser", "test");        
+        cms.getRequestContext().setCurrentProject(offline);
+        assertFalse(cms.hasPermissions(cms.readResource(resName), CmsPermissionSet.ACCESS_WRITE));
+        
+        cms.loginUser("Admin", "admin");       
+        cms.getRequestContext().setCurrentProject(offline);
+        cms.lockResource(resName);
+        cms.rmacc(resName, I_CmsPrincipal.C_PRINCIPAL_GROUP, testGroup.getName());
+        cms.unlockResource(resName);
+        cms.publishProject();
+        
+        // re-check permissions of test user after removing ACE
+        cms.loginUser("testuser", "test");     
+        success = false;
+        try {
+            assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
+        }  catch (CmsException e) {
+            success = true;
+        }
+        if (! success) {
+            throw new Exception("Test user has permissions +r+v set on /folder2/ after removal of ACE"); 
+        }
+    }    
 }
