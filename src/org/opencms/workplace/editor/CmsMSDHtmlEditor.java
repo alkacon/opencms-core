@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/10 17:37:26 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/12/11 08:40:45 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.12
  */
@@ -158,7 +158,7 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
     /**
      * Manipulates the content String for the different editor views and the save operation.<p>
      * 
-     * @param save if set to true, the result String is not escaped and the content parameter is not updated
+     * @param save if set to true, the content parameter is not updated
      * @return the prepared content String
      */
     protected String prepareContent(boolean save) {
@@ -183,21 +183,22 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
                 contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
                 content = content.substring(0, contentLowerCase.indexOf("</body>"));
             }      
+            
+            // create a head with stylesheet for template and base URL to display images correctly
+            String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
+            String head = "<html><head>";
             if (!"".equals(stylesheet)) {
-                // create a head with stylesheet for template and base URL to display images correctly
-                String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
                 stylesheet = getJsp().link(stylesheet);
-                String head = "<html><head><link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">";
-                head += "<base href=\"" + server + OpenCms.getOpenCmsContext() + "\"></base></head><body>";
-                content =  head + content;
-                content += "</body></html>";
-            }  
+                head += "<link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">";
+            }            
+            head += "<base href=\"" + server + OpenCms.getOpenCmsContext() + "\"></base></head><body>";
+            content =  head + content + "</body></html>";             
         }
         if (!save) {
-            // set the content parameter to the escaped content
+            // set the content parameter to the modified content
             setParamContent(content);
         }
-        return content;
+        return content.trim();
     }  
     
     /**
