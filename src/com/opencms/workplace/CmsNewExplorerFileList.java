@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/07 16:13:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/12/08 10:22:41 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/12/07 16:13:09 $
+ * @version $Revision: 1.8 $ $Date: 2000/12/08 10:22:41 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -140,8 +140,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		session.putValue(C_PARA_FILELIST, currentFolder);
 	} else {
 		currentFolder = (String) session.getValue(C_PARA_FILELIST);
-		if (currentFolder == null) {
+		if ((currentFolder == null)||(!folderExists(cms, currentFolder))) {
 			currentFolder = cms.rootFolder().getAbsolutePath();
+			session.putValue(C_PARA_FILELIST, currentFolder);
 		}
 	}
 	// get the checksum
