@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/01 14:05:07 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2003/10/06 15:51:01 $
+ * Version: $Revision: 1.142 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.141 $ $Date: 2003/10/01 14:05:07 $
+ * @version $Revision: 1.142 $ $Date: 2003/10/06 15:51:01 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -522,7 +522,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(2, name);
             stmt.setInt(3, resourcetype);
             stmt.executeUpdate();         
-                        
+                          
             /*
             for (int i = 0; i < 3; i++) {
                 if (i == 0) {
@@ -551,6 +551,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
+        }
+        
+        // now try to write the backup propertydefinition as well
+        try {
+            m_driverManager.getBackupDriver().createBackupPropertyDefinition(name, resourcetype);         
+        } catch (CmsException ex) {
+            // do nothing here
+            // an error is thrown if the propertydefnition is already existing in the backup tables
         }
 
         return readPropertyDefinition(name, projectId, resourcetype);
@@ -2305,7 +2313,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         if (propdef == null) {
             // create the definition of the property optionally if it is missing
             if (addDefinition) {
-                propdef = createPropertyDefinition(meta, projectId, resourceType);
+                propdef = createPropertyDefinition(meta, projectId, resourceType);                
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".writeProperty/1] " + meta, CmsException.C_NOT_FOUND);
             }
