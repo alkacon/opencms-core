@@ -36,6 +36,8 @@
     <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
     <property name="build.inputlib.uuid"        value="${build.inputlib}/jug.jar"/>
+    <property name="build.inputlib.dbcp"        value="${build.inputlib}/commons-dbcp.jar"/>
+    <property name="build.inputlib.pool"        value="${build.inputlib}/commons-pool.jar"/>    
         
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
@@ -64,6 +66,8 @@
                 <available file="${build.inputlib.oro}"/>
                 <available file="${build.inputlib.tidy}"/>
                 <available file="${build.inputlib.uuid}"/>                
+                <available file="${build.inputlib.pool}"/> 
+                <available file="${build.inputlib.dbcp}"/> 
             </and>
         </condition>
         
@@ -115,6 +119,8 @@ ${build.inputlib.mysql}
 ${build.inputlib.oro}
 ${build.inputlib.tidy}
 ${build.inputlib.uuid}
+${build.inputlib.pool}
+${build.inputlib.dbcp}
 
         </fail>
     </target>
@@ -161,6 +167,8 @@ ${build.inputlib.uuid}
                         ${build.inputlib.fop}:
                         ${build.inputlib.oro}:
                         ${build.inputlib.tidy}:
+                        ${build.inputlib.dbcp}:
+                        ${build.inputlib.pool}:
                         ${build.inputlib.uuid}"
             debug="on"
             optimize="on"
