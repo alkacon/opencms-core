@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/06/05 13:37:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/06 13:21:01 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import source.org.apache.java.util.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:50 $  
+* @version $Revision: 1.7 $ $Date: 2000/06/06 13:21:01 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -92,6 +92,13 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * 
      */
     abstract void setResponse(CmsObject cms, CmsFile file);
+    
+    
+     /**
+     * Destructor, called when the the servlet is shut down.
+     */
+    abstract void destroy()
+          throws CmsException;
     
         
     /**

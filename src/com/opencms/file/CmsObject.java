@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/06 09:51:08 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2000/06/06 13:21:01 $
+ * Version: $Revision: 1.78 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.77 $ $Date: 2000/06/06 09:51:08 $ 
+ * @version $Revision: 1.78 $ $Date: 2000/06/06 13:21:01 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -75,6 +75,17 @@ public class CmsObject implements I_CmsConstants {
 		c_rb = resourceBroker;
 	}
 	
+    
+    /**
+     * Destroys the resource borker and required modules and connections.
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void destroy() 
+        throws CmsException {
+        c_rb.destroy();
+    }
+    
+    
 	/**
 	 * Initialises the CmsObject for each request.
 	 * 

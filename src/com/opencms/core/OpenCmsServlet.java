@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/06 08:23:07 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/06/06 13:21:01 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.40 $ $Date: 2000/06/06 08:23:07 $  
+* @version $Revision: 1.41 $ $Date: 2000/06/06 13:21:01 $  
 * 
 * */
 
@@ -238,10 +238,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing Shutdown....");
         }
-		
-		// no destroying actions here - at the moment...
-		// TODO: check if we have to destroy the rb...
-			
+        try {
+            m_opencms.destroy();
+        } catch (CmsException e) {
+           A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]"+e.toString());
+        }
+        
+        
         if(A_OpenCms.isLogging()) {
 	        A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
         }

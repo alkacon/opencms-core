@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 12:04:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/06 13:21:02 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/06/06 12:04:48 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/06 13:21:02 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker {
@@ -81,6 +81,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 		m_dbAccess = new CmsDbAccess(config);		
     }
 	
+    /**
+     * Destroys the resource borker and required modules and connections.
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void destroy() 
+        throws CmsException{
+    }
+    
+    
+    
 	// Method to access the configuration
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/06/06 08:23:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/06/06 13:21:01 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.26 $ $Date: 2000/06/06 08:23:07 $  
+* @version $Revision: 1.27 $ $Date: 2000/06/06 13:21:01 $  
 * 
 * */
 
@@ -106,7 +106,6 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object and the main resource-broker");
 			}
-			
 
 			// init the rb via the manager with the configuration 			
 			// and init the cms-object with the rb.
@@ -274,5 +273,15 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
             }
 		}
 	}
+    
+    /**
+     * Destructor, called when the the servlet is shut down.
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void destroy() 
+        throws CmsException {
+        CmsObject cms=new CmsObject();        
+        cms.destroy();
+    }
     
 }
