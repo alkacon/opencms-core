@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/03/05 16:02:40 $
-* Version: $Revision: 1.117 $
+* Date   : $Date: 2003/03/19 19:38:51 $
+* Version: $Revision: 1.118 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.I_CmsRegistry;
 import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.flex.CmsJspLoader;
 import com.opencms.flex.util.CmsResourceTranslator;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.launcher.CmsLauncherManager;
 import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.template.cache.CmsElementCache;
@@ -81,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.117 $ $Date: 2003/03/05 16:02:40 $
+ * @version $Revision: 1.118 $ $Date: 2003/03/19 19:38:51 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -222,6 +223,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         }        
         setDefaultEncoding(defaultEncoding);
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Encoding set to      : " + defaultEncoding);
+        
+        // Read server ethernet address (MAC) and init UUID generator
+        String ethernetAddress = conf.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Ethernet address used: " + ethernetAddress);
+        CmsUUID.init(ethernetAddress);
         
         // invoke the ResourceBroker via the initalizer
         try {
