@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlLocaleValue;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -745,13 +746,28 @@ public class CmsXmlContentDefinition implements Cloneable {
      * Returns the scheme type for the given element name, or <code>null</code> if no 
      * node is defined with this name.<p>
      * 
-     * @param elementName the element name to look up the type for
+     * @param elementPath the element path to look up the type for
      * @return the type for the given element name, or <code>null</code> if no 
      *      node is defined with this name
      */
-    public I_CmsXmlSchemaType getSchemaType(String elementName) {
+    public I_CmsXmlSchemaType getSchemaType(String elementPath) {
 
-        return (I_CmsXmlSchemaType)m_types.get(elementName);
+        String path = CmsXmlUtils.getFirstXpathElement(elementPath);
+
+        // check if recursion is required to get value from a nested schema
+        I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)m_types.get(path);      
+        if (type == null) {
+            System.out.print("hier");
+        }
+        if (type.isSimpleType() || !CmsXmlUtils.isDeepXpath(elementPath)) {
+            // no recusion required
+            return type;            
+        }
+        
+        // recusion required since the path is an Xpath
+        CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)type;        
+        path = CmsXmlUtils.removeFirstXpathElement(elementPath);        
+        return nestedDefinition.getContentDefinition().getSchemaType(path);
     }
 
     /**

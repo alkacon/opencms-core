@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayOutputStream;
@@ -58,7 +57,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -98,96 +97,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         m_bookmarks = new HashMap();
         m_locales = new HashSet();
-    }
-
-    /**
-     * Translates a simple lookup path to the simplified Xpath format used for 
-     * the internal bookmarks.<p>
-     * 
-     * Examples:<br> 
-     * <code>title</code> becomes <code>title[0]</code><br>
-     * <code>title[1]</code> is left untouched<br>
-     * <code>title/subtitle</code> becomes <code>title[0]/subtitle[0]</code><br>
-     * <code>title/subtitle[1]</code> becomes <code>title[0]/subtitle[1]</code><p>
-     * 
-     * Note: If the name already has the format <code>title[1]</code> then provided index parameter 
-     * is ignored.<p> 
-     * 
-     * @param path the path to get the simplified Xpath for
-     * @param index the index to append (if required)
-     * 
-     * @return the simplified Xpath for the given name
-     */
-    public static String createXpath(String path, int index) {
-
-        if (path.indexOf('/') > -1) {
-            // this is a complex path over more then 1 node
-            StringBuffer result = new StringBuffer(path.length() + 32);
-
-            // split the path into subelements
-            List elements = CmsStringUtil.splitAsList(path, '/');
-            int end = elements.size() - 1;
-            for (int i = 0; i <= end; i++) {
-                // append [i] to path element if required 
-                result.append(createXpathElementCheck((String)elements.get(i), 0));
-                if (i < end) {
-                    // append path delimiter if not final path element
-                    result.append('/');
-                }
-            }
-            return result.toString();
-        }
-
-        // this path has only 1 node, append [index] if required
-        return createXpathElementCheck(path, index);
-    }
-
-    /**
-     * Appends the provided index parameter in square brackets to the given name,
-     * like <code>path[index]</code>.<p>
-     * 
-     * This method is used if it's clear that some path does not have 
-     * a square bracket already appended.<p>
-     * 
-     * @param path the path append the index to
-     * @param index the index to append
-     * 
-     * @return the simplified Xpath for the given name
-     */
-    protected static String createXpathElement(String path, int index) {
-
-        StringBuffer result = new StringBuffer(path.length() + 5);
-        result.append(path);
-        result.append('[');
-        result.append(index);
-        result.append(']');
-        return result.toString();
-    }
-
-    /**
-     * Ensures that a provided simplified Xpath has the format <code>title[0]</code>.<p>
-     * 
-     * This method is used if it's uncertain if some path does have 
-     * a square bracket already appended or not.<p>
-     * 
-     * Note: If the name already has the format <code>title[0]</code>, then provided index parameter 
-     * is ignored.<p> 
-     * 
-     * @param path the path to get the simplified Xpath for
-     * @param index the index to append (if required)
-     * 
-     * @return the simplified Xpath for the given name
-     */
-    protected static String createXpathElementCheck(String path, int index) {
-
-        if (path.charAt(path.length() - 1) == ']') {
-            // path is already in the form "title[1]"
-            // ignore provided index and return the path "as is"
-            return path;
-        }
-
-        // append index in square brackets
-        return createXpathElement(path, index);
     }
 
     /**
@@ -300,7 +209,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public List getLocales(String name) {
 
-        Object result = m_elementLocales.get(createXpath(name, 0));
+        Object result = m_elementLocales.get(CmsXmlUtils.createXpath(name, 0));
         if (result == null) {
             return Collections.EMPTY_LIST;
         }
@@ -324,7 +233,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public String getStringValue(CmsObject cms, String name, Locale locale) throws CmsXmlException {
 
-        I_CmsXmlContentValue value = getValueInternal(createXpath(name, 0), locale);
+        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, 0), locale);
         if (value != null) {
             return value.getStringValue(cms);
         }
@@ -338,7 +247,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         // directly calling getValueInternal() is more efficient then calling getStringValue(CmsObject, String, Locale)
         // since the most costs are generated in resolving the Xpath name
-        I_CmsXmlContentValue value = getValueInternal(createXpath(name, index), locale);
+        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, index), locale);
         if (value != null) {
             return value.getStringValue(cms);
         }
@@ -350,7 +259,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale) {
 
-        return getValueInternal(createXpath(name, 0), locale);
+        return getValueInternal(CmsXmlUtils.createXpath(name, 0), locale);
     }
 
     /**
@@ -358,7 +267,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale, int index) {
 
-        return getValueInternal(createXpath(name, index), locale);
+        return getValueInternal(CmsXmlUtils.createXpath(name, index), locale);
     }
 
     /**
@@ -394,8 +303,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         List result = new ArrayList();
         int count = 0;
         Object o;
+        name = CmsXmlUtils.removeXpathIndex(name);
         do {
-            String path = createXpathElement(name, count);
+            String path = CmsXmlUtils.createXpathElement(name, count);
             o = getBookmark(path, locale);
             if (o != null) {
                 result.add(o);
@@ -423,7 +333,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale) {
 
-        return null != getBookmark(createXpath(name, 0), locale);
+        return null != getBookmark(CmsXmlUtils.createXpath(name, 0), locale);
     }
 
     /**
@@ -431,7 +341,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale, int index) {
 
-        return null != getBookmark(createXpath(name, index), locale);
+        return null != getBookmark(CmsXmlUtils.createXpath(name, index), locale);
     }
 
     /**

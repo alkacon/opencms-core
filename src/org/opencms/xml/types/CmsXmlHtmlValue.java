@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,13 +56,16 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsHtml";
+    
+    /** Base type for single type instances, required for XML pages. */
+    private static final I_CmsXmlSchemaType m_baseType = new CmsXmlHtmlValue("base", "1", "1");
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
@@ -77,7 +80,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         // empty constructor is required for class registration
     }
-
+    
     /**
      * Creates a new XML content value of type "OpenCmsHtml".<p>
      * 
@@ -87,7 +90,20 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public CmsXmlHtmlValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(document, element, locale);
+        super(document, element, locale, m_baseType);
+    }
+    
+    /**
+     * Creates a new XML content value of type "OpenCmsHtml".<p>
+     * 
+     * @param document the XML content instance this value belongs to
+     * @param element the XML element that contains this value
+     * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
+     */
+    public CmsXmlHtmlValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
+
+        super(document, element, locale, type);
     }
 
     /**
@@ -130,7 +146,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlHtmlValue(document, element, locale);
+        return new CmsXmlHtmlValue(document, element, locale, this);
     }
 
     /**

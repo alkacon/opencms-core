@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -69,7 +70,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -145,26 +146,46 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * Adds a new XML content value for the given element name and locale at the given index position
      * to this XML content document.<p> 
      * 
-     * @param name the name of the XML content value element
+     * @param path the path to the XML content value element
      * @param locale the locale where to add the new value 
      * @param index the index where to add the value (relative to all other values of this type)
      * 
      * @return the created XML content value
      */
-    public I_CmsXmlContentValue addValue(String name, Locale locale, int index) {
-
-        Element parentElement = getLocaleNode(locale);
-
-        // get the scheme type of the requested name           
-        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
-        List values = getValues(name, locale);
+    public I_CmsXmlContentValue addValue(String path, Locale locale, int index) {
+        
+        // get the schema type of the requested path           
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
+        
+        Element parentElement;
+        String elementName;
+        CmsXmlContentDefinition contentDefinition;
+        if (CmsXmlUtils.isDeepXpath(path)) {
+            // this is a nested content definition, so the parent element must be in the bookmarks
+            String parentPath = CmsXmlUtils.removeLastXpathElement(path);
+            Object o = getBookmark(parentPath, locale);
+            if (o == null) {
+                throw new IllegalArgumentException("Unknown XML content element path " + path);
+            }
+            CmsXmlNestedContentDefinition parentValue = (CmsXmlNestedContentDefinition)o;
+            parentElement = parentValue.getElement();
+            elementName = CmsXmlUtils.getLastXpathElement(path);   
+            contentDefinition = parentValue.getContentDefinition();
+        } else {
+            // the parent element is the locale element
+            parentElement = getLocaleNode(locale);
+            elementName = CmsXmlUtils.removeXpathIndex(path);
+            contentDefinition = m_contentDefinition;
+        }
+                
+        List values = getValues(path, locale);
 
         int insertIndex;
         if (values.size() > 0) {
 
             if (values.size() >= type.getMaxOccurs()) {
                 // must not allow adding an element if max occurs would be violated
-                throw new RuntimeException("Element '" + name + "' can occur at maximum " + type.getMaxOccurs() + " times");
+                throw new RuntimeException("Element '" + elementName + "' can occur at maximum " + type.getMaxOccurs() + " times");
             }
 
             // iterate all elements of the parent node            
@@ -175,7 +196,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 pos++;
                 Node node = (Node)i.next();
                 if (node instanceof Element) {
-                    if (node.getName().equals(name)) {
+                    if (node.getName().equals(elementName)) {
                         // found an element of this type
                         foundCount++;
                         if (foundCount >= index) {
@@ -194,7 +215,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         } else {
 
             // check where in the type sequence the type should appear
-            int typeIndex = m_contentDefinition.getTypeSequence().indexOf(type);
+            int typeIndex = contentDefinition.getTypeSequence().indexOf(type);
             if (typeIndex == 0) {
                 // this is the first type, so we just add at the very first position
                 insertIndex = 0;
@@ -203,7 +224,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 // create a list of all element names that should occur before the selected type
                 List previousTypeNames = new ArrayList();
                 for (int i = 0; i < typeIndex; i++) {
-                    I_CmsXmlSchemaType t = (I_CmsXmlSchemaType)m_contentDefinition.getTypeSequence().get(i);
+                    I_CmsXmlSchemaType t = (I_CmsXmlSchemaType)contentDefinition.getTypeSequence().get(i);
                     previousTypeNames.add(t.getElementName());
                 }
 
@@ -226,40 +247,20 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         }
 
         // append the new element at the calculated position
-        I_CmsXmlContentValue newValue = addValue(parentElement, type, locale, insertIndex);
+        I_CmsXmlContentValue newValue = addValue(contentDefinition, parentElement, type, locale, insertIndex);
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
 
         return newValue;
     }
-
+    
     /**
-     * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition(org.xml.sax.EntityResolver)
+     * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
      */
-    public CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) {
-
-        String schema = m_document.getRootElement().attributeValue(
-            I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
-
-        // Note regarding exception handling:
-        // Since this object already is a valid XML content object,
-        // it must have a valid schema, otherwise it would not exist.
-        // Therefore the exceptions should never be really thrown.
-        if (schema == null) {
-            throw new RuntimeException("No XML schema set for content definition");
-        }
-        InputSource source;
-        try {
-            source = resolver.resolveEntity(null, schema);
-            return CmsXmlContentDefinition.unmarshal(source, schema, resolver);
-        } catch (SAXException e) {
-            throw new RuntimeException("Could not parse XML content definition schema", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IO error resolving XML content definition schema", e);
-        } catch (CmsXmlException e) {
-            throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
-        }
+    public CmsXmlContentDefinition getContentDefinition() {
+        
+        return m_contentDefinition;
     }
 
     /**
@@ -282,7 +283,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public CmsXmlContentValueSequence getValueSequence(String name, Locale locale) {
 
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
-        return new CmsXmlContentValueSequence(type, locale, this);
+        return new CmsXmlContentValueSequence(name, type, locale, this);
     }
 
     /**
@@ -401,9 +402,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * 
      * @return the created XML content value
      */
-    private I_CmsXmlContentValue addValue(Element parent, I_CmsXmlSchemaType type, Locale locale, int insertIndex) {
-
-        Element element = m_contentDefinition.createDefaultXml(this, type.getElementName(), locale);       
+    private I_CmsXmlContentValue addValue(CmsXmlContentDefinition contentDefinition, Element parent, I_CmsXmlSchemaType type, Locale locale, int insertIndex) {
+        
+        // now generate the default value for the content definition
+        Element element = contentDefinition.createDefaultXml(this, type.getElementName(), locale);       
         
         List parentContent = parent.content();
         parentContent.add(insertIndex, element);
@@ -419,6 +421,38 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             }
         }
         return value;
+    }
+
+    /**
+     * Returns the content definition object for this xml content object.<p>
+     * 
+     * @param resolver the XML entity resolver to use, required for VFS access
+     * 
+     * @return the content definition object for this xml content object
+     */
+    private CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) {
+
+        String schema = m_document.getRootElement().attributeValue(
+            I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
+
+        // Note regarding exception handling:
+        // Since this object already is a valid XML content object,
+        // it must have a valid schema, otherwise it would not exist.
+        // Therefore the exceptions should never be really thrown.
+        if (schema == null) {
+            throw new RuntimeException("No XML schema set for content definition");
+        }
+        InputSource source;
+        try {
+            source = resolver.resolveEntity(null, schema);
+            return CmsXmlContentDefinition.unmarshal(source, schema, resolver);
+        } catch (SAXException e) {
+            throw new RuntimeException("Could not parse XML content definition schema", e);
+        } catch (IOException e) {
+            throw new RuntimeException("IO error resolving XML content definition schema", e);
+        } catch (CmsXmlException e) {
+            throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
+        }
     }
 
     /**
@@ -464,10 +498,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
                 b.append(rootPath);
                 b.append('/');
-                b.append(createXpathElement(name, count));
+                b.append(CmsXmlUtils.createXpathElement(name, count));
                 path = b.toString();
             } else {
-                path = createXpathElement(name, count);
+                path = CmsXmlUtils.createXpathElement(name, count);
             }
 
             // create a XML content value element

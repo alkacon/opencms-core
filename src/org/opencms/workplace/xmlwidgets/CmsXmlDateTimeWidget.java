@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -72,21 +72,20 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
         CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)value;
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");        
-        result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
+        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
         result.append(": </td>");
-        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getElementName()));
+        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputSmall\" value=\"");

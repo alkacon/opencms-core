@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {
@@ -60,14 +60,16 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      * @param contentDefinition the nested XML content definition
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
     public CmsXmlNestedContentDefinition(
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlDocument document,
         Element element,
-        Locale locale) {
+        Locale locale,
+        I_CmsXmlSchemaType type) {
 
-        super(document, element, locale);
+        super(document, element, locale, type);
         m_contentDefinition = contentDefinition;
     }
 
@@ -113,7 +115,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlNestedContentDefinition(m_contentDefinition, document, element, locale);
+        return new CmsXmlNestedContentDefinition(m_contentDefinition, document, element, locale, this);
     }
 
     /**

@@ -14,6 +14,7 @@
 	<xsd:complexType name="OpenCmsHandlertest">
 		<xsd:sequence>
 			<xsd:element name="Html" type="OpenCmsHtml" />
+			<xsd:element name="Option" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" default="/system/modules/index.html" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>

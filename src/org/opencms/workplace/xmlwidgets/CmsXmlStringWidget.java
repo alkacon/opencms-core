@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -49,7 +48,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -71,12 +70,11 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, I_CmsXmlDocument)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, I_CmsXmlDocument)
      */
     public String getDialogInitMethod(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlDocument document) throws CmsXmlException {
 
         StringBuffer result = new StringBuffer(8);
@@ -84,7 +82,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
 
         Locale locale = widgetDialog.getElementLocale();
 
-        List typeSequence = contentDefinition.getTypeSequence();
+        List typeSequence = document.getContentDefinition().getTypeSequence();
         Iterator i = typeSequence.iterator();
         while (i.hasNext()) {
 
@@ -95,9 +93,9 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
             for (int j = 0; j < count; j++) {
 
                 I_CmsXmlContentValue value2 = document.getValue(name, locale, j);
-                I_CmsXmlWidget widget = contentDefinition.getContentHandler().getEditorWidget(
+                I_CmsXmlWidget widget = document.getContentDefinition().getContentHandler().getEditorWidget(
                     value2,
-                    contentDefinition);
+                    document.getContentDefinition());
 
                 if (this.equals(widget)) {
                     // add init methods for all elements that use the String widget
@@ -129,22 +127,21 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
         String id = getParameterName(value);
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
+        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
         result.append(": </td>");
 
-        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getElementName()));
+        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
 
         result.append("<td class=\"xmlTd\"><input class=\"xmlInput maxwidth\" name=\"");
         result.append(id);

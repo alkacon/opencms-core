@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -42,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {
@@ -53,6 +54,9 @@ public class CmsXmlContentValueSequence {
     /** The locale this sequence is based on. */
     private Locale m_locale;
 
+    /** The Xpath this content value seqnence was generated for. */
+    private String m_path;
+
     /** The XML schema type this sequence is based on. */
     private I_CmsXmlSchemaType m_schemaType;
 
@@ -62,16 +66,18 @@ public class CmsXmlContentValueSequence {
     /**
      * Generates a new content sequence element from the given type, content and content defintion.<p>
      * 
+     * @param path the path in the document to generate the value sequence for
      * @param schemaType the schema type to generate the seqnence element for
      * @param locale the locale to get the content values from
      * @param content the XML content to generate the sequence element out of
      */
-    public CmsXmlContentValueSequence(I_CmsXmlSchemaType schemaType, Locale locale, CmsXmlContent content) {
+    public CmsXmlContentValueSequence(String path, I_CmsXmlSchemaType schemaType, Locale locale, CmsXmlContent content) {
 
         m_schemaType = schemaType;
         m_locale = locale;
         m_content = content;
-        m_values = m_content.getValues(getElementName(), m_locale);
+        m_values = m_content.getValues(path, m_locale);
+        m_path = CmsXmlUtils.removeXpathIndex(path);
     }
 
     /**
@@ -85,10 +91,10 @@ public class CmsXmlContentValueSequence {
      */
     public I_CmsXmlContentValue addValue(int index) {
 
-        I_CmsXmlContentValue newValue = m_content.addValue(m_schemaType.getElementName(), getLocale(), index);
+        I_CmsXmlContentValue newValue = m_content.addValue(getPath(), getLocale(), index);
 
         // re-initialize the value list
-        m_values = m_content.getValues(getElementName(), getLocale());
+        m_values = m_content.getValues(getPath(), getLocale());
 
         return newValue;
     }
@@ -155,6 +161,30 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
+     * Returns the (simplified) Xpath expression that identifies the root node 
+     * of this content value sequence.<p> 
+     * 
+     * @return the (simplified) Xpath expression that identifies the root node 
+     *      of this content value sequence
+     */
+    public String getPath() {
+
+        return m_path;
+    }
+
+    /**
+     * Returns the XML content values from the index position of this seqnence.<p>
+     * 
+     * @param index the index position to get the value from
+     * 
+     * @return the XML content values from the index position of this seqnence
+     */
+    public I_CmsXmlContentValue getValue(int index) {
+
+        return (I_CmsXmlContentValue)m_values.get(index);
+    }
+
+    /**
      * Returns the list of XML content values for the selected schema type and locale in the XML content.<p>
      * 
      * @return the list of XML content values for the selected schema type and locale in the XML content
@@ -164,18 +194,6 @@ public class CmsXmlContentValueSequence {
     public List getValues() {
 
         return m_values;
-    }
-    
-    /**
-     * Returns the XML content values from the index position of this seqnence.<p>
-     * 
-     * @param index the index position to get the value from
-     * 
-     * @return the XML content values from the index position of this seqnence
-     */    
-    public I_CmsXmlContentValue getValue(int index) {
-        
-        return (I_CmsXmlContentValue)m_values.get(index);
     }
 
     /**
@@ -232,9 +250,9 @@ public class CmsXmlContentValueSequence {
      */
     public void removeValue(int index) {
 
-        m_content.removeValue(getElementName(), getLocale(), index);
-        
+        m_content.removeValue(getPath(), getLocale(), index);
+
         // re-initialize the value list
-        m_values = m_content.getValues(getElementName(), getLocale());
+        m_values = m_content.getValues(getPath(), getLocale());
     }
 }

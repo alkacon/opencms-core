@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlValueTextBase.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
 
@@ -66,10 +66,11 @@ public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
-    protected A_CmsXmlValueTextBase(I_CmsXmlDocument document, Element element, Locale locale) {
+    protected A_CmsXmlValueTextBase(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
-        super(document, element, locale);
+        super(document, element, locale, type);
         m_stringValue = element.getText();
     }
 
@@ -86,6 +87,14 @@ public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
+     */
+    public String getStringValue(CmsObject cms) {
+
+        return m_stringValue;
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
      */
     public void setStringValue(String value) {
@@ -95,13 +104,5 @@ public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
             m_element.addText(value);
         }
         m_stringValue = value;
-    }
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
-     */
-    public String getStringValue(CmsObject cms) {
-
-        return m_stringValue;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -91,13 +91,16 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
-    protected A_CmsXmlContentValue(I_CmsXmlDocument document, Element element, Locale locale) {
+    protected A_CmsXmlContentValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
         m_element = element;
         m_name = element.getName();
         m_document = document;
         m_locale = locale;
+        m_minOccurs = type.getMinOccurs();
+        m_maxOccurs = type.getMaxOccurs();
     }
 
     /**

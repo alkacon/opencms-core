@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -68,7 +67,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -126,7 +125,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 checkLock(getParamResource());
                 m_file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
                 m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
-                m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));              
+                m_contentDefinition = m_content.getContentDefinition();              
             } catch (CmsException e) {
                 // error during initialization
                 try {
@@ -319,7 +318,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
             
             // now create a new XML content based on the templates content definition            
-            CmsXmlContent newContent = new CmsXmlContent(template.getContentDefinition(new CmsXmlEntityResolver(getCms())), locale, template.getEncoding());  
+            CmsXmlContent newContent = new CmsXmlContent(template.getContentDefinition(), locale, template.getEncoding());  
             
             // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
             String newFileName = collector.getCreateLink(getCms(), collectorName, param);            
@@ -339,7 +338,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // set the member variables for the content 
             m_file = newFile;
             m_content = newContent;
-            m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));                           
+            m_contentDefinition = m_content.getContentDefinition();                           
                         
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -402,7 +401,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // the file content might have been modified during the write operation    
             m_file = getCms().writeFile(m_file);
             m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
-            m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));
+            m_contentDefinition = m_content.getContentDefinition();
             try {
                 decodedContent = new String(m_file.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
@@ -496,7 +495,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = 
                         m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);                    
-                    result.append(widget.getDialogWidget(getCms(), this, m_contentDefinition, value));
+                    result.append(widget.getDialogWidget(getCms(), this, value));
                 }               
             }
             
@@ -534,7 +533,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = 
                         m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
-                    result.append(widget.getDialogHtmlEnd(getCms(), this, m_contentDefinition, value));
+                    result.append(widget.getDialogHtmlEnd(getCms(), this, value));
                 }               
             }
         } catch (CmsXmlException e) {
@@ -597,7 +596,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             Iterator i = getWidgets().iterator();
             while (i.hasNext()) {
                 I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
-                result.append(widget.getDialogInitMethod(getCms(), this, m_contentDefinition, m_content));
+                result.append(widget.getDialogInitMethod(getCms(), this, m_content));
                 result.append("\n");
             }
         } catch (CmsXmlException e) {

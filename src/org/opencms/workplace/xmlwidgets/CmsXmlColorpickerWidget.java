@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlColorpickerWidget.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.2
  */
 public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
@@ -80,12 +80,11 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
     }
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, I_CmsXmlDocument)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, I_CmsXmlDocument)
      */
     public String getDialogInitMethod(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlDocument document) {
         
         StringBuffer result = new StringBuffer(128);
@@ -101,21 +100,20 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
         CmsXmlColorValue castValue = (CmsXmlColorValue)value;
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
+        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
         result.append(": </td>");        
-        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getElementName()));
+        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
         result.append("<td class=\"xmlTd\">");
         String colorValue = castValue.getStringValue(cms);
         String id = getParameterName(value);

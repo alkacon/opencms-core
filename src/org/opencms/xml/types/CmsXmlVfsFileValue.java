@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
@@ -75,10 +75,11 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
-    public CmsXmlVfsFileValue(I_CmsXmlDocument document, Element element, Locale locale) {
+    public CmsXmlVfsFileValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
-        super(document, element, locale);
+        super(document, element, locale, type);
         m_stringValue = element.getText();
     }
 
@@ -99,7 +100,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlVfsFileValue(document, element, locale);
+        return new CmsXmlVfsFileValue(document, element, locale, this);
     }
 
     /**

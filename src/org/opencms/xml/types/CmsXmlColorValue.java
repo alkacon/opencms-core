@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
@@ -64,10 +64,11 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
-    public CmsXmlColorValue(I_CmsXmlDocument document, Element element, Locale locale) {
+    public CmsXmlColorValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
-        super(document, element, locale);
+        super(document, element, locale, type);
     }
 
     /**
@@ -87,7 +88,7 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlColorValue(document, element, locale);
+        return new CmsXmlColorValue(document, element, locale, this);
     }
 
     /**

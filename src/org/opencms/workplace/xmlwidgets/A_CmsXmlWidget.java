@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -71,15 +71,14 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogHtmlEnd(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
-        return getHelpText(widgetDialog, contentDefinition, value.getElementName());
+        return getHelpText(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName());
     }
 
     /**
@@ -103,12 +102,11 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, I_CmsXmlDocument)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, I_CmsXmlDocument)
      */
     public String getDialogInitMethod(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlDocument document) throws CmsXmlException {
         
         if (document == null) {

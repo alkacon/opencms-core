@@ -20,7 +20,7 @@
 			<xsd:element name="Cascade" type="OpenCmsModtest" maxOccurs="5" />
 			<xsd:element name="Option" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="DeepCascade" type="OpenCmsCascadetest" minOccurs="0" maxOccurs="2" />
-			<xsd:element name="Toast" type="OpenCmsString"  maxOccurs="3" />
+			<xsd:element name="Toast" type="OpenCmsString" maxOccurs="3" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

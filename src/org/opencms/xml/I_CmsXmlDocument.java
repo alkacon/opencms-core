@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/28 21:57:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,12 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.List;
 import java.util.Locale;
 
-import org.xml.sax.EntityResolver;
-
 /**
  * Describes the API to access the values of a XML content document.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
@@ -63,13 +61,9 @@ public interface I_CmsXmlDocument {
     /**
      * Returns the content definition object for this xml content object.<p>
      * 
-     * @param resolver the XML entitiy resolver to use
-     * 
      * @return the content definition object for this xml content object
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsXmlException;
+    CmsXmlContentDefinition getContentDefinition();
 
     /**
      * Returns the content converison parameter used for this XML document.<p>
@@ -123,6 +117,18 @@ public interface I_CmsXmlDocument {
      * @return a List of all Locales that have the given element set in this XML document
      */
     List getLocales(String element);
+
+    /**
+     * Returns all available elements names used in this document for the given locale.<p>
+     * 
+     * If no element for the given locale is available, an empty list is returned.<p>
+     * 
+     * @param locale the locale
+     * @return list of available element names (Strings)
+     * 
+     * @see #getValues(Locale)
+     */
+    List getNames(Locale locale);
 
     /**
      * Returns the first content value for the given key name as a String,
@@ -179,6 +185,18 @@ public interface I_CmsXmlDocument {
      * @return the content value for the given key name
      */
     I_CmsXmlContentValue getValue(String name, Locale locale, int index);
+
+    /**
+     * Returns all available elements values used in this document for the given locale.<p>
+     * 
+     * If no element for the given locale is available, an empty list is returned.<p>
+     * 
+     * @param locale the locale
+     * @return list of available element valies (type {@link I_CmsXmlContentValue})
+     * 
+     * @see #getNames(Locale)
+     */
+    List getValues(Locale locale);
 
     /**
      * Returns all content value Objects for the given key name in a List,
@@ -267,29 +285,5 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException in case the locale did not exist in the document, or if something else goes wrong
      */
     void removeLocale(Locale locale) throws CmsXmlException;
-    
-    /**
-     * Returns all available elements names used in this document for the given locale.<p>
-     * 
-     * If no element for the given locale is available, an empty list is returned.<p>
-     * 
-     * @param locale the locale
-     * @return list of available element names (Strings)
-     * 
-     * @see #getValues(Locale)
-     */
-    List getNames(Locale locale);
-    
-    /**
-     * Returns all available elements values used in this document for the given locale.<p>
-     * 
-     * If no element for the given locale is available, an empty list is returned.<p>
-     * 
-     * @param locale the locale
-     * @return list of available element valies (type {@link I_CmsXmlContentValue})
-     * 
-     * @see #getNames(Locale)
-     */    
-    List getValues(Locale locale);
 
 }

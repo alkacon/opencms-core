@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
@@ -67,10 +67,11 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
-    public CmsXmlDateTimeValue(I_CmsXmlDocument document, Element element, Locale locale) {
+    public CmsXmlDateTimeValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
-        super(document, element, locale);
+        super(document, element, locale, type);
         try {
             m_dateTime = Long.valueOf(m_stringValue).longValue();
         } catch (NumberFormatException e) {
@@ -95,7 +96,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlDateTimeValue(document, element, locale);
+        return new CmsXmlDateTimeValue(document, element, locale, this);
     }
 
     /**

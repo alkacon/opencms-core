@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.0
  */
@@ -373,7 +373,7 @@ public class TestCmsXmlPage extends TestCase {
         // obtain content definition from a XML page
         String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);    
-        CmsXmlContentDefinition cd3 = page.getContentDefinition(resolver);
+        CmsXmlContentDefinition cd3 = page.getContentDefinition();
 
         // ensure content definitions are equal
         assertEquals(cd1, cd3);    

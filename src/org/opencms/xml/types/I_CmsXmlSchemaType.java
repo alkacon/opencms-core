@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -153,8 +153,8 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * Returns the schema type name.<p>
      *
      * By convention, a XML schema type name has the form 
-     * <code>"cms + ${name} + Type"</code>. Examples are
-     * <code>"cmsStringType"</code> or <code>"cmsDateTimeType"</code>.<p>
+     * <code>"OpenCms + ${name}"</code>. Examples are
+     * <code>"OpenCmsString"</code> or <code>"OpenCmsBoolean"</code>.<p>
      * 
      * The schema type name is fixed by the implementation.<p> 
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
@@ -54,7 +54,6 @@ public interface I_CmsXmlWidget {
      * 
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefinition the content definition object
      * @param value the XML content value to generate the widget for
      * 
      * @return the html to include at the end of the editor form
@@ -64,7 +63,6 @@ public interface I_CmsXmlWidget {
     String getDialogHtmlEnd(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException;
     
     /**
@@ -102,7 +100,6 @@ public interface I_CmsXmlWidget {
      * 
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefinition the content definition object
      * @param document the XML content document instance to generate to widget for
      * 
      * @return the initialization code
@@ -112,7 +109,6 @@ public interface I_CmsXmlWidget {
     String getDialogInitMethod(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlDocument document) throws CmsXmlException;
     
     /**
@@ -120,7 +116,6 @@ public interface I_CmsXmlWidget {
      * 
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefinition the content definition object
      * @param value the XML content value to generate the widget for
      * 
      * @return the HTML form for this content node
@@ -130,7 +125,6 @@ public interface I_CmsXmlWidget {
     String getDialogWidget(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**

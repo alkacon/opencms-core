@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Attic/CmsXmlSimpleLinkValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.3
  */
 public class CmsXmlSimpleLinkValue extends A_CmsXmlValueTextBase {
@@ -67,10 +67,11 @@ public class CmsXmlSimpleLinkValue extends A_CmsXmlValueTextBase {
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
+     * @param type the type instance to create the value for
      */
-    public CmsXmlSimpleLinkValue(I_CmsXmlDocument document, Element element, Locale locale) {
+    public CmsXmlSimpleLinkValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
-        super(document, element, locale);
+        super(document, element, locale, type);
     }
 
     /**
@@ -90,7 +91,7 @@ public class CmsXmlSimpleLinkValue extends A_CmsXmlValueTextBase {
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlSimpleLinkValue(document, element, locale);
+        return new CmsXmlSimpleLinkValue(document, element, locale, this);
     }
 
     /**

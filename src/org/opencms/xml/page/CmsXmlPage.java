@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,12 +42,13 @@ import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,9 +62,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -77,7 +76,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -129,6 +128,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /** Name of the target node. */
     public static final String NODE_TARGET = "target";
 
+    /** The XML page content definition is static. */
+    private static CmsXmlContentDefinition m_contentDefinition;
+
     /** Name of the element node. */
     private static final String NODE_ELEMENT = "element";
 
@@ -162,7 +164,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         initDocument(CmsXmlPageFactory.createDocument(locale), encoding, null);
     }
-    
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#addLocale(java.util.Locale)
      */
@@ -171,13 +173,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         if (hasLocale(locale)) {
             throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
         }
-        
+
         // append new "page" element
         Element pages = m_document.getRootElement();
         Element newPage = pages.addElement(NODE_PAGE);
         // add "language" attribute
         newPage.addAttribute(ATTRIBUTE_LANGUAGE, locale.toString());
-        
+
         // re-initialize the bookmarks
         initDocument(m_document, m_encoding, null);
     }
@@ -190,15 +192,21 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * @param locale the locale of the value
      */
     public void addValue(String name, Locale locale) {
-        
+
         if (name.indexOf('[') >= 0) {
-            throw new IllegalArgumentException("XML page element names must not contain indexes, invalid name '" + name + "''");            
+            throw new IllegalArgumentException("XML page element names must not contain indexes, invalid name '"
+                + name
+                + "''");
         }
-        
+
         if (hasValue(name, locale)) {
-            throw new IllegalArgumentException("XML page already contains an element '" + name + "' for language '" + locale + "'");
+            throw new IllegalArgumentException("XML page already contains an element '"
+                + name
+                + "' for language '"
+                + locale
+                + "'");
         }
-        
+
         Element pages = m_document.getRootElement();
         String localeStr = locale.toString();
         Element page = null;
@@ -232,7 +240,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
 
         // bookmark the element
-        addBookmark(createXpathElement(name, 0), locale, true, value);
+        addBookmark(CmsXmlUtils.createXpathElement(name, 0), locale, true, value);
     }
 
     /**
@@ -246,25 +254,23 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition(org.xml.sax.EntityResolver)
+     * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
      */
-    public CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) {
+    public CmsXmlContentDefinition getContentDefinition() {
 
-        // Note regarding exception handling:
-        // Since this object already is a valid XML content object,
-        // it must have a valid schema, otherwise it would not exist.
-        // Therefore the exceptions should never be really thrown.
-        InputSource source;
-        try {
-            source = resolver.resolveEntity(null, C_XMLPAGE_XSD_SYSTEM_ID);
-            return CmsXmlContentDefinition.unmarshal(source, C_XMLPAGE_XSD_SYSTEM_ID, resolver);
-        } catch (SAXException e) {
-            throw new RuntimeException("Could not parse XML page content definition schema", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IO error resolving XML page content definition schema", e);
-        } catch (CmsXmlException e) {
-            throw new RuntimeException("Unable to unmarshal XML page content definition schema", e);
+        if (m_contentDefinition == null) {
+            // since XML page schema is cached anyway we don't need an CmsObject instance
+            CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+            InputSource source;
+            try {
+                source = resolver.resolveEntity(null, C_XMLPAGE_XSD_SYSTEM_ID);
+                // store content definition in static variable
+                m_contentDefinition = CmsXmlContentDefinition.unmarshal(source, C_XMLPAGE_XSD_SYSTEM_ID, resolver);
+            } catch (CmsXmlException e) {
+                throw new RuntimeException("Unable to unmarshal XML page content definition schema", e);
+            }
         }
+        return m_contentDefinition;
     }
 
     /**
@@ -306,8 +312,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             List result = new ArrayList(8);
             Iterator i = ((Set)o).iterator();
             while (i.hasNext()) {
-                String name = (String)i.next();
-                result.add(removeXpath(name));
+                String path = (String)i.next();
+                result.add(CmsXmlUtils.removeXpathIndex(path));
             }
             return result;
         }
@@ -343,13 +349,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public void removeValue(String name, Locale locale) {
 
-        I_CmsXmlContentValue value =  removeBookmark(createXpath(name, 0), locale);
+        I_CmsXmlContentValue value = removeBookmark(CmsXmlUtils.createXpath(name, 0), locale);
         if (value != null) {
             Element element = value.getElement();
             element.detach();
         }
-    }     
-    
+    }
+
     /**
      * Sets the enabled flag of an already existing element.<p>
      * 
@@ -437,14 +443,14 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
 
                     // add the element type bookmark
-                    addBookmark(createXpathElement(name, 0), locale, enabled, value);
+                    addBookmark(CmsXmlUtils.createXpathElement(name, 0), locale, enabled, value);
                 }
             }
         } catch (NullPointerException e) {
             OpenCms.getLog(this).error("Error while initalizing XML page bookmarks", e);
         }
     }
-    
+
     /**
      * Sets the parameter that controls the relative link generation.<p>
      * 
@@ -514,29 +520,5 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         // now replace the old with the new document
         m_document = newDocument;
-    }
-
-    /**
-     * Translates a simplified Xpath format to the simple lookup path.<p>
-     * 
-     * Examples:<br> 
-     * <code>title[0]</code> becomes <code>title</code><br>
-     * <code>title</code> is left untouched<br>
-     * <code>title[0]/subtitle[0]</code> becomes <code>title[0]/subtitle</code><br>
-     * <code>title/subtitle[1]</code> becomes <code>title/subtitle</code><p>
-     * 
-     * @param path the path to get the simplified Xpath for
-     * 
-     * @return the simple lookup path for the given name
-     */
-    private String removeXpath(String path) {
-
-        if (path.charAt(path.length() - 1) == ']') {
-            return path.substring(0, path.length() - 3);
-        } else {
-            return path;   
-        }
-            
-    
     }
 }

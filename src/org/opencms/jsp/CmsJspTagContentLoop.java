@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2004/11/17 12:16:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/01 12:01:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.util.Locale;
 
@@ -45,7 +46,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -75,7 +76,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         if (m_content.hasValue(m_element, m_locale, m_index + 1)) {
             m_index++;
-            m_currentElement = A_CmsXmlDocument.createXpath(m_element, m_index);
+            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index);
             // one more element with the same name is available, loop again
             return EVAL_BODY_AGAIN;
         } else {
@@ -103,7 +104,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         if (m_content.hasValue(m_element, m_locale)) {
             // selected element is available at last once in content
-            m_currentElement = A_CmsXmlDocument.createXpath(m_element, m_index);
+            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index);
             return EVAL_BODY_INCLUDE;
         } else {
             // no value available for the selected element name, so we skip the whole body
