@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/01 10:21:09 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/04/01 13:17:07 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsObject {
 
@@ -4105,6 +4105,7 @@ public class CmsObject {
      * @return the value of the property found, <code>null</code> if nothing was found
      * @throws CmsException in case there where problems reading the property
      * @see CmsProperty#getValue()
+     * @deprecated use new Object base methods
      */
     public String readProperty(String resource, String property) throws CmsException {
         CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
@@ -4121,6 +4122,7 @@ public class CmsObject {
      * @return the value of the property found, <code>null</code> if nothing was found
      * @throws CmsException in case there where problems reading the property
      * @see CmsProperty#getValue()
+     * @deprecated use new Object base methods
      */
     public String readProperty(String resource, String property, boolean search) throws CmsException {
         CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
@@ -4139,6 +4141,7 @@ public class CmsObject {
      * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
      * @throws CmsException in case there where problems reading the property
      * @see CmsProperty#getValue()
+     * @deprecated use new Object base methods
      */
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
         CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
