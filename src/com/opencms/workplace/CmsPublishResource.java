@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2001/07/18 15:07:30 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/07/26 11:44:07 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2001/07/18 15:07:30 $
+ * @version $Revision: 1.3 $ $Date: 2001/07/26 11:44:07 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -82,21 +82,24 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         }
         filename = (String)session.getValue(C_PARA_FILE);
         String action = (String)parameters.get("action");
-
         CmsResource file = null;
         if(filename.endsWith("/")){
-            file = (CmsResource)cms.readFolder(filename);
+            file = (CmsResource)cms.readFolder(filename, true);
         } else {
             file = (CmsResource)cms.readFileHeader(filename);
         }
 
         if(action!= null){
             if ("check".equals(action)){
-                if(checkLocked(cms, file)){
-                    action = "wait";
+                if(file.getState() != C_STATE_DELETED){
+                    if(checkLocked(cms, file)){
+                        action = "wait";
+                    } else {
+                        // ask user if the locks should be removed
+                        return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"asklock");
+                    }
                 } else {
-                    // ask user if the locks should be removed
-                    return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"asklock");
+                    action = "wait";
                 }
             } else if("rmlocks".equals(action)){
                 // remove the locks and publish
