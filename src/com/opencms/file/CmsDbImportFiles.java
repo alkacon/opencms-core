@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/17 16:52:57 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.6 $ $Date: 2000/02/17 15:48:49 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/17 16:52:57 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -215,17 +215,12 @@ class CmsDbImportFiles implements I_CmsConstants {
 			}
 			m_fName=m_fName.substring((m_fName.lastIndexOf("/")+1),m_fName.length());
 			try {
-				System.out.println(m_fName);
 				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fMeta);
-				System.out.println("lock");
 				m_RB.lockResource(m_user,m_project,newFile.getAbsolutePath(), true);
-				System.out.println("gelocked");
 				m_RB.chown(m_user, m_project, newFile.getAbsolutePath(), m_fUser);
 				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);
-				System.out.println(m_fAccess);
 				m_RB.chmod(m_user, m_project, newFile.getAbsolutePath(), Integer.parseInt(m_fAccess) );
 				m_RB.unlockResource(m_user,m_project,newFile.getAbsolutePath());
-				System.out.println("geschrieben");
 			} catch (CmsException e) {
 				m_errMsg.addElement(e.getMessage());	
 			}
@@ -313,7 +308,6 @@ class CmsDbImportFiles implements I_CmsConstants {
 		for(i=0; i<sl; i++) {
 			fContent[i]=(byte)Integer.parseInt( v_erg.elementAt(i).toString());	
 		}
-		System.out.println("read Content");
 		return fContent;
 		
 	}
