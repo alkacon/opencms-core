@@ -1,6 +1,7 @@
 \chapter{Static Export}
 
 \section{Introduction}
+\index{Static Export}
 
 Since version 4.6 OpenCms has the feature "Static Export". With this feature it is possible to export the static resources to a docroot in the server filesystem. During this export all links to this static resources and back to dynamic resources will be adjusted automatically. In this scenario it is possible that a traditional web server like Apache (\rqhttp{http://httpd.apache.org}{http://httpd.apache.org}) serves all static resources and OpenCms delivers all dynamic resources (like forms or personalized sites). This splits up the work to each software that can handle the specific request in a better way.
 
@@ -44,7 +45,7 @@ This is the static copy of the resource you can reach with:
 \texttt{http://yourserver.com:8080/opencms/opencms/index.html}
 
 \section{What have I to do?}
-
+\index{link tag}
 OpenCms needs your help to adjust all links between resources. Therefore you have to mark all links in the templates (mastertemplates, frametemplates, contenttemplates and elements) with the tag \texttt{<link>}. In this link tag you define the link to another resource within the OpenCms system (No scheme, server name, port or webapplication name is allowed). You can add url parameters to the link, if you need:
 
 \begin{quote}
@@ -57,6 +58,7 @@ src="]]><link>/pics/logo.gif</link><![CDATA["
 
 An editor can use the HTML edit control. OpenCms will take care about links added with the control. Therefore it uses the JTidy library to find all "a href" and "img src" tags and inserts the needed OpenCms link tag.
 
+\index{getLinkSubstitution}
 A module developer has to call the method getLinkSubstitution to get adjusted links:
 
 \texttt{String adjustedLink = cms.getLinkSubstitution(String link);}
@@ -72,6 +74,7 @@ A next run of the static export will only export the changed resources. A resour
 Note: You can find the names of all exported resources in the opencms.log file. So you can check which resources are exported.
 
 \section{How to control what is exported?}
+\index{export property}
 
 Only resources that are readable as a \texttt{Guest} user are exported. You can control the export behaviour of these resources by adding properties to that resource. The property "\texttt{export}" controls if and how the resource will be exported. The following values are possible:
 
@@ -82,6 +85,7 @@ The resource will never be touched by the export (not exported and no link adjus
 \item dynamic:\\
 The resource is dynamic. It will not be exported. All requests will be delivered by OpenCms. A link to this resource will be adjusted to a link into the OpenCms system.
 
+\index{https}
 \item https:\\
 The resource is dynamic. A link to this resource will be adjusted to a link into the OpenCms system. Additionally the scheme will be set to https. You need to configure OpenCms and the web server to handle https requests.
 
@@ -95,6 +99,7 @@ This is a static resource. The resource will be exported to the docroot of the w
 Like dynamic but the links to this resource from a https page will not be set to http. 
 \end{itemize}
 
+\index{exportname}
 You can control the name of an exported resource with the property "\texttt{exportname}". This is useful for modules which reside in the folder 
 
 \texttt{/system/modules/YOURMODULENAME/YOURMODULEFILES}. 
