@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/14 12:50:53 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2003/08/19 14:38:07 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -206,14 +206,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         }
         
         // first the folder
-        cms.doCopyFolder(source, destination, lockCopy);
+        cms.doCopyFolder(source, destination, lockCopy, keepFlags);
         
         // now the subfolders
         for (int i = 0; i < allSubFolders.size(); i++) {
             CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
             if (curFolder.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length());
-                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination, false);
+                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination, false, keepFlags);
             }
         }
         
@@ -453,7 +453,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
         //cms.doMoveResource(source, destination);
-        this.copyResource(cms, source, destination, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
+        this.copyResource(cms, source, destination, true, true, I_CmsConstants.C_COPY_AS_LINK);
         this.deleteResource(cms, source, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);        
     }
 
@@ -465,7 +465,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
         // rename the folder itself
         // cms.doRenameResource(oldname, newname);
-        this.copyResource(cms, oldname, newname, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
+        this.copyResource(cms, oldname, newname, true, true, I_CmsConstants.C_COPY_AS_LINK);
         this.deleteResource(cms, oldname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
 
         if (C_BODY_MIRROR) {
@@ -474,7 +474,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
             // rename the corresponding body folder
             // cms.doRenameResource(bodyPath, newname);
-            this.copyResource(cms, bodyPath, newname, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
+            this.copyResource(cms, bodyPath, newname, true, true, I_CmsConstants.C_COPY_AS_LINK);
             this.deleteResource(cms, bodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/08/19 07:44:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/19 14:38:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.9 $ $Date: 2003/08/19 07:44:51 $
+ * @version $Revision: 1.10 $ $Date: 2003/08/19 14:38:07 $
  */
 public class CmsExport implements Serializable {
 
@@ -294,8 +294,8 @@ public class CmsExport implements Serializable {
         i = m_exportedPageFiles.iterator();
         while (i.hasNext()) {
             String filename= (String)i.next();
-            // check if the stie path is within the filename. If so, this export is
-            // started from the root site and must be modified.
+            // check if the site path is within the filename. If so,this export is
+            // started from the root site and the path to the bodies must be modifed
             // this is not nice, but it works.
             if (filename.startsWith(I_CmsConstants.VFS_FOLDER_SITES)) {            
                 filename=filename.substring(I_CmsConstants.VFS_FOLDER_SITES.length()+1, filename.length());

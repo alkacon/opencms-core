@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/18 19:19:55 $
-* Version: $Revision: 1.381 $
+* Date   : $Date: 2003/08/19 14:38:07 $
+* Version: $Revision: 1.382 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.381 $
+ * @version $Revision: 1.382 $
  */
 public class CmsObject {
 
@@ -1121,12 +1121,12 @@ public class CmsObject {
      *
      * @param source the complete path of the sourcefolder.
      * @param destination the complete path of the destinationfolder.
-     *
+     * @param preserveTimestamps true if the timestamps and users of the folder should be kept
      * @throws CmsException if the folder couldn't be copied, or if the
      * user has not the appropriate rights to copy the folder.
      */
-    protected void doCopyFolder(String source, String destination, boolean lockCopy) throws CmsException {
-        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false);
+    protected void doCopyFolder(String source, String destination, boolean lockCopy, boolean preserveTimestamps) throws CmsException {
+        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false, preserveTimestamps);
     }
 
     /**

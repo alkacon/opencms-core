@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2003/08/19 14:38:07 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.92 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.93 $ $Date: 2003/08/19 14:38:07 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -360,9 +360,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             
             dateCreated = System.currentTimeMillis();
             createdByUserId = userId;
-
+ 
             dateModified = dateCreated;            
             modifiedByUserId = createdByUserId;
+
+
         }
 
         // check if the resource already exists
@@ -595,6 +597,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         // TODO VFS links: refactor all upper methods to support the VFS link type param
         
+        
+        
+        
         CmsFile newFile = new CmsFile(
             new CmsUUID(),
             new CmsUUID(),
@@ -680,8 +685,19 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         CmsFolder oldFolder = null;
         int state = 0;
+                         
         CmsUUID modifiedByUserId = user.getId();
-        long dateModified = System.currentTimeMillis();
+        if (folder.getUserLastModified().equals(CmsUUID.getNullUUID())) {
+            modifiedByUserId=folder.getUserLastModified();   
+        }
+        CmsUUID userCreatedId = user.getId();
+        if (folder.getUserCreated().equals(CmsUUID.getNullUUID())) {
+            userCreatedId =folder.getUserCreated();   
+        }
+        long dateModified = folder.getDateLastModified();
+        if (dateModified==0) {
+            dateModified=System.currentTimeMillis();
+        }
         // check if the creation date is set. if not, set it to the current system time        
         long dateCreated= folder.getDateCreated();
         if (dateCreated==0) {
@@ -694,6 +710,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             dateModified = folder.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
+
         }
 
         // Test if the file is already there and marked as deleted.
@@ -741,7 +758,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(4, CmsUUID.getNullUUID().toString());           
                 stmt.setInt(5, folder.getLoaderId());
                 stmt.setTimestamp(6, new Timestamp(dateCreated));
-                stmt.setString(7, user.getId().toString());
+                stmt.setString(7, userCreatedId.toString());
                 stmt.setTimestamp(8, new Timestamp(dateModified));
                 stmt.setString(9, modifiedByUserId.toString());
                 stmt.setInt(10, state);
@@ -806,14 +823,28 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
       * @param project The project in which the resource will be used.
       * @param parentId The parentId of the folder.
       * @param fileId The fileId of the folder.
-      * @param foldername The complete path to the folder in which the new folder will be created.
+      * @param folderName The complete path to the folder in which the new folder will be created.
       * @param flags The flags of this resource.
+      * @param dateLastModified the overwrite modification timestamp
+      * @param userLastModified the overwrite modification user
+      * @param dateCreated the overwrite creation timestamp  
+      * @param userCreated the overwrite creation user         
       *
       * @return The created folder.
       * @throws CmsException Throws CmsException if operation was not succesful.
       */
-    public CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException {
+    public CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException {
         
+        
+        // check if the overwrite user & timestamp are given
+        if (userLastModified.equals(CmsUUID.getNullUUID())) {
+            userLastModified=user.getId();
+        }
+        
+        if (userCreated.equals(CmsUUID.getNullUUID())) {
+            userCreated=user.getId();
+        }
+                
         CmsFolder newFolder = new CmsFolder(
             new CmsUUID(),
             new CmsUUID(),
@@ -824,10 +855,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             flags,
             project.getId(),
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
-            0,
-            user.getId(), 
-            0,
-            user.getId(), 
+            dateLastModified,
+            userLastModified, 
+            dateCreated,
+            userCreated, 
             1);
     
         return createFolder(user, project, newFolder, parentId, folderName);        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/19 07:29:07 $
- * Version: $Revision: 1.167 $
+ * Date   : $Date: 2003/08/19 14:38:07 $
+ * Version: $Revision: 1.168 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.167 $ $Date: 2003/08/19 07:29:07 $
+ * @version $Revision: 1.168 $ $Date: 2003/08/19 14:38:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1065,7 +1065,7 @@ public class CmsDriverManager extends Object {
         Map newResourceProps = null;
 
         if (destination.endsWith("/")) {
-            copyFolder(context, source, destination, lockCopy, copyAsLink);
+            copyFolder(context, source, destination, lockCopy, copyAsLink, false);
             return;
         }
 
@@ -1129,7 +1129,10 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);            
+                        
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
+            
+            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
         
         if (lockCopy) {
                 lockResource(context, destination);
@@ -1158,11 +1161,12 @@ public class CmsDriverManager extends Object {
      * @param context the current request context
      * @param source The complete m_path of the sourcefolder.
      * @param destination The complete m_path to the destination.
+     * @param preserveTimestamps true if the timestamps and users of the folder should be kept
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     // TODO: implement copyAsLink
-    public void copyFolder(CmsRequestContext context, String source, String destination, boolean lockCopy, boolean copyAsLink) throws CmsException {
+    public void copyFolder(CmsRequestContext context, String source, String destination, boolean lockCopy, boolean copyAsLink, boolean preserveTimestaps) throws CmsException {
         CmsResource newResource = null;
 
         // the name of the folder.
@@ -1183,14 +1187,31 @@ public class CmsDriverManager extends Object {
         // check if the user has write access to the destination folder (checking read access to the source is done implicitly by read folder)
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
+        // set user and creation timestamps
+        long dateLastModified = 0;
+        long dateCreated = 0;
+        CmsUUID userLastModified = context.currentUser().getId();
+        CmsUUID userCreated = context.currentUser().getId();
+        if (preserveTimestaps) {
+            dateLastModified = sourceFolder.getDateLastModified();
+            dateCreated = sourceFolder.getDateCreated();
+            userLastModified = sourceFolder.getUserLastModified();
+            userCreated = sourceFolder.getUserCreated();
+        }
+
+
         // create a copy of the folder
-        newResource = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags());
+        newResource = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags(),dateLastModified, userLastModified, dateCreated, userCreated);
 
         //clearResourceCache(destination, context.currentProject(), context.currentUser());
         clearResourceCache();
 
         // copy the properties
         writeProperties(context, destination, readProperties(context, source, null, false));
+        
+        if (preserveTimestaps) {
+            touch(context,destination,dateLastModified,userLastModified);
+        }
 
         // copy the access control entries of this resource
         ListIterator aceList = getAccessControlEntries(context, sourceFolder, false).listIterator();
@@ -1437,7 +1458,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // create the folder.
-        CmsFolder newFolder = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), cmsFolder.getId(), CmsUUID.getNullUUID(), resourceName, 0);
+        CmsFolder newFolder = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), cmsFolder.getId(), CmsUUID.getNullUUID(), resourceName, 0, 0, context.currentUser().getId(), 0, context.currentUser().getId());
         //newFolder.setState(I_CmsConstants.C_STATE_NEW);
         //m_vfsDriver.writeFolder(context.currentProject(), newFolder, false);
 
@@ -4627,7 +4648,7 @@ public class CmsDriverManager extends Object {
             deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
         } else {
             // folder is copied as link
-            copyFolder(context, sourceName, destinationName, true, true);
+            copyFolder(context, sourceName, destinationName, true, true, true);
             deleteFolder(context, sourceName);
         }
         // read the moved file
@@ -6994,20 +7015,23 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the resource
      * </ul>
      * 
-     * @param context the current request context		 
-     * @param resource			the resource
-     * @param principal			the id of a group or user to identify the access control entry
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context
+     * @param resource the resource
+     * @param principal the id of a group or user to identify the access control entry
+     * @throws CmsException if something goes wrong
      */
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
+        // get the old values
+        long dateLastModified=resource.getDateLastModified();
+        CmsUUID userLastModified=resource.getUserLastModified();
+        
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
 
-        long dateLastModified = resource.getDateLastModified();
         m_userDriver.removeAccessControlEntry(context.currentProject(), resource.getResourceAceId(), principal);
         clearAccessControlListCache();
         
-        touchResource(context, resource, dateLastModified, context.currentUser().getId());
+        touchResource(context, resource, dateLastModified, userLastModified);
     }
 
     /**
@@ -7891,18 +7915,21 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param resource			the resource	 
-     * @param acEntry 			the entry to write
-     * @throws CmsException		if something goes wrong
+     * @param resource the resource
+     * @param acEntry the entry to write
+     * @throws CmsException if something goes wrong
      */
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
+        // get the old values
+        long dateLastModified=resource.getDateLastModified();
+        CmsUUID userLastModified=resource.getUserLastModified();
+        
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
         
-        long dateLastModified = resource.getDateLastModified();
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
-        touchResource(context, resource, dateLastModified, context.currentUser().getId());
+        touchResource(context, resource, dateLastModified, userLastModified);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/13 15:56:46 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/08/19 14:38:07 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.35 $ $Date: 2003/08/13 15:56:46 $
+ * @version $Revision: 1.36 $ $Date: 2003/08/19 14:38:07 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -127,7 +127,7 @@ public interface I_CmsVfsDriver {
     CmsResource createVfsLink(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
     
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException;
-    CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException;
+    CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException;
     void createProjectResource(int projectId, String resourceName) throws CmsException;
     CmsPropertydefinition createPropertydefinition(String name, int projectId, int resourcetype) throws CmsException;
     CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
