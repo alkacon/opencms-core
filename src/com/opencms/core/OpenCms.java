@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/02/05 10:49:58 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2002/03/05 12:55:35 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.79 $ $Date: 2002/02/05 10:49:58 $
+ * @version $Revision: 1.80 $ $Date: 2002/03/05 12:55:35 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -348,16 +348,29 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH)));
 
             // is the static export enabled?
-            c_staticExportEnabled = conf.getBoolean("staticexport.enabled", false);
+            String activCheck = conf.getString("staticexport.enabled", "false");
+            if("true".equalsIgnoreCase(activCheck)){
+                c_staticExportEnabled = true;
+            }else{
+                c_staticExportEnabled = false;
+            }
             if(c_staticExportEnabled){
                 // we have to generate the dynamic rulessets
                 createDynamicLinkRules();
             }else{
-                // no static export. We need online and offline rules to stay in OpenCms.
-                // we generate them with the url_prefix_http so the user can still configure
-                // the servletpath.
-                c_linkRulesOffline = new String[]{"s#^#" + c_staticUrlPrefix[1] + "#"};
-                c_linkRulesOnline = c_linkRulesOffline;
+                if("false_ssl".equalsIgnoreCase(activCheck)){
+                    // no static esport, but we need the dynamic rules for setting the protokoll to https
+                    c_linkRulesOffline = new String[]{"s#^#" + c_staticUrlPrefix[1] + "#"};
+                    c_linkRulesOnline = new String[]{"*dynamicRules*", "s#^#" + c_staticUrlPrefix[1] + "#"};
+                    // and we have to change the standart export prefix to stay in opencms
+                    c_staticUrlPrefix[0] = c_staticUrlPrefix[1];
+                }else{
+                    // no static export. We need online and offline rules to stay in OpenCms.
+                    // we generate them with the url_prefix_http so the user can still configure
+                    // the servletpath.
+                    c_linkRulesOffline = new String[]{"s#^#" + c_staticUrlPrefix[1] + "#"};
+                    c_linkRulesOnline = c_linkRulesOffline;
+                }
             }
         }catch(Exception e){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {

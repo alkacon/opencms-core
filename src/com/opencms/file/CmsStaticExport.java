@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/02/26 16:19:45 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/03/05 12:55:35 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.19 $ $Date: 2002/02/26 16:19:45 $
+ * @version $Revision: 1.20 $ $Date: 2002/03/05 12:55:35 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -690,6 +690,10 @@ public class CmsStaticExport implements I_CmsConstants{
         int paraStartPos = link.indexOf('?');
         if(paraStartPos < 0){
             // no parameter - no service
+            return link;
+        }
+        // is the export activ? (there is a new parameter false_ssl for staticexport.enabled)
+        if(!cms.isStaticExportEnabled()){
             return link;
         }
         // cut the parameters
