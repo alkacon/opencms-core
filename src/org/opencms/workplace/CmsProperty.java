@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/08/19 12:04:41 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/21 16:16:13 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -319,41 +319,8 @@ public class CmsProperty extends CmsDialog {
      *  
      * @return the HTML output String for the buttons
      */
-    public String buildActionButtons() {
-        String resourceName = getParamResource();
-        CmsResource file = null;
-        CmsLock lock = null;
-        
-        try {
-            file = getCms().readFileHeader(resourceName);
-            // check if resource is a folder
-            if (file.isFolder()) {
-                resourceName += "/";            
-            }
-        } catch (CmsException e) { }
-        
-        try {
-            lock = getCms().getLock(resourceName);
-        } catch (CmsException e) {
-            lock = CmsLock.getNullLock();
-            
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + resourceName + " " + e.getMessage());
-            }             
-        }
-        
-        boolean showButtons = false;
-        if (!lock.isNullLock()) {
-            // determine when to show buttons...
-            if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
-                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())
-                    && getCms().getRequestContext().currentProject().getId() == lock.getProjectId()) {
-                // lock is not shared and belongs to the current user in the current project, so show buttons
-                showButtons = true;
-            }
-        }
-        
-        if (showButtons) {
+    public String buildActionButtons() {       
+        if (isEditable()) {
             StringBuffer retValue = new StringBuffer(256);
             
             retValue.append("<table border=\"0\">\n");
@@ -385,6 +352,48 @@ public class CmsProperty extends CmsDialog {
             // resource is not locked, don't display edit buttons
             return "";
         }
+    }
+    
+    /**
+     * Returns whether the properties are editable or not depending on the lock state of the resource.<p>
+     * 
+     * @return true if properties are editable, otherwise false
+     */
+    public boolean isEditable() {
+        String resourceName = getParamResource();
+        CmsResource file = null;
+        CmsLock lock = null;
+    
+        try {
+            file = getCms().readFileHeader(resourceName);
+            // check if resource is a folder
+            if (file.isFolder()) {
+                resourceName += "/";            
+            }
+        } catch (CmsException e) { }
+    
+        try {
+            // get the lock for the resource
+            lock = getCms().getLock(resourceName);
+        } catch (CmsException e) {
+            lock = CmsLock.getNullLock();
+        
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + resourceName + " " + e.getMessage());
+            }             
+        }
+    
+        if (!lock.isNullLock()) {
+            // determine if resource is editable...
+            if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
+                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())
+                    && getCms().getRequestContext().currentProject().getId() == lock.getProjectId()) {
+                // lock is not shared and belongs to the current user in the current project, so properties are editable
+                return true;
+            }
+        }
+        // lock is null or belongs to other user and/or project, properties are not editable
+        return false;
     }
 
     /**
