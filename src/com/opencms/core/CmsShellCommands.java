@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/04 12:07:18 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/06/04 13:39:34 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import com.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.72 $ $Date: 2003/06/04 12:07:18 $
+ * @version $Revision: 1.73 $ $Date: 2003/06/04 13:39:34 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3728,7 +3728,7 @@ class CmsShellCommands implements I_CmsConstants {
     }
     
     /**
-     * Displays the access control list of a given rersource.
+     * Displays the access control list of a given resource.
      * 
 	 * @param resourceName the name of the resource
 	 */
@@ -3744,4 +3744,31 @@ class CmsShellCommands implements I_CmsConstants {
 			CmsShell.printException(e);    	
 		}    	
     }
+    
+    /**
+     * Displays the current permissions of a user on a given resource.
+     * 
+	 * @param resourceName
+	 * @param userName
+	 */
+	public void getPermissions(String resourceName, String userName){
+    	try {
+			System.out.println(CmsAccessControlEntry.toPermissionString(m_cms.getPermissions(resourceName, userName),0,0));
+    	} catch (Exception e) {
+			CmsShell.printException(e);    	
+		}    	
+    }
+
+	/**
+	 * Displays the permissions of the current user on a given resource
+	 * 
+	 * @param resourceName
+	 */
+	public void getPermissions(String resourceName){
+		try {
+			System.out.println(CmsAccessControlEntry.toPermissionString(m_cms.getPermissions(resourceName),0,0));
+		} catch (Exception e) {
+			CmsShell.printException(e);    	
+		}    	
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/06/04 12:08:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/04 13:39:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,14 @@ package com.opencms.security;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.ListIterator;
+import java.util.Vector;
 
 /**
  * An access control list contains a permission set for a distinct resource
  * that is calculated on the permissions given by various access control entries
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/04 12:08:56 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/04 13:39:34 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -96,18 +98,26 @@ public class CmsAccessControlList {
 	
 	/**
 	 * Calculates the permission set of the access control list
-	 * for a given user
+	 * for a given vector of principals
 	 * 
 	 * @param principal	the user
 	 * 
 	 * @return the current permission set of the list
 	 */
-	public int getPermissions(I_CmsPrincipal principal){
-		PrincipalPermissions permissions = (PrincipalPermissions)m_permissions.get(principal.getId());
-		if (permissions == null)
-			return 0;
+	public int getPermissions(Vector principals){
 
-		return permissions.getPermissions();
+		ListIterator pIterator = principals.listIterator();
+		int allowed = 0, denied  = 0;
+		while (pIterator.hasNext()) {
+			I_CmsPrincipal principal = (I_CmsPrincipal)pIterator.next();
+			PrincipalPermissions permissions = (PrincipalPermissions)m_permissions.get(principal.getId());
+			if (permissions != null) {
+				allowed |= permissions.m_allowed;
+				denied  |= permissions.m_denied;		
+			}
+		}
+		
+		return allowed & ~denied;
 	}
 	
 	public String getPermissionString(I_CmsPrincipal principal){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/04 12:08:48 $
-* Version: $Revision: 1.275 $
+* Date   : $Date: 2003/06/04 13:39:33 $
+* Version: $Revision: 1.276 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.275 $
+ * @version $Revision: 1.276 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1792,7 +1792,7 @@ public Vector getGroups() throws CmsException {
  * @throws CmsException if operation was not succesful.
  */
 public Vector getGroupsOfUser(String username) throws CmsException {
-    return (m_driverManager.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
+    return (m_driverManager.getGroupsOfUser(m_context.currentUser(), username));
 }
 /**
  * Get the launcher manager used with this instance of CmsObject.
@@ -1892,7 +1892,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup getParent(String groupname) throws CmsException {
-    return (m_driverManager.getParent(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_driverManager.getParent(m_context.currentUser(), groupname));
 }
 /**
  * Gets the Registry.
@@ -3138,7 +3138,7 @@ public CmsGroup readGroup(CmsTask task) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readGroup(String groupName) throws CmsException {
-    return (m_driverManager.readGroup(m_context.currentUser(), m_context.currentProject(), groupName));
+    return (m_driverManager.readGroup(m_context.currentUser(), groupName));
 }
 /**
  * Reads a group of the Cms.
@@ -4500,6 +4500,22 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlEntries(res,true);
+	}
+	
+	public int getPermissions(String resourceName, String userName) throws CmsException {
+		CmsAccessControlList acList = getAccessControlList(resourceName);
+		CmsUser user = readUser(userName);
+		Vector principals = getGroupsOfUser(userName);
+		principals.add(user);
+		return acList.getPermissions(principals);		
+	}
+	
+	public int getPermissions(String resourceName) throws CmsException {
+		CmsAccessControlList acList = getAccessControlList(resourceName);
+		CmsUser user = m_context.currentUser();
+		Vector principals = getGroupsOfUser(user.getName());
+		principals.add(user);
+		return acList.getPermissions(principals);		
 	}
 	
 	/**

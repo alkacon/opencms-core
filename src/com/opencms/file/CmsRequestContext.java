@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/05/28 16:47:17 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/06/04 13:39:33 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.69 $ $Date: 2003/05/28 16:47:17 $
+ * @version $Revision: 1.70 $ $Date: 2003/06/04 13:39:33 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -201,7 +201,7 @@ public class CmsRequestContext implements I_CmsConstants {
             project = setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
         
-        m_currentGroup = m_driverManager.readGroup(m_user, m_currentProject, currentGroup);
+        m_currentGroup = m_driverManager.readGroup(m_user, currentGroup);
         m_streaming = streaming;
         m_elementCache = elementCache;
         m_directoryTranslator = directoryTranslator;
@@ -457,7 +457,7 @@ public class CmsRequestContext implements I_CmsConstants {
                 groupname)) {
             // Yes - set it to the current Group.
             m_currentGroup =
-                m_driverManager.readGroup(m_user, m_currentProject, groupname);
+                m_driverManager.readGroup(m_user, groupname);
         } else {
             // No - throw exception.
             throw new CmsException(

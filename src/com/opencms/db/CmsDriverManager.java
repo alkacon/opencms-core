@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/04 12:08:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/04 13:39:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,13 +99,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.12 $ $Date: 2003/06/04 12:08:20 $
+ * @version $Revision: 1.13 $ $Date: 2003/06/04 13:39:33 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.12 $ $Date: 2003/06/04 12:08:20 $
+ * @version $Revision: 1.13 $ $Date: 2003/06/04 13:39:33 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -738,7 +738,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         }
 
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
 
         // test, if the user is in the same groups like the project.
         for (int i = 0; i < groups.size(); i++) {
@@ -1158,7 +1158,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             // check the password
             Utils.validateNewPassword(cms, password, null);
             if(name.length() > 0 ) {
-                CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
+                CmsGroup defaultGroup =  readGroup(currentUser, group);
                 CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_SYSTEMUSER);
                 addUserToGroup(currentUser, currentProject, newUser.getName(),defaultGroup.getName());
                 return newUser;
@@ -1212,7 +1212,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             name = name.trim();
             // check the username
             validFilename(name);
-            CmsGroup group =  readGroup(currentUser, currentProject, defaultGroup);
+            CmsGroup group =  readGroup(currentUser, defaultGroup);
             CmsUser newUser = m_userDriver.addImportUser(name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
             addUserToGroup(currentUser, currentProject, newUser.getName(), group.getName());
             return newUser;
@@ -1253,7 +1253,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
             }
             //check if the user exists
             if (user != null) {
-                group = readGroup(currentUser, currentProject, groupname);
+                group = readGroup(currentUser, groupname);
                 //check if group exists
                 if (group != null) {
                     //add this user to the group
@@ -1303,7 +1303,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
         // check the password
         Utils.validateNewPassword(cms, password, null);
         if( (name.length() > 0) ) {
-                CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
+                CmsGroup defaultGroup =  readGroup(currentUser, group);
                 CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
                 CmsUser user;
                 CmsGroup usergroup;
@@ -1312,7 +1312,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
 
                 //check if the user exists
                 if (user != null) {
-                    usergroup=readGroup(currentUser,currentProject,group);
+                    usergroup=readGroup(currentUser,group);
                     //check if group exists
                     if (usergroup != null){
                         //add this user to the group
@@ -1368,7 +1368,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
         // check the password
         Utils.validateNewPassword(cms, password, null);
         if( (name.length() > 0) ) {
-            CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
+            CmsGroup defaultGroup =  readGroup(currentUser, group);
             CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
@@ -1377,7 +1377,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
             user=m_userDriver.readUser(newUser.getName(),C_USER_TYPE_WEBUSER);
             //check if the user exists
             if (user != null) {
-                usergroup=readGroup(currentUser,currentProject,group);
+                usergroup=readGroup(currentUser,group);
                 //check if group exists
                 if (usergroup != null && isWebgroup(usergroup)){
                     //add this user to the group
@@ -1390,7 +1390,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                 // if an additional groupname is given and the group does not belong to
                 // Users, Administrators or Projectmanager add the user to this group
                 if (additionalGroup != null && !"".equals(additionalGroup)){
-                    addGroup = readGroup(currentUser, currentProject, additionalGroup);
+                    addGroup = readGroup(currentUser, additionalGroup);
                     if(addGroup != null && isWebgroup(addGroup)){
                         //add this user to the group
                         m_userDriver.addUserToGroup(user.getId(), addGroup.getId());
@@ -1466,7 +1466,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
             ( (resource.getOwnerId().equals(currentUser.getId())) ||
               isAdmin(currentUser, currentProject))) {
         	CmsUUID oldGroupId = resource.getGroupId();
-            CmsGroup group = readGroup(currentUser, currentProject, newGroup);
+            CmsGroup group = readGroup(currentUser, newGroup);
             resource.setGroupId(group.getId());
             // write-acces  was granted - write the file.
             if (filename.endsWith("/")) {
@@ -2296,7 +2296,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         if (accessCreate(currentUser, currentProject, (CmsResource) parentFolder)) {
             // try to read owner and group
             CmsUser owner = this.readUser(currentUser, currentProject, ownername);
-            CmsGroup group = this.readGroup(currentUser, currentProject, groupname);
+            CmsGroup group = this.readGroup(currentUser, groupname);
                         
             // create a new CmsResourceObject
             if (filecontent == null) {
@@ -2351,8 +2351,8 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
             throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
         // read the needed groups from the cms
-        CmsGroup group = readGroup(currentUser, currentProject, groupname);
-        CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
+        CmsGroup group = readGroup(currentUser, groupname);
+        CmsGroup managergroup = readGroup(currentUser, managergroupname);
 
         // create a new task for the project
         CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
@@ -2388,8 +2388,8 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
             throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
         // read the needed groups from the cms
-        CmsGroup group = readGroup(currentUser, currentProject, groupname);
-        CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
+        CmsGroup group = readGroup(currentUser, groupname);
+        CmsGroup managergroup = readGroup(currentUser, managergroupname);
 
         // create a new task for the project
         CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
@@ -2425,8 +2425,8 @@ public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject cur
             throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
         // read the needed groups from the cms
-        CmsGroup group = readGroup(currentUser, currentProject, groupname);
-        CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
+        CmsGroup group = readGroup(currentUser, groupname);
+        CmsGroup managergroup = readGroup(currentUser, managergroupname);
 
         // create a new task for the project
         CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
@@ -2456,8 +2456,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     if (isAdmin(currentUser, currentProject))
     {
         // read the needed groups from the cms
-        CmsGroup group = readGroup(currentUser, currentProject, "Users");
-        CmsGroup managergroup = readGroup(currentUser, currentProject, "Administrators");
+        CmsGroup group = readGroup(currentUser, "Users");
+        CmsGroup managergroup = readGroup(currentUser, "Administrators");
 
         // create a new task for the project
         CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
@@ -2494,7 +2494,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
 
         // read the role
         if(roleName!=null && !roleName.equals("")) {
-            role = readGroup(currentUser, null, roleName);
+            role = readGroup(currentUser, roleName);
         }
         // create the timestamp
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
@@ -3367,8 +3367,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                             CmsProject currentProject)
          throws CmsException {
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentProject,
-                                        currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
 
         // get all projects which are owned by the user.
         Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(currentUser);
@@ -3412,8 +3411,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                             CmsProject currentProject)
          throws CmsException {
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentProject,
-                                        currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
 
         // get all projects which are owned by the user.
         Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(currentUser);
@@ -3859,8 +3857,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject,
-                                  String username)
+    public Vector getGroupsOfUser(CmsUser currentUser, String username)
         throws CmsException {
 
          Vector allGroups;
@@ -3878,12 +3875,12 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
          while (enu.hasMoreElements()) {
              group=(CmsGroup)enu.nextElement();
 
-             subGroup=getParent(currentUser, currentProject,group.getName());
+             subGroup=getParent(currentUser, group.getName());
              while((subGroup != null) && (!allGroups.contains(subGroup))) {
 
                  allGroups.addElement(subGroup);
                  // read next sub group
-                 subGroup = getParent(currentUser, currentProject,subGroup.getName());
+                 subGroup = getParent(currentUser, subGroup.getName());
              }
 
              if(!allGroups.contains(group)) {
@@ -3920,9 +3917,9 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      * @return group The parent group or null.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String groupname) throws CmsException
+    public CmsGroup getParent(CmsUser currentUser, String groupname) throws CmsException
     {
-        CmsGroup group = readGroup(currentUser, currentProject, groupname);
+        CmsGroup group = readGroup(currentUser, groupname);
         if (group.getParentId().isNullUUID())
         {
             return null;
@@ -4627,8 +4624,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             return true;
         }
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentProject,
-                                        currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
 
         for(int i = 0; i < groups.size(); i++) {
             // is this a managergroup for this project?
@@ -6160,7 +6156,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
      *
      * @throws CmsException  Throws CmsException if operation was not succesful
      */
-    public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, String groupname)
+    public CmsGroup readGroup(CmsUser currentUser, String groupname)
         throws CmsException {
         CmsGroup group=null;
         // try to read group form cache
@@ -6758,7 +6754,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         CmsGroup role = null;
 
         if(roleName != null) {
-            role = readGroup(currentUser, currentProject, roleName);
+            role = readGroup(currentUser, roleName);
         }
 
         if(projectId != C_UNKNOWN_ID) {
@@ -7045,7 +7041,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
             user=readUser(currentUser,currentProject,username);
             //check if the user exists
             if (user != null) {
-                group=readGroup(currentUser,currentProject,groupname);
+                group=readGroup(currentUser, groupname);
                 //check if group exists
                 if (group != null){
                   // do not remmove the user from its default group
@@ -7154,7 +7150,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // user can not be read, set the userid of current user
         }
         try{
-            groupId = readGroup(currentUser, currentProject, backupFile.getGroupName()).getId();
+            groupId = readGroup(currentUser, backupFile.getGroupName()).getId();
         } catch(CmsException exc){
             // group can not be read, set the groupid of current user
         }
@@ -7223,12 +7219,12 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 
         // Check the security
         if( isAdmin(currentUser, currentProject) ) {
-            CmsGroup group = readGroup(currentUser, currentProject, groupName);
+            CmsGroup group = readGroup(currentUser, groupName);
             CmsUUID parentGroupId = CmsUUID.getNullUUID();
 
             // if the group exists, use its id, else set to unknown.
             if( parentGroupName != null ) {
-                parentGroupId = readGroup(currentUser, currentProject, parentGroupName).getId();
+                parentGroupId = readGroup(currentUser, parentGroupName).getId();
             }
 
             group.setParentId(parentGroupId);
@@ -7639,7 +7635,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
     public boolean userInGroup(CmsUser currentUser, CmsProject currentProject,
                                String username, String groupname)
         throws CmsException {
-         Vector groups = getGroupsOfUser(currentUser,currentProject,username);
+         Vector groups = getGroupsOfUser(currentUser, username);
          CmsGroup group;
          for(int z = 0; z < groups.size(); z++) {
              group = (CmsGroup) groups.elementAt(z);
@@ -7891,7 +7887,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             // write-access was granted
 			// set the owner, group, access flags and type of this resource
 			CmsUser owner = readUser(currentUser,currentProject, username);			
-			CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			CmsGroup group = readGroup(currentUser, groupname);
 			
 			// if owner, group, accessFlags or resourcetype must be changed,
 			// check if the current user is owner of the resource or administrator
@@ -9285,6 +9281,39 @@ protected void validName(String name, boolean blank) throws CmsException {
 		}
 		
 		return acList;
+	}
+	
+
+	//
+	//	Permissions and permission checks
+	//
+
+	/**
+	 * Returns the current permissions of an user on the given resource
+	 * 
+	 * @param resource	the resource
+	 * @param user		the user
+	 * @return			bitset with allowed permissions
+	 */	
+	public int getPermissions(CmsResource resource, CmsUser user) throws CmsException {
+		
+		CmsAccessControlList acList = getAccessControlList(resource);
+		Vector principals = getGroupsOfUser(user, user.getName());
+		principals.add(user);
+		
+		return acList.getPermissions(principals);
+	}
+	
+	/**
+	 * Checks if the requested permissions are satisfied by the permissions at the resource.
+	 * 
+	 * @param resource
+	 * @param user
+	 * @param permissions
+	 * @return
+	 */
+	public boolean checkPermissions(CmsResource resource, CmsUser user, int permissions){
+		return false;
 	}
 	
 	//
