@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2001/01/30 08:50:58 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -93,7 +93,13 @@ function setTextDelayed()
 
 function doSubmit()
 {
-	document.EDITOR.content.value = escape(document.EDITOR.edit1.Text);
+	if(IE) {
+		document.EDITOR.content.value = escape(document.EDITOR.edit1.Text);
+	} else {
+		// We have to do a blur on the textarea here. otherwise netscape may have problems with reading the value
+		document.EDITOR.edit1.blur();
+		document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
+	}
 }
 
 // Function action on button click for Netscape Navigator
