@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/01/03 14:56:35 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/01/15 13:31:52 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2002/01/03 14:56:35 $
+ * @version $Revision: 1.25 $ $Date: 2002/01/15 13:31:52 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -160,251 +160,11 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     private String createErrorBox(CmsException e, CmsObject cms) {
         StringBuffer output = new StringBuffer();
-        output.append("<HTML>\n");
-        output.append("<script language=JavaScript>\n");
-        output.append("<!--\n");
-        output.append("function show_help()\n");
-        output.append("{\n");
-        output.append("return '2_2_2_2_5_5_1.html';\n");
-        output.append("}\n");
-        output.append("var shown=false;\n");
-        output.append("function checkBrowser(){\n");
-        output.append("this.ver=navigator.appVersion\n");
-        output.append("this.dom=document.getElementById?1:0\n");
-        output.append("this.ie5=(this.ver.indexOf(\"MSIE 5\")>-1 && this.dom)?1:0;\n");
-        output.append("this.ie4=(document.all && !this.dom)?1:0;\n");
-        output.append("this.ns5=(this.dom && parseInt(this.ver) >= 5) ?1:0;\n");
-        output.append("this.ns4=(document.layers && !this.dom)?1:0;\n");
-        output.append("this.bw=(this.ie5 || this.ie4 || this.ns4 || this.ns5)\n");
-        output.append("return this\n");
-        output.append("}\n");
-        output.append("bw=new checkBrowser();\n");
-        output.append("function makeObj(obj,nest){\n");
-        output.append("nest=(!nest) ? '':'document.'+nest+'.';\n");
-        output.append("this.el=bw.dom?document.getElementById(obj):bw.ie4?document.all[obj]:bw.ns4?eval(nest+'document.'+obj):0;\n");
-        output.append("this.css=bw.dom?document.getElementById(obj).style:bw.ie4?document.all[obj].style:bw.ns4?eval(nest+'document.'+obj):0;\n");
-        output.append("this.scrollHeight=bw.ns4?this.css.document.height:this.el.offsetHeight; \n");
-        output.append("this.clipHeight=bw.ns4?this.css.clip.height:this.el.offsetHeight;\n");
-        output.append("this.obj = obj + \"Object\";\n");
-        output.append("eval(this.obj + \"=this\");\n");
-        output.append("return this;\n");
-        output.append("}\n");
-        output.append("ns = (document.layers)? true:false;\n");
-        output.append("ie = (document.all)? true:false;\n");
-        output.append("if(ns)\n");
-        output.append("{\n");
-        output.append("var layerzeigen_01= 'document.layers.';\n");
-        output.append("var layerzeigen_02= '.visibility=\"show\"';\n");
-        output.append("var layerverstecken_01= 'document.layers.';\n");
-        output.append("var layerverstecken_02= '.visibility=\"hide\"';\n");
-        output.append("}\n");
-        output.append("else\n");
-        output.append("{\n");
-        output.append("var layerzeigen_01= 'document.all.';\n");
-        output.append("var layerzeigen_02= '.style.visibility=\"visible\"';\n");
-        output.append("var layerverstecken_01= 'document.all.';\n");
-        output.append("var layerverstecken_02= '.style.visibility=\"hidden\"';\n");
-        output.append("}\n");
-        output.append("function getWindowWidth() {\n");
-        output.append("if( ns==true ) {\n");
-        output.append("windowWidth = innerWidth;\n");
-        output.append("}\n");
-        output.append("else if( ie==true ) {\n");
-        output.append("windowWidth = document.body.clientWidth;\n");
-        output.append("}\n");
-        output.append("return windowWidth;\n");
-        output.append("}\n");
-        output.append("function centerLayer(layerName){\n");
-        output.append("totalWidth=getWindowWidth();\n");
-        output.append("if (ie) {\n");
-        output.append("eval('lyrWidth = document.all[\"'+ layerName +'\"].offsetWidth');\n");
-        output.append("eval('document.all[\"'+ layerName +'\"].style.left=Math.round((totalWidth-lyrWidth)/2)');\n");
-        output.append("}\n");
-        output.append("else if (ns) {\n");
-        output.append("eval('lyrWidth = document[\"'+ layerName +'\"].clip.width');\n");
-        output.append("eval('document[\"'+ layerName +'\"].left=Math.round((totalWidth-lyrWidth)/2)');\n");
-        output.append("}\n");
-        output.append("}\n");
-        output.append("function justifyLayers(lyr1,lyr2) {\n");
-        output.append("if (ie) {\n");
-        output.append("eval('y1 = document.all[\"'+ lyr1 +'\"].offsetTop');\n");
-        output.append("eval('lyrHeight = document.all[\"'+ lyr1 +'\"].offsetHeight');\n");
-        output.append("y2 = y1 + lyrHeight;\n");
-        output.append("eval('document.all[\"'+ lyr2 +'\"].style.top = y2-22');\n");
-        output.append("}\n");
-        output.append("else if (ns) {\n");
-        output.append("eval('y1 = document[\"'+ lyr1 +'\"].top');\n");
-        output.append("eval('lyrHeight = document[\"'+ lyr1 +'\"].clip.height');\n");
-        output.append("y2 = y1 + lyrHeight; \n");
-        output.append("eval('document[\"'+ lyr2 +'\"].top = y2-22');\n");
-        output.append("}\n");
-        output.append("}\n");
-        output.append("function chInputTxt(formName,field,txt,layerName)\n");
-        output.append("{\n");
-        output.append("if (ie || layerName==null)\n");
-        output.append("eval('document.' + formName +'.'+ field + '.value=\"'+ txt +'\";');\n");
-        output.append("else if (ns && layerName!=null) \n");
-        output.append("eval('document[\"'+layerName+'\"].document.forms[\"'+formName+'\"].'+ field + '.value=\"'+ txt +'\";');\n");
-        output.append("}\n");
-        output.append("function chButtonTxt(formName,field,txt1,txt2,layerName)\n");
-        output.append("{\n");
-        output.append("if (shown)\n");
-        output.append("chInputTxt(formName,field,txt2,layerName);\n");
-        output.append("else\n");
-        output.append("chInputTxt(formName,field,txt1,layerName);\n");
-        output.append("}\n");
-        output.append("function newObj(layerName,visibility){\n");
-        output.append("eval('oCont=new makeObj(\"'+ layerName +'\")');\n");
-        output.append("eval('oCont.css.visibility=\"'+ visibility +'\"');\n");
-        output.append("eval('centerLayer(\"'+ layerName +'\")');\n");
-        output.append("}\n");
-        output.append("function showlyr(welche)\n");
-        output.append("{\n");
-        output.append("eval(layerzeigen_01+welche+layerzeigen_02);\n");
-        output.append("}\n");
-        output.append("function hidelyr(welche)\n");
-        output.append("{\n");
-        output.append("eval(layerverstecken_01+welche+layerverstecken_02);\n");
-        output.append("}\n");
-        output.append("function toggleLayer(layerName)\n");
-        output.append("{\n");
-        output.append("if (shown) {\n");
-        output.append("eval('hidelyr(\"'+ layerName +'\")');\n");
-        output.append("shown=false;\n");
-        output.append("}\n");
-        output.append("else {\n");
-        output.append("eval('showlyr(\"'+ layerName +'\")');\n");
-        output.append("shown=true;\n");
-        output.append("}\n");
-        output.append("}\n");
-        output.append("function resized(){\n");
-        output.append("pageWidth2=bw.ns4?innerWidth:document.body.offsetWidth;\n");
-        output.append("pageHeight2=bw.ns4?innerHeight:document.body.offsetHeight;\n");
-        output.append("if(pageWidth!=pageWidth2 || pageHeight!=pageHeight2) location.reload();\n");
-        output.append("}\n");
-        output.append("function errorinit() {\n");
-        output.append("newObj('errormain','hidden');\n");
-        output.append("newObj('errordetails','hidden');\n");
-        output.append("justifyLayers('errormain','errordetails');\n");
-        output.append("showlyr('errormain');\n");
-        output.append("pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;\n");
-        output.append("pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;\n");
-        output.append("window.onresize=resized;\n");
-        output.append("}\n");
-        output.append("//-->\n");
-        output.append("</script>\n");
-        output.append("<head>\n");
-        output.append("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n");
-        output.append("<title>OpenCms-Systemfehler</title>\n");
-        output.append("<style type=\"text/css\">\n");
-        output.append("TD.dialogtxt\n");
-        output.append("{\n");
-        output.append("BACKGROUND-COLOR: #c0c0c0;\n");
-        output.append("COLOR: #000000;\n");
-        output.append("FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;\n");
-        output.append("FONT-SIZE: 8px;\n");
-        output.append("FONT-WEIGHT: normal\n");
-        output.append("}\n");
-        output.append("TD.head\n");
-        output.append("{\n");
-        output.append("BACKGROUND-COLOR: #000066;\n");
-        output.append("COLOR: white;\n");
-        output.append("FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;\n");
-        output.append("FONT-SIZE: 8px;\n");
-        output.append("FONT-WEIGHT: bold\n");
-        output.append("}\n");
-        output.append("TD.leerzeile\n");
-        output.append("{\n");
-        output.append("BACKGROUND-COLOR: #c0c0c0;\n");
-        output.append("HEIGHT: 3px;\n");
-        output.append("PADDING-BOTTOM: 0px;\n");
-        output.append("PADDING-LEFT: 10px;\n");
-        output.append("PADDING-RIGHT: 10px\n");
-        output.append("}\n");
-        output.append("TD.formular\n");
-        output.append("{\n");
-        output.append("BACKGROUND-COLOR: #c0c0c0;\n");
-        output.append("COLOR: black;\n");
-        output.append("FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;\n");
-        output.append("FONT-SIZE: 8px;\n");
-        output.append("FONT-WEIGHT: bold\n");
-        output.append("}\n");
-        output.append("INPUT.button\n");
-        output.append("{\n");
-        output.append("COLOR: black;\n");
-        output.append("FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;\n");
-        output.append("FONT-SIZE: 8px;\n");
-        output.append("FONT-WEIGHT: normal;\n");
-        output.append("WIDTH: 100px;\n");
-        output.append("}\n");
-        output.append("TEXTAREA.textarea\n");
-        output.append("{\n");
-        output.append("COLOR: #000000;\n");
-        output.append("FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;\n");
-        output.append("FONT-SIZE: 8px;\n");
-        output.append("WIDTH: 300px\n");
-        output.append("}\n");
-        output.append("#errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }\n");
-        output.append("#errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}\n");
-        output.append("</style>\n");
-        output.append("</HEAD>\n");
-        output.append("<BODY onLoad=\"errorinit();\" bgcolor=\"#ffffff\" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>\n");
-        output.append("<div id=\"errormain\">\n");
-        output.append("<!-- Tabellenaufbau f?r Dialog mit OK und Abbrechen-->\n");
-        output.append("<form id=ERROR name=ERROR>\n");
-        output.append("<table cellspacing=0 cellpadding=0 border=2 width=350>\n");
-        output.append("<tr><td class=dialogtxt>\n");
-        output.append("<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>\n");
-        output.append("<!-- Beginn Tabellenkopf blau-->\n");
-        output.append("<tr> \n");
-        output.append("<td colspan=2 class=\"head\">Systemfehler</td>\n");
-        output.append("</tr>\n");
-        output.append("<!-- Ende Tabellenkopf blau-->\n");
-        output.append("<!-- Beginn Leerzeile-->\n");
-        output.append("<tr> <td colspan=2 class=\"leerzeile\">&nbsp;</td></tr>\n");
-        output.append("<!-- Ende Leerzeile-->\n");
-        output.append("<tr> \n");
-        output.append("<td class=\"dialogtxt\" rowspan=3 valign=top><IMG border=0 src=\"" + cms.getRequestContext().getRequest().getWebAppUrl() + "/pics/system/ic_caution.gif\" width=32 height=32></td>\n");
-        output.append("<td class=dialogtxt>Ein Systemfehler ist aufgetreten.</td>\n");
-        output.append("</tr>    \n");
-        output.append("<tr><td class=dialogtxt>F&uuml;r weitere Informationen klicken Sie auf \"Details anzeigen\" oder kontaktieren Sie Ihren Systemadministrator.</td></tr>\n");
-        output.append("<!-- Beginn Leerzeile-->\n");
-        output.append("<tr> <td class=\"leerzeile\">&nbsp;</td></tr>\n");
-        output.append("<!-- Ende Leerzeile-->\n");
-        output.append("<!-- Beginn Buttonleisete-->\n");
-        output.append("<tr><td class=dialogtxt colspan=2>\n");
-        output.append("<table cellspacing=0 cellpadding=5 width=100%>\n");
-        output.append("<tr>\n");
-        output.append("<td class=formular align=center><INPUT class=button width = 100 type=\"button\" value=\"OK\" id=OK name=OK onClick=\"history.back();\"></td>\n");
-        output.append("<td class=formular align=center><INPUT class=button width = 100 type=\"button\" value=\"Details anzeigen\" id=details name=details onClick=\"toggleLayer('errordetails');chButtonTxt('ERROR','details','Details anzeigen','Details verbergen','errormain')\"></td>\n");
-        output.append("</tr>\n");
-        output.append("</table>\n");
-        output.append("</td>\n");
-        output.append("</tr>\n");
-        output.append("</table>\n");
-        output.append("<!-- Ende Buttonleisete-->   \n");
-        output.append("</td></tr>\n");
-        output.append("</table>\n");
-        output.append("</form>\n");
-        output.append("</div>\n");
-        output.append("<div id=\"errordetails\">\n");
-        output.append("<form id=DETAILS name=DETAILS>\n");
-        output.append("<table cellspacing=0 cellpadding=0 border=2 width=350>\n");
-        output.append("<tr><td class=dialogtxt>\n");
-        output.append("<table cellspacing=1 cellpadding=5 border=0 width=100% height=100%>\n");
-        output.append("<tr><td class=formular>Fehlermeldung:</td>\n");
-        output.append("<tr><td align=center class=dialogtxt>\n");
-        output.append("<textarea wrap=off cols=33 rows=6 style=\"width:330\" class=\"textarea\" onfocus=\"this.blur();\" id=EXCEPTION name=EXCEPTION>");
+        output.append(this.getErrormsg("C_ERRORPART_1"));
+        output.append(cms.getRequestContext().getRequest().getWebAppUrl());
+        output.append(this.getErrormsg("C_ERRORPART_2"));
         output.append(Utils.getStackTrace(e));
-        output.append("</textarea>\n");
-        output.append("</td></tr>\n");
-        output.append("</table>\n");
-        output.append("</td></tr>\n");
-        output.append("</table>\n");
-        output.append("</form>\n");
-        output.append("</div> \n");
-        output.append("</BODY>\n");
-        output.append("</html>\n");
+        output.append(this.getErrormsg("C_ERRORPART_3"));
         return output.toString();
     }
 
@@ -976,5 +736,28 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 }
             }
         }
+    }
+
+    /**
+     * Get the value for the property entry
+     *
+     * @param part the name of the property
+     * @return The value of the property
+     */
+    public String getErrormsg(String part){
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/errormsg.properties"));
+        } catch(NullPointerException exc) {
+            if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            }
+        } catch(java.io.IOException exc) {
+            if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            }
+        }
+        String value = props.getProperty(part);
+        return value;
     }
 }
