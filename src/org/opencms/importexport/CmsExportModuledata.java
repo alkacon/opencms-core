@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/18 09:19:19 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/18 09:19:19 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -139,7 +139,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         try {
             m_cms.setContextToCos();
             // export all the resources
-            exportAllResourcesVersion3(resourcesToExport);
+            exportAllResources(resourcesToExport);
 
         } catch (Exception e) {
             throw new CmsException("Error exporting COS channels", e);

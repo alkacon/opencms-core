@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2003/08/11 15:53:53 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/08/18 09:19:19 $
+* Version: $Revision: 1.5 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/08/11 15:53:53 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/18 09:19:19 $
  */
 public class CmsImport implements Serializable {
 
@@ -108,7 +108,9 @@ public class CmsImport implements Serializable {
      * 
      * 0 indicates an export file without a version number, that is before version 4.3.23 of OpenCms.<br>
      * 1 indicates an export file of OpenCms with a version before 5.0.0
-     * 2 is the current (since 5.0.0) version of the export file    
+     * 2 indicates an export file of OpenCms with a version before 5.1.2
+     * 3 indicates an export file of OpenCms with a version before 5.1.6
+     * 4 indicates an export file of OpenCms with a version after 5.1.6
      */
     protected int m_importVersion = 0;
 
