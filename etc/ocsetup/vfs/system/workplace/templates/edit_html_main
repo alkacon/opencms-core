@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <workplace>
 <template>
-<![CDATA[
+<![CDATA[ 
+
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
@@ -78,7 +79,8 @@
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
-		
+		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
+		 
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
 	<tr><td colspan=20><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=2 height=3></td></tr>
@@ -105,6 +107,7 @@
 	</tr>
 </table> 
 <table>
+
 ]]>
 </template>
 </workplace>

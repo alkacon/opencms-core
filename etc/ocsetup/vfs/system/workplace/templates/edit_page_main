@@ -136,7 +136,8 @@
 	id=EDITOR
 	METHOD=POST>
 	<INPUT TYPE=HIDDEN name="bodyclass" value="]]><PROCESS>bodyclass</PROCESS><![CDATA[">
-	<INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA[">
+	<INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA["> 
+	<INPUT TYPE=HIDDEN name="URL" id="URL">
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>

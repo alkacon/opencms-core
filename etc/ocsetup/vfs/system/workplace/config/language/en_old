@@ -18,6 +18,7 @@
 			<default>Default</default>
 			<delete>Delete</delete>
 			<detail>Details...</detail>
+			<downloadlist>download list</downloadlist>
 			<edit>Edit</edit>
 			<endwizard>Finish</endwizard>
 			<exit>Exit</exit>
@@ -118,6 +119,7 @@
 				<deleteuser> Sorry, the user could not be deleted.</deleteuser>
 				<deleteextension>Sorry, the file extension could not be deleted.</deleteextension>
 				<deletegroup>Sorry, the group could not be deleted.</deletegroup>
+				<downbrowser>Sorry, you can't use the download browser.</downbrowser>
 				<changeuser>Sorry, the user data could not be changed.</changeuser>
 				<adduser> Sorry, the user could not be created.</adduser>
 				<addgroup>Sorry, the group could not be created..</addgroup>
@@ -130,6 +132,8 @@
 				<newprop>Sorry, the new propertydefinition could not be created.</newprop>
 				<newextension>Sorry, the new file extension could not be assigned.</newextension>
 				<newtask>Sorry, the new task could not be created.</newtask>
+				<picbrowser>Sorry, you can't use the picture browser yet.</picbrowser>
+				<picgallery>You don't have permission to create a new gallery in this project.</picgallery>
 				<propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
 				<projectdatamissing>Sorry, the new project could not be created.</projectdatamissing>
 				<publishproject>Sorry, the project could not be published.</publishproject>
@@ -155,10 +159,12 @@
 				<database>There was a system error.</database>
 				<datamissing>The fields User, Name and Email must be filled out.</datamissing> 
 				<disadmin>A user in the group Administrators can not be disabled.</disadmin>
+				<downbrowser>The folder for the download galeries doesn't exist.</downbrowser>
 				<extinuse>This extension has already been assigned to a resource type.</extinuse>
 				<lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
 				<lockchange>The file is locked by another user.</lockchange>
 				<login>The data entered is not correct.</login>
+				<picbrowser>The folder for the picture galeries doesn't exist.</picbrowser>
 				<projectlockchange>There was an error.</projectlockchange>
 				<namemissing>The field Name must be filled out.</namemissing>
 				<titlemissing>The field Title must be filled out.</titlemissing>
@@ -195,6 +201,7 @@
 				<deletegroup>Please contact your system administrator.</deletegroup>
 				<database>You must have Admin permissions to export or import the database.</database>
 				<disadmin>If you want to disable the user, remove him from the Administrators group first.</disadmin>
+				<downbrowser>Create the folder for the download galeries or contact your system administrator.</downbrowser>
 				<lock></lock>
 				<lockchange>Please try again later, or contact your system administrator.</lockchange>
 				<login>Please check the entered data or contact your system administrator.</login>
@@ -205,6 +212,8 @@
 				<newextension>Please contact your system administrator.</newextension>				
 				<newtask>Please check the entered data or contact your system administrator.</newtask>
 				<none></none>
+				<picbrowser>Create the folder for the picture galeries or contact your system administrator.</picbrowser>
+				<picgallery>Creating a picture gallery</picgallery>
 				<publishproject>Please try again later, or contact your system administrator.</publishproject>
 				<rmdefault>You must first change the default group of this user(s).</rmdefault>
 				<deleteproject>Please try again later, or contact your system administrator.</deleteproject>
@@ -225,6 +234,7 @@
 				<deleteextension>Delete file extension</deleteextension>
 				<deletegroup>Delete Group</deletegroup>
 				<database>Database Import/Export</database>
+				<downbrowser>DownloadBrowser</downbrowser>
 				<lock>Lock File</lock>
 				<lockchange>Steal Lock</lockchange>
  				<login>Login Error</login>
@@ -233,6 +243,7 @@
 				<newextension>Associate new file extension</newextension>				
  				<newproject>New Project</newproject>
  				<newtask>New Task</newtask>
+				<picbrowser>Picture Browser</picbrowser>
 				<publishproject>Publish Project</publishproject>
 				<deleteproject>Delete Project</deleteproject>
 				<unlock>Unlock File</unlock>
@@ -258,12 +269,16 @@
 			<currentprojects>Current Projects</currentprojects>
 			<database>Database- management</database>
 			<datatypes>Resource type- management</datatypes>
+			<downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
 			<export>Export</export>
-			<groups>Edit Groups</groups>
+			<groups>Edit Groups</groups> 
+			<imagelist>image list</imagelist>
 			<import>Import</import>
-			<mountpoint>Mountpoints</mountpoint>
+			<mountpoint>Mountpoints</mountpoint> 
+			<newgallery>new gallery</newgallery>
 			<newproject>New Project</newproject>
 			<news>News- management</news>
+			<picgallery>Picture galleries<![CDATA[<br>]]>management</picgallery>
 			<processmanagement>Scheduler</processmanagement>
 			<project>Project- management</project>
 			<projecthistory>Project History</projecthistory>
@@ -348,7 +363,10 @@
 			<email>Email</email>
 			<filter>Filter</filter>
 			<firstelement>at the first position</firstelement>
-			<firstname>First Name</firstname>
+			<firstname>First Name</firstname> 
+			<foldername>Foldername</foldername>
+			<galadmin>Caretaker</galadmin>
+			<gallery>Gallery</gallery>
 			<group>Group</group>
 			<groupname>Group Name</groupname>
 			<groupdefinition>Define this Group as</groupdefinition>
@@ -372,6 +390,7 @@
 			<messagecompleted>Mesage when completed</messagecompleted>
 			<messagemembers>Inform all role members of the task</messagemembers>
 			<moveto>Move to</moveto>
+			<promptgroup>Please choose group ...</promptgroup>
 			<propertydef>Select Property</propertydef>
 			<newpropertydefvalue>Enter Property Value</newpropertydefvalue>
 			<newpropertydef>New Property</newpropertydef>
@@ -391,8 +410,10 @@
 			<password>Password</password> 
 			<remove>Remove</remove>
 			<right>Right</right>
+			<rights>Rights</rights>
 			<rolefortasks>Role for Tasks</rolefortasks>
-			<rows>Rows</rows>
+			<rows>Rows</rows> 
+			<search>Search</search>
 			<settings>Settings</settings>
 			<size>Size</size>
 			<spacing>Spacing</spacing>
@@ -432,6 +453,7 @@
 			<date>Date</date>
 			<datecreated>Date created</datecreated>
 			<description>Description</description>
+			<downloadlist>Download Browser</downloadlist>
 			<externallink>Externel Link</externallink>
 			<editedat> Edited at</editedat>
 			<editedby>Edited by</editedby>
@@ -454,6 +476,7 @@
 			<newsstate>News-State</newsstate>
 			<notavailable>N/A</notavailable>
 			<page>Page</page>
+			<pictype>Picture Type</pictype>
 			<preferencesexplorer>Explorer</preferencesexplorer>
 			<preferencestasks>Tasks</preferencestasks>
 			<preferencesuser>Personal Data</preferencesuser>
@@ -462,6 +485,7 @@
 			<projectname>Project Name</projectname>
 			<publishedat>Published</publishedat>
 			<publishedby>Published by</publishedby>
+			<readrights>permission to read for others</readrights>
 			<selectfolder>Select folder...</selectfolder>
 			<shorttext>Short description</shorttext>
 			<size>Size</size>
@@ -474,6 +498,7 @@
 			<user>User</user>
 			<view>View</view>
 		 	<wptitle>OpenCms Workplace of</wptitle>
+			<writerights>permission to write for others</writerights>
 		</label>
 		
 		<message>
@@ -795,9 +820,11 @@ A new task was reactivated for you or your role.</content>
 			<login>Login</login>
 			<name>Name</name>
 			<new>New</new>	
+			<newdowngal>Create new Download Gallery</newdowngal>
 			<newfileother>Create a new File of other type</newfileother>
 			<newfolder>Create a new Folder</newfolder>
 			<newlink>Create a new Link</newlink>
+			<newpicgal>Create new Picture Gallery</newpicgal>	
 			<newpropertyinfo>Define new Property for</newpropertyinfo>
 			<newpropertydef>Create new Property</newpropertydef>
 			<newpropdeffor>New property definition for the resource type</newpropdeffor>

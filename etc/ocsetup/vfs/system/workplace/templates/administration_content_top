@@ -48,8 +48,12 @@
 		
 		<td>]]><ICON name="ic_admin_datatypes" label="datatypes" action="location.href='administration_content_datatypes.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isAdmin"/><![CDATA[</td>
 		<td>]]><ICON name="ic_admin_properties" label="properties" action="location.href='administration_content_properties.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isAdmin"/><![CDATA[</td>
- 
  	</tr>
+	<tr valign=top align=center>
+		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
+		<td>]]><ICON name="ic_picgallery" label="picgallery" action="location.href='administration_content_picgalleries.html?initial=true';" href="administration_head_picgalleries1.html" target="admin_head" visiblemethod="isProjectManager"/><![CDATA[</td>
+		<td>]]><ICON name="ic_downloadgallery" label="downloadgallery" action="location.href='administration_content_downgalleries.html?initial=true';" href="administration_head_downgalleries1.html" target="admin_head" visiblemethod="isProjectManager"/><![CDATA[</td>
+	</tr>
 </table>
 
 </body>
