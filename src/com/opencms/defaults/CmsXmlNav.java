@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2001/01/24 16:25:47 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2001/01/31 10:23:48 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.25 $ $Date: 2001/01/24 16:25:47 $
+ * @version $Revision: 1.26 $ $Date: 2001/01/31 10:23:48 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -132,7 +132,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */	
-	protected String buildNavFold(CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath)
+	protected String buildNavFold(CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level)
 		throws CmsException {
 		
 		String cmsfolder=(String)(((Hashtable)userObject).get("cmsfolder"));
@@ -149,7 +149,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])).toString());
+				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])-(level+1)).toString());
 				// this if condition is necessary because of url parameter,
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
@@ -298,7 +298,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */	
-	protected String buildNavTree(CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int depth)
+	protected String buildNavTree(CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level,int depth)
 		throws CmsException {
 				
 		StringBuffer result = new StringBuffer();
@@ -314,7 +314,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])).toString());
+				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])-(level+1)).toString());
 				// this if condition is necessary because of url parameter,
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
@@ -354,7 +354,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 						while (e.hasMoreElements()) {
 							all.addElement(e.nextElement());
 						}
-						result.append(buildNavTree(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath,depth));
+						result.append(buildNavTree(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath,level,depth));
 					}
 				}
 			}
@@ -619,7 +619,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			if (!xmlDataBlock.hasData("navTreeEnd")) {
 				xmlDataBlock.setData("navTreeEnd", "");
 			}
-			result=buildNavFold(cms,xmlDataBlock,userObject,resources,requestedUri,currentFolder,servletPath);
+			result=buildNavFold(cms,xmlDataBlock,userObject,resources,requestedUri,currentFolder,servletPath,level);
 		}
 		
 		return result.getBytes();
@@ -795,7 +795,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			if (!xmlDataBlock.hasData("navTreeEnd")) {
 				xmlDataBlock.setData("navTreeEnd", "");
 			}
-			result=buildNavTree(cms,xmlDataBlock,userObject,resources,requestedUri,currentFolder,servletPath,depth);
+			result=buildNavTree(cms,xmlDataBlock,userObject,resources,requestedUri,currentFolder,servletPath,level,depth);
 		}
 		
 		return result.getBytes();
