@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/12/12 18:58:44 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.43 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.44 $ $Date: 2002/12/12 18:58:44 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -113,17 +113,17 @@ public class CmsXmlNav extends A_CmsNavBase {
                 try {
                     cms.readFile(navLink[i] + navIndex);
                     link=navLink[i] + navIndex;
-                    template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i] + navIndex));
+                    template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, navLink[i] + navIndex));
                 } catch (CmsException e) {
-                    template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
+                    template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, requestedUri));
                 }
             } else {
                 try {
                     cms.readFile(navLink[i]);
                     link=navLink[i];
-                    template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i]));
+                    template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, navLink[i]));
                 } catch (CmsException e) {
-                    template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
+                    template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, requestedUri));
                 }
             }
             // Check if nav is current nav
@@ -192,20 +192,20 @@ public class CmsXmlNav extends A_CmsNavBase {
                     try {
                         cms.readFile(navLink[i] + navIndex);
                         link=navLink[i] + navIndex;
-                        template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i] + navIndex));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, navLink[i] + navIndex));
                     } catch (CmsException e) {
                         link=requestedUri;
-                        template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, requestedUri));
                     }
                 } else {
                     // read the file, if the file does'nt exist then write the uri as a link
                     try {
                         cms.readFile(navLink[i]);
                         link=navLink[i];
-                        template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i]));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, navLink[i]));
                     } catch (CmsException e) {
                         link=requestedUri;
-                        template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, requestedUri));
                     }
                 }
                 // Check if nav is current nav
@@ -303,20 +303,20 @@ public class CmsXmlNav extends A_CmsNavBase {
                     try {
                         cms.readFile(navLink[i] + navIndex);
                         link=navLink[i] + navIndex;
-                        template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i] + navIndex));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, navLink[i] + navIndex));
                     } catch (CmsException e) {
                         link=requestedUri;
-                        template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, requestedUri));
                     }
                 } else {
                     // check whether the file exist, if not then the link is current uri
                     try {
                         cms.readFile(navLink[i]);
                         link=navLink[i];
-                        template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i]));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, navLink[i]));
                     } catch (CmsException e) {
                         link=requestedUri;
-                        template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
+                        template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms, requestedUri));
                     }
                 }
                 // Check if nav is current nav
@@ -1088,7 +1088,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             // test if the file exists or not to avoid broken links
             try {
                 cms.readFile(currentNavLink);
-                template.setData("navlink", ls.getLinkSubstitution(cms,currentNavLink) );
+                template.setData("navlink", LinkSubstitution.getLinkSubstitution(cms,currentNavLink) );
             } 
             catch (CmsException e) {
                 template.setData("navlink", "#");
