@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/01/16 16:52:00 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/01/30 13:24:04 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
@@ -53,7 +54,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1.12
  */
@@ -79,16 +80,14 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      */
     protected String prepareContent(boolean save) {
         String content = getParamContent();
-        String contentLowerCase = content.toLowerCase();
-        int indexBodyStart = contentLowerCase.indexOf("<body>");
+        int indexBodyStart = content.toLowerCase().indexOf("<body>");
         boolean isBrowserNS = BROWSER_NS.equals(getBrowserType());
         if ("edit".equals(getParamEditormode()) || isBrowserNS || save) {
             // editor is in text mode or content should be saved
             if (indexBodyStart != -1) {
                 // cut tags which are unwanted for text editor
                 content = content.substring(indexBodyStart + 6);
-                contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
-                content = content.substring(0, contentLowerCase.indexOf("</body>"));
+                content = content.substring(0, content.toLowerCase().indexOf("</body>"));
             }
             // remove unwanted "&amp;" from links
             content = filterAnchors(content);
@@ -101,16 +100,15 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             } catch (CmsException e) {
                 // ignore this exception
             }
-            if (currentTemplate == null) {
-                currentTemplate = "";
-            } else {      
+            if (currentTemplate != null) {
+                // read the stylesheet from the template property
                 stylesheet = getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, currentTemplate, "");
             }
+            
             if (indexBodyStart != -1) {
                 // first delete the old tags
                 content = content.substring(indexBodyStart + 6);
-                contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
-                content = content.substring(0, contentLowerCase.indexOf("</body>"));
+                content = content.substring(0, content.toLowerCase().indexOf("</body>"));
             }
             
             // remove unwanted "&amp;" from links
@@ -118,17 +116,22 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             
             // create a head with stylesheet for template and base URL to display images correctly
             String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
-            String head = "<html><head>";
+            StringBuffer head = new StringBuffer(content.length() + 1024);
+            head.append("<html><head>");
             if (!"".equals(stylesheet)) {
                 stylesheet = getJsp().link(stylesheet);
-                head += "<link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">";
+                head.append("<link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">");
             }            
-            head += "<base href=\"" + server + OpenCms.getOpenCmsContext() + "\"></base></head><body>";
+            head.append("<base href=\"" + server + OpenCms.getOpenCmsContext() + "\"></base></head><body>");
             content =  head + content + "</body></html>";             
         }
         if (!save) {
             // set the content parameter to the modified content
             setParamContent(content);
+        } else {
+            // escape special characters for saving
+            // TODO: escape only if required because of encoding settings
+            content = Encoder.escapeNonAscii(content);
         }
         return content.trim();
     }  
@@ -194,17 +197,15 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @return filtered content
      */
     private final String filterAnchors(String content) {
-        Pattern pattern = null;
-        Matcher matcher = null;
         String anchor = null;
         String newAnchor = null;
         
         // regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags
         // don't forget to update the group index on the matcher after changing the regex below!
         int flags = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL;        
-        pattern = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", flags);
+        Pattern pattern = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", flags);
 
-        matcher = pattern.matcher(content);
+        Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
             anchor = matcher.group(6);
             newAnchor = CmsStringSubstitution.substitute(anchor, "&amp;", "&");
