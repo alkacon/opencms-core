@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.33 Arakis - 8 August 2000
+
+! Added session-failover for OpenCms-clusters.
+! Added cluster-url for OpenCms-clusters.
+! Support of different xerces versions added.
+* Page editor now shows images with relative links.
+- Minor changes to text editor.
+
 OpenCms 4.1.32 Arakis - 28 July 2000
 
 ! Added task components to the core.
