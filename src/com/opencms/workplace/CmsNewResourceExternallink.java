@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2003/10/15 15:22:53 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/10/24 08:36:06 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2003/10/15 15:22:53 $
+ * @version $Revision: 1.4 $ $Date: 2003/10/24 08:36:06 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -221,6 +221,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                             //    checkurl = CmsLinkCheck.checkUrl(targetName);
                             //}
                         }
+                        checkurl=true;
                         if(checkurl){
                             cms.writeFile(editFile);
                             cms.writeProperty(filename, C_PROPERTY_TITLE, title);
@@ -231,10 +232,11 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                         Hashtable prop = new Hashtable();
                         prop.put(C_PROPERTY_TITLE, title);
                         if (step.equals("1")) {
-                            if (!targetName.startsWith("/")) {
-                                checkurl = CmsLinkCheck.checkUrl(targetName);
-                            }
+                            //if (!targetName.startsWith("/")) {
+                            //    checkurl = CmsLinkCheck.checkUrl(targetName);
+                            //}
                         }
+                        checkurl=true;
                         if (checkurl ) {
                             Map targetProperties = null;
                             
