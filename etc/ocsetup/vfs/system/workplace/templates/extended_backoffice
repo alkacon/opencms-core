@@ -545,6 +545,77 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 </TEMPLATE>
 
+
+<!-- template undeleteerror  ********************************************************************* -->
+
+<TEMPLATE name="undeleteerror">
+<![CDATA[
+<html>
+<head>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<!-- Ende Style -->
+</head>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="ERROR" name="ERROR">
+<table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
+	<tr><td class=dialogtxt>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			<!-- Beginn Leerzeile-->
+			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+			<!-- Ende Leerzeile-->
+			<tr> 
+           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.undelete"/><![CDATA[
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>	
+			<tr>
+				<td class=dialogtxt align=left>]]><PROCESS>undeleteerror</PROCESS><![CDATA[!
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+				<!-- Beginn Leerzeile-->
+			<tr> 
+				<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Begin Buttons-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=center><INPUT class=button width = 100                       
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			</table>
+			<!-- End Buttons-->	
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</html>
+]]>
+
+</TEMPLATE>
+
 <!-- template lockerror  ********************************************************************* -->
 
 <TEMPLATE name="lockerror">
@@ -727,5 +798,3 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- End processed data -->
 
 </WORKPLACE>
-
-
