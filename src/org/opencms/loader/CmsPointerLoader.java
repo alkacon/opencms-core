@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/10/02 14:45:13 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -143,16 +143,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         if (pointer == null || "".equals(pointer.trim())) {
             throw new ServletException("Invalid pointer file " + file.getName());
         }
-        if (pointer.startsWith("/")) {
-            try {
-                CmsFile target = cms.readFile(pointer);
-                OpenCms.getLoaderManager().getLoader(target.getLoaderId()).load(cms, target, req, res);
-            } catch (CmsException e) {
-                throw new ServletException("Could not load pointed file from " + file.getName());
-            }
-        } else {
             res.sendRedirect(pointer);
-        }
     }   
     
     /**
