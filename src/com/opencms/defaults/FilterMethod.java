@@ -41,6 +41,7 @@ public class FilterMethod {
  * FilterMethod constructor
  */
 public FilterMethod(String filterName, Method filterMethod, Object [] filterParameters) {
+
 	m_filterName = filterName;
 	m_filterMethod = filterMethod;
 	m_defaultParameter = filterParameters;
@@ -49,18 +50,21 @@ public FilterMethod(String filterName, Method filterMethod, Object [] filterPara
  * gets the default parameter
  */
 public Object [] getDefaultParameter() {
+	
 	return m_defaultParameter;
 	}
 /**
  * gets the filter method
  */
 public Method getFilterMethod() {
+	
 	return m_filterMethod;
 	}
 /**
  * gets the filtername
  */
 public String getFilterName() {
+	
 	return m_filterName;
 	}
 /**
@@ -68,7 +72,8 @@ public String getFilterName() {
  * @return true if this filter needs additional user paramet. Otherwise return false.
  */
 public boolean hasUserParameter() {
-	if( m_filterMethod.getParameterTypes().length < m_defaultParameter.length ) {
+	
+	if( m_filterMethod.getParameterTypes().length > 1 ) {
 		return true;
 	} else {
 		return false;
@@ -79,6 +84,7 @@ public boolean hasUserParameter() {
  * @param parameter the filter parameter
  */
 public void setDefaultParameter(Object [] parameter) {
+	
 	m_defaultParameter = parameter;
 }
 /**
@@ -86,6 +92,7 @@ public void setDefaultParameter(Object [] parameter) {
  * @param method the filter method
  */
 public void setFilterMethod(Method method) {
+	
 	m_filterMethod = method;
 }
 /**
@@ -93,6 +100,7 @@ public void setFilterMethod(Method method) {
  * @param name the filter name
  */
 public void setFilterName(String name) {
+	
 	m_filterName = name;
 }
 }
