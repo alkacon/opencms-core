@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/05/03 10:21:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/05/05 09:09:58 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.21 $ $Date: 2000/05/03 10:21:33 $
+  * @version $Revision: 1.22 $ $Date: 2000/05/05 09:09:58 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -80,7 +80,8 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-        
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+
         // the template to be displayed
         String template=null;
         
@@ -184,6 +185,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 
                 session.removeValue(C_PARA_DELETE);  
                 session.removeValue(C_PARA_FILE);
+				xmlTemplateDocument.setData("lasturl", lasturl);
                 template="update";
             
             }
@@ -195,7 +197,6 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
            
         }
 
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
         // set the required datablocks
         if (action == null) {
             String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/05/03 10:21:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/05/05 09:09:58 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.20 $ $Date: 2000/05/03 10:21:33 $
+ * @version $Revision: 1.21 $ $Date: 2000/05/05 09:09:58 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -78,7 +78,8 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-        
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		
         // the template to be displayed
         String template=null;
         
@@ -160,7 +161,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     
                     String parent=file.getParent();
                     try {     
-                       // first creatre the new folder
+                       // first create the new folder
                        cms.copyFolder(filename,parent+newFile+"/");
                                     
                         // then copy all folders
@@ -215,13 +216,13 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                      // everything is done, so remove all session parameters
                     session.removeValue(C_PARA_FILE);
 	    		    session.removeValue(C_PARA_NAME);
+					xmlTemplateDocument.setData("lasturl", lasturl);
                     template="update";
                 }
             }
         }
         
   
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         // set the required datablocks
         if (action == null) {
             String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
