@@ -761,18 +761,21 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			template.setData("uniqueid", id);
 			//insert table entry
 			if (fieldEntry != null) {
-        try{
-          url = getUrl(cms, null, null, null);
-        }catch (Exception e) {
-          url = "";
-        }
-        if(!url.equals("")) {
-          // enable url
-				  entry += (template.getDataValue("tabledatabegin")) + (template.getProcessedDataValue("url", this, parameters)) + fieldEntry + (template.getDataValue("tabledataend"));
-        }else {
-          // disable url
-          entry += (template.getDataValue("tabledatabegin")) + fieldEntry + (template.getDataValue("tabledataend"));
-        }
+                try{
+                  Vector v = new Vector();
+                  v.addElement(new Integer(id));
+                  v.addElement(template);
+                  url = getUrl(cms, null, null,v);
+                }catch (Exception e) {
+                  url = "";
+                }
+                if(!url.equals("")) {
+                  // enable url
+                          entry += (template.getDataValue("tabledatabegin")) + (template.getProcessedDataValue("url", this, parameters)) + fieldEntry + (template.getDataValue("tabledataend"));
+                }else {
+                  // disable url
+                  entry += (template.getDataValue("tabledatabegin")) + fieldEntry + (template.getDataValue("tabledataend"));
+                }
 			} else {
 				entry += (template.getDataValue("tabledatabegin"))  + "" + (template.getDataValue("tabledataend"));
 			}
