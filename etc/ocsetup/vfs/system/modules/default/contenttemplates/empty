@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<XMLTEMPLATE>
-<TEMPLATE>
-<ELEMENT name="body"/>
-</TEMPLATE>
-</XMLTEMPLATE>
+<?xml version="1.0" encoding="utf-8"?>
+
+<xmltemplate>
+
+<template>
+<element name="body"/>
+</template>
+
+</xmltemplate>

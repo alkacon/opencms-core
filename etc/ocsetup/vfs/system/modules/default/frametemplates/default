@@ -1,0 +1,41 @@
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+
+--%><cms:template part="head"><%--
+--%><!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+<title>OpenCms - <cms:property name="title"/></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=<cms:property name="content-encoding" default="iso-8859-1" />">
+<meta name="author" content="OpenCms Group">
+<meta name="description" content="<cms:property name="Description" default="Default OpenCms application" />">
+<meta name="keywords" content="<cms:property name="Keywords" default="OpenCms, Demo, Application, Content Management" />">
+
+<style type="text/css">
+<!--
+
+<%@ include file="../resources/default.css" %>
+
+-->
+</style>
+
+</head>
+
+<body>
+
+<!-- Main page body starts here -->
+</cms:template>
+
+
+<cms:template part="body">
+<cms:include file="../contenttemplates/empty.xml" part="body" />
+</cms:template>
+
+
+<cms:template part="foot">
+<!-- Main page body ends here -->
+
+</body>
+</html>
+</cms:template>

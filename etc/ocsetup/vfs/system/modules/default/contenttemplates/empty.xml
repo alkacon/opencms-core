@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<page>
+	<class>com.opencms.template.CmsXmlTemplate</class>
+	<mastertemplate>empty</mastertemplate>
+</page>
