@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/14 17:05:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/12/15 17:03:47 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.18 $ $Date: 2000/12/14 17:05:09 $
+ * @version $Revision: 1.19 $ $Date: 2000/12/15 17:03:47 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -95,7 +95,7 @@ public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsRes
  */
 public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int projectId) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessProject(currentUser, currentProject));
+	return (dbAccess.accessProject(currentUser, projectId));
 }
 /**
  * Checks, if the user may read this resource.
@@ -243,6 +243,28 @@ public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, St
 		return groups;		
 	}	
 	return allGroups;
+}
+/**
+ * Returns a list of users in a group.<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted, except the anonymous user.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param groupname The name of the group to list users from.
+ * @return Vector of users.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, String groupname) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// check the security
+	if (!anonymousUser(currentUser, currentProject).equals(currentUser)) {
+		return dbAccess.getUsersOfGroup(currentUser, groupname, C_USER_TYPE_SYSTEMUSER);
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + groupname, CmsException.C_NO_ACCESS);
+	}
 }
 	/**
 	 * Initializes the resource broker and sets up all required modules and connections.
@@ -491,29 +513,31 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 	
 	m_subresCache.clear();
 }
-	/**
-	 * Checks if a user is member of a group.<P/>
-	 *  
-	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param callingUser The user who wants to use this method.
-	 * @param nameuser The name of the user to check.
-	 * @param groupname The name of the group to check.
-	 * @return True or False
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, 
-							   String username, String groupname)
-		throws CmsException {
+/**
+ * Checks if a user is member of a group.<P/>
+ *  
+ * <B>Security:</B>
+ * All users are granted, except the anonymous user.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param callingUser The user who wants to use this method.
+ * @param nameuser The name of the user to check.
+ * @param groupname The name of the group to check.
+ * @return True or False
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, String username, String groupname) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	CmsUser user = readUser(currentUser, currentProject, username);
-	CmsGroup group = readGroup(currentUser, currentProject, groupname);
-	return (dbAccess.userInGroup(user.getId(), group.getId()));
+	try {
+		CmsUser user = readUser(currentUser, currentProject, username);
+		CmsGroup group = readGroup(currentUser, currentProject, groupname);
+		return (dbAccess.userInGroup(user.getId(), group.getId()));
+	} catch (CmsException ex) {
+		return false;
 	}
+}
 /**
  * Writes a file to the Cms.<br>
  * 

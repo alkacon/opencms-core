@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/14 09:46:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/12/15 17:03:47 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.11 $ $Date: 2000/12/14 09:46:42 $ * 
+ * @version $Revision: 1.12 $ $Date: 2000/12/15 17:03:47 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -149,7 +149,7 @@ public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsRes
  * 
  * @return wether the user has access, or not.
 */
-public boolean accessProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
+public boolean accessProject(CmsUser currentUser, int projectId) throws CmsException {
 	//System.out.println("PL/SQL: accessProject");
 	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
@@ -158,7 +158,7 @@ public boolean accessProject(CmsUser currentUser, CmsProject currentProject) thr
 		// create the statement
 		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSPROJECT_KEY);
 		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
+		statement.setInt(3, projectId);
 		statement.execute();
 		if (statement.getInt(1) == 1) {
 			return true;
