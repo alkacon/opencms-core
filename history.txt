@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.35 Chusuk       - XX February 2001
+OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2001
 ! Export and Import of channels and moduledata
 * When static export was disabled the servletpath was not configurable. Now it can be 
   changed using the url_prefix_http variable in the opencms.properties.
