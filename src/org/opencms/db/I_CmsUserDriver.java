@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/20 15:18:46 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/12/20 17:04:25 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 
@@ -49,7 +50,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.41 $ $Date: 2004/12/20 15:18:46 $
+ * @version $Revision: 1.42 $ $Date: 2004/12/20 17:04:25 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -232,25 +233,27 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsSqlManager getSqlManager();
 
     /**
-     * Imports a user.<p>
+     * Creates a new user by import.<p>
      * 
      * @param dbc the current database context
-     * @param id the id of the user
-     * @param name the user name
-     * @param password the user password
-     * @param description the user description
-     * @param firstname the user firstname
-     * @param lastname the user lastname
-     * @param email the user email
-     * @param lastlogin the user lastlogin time
-     * @param flags the user flags
-     * @param additionalInfos the user additional infos
-     * @param address the user default address
-     * @param type the user type
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
-     * 
-     * @return the imported user
-     * @throws CmsException if something goes wrong
+     * @param id the id of the user.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param description the description for the user.
+     * @param firstname the firstname of the user.
+     * @param lastname the lastname of the user.
+     * @param email the email of the user.
+     * @param lastlogin the user lastlogin time.
+     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
+     *                      infos may be stored into the Usertables (depending on the implementation).
+     * @param address the address of the user.
+     * @param type the type of the user.
+     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations.
+     *
+     * @return a new <code>{@link CmsUser}</code> object representing the added user.
+     *
+     * @throws CmsException if operation was not successful.
      */
     CmsUser importUser(
         CmsDbContext dbc,

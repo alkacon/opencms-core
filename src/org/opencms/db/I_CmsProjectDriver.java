@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/12/20 15:18:46 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/12/20 17:04:25 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.59 $ $Date: 2004/12/20 15:18:46 $
+ * @version $Revision: 1.60 $ $Date: 2004/12/20 17:04:25 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -160,13 +160,13 @@ public interface I_CmsProjectDriver {
     /**
      * Deletes an entry in the published resource table.<p>
      * 
-     * @param dbc the current database context
-     * @param currentProject the current project
-     * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters of the resource
+     * @param dbc the current database context.
+     * @param currentProject the current project.
+     * @param resourceName The name of the resource to be deleted in the static export.
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * @param linkParameter the parameters of the resource.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     void deleteStaticExportPublishedResource(
         CmsDbContext dbc,
@@ -535,14 +535,14 @@ public interface I_CmsProjectDriver {
      * 
      * This is done during static export.<p>
      * 
-     * @param dbc the current database context
-     * @param currentProject the current project
-     * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
+     * @param dbc the current database context.
+     * @param currentProject the current project.
+     * @param resourceName The name of the resource to be added to the static export.
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter).
+     * @param linkParameter the parameters added to the resource.
+     * @param timestamp a timestamp for writing the data into the db.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     void writeStaticExportPublishedResource(
         CmsDbContext dbc,

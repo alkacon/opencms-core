@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/20 15:18:45 $
- * Version: $Revision: 1.460 $
+ * Date   : $Date: 2004/12/20 17:04:25 $
+ * Version: $Revision: 1.461 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.460 $ $Date: 2004/12/20 15:18:45 $
+ * @version $Revision: 1.461 $ $Date: 2004/12/20 17:04:25 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -522,27 +522,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Adds a user to the Cms.<p>
-     *
-     * Only a adminstrator can add users to the cms.     
-     * Only users, which are in the group "administrators" are granted.
+     * Creates a new user by import.<p>
      * 
      * @param dbc the current database context
-     * @param id the id of the user
-     * @param name the name for the user
-     * @param password the password for the user
-     * @param description the description for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
-     * @param email the email of the user
-     * @param flags the flags for a user (e.g. I_CmsConstants.C_FLAG_ENABLED)
-     * @param additionalInfos a Hashtable with additional infos for the user, these
-     *        Infos may be stored into the Usertables (depending on the implementation)
-     * @param address the address of the user
-     * @param type the type of the user
-     * 
-     * @return the new user will be returned.
-     * @throws CmsException if operation was not succesfull
+     * @param id the id of the user.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param description the description for the user.
+     * @param firstname the firstname of the user.
+     * @param lastname the lastname of the user.
+     * @param email the email of the user.
+     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
+     *                      infos may be stored into the Usertables (depending on the implementation).
+     * @param address the address of the user.
+     * @param type the type of the user.
+     *
+     * @return a new <code>{@link CmsUser}</code> object representing the added user.
+     *
+     * @throws CmsException if operation was not successful.
      */
     public CmsUser addImportUser(
         CmsDbContext dbc,
@@ -2262,9 +2260,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Deletes all entries in the published resource table.<p>
      * 
-     * @param dbc the current database context
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsException {
 
@@ -2758,11 +2757,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Deletes an entry in the published resource table.<p>
      * 
-     * @param dbc the current database context
-     * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters ofthe resource
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param resourceName The name of the resource to be deleted in the static export.
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * @param linkParameter the parameters ofthe resource.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void deleteStaticExportPublishedResource(
         CmsDbContext dbc,
@@ -3391,11 +3391,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns the parent group of a group.<p>
      *
-     * @param dbc the current database context
-     * @param groupname the name of the group
+     * @param dbc the current database context.
+     * @param groupname the name of the group.
      * 
-     * @return group the parent group or null
-     * @throws CmsException if operation was not succesful
+     * @return group the parent group or <code>null</code>.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup getParent(CmsDbContext dbc, String groupname) throws CmsException {
 
@@ -7096,13 +7097,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Validates the Cms resources in a Cms publish list.<p>
+     * Validates the HTML links in the unpublished files of the specified
+     * publish list, if a file resource type implements the interface 
+     * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
      * 
      * @param cms the current user's Cms object
-     * @param publishList a Cms publish list
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
+     * @param publishList an OpenCms publish list.
+     * @param report a report to write the messages to.
+     * 
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names.
+     * 
+     * @throws Exception if something goes wrong.
+     * 
      * @see #getPublishList(CmsDbContext, CmsResource, boolean)
      */
     public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
@@ -7499,13 +7505,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * This is done during static export.<p>
      * 
-     * @param dbc the current database context
-     * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
+     * @param dbc the current database context.
+     * @param resourceName The name of the resource to be added to the static export.
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter).
+     * @param linkParameter the parameters added to the resource.
+     * @param timestamp a timestamp for writing the data into the db.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void writeStaticExportPublishedResource(
         CmsDbContext dbc,

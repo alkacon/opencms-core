@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/12/20 17:04:25 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public final class OpenCms {
 
@@ -106,6 +106,8 @@ public final class OpenCms {
 
     /**
      * Notify all event listeners that a particular event has occurred.<p>
+     * 
+     * The event will be given to all registered <code>{@link I_CmsEventListener}</code> objects.<p>
      * 
      * @param type event type
      * @param data event data
