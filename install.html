@@ -27,18 +27,19 @@
         
         <p>
         <h2>2 Installing Tomcat</h2>
-        Notice: OpenCms does not work correctly with Tomcat 3.2.x. Tomcat 3.2.x uses its own XML parser which 
-        results in major errors while using OpenCms. Please use Tomcat 3.3 instead.
+        Note: OpenCms does not work correctly with Tomcat 3.2.x. Tomcat 3.2.x uses its own XML parser which 
+        results in major errors while using OpenCms. Please use Tomcat 4 instead.
         </p>
         
         <p>
         Install Jakarta Tomcat 
         <a href="http://jakarta.apache.org/tomcat/index.html">http://jakarta.apache.org/tomcat/index.html</a>
-        into a folder of your choice. This is the TOMCAT_HOME folder.
+        into a folder of your choice. This is the CATALINA_HOME folder. Don't forget to set the environment
+        variables CATALINA_HOME and JAVA_HOME.
         </p>
         
         <p>
-        Test the installation by running tomcat in standalone mode and check the examples. Notice: Tomcat uses 
+        Test the installation by running tomcat in standalone mode and check the examples. Note: Tomcat uses 
         port 8080 in standalone mode.
         </p>
         
@@ -53,7 +54,8 @@
         
         <pre>-Dfile.encoding=ISO8859_1</pre>
         
-        Add that parameter at the end of the file TOMCAT_HOME/conf/jk/wrapper.properties .
+        You can set the environment varibale CATALINA_OPTS to do so. (CATALINA_OPTS=-Dfile.encoding=ISO8859_1)
+        
         </p>
         
         
@@ -88,7 +90,7 @@
         
         <p>
         <h2>4 Deploy the opencms.war file</h2>
-        Copy the opencms.war file to TOMCAT_HOME/web-apps/. Notice: replace TOMCAT_HOME
+        Copy the opencms.war file to CATALINA_HOME/web-apps/. Note: replace CATALINA_HOME
         with the real path to your Tomcat installation.
         </p>
         
@@ -105,7 +107,7 @@
         </p>
         
         <p>
-        Notice: Maybe you have to replace localhost with your servername. The port 8080 is only used if
+        Note: Maybe you have to replace localhost with your servername. The port 8080 is only used if
         you start Tomcat in standalone mode.
         </p>
         
