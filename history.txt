@@ -10,6 +10,8 @@ Legend:
 
 OpenCms 4.5.28 Chusuk       - 0x December 2001
 - Changed some logentries for java-version infos.
+- Changed the returnurl (in error templates) for the actions in the context menu for using them in the galeries
+  and the projectview.
 
 OpenCms 4.5.27 Chusuk       - 04 December 2001
 * Bugfix in language files and templates: the tagname "link" was renamed to "linkto" because of problems with the
