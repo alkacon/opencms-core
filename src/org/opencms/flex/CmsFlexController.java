@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/02/28 15:53:34 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexController {
     
@@ -332,7 +332,12 @@ public class CmsFlexController {
      * @return the combined "expires" date for all resources read during this request
      */
     public long getDateExpires() {
-        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(m_flexContextInfoList.size()-1)).getDateExpires();
+        int pos = m_flexContextInfoList.size()-1;
+        if (pos < 0) {
+            // ensure a valid position is used
+            return CmsResource.DATE_EXPIRED_DEFAULT;
+        }
+        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).getDateExpires();
     }       
     
     /**
@@ -341,7 +346,12 @@ public class CmsFlexController {
      * @return the combined "last modified" date for all resources read during this request
      */
     public long getDateLastModified() {
-        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(m_flexContextInfoList.size()-1)).getDateLastModified();
+        int pos = m_flexContextInfoList.size()-1;
+        if (pos < 0) {
+            // ensure a valid position is used
+            return CmsResource.DATE_RELEASED_DEFAULT;
+        }
+        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).getDateLastModified();
     }   
     
     /**
