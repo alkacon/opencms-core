@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/07/31 12:26:03 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.5 $ $Date: 2000/07/31 12:26:03 $
  */
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -59,7 +59,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
 	 
 	 
-	 private static final String C_PDFTEMPLATE = "pdf";
+	 private static final String C_PDFTEMPLATE = "pdfpage";
       /**
      * Indicates if the results of this class are cacheable.
      * 

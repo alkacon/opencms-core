@@ -26,6 +26,7 @@ createPropertydefinition Title pdfpage 0
 createPropertydefinition NavText pdfpage 0
 createPropertydefinition NavPos pdfpage 0
 createPropertydefinition TemplateType plain 0
+createPropertydefinition TemplateType pdfpage 0
 createPropertydefinition TemplateType XMLTemplate 0
 addFileExtension doc binary
 addFileExtension pdf binary

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/news/Attic/CmsNewsContent.java,v $
- * Date   : $Date: 2000/07/11 15:01:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/07/31 12:26:03 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -57,7 +57,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.2 $ $Date: 2000/07/11 15:01:18 $
+ * @version $Revision: 1.3 $ $Date: 2000/07/31 12:26:03 $
  * @see com.opencms.xmlmodules.A_CmsModuleContent
  */
 public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConstants {
@@ -169,8 +169,8 @@ public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConst
                 result = servletPath + C_FOLDER_PAGE + article.getFilename() + "/index.html";
             } else if(tagcontent.toLowerCase().equals("linktext")) {
                 result = "Artikel lesen";
-			} else if(tagcontent.toLowerCase().equals("path")) {
-                result = servletPath;
+			} else if(tagcontent.toLowerCase().equals("servletPath")) {
+                result = servletPath + "/";
 			} else if(tagcontent.toLowerCase().equals("index")) {
 				// gets the index of currently selected article
 				String folder = getFolder(elementName, parameters);
@@ -207,7 +207,7 @@ public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConst
 			template.setData("author", Encoder.escapeXml(doc2.getAuthor()));
             template.setData("shorttext", Encoder.escapeXml(doc2.getShortText()));        
             template.setData("link", servletPath + C_FOLDER_PAGE + doc2.getFilename() + "/index.html");
-			template.setData("path", servletPath);
+			template.setData("servletPath", servletPath + "/");
 			template.setData("index", "" + i );
             result = result + template.getProcessedDataValue(C_TAG_LISTENTRY);        
         }                        
