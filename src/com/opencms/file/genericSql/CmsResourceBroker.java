@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/04 17:25:55 $
-* Version: $Revision: 1.362 $
+* Date   : $Date: 2003/03/05 18:44:56 $
+* Version: $Revision: 1.363 $
 
 *
 * This library is part of OpenCms -
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.362 $ $Date: 2003/03/04 17:25:55 $
+ * @version $Revision: 1.363 $ $Date: 2003/03/05 18:44:56 $
 
  *
  */
@@ -258,7 +258,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
     public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
                                 String resourceName) throws CmsException {
 
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
         return accessCreate(currentUser, currentProject, resource);
     }
     /**
@@ -357,7 +357,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
     public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
                               String resourceName) throws CmsException {
 
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
         return accessLock(currentUser,currentProject,resource);
     }
 /**
@@ -519,7 +519,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
      * @return weather the user has access, or not.
      */
     public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
         return accessRead(currentUser, currentProject, resource);
     }
 
@@ -680,7 +680,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
     public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
                                String resourceName) throws CmsException {
 
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
         return accessWrite(currentUser,currentProject,resource);
     }
     /**
@@ -1345,31 +1345,26 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         if (resourceName.endsWith("/")) {
             resource = (CmsFolder)readFolder( currentUser, currentProject, resourceName );
             isFolder = true;
-        } 
-        else {
+        } else {
             resource = (CmsFile)readFileHeader( currentUser, currentProject, resourceName );
         }
         
         // check the access rights
         if (accessWrite(currentUser, currentProject, resource)) {
+            // touch the resource
+            resource.setDateLastModified(timestamp);
             if (isFolder) {
-                if (resource.getState()==C_STATE_UNCHANGED) {
+                if (resource.getState() == C_STATE_UNCHANGED) {
                     resource.setState(C_STATE_CHANGED);
-                }
-                
+                }                
                 m_dbAccess.writeFolder( currentProject, (CmsFolder)resource, true, currentUser.getId() );
-                this.clearResourceCache( resourceName, currentProject, currentUser );
-            } 
-            else {
-                m_dbAccess.writeFileHeader (currentProject, (CmsFile)resource, true, currentUser.getId() );
-                if (resource.getState()==C_STATE_UNCHANGED) {
+            } else {
+                if (resource.getState() == C_STATE_UNCHANGED) {
                     resource.setState(C_STATE_CHANGED);
                 }
-                
-                this.clearResourceCache( resourceName, currentProject, currentUser );
+                m_dbAccess.writeFileHeader (currentProject, (CmsFile)resource, true, currentUser.getId() );
             }
-                 
-            m_accessCache.clear();
+            clearResourceCache( resource.getName(), currentProject, currentUser );
             fileSystemChanged( isFolder );
         } 
         else {
@@ -4827,7 +4822,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
     public boolean shouldReloadClasses(int projectId, Vector classFiles) {
         for(int i = 0; i < classFiles.size(); i++) {
             try {
-                CmsFile file = m_dbAccess.readFileHeader(projectId, (String)classFiles.elementAt(i));
+                CmsFile file = m_dbAccess.readFileHeader(projectId, (String)classFiles.elementAt(i), false);
                 if( (file.getState() == C_STATE_CHANGED) || (file.getState() == C_STATE_DELETED) ) {
                     // this class-file was changed or deleted - we have to reload
                     return true;
@@ -5448,7 +5443,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
              String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
              cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
              if (cmsFile==null) {
-                cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename);
+                cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, false);
                 m_resourceCache.put(cacheKey, cmsFile);
              }
          } catch(CmsException exc) {
@@ -7172,12 +7167,6 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFolder);
                 Map propertyInfos = m_dbAccess.readProperties(onlineProject.getId(),onlineFolder,onlineFolder.getType());
                 m_dbAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFolder,restoredFolder.getType());
-                m_propertyCache.clear();
-                // update the cache
-                this.clearResourceCache(restoredFolder.getResourceName(), currentProject, currentUser);
-                m_accessCache.clear();
-                // inform about the file-system-change
-                fileSystemChanged(false);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + restoredFolder.getAbsolutePath(),
                     CmsException.C_NO_ACCESS);
@@ -7208,17 +7197,17 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFile);
                 Map propertyInfos = m_dbAccess.readProperties(onlineProject.getId(),onlineFile,onlineFile.getType());
                 m_dbAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFile,restoredFile.getType());
-                m_propertyCache.clear();
-                // update the cache
-                this.clearResourceCache(restoredFile.getResourceName(), currentProject, currentUser);
-                m_accessCache.clear();
-                // inform about the file-system-change
-                fileSystemChanged(false);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + restoredFile.getAbsolutePath(),
                     CmsException.C_NO_ACCESS);
             }
-        }
+        }        
+        // update the cache
+        this.clearResourceCache(resourceName, currentProject, currentUser);
+        m_propertyCache.clear();
+        m_accessCache.clear();
+        // inform about the file-system-change
+        fileSystemChanged(false);        
     }
 
     /**

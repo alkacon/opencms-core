@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/02 18:43:58 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/03/05 18:44:56 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.83 $ $Date: 2003/03/02 18:43:58 $ *
+ * @version $Revision: 1.84 $ $Date: 2003/03/05 18:44:56 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -300,7 +300,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
         // Test if the file is already there and marked as deleted.
         // If so, delete it
         try {
-            readFileHeader(project.getId(),filename);
+            readFileHeader(project.getId(), filename, false);
             throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             // if the file is maked as deleted remove it!

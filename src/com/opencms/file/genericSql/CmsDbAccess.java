@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/05 08:52:42 $
-* Version: $Revision: 1.276 $
+* Date   : $Date: 2003/03/05 18:44:55 $
+* Version: $Revision: 1.277 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.276 $ $Date: 2003/03/05 08:52:42 $ *
+ * @version $Revision: 1.277 $ $Date: 2003/03/05 18:44:55 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -886,7 +886,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // If so, delete it.
         // If the file exists already and is not marked as deleted then throw exception
         try {
-            readFileHeader(project.getId(),filename);
+            readFileHeader(project.getId(), filename, false);
             throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             // if the file is marked as deleted remove it!
@@ -1005,7 +1005,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // Test if the file is already there and marked as deleted.
         // If so, delete it
         try {
-            readFileHeader(project.getId(), filename);
+            readFileHeader(project.getId(), filename, false);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             // if the file is maked as deleted remove it!
@@ -3922,7 +3922,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *          Admingroup for no Group.
      */
     public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        CmsResource res = readFileHeader(projectId, resource);
+        CmsResource res = readFileHeader(projectId, resource, false);
         int groupId = -1;
         boolean noGroupCanReadThis = false;
         do{
@@ -5152,7 +5152,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
                 CmsFile onlineFile = null;
                 try{
-                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName());
+                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
                 }catch (CmsException exc){
                     if (exc.getType() == CmsException.C_NOT_FOUND){
                         // get parentId for onlineFolder either from folderIdIndex or from the database
@@ -5270,7 +5270,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFile onlineFile = null;
                         try {
-                            onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName());
+                            onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
@@ -7686,115 +7686,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsFile readFileHeader(int projectId, String filename)
-        throws CmsException {
-
-        CmsFile file=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READ"+usedStatement));
-            // read file data from database
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            // create new file
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-
-        return file;
-       }
-
-    /**
-     * Reads a file header from the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
     public CmsFile readFileHeader(int projectId, String filename, boolean includeDeleted)
         throws CmsException {
 
@@ -9807,13 +9698,10 @@ public CmsTask readTask(int id) throws CmsException {
     try {
         con = DriverManager.getConnection(m_poolName);
         
-        // CHECK: Now using PreparedStatement in readTask()
         statement = con.prepareStatement(m_cq.get("C_TASK_READ"));
         statement.setInt(1, id);
         res = statement.executeQuery();
                 
-        // statement = con.createStatement();
-        // res = statement.executeQuery(m_cq.get("C_TASK_READ_STATEMENT")+id);
         if (res.next()) {
             int autofinish = res.getInt(m_cq.get("C_TASK_AUTOFINISH"));
             java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_ENDTIME"));
@@ -13033,7 +12921,7 @@ public CmsTask readTask(int id) throws CmsException {
             result = stmnt.executeQuery();
 
             while (result.next()) {
-                CmsResource resource = this.readFileHeader(theProject.getId(), result.getString(1));
+                CmsResource resource = this.readFileHeader(theProject.getId(), result.getString(1), false);
 
                 if (resource != null) {
                     vfsLinks.add(resource);
