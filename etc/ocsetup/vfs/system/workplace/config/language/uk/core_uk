@@ -29,7 +29,7 @@
 			<goto>Goto</goto>
 			<help>Help</help>
 			<hidedetails>Hide details</hidedetails>
-			<image>Insert Image</image>
+			<image>Image Parameters</image>
 			<imagelist>Image List</imagelist>
 			<indentin>Indent</indentin>
 			<indentout>Unindent</indentout>
