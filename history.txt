@@ -8,6 +8,17 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.10 Ecaz - xx July 2002
+! When checking the external links by the scheduler you can use the parameter owneremail to send
+  a generated email to the owner of the broken link.
+! The behaviour of the history function can be managed now. The history can be enabled/disabled.
+  Versions older than the given number of weeks can be deleted directly or by the scheduler.
+- For the new history feature the backup tables for the filecontents and properties have been changed 
+  (added version_id). When a project is published and the backup is inserted the version_id of these 
+  tables is filled in, too.
+  If you use the new history feature for deleting versions on an updated installation all entries in these
+  two tables that contain no version_id might be deleted.
+
 OpenCms 4.7.9 Ecaz - 14 June 2002
 ! added a new way to check a new entered password. 
 
