@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/04/05 13:27:18 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     public static final String C_RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
     
     /** The id of the legacy resource type "link". */
-    protected static final int C_RESOURCE_TYPE_LINK_ID = 2;
+    protected static final int C_RESOURCE_TYPE_LINK_ID = 1024;
     
     /** The name of the legacy resource type "link". */
     protected static final String C_RESOURCE_TYPE_LINK_NAME = "link";
