@@ -15,55 +15,59 @@ PACKAGE BODY OpenCmsProject IS
                     where user_id = pUserID
                     and project_flags = 0
                     order by project_name;
-      CURSOR cProjAdmin IS
-             select * from cms_projects
-                    where project_flags = 0
-                    order by project_name;
+                    	
       CURSOR cProjGroup(cGroupID NUMBER) IS
              select * from cms_projects
                     where (group_id = cGroupId or managergroup_id = cGroupId)
                     and project_flags = 0
-                    order by project_name;
-
+                    order by project_name; 
+                    
       vCursor userTypes.anyCursor := opencmsgroup.getGroupsOfUser (pUserID);
       recAllAccProjects userTypes.anyCursor;
       recGroup cms_groups%ROWTYPE;
       recProject cms_projects%ROWTYPE;
       vQueryStr VARCHAR2(32767) := '';
+      isAdmin NUMBER := 0;
+      adminId NUMBER;
 	BEGIN
-      -- all projects where the user is owner
-      FOR recProject IN cProjUser LOOP
-        -- remember each project-id => no duplicates
-        IF addInList(recProject.project_id) THEN
-          null;
-        END IF;
-      END LOOP;
-      -- all projects where the groups, which the user belongs to, have access
-	  LOOP
-	    FETCH vCursor INTO recGroup;
-	    EXIT WHEN vCursor%NOTFOUND;
-        IF recGroup.group_name = opencmsConstants.C_GROUP_ADMIN THEN
-          -- if the user is member of the group administrators then list all projects
-          FOR recProject IN cProjAdmin LOOP
-            IF addInList(recProject.project_id) THEN
-              vQueryStr := vQueryStr||' union select * from cms_projects where project_flags = 0 ';
-            END IF;
-          END LOOP;
-        ELSE
-          FOR recProject IN cProjGroup(recGroup.group_id) LOOP
+	  -- if the user belongs to administrators then list all projects
+	  select group_id into adminId from cms_groups where group_name = opencmsConstants.C_GROUP_ADMIN;
+	  isAdmin := opencmsgroup.userInGroup(pUserID, adminId);
+	  IF isAdmin = 1 THEN
+	    OPEN recAllAccProjects FOR 'select * from cms_projects where project_flags = 0 order by project_name';
+	  ELSE
+	    -- all projects where the user is owner
+        FOR recProject IN cProjUser LOOP
+          -- remember each project-id => no duplicates
+          IF addInList(recProject.project_id) THEN
+            null;
+          END IF;
+        END LOOP;
+        -- all projects where the groups, which the user belongs to, have access
+	    LOOP
+	      FETCH vCursor INTO recGroup;
+	      EXIT WHEN vCursor%NOTFOUND;
+	      OPEN cProjGroup(recGroup.group_id);
+	      LOOP
+	        FETCH cProjGroup INTO recProject;
+	        EXIT WHEN cProjGroup%NOTFOUND;
+	        -- if any project does not exist in the list of the users projects then add the select for this group
             IF addInList(recProject.project_id) THEN
               vQueryStr := vQueryStr||' union select * from cms_projects where project_flags = 0'||
                                       ' and (group_id = '||to_char(recGroup.group_id)||' or managergroup_id = '||
-                                      to_char(recGroup.group_id)||')';
+                                      to_char(recGroup.group_id)||')'||
+                                      ' and user_id != '||to_char(pUserID);
+              EXIT;
             END IF;
           END LOOP;
-        END IF;
-	  END LOOP;
-      CLOSE vCursor;
+          CLOSE cProjGroup;
+	    END LOOP;
+        CLOSE vCursor;
+        OPEN recAllAccProjects FOR 'select * from (select * from cms_projects where user_id = '||to_char(pUserID)||' and project_flags = 0 '||
+                                  vQueryStr||') order by project_name';
+      END IF; 
       -- return the cursor
       bList.DELETE;
-      OPEN recAllAccProjects FOR 'select * from (select * from cms_projects where user_id = '||to_char(pUserID)||' and project_flags = 0 '||
-                                  vQueryStr||') order by project_name';
       RETURN recAllAccProjects;
 	END getAllAccessibleProjects;
 ------------------------------------------------------------------------------------
@@ -234,7 +238,7 @@ PACKAGE BODY OpenCmsProject IS
                  where resource_name = opencmsResource.getParent(recFolders.resource_name);
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
-            usererrors.raiseUserError(-20002);
+            vParentId := opencmsConstants.C_UNKNOWN_ID;
         END;
         BEGIN
           opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
@@ -297,7 +301,7 @@ PACKAGE BODY OpenCmsProject IS
                    where resource_name = opencmsResource.getParent(recFolders.resource_name);
           EXCEPTION
             WHEN NO_DATA_FOUND THEN
-              usererrors.raiseUserError(-20002);
+              vParentId := opencmsConstants.C_UNKNOWN_ID;
           END;
           opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
                                        vParentId, recFolders.resource_name, curNewFolder);
@@ -383,7 +387,7 @@ PACKAGE BODY OpenCmsProject IS
                  where resource_name = opencmsResource.getParent(recFiles.resource_name);
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
-            usererrors.raiseUserError(-20002);
+            vParentId := opencmsConstants.C_UNKNOWN_ID;
         END;
         BEGIN
           opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId, vParentId,
@@ -448,7 +452,7 @@ PACKAGE BODY OpenCmsProject IS
                    where resource_name = opencmsResource.getParent(recFiles.resource_name);
           EXCEPTION
             WHEN NO_DATA_FOUND THEN
-              usererrors.raiseUserError(-20002);
+              vParentId := opencmsConstants.C_UNKNOWN_ID;
           END;
           opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId,
                                      vParentId, recFiles.resource_name, 'FALSE', curNewFile);
