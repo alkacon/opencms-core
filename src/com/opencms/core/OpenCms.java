@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/02/16 09:21:00 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/02/16 10:47:57 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.18 $ $Date: 2000/02/16 09:21:00 $  
+* @version $Revision: 1.19 $ $Date: 2000/02/16 10:47:57 $  
 * 
 */
 
@@ -248,6 +248,9 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
 	private void printCopyrightInformation(A_CmsObject cms) {
 		System.err.println(cms.version());
 		System.out.println(cms.version());
+        if(c_servletLogging) {
+            this.log(C_OPENCMS_INFO, cms.version());
+        }
 		
 		String copy[] = cms.copyright();
 		

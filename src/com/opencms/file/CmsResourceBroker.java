@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/16 09:44:01 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/02/16 10:47:57 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.59 $ $Date: 2000/02/16 09:44:01 $
+ * @version $Revision: 1.60 $ $Date: 2000/02/16 10:47:57 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2283,17 +2283,30 @@ System.err.println(">>> readFile(2) error for\n" +
 	public void deleteFolder(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String foldername)
 		throws CmsException {
+
+		A_CmsResource onlineFolder;
 		
 		// read the folder, that shold be deleted
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  foldername);
+		try {
+			onlineFolder = m_fileRb.readFolder(onlineProject(currentUser, currentProject), foldername);
+		} catch (CmsException exc) {
+			// the file dosent exist
+			onlineFolder = null;
+		}
 		// check, if the user may delete the resource
 		if( (!cmsFolder.isLocked()) &&
 			accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - delete the folder and metainfos.
 			m_metadefRb.deleteAllMetainformations((A_CmsResource) cmsFolder);
-			m_fileRb.deleteFolder(currentProject, foldername, false);
+			if(onlineFolder == null) {
+				// the onlinefile dosent exist => remove the file realy!
+				m_fileRb.removeFolder(currentProject, foldername);
+			} else {
+				m_fileRb.deleteFolder(currentProject, foldername, false);
+			}
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), foldername);
 		
@@ -2818,16 +2831,28 @@ System.err.println(">>> readFile(2) error for\n" +
 						   String filename)
 		throws CmsException {
 		
-		// read the old file
+		// read the file
+		A_CmsResource onlineFile;
 		A_CmsResource file = m_fileRb.readFileHeader(currentProject, filename);
+		try {
+			onlineFile = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject), filename);
+		} catch (CmsException exc) {
+			// the file dosent exist
+			onlineFile = null;
+		}
 		
 		// has the user write-access?
 		if( accessWrite(currentUser, currentProject, file) ) {
 				
 			// write-acces  was granted - delete the file.
 			// and the metainfos
-			m_metadefRb.deleteAllMetainformations((A_CmsResource)file);			
-			m_fileRb.deleteFile(currentProject, filename);
+			m_metadefRb.deleteAllMetainformations((A_CmsResource)file);
+			if(onlineFile == null) {
+				// the onlinefile dosent exist => remove the file realy!
+				m_fileRb.removeFile(currentProject, filename);
+			} else {
+				m_fileRb.deleteFile(currentProject, filename);
+			}
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), filename);
 								
