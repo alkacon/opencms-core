@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/05/02 10:03:34 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.6 $ $Date: 2000/05/02 10:03:34 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -131,7 +131,7 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
         }  
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 	    // set all required datablocks
-        xmlTemplateDocument.setData("OWNER",cms.readOwner(file).getName());
+        xmlTemplateDocument.setData("OWNER",Utils.getFullName(cms.readOwner(file)));
         xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
         xmlTemplateDocument.setData("FILENAME",file.getName()); 
         

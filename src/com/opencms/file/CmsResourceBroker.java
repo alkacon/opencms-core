@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/28 14:12:14 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2000/05/02 10:03:34 $
+ * Version: $Revision: 1.111 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.110 $ $Date: 2000/04/28 14:12:14 $
+ * @version $Revision: 1.111 $ $Date: 2000/05/02 10:03:34 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -469,10 +469,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 
 			 // the project-state will be set to "published", the date will be set.
 			 // the project must be written to the cms.
-			 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
+		/*	 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
 			 publishProject.setPublishingDate(new Date().getTime());
 			 publishProject.setPublishedBy(currentUser.getId());
-			 m_projectRb.writeProject(publishProject);
+			 m_projectRb.writeProject(publishProject);*/
 			 
 			 // return the changed resources.
 			 return(resources);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/04/26 10:33:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/05/02 10:03:34 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/04/26 10:33:39 $
+ * @version $Revision: 1.13 $ $Date: 2000/05/02 10:03:34 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -231,7 +231,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
         A_CmsUser owner=cms.readOwner(file);
         xmlTemplateDocument.setData("TITLE",title);
         xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
-        xmlTemplateDocument.setData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
+        xmlTemplateDocument.setData("OWNER",Utils.getFullName(owner));
         xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		xmlTemplateDocument.setData("FILENAME",file.getName());
    

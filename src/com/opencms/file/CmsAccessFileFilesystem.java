@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/05/02 10:03:34 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.29 $ $Date: 2000/05/02 10:03:34 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -1126,6 +1126,8 @@ import com.opencms.core.*;
         
         getAllResources(rootFolder,project,allFiles,allFolders);
 
+        
+        
         // Step 1:
         // Now check all found folders and publish the new or changed ones.
         for (int i=0;i<allFolders.size();i++) {
@@ -1384,6 +1386,8 @@ import com.opencms.core.*;
      throws CmsException {
         Vector folders=new Vector();
         Vector files=new Vector();
+        
+        allFolders.addElement(readFolder(project,rootFolder));
         
         // get files and folders of this rootFolder
         folders=getSubFolders(project,rootFolder);

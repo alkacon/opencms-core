@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/19 09:04:30 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/05/02 10:03:34 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/19 09:04:30 $
+ * @version $Revision: 1.21 $ $Date: 2000/05/02 10:03:34 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -499,10 +499,10 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          System.err.println("### The project is "+project);*/
          for (int i=0;i<folders.size();i++) {             
              CmsFolder folder=(CmsFolder)folders.elementAt(i);
-             /*System.err.println("### Checking folder "+folder);*/
+             //System.err.println("### Checking folder "+folder);
              if (getFilesystem(foldername) != getFilesystem(folder.getAbsolutePath())) {
                  CmsFolder newFolder=readFolder(project,folder.getAbsolutePath());
-                 /*System.err.println("### Getting folder from other mountpoint "+newFolder);*/
+               //  System.err.println("### Getting folder from other mountpoint "+newFolder);
                  folders.setElementAt(newFolder,i);
              }                         
          }
