@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/11 16:29:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsPropertydefinition implements Cloneable, Comparable {
 
@@ -93,7 +93,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      */
     public boolean equals(Object obj) {
         if (obj instanceof CmsPropertydefinition) {
-            return ((CmsPropertydefinition)obj).getId() == m_id;
+            return ((CmsPropertydefinition)obj).getId().equals(m_id);
         }
         return false;    
     }
