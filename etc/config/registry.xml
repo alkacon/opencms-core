@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<registry>
+    <system>
+        <view>
+            <name>select.explorer</name>
+            <url>/system/workplace/action/explorer.html</url>
+        </view>
+        <view>
+            <name>select.admin</name>
+            <url>/system/workplace/action/administration.html</url>
+        </view>
+        <view>
+            <name>select.tasks</name>
+            <url>/system/workplace/action/tasks.html</url>
+        </view>
+        <view>
+            <name>select.news</name>
+            <url>/system/workplace/action/news_admin.html</url>
+        </view>
+    </system>
+    <modules/>
+</registry>
