@@ -45,7 +45,7 @@ First the frametemplate:
 
 %\input{examples/templateMechanism/navigation/frametemplateNav}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE> 
 <TEMPLATE><![CDATA[
     <HTML>
@@ -74,7 +74,7 @@ First the frametemplate:
 
 <ELEMENTDEF name="nav">
     <CLASS>com.opencms.defaults.CmsXmlNav</CLASS>
-    <TEMPLATE>/content/elements/navigation</TEMPLATE>
+    <TEMPLATE>/system/modules/org.opencms.default/elements/navigation</TEMPLATE>
 </ELEMENTDEF>
 
 </XMLTEMPLATE>
@@ -83,12 +83,12 @@ First the frametemplate:
 \index{element}
 \index{getTitle}
 
-Now the definition of the navigation element in {\dir
-/content/elements/}
+Now the definition of the navigation element in 
+{\dir /system/modules/org.opencms.default/elements/}
 
 %\input{examples/templateMechanism/navigation/navigation}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
 
 <naventry>
@@ -448,7 +448,7 @@ It is very common to use an image instead of Text in navigation. Therefore, here
 an example that uses images instead of text: \\
 
 \begin{xml}
-<?xml version="1.0"?> \\
+<?xml version="1.0" encoding="ISO-8859-1"?> \\
 <XMLTEMPLATE> \\
 
 <naventry> \\
@@ -517,7 +517,7 @@ The frameset and the inserted parts (templates) are defined in the
 frametemplate. The complete code for a frametemplate with 2 frames
 is shown here:
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 
 <TEMPLATE><![CDATA[\\
@@ -563,7 +563,7 @@ is shown here:
 
 <ELEMENTDEF name="nav\_head">\\
 \xtaba <CLASS>com.opencms.defaults.CmsXmlNav</CLASS>\\
-\xtaba <TEMPLATE>/content/elements/nav\_head</TEMPLATE> \\
+\xtaba <TEMPLATE>/system/modules/org.opencms.default/elements/nav\_head</TEMPLATE> \\
 </ELEMENTDEF>\\
 
 </XMLTEMPLATE>\\
@@ -611,7 +611,7 @@ XML-file.  The navigation template for this example looks like
 this:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 
 <NAVENTRY><![CDATA[\\
@@ -705,7 +705,7 @@ be named {\name plain}. It defines the layout for the site without
 frames. One implementation of the {\name plain}-template is shown now:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 ...\\
 <TEMPLATE name="plain"><![CDATA[\\
 <HTML> \\
@@ -1100,7 +1100,7 @@ active template is selected by the template selector in the controlling
 Java class:
 
 \begin{java}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 <TEMPLATE>\\
 <![CDATA[\\
