@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/26 14:17:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/27 11:35:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagInclude;
@@ -69,7 +70,6 @@ import com.opencms.template.cache.CmsElementDefinitionCollection;
 import com.opencms.template.cache.CmsElementDescriptor;
 import com.opencms.template.cache.CmsUri;
 import com.opencms.template.cache.CmsUriDescriptor;
-import com.opencms.template.cache.CmsUriLocator;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -92,7 +92,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -237,14 +237,25 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     protected byte[] generateOutput(CmsObject cms, CmsFile file, I_CmsRequest req) throws CmsException {
         byte[] output = null;
 
-        // Hashtable for collecting all parameters.
+        // hashtable for collecting all parameters.
         Hashtable newParameters = new Hashtable();
         String uri = cms.getRequestContext().getUri();
 
-        // ladies and gentelman: and now for something completly different 
+        // collect xml template information
         String absolutePath = cms.readAbsolutePath(file);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("absolutePath=" + absolutePath);
+        }
         String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("templateProp=" + templateProp);
+        }
         String templateClassProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_BODY_CLASS, false, I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("templateClassProp=" + templateClassProp);
+        }
+        
+        // ladies and gentelman: and now for something completly different 
         String xmlTemplateContent = null;
         if (templateProp != null) {
             // i got a black magic template,
@@ -256,7 +267,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             // i got a black magic template,
             buf.append(templateProp);
             buf.append("</masterTemplate>\n<ELEMENTDEF name=\"body\">\n<CLASS>");
-            // buf.append(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
             buf.append(templateClassProp);
             buf.append("</CLASS>\n<TEMPLATE>");
             // i got a black magic template got me so blind I can't see,
@@ -271,7 +281,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         boolean elementCacheEnabled = CmsXmlTemplateLoader.isElementCacheEnabled();
         CmsElementCache elementCache = null;
         CmsUriDescriptor uriDesc = null;
-        CmsUriLocator uriLoc = null;
         CmsUri cmsUri = null;
 
         String templateClass = null;
@@ -284,8 +293,18 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
 
             // Prepare URI Locator
             uriDesc = new CmsUriDescriptor(uri);
-            uriLoc = elementCache.getUriLocator();
-            cmsUri = uriLoc.get(uriDesc);
+            cmsUri = elementCache.getUriLocator().get(uriDesc);
+            // check if cached
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("found cmsUri=" + cmsUri);
+            }
+            if ((cmsUri != null) && !cmsUri.getElementDescriptor().getTemplateName().equalsIgnoreCase(templateProp)) {
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("cmsUri has different template: " + cmsUri.getElementDescriptor().getTemplateName()
+                            + " than current template: " + templateProp + ", not using cmsUri from cache");
+                }
+                cmsUri = null;
+            }            
         }
 
         // check if printversion is requested

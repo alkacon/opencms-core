@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2004/02/22 13:52:28 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/02/27 11:35:10 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -211,4 +211,8 @@ public class CmsUri {
 //        throw new CmsException(currentGroup.getName()+" has no read access. ",
 //                                CmsException.C_ACCESS_DENIED);
     }
+    
+    public CmsElementDescriptor getElementDescriptor() {
+        return m_startingElement;
+    }    
 }
