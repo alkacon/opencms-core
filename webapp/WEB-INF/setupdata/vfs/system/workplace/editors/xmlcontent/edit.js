@@ -156,8 +156,12 @@ function checkElementLanguage(newValue) {
 
 // submits the checked form for customized action button and considers delayed string insertion
 function submitSaveAction() {
+	if (! initialized) {
+		setTimeout('submitSaveAction()', 20);
+		return;
+	}
 	if (stringsPresent == true) {
-		if (stringsInserted) {
+		if (stringsInserted == true) {
 			buttonAction(9);
 		} else {
 			setTimeout('submitSaveAction()', 20);

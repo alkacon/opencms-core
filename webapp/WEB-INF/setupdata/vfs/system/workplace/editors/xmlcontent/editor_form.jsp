@@ -116,6 +116,9 @@ default:
 <script type="text/javascript">
 <!--
 
+// flag indicating if form initialization is finished
+var initialized = false;
+
 // the OpenCms context path
 var contextPath = "<%= wp.getOpenCmsContext() %>";
 
@@ -144,7 +147,8 @@ function confirmExit() {
 function init() {
 	checkElementLanguage("<%= wp.getParamElementlanguage() %>");
 <%= wp.getXmlEditorInitCalls() %>
-	setTimeout("scrollForm();", 100);
+	setTimeout("scrollForm();", 50);
+	initialized = true;
 }
 
 function exitEditor() {
@@ -186,8 +190,7 @@ if ((wp.getAction() == CmsXmlContentEditor.ACTION_CHECK) && (! wp.hasValidationE
 	%>
 	<script type="text/javascript">
 	<!--
-		// use timeout to avoid empty String values
-		setTimeout('submitSaveAction()', 20);
+		setTimeout('submitSaveAction();', 20);
 	//-->
 	</script>
 	<%
