@@ -1,39 +1,49 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLabel.java,v $
-* Date   : $Date: 2003/02/17 01:12:45 $
-* Version: $Revision: 1.2 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2002  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLabel.java,v $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.3 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
 import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.workplace.CmsXmlLanguageFile;
+import com.opencms.workplace.CmsXmlWpLabelDefFile;
+import com.opencms.workplace.I_CmsWpConstants;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * This Tag provides access to the labels stored in the
+ * Provides access to the labels stored in the
  * language files of the OpenCms workplace.<p>
  * 
  * Instead of using the XML based workplace tags one should 
@@ -41,26 +51,26 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class CmsJspTagLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
+public class CmsJspTagLabel extends BodyTagSupport {
             
     /**
      * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
      */
-    public int doAfterBody() throws javax.servlet.jsp.JspException {
+    public int doAfterBody() throws JspException {
         
-        javax.servlet.ServletRequest req = pageContext.getRequest();
+        ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof com.opencms.flex.cache.CmsFlexRequest) {
+        if (req instanceof CmsFlexRequest) {
 
-            com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
+            CmsFlexRequest c_req = (CmsFlexRequest)req;
                
             try {       
                 
                 // Get label string from the body and reset body 
-                javax.servlet.jsp.tagext.BodyContent body = this.getBodyContent();
+                BodyContent body = this.getBodyContent();
                 String label = body.getString();            
                 body.clearBody();  
                 
@@ -87,11 +97,11 @@ public class CmsJspTagLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
      */    
     public static String wpLabelTagAction(String label, CmsFlexRequest req) 
     throws CmsException {
-        com.opencms.workplace.CmsXmlWpLabelDefFile labeldeffile;
-        com.opencms.workplace.CmsXmlLanguageFile langfile;
+        CmsXmlWpLabelDefFile labeldeffile;
+        CmsXmlLanguageFile langfile;
         
-        labeldeffile = new com.opencms.workplace.CmsXmlWpLabelDefFile(req.getCmsObject(), "/system/workplace/templates/" + com.opencms.workplace.I_CmsWpConstants.C_LABELTEMPLATE);
-        langfile = new com.opencms.workplace.CmsXmlLanguageFile(req.getCmsObject());
+        labeldeffile = new CmsXmlWpLabelDefFile(req.getCmsObject(), I_CmsWpConstants.C_VFS_PATH_WORKPLACE +  I_CmsWpConstants.C_VFS_DIR_TEMPLATES + I_CmsWpConstants.C_LABELTEMPLATE);
+        langfile = new CmsXmlLanguageFile(req.getCmsObject());
         
         return labeldeffile.getLabel(langfile.getLanguageValue(label));                        
     }

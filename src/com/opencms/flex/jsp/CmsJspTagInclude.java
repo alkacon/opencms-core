@@ -1,32 +1,34 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2003/02/12 17:22:41 $
-* Version: $Revision: 1.19 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2002  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.20 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
 package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
@@ -46,10 +48,10 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * This Tag is used to include another OpenCms managed resource in a JSP.
+ * Used to include another OpenCms managed resource in a JSP.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.20 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -269,6 +271,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * Include action method.<p>
      * 
+     * The logic in this mehod is more complex than it should be.
+     * This is because of the XMLTemplate integration, which requires some settings 
+     * to the parameters understandable only to XMLTemplate gurus.
+     * By putting this logic here it is not required to care about these issues
+     * on JSP pages, and you end up with considerable less JSP code.
+     * Also JSP developers need not to know the intrinsics of XMLTemplates this way.<p>
+     * 
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
      * @param element the element to select form the target might be <code>null</code>
@@ -280,12 +289,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      */
     static void includeTagAction(PageContext context, String target, String element, Map parameterMap, CmsFlexRequest req, CmsFlexResponse res) 
     throws JspException {
-        // The logic in this mehod is more complex than it should be.
-        // This is because of the XMLTemplate integration, which requires some settings 
-        // to the parameters understandable only to XMLTemplate gurus.
-        // By putting this logic here it is not required to care about these issues
-        // on JSP pages, and you end up with considerable less JSP code.
-        // Also JSP developers need not to know the intrinsics of XMLTemplates this way.
         
         if (target == null) {
             // set target to default
@@ -390,6 +393,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * value already exists for the parameter, nothing will be added, since a 
      * value can appear only once per parameter.<p>
      * 
+     * @param name the name to add
+     * @param value the value to add
 	 * @see com.opencms.flex.jsp.I_CmsJspTagParamParent#addParameter(String, String)
 	 */
 	public void addParameter(String name, String value) {
@@ -407,7 +412,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
-     * Internal method to add parameters.
+     * Internal method to add parameters.<p>
+     * 
+     * @param parameters the Map to add the parameters to
+     * @param name the name to add
+     * @param value the value to add
      */
     private static void addParameter(Map parameters, String name, String value) {
         // No null values allowed in parameters

@@ -1,41 +1,50 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.6 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2002  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.7 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.flex.cache;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /** 
- * Implementation of the javax.servlet.RequestDispatcher interface.
+ * Implementation of the javax.servlet.RequestDispatcher interface to allow JSPs to be loaded
+ * from OpenCms.<p>
+ * 
  * This dispatcher will load data from 3 different data sources:
  * <ol>
  * <li>Form the "real" system Filesystem (e.g. for JSP pages)
@@ -44,9 +53,9 @@ import javax.servlet.ServletException;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
-public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher {
+public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
     /** The "real" RequestDispatcher, used when a true include (to the file system) is needed. */    
     private javax.servlet.RequestDispatcher m_rd = null;
@@ -67,27 +76,27 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
     private static final int DEBUG = 0;
     
     /** 
-     * Creates a new instance of CmsFlexRequestDispatcher.
+     * Creates a new instance of CmsFlexRequestDispatcher.<p>
      *
-     * @param rd The "real" dispatcher, used for include call to file system.
-     * @param target The target that the request will be dispatched to.
-     * @param cache The cache used for delivering and storing of cached pages.
-     * @param cms The CmsObject that is needed for authorization of internal calls to the OpenCms VFS.
+     * @param rd the "real" dispatcher, used for include call to file system
+     * @param target the target that the request will be dispatched to
+     * @param cache the cache used for delivering and storing of cached pages
+     * @param cms the CmsObject that is needed for authorization of internal calls to the OpenCms VFS<
      */
-    public CmsFlexRequestDispatcher(javax.servlet.RequestDispatcher rd, String target, CmsFlexCache cache, com.opencms.file.CmsObject cms) {
+    public CmsFlexRequestDispatcher(RequestDispatcher rd, String target, CmsFlexCache cache, CmsObject cms) {
         this(rd, target, null, cache, cms);
     }
 
     /** 
-     * Creates a new instance of CmsFlexRequestDispatcher.
+     * Creates a new instance of CmsFlexRequestDispatcher.<p>
      *
-     * @param rd The "real" dispatcher, used for include call to file system.
-     * @param target The cms resource that represents the external target.
-     * @param ext_target The external target that the request will be dispatched to.
-     * @param cache The cache used for delivering and storing of cached pages.
-     * @param cms The CmsObject that is needed for authorization of internal calls to the OpenCms VFS.
+     * @param rd the "real" dispatcher, used for include call to file system
+     * @param target the cms resource that represents the external target
+     * @param ext_target the external target that the request will be dispatched to
+     * @param cache the cache used for delivering and storing of cached pages
+     * @param cms the CmsObject that is needed for authorization of internal calls to the OpenCms VFS
      */
-    public CmsFlexRequestDispatcher(javax.servlet.RequestDispatcher rd, String target, String ext_target, CmsFlexCache cache, com.opencms.file.CmsObject cms) {
+    public CmsFlexRequestDispatcher(RequestDispatcher rd, String target, String ext_target, CmsFlexCache cache, CmsObject cms) {
         m_rd = rd;
         m_target = target;
         m_ext_target = ext_target;
@@ -96,22 +105,26 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
     } 
 
     /** 
-     * Wrapper for the standard servlet API call.
+     * Wrapper for the standard servlet API call.<p>
+     * 
      * Forward calls are actually NOT wrapped by OpenCms as of now.
-     * So they should not be used in JSP pages or servlets.
+     * So they should not be used in JSP pages or servlets.<p>
      *
-     * @param servletRequest The servlet request
-     * @param servletResponse The servlet response
-     * @throws ServletException In case something goes wrong
-     * @throws IOException In case something goes wrong
-     */    
-    public void forward(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) 
+     * @param servletRequest the servlet request
+     * @param servletResponse the servlet response
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
+     *
+     * @see javax.servlet.RequestDispatcher#forward(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     */ 
+    public void forward(ServletRequest servletRequest, ServletResponse servletResponse) 
     throws ServletException, java.io.IOException {
         m_rd.forward(servletRequest, servletResponse);
     }
     
     /** 
-     * Wrapper for the standard servlet API call.
+     * Wrapper for the standard servlet API call.<p>
+     * 
      * If you use standard include(), the call will be done 
      * by the standard request dispatcher. 
      * In case you want to include somthing from the Cms VFS,
@@ -121,8 +134,10 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
      * @param servletResponse The servlet response
      * @throws ServletException In case something goes wrong
      * @throws IOException In case something goes wrong
-     */       
-    public void include(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) 
+     *
+     * @see javax.servlet.RequestDispatcher#include(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     */      
+    public void include(ServletRequest servletRequest, ServletResponse servletResponse) 
     throws ServletException, java.io.IOException {
         m_rd.include(servletRequest, servletResponse);        
     }
@@ -132,24 +147,25 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
      *
      * It was choosen NOT to overload the standard API include() call,
      * since standard JSP might expect the standard behaviour from 
-     * the RequestDispatcher, i.e. loading the files form the file system.
+     * the RequestDispatcher, i.e. loading the files form the file system.<p>
      *
      * This method will dispatch to cache, to real file system or
      * to the OpenCms VFS, whatever is needed.<p>
      *
-     * This method is much more complex then it sould be because of the internal buffering of JSP pages.
+     * This method is much more complex then it sould be because of the internal standard 
+     * buffering of JSP pages.
      * Because of that I can not just intercept and buffer the stream, since I don't have 
      * access to it (it is wrapped internally in the JSP pages, which have their own buffer).
      * That leads to a solution where the data is first written to the bufferd stream, 
      * but without includes. Then it is parsed again later 
      * (in response.processCacheEntry()), enriched with the 
      * included elements that have been ommitted in the first case.
-     * I would love to see a simpler solution, but this works for now.
+     * I would love to see a simpler solution, but this works for now.<p>
      *
-     * @param req The servlet request
-     * @param res The servlet response
-     * @throws ServletException In case something goes wrong
-     * @throws IOException In case something goes wrong
+     * @param req the servlet request
+     * @param res the servlet response
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
      */ 
     public void include(CmsFlexRequest req, CmsFlexResponse res) 
     throws ServletException, java.io.IOException {

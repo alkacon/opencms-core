@@ -1,30 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsResourceLoader.java,v $
-* Date   : $Date: 2002/12/06 15:59:53 $
-* Version: $Revision: 1.5 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2002  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsResourceLoader.java,v $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.6 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.flex;
 
@@ -63,7 +66,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -101,12 +104,12 @@ public interface I_CmsResourceLoader {
      * Basic top-page processing method for a I_CmsResourceLoader,
      * this method is called if the page is called as a sub-element 
      * on a page not already loded with a I_CmsResourceLoader,
-     * which most often would be an I_CmsLauncher then.
+     * which most often would be an I_CmsLauncher then.<p>
      *
-     * @param cms The initialized CmsObject which provides user permissions
-     * @param file The requested OpenCms VFS resource
-     * @param req The original servlet request
-     * @param res The original servlet response
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param file the requested OpenCms VFS resource
+     * @param req the original servlet request
+     * @param res the original servlet response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
@@ -119,12 +122,12 @@ public interface I_CmsResourceLoader {
     /**
      * Does the job of including the requested resource, 
      * this method is called directly if the element is 
-     * called as a sub-element from another I_CmsResourceLoader.
+     * called as a sub-element from another I_CmsResourceLoader.<p>
      * 
-     * @param cms Used to access the OpenCms VFS
-     * @param file The reqested JSP file resource in the VFS
-     * @param req The current request
-     * @param res The current response
+     * @param cms used to access the OpenCms VFS
+     * @param file the reqested JSP file resource in the VFS
+     * @param req the current request
+     * @param res the current response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/I_CmsFlexLruCacheObject.java,v $
- * Date   : $Date: 2002/09/16 12:38:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/02/26 15:19:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,12 +15,15 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,34 +32,59 @@
 package com.opencms.flex.util;
 
 /**
- * This interface defines the methods which an object being cached by CmsFlexLruCache has to implement.
+ * Defines the methods which an object being cached by CmsFlexLruCache must implement.<p>
+ * 
  * CmsFlexLruCache is organized as a double linked list, that's why objects implementing this interface
- * need getters/setter for the next/previous nodes in the list of all cached objects.
+ * need getters/setter for the next/previous nodes in the list of all cached objects.<p>
  *
  * @see com.opencms.flex.util.CmsFlexLruCache
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface I_CmsFlexLruCacheObject {
     
-    /** Set the next object in the double linked list of all cached objects. */
+    /** 
+     * Set the next object in the double linked list of all cached objects.<p>
+     *
+     * @param theNextObject the next object
+     */
     public void setNextLruObject( I_CmsFlexLruCacheObject theNextObject );
     
-    /** Get the next object in the double linked list of all cached objects. */
+    /** 
+     * Returns the next object in the double linked list of all cached objects.<p>
+     *
+     * @return the next object in the double linked list of all cached objects
+     */
     public I_CmsFlexLruCacheObject getNextLruObject();
     
-    /** Set the previous object in the double linked list of all cached objects. */
+    /** 
+     * Set the previous object in the double linked list of all cached objects.<p>
+     * 
+     * @param thePreviousObject the previous object
+     */
     public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousObject );
      
-    /** Get the previous object in the double linked list of all cached objects. */
+    /** 
+     * Returns the previous object in the double linked list of all cached objects.<p>
+     * 
+     * @return the previous object in the double linked list of all cached objects 
+     */
     public I_CmsFlexLruCacheObject getPreviousLruObject();
     
-    /** This method is invoked after the object was added to the cache. */
+    /** 
+     * Invoked after an object was added to the cache.<p>
+     */
     public void addToLruCache();
     
-    /** This method is invoked after the object was removed to the cache. */
+    /** 
+     * Invoked after the object was removed to the cache.<p>
+     */
     public void removeFromLruCache();
     
-    /** Returns the cache costs of this object, as for example it's byte size. */
+    /** 
+     * Returns the cache costs of this object, as for example it's byte size.<p>
+     * 
+     * @return the cache costs of this object
+     */
     public int getLruCacheCosts();
 }

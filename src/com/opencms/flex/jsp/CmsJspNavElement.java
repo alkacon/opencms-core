@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/02/17 10:01:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,19 +15,20 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 4. Mai 2002, 21:49
  */
-
+ 
 package com.opencms.flex.jsp;
 
 import com.opencms.core.I_CmsConstants;
@@ -40,7 +41,7 @@ import java.util.Hashtable;
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -218,7 +219,7 @@ public class CmsJspNavElement implements Comparable {
     /**
      * Returns the resource name this nav element was initalized with.<p>
      * 
-     * @return String the resource name this nav element was initalized with
+     * @return the resource name this nav element was initalized with
      */
     public String getResourceName() {
         return m_resource;
@@ -228,7 +229,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns the filename of the nav element, i.e.
      * the name of the nav resource without any path information.<p>
      * 
-     * @return String the filename of the nav element, i.e.
+     * @return the filename of the nav element, i.e.
      * the name of the nav resource without any path information
      */
     public String getFileName() {        
@@ -249,7 +250,7 @@ public class CmsJspNavElement implements Comparable {
     /**
      * Returns the name of the parent folder of the resource of this nav element,<p>
      * 
-     * @return String the name of the parent folder of the resource of this nav element
+     * @return the name of the parent folder of the resource of this nav element
      */
     public String getParentFolderName() {
         return CmsResource.getParent(m_resource);
@@ -260,7 +261,7 @@ public class CmsJspNavElement implements Comparable {
      * or a warning message if this property is not set 
      * (this method will never return <code>null</code>).<p> 
      * 
-     * @return String the value of the property C_PROPERTY_NAVTEXT of this nav element,
+     * @return the value of the property C_PROPERTY_NAVTEXT of this nav element,
      * or a warning message if this property is not set 
      * (this method will never return <code>null</code>)
      */
@@ -277,7 +278,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns the value of the property C_PROPERTY_TITLE of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return String the value of the property C_PROPERTY_TITLE of this nav element
+     * @return the value of the property C_PROPERTY_TITLE of this nav element
      * or <code>null</code> if this property is not set
      */
     public String getTitle() {
@@ -288,7 +289,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns the value of the property C_PROPERTY_NAVINFO of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return String the value of the property C_PROPERTY_NAVINFO of this nav element
+     * @return the value of the property C_PROPERTY_NAVINFO of this nav element
      * or <code>null</code> if this property is not set
      */
     public String getInfo() {
@@ -299,7 +300,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns the value of the property C_PROPERTY_LOCALE of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return String the value of the property C_PROPERTY_LOCALE of this nav element
+     * @return the value of the property C_PROPERTY_LOCALE of this nav element
      * or <code>null</code> if this property is not set
      */    
     public String getLocale() {
@@ -310,7 +311,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns the value of the property C_PROPERTY_NAVIMAGE of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return String the value of the property C_PROPERTY_NAVIMAGE of this nav element
+     * @return the value of the property C_PROPERTY_NAVIMAGE of this nav element
      * or <code>null</code> if this property is not set
      */    
     public String getNavImage() {
@@ -321,7 +322,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns the value of the property C_PROPERTY_DESCRIPTION of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return String the value of the property C_PROPERTY_DESCRIPTION of this nav element
+     * @return the value of the property C_PROPERTY_DESCRIPTION of this nav element
      * or <code>null</code> if this property is not set
      */    
     public String getDescription() {
@@ -337,7 +338,7 @@ public class CmsJspNavElement implements Comparable {
      * <li><em>or</em> it has the property C_PROPERTY_NAVPOS set 
      * <li><em>and</em> it is not a temporary file that contains a '~' in it's filename.</ol> 
      * 
-     * @return boolean <code>true</code> if this nav element is in the navigation, <code>false</code>
+     * @return <code>true</code> if this nav element is in the navigation, <code>false</code>
      * otherwise
      */
     public boolean isInNavigation() {
@@ -354,7 +355,7 @@ public class CmsJspNavElement implements Comparable {
      * Returns <code>true</code> if this nav element describes a folder, <code>false</code>
      * otherwise.<p>
      * 
-     * @return boolean <code>true</code> if this nav element describes a folder, <code>false</code>
+     * @return <code>true</code> if this nav element describes a folder, <code>false</code>
      * otherwise.<p>
      */
     public boolean isFolderLink() {
@@ -368,7 +369,7 @@ public class CmsJspNavElement implements Comparable {
      * the nav element belongs to.<p>
      * 
      * @param key the property name to look up
-     * @return String the value of the selected property
+     * @return the value of the selected property
      */
     public String getProperty(String key) {
         return (String)m_properties.get(key);
@@ -381,7 +382,7 @@ public class CmsJspNavElement implements Comparable {
      * Please note that the original reference is returned, so be careful when making 
      * changes to the Hashtable.<p>
      * 
-     * @return Hashtable the original Hashtable of all file properties of the resource that
+     * @return the original Hashtable of all file properties of the resource that
      * the nav element belongs to
      */    
     public Hashtable getProperties() {

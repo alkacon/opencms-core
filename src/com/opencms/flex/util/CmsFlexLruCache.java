@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/02/15 11:14:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/02/26 15:19:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,24 +15,29 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+ 
 package com.opencms.flex.util;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 
 /**
- * The idea of this cache is, to separate the caching policy from the data structure
+ * Implements an LRU (last recently used) cache.<p>
+ * 
+ * The idea of this cache to separate the caching policy from the data structure
  * where the cached objects are stored. The advantage of doing so is, that the CmsFlexLruCache
  * can identify the last-recently-used object in O(1), whereas you would need at least
  * O(n) to traverse the data structure that stores the cached objects. Second, you can
@@ -48,7 +53,7 @@ import com.opencms.core.A_OpenCms;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -78,7 +83,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     
     
     /**
-     * The constructor with all options.
+     * The constructor with all options.<p>
      *
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
@@ -96,7 +101,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Constructor for a LRU cache with forced garbage collection/finalization.
+     * Constructor for a LRU cache with forced garbage collection/finalization.<p>
      *
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
@@ -108,7 +113,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     
     /**
      * Constructor for a LRU cache with forced garbage collection/finalization, the max. allowed costs of cacheable
-     * objects is 1/4 of the max. costs of all cached objects.
+     * objects is 1/4 of the max. costs of all cached objects.<p>
      *
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
@@ -118,7 +123,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Constructor for a LRU cache where the max. allowed costs of cacheable objects is 1/4 of the max. costs of all cached objects.
+     * Constructor for a LRU cache where the max. allowed costs of cacheable objects is 1/4 of the max. costs of all cached objects.<p>
      *
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
@@ -129,7 +134,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Returns a string representing the current state of the cache.
+     * Returns a string representing the current state of the cache.<p>
      */
     public String toString() {
         String objectInfo = "\n";
@@ -149,8 +154,10 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Add a new object to the cache. If you try to add the same object more than once,
-     * the object is touched instead.
+     * Adds a new object to this cache.<p>
+     * 
+     * If add the same object more than once,
+     * the object is touched instead.<p>
      *
      * @param theCacheObject the object being added to the cache
      * @return true if the object was added to the cache, false if the object was denied because its cache costs were higher than the allowed max. cache costs per object
@@ -185,7 +192,8 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Test if a given object resides inside the cache.
+     * Test if a given object resides inside the cache.<p>
+     * 
      * @return true if the object is inside the cache, false otherwise
      */
     private boolean isCached( I_CmsFlexLruCacheObject theCacheObject ) {
@@ -211,8 +219,8 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Touch an existing object in the cache in the sense that it's "last-recently-used" state
-     * is updated.
+     * Touch an existing object in this cache, in the sense that it's "last-recently-used" state
+     * is updated.<p>
      *
      * @param theCacheObject the object being touched
      */
@@ -255,7 +263,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Adds a cache object as the new haed to the list of all cached objects.
+     * Adds a cache object as the new haed to the list of all cached objects in this cache.<p>
      *
      * @param theCacheObject the object being added as the new head to the list of all cached objects
      */
@@ -280,8 +288,8 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Removes an object from the list of all cached objects,
-     * no matter what position it has inside the list.
+     * Removes an object from the list of all cached objects in this cache,
+     * no matter what position it has inside the list.<p>
      *
      * @param theCacheObject the object being removed from the list of all cached objects
      * @return a reference to the object that was removed
@@ -330,7 +338,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Removes the tailing object from the list of all cached objects.
+     * Removes the tailing object from the list of all cached objects.<p>
      */
     private synchronized void removeTail() {
         I_CmsFlexLruCacheObject oldTail = null;
@@ -355,7 +363,8 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Decrease the cache stats. and notify the cached object that it was removed from the cache.
+     * Decrease this caches statistics
+     * and notify the cached object that it was removed from this cache.<p>
      *
      * @param theCacheObject the object being notified that it was removed from the cache
      */
@@ -374,7 +383,8 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Increase the cache stats. and notify the cached object that it was added to the cache.
+     * Increase this caches statistics 
+     * and notify the cached object that it was added to this cache.<p>
      *
      * @param theCacheObject the object being notified that it was added to the cache
      */
@@ -390,7 +400,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     
     /**
      * Removes the last recently used objects from the list of all cached objects as long
-     * as the costs of all cached objects are higher than the allowed avg. costs of the cache.
+     * as the costs of all cached objects are higher than the allowed avg. costs of the cache.<p>
      */
     private void gc() {       
         I_CmsFlexLruCacheObject currentObject = this.m_ListTail;
@@ -408,7 +418,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Returns the count of all cached objects.
+     * Returns the count of all cached objects.<p>
      *
      * @return the count of all cached objects
      */
@@ -417,7 +427,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Clears the cache for finalization.
+     * Clears this cache for finalization.<p>
      */
     protected void finalize() throws java.lang.Throwable {
         this.clear();
@@ -425,7 +435,7 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Removes all cached objects and resets the internal cache.
+     * Removes all cached objects in this cache.<p>
      */
     public void clear() {
         // remove all objects from the linked list from the tail to the head:
@@ -447,32 +457,36 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
 	/**
-	 * Returns the avg. costs of all cached objects.
-	 * @return the avg. costs of all cached objects
+	 * Returns the average costs of all cached objects.<p>
+     * 
+	 * @return the average costs of all cached objects
 	 */
 	public int getAvgCacheCosts() {
 		return this.m_AvgCacheCosts;
 	}
 
 	/**
-	 * Returns the max. costs of all cached objects.
-	 * @return the max. costs of all cached objects
+	 * Returns the max costs of all cached objects.<p>
+     * 
+	 * @return the max costs of all cached objects
 	 */
 	public int getMaxCacheCosts() {
 		return this.m_MaxCacheCosts;
 	}
 
 	/**
-	 * Returns the max. allowed costs per cached object.
-	 * @return the max. allowed costs per cached object
+	 * Returns the max allowed costs per cached object.<p>
+     * 
+	 * @return the max allowed costs per cached object
 	 */
 	public int getMaxObjectCosts() {
 		return this.m_MaxObjectCosts;
 	}
 
 	/**
-	 * Returns the cur. costs of all cached objects.
-	 * @return the cur. costs of all cached objects
+	 * Returns the current costs of all cached objects.<p>
+     * 
+	 * @return the current costs of all cached objects
 	 */
 	public int getObjectCosts() {
 		return this.m_ObjectCosts;

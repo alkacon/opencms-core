@@ -1,31 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
-* Date   : $Date: 2003/02/17 01:12:45 $
-* Version: $Revision: 1.3 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2002  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.4 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.flex.jsp;
 
@@ -34,10 +36,10 @@ import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.util.Encoder;
 
 /**
- * This Tag provides access to the currently included files OpenCms properties.<p>
+ * Provides access to the properties of a resource in the OpenCms VFS .<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -104,7 +106,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     /**
      * Returns the default value.<p>
      * 
-     * @return String the default value
+     * @return the default value
      */
     public String getDefault() {
         return m_defaultValue!=null?m_defaultValue:"";
@@ -124,7 +126,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     /**
      * Returns the file name.<p>
      * 
-     * @return String the file name
+     * @return the file name
      */
     public String getFile() {
         return m_propertyFile!=null?m_propertyFile:"parent";
@@ -145,7 +147,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     /**
      * The value of the escape html flag.<p>
      * 
-     * @return String the value of the escape html flag
+     * @return the value of the escape html flag
      */
     public String getEscapeHtml() {
         return "" + m_escapeHtml;

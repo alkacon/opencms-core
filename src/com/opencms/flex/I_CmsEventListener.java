@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2002/10/30 09:56:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,19 +15,19 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 18. April 2002, 14:59
  */
-
 
 package com.opencms.flex;
 
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -68,28 +68,28 @@ package com.opencms.flex;
 public interface I_CmsEventListener {
     
     /** 
-     * Event "user has logged in" 
+     * Event "user has logged in".<p>
      *
      * @see com.opencms.file.CmsObject#loginUser(String, String) 
      */
     public static int EVENT_LOGIN_USER = 1;
 
     /**
-     * Event "a project was published" 
+     * Event "a project was published".<p>
      * 
      * @see com.opencms.file.CmsObject#publishProject(int, I_CmsReport)
      */    
     public static int EVENT_PUBLISH_PROJECT = 2;
     
     /** 
-     * Event "a resource was published" 
+     * Event "a resource was published".<p>
      * 
      * @see com.opencms.file.CmsObject#publishResource(String, boolean)
      */    
     public static int EVENT_PUBLISH_RESOURCE = 3;    
 
     /** 
-     * Event "a resource in the COS was published".
+     * Event "a resource in the COS was published".<p>
      * 
      * @see com.opencms.defaults.master.CmsMasterContent#publishResource(CmsObject)
      */    
@@ -103,12 +103,12 @@ public interface I_CmsEventListener {
     public static int EVENT_CLEAR_CACHES = 5;
 
     /** 
-     * Event used by the Flex Cluster Module
+     * Event used by the Flex Cluster Module.<p>
      */ 
     public static int EVENT_FLEX_CLUSTER_CHECK_SOURCE = 6;
 
     /** 
-     * Event used by the Flex Cluster Module
+     * Event used by the Flex Cluster Module.<p>
      */      
     public static int EVENT_FLEX_CLUSTER_HOOK = 7;
 

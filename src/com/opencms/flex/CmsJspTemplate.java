@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/01/20 17:57:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,20 +15,20 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 24. Mai 2002, 09:53
  */
-
-
+ 
 package com.opencms.flex;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -42,27 +42,26 @@ import java.util.Hashtable;
 
 /**
  * A simple dump class for JSPs which enables
- * the use of JSP as sub-elements in the XMLTemplate 
- * mechanism.
+ * the use of JSP as sub-elements in the legacy OpenCms XMLTemplate 
+ * mechanism.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.0 beta 1
- * 
  */
 public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
     
-    /** 
-     * Constructor for class CmsJspTemplate,
-     * not used.
+    /**
+     * The constructor of the class is empty and does nothing.<p>
      */
-    public CmsJspTemplate() {       
+    public CmsJspTemplate() {
+        // NOOP
     }
 
     /**
      * Gets the content of the given JSP file to include them
-     * in the XMLTemplate.
+     * in the XMLTemplate.<p>
      *
      * @param cms for accessing system resources
      * @param jspFile filename of the JSP in the VFS
@@ -141,10 +140,10 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
      * i.e. <code>new CmsCacheDirectives(false)</code>
      *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
+     * @param templateFile filename of the template file
+     * @param elementName element name of this template in our parent template
+     * @param parameters Hashtable with all template class parameters
+     * @param templateSelector template section that should be processed
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
     public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {

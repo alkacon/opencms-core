@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/12/06 23:16:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,20 +15,20 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 9. April 2002, 12:42
  */
-
-
+ 
 package com.opencms.flex.cache;
 
 import com.opencms.flex.util.I_CmsFlexLruCacheObject;
@@ -37,16 +37,18 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * A CmsFlexCacheEntry describes a cached resource.
+ * Contains the contents of a cached resource.<p>
+ * 
  * It is basically a list of pre-generated output,
- * include() calls to other resources and http headers that this 
+ * include() calls to other resources (with request parameters) and http headers that this 
  * resource requires to be set.<p>
  *
- * An CmsFlexCacheEntry might also describe a redirect-call, but in this case
+ * A CmsFlexCacheEntry might also describe a redirect-call, but in this case
  * nothing else will be cached.<p>
  *
- * The pre-generated output is saved in byte[] arrays.
- * The include() calls are saved as Strings of the included resource name.
+ * The pre-generated output is saved in <code>byte[]</code> arrays.
+ * The include() calls are saved as Strings of the included resource name, 
+ * the parameters for the calls are saved in a HashMap.
  * The headers are saved in a HashMap.
  * In case of a redirect, the redircet target is cached in a String.<p>
  *
@@ -56,7 +58,7 @@ import java.util.Map;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
@@ -104,7 +106,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     private int ID;
     
     /** 
-     * Constructor for class CmsFlexCacheEntry.
+     * Constructor for class CmsFlexCacheEntry.<p>
+     * 
      * The way to use this class is to first use this empty constructor 
      * and later add data with the various add methods.
      */
@@ -121,10 +124,10 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /** 
-     * Add an array of bytes to the cache.
-     * This will usually be the result of some kind of output - stream.
+     * Adds an array of bytes to this cache entry,
+     * this will usually be the result of some kind of output - stream.<p>
      *
-     * @param bytes The output to save in the cache.
+     * @param bytes the output to save in the cache
      */    
     public void add(byte[] bytes) {
         if (m_completed) return;
@@ -136,10 +139,10 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /** 
-     * Add an include - call target resource to the cache entry.
+     * Add an include - call target resource to this cache entry.<p>
      *
-     * @param resource A name of a resource in the OpenCms VFS.
-     * @param parameters A map of parameters specific to this include call.
+     * @param resource a name of a resource in the OpenCms VFS
+     * @param parameters a map of parameters specific to this include call
      */    
     public void add(String resource, java.util.Map paramters) {
         if (m_completed) return;
@@ -153,10 +156,11 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /** 
-     * Add a map of headers to the cache entry.
-     * The headers are usually collected in the class CmsFlexResponse first.
+     * Add a map of headers to this cache entry,
+     * which are usually collected in the class CmsFlexResponse first.<p>
      *
-     * @param headers The map of headers to add to the entry */
+     * @param headers the map of headers to add to the entry 
+     */
     public void addHeaders(java.util.Map headers) {
         if (m_completed) return;
         m_headers = headers;
@@ -174,7 +178,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * When a redirect target is set, all saved data is thrown away,
      * and new data will not be saved in the cache entry.
      * This is so since with a redirect nothing will be displayed
-     * in the browser anyway, so there is no point in saving the data.
+     * in the browser anyway, so there is no point in saving the data.<p>
      * 
      * @param target The redirect target (must be a valid URL).
      */    
@@ -188,28 +192,29 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /**
-     * Returns the list of data entries of this cache entry.
+     * Returns the list of data entries of this cache entry.<p>
+     * 
      * Data entries are byte arrays representing some kind of ouput
      * or Strings representing include calls to other resources.
      *
-     * @return The list of data elements of this cache entry.
+     * @return the list of data elements of this cache entry
      */    
     public java.util.List elements() {
         return m_elements;
     }
 
     /** 
-     * Processing method for the cached entry.<p>
+     * Processing method for this cached entry.<p>
      *
      * If this method is called, it delivers the contents of
      * the cached entry to the given request / response.
      * This includes calls to all included resources.<p>
      *
-     * @param req The request from the client.
-     * @param res The server response.
-     * @throws CmsException Is thrown when problems writing to the response output-stream occur
-     * @throws ServletException Might be thrown from call to RequestDispatcher.include()
-     * @throws IOException Might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
+     * @param req the request from the client
+     * @param res the server response
+     * @throws CmsException is thrown when problems writing to the response output-stream occur
+     * @throws ServletException might be thrown from call to RequestDispatcher.include()
+     * @throws IOException might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
      */
     public void service(CmsFlexRequest req, CmsFlexResponse res) 
     throws com.opencms.core.CmsException, javax.servlet.ServletException, java.io.IOException {
@@ -254,26 +259,26 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /** 
-     * Returns the timeout - value of this cache entry.
-     * This is set to the time when the entry becomes invalid.
+     * Returns the timeout - value of this cache entry,
+     * this is set to the time when the entry becomes invalid.
      *
-     * @return  The timeout value for this resource
+     * @return the timeout value for this resource
      */ 
     public long getTimeout() {
         return m_timeout;
     }
     
     /**
-     * Sets a timeout value to the entry. 
-     * A timout value indicates the time the entry should become invalid.<p>
+     * Sets a timeout value to this cache entry,
+     * which indicates the time this entry becomes invalid.<p>
      *
      * The timeout parameter represents the minute - intervall in which the cache entry
      * is to be cleared. 
      * The intervall always starts at 0.00h. 
      * A value of 60 would indicate that this entry will reach it's timeout at the beginning of the next 
-     * full hour, a timeout of 20 would indicate that the entry is invalidated at x.00, x.20 and x.40 of every hour etc.
+     * full hour, a timeout of 20 would indicate that the entry is invalidated at x.00, x.20 and x.40 of every hour etc.<p>
      *
-     * @param timeout The timeout value to be set
+     * @param timeout the timeout value to be set
      */
     public synchronized void setTimeout(long timeout) {
         if (timeout < 0 || ! m_completed) return;
@@ -285,11 +290,12 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     } 
     
     /**
-     * Completes this cache entry.
-     * A completed cache entry is made "unmodifyable",
+     * Completes this cache entry.<p>
+     * 
+     * A completed cache entry is made "unmodifiable",
      * so that no further data can be added and existing data can not be changed.
      * This is to prevend the (unlikley) case that some user-written class 
-     * tries to make changes to a cache entry.
+     * tries to make changes to a cache entry.<p>
      */
     public void complete() {        
         m_completed = true;
@@ -304,10 +310,10 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /** 
-     * Overloaded from Object.toString()
+     * @see java.lang.Object#toString()
      *
-     * @return A basic String representation of this CmsFlexCache entry.
-     */    
+     * @return a basic String representation of this CmsFlexCache entry
+     */
     public String toString() {
         String str = null;
         if (m_redirectTarget == null) {
@@ -331,6 +337,11 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     
     /**
      * Stores a backward reference to the map and key where this cache entry is stored.
+     * 
+     * This is required for the FlexCache.<p>
+     *
+     * @param theVariationKey the variation key
+     * @param theVariationMap the variation map
      */
     public void setVariationData( String theVariationKey, Map theVariationMap ) {
         this.m_VariationKey = theVariationKey;
@@ -339,44 +350,44 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     
     // implementation of the com.opencms.flex.util.I_CmsFlexLruCacheObject interface methods
     
-    /** 
-     * Set the next object in the double linked list of all cached objects. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setNextLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
      */
     public void setNextLruObject( I_CmsFlexLruCacheObject theNextEntry ) {
         this.m_Next = theNextEntry;
     }
     
-    /** 
-     * Get the next object in the double linked list of all cached objects. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getNextLruObject()
      */
     public I_CmsFlexLruCacheObject getNextLruObject() {
         return this.m_Next;
     }
     
-    /** 
-     * Set the previous object in the double linked list of all cached objects. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setPreviousLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
      */
     public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousEntry ) {
         this.m_Previous = thePreviousEntry;
     }
     
-    /** 
-     * Get the previous object in the double linked list of all cached objects. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getPreviousLruObject()
      */
     public I_CmsFlexLruCacheObject getPreviousLruObject() {
         return this.m_Previous;
     }  
     
-    /** 
-     * This method is invoked after the object was added to the cache. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#addToLruCache()
      */
     public void addToLruCache() {
         // do nothing here...
         if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to the LRU cache" );
     }
     
-    /** 
-     * This method is invoked after the object was removed to the cache. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#removeFromLruCache()
      */
     public void removeFromLruCache() {
         if (m_VariationMap!=null && this.m_VariationKey!=null) {
@@ -385,8 +396,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         }
     }
     
-    /** 
-     * Returns the byte size as the cache costs of this object. 
+    /**
+     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getLruCacheCosts()
      */
     public int getLruCacheCosts() {
         return m_byteSize;
@@ -395,7 +406,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     // methods to clean-up/finalize the object instance
     
     /**
-     * Finalize this instance.
+     * Finalize this instance.<p>
+     *
+     * @see java.lang.Object#finalize()
      */
     protected void finalize() throws java.lang.Throwable {
         if (DEBUG>0) System.err.println( "Finalizing cache entry with ID: " + this.ID );
@@ -417,9 +430,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     }
     
     /**
-     * Clears the elements and headers HashMaps.
+     * Clears the elements and headers HashMaps.<p>
      */
-    public void clear() {
+    private void clear() {
         m_elements.clear();
         m_headers.clear();
     }

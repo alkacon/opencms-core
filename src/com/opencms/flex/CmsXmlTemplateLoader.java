@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/02/26 10:30:37 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,19 +15,19 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 14. April 2002, 19:10
  */
-
 
 package com.opencms.flex;
 
@@ -46,7 +46,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Implementation of the {@link I_CmsResourceLoader} and 
  * the {@link com.opencms.launcher.I_CmsLauncher} interface for 
@@ -59,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -80,14 +79,16 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         // NOOP
     }
         
-    /** Destroy this ResourceLoder, this is a NOOP so far.  */
+    /** 
+     * Destroy this ResourceLoder, this is a NOOP so far.  
+     */
     public void destroy() {
         // NOOP
     }
     
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"A XMLTemplate loader that extends from com.opencms.launcher.CmsXmlLauncher"</code>
+     * which is <code>"A XMLTemplate loader that extends from com.opencms.launcher.CmsXmlLauncher"</code>.<p>
      * 
      * @return a describing String for the ResourceLoader 
      */
@@ -97,7 +98,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
     
     /** 
      * Initialize the ResourceLoader, the OpenCms parameter is
-     * saved here for later access to <code>generateOutput()</code>.
+     * saved here for later access to <code>generateOutput()</code>.<p>
      * 
      * @param openCms used to access <code>generateOutput()</code> later
      */
@@ -113,12 +114,12 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
      * Basic top-page processing method for this I_CmsResourceLoader,
      * this method is called if the page is called as a sub-element 
      * on a page not already loded with a I_CmsResourceLoader,
-     * which most often would be an I_CmsLauncher then.
+     * which most often would be an I_CmsLauncher then.<p>
      *
-     * @param cms The initialized CmsObject which provides user permissions
-     * @param file The requested OpenCms VFS resource
-     * @param req The original servlet request
-     * @param res The original servlet response
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param file the requested OpenCms VFS resource
+     * @param req the original servlet request
+     * @param res the original servlet response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
@@ -146,12 +147,12 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
     /**
      * Does the job of including the XMLTemplate, 
      * this method is called directly if the element is 
-     * called as a sub-element from another I_CmsResourceLoader.
+     * called as a sub-element from another I_CmsResourceLoader.<p>
      * 
-     * @param cms Used to access the OpenCms VFS
-     * @param file The reqested JSP file resource in the VFS
-     * @param req The current request
-     * @param res The current response
+     * @param cms used to access the OpenCms VFS
+     * @param file the reqested JSP file resource in the VFS
+     * @param req the current request
+     * @param res the current response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 

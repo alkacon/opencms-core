@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/02/17 01:12:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,23 +15,32 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-
+ 
 package com.opencms.flex.jsp;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.flex.cache.CmsFlexRequest;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Provides access to OpenCms and System related information.<p>
@@ -68,9 +77,9 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
-public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
+public class CmsJspTagInfo extends TagSupport {
     
     // member variables    
 	private String m_property = null;
@@ -90,8 +99,8 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
         };                
             
     /** array list of allowed property values for more convenient lookup */
-    private static final java.util.List m_userProperty =
-        java.util.Arrays.asList(m_systemProperties);
+    private static final List m_userProperty =
+        Arrays.asList(m_systemProperties);
 
     /**
      * Sets the info property name.
@@ -124,14 +133,14 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
-	public int doStartTag() throws javax.servlet.jsp.JspException {
+	public int doStartTag() throws JspException {
 
-		javax.servlet.ServletRequest req = pageContext.getRequest();
+		ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof com.opencms.flex.cache.CmsFlexRequest) {
+        if (req instanceof CmsFlexRequest) {
 
-            com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
+            CmsFlexRequest c_req = (CmsFlexRequest)req;
 
             try {       
                 String result = infoTagAction(m_property, c_req);
@@ -140,7 +149,7 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
             } catch (Exception ex) {
                 System.err.println("Error in Jsp 'info' tag processing: " + ex);
                 System.err.println(com.opencms.util.Utils.getStackTrace(ex));
-                throw new javax.servlet.jsp.JspException(ex);
+                throw new JspException(ex);
             }
         }
         return SKIP_BODY;

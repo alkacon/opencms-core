@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/02/17 00:32:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2003  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,17 +15,20 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  */
+ 
 package com.opencms.flex.jsp;
 
 import com.opencms.file.CmsFile;
@@ -42,7 +45,7 @@ import java.util.Vector;
  * Bean to provide a convenient way to build navigation structures.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -256,7 +259,7 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * @param startlevel the start level
      * @param endlevel the end level
-     * @return ArrayList a sorted list of nav elements with the nav tree level property set 
+     * @return a sorted list of nav elements with the nav tree level property set 
      */
     public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
         folder = CmsFile.getPath(folder);
@@ -308,7 +311,7 @@ public class CmsJspNavBuilder {
      * 
      * @param parentChannel the parent channel
      * @param subChannel the sub channel
-     * @return ArrayList an unsorted list of CmsResources
+     * @return an unsorted list of CmsResources
      */
     public ArrayList getChannelSubFolders(String parentChannel, String subChannel) {
         return getChannelSubFolders(m_cms, parentChannel, subChannel);
@@ -322,7 +325,7 @@ public class CmsJspNavBuilder {
      * @param cms context provider for the current request
      * @param parentChannel the parent channel
      * @param subChannel the sub channel
-     * @return ArrayList an unsorted list of CmsResources
+     * @return an unsorted list of CmsResources
      */
     public static ArrayList getChannelSubFolders(CmsObject cms, String parentChannel, String subChannel) {
         String channel = null;
@@ -345,7 +348,7 @@ public class CmsJspNavBuilder {
      * the folder does not exist or has no subfolders.<p>
      * 
      * @param channel the channel to look for subfolders in
-     * @return ArrayList an unsorted list of CmsResources
+     * @return an unsorted list of CmsResources
      */    
     public ArrayList getChannelSubFolders(String channel) {
         return getChannelSubFolders(m_cms, channel);
@@ -357,7 +360,7 @@ public class CmsJspNavBuilder {
      * 
      * @param cms context provider for the current request
      * @param channel the channel to look for subfolders in
-     * @return ArrayList an unsorted list of CmsResources
+     * @return an unsorted list of CmsResources
      */    
     public static ArrayList getChannelSubFolders(CmsObject cms, String channel) {
         if (! channel.startsWith("/")) channel = "/" + channel;
@@ -387,7 +390,7 @@ public class CmsJspNavBuilder {
      * 
      * @param channel the parent channel
      * @param subChannel the sub channel
-     * @return ArrayList a sorted list of CmsResources
+     * @return a sorted list of CmsResources
      */    
     public ArrayList getChannelSubFoldersSortTitleAsc(String channel, String subChannel) {
         return getChannelSubFoldersSortTitleAsc(m_cms, channel, subChannel);
@@ -401,7 +404,7 @@ public class CmsJspNavBuilder {
      * @param cms context provider for the current request
      * @param channel the parent channel
      * @param subChannel the sub channel
-     * @return ArrayList a sorted list of CmsResources
+     * @return a sorted list of CmsResources
      */
     public static ArrayList getChannelSubFoldersSortTitleAsc(CmsObject cms, String channel, String subChannel) {
         ArrayList subChannels = getChannelSubFolders(cms, channel, subChannel);
@@ -428,7 +431,7 @@ public class CmsJspNavBuilder {
      */
     private static class ResourceTitleContainer implements Comparable {
 
-        // member variabled        
+        // member variables       
         public CmsResource m_res = null;
         public String m_title = null;
 

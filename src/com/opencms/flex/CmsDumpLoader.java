@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/01/31 10:01:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,19 +15,19 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 14. April 2002, 19:10
  */
-
 
 package com.opencms.flex;
 
@@ -52,7 +52,7 @@ import javax.servlet.ServletException;
  * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
@@ -63,20 +63,22 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
     private static final int DEBUG = 0;
     
     /**
-     * The constructor of the class is empty and does nothing.
+     * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
         // NOOP
     }
         
-    /** Destroy this ResourceLoder, this is a NOOP so far.  */
+    /** 
+     * Destroy this ResourceLoder, this is a NOOP so far.<p>
+     */
     public void destroy() {
         // NOOP
     }
     
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"A simple dump loader that extends from com.opencms.launcher.CmsDumpLauncher"</code>
+     * which is <code>"A simple dump loader that extends from com.opencms.launcher.CmsDumpLauncher"</code><p>
      * 
      * @return a describing String for the ResourceLoader 
      */
@@ -86,9 +88,9 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
     
     /** 
      * Initialize the ResourceLoader,
-     * not much done here, only the FlexCache is initialized for dump elements.
+     * not much done here, only the FlexCache is initialized for dump elements.<p>
      *
-     * @param openCms An OpenCms object to use for initalizing.
+     * @param openCms an OpenCms object to use for initalizing
      */
     public void init(A_OpenCms openCms) {
         m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);  
@@ -102,12 +104,12 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
      * Basic top-page processing method for this I_CmsResourceLoader,
      * this method is called if the page is called as a sub-element 
      * on a page not already loded with a I_CmsResourceLoader,
-     * which most often would be a I_CmsLauncher then.
+     * which most often would be a I_CmsLauncher then.<p>
      *
-     * @param cms The initialized CmsObject which provides user permissions
-     * @param file The requested OpenCms VFS resource
-     * @param req The original servlet request
-     * @param res The original servlet response
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param file the requested OpenCms VFS resource
+     * @param req the original servlet request
+     * @param res the original servlet response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
@@ -126,12 +128,12 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
     /**
      * Does the job of dumping the contents of the requested file to the
      * output stream, this method is called directly if the element is 
-     * called as a sub-element from another I_CmsResourceLoader.
+     * called as a sub-element from another I_CmsResourceLoader.<p>
      * 
-     * @param cms Used to access the OpenCms VFS
-     * @param file The reqested JSP file resource in the VFS
-     * @param req The current request
-     * @param res The current response
+     * @param cms used to access the OpenCms VFS
+     * @param file the reqested JSP file resource in the VFS
+     * @param req the current request
+     * @param res the current response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
@@ -157,11 +159,4 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
             System.err.println("========== Time delivering dump for " + file.getAbsolutePath() + ": " + timer2 + "ms");            
         }
     }
-    
-    // --------------------------- Overloaded methods from launcher interface
-    /*
-    public void setOpenCms(A_OpenCms openCms) {
-        init(openCms);
-    } 
-    */   
  }

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/02/26 10:30:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  The OpenCms Group
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,34 +15,34 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.org
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
  *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * First created on 9. April 2002, 12:44
  */
-
-
+ 
 package com.opencms.flex.cache;
 
 import java.util.Iterator;
 
 /**
- * This class implements the CmsFlexCacheKey.
- * This is a key used to describe the caching behaviour
- * of a specific resource.
+ * Implements the CmsFlexCacheKey,
+ * which is a key used to describe the caching behaviour
+ * of a specific resource.<p>
  *
  * It has a lot of "public" variables (which isn't good style, I know)
- * to avoid method calling overhead (a cache is about speed, isn't it :)
+ * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsFlexCacheKey {
     
@@ -97,15 +97,16 @@ public class CmsFlexCacheKey {
     private static final boolean DEBUG = false;
     
     /**
-     * This constructor is used when building a cache key from a request.
+     * This constructor is used when building a cache key from a request.<p>
+     * 
      * The request contains several data items that are neccessary to construct
      * the output. These items are e.g. the Query-String, the requested resource,
      * the current time etc. etc.
-     * All required items are saved in the constructed cache - key.
+     * All required items are saved in the constructed cache - key.<p>
      *
-     * @param target The requested resource in the OpenCms VFS
-     * @param online Must be true for an online resource, false for offline resources
-     * @param request The request to construct the key for.
+     * @param target the requested resource in the OpenCms VFS
+     * @param online must be true for an online resource, false for offline resources
+     * @param request the request to construct the key for
      */    
     public CmsFlexCacheKey(CmsFlexRequest request, String target, boolean online) {
                 
@@ -152,9 +153,9 @@ public class CmsFlexCacheKey {
      * and the hadParseError() flag is set to true. 
      * This is done to ensure that a valid key is always constructed with the constructor.<p>
      *
-     * @param target The requested resource
-     * @param cacheDirectives The cache directives of the resource (value of the property "cache")
-     * @param online Must be true for an online resource, false for offline resources
+     * @param target the requested resource
+     * @param cacheDirectives the cache directives of the resource (value of the property "cache")
+     * @param online must be true for an online resource, false for offline resources
      */        
     public CmsFlexCacheKey(String target, String cacheDirectives, boolean online) {
         Resource = getKeyName(target, online);     
@@ -166,11 +167,11 @@ public class CmsFlexCacheKey {
     
     /**
      * Calculates the cache key name that is used as key in 
-     * the first level of the FlexCache.
+     * the first level of the FlexCache.<p>
      *
-     * @param name The name of the resource
-     * @param online Must be true for an online resource, false for offline resources
-     * @return The FlexCache key name
+     * @param name the name of the resource
+     * @param online must be true for an online resource, false for offline resources
+     * @return fhe FlexCache key name
      */
     public static String getKeyName(String name, boolean online) {
         return name + (online?CmsFlexCache.C_CACHE_ONLINESUFFIX:CmsFlexCache.C_CACHE_OFFLINESUFFIX);             
@@ -180,7 +181,8 @@ public class CmsFlexCacheKey {
      * This flag is used to indicate that a parse error had
      * occured, which can happen if the cache directives String
      * passed to the constructor using the response is
-     * not build according to the Flex cache language syntax.
+     * not build according to the Flex cache language syntax.<p>
+     * 
      * @return true if a parse error did occur, false otherwise
      */    
     public boolean hadParseError() {
@@ -188,9 +190,10 @@ public class CmsFlexCacheKey {
     }
         
      /**
-      * This method is the "heart" of the key matching process.
-      * This key is compared to the other key passed as parameter.
-      * From comparing the two keys, a variation String is constructed.<p>
+      * Compares this key to the other key passed as parameter,
+      * from comparing the two keys, a variation String is constructed.<p>
+      * 
+      * This method is the "heart" of the key matching process.<p>
       *
       * The assumtion is that this key should be the one constructed for the response, 
       * while the parameter key should have been constructed from the request.<p>
@@ -198,9 +201,9 @@ public class CmsFlexCacheKey {
       * A short example how this works:
       * If the resource key is "cache=groups" and the request is done from a guest user
       * (which always belongs to the default group "guests"),
-      * the constructed variation will be "cache=(guests)".
+      * the constructed variation will be "groups=(guests)".<p>
       * 
-      * @param key The key to match this key with
+      * @param key the key to match this key with
       * @return null if not cachable, or the Variation String if cachable
       */
     public String matchRequestKey(CmsFlexCacheKey key) {
@@ -308,10 +311,10 @@ public class CmsFlexCacheKey {
     }
     
     /** 
-     * Overloaded from Object.toString()
+     * @see java.lang.Object#toString()
      *
-     * @return A simple String representation for this key.
-     */    
+     * @return a complete String representation for this key
+     */
     public String toString() {
         StringBuffer str = new StringBuffer(100);        
 
@@ -449,9 +452,9 @@ public class CmsFlexCacheKey {
     
     /**
      * Parse a String in the Flex cache language and construct 
-     * the key data structure from this.
+     * the key data structure from this.<p>
      *
-     * @param key The String to parse (usually read from a file property)
+     * @param key the String to parse (usually read from the file property "cache")
      */    
     private void parseFlexKey(String key) {
         java.util.StringTokenizer toker = new java.util.StringTokenizer(key,";");
@@ -540,10 +543,10 @@ public class CmsFlexCacheKey {
 
     /** 
      * A helper method for the parsing process which parses
-     * Strings like groups=(a, b, c).
+     * Strings like groups=(a, b, c).<p>
      *
-     * @param value The String to parse 
-     * @return A Map that contains of the parsed values, only the keyset of the Map is needed later
+     * @param value the String to parse 
+     * @return a Map that contains of the parsed values, only the keyset of the Map is needed later
      */    
     private java.util.Map parseValueMap(String value) {
         if (value.charAt(0) == '(') value = value.substring(1);

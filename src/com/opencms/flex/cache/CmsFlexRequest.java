@@ -1,35 +1,39 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
-* Date   : $Date: 2003/01/20 23:59:32 $
-* Version: $Revision: 1.8 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2002  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
+ * Date   : $Date: 2003/02/26 15:19:24 $
+ * Version: $Revision: 1.9 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.flex.cache;
 
 import com.opencms.core.A_OpenCms;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 
@@ -38,17 +42,21 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
- * A wrapper class for a HttpServletRequest.<p>
+ * Wrapper class for a HttpServletRequest.<p>
  *
  * This class wrapps the standard HttpServletRequest so that it's output can be delivered to
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
-public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper {
+public class CmsFlexRequest extends HttpServletRequestWrapper {
     
     /** The wrapped HttpServletRequest */    
     private javax.servlet.http.HttpServletRequest m_req = null;
@@ -94,11 +102,11 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
      * first "real" (not wrapped) request.<p>
      *
      * @param file the CmsFile (target resource) that has been requested
-     * @param req The request to wrap
-     * @param cache The CmsFlexCache used to store the cached result (needed by the dispatcher)
-     * @param cms The CmsObject for this request, containing the user authorization, needed by the dispatcher. 
+     * @param req the request to wrap
+     * @param cache the CmsFlexCache used to store the cached result (needed by the dispatcher)
+     * @param cms the CmsObject for this request, containing the user authorization, needed by the dispatcher
      */    
-    public CmsFlexRequest(javax.servlet.http.HttpServletRequest req, com.opencms.file.CmsFile file, CmsFlexCache cache, com.opencms.file.CmsObject cms) {
+    public CmsFlexRequest(HttpServletRequest req, CmsFile file, CmsFlexCache cache, CmsObject cms) {
         super(req);
         m_req = req;
         m_cache = cache;
@@ -154,10 +162,10 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
         
     /** 
-     * Constructs a new wrapper layer around a (already wrapped) CmsFlexRequest.
+     * Constructs a new wrapper layer around a (already wrapped) CmsFlexRequest.<p>
      *
-     * @param req The request to be wrapped
-     * @param resource The target resource that has been requested
+     * @param req the request to be wrapped
+     * @param resource the target resource that has been requested
      */    
     public CmsFlexRequest(CmsFlexRequest req, String resource) {
         super(req);
@@ -176,14 +184,15 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     
     /** 
      * This returns the "Top" request, i.e. the first wrapped
-     * request that is not of type CmsFlexRequest.
+     * request that is not of type CmsFlexRequest.<p>
+     * 
      * This is needed for access to the requestDispatcher
      * of this top request, which is used to access external 
-     * resources (like JSP files that must reside in the file system).
+     * resources (like JSP files that must reside in the file system).<p>
      *
-     * @return The top request
+     * @return the top request
      */    
-    public javax.servlet.http.HttpServletRequest getCmsTopRequest() {
+    public HttpServletRequest getCmsTopRequest() {
         if (m_req instanceof CmsFlexRequest) {
             return ((CmsFlexRequest)m_req).getCmsTopRequest();
         } else {
@@ -192,20 +201,21 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
 
     /** 
-     * The CmsObject is needed for all access to the OpenCms VFS.
+     * Returns the CmsObject that belongs to the request.<p> 
      *
-     * @return The CmsObject that belongs to the request.
+     * @return the CmsObject that belongs to the request
      */    
-    public com.opencms.file.CmsObject getCmsObject() {
+    public CmsObject getCmsObject() {
         return m_cms;
     } 
     
     /**
-     * The CmsFlexCache where all results from this request will be cached in.
+     * Returns the CmsFlexCache instance where all results from this request will be cached in.<p>
+     * 
      * This is public so that pages like the Flex Cache Administration page
-     * have a way to access the cache object.
+     * have a way to access the cache object.<p>
      *
-     * @return The cache where the results will be stored.
+     * @return the CmsFlexCache instance where all results from this request will be cached in
      */    
     public CmsFlexCache getCmsCache() {
         return m_cache;
@@ -223,47 +233,51 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
      * In case you need the top uri, use
      * getCmsObject().getRequestContext().getUri().
      *
-     * @return The requested top-level CmsFile
+     * @return the requested top-level CmsFile
      */    
     public com.opencms.file.CmsFile getCmsFile() {
         return m_file;
     } 
     
     /** 
-     * Returns the resource currently processed.
+     * Returns the name of the resource currently processed.<p>
      * 
      * This might be the name of an included resource,
      * not neccesarily the name the resource requested by the user.
      * 
+     * @return the name of the resource currently processed
      * @see #getCmsRequestedResource()
-     * @return The resource currently processed.
      */    
     public String getCmsResource() {
         return m_resource;
     }
     
     /** 
-     * Returns the resource requested by the user.
+     * Returns the OpenCms URI of the resource requested by the user.<p>
      * 
      * This might not be the resource currently processed,
      * which might be an included resource.
+     * Same as calling {@link com.opencms.file.CmsRequestContext#getUri()}.<p>
      * 
+     * @return the OpenCms URI of the resource requested by the user
      * @see #getCmsResource()
-     * @return The resource requested by the user.
+     * @see com.opencms.file.CmsRequestContext#getUri()
      */     
     public String getCmsRequestedResource() {
         return m_cms.getRequestContext().getUri();
     }
     
-    /** Convert (if necessary) and return the absolute URI that represents the
-     * resource referenced by this possibly relative URI for this request.
+    /** 
+     * Convert (if necessary) and return the absolute URI that represents the
+     * resource referenced by this possibly relative URI for this request.<p>
+     * 
      * Adjust for resources in the OpenCms VFS by cutting of servlet context
      * and servlet name.
      * If this URI is already absolute, return it unchanged.
-     * Return URI also unchanged if it is not well-formed.
+     * Return URI also unchanged if it is not well-formed.<p>
      *
      * @param location URI to be (possibly) converted and then returned
-     * @return The location converted to an absolut location
+     * @return the location converted to an absolut location
      */
     public String toAbsolute(String location) {
 
@@ -297,26 +311,28 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }      
     
     /** 
-     * Internal replacement for the standard servlet API getRequestDispatcher() method.
-     * This version is used if an external file (probably JSP) is dispached to.
+     * Replacement for the standard servlet API getRequestDispatcher() method.<p>
+     * 
+     * This variation is used if an external file (probably JSP) is dispached to.
      * This external file must have a "mirror" version, i.e. a file in the OpenCms VFS
-     * that represents the external file.
+     * that represents the external file.<p>
      *
-     * @param cms_target The OpenCms file that is a "mirror" version of the external file.
-     * @param ext_target The external file (outside the OpenCms VFS).
-     * @return The constructed CmsFlexRequestDispatcher.
+     * @param cms_target the OpenCms file that is a "mirror" version of the external file
+     * @param ext_target the external file (outside the OpenCms VFS)
+     * @return the constructed CmsFlexRequestDispatcher
      */     
     public CmsFlexRequestDispatcher getCmsRequestDispatcher(String cms_target, String ext_target) {
         return new CmsFlexRequestDispatcher(getCmsTopRequest().getRequestDispatcher(ext_target), toAbsolute(cms_target), ext_target, m_cache, m_cms);
     }
 
     /** 
-     * Internal replacement for the standard servlet API getRequestDispatcher() method.
-     * This version can be used if you know that you are dealing with a CmsFlexRequest,
+     * Replacement for the standard servlet API getRequestDispatcher() method.<p>
+     * 
+     * This variation can be used if you know that you are dealing with a CmsFlexRequest,
      * so you can avoid casting the result of getRequestDispatcher() to the CmsFlexRequestDispatcher.
      *
-     * @param target The target for the request dispatcher.
-     * @return The constructed CmsFlexRequestDispatcher.
+     * @param target the target for the request dispatcher
+     * @return the constructed CmsFlexRequestDispatcher
      */     
     public CmsFlexRequestDispatcher getCmsRequestDispatcher(String target) {
         return new CmsFlexRequestDispatcher(getCmsTopRequest().getRequestDispatcher(toAbsolute(target)), toAbsolute(target), m_cache, m_cms);
@@ -325,25 +341,27 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     // ---------------------------- Methods overloading the HttpServletRequest interface
     
     /** 
-     * Overloads the standard servlet API getRequestDispatcher() method.
-     * The RequestDispatcher is the main point in this wrapper.
+     * Overloads the standard servlet API getRequestDispatcher() method,
+     * which is the main purpose of this wrapper implementation.<p>
      *
-     * @param target The target for the request dispatcher.
-     * @return The constructed RequestDispatcher.
+     * @param target the target for the request dispatcher
+     * @return the constructed RequestDispatcher
      */    
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
         return (javax.servlet.RequestDispatcher) getCmsRequestDispatcher(target);
     }
 
     /** 
-     * Wraps the request URI, overloading the standard API.
+     * Wraps the request URI, overloading the standard API.<p>
+     * 
      * This ensures that any wrapped request will use the "faked"
      * target parameters. Remember that for the real request,
      * a mixture of PathInfo and other request information is used to
-     * idenify the target.
+     * idenify the target.<p>
      *
-     * @return A faked URI that will point to the wrapped target in the VFS.
-     */    
+     * @return a faked URI that will point to the wrapped target in the VFS 
+     * @see javax.servlet.http.HttpServletRequest#getRequestURI()
+     */      
     public String getRequestURI() {
         StringBuffer buf = new StringBuffer(128);
         buf.append(getContextPath());
@@ -354,10 +372,13 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     
     /**
      * Return the value of the specified request parameter, if any; otherwise,
-     * return <code>null</code>.  If there is more than one value defined,
-     * return only the first one.
+     * return <code>null</code>.<p>
+     * 
+     * If there is more than one value defined,
+     * return only the first one.<p>
      *
-     * @param name Name of the desired request parameter
+     * @param name the name of the desired request parameter
+     * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     public String getParameter(String name) {
 
@@ -370,20 +391,25 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
 
 
     /**
-     * Returns a <code>Map</code> of the parameters of this request.
+     * Returns a <code>Map</code> of the parameters of this request.<p>
+     * 
      * Request parameters are extra information sent with the request.
      * For HTTP servlets, parameters are contained in the query string
-     * or posted form data.
+     * or posted form data.<p>
      *
-     * @return A <code>Map</code> containing parameter names as keys
-     *  and parameter values as map values.
+     * @return a <code>Map</code> containing parameter names as keys
+     *  and parameter values as map values
+     * @see javax.servlet.ServletRequest#getParameterMap()
      */
     public Map getParameterMap() {
         return (this.m_parameters);
     }
 
     /**
-     * Return the names of all defined request parameters for this request.
+     * Return the names of all defined request parameters for this request.<p>
+     * 
+     * @return the names of all defined request parameters for this request
+     * @see javax.servlet.ServletRequest#getParameterNames()
      */
     public Enumeration getParameterNames() {
         java.util.Vector v = new java.util.Vector();
@@ -392,10 +418,13 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
 
     /**
-     * Return the defined values for the specified request parameter, if any;
+     * Returns the defined values for the specified request parameter, if any;
      * otherwise, return <code>null</code>.
      *
      * @param name Name of the desired request parameter
+     * @return the defined values for the specified request parameter, if any;
+     *          <code>null</code> otherwise
+     * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
     public String[] getParameterValues(String name) {
 
@@ -414,10 +443,10 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
      * a HttpRequest is a String array. If a parameter name already
      * exists in the HttpRequest, the values will be added to the existing
      * value array. Multiple occurences of the same value for one 
-     * paramter are also possible.
+     * paramter are also possible.<p>
      * 
-     * @param map The map to add
-     * @return The merged map of parameters
+     * @param map the map to add
+     * @return the merged map of parameters
      */
 	public Map addParameterMap(Map map) {
 		if (map == null)
@@ -461,9 +490,9 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
      * Use this in combination with getParameterMap() and
      * addParameterMap() in case you want to set the old status
      * of the parameter map after you have modified it for
-     * a specific operation. 
+     * a specific operation.<p>
      * 
-     * @param map The map to set
+     * @param map the map to set
      */    
     public void setParameterMap(Map map) {
         m_parameters = map;
@@ -471,23 +500,12 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
   
     
     /** 
-     * Makes sure that the target information is really used
-     * by internal include calls.
+     * Wraps the request URL, overloading the standard API,
+     * the wrapped URL will always point to the currently included VFS resource.<p>
      *
-     * @return The faked PathInfo for this request, which will point to the wrapped target
-     */    
-    /*
-    public String getPathInfo() {
-        return getCmsResource();
-    }
-    */
-    
-    /** 
-     * Wraps the request URL, overloading the standard API.
-     * The wrapped URL will always point to the currently included VFS resource.
-     *
-     * @return A faked URL that will point to the included target in the VFS.
-     */    
+     * @return a faked URL that will point to the included target in the VFS
+     * @see javax.servlet.http.HttpServletRequest#getRequestURL()
+     */   
     public StringBuffer getRequestURL() {
         StringBuffer buf = new StringBuffer(128);
         buf.append(getScheme());
@@ -500,10 +518,10 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
     
     /** 
-     * Returns the cache key for this request.
-     * The key will be calculated if neccessary.
+     * Returns the CmsFlexCacheKey for this request,
+     * the key will be calculated if neccessary.<p>
      * 
-     * @return The cache key for this request
+     * @return the CmsFlexCacheKey for this request
      */
     CmsFlexCacheKey getCmsCacheKey() {
         // The key for this request is only calculated if actually requested
@@ -514,7 +532,8 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
 
     /** 
-     * Indicates that this request belongs to an online project.
+     * Indicates that this request belongs to an online project.<p>
+     * 
      * This is required to distinguish between online and offline
      * resources in the cache. Since the resources have the same name,
      * a suffix [online] or [offline] is added to distinguish the strings
@@ -524,7 +543,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
      *
      * The suffixes are used so that we have a simple String name
      * for the resources in the cache. This makes it easy to
-     * use a standard HashMap for storage of the resources.
+     * use a standard HashMap for storage of the resources.<p>
      *
      * @return true if an online resource was requested, false otherwise
      */
@@ -533,10 +552,11 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
     
     /** 
-     * This is needed to decide if this request can be cached or not.
+     * This is needed to decide if this request can be cached or not.<p>
+     * 
      * Using the request to decide if caching is used or not
      * makes it possible to set caching to false e.g. on a per-user
-     * or per-project basis.
+     * or per-project basis.<p>
      *
      * @return true if the request is cacheable, false otherwise
      */
@@ -545,10 +565,11 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
     
     /** 
-     * Checks if JSPs should always be recompiled.
+     * Checks if JSPs should always be recompiled.<p>
+     * 
      * This is useful in case directive based includes are used
      * with &lt;%@ include file="..." %&gt; on a JSP.
-     * Note that this also forces the request not to be cached.
+     * Note that this also forces the request not to be cached.<p>
      *
      * @return true if JSPs should be recompiled, false otherwise
      */
@@ -557,18 +578,24 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     }
     
     /**
-     * Adds another include call to this wrapper.
+     * Adds another include call to this wrapper.<p>
+     * 
      * The set of include calls is maintained to dectect 
-     * an endless inclusion loop.
+     * an endless inclusion loop.<p>
+     * 
+     * @param target the target name (absolute OpenCms URI) to add
      */
     void addInlucdeCall(String target) {
         m_includeCalls.add(target);
     }
     
     /**
-     * Removes an include call from this wrapper.
+     * Removes an include call from this wrapper.<p>
+     * 
      * The set of include calls is maintained to dectect 
-     * an endless inclusion loop.
+     * an endless inclusion loop.<p>
+     * 
+     * @param target the target name (absolute OpenCms URI) to remove
      */
     void removeIncludeCall(String target) {
         m_includeCalls.remove(target);
@@ -576,20 +603,27 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     
     /**
      * Checks if a given target is already included in a top-layer of this
-     * wrapped request.
+     * wrapped request.<p>
+     * 
      * The set of include calls is maintained to dectect 
-     * an endless inclusion loop.
+     * an endless inclusion loop.<p>
+     * 
+     * @param target the target name (absolute OpenCms URI) to check for
+     * @return true if the target is already included, false otherwise
      */
     boolean containsIncludeCall(String target) {
         return m_includeCalls.contains(target);
     }
         
     /**
-     * Used to pass the Set of include calls to the next wrapping layer.
+     * Returns the Set of include calls which will be passed to the next wrapping layer.<p>
+     * 
      * The set of include calls is maintained to dectect 
-     * an endless inclusion loop.
+     * an endless inclusion loop.<p>
+     * 
+     * @return the Set of include calls
      */
-    protected java.util.Set getCmsIncludeCalls() {
+    protected Set getCmsIncludeCalls() {
         return m_includeCalls;
     }    
 }
