@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <WORKPLACE>	
 
+
 <tabledatabegin><![CDATA[<td>]]></tabledatabegin>
 <tabledataend><![CDATA[</a></td>]]></tabledataend>
 <tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
 <tablerowend><![CDATA[</tr>]]></tablerowend>
-<urlbegin><![CDATA[<a href="javascript:location.href=']]></urlbegin>
-<urlend><![CDATA['">]]></urlend>
+<urlbegin><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?idview=]]><PROCESS>uniqueid</PROCESS></urlbegin>
+<urlend><![CDATA[">]]></urlend>
 
 <lockuser><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lock.gif" alt="" border=0 width=16 height=16></td>]]></lockuser>
 <lock><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lockuser.gif" alt="" border=0 width=16 height=16></td>]]></lock>
@@ -25,6 +26,7 @@
 
 <setaction></setaction>
 
+<!-- default template (head)  ********************************************************************* -->
 <TEMPLATE>
 
 <![CDATA[
@@ -44,122 +46,10 @@
 	var admincontenturl="administration_content_top.html";
 </SCRIPT>
 
-<SCRIPT LANGUAGE="JavaScript">
-    ns = (document.layers)? true:false;
-    ie = (document.all)? true:false;
-
-    var nshowmuch=0;
-    opts=new Array()
-
-    function opt(p,l){
-        this.param=p;
-        this.llink=l;
-    }
-
-    function addoption(bla){
-        if(ns){
-
-            if(document.layers.pull.document.swl.selectbox.length<1+nshowmuch){
-
-                //window.alert(nshowmuch);
-                //opts[nshowmuch] = new opt(bla,p,l);
-
-                nshowmuch++;
-
-                for(i=0;i<document.layers.pull.document.swl.selectbox.length;i++){
-                    document.layers.pull.document.swl.selectbox.options[document.layers.pull.document.swl.selectbox.length] = null;
-                }
-
-                temp = new Option(bla);
-                document.layers.pull.document.swl.selectbox.options[document.layers.pull.document.swl.selectbox.length] = temp;
-                document.layers.pull.document.swl.selectbox.options[document.layers.pull.document.swl.selectbox.length-1].value = document.layers.pull.document.swl.selectbox.length-1;
-
-                if(nshowmuch == 1)document.layers.pull.document.swl.selectbox.options[]]><PROCESS>filter</PROCESS><![CDATA[].selected=true;
-
-                history.go(0);
-            }
-        }
-
-        if(ie){       
-            //opts[document.swl.selectbox.length] = new opt(bla,p,l);
-            temp = new Option(bla);
-            document.swl.selectbox.options[document.swl.selectbox.length]=temp;
-            document.swl.selectbox.options[document.swl.selectbox.length-1].value=document.swl.selectbox.length-1;
-        }
-
-    }
-
-
-
-    if(ns){
-    	var layerzeigen_01= 'document.layers.';
-    	var layerzeigen_02= '.visibility="show"';
-    	var layerverstecken_01= 'document.layers.';
-    	var layerverstecken_02= '.visibility="hide"';
-    }
-
-    if(ie){
-    	var layerzeigen_01= 'document.all.';
-    	var layerzeigen_02= '.style.visibility="visible"';
-    	var layerverstecken_01= 'document.all.';
-    	var layerverstecken_02= '.style.visibility="hidden"';
-    }
-    
-    var isshown=true;
-
-    function dellyr(welche){
-        eval(layerverstecken_01+welche+layerverstecken_02);
-    }
-    function showlyr(welche){
-        eval(layerzeigen_01+welche+layerzeigen_02);
-    }
-
-    function switchl(){
-    	//document.swl.selectbox.selectedIndex=]]><PROCESS>filternumber</PROCESS><![CDATA[;
-		//alert(document.layers.pull.document.swl.selectbox.selectedIndex); nur ns!!!!!!!!!!!!!!!!
-		//alert(document.swl.selectbox.selectedIndex);nur ie!!!!!!!!!!!!!!!!
-	
- 	   if(ie){
- 	       if(opts[document.swl.selectbox.selectedIndex].param==true){
-  	          showlyr('feld');
-   	   } else {
-   	         // hier richtigen frame angeben!
-   	         //document.location=opts[document.swl.selectbox.selectedIndex].llink;
-   	         dellyr('feld');
-   	   }
-    }
-	window.top.body.admin_content.location.href=']]><method name="getServletPath"></method><method name="getBackofficeUrl"></method><![CDATA[?selectbox=' + document.swl.selectbox.selectedIndex;
-
-}
-    function testit(){
-		]]><PROCESS>selectionbox</PROCESS><![CDATA[
-        if(opts.length<1){
-            if(ns)document.location=opts[document.layers.pull.document.swl.selectbox.selectedIndex].llink;
-            if(ie)document.location=opts[document.swl.selectbox.selectedIndex].llink;
-            dellyr("pull");
-            dellyr("feld");
-        }
-
-        else{
-            if(opts[0].param==false){
-                dellyr("feld");
-                showlyr("pull");
-            }else{
-            }
-       }
-                showlyr("feld");
-                showlyr("pull");
-    }
-    
-function markselected () {
-	document.swl.selectbox.options[]]><PROCESS>filter</PROCESS><![CDATA[].selected=true;
-}
-
-</SCRIPT>
-
 </head>
 
-<body bgcolor="#C0C0C0" onLoad=testit();switchl();markselected(); background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
+<!-- onload="window.top.body.admin_content.location.href='Backoffice.html'" -->
+<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href='Backoffice.html?action=list'">
 
 	<table cellspacing=0 cellpadding=0 valign=bottom>
 	
@@ -171,27 +61,8 @@ function markselected () {
 			</a>
 		</td>	
 			
-		]]><PROCESS>createbutton</PROCESS><![CDATA[	
-		
-        <td valign=top>
-            <div id="pull" style="position:relative; visibility:hide" valign=bottom>
-                <form name=swl valign=bottom>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
-                <input type=hidden name="setaction" value="filterchange"/>
-        		<select valign=bottom class=textfeld name="selectbox" id="selectbox" onchange="javascript:switchl();" size="1"/></select>
-                </form>
-            </div>
-        </td>
-        
-        <td valign=bottom>        
-            <div id="feld" style="position:relative; visibility:hide">
-                <form method="get">
-                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
-   					<input type=hidden name="setaction" value="setaction"/>
-                	<input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA["/>
-					<input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" onClick="javascript:document.swl.selectbox.selectedIndex=]]><PROCESS>filternumber</PROCESS><![CDATA[;window.top.body.admin_content.reload();"/>        
-            	</form>
-            </div>        
-        </td>
+		]]><PROCESS>createbutton</PROCESS>	
+		   <PROCESS>insertFilter</PROCESS><![CDATA[
     </tr>
     
     </table>
@@ -202,6 +73,8 @@ function markselected () {
 ]]>
 
 </TEMPLATE>
+
+<!-- template list  ********************************************************************* -->
 
 <TEMPLATE name="list">
 <![CDATA[
@@ -253,7 +126,7 @@ start();
 
 <contextmenue name="backofficeedit"> 
 	<contextentry name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href='EditBackoffice.html?iddelete='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelockuser"> 
@@ -279,6 +152,8 @@ start();
 
 </TEMPLATE>
 
+<!-- template lock  ********************************************************************* -->
+
 <TEMPLATE name="lock">
 <![CDATA[
 <HTML>
@@ -301,7 +176,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </HEAD>
 
 <body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
-onLoad="window.top.body.admin_content.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
@@ -376,6 +251,7 @@ onLoad="window.top.body.admin_content.location.href=']]><METHOD name="getServlet
 </TEMPLATE>
 <!--end lock-->
 
+<!-- template delete  ********************************************************************* -->
 
 <TEMPLATE name="delete">
 <![CDATA[
@@ -475,6 +351,8 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 </TEMPLATE>
 <!--delete-->
 
+<!-- template error  ********************************************************************* -->
+
 <TEMPLATE name="error">
 <![CDATA[
 <html>
@@ -542,6 +420,8 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 ]]>
 
 </TEMPLATE>
+
+<!-- template deleteerror  ********************************************************************* -->
 
 <TEMPLATE name="deleteerror">
 <![CDATA[
@@ -611,6 +491,8 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 </TEMPLATE>
 
+<!-- template lockerror  ********************************************************************* -->
+
 <TEMPLATE name="lockerror">
 <![CDATA[
 <html>
@@ -679,6 +561,8 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 </TEMPLATE>
 
+<!-- template done  ********************************************************************* -->
+
 <TEMPLATE name="done">
 <![CDATA[
 <HEAD>
@@ -690,6 +574,8 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 </HTML>
 ]]>
 </TEMPLATE>
+
+<!-- ************************************************************************************-->
 
 <!-- Begin processed data -->
 <singlerow>
@@ -703,12 +589,48 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 	]]><PROCESS>entry</PROCESS>
 </singlerow>
 
-<singleselection><![CDATA[addoption("]]><PROCESS>selectname</PROCESS><![CDATA[");
-        		 opts[ ]]><PROCESS>selectnumber</PROCESS><![CDATA[ ] 
-        		 = new opt(]]><PROCESS>selectparameter</PROCESS><![CDATA[,
-        		 "");]]>
-</singleselection>
+<singleSelectbox><![CDATA[
+	<form name=swl valign=bottom method="get" >
+        <td>
+            <div id="pull" style="position:relative; visibility:hide">
+               
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+                <input type=hidden name="setaction" value="filterchange"/> ]]>
+        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" size="1" onchange="document.swl.submit()"/><![CDATA[
+               
+            </div>
+        </td>
+    </form>]]>
+</singleSelectbox>
+
+<selectboxWithParam><![CDATA[
+	<form name=swl valign=bottom method="get" >
+        <td>
+            <div id="pull" style="position:relative; visibility:hide">
+               
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+                <input type=hidden name="setaction" value="filterchange"/> ]]>
+        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" size="1" onchange="document.swl.submit()"/><![CDATA[
+               
+            </div>
+        </td>
+        <td>        
+            <div id="feld" style="position:relative; visibility:hide">
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
+   				<input type=hidden name="setaction" value="setaction"/>
+                <input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA["/>
+				<!-- <input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" onClick="javascript:document.swl.selectbox.selectedIndex=]]><PROCESS>filternumber</PROCESS><![CDATA[;window.top.body.admin_content.reload();"/>  -->       
+            	<input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" /> 
+            
+            </div>        
+        </td>
+        </form>]]>
+</selectboxWithParam>
+
+<whatAction>showList</whatAction>
 <!-- End processed data -->
 
 </WORKPLACE>
+
 

@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -11,20 +11,20 @@ package com.opencms.defaults;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- 
+
 import java.lang.reflect.*;
 import com.opencms.file.*;
 
@@ -37,35 +37,46 @@ public class FilterMethod {
 	private String m_filterName;
 	private Method m_filterMethod;
 	private Object [] m_defaultParameter;
+  private String m_defaultFilterParam = "";
 
 /**
  * FilterMethod constructor
  */
 public FilterMethod(String filterName, Method filterMethod, Object [] filterParameters) {
+  this(filterName, filterMethod, filterParameters, "");
+}
+
+/**
+ * FilterMethod constructor with a default value in the Selectbox
+ */
+public FilterMethod(String filterName, Method filterMethod, Object [] filterParameters, String defaultFilterParam) {
 
 	m_filterName = filterName;
 	m_filterMethod = filterMethod;
 	m_defaultParameter = filterParameters;
+  m_defaultFilterParam = defaultFilterParam;
 }
+
+
 /**
  * gets the default parameter
  */
 public Object [] getDefaultParameter() {
-	
+
 	return m_defaultParameter;
 	}
 /**
  * gets the filter method
  */
 public Method getFilterMethod() {
-	
+
 	return m_filterMethod;
 	}
 /**
  * gets the filtername
  */
 public String getFilterName() {
-	
+
 	return m_filterName;
 	}
 /**
@@ -73,11 +84,11 @@ public String getFilterName() {
  * @return true if this filter needs additional user paramet. Otherwise return false.
  */
 public boolean hasUserParameter() {
-	
+
 	// check if this filter needs a user-parameter
-	
+
 	Class[] paramTypes = m_filterMethod.getParameterTypes();
-	
+
 	if( (paramTypes.length > 0) && (paramTypes[0] == CmsObject.class) ) {
 		return (paramTypes.length > (m_defaultParameter.length + 1) );
 	} else {
@@ -89,7 +100,7 @@ public boolean hasUserParameter() {
  * @param parameter the filter parameter
  */
 public void setDefaultParameter(Object [] parameter) {
-	
+
 	m_defaultParameter = parameter;
 }
 /**
@@ -97,7 +108,7 @@ public void setDefaultParameter(Object [] parameter) {
  * @param method the filter method
  */
 public void setFilterMethod(Method method) {
-	
+
 	m_filterMethod = method;
 }
 /**
@@ -105,7 +116,11 @@ public void setFilterMethod(Method method) {
  * @param name the filter name
  */
 public void setFilterName(String name) {
-	
+
 	m_filterName = name;
+}
+
+public String getDefaultFilterParam() {
+  return m_defaultFilterParam;
 }
 }
