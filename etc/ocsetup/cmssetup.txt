@@ -28,6 +28,12 @@ createPropertydefinition NavPos pdfpage 0
 createPropertydefinition TemplateType plain 0
 createPropertydefinition TemplateType pdfpage 0
 createPropertydefinition TemplateType XMLTemplate 0
+createPropertydefinition Description page 0
+createPropertydefinition Keywords page 0
+createPropertydefinition Description plain 0
+createPropertydefinition Keywords plain 0
+createPropertydefinition Description script 0
+createPropertydefinition Keywords script 0
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
