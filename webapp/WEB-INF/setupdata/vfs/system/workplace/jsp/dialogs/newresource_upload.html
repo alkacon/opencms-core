@@ -51,7 +51,9 @@ case CmsNewResourceUpload.ACTION_SUBMITFORM:
 //////////////////// ACTION: upload name specified and form submitted
 	wp.actionUpload();
 	if (wp.unzipUpload()) {
-		wp.actionCloseDialog();
+		if (wp.getAction() != CmsNewResourceUpload.ACTION_SHOWERROR) {
+			wp.actionCloseDialog();
+		}
 		break;
 	}
 

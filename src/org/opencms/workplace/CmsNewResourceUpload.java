@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/17 10:52:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -65,7 +64,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -195,7 +194,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // determine the type of upload
         boolean unzipFile = Boolean.valueOf(getParamUnzipFile()).booleanValue();
         
-        try {           
+        try {
             // get the file item from the multipart request
             Iterator i = getMultiPartFileItems().iterator();
             FileItem fi = null;
@@ -232,11 +231,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                    
                 } else {
                     // single file upload
-                    String newResname = fileName;
-                    if (newResname.indexOf(File.separator) != -1) {
-                        // remove folder structure from new resource name
-                        newResname = newResname.substring(newResname.lastIndexOf(File.separator) + 1);
-                    }
+                    String newResname = getCms().getRequestContext().getFileTranslator().translateResource(CmsResource.getName(fileName.replace('\\', '/')));
                     setParamNewResourceName(newResname);
                     setParamResource(newResname);
                     setParamResource(computeFullResourceName());
@@ -251,6 +246,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             }
         } catch (CmsException e) {
             // error uploading file, show error dialog
+            setAction(ACTION_SHOWERROR);
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(key("error.message.upload"));
