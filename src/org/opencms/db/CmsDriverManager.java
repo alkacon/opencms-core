@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 15:59:09 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2003/08/05 15:39:13 $
+ * Version: $Revision: 1.136 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.135 $ $Date: 2003/08/04 15:59:09 $
+ * @version $Revision: 1.136 $ $Date: 2003/08/05 15:39:13 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1089,7 +1089,7 @@ public class CmsDriverManager extends Object {
         
         // create a copy of the source file in the destination parent folder      
         if (copyAsLink) {
-            newResource = createVfsLink(context, destination, source, newResourceProps, lockCopy);
+            newResource = createVfsLink(context, destination, source, newResourceProps, false);
         } else {
             newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
@@ -1103,11 +1103,11 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);            
-        }
-        
-        if (lockCopy) {
-            lockResource(context, destination);
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
+            
+            if (lockCopy) {
+                lockResource(context, destination);
+            }
         }
 
         clearAccessControlListCache();
@@ -4348,7 +4348,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Locks a resource.<p>
+     * Locks a resource exclusively.<p>
      *
      * @param context the current request context
      * @param resourcename the resource name that gets locked
@@ -7442,7 +7442,7 @@ public class CmsDriverManager extends Object {
     }
     
     /**
-     * Unlocks a resource.<p>
+     * Unlocks a resource by removing the exclusive lock on the exclusive locked sibling.<p>
      *
      * @param context the current request context
      * @param resourcename the resource name that gets locked

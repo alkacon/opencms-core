@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/04 15:59:09 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/08/05 15:39:13 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2003/08/04 15:59:09 $
+ * @version $Revision: 1.31 $ $Date: 2003/08/05 15:39:13 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -104,8 +104,8 @@ public final class CmsLockDispatcher extends Object {
     public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId) throws CmsException {
         CmsLock lock = getLock(driverManager, context, resourcename);
 
-        if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId()) && lock.getProjectId() != context.currentProject().getId()) {
-            throw new CmsLockException("Resource is already locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+        if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId())) {
+            throw new CmsLockException("Resource is already locked by the current user", CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER);
         }
 
         CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE);
