@@ -120,7 +120,7 @@
 		</file>
 		<file>
 			<source>action/sitematrix_head.html</source>
-			<destination>system/workplace/action/sitematrix.html</destination>
+			<destination>system/workplace/action/sitematrix_head.html</destination>
 			<type>XMLTemplate</type>
 			<user>Admin</user>
 			<group>Users</group>
@@ -129,7 +129,7 @@
 		</file>
 		<file>
 			<source>action/sitematrix_frames.html</source>
-			<destination>system/workplace/action/sitematrix.html</destination>
+			<destination>system/workplace/action/sitematrix_frames.html</destination>
 			<type>XMLTemplate</type>
 			<user>Admin</user>
 			<group>Users</group>
