@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/09 10:27:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/09 13:05:37 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -452,6 +452,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             if (editMode != null && editArea != null) {
 
                 req.setAttribute(I_CmsEditorActionHandler.C_EDIT_BODY, element);
+                req.setAttribute(I_CmsEditorActionHandler.C_EDIT_LANGUAGE, controller.getCmsObject().getRequestContext().getLocale().toString());
                 req.setAttribute(I_CmsEditorActionHandler.C_EDIT_TARGET, target);
                 includeElement(context, editArea, I_CmsEditorActionHandler.C_EDIT_STARTAREA + "_" + editMode, req, res);
             }

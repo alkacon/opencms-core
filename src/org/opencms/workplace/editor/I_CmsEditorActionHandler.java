@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/09 13:05:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -81,6 +81,11 @@ public interface I_CmsEditorActionHandler {
      * Key to identify the edit body
      */  
     String C_EDIT_BODY = "__editBody";
+    
+    /**
+     * Key to identify the edit language
+     */  
+    String C_EDIT_LANGUAGE = "__editLanguage";
     
     /**
      * Key to identify the edit target

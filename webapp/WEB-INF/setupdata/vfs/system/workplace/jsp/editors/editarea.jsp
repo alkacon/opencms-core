@@ -13,8 +13,8 @@ String uri = cms.getRequestContext().getUri();
 CmsDialog wp = new CmsDialog(cms);
 
 String editTarget = (String)request.getAttribute("__editTarget");
-String editBody = (String)request.getAttribute("__editBody");
-String editBodyLanguage = "en";
+String editElement = (String)request.getAttribute("__editBody");
+String editLanguage = (String)request.getAttribute("__editLanguage");
 String editLink = cms.link("/system/workplace/jsp/editors/editor.html");
 
 String editId = "editarea";
@@ -22,8 +22,8 @@ String editId = "editarea";
 if (editTarget != null) {
 	editId += "_" + editTarget.substring(editTarget.lastIndexOf("/")+1);
 }
-if (editBody != null) {
-	editId += "_" + editBody;
+if (editElement != null) {
+	editId += "_" + editElement;
 }
 %><%--
 
@@ -33,8 +33,8 @@ if (editBody != null) {
 <form name="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
-<input type="hidden" name="bodylanguage" value="<%= editBodyLanguage %>">
-<input type="hidden" name="bodyname" value="<%= editBody %>">
+<input type="hidden" name="bodylanguage" value="<%= editLanguage %>">
+<input type="hidden" name="bodyname" value="<%= editElement %>">
 <input type="hidden" name="backlink" value="<%= uri %>">
 </form>
 <span class="editarea_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
