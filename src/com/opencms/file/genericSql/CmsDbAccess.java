@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/02/05 08:57:07 $
-* Version: $Revision: 1.236 $
+* Date   : $Date: 2002/02/13 16:12:11 $
+* Version: $Revision: 1.237 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.236 $ $Date: 2002/02/05 08:57:07 $ *
+ * @version $Revision: 1.237 $ $Date: 2002/02/13 16:12:11 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2535,7 +2535,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // is there a valid digest?
         if( m_digest != null ) {
             try {
-                return new String(m_digest.digest(value.getBytes(m_digestFileEncoding)), m_digestFileEncoding);
+                byte[] bytesForDigest = value.getBytes(m_digestFileEncoding);
+                byte[] bytesFromDigest = m_digest.digest(bytesForDigest);
+                // to get a String out of the bytearray we translate every byte
+                // in a hex value and put them together
+                StringBuffer result = new StringBuffer();
+                String addZerro;
+                for(int i=0; i<bytesFromDigest.length; i++){
+                    addZerro = Integer.toHexString(128 + bytesFromDigest[i]);
+                    if(addZerro.length() < 2){
+                        addZerro = "0" + addZerro;
+                    }
+                    result.append(addZerro);
+                }
+                return result.toString();
             } catch(UnsupportedEncodingException exc) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbAccess] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
