@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1
  */
@@ -140,8 +140,10 @@ public class CmsTree extends CmsWorkplace {
                 retValue.append("\taddResourceType(");
                 retValue.append(curTypeId + ", \"" + curTypeName + "\",\t\"" + curTypeLocalName + "\",\t\"filetypes/" + curTypeName + ".gif\");\n");
             } catch (CmsException e) {
-                // empty
-                // WHY IS THIS EMPTY!!!!!
+                // can usually be ignored
+                if (OpenCms.getLog(CmsTree.class).isInfoEnabled()) {
+                    OpenCms.getLog(CmsTree.class).info(e);
+                }
             }
         }       
 
@@ -200,7 +202,10 @@ public class CmsTree extends CmsWorkplace {
                 title = resource.getRootPath();
             }
         } catch (CmsException e) {
-            // should not happen
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         return getNode(title, resource.getTypeId(), resource.getStructureId(), resource.getParentStructureId(), false);
     }
@@ -219,6 +224,9 @@ public class CmsTree extends CmsWorkplace {
             try {
                 getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 folder = "/";    
             }
             m_rootFolder = folder;  
@@ -354,6 +362,9 @@ public class CmsTree extends CmsWorkplace {
                         getCms().readFolder(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                     } catch (CmsException e) {
                         // target folder not found, set it to "/"
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(e);
+                        }                        
                         currentTargetFolder = "/";
                     }
                 }
@@ -421,6 +432,9 @@ public class CmsTree extends CmsWorkplace {
                 projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
             } catch (CmsException e) {
                 // use an empty list (all resources are "outside")
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 projectResources = new ArrayList();
             }
     

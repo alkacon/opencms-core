@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.10
  */
@@ -335,6 +335,10 @@ public class CmsReport extends CmsDialog {
         try {
             m_paramThread = new CmsUUID(value);
         } catch (Exception e) {
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             m_paramThread = CmsUUID.getNullUUID();
         }
     }  

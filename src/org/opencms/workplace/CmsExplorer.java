@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * 
  * @since 5.1
  */
@@ -143,6 +143,9 @@ public class CmsExplorer extends CmsWorkplace {
                 page = Integer.parseInt(selectedPage);
             } catch (NumberFormatException e) {
                 // default is 1
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
             }
             settings.setExplorerPage(page);
         }        
@@ -181,7 +184,7 @@ public class CmsExplorer extends CmsWorkplace {
         try {
             cms.readResource(resource, CmsResourceFilter.ALL);
             return true;            
-        } catch (Exception e) {
+        } catch (CmsException e) {
             return false;
         }
     }    
@@ -217,6 +220,9 @@ public class CmsExplorer extends CmsWorkplace {
             currentResource = getCms().readResource(currentFolder, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // file was not readable
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             found = false;
         }
         if (found) {
@@ -231,7 +237,10 @@ public class CmsExplorer extends CmsWorkplace {
             try {
                 currentResource = getCms().readResource(currentFolder, CmsResourceFilter.ALL);
             } catch (CmsException e) {
-                // should not happen
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }            
         }
         
@@ -286,6 +295,10 @@ public class CmsExplorer extends CmsWorkplace {
                 CmsFolder test = getCms().readFolder(currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                 writeAccess = getCms().isInsideCurrentProject(test);
             } catch (CmsException e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 writeAccess = false;
             }
         }
@@ -365,6 +378,9 @@ public class CmsExplorer extends CmsWorkplace {
             projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
         } catch (CmsException e) {
             // use an empty list (all resources are "outside")
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             projectResources = new ArrayList();
         }
 
@@ -407,8 +423,10 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     title = getCms().readPropertyObject(getCms().getSitePath(res), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 } catch (CmsException e) {
-                   
-                    // ignore
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e);
+                    }                   
                 }
                 if (title == null) {
                     title = "";
@@ -600,6 +618,9 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             } catch (CmsException exc) {
                 // where did my project go?
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(exc);
+                }                
                 lockedInProjectName = "";
             }                        
             content.append("\"");
@@ -644,6 +665,10 @@ public class CmsExplorer extends CmsWorkplace {
             getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             return folder;
         } catch (CmsException e) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             return "/";    
         }
     }
@@ -666,6 +691,10 @@ public class CmsExplorer extends CmsWorkplace {
                 // also return "invisible" siblings (the user might get confused if not all are returned)
                 return getCms().readSiblings(resource, CmsResourceFilter.ALL);
             } catch (CmsException e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 return Collections.EMPTY_LIST;
             }
         } else if ("projectview".equals(getSettings().getExplorerMode())) {
@@ -673,6 +702,10 @@ public class CmsExplorer extends CmsWorkplace {
             try {
                 return new ArrayList(getCms().readProjectView(getSettings().getExplorerProjectId(), getSettings().getExplorerProjectFilter()));
             } catch (CmsException e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 return Collections.EMPTY_LIST;
             }
         } else {
@@ -680,6 +713,10 @@ public class CmsExplorer extends CmsWorkplace {
             try {
                 return getCms().getResourcesInFolder(resource, CmsResourceFilter.ONLY_VISIBLE);
             } catch (CmsException e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 return Collections.EMPTY_LIST;
             }
         }

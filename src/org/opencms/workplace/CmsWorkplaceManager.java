@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/06/25 16:35:00 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.3.1
  */
@@ -660,6 +660,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         try {
             m_fileMaxUploadSize = Integer.valueOf(value).intValue();
         } catch (NumberFormatException e) {
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }                  
             m_fileMaxUploadSize = -1;
         }
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsVersion.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -110,7 +110,10 @@ public class CmsVersion {
                 try {
                     m_version = Integer.parseInt(versionString);
                 } catch (NumberFormatException nf) {
-                    // ignore
+                    // can usually be ignored
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(nf);
+                    }
                 }
             }
         }
@@ -131,6 +134,10 @@ public class CmsVersion {
             try {
                 res = m_cms.readBackupFile(m_resourceName, m_version);
             } catch (CmsException e) { 
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 return;
             }
             byte[] result = res.getContents();
@@ -141,6 +148,10 @@ public class CmsVersion {
                 m_response.getOutputStream().write(result);
                 m_response.getOutputStream().flush();
             } catch (IOException e) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 return;
             }
         }

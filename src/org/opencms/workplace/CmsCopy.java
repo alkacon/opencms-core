@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,11 @@ package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -55,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
@@ -192,7 +194,10 @@ public class CmsCopy extends CmsDialog {
                 isFolder = true;        
             }
         } catch (CmsException e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         String checkedAttr = " checked=\"checked\"";
         
@@ -283,8 +288,11 @@ public class CmsCopy extends CmsDialog {
                     }
                     CmsResource targetRes = getCms().readResource(getParamTarget());
                     targetType = targetRes.getTypeId();
-                } catch (CmsException exc) { 
-                    // ignore
+                } catch (CmsException e2) { 
+                    // can usually be ignored
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e2);
+                    }
                 } finally {
                     if (restoreSiteRoot) {
                         getCms().getRequestContext().restoreSiteRoot();
@@ -331,7 +339,10 @@ public class CmsCopy extends CmsDialog {
         try {
             copyMode = Integer.parseInt(getParamCopymode());
         } catch (Exception e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
 
         // calculate the target name
@@ -371,8 +382,11 @@ public class CmsCopy extends CmsDialog {
                     }
                     target = target + CmsResource.getName(getParamResource());
                 }
-            } catch (CmsException exc) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 // target folder does not already exist, so target name is o.k.
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                      
             }
             
             // set the target parameter value
@@ -380,7 +394,7 @@ public class CmsCopy extends CmsDialog {
              
             // delete existing target resource if confirmed by the user
             if (DIALOG_CONFIRMED.equals(getParamAction())) {
-                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
             }            
             
             // copy the resource       

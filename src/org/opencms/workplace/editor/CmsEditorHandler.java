@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/06/28 07:51:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.1
  */
@@ -121,6 +121,9 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             jsp.getCmsObject().readResource(editorUri);
         } catch (Throwable t) {
             // preferred or selected editor not found, try default editor
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }            
             editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType, userAgent);
         }
         
@@ -160,7 +163,10 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         try {
             jsp.include(CmsWorkplace.C_FILE_DIALOG_SCREEN_ERROR);
         } catch (JspException e) {
-            // ignore
+            // should usually never happen
+            if (OpenCms.getLog(CmsEditorHandler.class).isInfoEnabled()) {
+                OpenCms.getLog(CmsEditorHandler.class).info(e);
+            }
         }
         return null;
     }

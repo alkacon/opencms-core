@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/28 07:52:29 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.3.5
  */
@@ -1036,8 +1036,10 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             CmsLock lock = cms.getLock(res);
             
-            if (lockType == CmsLock.C_TYPE_UNLOCKED && !lock.isNullLock()) {
-                fail("[Lock " + resourceName + " must be unlocked]");
+            if (lockType == CmsLock.C_TYPE_UNLOCKED) {
+                if (!lock.isNullLock()) {
+                    fail("[Lock " + resourceName + " must be unlocked]");
+                }
             } else if (lock.isNullLock() || lock.getType() != lockType || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
                 fail("[Lock " + resourceName + " requires a lock of type " + lockType + " for user " + cms.getRequestContext().currentUser().getId() + "]");
             }

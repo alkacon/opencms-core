@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.3
  */
@@ -226,7 +227,10 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // get all available body files
             bodies = getBodies(getCms());
         } catch (CmsException e) {
-            // ignore this exception
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         if (bodies == null) {
             // no body files found, return empty String
@@ -261,7 +265,10 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // get all available templates
             templates = getTemplates(getCms());
         } catch (CmsException e) {
-            // ignore this exception
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         if (templates == null) {
             // no templates found, return empty String
@@ -320,11 +327,26 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         for (int i = 0; i < modules.size(); i++) {
             List moduleTemplateFiles = new ArrayList();
             String folder = cms.getSitePath((CmsFolder)modules.get(i));
-            moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder);
+            try {
+                moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder);
+            } catch (CmsException e) {
+                // folder not available, list will be empty
+                if (OpenCms.getLog(CmsNewResourceXmlPage.class).isDebugEnabled()) {
+                    OpenCms.getLog(CmsNewResourceXmlPage.class).debug(e);
+                }
+            }
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {
                 // get the current template file
                 CmsFile templateFile = (CmsFile)moduleTemplateFiles.get(j);
-                String title = cms.readPropertyObject(cms.getSitePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                String title = null;
+                try {
+                    title = cms.readPropertyObject(cms.getSitePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                } catch (CmsException e) {
+                    // property not available, will be null
+                    if (OpenCms.getLog(CmsNewResourceXmlPage.class).isInfoEnabled()) {
+                        OpenCms.getLog(CmsNewResourceXmlPage.class).info(e);
+                    }
+                }                
                 if (title == null) {
                     // no title property found, display the file name
                     title = templateFile.getName();

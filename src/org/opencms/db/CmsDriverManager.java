@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.386 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.387 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.386 $ $Date: 2004/06/28 07:47:32 $
+ * @version $Revision: 1.387 $ $Date: 2004/06/28 11:18:10 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1365,8 +1365,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public void chflags(CmsRequestContext context, CmsResource resource, int flags) throws CmsException {
 
-        resource.setFlags(flags);
-        writeResource(context, resource);
+        // must operate on a clone to ensure resource is not modified in case permissions are not granted
+        CmsResource clone = (CmsResource)resource.clone();
+        clone.setFlags(flags);
+        writeResource(context, clone);
     }      
     
     /**
@@ -1383,10 +1385,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public void chtype(CmsRequestContext context, CmsResource resource, int type) throws CmsException {
 
+        // must operate on a clone to ensure resource is not modified in case permissions are not granted
+        CmsResource clone = (CmsResource)resource.clone();
         I_CmsResourceType newType = OpenCms.getResourceManager().getResourceType(type);
-        resource.setType(newType.getTypeId());
-        resource.setLoaderId(newType.getLoaderId());
-        writeResource(context, resource);
+        clone.setType(newType.getTypeId());
+        clone.setLoaderId(newType.getLoaderId());
+        writeResource(context, clone);
     }
     
     /**
@@ -1429,7 +1433,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Possible values for this parameter are: 
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_IGNORE_SIBLINGS}</code></li>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
@@ -1444,18 +1447,21 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */    
     public void deleteResource(CmsRequestContext context, CmsResource resource, int siblingMode) throws CmsException {
 
-        // upgrade a potential inherited, non-shared lock into an exclusive lock
+        // check if the user has write access and if resource is locked 
+        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        
+        // upgrade a potential inherited, non-shared lock into a common lock
         CmsLock currentLock = getLock(context, resource.getRootPath());
-        if ((currentLock.isNullLock()) || (currentLock.getType() == CmsLock.C_TYPE_INHERITED)) {
-            // this will also check write permissions on the resource
-            lockResource(context, resource, CmsLock.C_MODE_COMMON);
+        if (currentLock.getType() == CmsLock.C_TYPE_INHERITED) {
+            // upgrade the lock status if required
+            internalLockResource(context, resource, CmsLock.C_MODE_COMMON);
         }
                 
         // check if siblings of the resource exist and must be deleted as well
         List resources;
         if (resource.isFolder()) {
             // folder can have no siblings
-            siblingMode = I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS;
+            siblingMode = I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
         }
         
         // if selected, add all aiblings of this resource to the list of resources to be deleted    
@@ -2088,7 +2094,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         if (requiredPermissions.requiresWritePermission()
         || requiredPermissions.requiresControlPermission()) {
-            // checl lock state only if required
+            // check lock state only if required
             CmsLock lock = getLock(context, resource);
             // if the resource is not locked by the current user, write and control is rejected
             // read is still possible            

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -178,6 +178,10 @@ public class CmsChnav extends CmsDialog {
             }
             return navText;
         } catch (CmsException e) {
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }         
             return "";
         }
         
@@ -229,7 +233,10 @@ public class CmsChnav extends CmsDialog {
             try {
                 selectedPos = Float.parseFloat(selectedPosString);
             } catch (Exception e) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
             
             // only update the position if a change is requested
@@ -297,7 +304,10 @@ public class CmsChnav extends CmsDialog {
             CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
             maxValue = ne.getNavPosition();
         } catch (Exception e) {
-            // ignore
+            // should usually never happen
+            if (OpenCms.getLog(CmsChnav.class).isInfoEnabled()) {
+                OpenCms.getLog(CmsChnav.class).info(e);
+            }
         }
         
         if (maxValue != 0) {

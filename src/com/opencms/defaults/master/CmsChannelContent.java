@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2004/06/28 11:18:10 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.74 $
- * $Date: 2004/06/28 07:44:02 $
+ * $Revision: 1.75 $
+ * $Date: 2004/06/28 11:18:10 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -207,7 +207,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         cms.getRequestContext().saveSiteRoot();
         cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
         try{
-            cms.deleteResource(cms.getSitePath(m_channel), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+            cms.deleteResource(cms.getSitePath(m_channel), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
         } catch (CmsException exc){
             throw exc;
             /*

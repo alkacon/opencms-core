@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/06/28 07:51:15 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.3.0
  */
@@ -237,7 +237,10 @@ public class CmsDialogElements extends CmsDialog {
             file.setContents(page.marshal());
             getCms().writeFile(file);
         } catch (CmsException e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
     }
     
@@ -302,7 +305,10 @@ public class CmsDialogElements extends CmsDialog {
             try {
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR); 
             } catch (Exception exc) {
-                // ignore this exception
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(exc);
+                }
             }
         }
     }
@@ -368,7 +374,10 @@ public class CmsDialogElements extends CmsDialog {
             
             
         } catch (CmsException e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         
         retValue.append("</table>\n");

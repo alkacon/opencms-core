@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2004/06/06 10:46:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -425,6 +425,10 @@ public class CmsExplorerTypeSettings implements Comparable {
                 OpenCms.getLog(this).debug("Setting new resource order: " + newResourceOrder);
             }     
         } catch (Exception e) {
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             m_newResourceOrder = new Integer(0);
         }
     }

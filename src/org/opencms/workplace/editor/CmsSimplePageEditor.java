@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -51,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.3.0
  */
@@ -89,7 +90,10 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 try {
                     showErrorPage(this, e, "read");
                 } catch (JspException exc) {
-                    // ignore this exception
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(exc);
+                    }
                 }
             }
         }
@@ -104,7 +108,10 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             try {
                 actionDirectEdit();
             } catch (Exception e) {
-                // ignore this exception
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
@@ -137,7 +144,10 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 try {
                     showErrorPage(this, e, "read");
                 } catch (JspException exc) {
-                    // ignore this exception
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(exc);
+                    }       
                 }
             }
             // set the initial body language & name if not given in request parameters

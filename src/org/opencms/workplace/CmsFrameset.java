@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 5.1
  */
@@ -204,7 +204,10 @@ public class CmsFrameset extends CmsWorkplace {
         try {
             allProjects = getCms().getAllAccessibleProjects();
         } catch (CmsException e) {
-            // should not happen
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             allProjects = Collections.EMPTY_LIST;
         }
 
@@ -265,6 +268,10 @@ public class CmsFrameset extends CmsWorkplace {
             try {
                 getCms().readResource(viewUri);
             } catch (CmsException e) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 visible = false;
             }
             if (visible) {
@@ -295,7 +302,10 @@ public class CmsFrameset extends CmsWorkplace {
         try {
             allGroups = getCms().getGroupsOfUser(getSettings().getUser().getName());
         } catch (CmsException e) {
-            // should not happen
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
 
         List options = new ArrayList();
@@ -363,7 +373,7 @@ public class CmsFrameset extends CmsWorkplace {
         try {
             getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/", CmsResourceFilter.IGNORE_EXPIRATION);
             return true;
-        } catch (CmsException e) {
+        } catch (CmsException e) {          
             return false;
         }        
     }

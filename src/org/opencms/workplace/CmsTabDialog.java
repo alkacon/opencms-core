@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
 
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -173,6 +174,9 @@ public abstract class CmsTabDialog extends CmsDialog {
                     tab = Integer.parseInt(paramTab);
                 } catch (NumberFormatException e) {
                     // do nothing, the first tab is returned
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e);
+                    }                    
                 }
             }
             setParamTab("" + tab);
@@ -196,6 +200,10 @@ public abstract class CmsTabDialog extends CmsDialog {
         try {
             return (String)tabNames.get(m_activeTab -1);
         } catch (IndexOutOfBoundsException e) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
             return null;
         }
     }

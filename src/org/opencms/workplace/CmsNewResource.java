@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.3
  */
@@ -252,6 +252,10 @@ public class CmsNewResource extends CmsDialog {
             try {
                 getJsp().include(nextUri);
             } catch (JspException e) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 // JSP dialog not present, display legacy XMLTemplate dialog
                 nextUri = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
                 sendCmsRedirect(nextUri);
@@ -283,6 +287,10 @@ public class CmsNewResource extends CmsDialog {
                 currentFolder = getCms().getSitePath(
                     getCms().readFolder(I_CmsConstants.C_ROOT, CmsResourceFilter.IGNORE_EXPIRATION));
             } catch (CmsException e) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 currentFolder = I_CmsConstants.C_ROOT;
             }
         }           

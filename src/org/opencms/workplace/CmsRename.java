@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -210,7 +211,10 @@ public class CmsRename extends CmsDialog {
             getCms().readResource(parentFolder + target, CmsResourceFilter.ALL);
             targetExists = true;
         } catch (CmsException e) {
-            // empty
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         } 
         if (targetExists) {
             throw new CmsException("The resource already exists", CmsException.C_FILE_EXISTS);       

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/25 16:34:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public interface I_CmsConstants {
 
@@ -1222,28 +1222,15 @@ public interface I_CmsConstants {
 
     /** Default class for templates. */
     String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
-
     
-    /** 
-     * Flag for leaving a date unchanged during a touch operation.
-     */
+    /** Flag for leaving a date unchanged during a touch operation. */
     long C_DATE_UNCHANGED = -1;
     
-    /** 
-     * Signals that siblings of this resource should not be 
-     * deleted and will remain unchanged at all.
-     */
-    int C_DELETE_OPTION_IGNORE_SIBLINGS = 0;
-    
-    /** 
-     * Signals that siblings of this resource should not be deleted. 
-     */
-    int C_DELETE_OPTION_PRESERVE_SIBLINGS = 1;
+    /** Signals that siblings of this resource should not be deleted. */
+    int C_DELETE_OPTION_PRESERVE_SIBLINGS = 0;
 
-    /** 
-     * Signals that siblings of this resource should be deleted.
-     */
-    int C_DELETE_OPTION_DELETE_SIBLINGS = 2;
+    /** Signals that siblings of this resource should be deleted. */
+    int C_DELETE_OPTION_DELETE_SIBLINGS = 1;
 
     /** Copy mode for copy resources as new resource. */
     int C_COPY_AS_NEW = 1;

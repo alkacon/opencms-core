@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.3
  */
@@ -198,7 +198,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         try {
             navPos = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_NAVPOS, false).getValue();
         } catch (CmsException e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         if (navPos == null) {
             navPos = "";
@@ -418,7 +421,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 actionEdit(request);
                 sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
             } catch (Exception e) {
-                // ignore this exception
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }          
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             // save the edited properties
@@ -594,14 +600,20 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @return a map with CmsProperty object values
      */
     protected Map getActiveProperties() {
+
         // get all used properties for the resource
         if (m_activeProperties == null) {
-        try {
-            m_activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
-        } catch (CmsException e) { 
-            // create an empty list
-            m_activeProperties = new HashMap();
-        }
+            try {
+                m_activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(
+                    getParamResource(),
+                    false));
+            } catch (CmsException e) {
+                // create an empty list
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
+                m_activeProperties = new HashMap();
+            }
         }
         return m_activeProperties;
     }

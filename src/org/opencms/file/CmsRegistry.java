@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/06/21 09:55:24 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -540,7 +540,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                     // lock the resource
                     m_cms.lockResource(currentResource);
                     // delete the resource
-                    m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                    m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                     // update the report
                     report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                     report.println(currentResource);
@@ -576,7 +576,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                     String currentResource = (String)resourceNames.elementAt(i);
                     if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
                         m_cms.lockResource(currentResource);
-                        m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                        m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                         // update the report
                         report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                         report.println(currentResource);

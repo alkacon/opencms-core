@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1
  */
@@ -247,7 +247,10 @@ public class CmsChacc extends CmsDialog {
                 setInherit(true);
             }
         } catch (CmsException e) { 
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
 
         // check the current users permission to change access control entries
@@ -257,7 +260,10 @@ public class CmsChacc extends CmsDialog {
                     setEditable(true);
             }
         } catch (CmsException e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
     }
     
@@ -332,7 +338,10 @@ public class CmsChacc extends CmsDialog {
         try {
             arrayPosition = Integer.parseInt(type);
         } catch (Exception e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
                
         if (checkNewEntry(name, arrayPosition)) {
@@ -406,14 +415,20 @@ public class CmsChacc extends CmsDialog {
                 paramInt = Integer.parseInt(param);
                 allowValue |= paramInt;
             } catch (Exception e) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
             try {           
                 param = request.getParameter(value+PERMISSION_DENY);
                 paramInt = Integer.parseInt(param);
                 denyValue |= paramInt;
             } catch (Exception e) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
             
         }
@@ -479,7 +494,10 @@ public class CmsChacc extends CmsDialog {
                     getCms().readUser(id);
                     flags = I_CmsConstants.C_ACCESSFLAGS_USER;
                 } catch (CmsException exc) {
-                    // ignore
+                    // can usually be ignored
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e);
+                    }
                 }
             }
             CmsResource res = getCms().readResource(fileName, CmsResourceFilter.ALL);
@@ -487,6 +505,10 @@ public class CmsChacc extends CmsDialog {
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
             return buildPermissionEntryForm(entry, editable, extendedView, null);
         } catch (CmsException e) {
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }         
             return new StringBuffer("");
         }
     }
@@ -686,7 +708,10 @@ public class CmsChacc extends CmsDialog {
                     retValue.append(buildPermissionEntryForm(principalId, permissions, false, true));
                 }
             } catch (CmsException e) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
         }
         return retValue;
@@ -771,7 +796,10 @@ public class CmsChacc extends CmsDialog {
         try {
             allEntries = getCms().getAccessControlEntries(getParamResource(), true);
         } catch (CmsException e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         
         // store all parent folder ids together with path in a map
@@ -782,7 +810,10 @@ public class CmsChacc extends CmsDialog {
             // get all parent folders of the current file
             parentResources = getCms().readPath(path, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         Iterator k = parentResources.iterator();
         while (k.hasNext()) {

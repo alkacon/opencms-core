@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,11 @@ package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -55,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -240,8 +242,11 @@ public class CmsMove extends CmsDialog {
                         target = target.substring(0, target.length()-1);
                     }
                 }
-            } catch (CmsException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 // target folder does not already exist, so target name is o.k.
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
             }
             
             // set the target parameter value
@@ -252,13 +257,16 @@ public class CmsMove extends CmsDialog {
             try {
                 targetRes = getCms().readResource(target, CmsResourceFilter.ALL);
             } catch (CmsException e) { 
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
     
             if (targetRes != null) {
                 if (DIALOG_CONFIRMED.equals(getParamAction())) {
                     // delete existing target resource if confirmed by the user
-                    getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                    getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                 } else {
                     // throw exception to indicate that the target exists
                     throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);

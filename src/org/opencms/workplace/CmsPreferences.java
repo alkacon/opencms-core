@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1.12
  */
@@ -307,7 +307,10 @@ public class CmsPreferences extends CmsTabDialog {
             // write the user settings to the db
             m_userSettings.save(getCms());
         } catch (CmsException e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         
         // update the preferences and project after saving
@@ -319,7 +322,10 @@ public class CmsPreferences extends CmsTabDialog {
             getCms().getRequestContext().setCurrentProject(project);
             getSettings().setProject(project.getId());            
         } catch (Exception e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
         }
         
         // now determine if the dialog has to be closed or not
@@ -331,8 +337,11 @@ public class CmsPreferences extends CmsTabDialog {
                 // redirect to dialog with action set to reload the workplace
                 sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
             }
-        } catch (IOException e) {
-            // error during redirect, do nothing 
+        } catch (IOException e) {            
+            // error during redirect, do nothing
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
         }
     }
     
@@ -606,6 +615,10 @@ public class CmsPreferences extends CmsTabDialog {
             }
             return buildSelect(htmlAttributes, options, values, checkedIndex);
         } catch (CmsException e) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }            
             return getSettings().getProject() + "";
         }
     }
@@ -704,6 +717,10 @@ public class CmsPreferences extends CmsTabDialog {
             try {
                 getCms().readResource(viewUri);
             } catch (CmsException e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }                
                 visible = false;
             }
             if (visible) {
@@ -1288,7 +1305,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setEditorButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
     
@@ -1301,7 +1321,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setDirectEditButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
     
@@ -1314,7 +1337,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setExplorerButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
 
@@ -1345,7 +1371,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setExplorerFileEntries(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
 
@@ -1505,7 +1534,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setWorkplaceButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
     
@@ -1518,7 +1550,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setDialogCopyFileMode(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
     
@@ -1531,7 +1566,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setDialogCopyFolderMode(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
     
@@ -1544,7 +1582,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             m_userSettings.setDialogDeleteFileMode(Integer.parseInt(value));
         } catch (Throwable t) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
         }
     }
 

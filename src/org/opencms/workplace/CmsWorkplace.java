@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  * 
  * @since 5.1
  */
@@ -252,6 +252,10 @@ public abstract class CmsWorkplace {
                 // read the user from db to avoid side effects in preferences dialog after publishing
                 user = cms.readUser(cms.getRequestContext().currentUser().getId());
             } catch (CmsException e) {
+                // can usually be ignored
+                if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
+                    OpenCms.getLog(CmsWorkplace.class).info(e);
+                }                
                 user = cms.getRequestContext().currentUser();
             }
         } else {
@@ -289,6 +293,10 @@ public abstract class CmsWorkplace {
             access = cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
+            if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
+                OpenCms.getLog(CmsWorkplace.class).info(e);
+            }            
+            
         }
         if ((res == null) || !access) {
             List sites = CmsSiteManager.getAvailableSites(cms, true);
@@ -339,7 +347,10 @@ public abstract class CmsWorkplace {
                 cms.readResource(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + type.getTypeName());
                 resourceTypes.put(new Integer(type.getTypeId()), type);               
             } catch (CmsException e) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
+                    OpenCms.getLog(CmsWorkplace.class).info(e);
+                }
             }                    
         }
         return resourceTypes;      
@@ -417,7 +428,11 @@ public abstract class CmsWorkplace {
                 try {
                     value = (String)values.get(i);
                 } catch (Exception e) {
-                    // lists are not properly initialized, just don't use the value
+                    // can usually be ignored
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e);
+                    }                    
+                    // lists are not properly initialized, just don't use the value                    
                     value = null;
                 }                
             }
@@ -908,9 +923,15 @@ public abstract class CmsWorkplace {
                 }
                 m.invoke(this, new Object[] {value});
             } catch (InvocationTargetException ite) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(ite);
+                }
             } catch (IllegalAccessException eae) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(eae);
+                }
             }
         } 
     }
@@ -1391,9 +1412,15 @@ public abstract class CmsWorkplace {
             try {
                 o = m.invoke(this, new Object[0]);
             } catch (InvocationTargetException ite) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(ite);
+                }                               
             } catch (IllegalAccessException eae) {
-                // ignore
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(eae);
+                }     
             }
             if (o != null) {
                 map.put(m.getName().substring(8).toLowerCase(), o);            
@@ -1438,25 +1465,27 @@ public abstract class CmsWorkplace {
      * @param cms the current cms object
      */
     private void initWorkplaceCmsContext(CmsWorkplaceSettings settings, CmsObject cms) {
-    
+
         CmsRequestContext reqCont = cms.getRequestContext();
-        
+
         // check project setting        
         if (settings.getProject() != reqCont.currentProject().getId()) {
-            try {                
+            try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
             } catch (CmsException e) {
-                // do nothing
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
+            }
         }
-                    }
-            
+
         // check site setting
         if (!(settings.getSite().equals(reqCont.getSiteRoot()))) {
             // site was switched, set new site root
             reqCont.setSiteRoot(settings.getSite());
             // removed setting explorer resource to "/" to get the stored folder
-                    }
-                }           
+        }
+    }           
             
     /**
      * Returns a list of all methods of the current class instance that 

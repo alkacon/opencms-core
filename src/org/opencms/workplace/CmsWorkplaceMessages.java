@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -152,7 +152,10 @@ public class CmsWorkplaceMessages {
                     ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
                     bundles.add(bundle);
                 } catch (MissingResourceException e) {
-                    // can be ignored
+                    // can usually be ignored
+                    if (OpenCms.getLog(this).isDebugEnabled()) {
+                        OpenCms.getLog(this).debug(e);
+                    }
                 }
             }
         }
@@ -179,6 +182,10 @@ public class CmsWorkplaceMessages {
         } catch (MissingResourceException e) {
             // exception - just use the default encoding
             result = m_workplaceDefaultEncoding;
+            // can usually be ignored
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug(e);
+            }            
         }
         if (result.startsWith("{")) {
             // this is a "supported set" - try to figure out the encoding to use
@@ -233,7 +240,10 @@ public class CmsWorkplaceMessages {
         try {
             return m_messages.getString(keyName);
         } catch (MissingResourceException e) {
-            // ignore
+            // can usually be ignored
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug(e);
+            }
         }
 
         // key was not found in default workplace bundles
@@ -246,7 +256,10 @@ public class CmsWorkplaceMessages {
                 return ((ResourceBundle) i.next()).getString(keyName);
                 // if no exception is thrown here we have found the result
             } catch (MissingResourceException e) {
-                // ignore and continue looking in the other bundles
+                // can usually be ignored
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug(e);
+                }                
             }
         }
         if (DEBUG > 1) {

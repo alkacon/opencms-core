@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/28 11:18:10 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -263,7 +263,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
             } catch (CmsException e) {
-                // ignore
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
         } else if (MODE_WIZARD_INDEXCREATED.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating an xml page in a new created folder in wizard mode
@@ -296,7 +299,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
          
-        } catch (IOException exc) {
+        } catch (IOException e) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
             getJsp().include(C_FILE_EXPLORER_FILELIST);
         }
     }
@@ -356,7 +363,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // get all property definitions
             propertyDef = getCms().readAllPropertydefinitions();
         } catch (CmsException e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         
         Iterator j = propertyDef.iterator();
@@ -504,7 +514,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 return URI_PROPERTY_CUSTOM_DIALOG;
             }
         } catch (CmsException e) {
-            // ignore this exception
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         return URI_PROPERTY_DIALOG;
     }
@@ -731,7 +744,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         resourceName += "/";            
                     }
                 } catch (CmsException e) {
-                    // ignore this exception
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e);
+                    }
                 }
             
                 try {
@@ -850,7 +866,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             try {
                 propertyDef = getCms().readAllPropertydefinitions();
             } catch (CmsException e) {
-                // ignore
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
             }
             m_propertyValues = new ArrayList(propertyDef.size());
     
@@ -860,6 +879,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 try {
                     activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
                 } catch (CmsException e) {
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(e);
+                    }                    
                     activeProperties = new HashMap();
                 }
             }

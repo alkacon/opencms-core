@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1.12
  */
@@ -472,6 +472,9 @@ public class CmsPublishProject extends CmsReport {
             res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // res will be null
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }                   
         }
         if ((res != null && res.isFile() && res.getSiblingCount() > 1) || (res != null && res.isFolder())) {
             // resource is file and has siblings, so create checkbox

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.util.Vector;
 
@@ -50,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -164,7 +165,10 @@ public class CmsChaccBrowser extends CmsDialog {
         try {
             groups = getCms().getGroups();
         } catch (CmsException e) {
-            // ignore
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
         
         for (int i=0; i<groups.size(); i++) {
@@ -185,7 +189,10 @@ public class CmsChaccBrowser extends CmsDialog {
         try {
             users = getCms().getUsers();
         } catch (CmsException e) {
-            // ignore
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
         }
 
         for (int i=0; i<users.size(); i++) {

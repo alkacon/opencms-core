@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/06/28 07:51:15 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/06/28 11:18:09 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 5.1.12
  */
@@ -118,7 +118,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             try {
             showErrorPage(this, e, "save");
             } catch (JspException exc) {
-                // ignore this exception
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(exc);
+                }       
             }
         }
         // re-initialize the element name if the language has changed
@@ -142,7 +145,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             try {
                 getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
-                // ignore this exception
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }       
             }
         }
     }
@@ -454,7 +460,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 try {
                 showErrorPage(this, e, "save");
                 } catch (JspException exc) {
-                    // ignore this exception
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(exc);
+                    }       
                 }
             }
             setParamElementlanguage(defaultLocale.toString());
@@ -522,7 +531,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             try {
                 showErrorPage(this, e, "read");
             } catch (JspException exc) {
-                // inclusion of error page failed, ignore
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(exc);
+                }       
             }
         }
     }
