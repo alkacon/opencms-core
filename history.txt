@@ -10,7 +10,10 @@ Legend:
 
 OpenCms 4.7.6 Ecaz - XX Xpril 2002
 ! The WYSIWYG-Editor now supports modification of previously created tables.
-  In Edit-Mode the border of a table is shown even if the tables border is set to 0.
+  In Edit-Mode the border of a table is shown even if the table border is set to 0.
+  Now you can use the editors capability to show details (like paragraphs) of the opened document.
+  The setting of internal and external links has been revised. Now you can set anchor links, add 
+  style definitions, etc. Special characters can be added within the WYSIWYG-editor.
 - Added some resource types that should be exported when the default is set to dynamic. 
 - Added pic and download folder to the static export if default is set to dynamic.
 
