@@ -688,7 +688,7 @@
 				<deletetext4>Folgende Dateien fehlen bereits:</deletetext4>
 				<createtitle>Modul anlegen</createtitle>
 				<createmessage>Das Modul konnte nicht erstellt werden.</createmessage>
-				<createreason>Bitte gegen Sie einen Packet Namen und eine Version an.</createreason>
+				<createreason>Bitte geben Sie einen Packet Namen und eine Version an.</createreason>
 				<empty> </empty>
 				<existsreason>Es existiert schon ein Modul mit diesem Namen.</existsreason>
 				<existsugg>Ändern Sie den Namen für ein neues Modul oder wählen Sie aus dem Kontexmenu administrieren für dieses Modul.</existsugg>
