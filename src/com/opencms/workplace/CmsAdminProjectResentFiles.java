@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/10/16 13:17:45 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.11 $ $Date: 2000/10/16 13:17:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -100,7 +100,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 			 access=true;
 		 }
 		 return access;
-	 } 
+	 }
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
@@ -116,6 +116,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 		
 		// get the session
 		I_CmsSession session = cms.getRequestContext().getSession(true);
+		int currentProjectId = cms.getRequestContext().currentProject().getId();
 		
 		// load the template file
 		CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -167,7 +168,12 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 		session.putValue("filter", filter);
 
 		// Finally start the processing
-		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+		byte[] content = startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+		
+		//set the current project back
+		cms.getRequestContext().setCurrentProject(currentProjectId);
+		
+		return content;
 	}
 	/**
 	 * From interface <code>I_CmsFileListUsers</code>.
