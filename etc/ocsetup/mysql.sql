@@ -515,7 +515,7 @@ create table CMS_MODULE_MASTER          (MASTER_ID              int not null,
                                          DATA_REFERENCE_9       int,
                                          primary key(MASTER_ID));
 
-create table CMS_MODULE_CHANNEL_RELATION
+create table CMS_MODULE_CHANNEL_REL
                                         (MASTER_ID              int not null,
                                          CHANNEL_ID             int not null,
                                          primary key(CHANNEL_ID, MASTER_ID));
