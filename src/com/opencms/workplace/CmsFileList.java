@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/05/30 13:19:23 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.40 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.41 $ $Date: 2000/05/30 13:19:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -139,8 +139,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      */    
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc,
                                             Object callingObject, Hashtable parameters, 
-                                            CmsXmlLanguageFile lang) throws CmsException {
-        long startTime = System.currentTimeMillis();
+                                            CmsXmlLanguageFile lang) throws CmsException { 
 		        
         String template = n.getAttribute(C_FILELIST_TEMPLATE);
         String customizedTemplate = n.getAttribute(C_FILELIST_CUSTOMTEMPLATE);
@@ -165,11 +164,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         
         I_CmsFileListUsers filelistUser = (I_CmsFileListUsers)callingObject;
-        Vector filelist = filelistUser.getFiles(cms); 
-		System.err.println("time after getFiles:" + (System.currentTimeMillis()- startTime));
-		Object ret=getFilelist(cms, filelist, filelistTemplate, lang, parameters, filelistUser, configFile);
-		System.err.println("time for handleSpecialWorkplaceTag:FILELIST" + (System.currentTimeMillis()- startTime));
-		return ret;
+        Vector filelist = filelistUser.getFiles(cms);  
+		return getFilelist(cms, filelist, filelistTemplate, lang, parameters, filelistUser, configFile); 
     }          
     
      /**
@@ -242,8 +238,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			
             // go through all folders and files
             enum=list.elements();
-			
-			long startTime =System.currentTimeMillis();
+			 
             while (enum.hasMoreElements()) {
                 res=(CmsResource)enum.nextElement();
                 
@@ -424,9 +419,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 } 
 				output.append(template.getProcessedDataValue(C_LIST_ENTRY,callingObject)); 
                }
-            }
-		
-			System.err.println("CmsFileList:Schleife:"+ (System.currentTimeMillis()-startTime));
+            } 
          return output.toString();
      }            
     
