@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/02/06 10:18:10 $
-  * Version: $Revision: 1.20 $
+  * Date   : $Date: 2001/02/06 14:03:20 $
+  * Version: $Revision: 1.21 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -638,7 +638,7 @@ function openTreeWin(){
  
 function closeTreeWin(){
     if(	treewindowexists==true){
-    	windows.treewin.close();
+    	window.treewin.close();
 	    treewindowexists=false;
     }
 }
