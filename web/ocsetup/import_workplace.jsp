@@ -15,7 +15,7 @@
 		Bean.getErrors().clear();
 		
 		/* Create Database */
-		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getConfigFolder());
+		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
 		Utils.createDatabase(Bean.getDbDriver(), Bean.getDbSetupConStr(false), Bean.getDbSetupUser(false),
 				Bean.getDbSetupPwd(false), Bean.getResourceBroker());			
 	}		

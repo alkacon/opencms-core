@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2001/07/11 11:48:38 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/07/11 14:32:20 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.2 $ $Date: 2001/07/11 11:48:38 $
+ * @version $Revision: 1.3 $ $Date: 2001/07/11 14:32:20 $
  */
 public class CmsMain {
 
@@ -184,7 +184,7 @@ public class CmsMain {
         System.out.println("Usage: java com.opencms.core.CmsMain properties-file");
     }
 
-    protected static void collectRepositories(String base, CmsClassLoader cl) {
+    public static void collectRepositories(String base, CmsClassLoader cl) {
         System.out.println("Collecting Repositories");
         // Add simple, unpacked classes
         File classesFolder = new File(base + "occlasses");

@@ -40,8 +40,16 @@ public class CmsSetupUtils {
 
     private String m_configFolder;
 
-    public CmsSetupUtils(String configFolder) {
-      m_configFolder = configFolder;
+    private String m_ocsetupFolder;
+
+    private String m_basePath;
+
+
+    public CmsSetupUtils(String basePath) {
+      m_basePath = basePath;
+      m_ocsetupFolder = basePath + "WEB-INF/ocsetup/";
+      m_configFolder = basePath + "WEB-INF/config/";
+
     }
 
     public void saveProperties(ExtendedProperties extProp, String originalFile)  {
@@ -140,13 +148,16 @@ public class CmsSetupUtils {
 
         /* get connection */
         try {
+/*            CmsClassLoader loader = new CmsClassLoader();
+            CmsMain.collectRepositories(m_basePath+"WEB-INF/",loader);
+            loader.loadClass(DbDriver);*/
             Class.forName(DbDriver);
             con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
 
           /* get and parse the setup script */
           try {
               String file = getSetupScript(resourceBroker);
-              LineNumberReader reader = new LineNumberReader(new FileReader(m_configFolder + file));
+              LineNumberReader reader = new LineNumberReader(new FileReader(m_ocsetupFolder + file));
 
               String line = null;
               String statement = "";
@@ -202,10 +213,12 @@ public class CmsSetupUtils {
           }
           catch (Exception e) {
               CmsSetup.setErrors(e.toString() + "\n");
+              e.printStackTrace();
           }
       }
       catch (Exception e) {
           CmsSetup.setErrors(e.toString() + "\n");
+          e.printStackTrace();
       }
   }
 
@@ -233,7 +246,7 @@ public class CmsSetupUtils {
 
         /* read and return everything */
         try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(m_configFolder + file));
+            LineNumberReader reader = new LineNumberReader(new FileReader(m_ocsetupFolder + file));
             String stat = "";
             String line = null;
 
