@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2004/11/29 14:47:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/30 08:15:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -547,10 +548,21 @@ public class CmsPreferences extends CmsTabDialog {
         }
         Map resourceEditors = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getConfigurableEditors();
         if (resourceEditors != null) {
-            // first: iterate over the resource types
+            // first: iterate over the resource types and consider order from configuration
             Iterator i = resourceEditors.keySet().iterator();
+            
+            SortedMap rankResources = new TreeMap();
             while (i.hasNext()) {
                 String currentResourceType = (String)i.next();
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(currentResourceType);
+                rankResources.put(new Float(settings.getNewResourceOrder()), currentResourceType);
+            }
+            
+            while (rankResources.size() > 0) {
+                // get editor configuration with lowest order 
+                Float keyVal = (Float)rankResources.firstKey();           
+                String currentResourceType = (String)rankResources.get(keyVal);            
+           
                 SortedMap availableEditors = (TreeMap)resourceEditors.get(currentResourceType);
                 if (availableEditors != null && availableEditors.size() > 0) {
                     String preSelection = computeEditorPreselection(request, currentResourceType);
@@ -584,6 +596,7 @@ public class CmsPreferences extends CmsTabDialog {
                     result.append(buildSelect(htmlAttributes + currentResourceType + "\"", options, values, selectedIndex));
                     result.append("</td>\n</tr>\n");
                 }
+                rankResources.remove(keyVal);
             }
         }
         return result.toString();
