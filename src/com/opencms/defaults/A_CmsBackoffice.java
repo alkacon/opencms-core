@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/22 11:36:01 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/10/24 09:58:00 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1729,6 +1729,14 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         String projectFlag = null;
         int actProjectId = cms.getRequestContext().currentProject().getId();
         String isInProject = null;
+        // set the default projectflag
+        try {
+            template.setData("projectflag", template.getDataValue("noproject"));
+        } catch  (Exception e) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
+            }
+        }
 
         // get the state of an entry: if its unchanged do not show the flag
         try {
