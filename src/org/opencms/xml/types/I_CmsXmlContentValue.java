@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
@@ -41,18 +42,18 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
-    
+
     /**
      * Returns the original XML element of this XML content node.<p>
      * 
      * @return the original XML element of this XML content node
      */
     Element getElement();
-    
+
     /**
      * Returns the index of this XML content node in the source document, 
      * starting with 0.<p>
@@ -75,15 +76,35 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @throws CmsXmlException if something goes wrong
      */
     String getStringValue(CmsObject cms, I_CmsXmlDocument document) throws CmsXmlException;
-    
+
     /**
      * Sets the provided String as value of this XML content node.<p>  
+     * 
+     * This method does does provide processing of the content based on the
+     * users current OpenCms context. This can be used e.g. for link 
+     * extraction and replacement in the content.<p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
      * @param value the value to set
      * 
      * @throws CmsXmlException if something goes wrong
-     */    
-    void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException;    
+     * 
+     * @see #setStringValue(String)
+     */
+    void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException;
+
+    /**
+     * Sets the provided String as value of this XML content node.<p>  
+     * 
+     * This method does not provide special processing of the content based on the
+     * users current OpenCms context.<p>
+     * 
+     * @param value the value to set
+     * 
+     * @throws CmsXmlException if something goes wrong
+     * 
+     * @see #setStringValue(CmsObject, I_CmsXmlDocument, String)
+     */
+    void setStringValue(String value) throws CmsXmlException;
 }

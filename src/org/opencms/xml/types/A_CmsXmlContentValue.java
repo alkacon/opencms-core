@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,11 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import org.dom4j.Element;
 
@@ -42,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -80,17 +82,15 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
      */
     public void appendDefaultXml(Element root, int index) {
 
-        Element sub = root.addElement(getNodeName());
+        Element element = root.addElement(getNodeName());
         if (getDefault() != null) {
             try {
-                I_CmsXmlContentValue value = createValue(sub, getNodeName(), index);
-                int todo = 0;
-                // TODO: check "double null" dilemma here...
-                value.setStringValue(null, null, getDefault());
+                I_CmsXmlContentValue value = createValue(element, getNodeName(), index);
+                value.setStringValue(getDefault());
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
                 OpenCms.getLog(this).error("Invalid default value '" + getDefault() + "' for XML content", e);
-                sub.clearContent();
+                element.clearContent();
             }
         }
     }
@@ -220,4 +220,13 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
         m_defaultValue = defaultValue;
     }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.lang.String)
+     */
+    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException {
+
+        // for most values, no special processing on the users OpenCms context is required
+        setStringValue(value);
+    } 
 }

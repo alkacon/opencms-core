@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.xml;
 
 import org.opencms.file.CmsObject;
+import org.opencms.staticexport.CmsLinkProcessor;
+import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.List;
@@ -44,7 +46,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
@@ -70,6 +72,13 @@ public interface I_CmsXmlDocument {
     CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsXmlException;
 
     /**
+     * Returns the content converison parameter used for this XML document.<p>
+     * 
+     * @return the content converison parameter used for this XML document
+     */
+    String getConversion();
+
+    /**
      * Returns the encoding used for this XML document.<p>
      * 
      * @return the encoding used for this XML document
@@ -86,6 +95,16 @@ public interface I_CmsXmlDocument {
      * @return the index count for the given key name
      */
     int getIndexCount(String name, Locale locale);
+
+    /**
+     * Returns a link processor for the values of this XML document.<p>
+     * 
+     * @param cms an initialized CmsObject that provides the context for the link processor
+     * @param linkTable the table with the links to process
+     * 
+     * @return a link processor for the values of this XML document
+     */
+    CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable);
 
     /**
      * Returns a List of all locales that have at last one element in 
@@ -247,5 +266,6 @@ public interface I_CmsXmlDocument {
      * 
      * @throws CmsXmlException in case the locale did not exist in the document, or if something else goes wrong
      */
-    void removeLocale(Locale locale) throws CmsXmlException;    
+    void removeLocale(Locale locale) throws CmsXmlException;
+
 }

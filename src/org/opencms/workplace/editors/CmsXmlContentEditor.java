@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/22 15:57:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -472,6 +473,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         StringBuffer result = new StringBuffer(128);
 
         try {
+            
+            // set "editor mode" attribute (required for link replacement in the root site) 
+            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
             
             Locale locale = getElementLocale();
             result.append("<table class=\"xmlTable\">\n");

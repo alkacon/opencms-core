@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
@@ -39,7 +40,6 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -56,27 +56,28 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
-    
+
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsHtml";
-    
+
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
 
     /** The String value of the element node. */
-    private String m_stringValue;   
-    
+    private String m_stringValue;
+
     /**
      * Creates a new Locale type definition.<p>
      */
     public CmsXmlHtmlValue() {
+
         // empty constructor is required for class registration
     }
-    
+
     /**
      * Creates a new XML content value.<p>
      * 
@@ -85,23 +86,24 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      * @param index the index of the XML element in the source document
      */
     public CmsXmlHtmlValue(Element element, String name, int index) {
-        
+
         m_element = element;
         m_name = name;
         m_index = index;
     }
-    
+
     /**
      * Creates a new Locale type which must occur exaclty once.<p>
      * 
      * @param name the name of the element
      */
     public CmsXmlHtmlValue(String name) {
+
         m_name = name;
         m_minOccurs = 1;
         m_maxOccurs = 1;
     }
-    
+
     /**
      * Creates a new Locale type.<p>
      * 
@@ -110,6 +112,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      * @param maxOccurs maximum number of occurences
      */
     public CmsXmlHtmlValue(String name, int minOccurs, int maxOccurs) {
+
         m_name = name;
         m_minOccurs = minOccurs;
         m_maxOccurs = maxOccurs;
@@ -123,6 +126,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      * @param maxOccurs maximum number of occurences
      */
     public CmsXmlHtmlValue(String name, String minOccurs, String maxOccurs) {
+
         m_name = name;
         m_minOccurs = 1;
         if (CmsStringUtil.isNotEmpty(minOccurs)) {
@@ -144,37 +148,35 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 }
             }
         }
-    }    
-    
+    }
+
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, int)
      */
     public void appendDefaultXml(Element root, int index) {
 
-        Element sub = root.addElement(getNodeName());
-        sub.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getNodeName() + index);
-        sub.addElement(CmsXmlPage.NODE_LINKS);
-        sub.addElement(CmsXmlPage.NODE_CONTENT);
-        
-//        if (m_defaultValue != null) {
-//            try {
-//                I_CmsXmlContentValue value = createValue(sub, getNodeName(), index);
-//                int todo = 0;
-//                // TODO: check "double null" dilemma here...
-//                value.setStringValue(null, null, m_defaultValue);
-//            } catch (CmsXmlException e) {
-//                // should not happen if default value is correct
-//                OpenCms.getLog(this).error("Invalid default value '" + m_defaultValue + "' for XML content", e);
-//                sub.clearContent();
-//            }
-//        }
+        Element element = root.addElement(getNodeName());
+        element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getNodeName() + index);
+        element.addElement(CmsXmlPage.NODE_LINKS);
+        element.addElement(CmsXmlPage.NODE_CONTENT);
+
+        if (m_defaultValue != null) {
+            try {
+                I_CmsXmlContentValue value = createValue(element, getNodeName(), index);
+                value.setStringValue(m_defaultValue);
+            } catch (CmsXmlException e) {
+                // should not happen if default value is correct
+                OpenCms.getLog(this).error("Invalid default value '" + m_defaultValue + "' for XML content", e);
+                element.clearContent();
+            }
+        }
     }
-    
+
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
      */
     public I_CmsXmlContentValue createValue(Element element, String name, int index) {
-        
+
         return new CmsXmlHtmlValue(element, name, index);
     }
 
@@ -214,17 +216,19 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             }
         }
         return linkTable;
-    }    
+    }
 
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
-        
+
         // the schema definition is located in a separate file for easier editing
-        if (m_schemaDefinition == null) {            
+        if (m_schemaDefinition == null) {
             try {
-                m_schemaDefinition = CmsFileUtil.readFile("org/opencms/xml/types/HtmlValue.xsd", CmsEncoder.C_UTF8_ENCODING);
+                m_schemaDefinition = CmsFileUtil.readFile(
+                    "org/opencms/xml/types/HtmlValue.xsd",
+                    CmsEncoder.C_UTF8_ENCODING);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -233,17 +237,17 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, A_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
      */
     public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
-        
+
         if (m_stringValue == null) {
             m_stringValue = createStringValue(cms, document);
         }
-        
+
         return m_stringValue;
     }
-    
+
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
      */
@@ -259,7 +263,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         return new CmsXmlHtmlValue(name, minOccurs, maxOccurs);
     }
-    
+
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.lang.String)
      */
@@ -267,24 +271,25 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         Element content = m_element.element(CmsXmlPage.NODE_CONTENT);
         Element links = m_element.element(CmsXmlPage.NODE_LINKS);
+        CmsLinkProcessor linkProcessor = null;
 
-        int todo = 0;
-        // TODO: solve Interface vs. abstract issue
-        A_CmsXmlDocument xmlDoc = (A_CmsXmlDocument)document;
-        
-        String encoding = xmlDoc.getEncoding();
-        CmsLinkProcessor linkProcessor = xmlDoc.getLinkProcessor(cms, new CmsLinkTable());
+        if (document != null) {
+            // may be null in case of default value generation (i.e. setStringValue(String) was called)
 
-        if (encoding != null) {
-            // ensure all chars in the given content are valid chars for the selected charset
-            value = CmsEncoder.adjustHtmlEncoding(value, encoding);
-        }
-        
-        // do some processing to remove unnecessary tags if necessary
-        String contentConversion = xmlDoc.getConversion();    
-        if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
-            CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
-            value = converter.convertToStringSilent(value);
+            String encoding = document.getEncoding();
+            linkProcessor = document.getLinkProcessor(cms, new CmsLinkTable());
+
+            if (encoding != null) {
+                // ensure all chars in the given content are valid chars for the selected charset
+                value = CmsEncoder.adjustHtmlEncoding(value, encoding);
+            }
+
+            // remove unnecessary tags if required
+            String contentConversion = document.getConversion();
+            if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
+                CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
+                value = converter.convertToStringSilent(value);
+            }
         }
 
         if (linkProcessor != null) {
@@ -297,72 +302,80 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         }
 
         content.clearContent();
-        content.addCDATA(value);
+        links.clearContent();
 
-        CmsLinkTable linkTable = linkProcessor.getLinkTable();
-        links.setContent(null);
-        for (Iterator i = linkTable.iterator(); i.hasNext();) {
-            CmsLink link = linkTable.getLink((String)i.next());
-
-            Element linkElement = links.addElement(CmsXmlPage.NODE_LINK).addAttribute(
-                CmsXmlPage.ATTRIBUTE_NAME,
-                link.getName()).addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType()).addAttribute(
-                CmsXmlPage.ATTRIBUTE_INTERNAL,
-                Boolean.toString(link.isInternal()));
-
-            linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
-
-            if (link.getAnchor() != null) {
-                linkElement.addElement(CmsXmlPage.NODE_ANCHOR).addCDATA(link.getAnchor());
-            }
-
-            if (link.getQuery() != null) {
-                linkElement.addElement(CmsXmlPage.NODE_QUERY).addCDATA(link.getQuery());
+        if (CmsStringUtil.isNotEmpty(value)) {
+            content.addCDATA(value);
+            if (linkProcessor != null) {
+                // may be null in case of default value generation (i.e. setStringValue(String) was called)
+    
+                CmsLinkTable linkTable = linkProcessor.getLinkTable();
+                for (Iterator i = linkTable.iterator(); i.hasNext();) {
+                    CmsLink link = linkTable.getLink((String)i.next());
+    
+                    Element linkElement = links.addElement(CmsXmlPage.NODE_LINK).addAttribute(
+                        CmsXmlPage.ATTRIBUTE_NAME,
+                        link.getName()).addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType()).addAttribute(
+                        CmsXmlPage.ATTRIBUTE_INTERNAL,
+                        Boolean.toString(link.isInternal()));
+    
+                    linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
+    
+                    if (link.getAnchor() != null) {
+                        linkElement.addElement(CmsXmlPage.NODE_ANCHOR).addCDATA(link.getAnchor());
+                    }
+    
+                    if (link.getQuery() != null) {
+                        linkElement.addElement(CmsXmlPage.NODE_QUERY).addCDATA(link.getQuery());
+                    }
+                }
             }
         }
-        
+
         // ensure the String value is re-calculated next time
         m_stringValue = null;
     }
-    
+
     /**
-     * Creates the String value for this XML page element.<p>
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
+     */
+    public void setStringValue(String value) throws CmsXmlException {
+
+        // we don't have any information available for link processing
+        setStringValue(null, null, value);
+    }
+
+    /**
+     * Creates the String value for this HTML value element.<p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
      * 
-     * @return the String value for this XML page element
+     * @return the String value for this HTML value element
      */
     private String createStringValue(CmsObject cms, I_CmsXmlDocument document) {
-        
+
         Element data = m_element.element(CmsXmlPage.NODE_CONTENT);
         Attribute enabled = m_element.attribute(CmsXmlPage.ATTRIBUTE_ENABLED);
-        
-        int todo = 0;
-        // TODO: solve Interface vs. abstract issue
-        A_CmsXmlDocument xmlDoc = (A_CmsXmlDocument)document;
-        
+
         String content = "";
         if (enabled == null || Boolean.valueOf(enabled.getText()).booleanValue()) {
-        
+
             content = data.getText();
 
             CmsLinkTable linkTable = getLinkTable();
             if (!linkTable.isEmpty()) {
-                
-                int todo2 = 0;
-                // TODO: boolean value for "editor mode" currently always set to "false", see XML page handling of this
-                
-                // replace macros with links
-                CmsLinkProcessor linkProcessor = new CmsLinkProcessor(cms, linkTable, xmlDoc.getEncoding(), null);                
-                try {                    
+
+                // link processing: replace macros with links
+                CmsLinkProcessor linkProcessor = document.getLinkProcessor(cms, linkTable);
+                try {
                     content = linkProcessor.processLinks(content);
                 } catch (ParserException e) {
                     // should better not happen
                     OpenCms.getLog(this).error("HTML link processing failed", e);
                 }
-            } 
-        }             
+            }
+        }
         return content;
     }
 }

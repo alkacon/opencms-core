@@ -2019,9 +2019,14 @@ HTMLArea.getHTML = function(root, outputRoot, editor) {
 						// IE seems not willing to return the original values - it converts to absolute
 						// links using a.nodeValue, a.value, a.stringValue, root.getAttribute("href")
 						// So we have to strip the baseurl manually -/
-						if (HTMLArea.is_ie && (name == "href" || name == "src")) {
-							value = editor.stripBaseURL(value);
-						}
+						
+						// OPENCMS-FIX 10/22/04 (AK):
+						// HtmlArea strips hostname and port in IE, but OpenCms requires this info
+						// in order to work with multiple sites. 
+						
+						// if (HTMLArea.is_ie && (name == "href" || name == "src")) {
+						// 	value = editor.stripBaseURL(value);
+						// }
 					}
 				} else { // IE fails to put style in attributes list
 					// FIXME: cssText reported by IE is UPPERCASE

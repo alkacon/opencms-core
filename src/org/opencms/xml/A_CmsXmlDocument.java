@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.staticexport.CmsLinkProcessor;
-import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayOutputStream;
@@ -59,7 +57,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -265,16 +263,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             return elements.size();
         }
     }
-
-    /**
-     * Returns a link processor for the values of this XML element.<p>
-     * 
-     * @param cms an initialized CmsObject that provides the context for the link processor
-     * @param linkTable the link table to use
-     * 
-     * @return a link processor for the values of this XML element
-     */
-    public abstract CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable);
 
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getLocales()

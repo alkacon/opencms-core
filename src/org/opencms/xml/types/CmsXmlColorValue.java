@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
@@ -42,24 +43,25 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public class CmsXmlColorValue extends A_CmsXmlContentValue {
-    
+
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsColor";
-    
+
     /** The String value of the element node. */
-    private String m_stringValue;     
-    
+    private String m_stringValue;
+
     /**
      * Creates a new Color type definition.<p>
      */
     public CmsXmlColorValue() {
+
         // empty constructor is required for class registration
     }
-    
+
     /**
      * Creates a new XML content value.<p>
      * 
@@ -68,23 +70,25 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
      * @param index the index of the XML element in the source document
      */
     public CmsXmlColorValue(Element element, String name, int index) {
+
         m_element = element;
         m_name = name;
         m_index = index;
         m_stringValue = element.getText();
     }
-    
+
     /**
      * Creates a new Color type which must occur exactly once.<p>
      * 
      * @param name the name of the element
      */
     public CmsXmlColorValue(String name) {
+
         m_name = name;
         m_minOccurs = 1;
         m_maxOccurs = 1;
     }
-    
+
     /**
      * Creates a new Color type.<p>
      * 
@@ -93,6 +97,7 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
      * @param maxOccurs maximum number of occurences
      */
     public CmsXmlColorValue(String name, int minOccurs, int maxOccurs) {
+
         m_name = name;
         m_minOccurs = minOccurs;
         m_maxOccurs = maxOccurs;
@@ -106,6 +111,7 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
      * @param maxOccurs maximum number of occurences
      */
     public CmsXmlColorValue(String name, String minOccurs, String maxOccurs) {
+
         m_name = name;
         m_minOccurs = 1;
         if (CmsStringUtil.isNotEmpty(minOccurs)) {
@@ -133,15 +139,15 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
      */
     public I_CmsXmlContentValue createValue(Element element, String name, int index) {
-        
+
         return new CmsXmlColorValue(element, name, index);
     }
-    
+
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getDefault()
      */
     public String getDefault() {
-        
+
         if (m_defaultValue != null) {
             return m_defaultValue;
         }
@@ -152,13 +158,13 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
-        
+
         return "<xsd:simpleType name=\""
             + C_TYPE_NAME
             + "\"><xsd:restriction base=\"xsd:string\">"
             + "<xsd:pattern value=\""
             + "#?([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?"
-            + "\" /></xsd:restriction></xsd:simpleType>";   
+            + "\" /></xsd:restriction></xsd:simpleType>";
     }
 
     /**
@@ -186,11 +192,13 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.lang.String)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
      */
-    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) {
+    public void setStringValue(String value) {
 
         m_element.clearContent();
-        m_element.addText(value);
-    }  
+        if (CmsStringUtil.isNotEmpty(value)) { 
+            m_element.addText(value);
+        }
+    }
 }

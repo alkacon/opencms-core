@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class CmsLinkManager {
     
@@ -191,6 +191,7 @@ public class CmsLinkManager {
         String path;
         String fragment;
         String query;
+        String suffix;
         
         // malformed uri
         try {
@@ -214,6 +215,9 @@ public class CmsLinkManager {
         } catch (Exception exc) {   
             return null;
         }
+        
+        // concat fragment and query 
+        suffix = fragment.concat(query);
 
         // opaque URI
         if (uri.isOpaque()) { 
@@ -227,7 +231,8 @@ public class CmsLinkManager {
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                return cms.getRequestContext().addSiteRoot(OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(), path + fragment + query);                 
+                
+                return cms.getRequestContext().addSiteRoot(OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(), path + suffix);                 
             } else {
                 return null;
             }
@@ -237,18 +242,27 @@ public class CmsLinkManager {
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
         if ((context != null) && path.startsWith(context)) {
             // URI is starting with opencms context
+
             String siteRoot = null;
             if (relativePath != null) {
                 siteRoot = CmsSiteManager.getSiteRoot(relativePath);
             }
             
-            // relative path contains a site root
-            // so, we are in the root site and have to add this path as site prefix
+            // cut context from path
+            path = path.substring(context.length());
+            
             if (siteRoot != null) {
-                return cms.getRequestContext().addSiteRoot(siteRoot, path.substring(context.length()) + fragment + query);
+                // special case: relative path contains a site root, i.e. we are in the root site                
+                if (! path.startsWith(siteRoot)) {
+                    // path does not already start with the site root, we have to add this path as site prefix
+                    return cms.getRequestContext().addSiteRoot(siteRoot, path + suffix);                    
+                } else {
+                    // since path already contains the site root, we just leave it unchanged
+                    return path + suffix;
+                }                
             } else {
                 // site root is added with standard mechanism
-                return cms.getRequestContext().addSiteRoot(path.substring(context.length())) + fragment + query;
+                return cms.getRequestContext().addSiteRoot(path + suffix);
             }
         }
         
@@ -258,7 +272,7 @@ public class CmsLinkManager {
             if (relativePath != null) {
                 String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
-                    return absolutePath + fragment + query;
+                    return absolutePath + suffix;
                 } 
             }
 
@@ -267,11 +281,11 @@ public class CmsLinkManager {
         
         // relative uri (= vfs path relative to currently selected site root)
         if (!"".equals(path)) {
-            return cms.getRequestContext().addSiteRoot(path) + fragment + query;
+            return cms.getRequestContext().addSiteRoot(path) + suffix;
         }
         
         // uri without path (typically local link)
-        return fragment + query;
+        return suffix;
     }
     
     /**

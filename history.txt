@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/23 03:35:36 $
- * Version: $Revision: 1.574 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.575 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,8 @@ OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October xx, 2004
 ! Split the CmsDriverManager into CmsSecurityManager and CmsDriverMAnager,
   for more efficient handling of permission checks during DB operations
 ! XML content editor now allows "direct publish" from the editor
+* Fixed issue with link replace mode in XML content editor operating in the roor site
+* Fixed issue with default XML default value creation not having an OpenCms context available
 
 OpenCms 5.5.2 Caladan - October 22, 2004
 ! Locale handler for the workplace has been made configurable

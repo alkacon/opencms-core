@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlStringValue.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/23 06:50:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
@@ -42,24 +43,25 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
-        
+
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsString";
-    
+
     /** The String value of the element node. */
-    private String m_stringValue;        
-    
+    private String m_stringValue;
+
     /**
      * Creates a new String type definition.<p>
      */
     public CmsXmlStringValue() {
+
         // empty constructor is required for class registration
     }
-    
+
     /**
      * Creates a new XML content value.<p>
      * 
@@ -68,24 +70,25 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
      * @param index the index of the XML element in the source document
      */
     public CmsXmlStringValue(Element element, String name, int index) {
-        
+
         m_element = element;
         m_name = name;
         m_index = index;
         m_stringValue = element.getText();
     }
-    
+
     /**
      * Creates a new String type which must occur exaclty once.<p>
      * 
      * @param name the name of the element
      */
     public CmsXmlStringValue(String name) {
+
         m_name = name;
         m_minOccurs = 1;
         m_maxOccurs = 1;
     }
-    
+
     /**
      * Creates a new String type.<p>
      * 
@@ -94,6 +97,7 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
      * @param maxOccurs maximum number of occurences
      */
     public CmsXmlStringValue(String name, int minOccurs, int maxOccurs) {
+
         m_name = name;
         m_minOccurs = minOccurs;
         m_maxOccurs = maxOccurs;
@@ -107,6 +111,7 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
      * @param maxOccurs maximum number of occurences
      */
     public CmsXmlStringValue(String name, String minOccurs, String maxOccurs) {
+
         m_name = name;
         m_minOccurs = 1;
         if (CmsStringUtil.isNotEmpty(minOccurs)) {
@@ -134,7 +139,7 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
      */
     public I_CmsXmlContentValue createValue(Element element, String name, int index) {
-        
+
         return new CmsXmlStringValue(element, name, index);
     }
 
@@ -142,10 +147,8 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
-        
-        return "<xsd:simpleType name=\""
-            + C_TYPE_NAME
-            + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";   
+
+        return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";
     }
 
     /**
@@ -173,11 +176,13 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, I_CmsXmlDocument, java.lang.String)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
      */
-    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) {
+    public void setStringValue(String value) {
 
         m_element.clearContent();
-        m_element.addCDATA(value);
+        if (CmsStringUtil.isNotEmpty(value)) { 
+            m_element.addCDATA(value);
+        }
     }
 }
