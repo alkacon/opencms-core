@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/21 17:21:36 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/02/21 23:33:42 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.OpenCms;
@@ -47,7 +48,9 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -56,22 +59,26 @@ import java.util.zip.ZipFile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.*;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 ;
 
 /**
- * This class holds the functionaility to import resources from the filesystem
- * into the cms.
+ * Holds the functionaility to import resources from the filesystem
+ * into the OpenCms VFS.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.68 $ $Date: 2003/02/21 17:21:36 $
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * 
+ * @version $Revision: 1.69 $ $Date: 2003/02/21 23:33:42 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
     /**
      * The algorithm for the message digest
      */
-    public static final String C_IMPORT_DIGEST="MD5";
+    public static final String C_IMPORT_DIGEST = "MD5";
     
     /**
      * The path to the bodies in OpenCms 4.x
@@ -101,6 +108,16 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private int m_importVersion = 0;
 
     /**
+     * Flag to indicate support for 4.x file conversion
+     */
+    private Boolean m_convertImport4x = new Boolean(false);
+    
+    /**
+     * Web application names for conversion support
+     */
+    private List m_webAppNames = new ArrayList();
+
+    /**
      * The import-resource (zip) to load resources from
      */
     private ZipFile m_importZip = null;
@@ -126,7 +143,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private MessageDigest m_digest = null;
 
     /**
-     *
+     * Groups to create during import are stored here
      */
     private Stack m_groupsToCreate = new Stack();
 
@@ -176,23 +193,24 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             //ignore the exception, the export file has no version nummber (version 0).
         }
     }
-/**
- * Read infos from the properties and create a MessageDigest
- * Creation date: (29.08.00 15:45:35)
- */
-private void createDigest() throws CmsException {
-    // Configurations config = m_cms.getConfigurations();
-
-    String digest = C_IMPORT_DIGEST;
-    // create the digest
-    try {
-        m_digest = MessageDigest.getInstance(digest);
-    } catch (NoSuchAlgorithmException e) {
-        throw new CmsException("Could'nt create MessageDigest with algorithm " + digest);
-    }
-}
+    
     /**
-     * Creates missing property definitions if needed.
+     * Read infos from the properties and create a MessageDigest
+     */
+    private void createDigest() throws CmsException {
+        // Configurations config = m_cms.getConfigurations();
+    
+        String digest = C_IMPORT_DIGEST;
+        // create the digest
+        try {
+            m_digest = MessageDigest.getInstance(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new CmsException("Could'nt create MessageDigest with algorithm " + digest);
+        }
+    }
+
+    /**
+     * Creates missing property definitions if needed.<p>
      *
      * @param name the name of the property.
      * @param propertyType the type of the property.
@@ -212,15 +230,16 @@ private void createDigest() throws CmsException {
     }
 
     /**
-     * Checks if the file sticks to the rules for files in the content path.
+     * Checks if the file sticks to the rules for files in the content path.<p>
+     * 
      * If not, it sets the type of the file to compatible_plain.
      * This is for exports of older versions of OpenCms. The imported files
      * will work as before, but they cant be edited.
      *
-     * @param name The name of the resource including path that is imported
-     * @param content the content of the resource.
-     * @param type the type of the resourse, is set to compatible_plain if nessesary.
-     * @param properties the properties, not yet used here.
+     * @param name the name of the resource including path that is imported
+     * @param content the content of the resource
+     * @param type the type of the resourse, is set to compatible_plain if nessesary
+     * @param properties the properties, not yet used here
      * @return the new type of the resouce
      */
     private String fitFileType(String name, byte[] content, String type, Hashtable properties){
@@ -236,60 +255,59 @@ private void createDigest() throws CmsException {
         return type;
     }
 
-/**
- * Returns a list of files which are both in the import and in the virtual file system
- * Creation date: (24.08.00 16:18:23)
- * @return java.util.Vector of Strings, complete path of the files
- */
-public Vector getConflictingFilenames() throws CmsException {
-    NodeList fileNodes;
-    Element currentElement;
-    String source, destination;
-    Vector conflictNames = new Vector();
-    try {
-        // get all file-nodes
-        fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
-
-        // walk through all files in manifest
-        for (int i = 0; i < fileNodes.getLength(); i++) {
-            currentElement = (Element) fileNodes.item(i);
-            source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
-            destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-            if (source != null) {
-                // only consider files
-                boolean exists = true;
-                try {
-                    CmsResource res=m_cms.readFileHeader(m_importPath + destination);
-                    if (res.getState()==C_STATE_DELETED) {
-                        exists=false;
+    /**
+     * Returns a list of files which are both in the import and in the virtual file system.<p>
+     * 
+     * @return Vector of Strings, complete path of the files
+     */
+    public Vector getConflictingFilenames() throws CmsException {
+        NodeList fileNodes;
+        Element currentElement;
+        String source, destination;
+        Vector conflictNames = new Vector();
+        try {
+            // get all file-nodes
+            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+    
+            // walk through all files in manifest
+            for (int i = 0; i < fileNodes.getLength(); i++) {
+                currentElement = (Element)fileNodes.item(i);
+                source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+                if (source != null) {
+                    // only consider files
+                    boolean exists = true;
+                    try {
+                        CmsResource res = m_cms.readFileHeader(m_importPath + destination);
+                        if (res.getState() == C_STATE_DELETED) {
+                            exists = false;
+                        }
+                    } catch (CmsException e) {
+                        exists = false;
                     }
-                } catch (CmsException e) {
-                    exists = false;
-                }
-                if (exists) {
-                    conflictNames.addElement(m_importPath + destination);
+                    if (exists) {
+                        conflictNames.addElement(m_importPath + destination);
+                    }
                 }
             }
+        } catch (Exception exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-    } catch (Exception exc) {
-        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        if (m_importZip != null) {
+            try {
+                m_importZip.close();
+            } catch (IOException exc) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            }
+        }
+        return conflictNames;
     }
-    if (m_importZip != null)
-    {
-      try
-      {
-          m_importZip.close();
-      } catch (IOException exc) {
-          throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-      }
-    }
-    return conflictNames;
-}
+    
     /**
-     * Returns a byte-array containing the content of the file.
+     * Returns a byte array containing the content of the file.<p>
      *
-     * @param filename The name of the file to read.
-     * @return bytes[] The content of the file.
+     * @param filename the name of the file to read
+     * @return a byte array containing the content of the file
      */
     private byte[] getFileBytes(String filename)
         throws Exception{
@@ -324,7 +342,7 @@ public Vector getConflictingFilenames() throws CmsException {
     }
     
     /**
-     * Gets the import resource and stores it in object-member.
+     * Gets the import resource and stores it in object-member.<p>
      */
     private void getImportResource()
         throws CmsException {
@@ -340,67 +358,70 @@ public Vector getConflictingFilenames() throws CmsException {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
-/**
- * This method returns the resource-names that are needed to create a project for this import.
- * It calls the method getConflictingFileNames if needed, to calculate these resources.
- */
-public Vector getResourcesForProject() throws CmsException {
-    NodeList fileNodes;
-    Element currentElement;
-    String destination;
-    Vector resources = new Vector();
-    try {
-        // get all file-nodes
-        fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
-        // walk through all files in manifest
-        for (int i = 0; i < fileNodes.getLength(); i++) {
-            currentElement = (Element) fileNodes.item(i);
-            destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-
-            // get the resources for a project
-            try {
-                String resource = destination.substring(0, destination.indexOf("/",1) + 1);
-                resource = m_importPath + resource;
-                // add the resource, if it dosen't already exist
-                if((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
-                    try {
-                        m_cms.readFolder(resource);
-                        // this resource exists in the current project -> add it
-                        resources.addElement(resource);
-                    } catch(CmsException exc) {
-                        // this resource is missing - we need the root-folder
-                        resources.addElement(C_ROOT);
+    
+    /**
+     * Returns a Vector of resource names that are needed to create a project for this import.<p>
+     * 
+     * It calls the method getConflictingFileNames if needed, to calculate these resources.
+     * 
+     * @return a Vector of resource names that are needed to create a project for this import
+     */
+    public Vector getResourcesForProject() throws CmsException {
+        NodeList fileNodes;
+        Element currentElement;
+        String destination;
+        Vector resources = new Vector();
+        try {
+            // get all file-nodes
+            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+            // walk through all files in manifest
+            for (int i = 0; i < fileNodes.getLength(); i++) {
+                currentElement = (Element)fileNodes.item(i);
+                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+    
+                // get the resources for a project
+                try {
+                    String resource = destination.substring(0, destination.indexOf("/", 1) + 1);
+                    resource = m_importPath + resource;
+                    // add the resource, if it dosen't already exist
+                    if ((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
+                        try {
+                            m_cms.readFolder(resource);
+                            // this resource exists in the current project -> add it
+                            resources.addElement(resource);
+                        } catch (CmsException exc) {
+                            // this resource is missing - we need the root-folder
+                            resources.addElement(C_ROOT);
+                        }
                     }
+                } catch (StringIndexOutOfBoundsException exc) {
+                    // this is a resource in root-folder: ignore the excpetion
                 }
-            } catch(StringIndexOutOfBoundsException exc) {
-                // this is a resource in root-folder: ignore the excpetion
+            }
+        } catch (Exception exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+        if (m_importZip != null) {
+            try {
+                m_importZip.close();
+            } catch (IOException exc) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
             }
         }
-    } catch (Exception exc) {
-        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        if (resources.contains(C_ROOT)) {
+            // we have to import root - forget the rest!
+            resources.removeAllElements();
+            resources.addElement(C_ROOT);
+        }
+        return resources;
     }
-    if (m_importZip != null)
-    {
-      try
-      {
-          m_importZip.close();
-      } catch (IOException exc) {
-          throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-      }
-    }
-    if(resources.contains(C_ROOT)) {
-        // we have to import root - forget the rest!
-        resources.removeAllElements();
-        resources.addElement(C_ROOT);
-    }
-    return resources;
-}
+
     /**
-     * Returns the text for this node.
+     * Returns the text of a named node
      *
-     * @param elem the parent-element.
-     * @param tag the tagname to get the value from.
-     * @return the value of the tag.
+     * @param elem the parent-element
+     * @param tag the tagname to get the value from
+     * @return the text of a named node
      */
     private String getTextNodeValue(Element elem, String tag) {
         try {
@@ -410,228 +431,241 @@ public Vector getResourcesForProject() throws CmsException {
             return null;
         }
     }
+    
     /**
      * Gets the xml-config file from the import resource and stores it in object-member.
      * Checks whether the import is from a module file
      */
-      private void getXmlConfigFile() throws CmsException {
-         try {
-             InputStream in = new ByteArrayInputStream(getFileBytes(C_EXPORT_XMLFILENAME));
-             try {
-                 m_docXml = A_CmsXmlContent.getXmlParser().parse(in);
-             } finally {
-                 try {
-                     in.close();
-                 } catch (Exception e) {}
-             }
-          } catch(Exception exc) {
-             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-         }
-     }
-
-
-
-/**
- * Imports a resource (file or folder) into the cms.
- * @param source the path to the source-file
- * @param destination the path to the destination-file in the cms
- * @param type the resource-type of the file
- * @param user the owner of the file
- * @param group the group of the file
- * @param access the access-flags of the file
- * @param properties a hashtable with properties for this resource
- * @param writtenFilenames filenames of the files and folder which have actually been successfully written
- *       not used when null
- * @param fileCodes code of the written files (for the registry)
- *       not used when null
- */
-private void importResource(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
-    // print out the information for shell-users
-    m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-    m_report.print(C_ROOT + destination + " ");
-    boolean success = true;
-    byte[] content = null;
-    String fullname = null;
-    try {
-
-        if (source != null) {
-            content = getFileBytes(source);
-            if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
-                // change the filecontent for encoding if necessary
-                content = convertFile(source, content, type);
-            }
-        }
-
-        // set invalid files to type compatible_plain
-        type = fitFileType(m_importPath + destination, content, type, properties);
-
-        CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
-                                    properties, launcherStartClass, content, m_importPath);
-        if(res != null){
-            fullname = res.getAbsolutePath();
-            if(C_TYPE_PAGE_NAME.equals(type)){
-                m_importedPages.add(fullname);
-            }
-        }
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-    } catch (Exception exc) {
-        // an error while importing the file
-        success = false;
-        m_report.println(exc);
+    private void getXmlConfigFile() throws CmsException {
         try {
-            // Sleep some time after an error so that the report output has a chance to keep up
-            Thread.sleep(1000);   
-        } catch (Exception e) {};
-    }
-    byte[] digestContent = {0};
-    if (content != null) {
-        digestContent = m_digest.digest(content);
-    }
-    if (success && (fullname != null)){
-        if (writtenFilenames != null){
-            writtenFilenames.addElement(fullname);
-        }
-        if (fileCodes != null){
-            fileCodes.addElement(new String(digestContent));
-        }
-    }
-}
-/**
- * Imports the resources and writes them to the cms even if there already exist conflicting files
- */
-public void importResources() throws CmsException {
-    if (m_cms.isAdmin()){
-        importGroups();
-        importUsers();
-    }
-    importResources(null, null, null, null, null);
-    if (m_importZip != null){
-        try{
-            m_importZip.close();
-        } catch (IOException exc) {
+            InputStream in = new ByteArrayInputStream(getFileBytes(C_EXPORT_XMLFILENAME));
+            try {
+                m_docXml = A_CmsXmlContent.getXmlParser().parse(in);
+            } finally {
+                try {
+                    in.close();
+                } catch (Exception e) {}
+            }
+        } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
-}
-/**
- * Imports the resources and writes them to the cms.
- * param excludeList filenames of files and folders which should not be (over) written in the virtual file system
- * param writtenFilenames filenames of the files and folder which have actually been successfully written
- *       not used when null
- * param fileCodes code of the written files (for the registry)
- *       not used when null
- * param propertyName name of a property to be added to all resources
- * param propertyValue value of that property
- */
-public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-    NodeList fileNodes, propertyNodes;
-    Element currentElement, currentProperty;
-    String source, destination, type, user, group, access, launcherStartClass;
-    Hashtable properties;
-    Vector types = new Vector(); // stores the file types for which the property already exists
-
-    // first lock the resource to import
-    // m_cms.lockResource(m_importPath);
-    try {
-        // get all file-nodes
-        fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
-        int importSize = fileNodes.getLength();
-
-        // walk through all files in manifest
-        for (int i = 0; i < fileNodes.getLength(); i++) {
-
-            m_report.print(" ( " + (i+1) + " / " + importSize + " ) ");
-            currentElement = (Element) fileNodes.item(i);
-
-            // get all information for a file-import
-            source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
-            destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-            type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
-            user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
-            group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
-            access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
-            launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
-            // if the type is javascript set it to plain
-            if("script".equals(type)){
-                type = C_TYPE_PLAIN_NAME;
-            }
-            if (!inExcludeList(excludeList, m_importPath + destination)) {
-
-                // get all properties for this file
-                propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
-                // clear all stores for property information
-                properties = new Hashtable();
-                // add the module property to properties
-                if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
-                    if (!types.contains(type)) {
-                        types.addElement(type);
-                        createPropertydefinition(propertyName, type);
-                    }
-                    properties.put(propertyName, propertyValue);
-                }
-                // walk through all properties
-                for (int j = 0; j < propertyNodes.getLength(); j++) {
-                    currentProperty = (Element) propertyNodes.item(j);
-                    // get all information for this property
-                    String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
-                    String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
-                    if(value == null) {
-                        // create an empty property
-                        value = "";
-                    }
-                    // store these informations
-                    if ((name != null) && (value != null)) {
-                        properties.put(name, value);
-                        createPropertydefinition(name, type);
-                    }
-                }
-
-                // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
-                importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
-            } else {
-                m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                m_report.println(destination);
-            }
-        }
-        // at last we have to get the links from all new imported pages for the  linkmanagement
-        m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        updatePageLinks();
-        m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
-    } catch (Exception exc) {
-        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-    }
-    if (m_importZip != null)
-    {
-      try
-      {
-          m_importZip.close();
-      } catch (IOException exc) {
-          throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-      }
-    }
-}
-/**
- * Checks whether the path is on the list of files which are excluded from the import
- *
- * @return boolean true if path is on the excludeList
- * @param excludeList list of pathnames which should not be (over) written
- * @param path a complete path of a resource
- */
-private boolean inExcludeList(Vector excludeList, String path) {
-    boolean onList = false;
-    if (excludeList == null) {
-        return onList;
-    }
-    int i=0;
-    while (!onList && i<excludeList.size()) {
-        onList = (path.equals(excludeList.elementAt(i)));
-        i++;
-    }
-    return onList;
-}
 
     /**
-     * Imports the groups and writes them to the cms.
+     * Imports a resource (file or folder) into the cms.<p>
+     * 
+     * @param source the path to the source-file
+     * @param destination the path to the destination-file in the cms
+     * @param type the resource-type of the file
+     * @param user the owner of the file
+     * @param group the group of the file
+     * @param access the access-flags of the file
+     * @param properties a hashtable with properties for this resource
+     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
+     *       not used when null
+     * @param fileCodes code of the written files (for the registry)
+     *       not used when null
+     */
+    private void importResource(String source, String destination, String type, String user, 
+    String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+        // print out the information for shell-users
+        m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(C_ROOT + destination + " ");
+        boolean success = true;
+        byte[] content = null;
+        String fullname = null;
+        try {
+    
+            if (source != null) {
+                content = getFileBytes(source);
+                if (m_convertImport4x.booleanValue() && 
+                    // convert content from pre 4.x is activated
+                    ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type)))) {
+                    // change the filecontent for encoding if necessary
+                    content = convertFile(source, content, type);
+                }
+            }
+    
+            if (m_convertImport4x.booleanValue()) {
+                // set invalid files to type compatible_plain
+                type = fitFileType(m_importPath + destination, content, type, properties);
+            }
+    
+            CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
+                                        properties, launcherStartClass, content, m_importPath);
+            if(res != null){
+                fullname = res.getAbsolutePath();
+                if(C_TYPE_PAGE_NAME.equals(type)){
+                    m_importedPages.add(fullname);
+                }
+            }
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        } catch (Exception exc) {
+            // an error while importing the file
+            success = false;
+            m_report.println(exc);
+            try {
+                // Sleep some time after an error so that the report output has a chance to keep up
+                Thread.sleep(1000);   
+            } catch (Exception e) {};
+        }
+        byte[] digestContent = {0};
+        if (content != null) {
+            digestContent = m_digest.digest(content);
+        }
+        if (success && (fullname != null)){
+            if (writtenFilenames != null){
+                writtenFilenames.addElement(fullname);
+            }
+            if (fileCodes != null){
+                fileCodes.addElement(new String(digestContent));
+            }
+        }
+    }
+
+    /**
+     * Imports the resources and writes them to the cms even if there already exist conflicting files.<p>
+     */
+    public void importResources() throws CmsException {
+        if (m_cms.isAdmin()){
+            importGroups();
+            importUsers();
+        }
+        importResources(null, null, null, null, null);
+        if (m_importZip != null){
+            try{
+                m_importZip.close();
+            } catch (IOException exc) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            }
+        }
+    }
+
+    /**
+     * Imports the resources and writes them to the cms.<p>
+     * 
+     * @param excludeList filenames of files and folders which should not be (over) written in the virtual file system
+     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
+     *         not used when null
+     * @param fileCodes code of the written files (for the registry)
+     *         not used when null
+     * @param propertyName name of a property to be added to all resources
+     * @param propertyValue value of that property
+     */
+    public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, 
+    String propertyName, String propertyValue) throws CmsException {
+        NodeList fileNodes, propertyNodes;
+        Element currentElement, currentProperty;
+        String source, destination, type, user, group, access, launcherStartClass;
+        Hashtable properties;
+        Vector types = new Vector(); // stores the file types for which the property already exists
+        
+        m_convertImport4x = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.import.4.x.contents");
+        if (m_convertImport4x == null) m_convertImport4x = new Boolean(false);    
+        m_webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");  
+        if (m_webAppNames == null) m_webAppNames = new ArrayList();            
+            
+        try {
+            // get all file-nodes
+            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+            int importSize = fileNodes.getLength();
+    
+            // walk through all files in manifest
+            for (int i = 0; i < fileNodes.getLength(); i++) {
+    
+                m_report.print(" ( " + (i+1) + " / " + importSize + " ) ");
+                currentElement = (Element) fileNodes.item(i);
+    
+                // get all information for a file-import
+                source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+                type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
+                user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
+                group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
+                access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
+                launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
+                // if the type is javascript set it to plain
+                if("script".equals(type)){
+                    type = C_TYPE_PLAIN_NAME;
+                }
+                if (!inExcludeList(excludeList, m_importPath + destination)) {
+    
+                    // get all properties for this file
+                    propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
+                    // clear all stores for property information
+                    properties = new Hashtable();
+                    // add the module property to properties
+                    if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
+                        if (!types.contains(type)) {
+                            types.addElement(type);
+                            createPropertydefinition(propertyName, type);
+                        }
+                        properties.put(propertyName, propertyValue);
+                    }
+                    // walk through all properties
+                    for (int j = 0; j < propertyNodes.getLength(); j++) {
+                        currentProperty = (Element) propertyNodes.item(j);
+                        // get all information for this property
+                        String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
+                        String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
+                        if(value == null) {
+                            // create an empty property
+                            value = "";
+                        }
+                        // store these informations
+                        if ((name != null) && (value != null)) {
+                            properties.put(name, value);
+                            createPropertydefinition(name, type);
+                        }
+                    }
+    
+                    // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
+                    importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
+                } else {
+                    m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.println(destination);
+                }
+            }
+            // at last we have to get the links from all new imported pages for the  linkmanagement
+            m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            updatePageLinks();
+            m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        } catch (Exception exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+        if (m_importZip != null)
+        {
+          try
+          {
+              m_importZip.close();
+          } catch (IOException exc) {
+              throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+          }
+        }
+    }
+
+    /**
+     * Checks whether the path is on the list of files which are excluded from the import.<p>
+     *
+     * @param excludeList list of pathnames which should not be (over) written
+     * @param path a complete path of a resource
+     * @return boolean true if path is on the excludeList
+     */
+    private boolean inExcludeList(Vector excludeList, String path) {
+        boolean onList = false;
+        if (excludeList == null) {
+            return onList;
+        }
+        int i=0;
+        while (!onList && i<excludeList.size()) {
+            onList = (path.equals(excludeList.elementAt(i)));
+            i++;
+        }
+        return onList;
+    }
+
+    /**
+     * Imports the groups and writes them to the cms.<p>
      */
     private void importGroups() throws CmsException{
         NodeList groupNodes;
@@ -672,7 +706,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
      }
 
     /**
-     * Imports the users and writes them to the cms.
+     * Imports the users and writes them to the cms.<p>
      */
     private void importUsers() throws CmsException{
         NodeList userNodes;
@@ -739,7 +773,12 @@ private boolean inExcludeList(Vector excludeList, String path) {
     }
 
     /**
-     * Writes the group to the cms.
+     * Creates an imported group in the cms.<p>
+     * 
+     * @param name the name of the group
+     * @param description group description
+     * @param flags group flags
+     * @param parentgroupName name of the parent group
      */
     private void importGroup(String name, String description, String flags, String parentgroupName)
         throws CmsException{
@@ -777,8 +816,25 @@ private boolean inExcludeList(Vector excludeList, String path) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+    
     /**
-     * Writes the group to the cms.
+     * Creates an imported user in the cms.<p>
+     * 
+     * @param name user name
+     * @param description user description
+     * @param flags user flags
+     * @param password user password 
+     * @param recoveryPassword user recovery password
+     * @param firstname firstname of the user
+     * @param lastname lastname of the user
+     * @param email user email
+     * @param address user address 
+     * @param section user section
+     * @param defaultGroup user default group
+     * @param type user type
+     * @param userInfo user info
+     * @param userGroups user groups
+     * @throws CmsException in case something goes wrong
      */
     private void importUser(String name, String description, String flags, String password,
                             String recoveryPassword, String firstname, String lastname,
@@ -809,8 +865,8 @@ private boolean inExcludeList(Vector excludeList, String path) {
     }
 
     /**
-     * checks all new imported pages and create/updates the entrys in the
-     * database for the linkmanagement.
+     * Checks all new imported pages and create or updates the entrys in the
+     * database for the linkmanagement.<p>
      */
     private void updatePageLinks(){
         int importPagesSize = m_importedPages.size();
@@ -823,24 +879,20 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 m_report.println((String)m_importedPages.elementAt(i));
                 // now save the result in the database
                 m_cms.createLinkEntrys(links.getResourceId(), links.getLinkTargets());
-            }catch(CmsException e){
+            } catch(CmsException e){
                 m_report.println(e);
                 // m_report.println(m_report.key("report.problems_with") + m_importedPages.elementAt(i) + ": " + e.getMessage());
             }
         }
     }
     
-	// 
-	// content replacement tool
-	// by Andreas Zahner
-	//
 	/**
-	 * Converts the content of a file
+	 * Converts the content of a file.<p>
 	 * 
-	 * @param filename The name of the file to convert
-	 * @param byteContent The content of the file
-     * @param type The type of the file
-	 * @return byte[] The converted filecontent
+	 * @param filename the name of the file to convert
+	 * @param byteContent the content of the file
+     * @param type the type of the file
+	 * @return the converted filecontent
 	 */
 	private byte[] convertFile(String filename, byte[] byteContent, String type){
     	byte[] returnValue = byteContent;
@@ -860,7 +912,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
         fileContent = setDirectories(fileContent,type);
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
-            fileContent = setBody(fileContent);
+            fileContent = convertPageBody(fileContent);
         }
         // create output file
 	    returnValue = fileContent.getBytes();
@@ -868,10 +920,11 @@ private boolean inExcludeList(Vector excludeList, String path) {
 
 	}	
     
-    /** Scans the given content of frametemplate and returns the result
+    /** 
+     * Scans the given content of a frametemplate and returns the result.<p>
      *
-     * @param content The filecontent
-     * @return String with new content
+     * @param content the filecontent
+     * @return modified content
      */
     private String scanFrameTemplate(String content) {
         // no Meta-Tag present, insert it!
@@ -891,11 +944,12 @@ private boolean inExcludeList(Vector excludeList, String path) {
         return content;
     }
     
-    /** Sets the right encoding and returns the result
+    /** 
+     * Sets the right encoding and returns the result.<p>
      * 
-     * @param content The filecontent
-     * @param encoding The encoding to use
-     * @return String with new content
+     * @param content the filecontent
+     * @param encoding the encoding to use
+     * @return modified content
      */
     private String setEncoding(String content, String encoding) {
         if (content.toLowerCase().indexOf("<?xml") == -1) {        
@@ -942,20 +996,17 @@ private boolean inExcludeList(Vector excludeList, String path) {
         return content;
     }
     
-    
     /**
-     * Searches for the webapps String and replaces it with a makro which is needed for the WYSIWYG editor.<p>
+     * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor.<p>
      * 
      * @param content the filecontent 
      * @return String the modified filecontent
      */
-    private String setBody(String content) {
-        String[] contextPath = {"/opencms/opencms/"};
-        String testContext = "";
+    private String convertPageBody(String content) {
         // first check if any contextpaths are in the content String
         boolean found = false;
-        for (int i=0; i<contextPath.length; i++) {
-            if (content.indexOf(contextPath[i]) != -1) {
+        for (int i=0; i<m_webAppNames.size(); i++) {
+            if (content.indexOf((String)m_webAppNames.get(i)) != -1) {
                 found = true;
             }
         }
@@ -968,9 +1019,10 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
                 for (int i=0; i<editNodes.getLength(); i++) {
                     String editString = editNodes.item(i).getFirstChild().getNodeValue();
-                    for (int k=0; k<contextPath.length; k++) {
-                        testContext = contextPath[k];
-                        editString = CmsStringSubstitution.substitute(editString,CmsStringSubstitution.escapePattern(testContext),CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));
+                    for (int k=0; k<m_webAppNames.size(); k++) {
+                        editString = CmsStringSubstitution.substitute(editString, 
+                            CmsStringSubstitution.escapePattern((String)m_webAppNames.get(k)),
+                            CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));
                         editNodes.item(i).getFirstChild().setNodeValue(editString);
                     }               
                 }
@@ -1048,16 +1100,16 @@ private boolean inExcludeList(Vector excludeList, String path) {
         }
     }
     
-    
     /**
-     * Method to replace a subString with replaceItem.
+     * Method to replace a subString with replaceItem.<p>
+     * 
      * @param testString the original String
      * @param searchString the subString that has to be replaced
      * @param replaceItem the String that replaces searchString
      * @return String with replaced subStrings
      */
     protected static String replaceString(String testString, String searchString, String replaceItem) {
-    	/* if searchString isn't in testString, return (better performance) */
+    	// if searchString isn't in testString, return (better performance) 
         if (testString.toLowerCase().indexOf(searchString.toLowerCase()) == -1) {
         	return testString;
         }

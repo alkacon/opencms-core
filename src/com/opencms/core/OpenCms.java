@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/15 10:46:47 $
-* Version: $Revision: 1.111 $
+* Date   : $Date: 2003/02/21 23:33:00 $
+* Version: $Revision: 1.112 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -79,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.111 $ $Date: 2003/02/15 10:46:47 $
+ * @version $Revision: 1.112 $ $Date: 2003/02/21 23:33:00 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -296,7 +297,26 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue()?"enabled":"disabled"));      
 
-        
+        // convert import files from 4.x versions flag
+        Boolean convertImport4x = (Boolean)conf.getBoolean("compatibility.support.import.4.x.contents", new Boolean(false));
+        setRuntimeProperty("compatibility.support.import.4.x.contents", convertImport4x);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". 4.x import conversion: " + (convertImport4x.booleanValue()?"enabled":"disabled"));      
+
+        // old web application names (for editor macro replacement) 
+        String[] appNames = conf.getStringArray("compatibility.support.webAppNames");
+        if (appNames == null) appNames = new String[0];  
+        ArrayList webAppNames = new ArrayList(java.util.Arrays.asList(appNames));
+        for (int i=0; i<webAppNames.size(); i++) {
+            // remove possible white space
+            String name = ((String)webAppNames.get(i)).trim();
+            if (name != null && ! "".equals(name)) {
+                webAppNames.set(i, name);
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old context path     : " + (i+1) + " - " + webAppNames.get(i) );
+            }               
+        }        
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0)?"enabled":"disabled"));     
+        setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
+       
         // try to initialize directory translations
         try {
             boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
@@ -545,6 +565,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if (! context.endsWith("/")) context += "/";
         A_OpenCms.setOpenCmsContext(context);
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
+        
+        // check for old webapp names and extend with context
+        ArrayList webAppName = (ArrayList)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
+        if (webAppName != null) {
+            if (! webAppName.contains(context)) {
+                webAppName.add(context);
+                setRuntimeProperty("compatibility.support.webAppNames", webAppName);
+            }
+        } else {
+            setRuntimeProperty("compatibility.support.webAppNames", new ArrayList());
+        }
 
         // check for the JSP export URL runtime property
         String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
@@ -666,10 +697,10 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * In case a directory name is requested, the default files of the 
      * directory will be looked up and the first match is returned.
      *
-     * @param cms The current CmsObject
-     * @return CmsFile The requested file read from the VFS
+     * @param cms the current CmsObject
+     * @return CmsFile the requested file read from the VFS
      * 
-     * @throws CmsException In case the file does not exist or the user has insufficient access permissions 
+     * @throws CmsException in case the file does not exist or the user has insufficient access permissions 
      */
 	CmsFile initResource(CmsObject cms) throws CmsException {
 
