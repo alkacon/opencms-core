@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/12/15 14:21:51 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/12/17 19:42:10 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -239,7 +239,7 @@ public class Encoder {
      * entity representation, for example &amp; becomes &amp;#38;.<p>
      * 
      * A character <code>num</code> is replaced if<br>
-     * <code>((num &gt; 122) || (num &lt; 48) || (num == 60) || (num == 62))</code><p>
+     * <code>((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62)))</code><p>
      * 
      * @param source the String to escape
      * @return String the escaped String
@@ -251,7 +251,7 @@ public class Encoder {
         StringBuffer result = new StringBuffer(source.length()*2);
         for(int i = 0;i < source.length();i++) {
             int ch = source.charAt(i);
-            if((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62)) {
+            if((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
                 result.append("&#");
                 result.append(ch);
                 result.append(";");
