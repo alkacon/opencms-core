@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/03 08:28:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsLinkManager {
     
@@ -132,14 +132,18 @@ public class CmsLinkManager {
     /**
      * Checks if the export is required for a given vfs resource.<p>
      * 
-     * @param cms the current cms context
+     * @param cmsParam the current cms context
      * @param vfsName the vfs resource name to check
      * @return true if export is required for the given vfsName
      */
-    private boolean exportRequired(CmsObject cms, String vfsName) {
+    private boolean exportRequired(CmsObject cmsParam, String vfsName) {
         boolean result = false;
         if (OpenCms.getStaticExportManager().isStaticExportEnabled()) { 
             try {
+                // static export must always be checked with the export users permissions,
+                // not the current users permissions
+                CmsObject cms = OpenCms.getGuestCmsObject();
+                cms.getRequestContext().setSiteRoot(cmsParam.getRequestContext().getSiteRoot());
                 // let's look up export property in VFS
                 String exportValue = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true);
                 if (exportValue == null) {
@@ -156,7 +160,7 @@ public class CmsLinkManager {
                     result = "true".equalsIgnoreCase(exportValue.trim());
                 }
             } catch (Throwable t) {
-                // ignore, no export required
+                // no export required (probably security issues, e.g. no access for export user)
             }
         }
         return result;

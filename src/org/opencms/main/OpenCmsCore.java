@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/03 08:28:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -689,7 +689,8 @@ public class OpenCmsCore {
     }    
     
     /**
-     * Returns an initialized CmsObject with "Guest" user permissions.<p>
+     * Returns an initialized CmsObject with "Guest" user permissions,
+     * with the "online" project selected and "/" set as the current site root.<p>
      * 
      * @return an initialized CmsObject with "Guest" user permissions
      */
