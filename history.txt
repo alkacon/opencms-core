@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/02 11:03:41 $
- * Version: $Revision: 1.441 $
+ * Date   : $Date: 2003/02/02 16:01:10 $
+ * Version: $Revision: 1.442 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 5.0 (next version)
 * Fixed issues #43, 44 and 45 from Bugzilla
 * Fixed isse where CmsMethodElement could produce NullPointerExceptions in rare circumstances
 * Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed
+- The online help is now a separate upload module (is currently available only in German and needs an update anyway)
 - The default character encoding for a new OpenCms installation is now ISO-8859-1
 - Improved the OpenCms logfile output during startup
 - The proprietary XML style localization for the workplace has been replaced by standard java.util.ResourceBundles and 
