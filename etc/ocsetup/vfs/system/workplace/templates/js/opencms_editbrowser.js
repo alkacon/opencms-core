@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_editbrowser.js,v $
- * Date   : $Date: 2000/05/31 12:16:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/11 13:32:30 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -107,8 +107,8 @@ function doEdit(para)
    case 4: // upload image, open the upload dialog.
    {
 	 // filter=document.form1.galerieFilterInput.value;
-	 gallery=document.form1.galerie.value;
-	 
+	 //gallery=document.form1.galerie.value;
+	 gallery=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
      parent.frames[1].location.href = uploadurl + gallery;
      break;
    }
