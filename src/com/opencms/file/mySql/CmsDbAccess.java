@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/04 08:24:33 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2001/10/04 15:13:30 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.65 $ $Date: 2001/10/04 08:24:33 $ *
+ * @version $Revision: 1.66 $ $Date: 2001/10/04 15:13:30 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -765,6 +765,10 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
     for (int i = 0; i < offlineFiles.size(); i++)
     {
         currentFile = ((CmsFile) offlineFiles.elementAt(i));
+        if(!currentFile.isLocked()){
+            // remove the temporary files for this resource
+            removeTemporaryFile(currentFile);
+        }
         // do not publish files that are locked in another project
         if (currentFile.isLocked()) {
             // in this case do nothing

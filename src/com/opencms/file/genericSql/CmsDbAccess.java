@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/04 08:24:23 $
-* Version: $Revision: 1.218 $
+* Date   : $Date: 2001/10/04 15:13:20 $
+* Version: $Revision: 1.219 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.218 $ $Date: 2001/10/04 08:24:23 $ *
+ * @version $Revision: 1.219 $ $Date: 2001/10/04 15:13:20 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4738,6 +4738,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         offlineFiles = readFiles(projectId, false, true);
         for (int i = 0; i < offlineFiles.size(); i++){
             currentFile = ((CmsFile) offlineFiles.elementAt(i));
+            if(!currentFile.isLocked()){
+                // remove the temporary files for this resource
+                removeTemporaryFile(currentFile);
+            }
             // do not publish files that are locked in another project
             if (currentFile.isLocked()){
                 //in this case do nothing
@@ -8863,6 +8867,43 @@ public CmsTask readTask(int id) throws CmsException {
                 } catch(SQLException exc) {
                     // nothing to do here
                 }
+            }
+        }
+    }
+
+    /**
+     * Removes the temporary files of the given resource
+     *
+     * @param file The file of which the remporary files should be deleted
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    protected void removeTemporaryFile(CmsFile file) throws CmsException{
+        PreparedStatement statement = null;
+        Connection con = null;
+        String tempFilename = file.getPath() + C_TEMP_PREFIX + file.getName()+"%";
+        try{
+            con = DriverManager.getConnection(m_poolName);
+            // create statement
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETETEMPFILES"));
+            statement.setString(1, tempFilename);
+            statement.executeUpdate();
+        } catch (SQLException e){
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            // close all db-resources
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
             }
         }
     }
