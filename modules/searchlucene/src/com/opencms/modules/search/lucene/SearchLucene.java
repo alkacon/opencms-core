@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: SearchLucene.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/13 14:42:10 $
- *  $Revision: 1.1 $
+ *  $Date: 2002/02/20 11:06:09 $
+ *  $Revision: 1.2 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -106,7 +106,7 @@ public class SearchLucene {
         replaceAll("Ü", "Ue");
         replaceAll("Ä", "Ae");
         replaceAll("Ö", "Oe");
-        replaceAll("ü", "Ue");
+        replaceAll("ü", "ue");
         replaceAll("ä", "ae");
         replaceAll("ö", "oe");
         replaceAll("&nbsp;", "");

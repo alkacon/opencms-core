@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: IndexFiles.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/13 14:42:10 $
- *  $Revision: 1.1 $
+ *  $Date: 2002/02/20 11:06:09 $
+ *  $Revision: 1.2 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -28,7 +28,7 @@ import org.apache.lucene.analysis.de.GermanAnalyzer;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import com.opencms.htmlconverter.*;
+
 
 /**
  *  Description of the Class
@@ -51,10 +51,10 @@ public class IndexFiles extends Thread {
 
     private String m_configPath = "";
 
-    private CmsHtmlConverter conv = null;
+    private PdfParser convPdf = null;
 
-
-    // usage: IndexFiles <index-path> <file> ...
+    private HtmlParser convHtml = null;
+  // usage: IndexFiles <index-path> <file> ...
     /**
      *  Constructor for the IndexFiles object
      *
@@ -63,7 +63,8 @@ public class IndexFiles extends Thread {
      *@param  configPath  Description of the Parameter
      */
     public IndexFiles(String indexPath, Vector files, String configPath) {
-        conv = new CmsHtmlConverter();
+        convPdf = new PdfParser();
+        convHtml= new HtmlParser();
         m_indexPath = indexPath;
         m_files = files;
         m_configPath = configPath;
@@ -90,31 +91,72 @@ public class IndexFiles extends Thread {
     public void createIndexFiles() throws Exception {
         IndexWriter writer = null;
         deleteIndexFiles();
+        Document doc=null;
+        //
+        InputStream conPDF=null;
+        //
+
         try {
             writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
             //writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
-            String completeContent = null;
+            String completeContent = "", keywords="",description="",title="",parsedContent="";
+            InputStream is = null;
 
             for (int i = 0; i < m_files.size(); i++) {
                 if (debug) {
                     System.out.println("Indexing file " + m_files.elementAt(i));
                 }
-                completeContent = fetchContentForUrl((String) m_files.elementAt(i));
-                if (completeContent.indexOf("Not Found (404)") != -1 ||
-                        completeContent.indexOf("HTTP Status 404") != -1 ||
-                        completeContent.indexOf("Error 404") != -1) {
-                    if (debug) {
-                        System.out.println("Servermessage: Not Found (404)");
+                doc = new Document();
+                //the html-Parsing and Indexing
+                if (((String)m_files.elementAt(i)).toLowerCase().indexOf(".htm")!=-1){
+
+                    completeContent = fetchContentForUrl((String) m_files.elementAt(i));
+                    convHtml.parse(completeContent);
+                    if (completeContent.indexOf("Not Found (404)") != -1 ||
+                            completeContent.indexOf("HTTP Status 404") != -1 ||
+                            completeContent.indexOf("Error 404") != -1) {
+                        if (debug) System.out.println("Servermessage: Not Found (404)");
+                        continue;
                     }
-                    continue;
+                    if (convHtml.getKeywords()!=null) keywords=convHtml.getKeywords();
+                    if (convHtml.getDescription()!=null)description=convHtml.getDescription();
+                    if (convHtml.getTitle()!=null)title=convHtml.getTitle();
+                    if (convHtml.getContents()!=null) parsedContent=convHtml.getContents();
+
+
+                    doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
+                    doc.add(Field.Keyword("keywords", keywords));
+                    doc.add(Field.Keyword("description", description));
+                    doc.add(Field.Keyword("title", title));
+                    is = new ByteArrayInputStream(parsedContent.getBytes());
+                }
+                //the PDF-Parsing and Indexing
+                else {
+                    conPDF = connectPdfForUrl((String) m_files.elementAt(i));
+                    doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
+                    convPdf.parse(conPDF);
+                    completeContent=convPdf.getContents();
+                    if (completeContent.indexOf("Not Found (404)") != -1 ||
+                            completeContent.indexOf("HTTP Status 404") != -1 ||
+                            completeContent.indexOf("Error 404") != -1) {
+                        if (debug) System.out.println("Servermessage: Not Found (404)");
+                        continue;
+                    }
+                    if (convPdf.getKeywords()!=null) keywords=convPdf.getKeywords();
+                    if (convPdf.getDescription()!=null)description=convPdf.getDescription();
+                    if (convPdf.getTitle()!=null)title=convPdf.getTitle();
+
+                    File output=new File("D:/Programme/Apache Group/Apache/htdocs/lucineTest/"+((String)m_files.elementAt(i)).substring(((String)m_files.elementAt(i)).lastIndexOf("/"),((String)m_files.elementAt(i)).lastIndexOf("."))+".txt");
+                    FileOutputStream os=new FileOutputStream(output);
+                    os.write(completeContent.getBytes());
+                    os.close();
+                    doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
+                    doc.add(Field.Keyword("keywords", keywords));
+                    doc.add(Field.Keyword("description", description));
+                    doc.add(Field.Keyword("title", title));
+                    is = new ByteArrayInputStream(completeContent.getBytes());
                 }
 
-                InputStream is = new ByteArrayInputStream(filterContent(completeContent, m_configPath + "/content.xml").getBytes());
-                Document doc = new Document();
-                doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
-                doc.add(Field.Keyword("keywords", filterContent(completeContent, m_configPath + "/keywords.xml")));
-                doc.add(Field.Keyword("description", filterContent(completeContent, m_configPath + "/description.xml")));
-                doc.add(Field.Keyword("title", filterContent(completeContent, m_configPath + "/title.xml")));
                 doc.add(Field.Text("body", (Reader) new InputStreamReader(is)));
                 writer.addDocument(doc);
                 is.close();
@@ -217,22 +259,27 @@ public class IndexFiles extends Thread {
         return content.toString();
     }
 
+    private InputStream connectPdfForUrl(String theUrl) {
+        int index = -1;
+        StringBuffer content = null;
+        URLConnection urlCon = null;
+        DataInputStream input = null;
+        String line = null;
 
-    /**
-     *  Description of the Method
-     *
-     *@param  content   Description of the Parameter
-     *@param  confFile  Description of the Parameter
-     *@return           Description of the Return Value
-     */
-    private String filterContent(String content, String confFile) {
-        conv.setConverterConfFile(confFile);
-        content = conv.convertHTML(content);
-        if (debug) {
-            System.out.println("filteredContent=" + content);
+        try {
+            if (debug) {
+                System.out.print("Fetching URL '" + theUrl);
+            }
+            urlCon = new URL(theUrl).openConnection();
+            urlCon.connect();
+            input = new DataInputStream(urlCon.getInputStream());
+            if (debug) System.out.println("' done!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return content;
+        return input;
     }
+
 
 
     /**
