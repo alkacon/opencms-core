@@ -1,26 +1,30 @@
-/**
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/20 16:41:07 $
- * Version: $Revision: 1.2 $
- * Release: $Name:  $
- *
- * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
- *
- * THIS SOFTWARE IS NEITHER FREEWARE NOR PUBLIC DOMAIN!
- *
- * To use this software you must purchease a licencse from Framfab.
- * In order to use this source code, you need written permission from Framfab.
- * Redistribution of this source code, in modified or unmodified form,
- * is not allowed.
- *
- * FRAMFAB MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
- * OF THIS SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. FRAMFAB SHALL NOT BE LIABLE FOR ANY
- * DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
- */
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
+* Date   : $Date: 2002/01/25 08:04:54 $
+* Version: $Revision: 1.3 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 package com.opencms.defaults.master;
 
@@ -38,16 +42,16 @@ import com.opencms.defaults.master.*;
 
 public class CmsShowBackofficeMedia extends CmsXmlTemplate {
 
-  	static final String C_EMPTY_PICTURE = "empty.gif";
-	static byte[] emptyGIF = new byte[0];
+    static final String C_EMPTY_PICTURE = "empty.gif";
+    static byte[] emptyGIF = new byte[0];
 
-	/**
+    /**
      * Gets the content of a defined section in a given template file and its
      * subtemplates with the given parameters.
      *
-	 * @see getContent(A_CmsObject cms, String templateFile, String elementName,
-	 * Hashtable parameters)
-	 *
+     * @see getContent(A_CmsObject cms, String templateFile, String elementName,
+     * Hashtable parameters)
+     *
      * @param cms A_CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -57,12 +61,12 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
      * @return It returns an array of bytes that contains the page.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-		// session will be created or fetched
-		CmsRequestContext req = cms.getRequestContext();
-		I_CmsSession session = (I_CmsSession) req.getSession(true);
-		byte[] picture = new byte[0];
+        // session will be created or fetched
+        CmsRequestContext req = cms.getRequestContext();
+        I_CmsSession session = (I_CmsSession) req.getSession(true);
+        byte[] picture = new byte[0];
         try{
-		//selected media content definition
+        //selected media content definition
         CmsMasterMedia selectedmediaCD=null;
         //try to get the medias from session
         try{
@@ -71,7 +75,7 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
                 e.printStackTrace(System.err);
         }
         //no CmsMasterMedia
-		if(selectedmediaCD != null){
+        if(selectedmediaCD != null){
                 picture = selectedmediaCD.getMedia();
                 String mType = selectedmediaCD.getMimetype();
                 if (mType == null || mType.equals("")) {
@@ -80,21 +84,21 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
                 // set the mimetype ...
                 req.getResponse().setContentType( mType );
                 //empty media
-				if(picture==null){
-					picture = emptyGIF;
+                if(picture==null){
+                    picture = emptyGIF;
                     // set the mimetype ...
                     req.getResponse().setContentType("images/gif");
-				}
-			}else{
-				picture = emptyGIF;
+                }
+            }else{
+                picture = emptyGIF;
                  // set the mimetype ...
                 req.getResponse().setContentType("images/gif");
         }
         }catch(Exception exx){
                 exx.printStackTrace(System.err);
         }
-		return picture;
-	}
+        return picture;
+    }
 
 
    /**

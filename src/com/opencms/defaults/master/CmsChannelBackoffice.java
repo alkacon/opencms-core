@@ -1,26 +1,30 @@
-/**
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2002/01/17 09:22:18 $
- * Version: $Revision: 1.9 $
- * Release: $Name:  $
- *
- * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
- *
- * THIS SOFTWARE IS NEITHER FREEWARE NOR PUBLIC DOMAIN!
- *
- * To use this software you must purchease a licencse from Framfab.
- * In order to use this source code, you need written permission from Framfab.
- * Redistribution of this source code, in modified or unmodified form,
- * is not allowed.
- *
- * FRAMFAB MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
- * OF THIS SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. FRAMFAB SHALL NOT BE LIABLE FOR ANY
- * DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
- */
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
+* Date   : $Date: 2002/01/25 08:04:54 $
+* Version: $Revision: 1.10 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 package com.opencms.defaults.master;
 
@@ -89,14 +93,14 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
      * @param templateFile Filename of the template file
      * @param elementName not used here
      * @param parameters get the parameters action for the button activity
-     * 					 and id for the used content definition instance object
-     *					 and the author, title, text content for setting the new/changed data
+     *                   and id for the used content definition instance object
+     *                   and the author, title, text content for setting the new/changed data
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
      * @exception CmsException
      */
     public byte[] getContentEdit(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
-							 Hashtable parameters, String templateSelector) throws CmsException {
+                             Hashtable parameters, String templateSelector) throws CmsException {
         //get the Languagedata
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         //create appropriate class name with underscores for labels
@@ -134,7 +138,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //channelname
         String channelname = (String) parameters.get("channelName");
         if(channelname == null){
-		    channelname = "";
+            channelname = "";
         }
         //plausibility check
         if(!action.equals("") && channelname.trim().equals("")){
@@ -254,8 +258,8 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         template.setData("parentName", cd.getParentName());
         template.setData("error", error);
 
-	    //if the saveexit-button has been clicked.
-	    if(action.equals("saveexit") && error.equals("")){
+        //if the saveexit-button has been clicked.
+        if(action.equals("saveexit") && error.equals("")){
             try{
                 //write/save
                 cd.write(cms);
@@ -286,8 +290,8 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }
         }
 
-	    //if the "save"-button has been clicked.
-	    if(action.equals("save") && error.equals("")){
+        //if the "save"-button has been clicked.
+        if(action.equals("save") && error.equals("")){
             try{
                 //write
                 cd.write(cms);
@@ -317,8 +321,8 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("error", error);
             }
         }
-	    //finally start the processing
-	    return startProcessing(cms, template, elementName, parameters, templateSelector);
+        //finally start the processing
+        return startProcessing(cms, template, elementName, parameters, templateSelector);
     }
 
     /**
