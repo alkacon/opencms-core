@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/28 09:11:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -40,10 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.dom4j.Document;
-import org.dom4j.util.NodeComparator;
 import org.xml.sax.InputSource;
 
 
@@ -54,7 +52,7 @@ import org.xml.sax.InputSource;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
-public class TestConfiguration extends TestCase {
+public class TestConfiguration extends OpenCmsTestCase {
   
     /**
      * Default JUnit constructor.<p>
@@ -62,10 +60,7 @@ public class TestConfiguration extends TestCase {
      * @param arg0 JUnit parameters
      */    
     public TestConfiguration(String arg0) {
-        super(arg0);
-        
-        // set "OpenCms" system property to "test" for allowing the logger to be used
-        System.setProperty("OpenCmsLog", "opencms_test.log");
+        super(arg0, false);
     }
     
     /**
@@ -87,7 +82,6 @@ public class TestConfiguration extends TestCase {
         allConfigurations.add(manager);
         allConfigurations.addAll(manager.getConfigurations());
 
-        NodeComparator comparator = new NodeComparator();
         Iterator i = allConfigurations.iterator();
         while (i.hasNext()) {
             I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
@@ -95,21 +89,19 @@ public class TestConfiguration extends TestCase {
             System.out.println("\n\nConfiguration instance: " + config + ":\n");
 
             // gernerate XML document for the configuration
-            Document outputDoc = manager.generateXml(config);                      
+            Document outputDoc = manager.generateXml(config);
+            outputDoc.setName(config.getXmlFileName());
 
             // load XML from original file and compare to generated document
             InputSource source = new InputSource(new FileInputStream(xmlOrigFile));
             Document inputDoc = CmsXmlUtils.unmarshalHelper(source, new CmsXmlEntityResolver(null));
-            int result = comparator.compare(outputDoc, inputDoc);
 
-            // output the document            
+            // output the document
+            System.out.println("---");
             System.out.println(CmsXmlUtils.marshal(outputDoc, "UTF-8"));
-
-            // triggers a failure that is recorded by JUnit when the argument are not equals            
-            if (result != 0) {
-                System.out.println("\n\nTest failed for configuration instance: " + config + ":\n");
-                fail("Generated output for configuration '" + config.getXmlFileName() + "' differs from input!");
-            }
+            System.out.println("---");
+            
+            assertEquals(outputDoc, inputDoc);
         }
     }    
 }

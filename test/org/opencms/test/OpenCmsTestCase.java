@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/10/24 20:20:56 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/10/28 09:11:17 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,10 @@ import junit.framework.TestCase;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+import org.dom4j.Document;
+import org.dom4j.Node;
+import org.dom4j.util.NodeComparator;
+
 /** 
  * Extends the JUnit standard with methods to handle an OpenCms database
  * test instance.<p>
@@ -82,7 +86,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 5.3.5
  */
@@ -158,25 +162,67 @@ public class OpenCmsTestCase extends TestCase {
     public OpenCmsTestResourceStorage m_currentResourceStrorage;
 
     /**
+     * Extension of <code>NodeComparator</code> to store unequal nodes.<p>
+     */
+    private class InternalNodeComparator extends NodeComparator {
+
+        /** Unequal node1. */
+        public Node m_node1 = null;
+        
+        /** Unequal node2. */
+        public Node m_node2 = null;
+        
+        /** 
+        /**
+         * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Node, org.dom4j.Node)
+         */
+        public int compare(Node n1, Node n2) {
+            
+            int result = super.compare(n1, n2);
+            if (result != 0 && m_node1 == null) {
+                m_node1 = n1;
+                m_node2 = n2;
+            }
+            return result;
+        }
+    }
+    
+    /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
     public OpenCmsTestCase(String arg0) {
 
+        this(arg0, true);
+    }
+    
+    /**
+     * JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     * @param initialize indicates if the configuration will be initialized
+     */
+    public OpenCmsTestCase(String arg0, boolean initialize) {
+
         super(arg0);
-        OpenCmsTestLogAppender.setBreakOnError(false);
-        if (m_resourceStorages == null) {
-            m_resourceStorages = new HashMap();
+        if (initialize) {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            if (m_resourceStorages == null) {
+                m_resourceStorages = new HashMap();
+            }
+            m_testClassName = this.getClass().getName();
+    
+            // initialize configuration
+            initConfiguration();
+    
+            // set "OpenCmsLog" system property to enable the logger
+            System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
+            OpenCmsTestLogAppender.setBreakOnError(true);
+        } else {
+            // set "OpenCmsLog" system property to enable the logger
+            System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");            
         }
-        m_testClassName = this.getClass().getName();
-
-        // initialize configuration
-        initConfiguration();
-
-        // set "OpenCmsLog" system property to enable the logger
-        System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
-        OpenCmsTestLogAppender.setBreakOnError(true);
     }
 
     /**
@@ -550,7 +596,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Initializes the path to the test data configuration files.<p>
      */
-    protected static synchronized void initTestDataPath() {
+    public static synchronized void initTestDataPath() {
 
         if (m_testDataPath == null) {
             m_testDataPath = new ArrayList(4);
@@ -641,8 +687,9 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Copies the configuration files from the "config-ori" folder to the 
-     * "config" folder.<p>
+     * Copies the configuration files from the given folder to the "config" folder.
+     * 
+     * @param newConfig the folder with the configuration files to copy
      */
     private static void copyConfiguration(String newConfig) {
 
@@ -1047,6 +1094,31 @@ public class OpenCmsTestCase extends TestCase {
         }
     }
 
+    /**
+     * Tests if the given xml document objects are equals (or both null).<p>
+     * 
+     * @param d1 first document to compare
+     * @param d2 second document to compare
+     */
+    public void assertEquals(Document d1, Document d2) {
+
+        if (d1 == null && d2 == null) {
+            return;
+        }
+
+        if ((d1 == null && d2 != null) || (d1 != null && d2 == null)) {
+            fail("Documents not equal (not both null)");
+        }
+        
+        InternalNodeComparator comparator = new InternalNodeComparator();
+        if (comparator.compare(d1, d2) != 0) {
+            fail("Comparison of documents failed: "
+                + "name = " + d1.getName() + ", " 
+                + "path = " + comparator.m_node1.getPath() + ", "
+                + "node = " + comparator.m_node1.toString()); 
+        }
+    }
+    
     /**
      * Compares a given resource to its stored version containing the state before a CmsObject
      * method was called.<p>
