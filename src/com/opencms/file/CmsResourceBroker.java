@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/01/05 17:03:09 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/06 17:02:04 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -627,6 +627,26 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 
 	/**
+	 * Returns a group object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param groupId The id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	private A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+								int groupId)
+		throws CmsException {
+		
+		return m_userRb.readGroup(groupId);
+	}
+
+	/**
 	 * Returns a list of users in a group.<P/>
 	 * 
 	 * <B>Security:</B>
@@ -1179,4 +1199,297 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 // HACK: !!!
 		 return( m_fileRb.readFile(currentProject, filename) );
 	 }
+
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param folder The complete path to the folder from which the folder will be 
+	 * read.
+	 * @param foldername The name of the folder to be read.
+	 * 
+	 * @return folder The read folder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+								String folder, String folderName)
+		throws CmsException {
+			
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  folder + folderName);
+		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// acces to all subfolders was granted - return the folder.
+			return(cmsFolder);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	/**
+	 * Creates a new folder.
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
+	 * CmsException will be thrown, because the file cannot be created without
+	 * the mandatory Metainformations.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param folder The complete path to the folder in which the new folder will 
+	 * be created.
+	 * @param newFolderName The name of the new folder (No pathinformation allowed).
+	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
+	 * the values for the metainfos.
+	 * 
+	 * @return file The created file.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * or if the filename is not valid. The CmsException will also be thrown, if the 
+	 * user has not the rights for this resource.
+	 */
+	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsProject currentProject, 
+								  String folder, String newFolderName, 
+								  Hashtable metainfos)
+		throws CmsException {
+		
+		// TODO: write the metainfos!
+		
+		// checks, if the filename is valid, if not it throws a exception
+		validFilename(newFolderName);
+		
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  folder);
+		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// write-acces  was granted - create and return the folder.
+			return(m_fileRb.createFolder(currentUser, currentProject, 
+										 folder + newFolderName + C_FOLDER_SEPERATOR,
+										 C_ACCESS_DEFAULT_FLAGS));
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+
+	/**
+	 * Checks, if the user may read this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessRead(A_CmsUser currentUser, A_CmsProject currentProject,
+							   A_CmsResource resource) 
+		throws CmsException	{
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+			// no access to the project!
+			return(false);
+		}
+		
+		// check the rights.
+		do {
+			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
+				
+				// read next resource
+				if(resource.getParent() != null) {
+					resource = m_fileRb.readFolder(currentProject, resource.getParent());
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
+	}
+
+	/**
+	 * Checks, if the user may create this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
+								A_CmsResource resource) 
+		throws CmsException	{
+		
+		// check, if this is the onlineproject
+		// TODO: this should be uncommented - the online-project is not for creating!
+/*		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		} */
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+			// no access to the project!
+			return(false);
+		}
+		
+		// check the rights and if the resource is not locked
+		do {
+			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+				
+				// is the resource locked?
+				if(resource.isLocked()) {
+					// resource locked, no creation allowed
+					return(false);					
+				}
+				
+				// read next resource
+				if(resource.getParent() != null) {
+					resource = m_fileRb.readFolder(currentProject, resource.getParent());
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
+	}
+	
+	/**
+	 * Checks, if the owner may access this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @param flags The flags to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessOwner(A_CmsUser currentUser, A_CmsProject currentProject,
+								A_CmsResource resource, int flags) 
+		throws CmsException {
+		// The Admin has always access
+		if( isAdmin(currentUser, currentProject) ) {
+			return(true);
+		}
+		// is the resource owned by this user?
+		if(resource.getOwnerId() == currentUser.getId()) {
+			if( (resource.getAccessFlags() & flags) == flags ) {
+				return( true );
+			}
+		}
+		// the resource isn't accesible by the user.
+		return(false);
+	}
+
+	/**
+	 * Checks, if the group may access this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @param flags The flags to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessGroup(A_CmsUser currentUser, A_CmsProject currentProject,
+								A_CmsResource resource, int flags)
+		throws CmsException {
+
+		// TODO: implement this! read group by id is missing here!
+		
+		// is the user in the group for the resource?
+		if(userInGroup(currentUser, currentProject, currentUser.getName(), 
+					   readGroup(currentUser, currentProject, 
+								 resource.getGroupId()).getName())) {
+			if( (resource.getAccessFlags() & flags) == flags ) {
+				return( true );
+			}
+		}
+		// the resource isn't accesible by the user.
+
+		return(false);
+
+	}
+
+	/**
+	 * Checks, if others may access this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @param flags The flags to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessOther(A_CmsUser currentUser, A_CmsProject currentProject, 
+								A_CmsResource resource, int flags)
+		throws CmsException {
+		
+		if( (resource.getAccessFlags() & flags) == flags ) {
+			return( true );
+		} else {
+			return( false );
+		}
+		
+	}
+	
+	/**
+	 * Checks ii characters in a String are allowed for filenames
+	 * 
+	 * @param filename String to check
+	 * 
+	 * @exception throws a exception, if the check fails.
+	 */	
+	private void validFilename( String filename ) 
+		throws CmsException {
+		
+		if (filename == null) {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_BAD_NAME],
+				CmsException.C_BAD_NAME);
+		}
+
+		int l = filename.length();
+
+		for (int i=0; i<l; i++) {
+			char c = filename.charAt(i);
+			if ( 
+				((c < 'a') || (c > 'z')) &&
+				((c < '0') || (c > '9')) &&
+				((c < 'A') || (c > 'Z')) &&
+				(c != '-') && (c != '/') && (c != '.') &&
+				(c != '|') && (c != '_') //removed because auf MYSQL regexp syntax
+				) {
+				throw new CmsException(CmsException.C_EXTXT[CmsException.C_BAD_NAME],
+					CmsException.C_BAD_NAME);
+			}
+		}
+	}
 }

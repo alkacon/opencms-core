@@ -8,7 +8,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/05 18:15:22 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/06 17:02:03 $
  */
 public abstract class A_CmsResource {
 	/**
@@ -237,5 +237,12 @@ public abstract class A_CmsResource {
 	 * @return the length of the content.
 	 */
     abstract public int getLength();
-	
+
+	/**
+	 * Creates a Unix-Style string of access rights from the access right flag 
+	 * of a resource
+	 * 
+	 * @return String of access rights
+	 */
+	public abstract String getFlagString();
 }

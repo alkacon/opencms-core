@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/01/05 17:03:09 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/06 17:02:04 $
  */
 interface I_CmsResourceBroker {
 
@@ -791,7 +791,8 @@ interface I_CmsResourceBroker {
 	 * <li>the user can read the resource</li>
 	 * </ul>
 	 * 
-	 * @param project The project in which the resource will be used.
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
 	 * @param filename The name of the file to be read.
 	 * 
 	 * @return The file read from the Cms.
@@ -801,4 +802,65 @@ interface I_CmsResourceBroker {
 	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String filename)
 		throws CmsException;
+
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param folder The complete path to the folder from which the folder will be 
+	 * read.
+	 * @param foldername The name of the folder to be read.
+	 * 
+	 * @return folder The read folder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+								String folder, String folderName)
+		throws CmsException ;
+	
+	/**
+	 * Creates a new folder.
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
+	 * CmsException will be thrown, because the file cannot be created without
+	 * the mandatory Metainformations.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param folder The complete path to the folder in which the new folder will 
+	 * be created.
+	 * @param newFolderName The name of the new folder (No pathinformation allowed).
+	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
+	 * the values for the metainfos.
+	 * 
+	 * @return file The created file.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * or if the filename is not valid. The CmsException will also be thrown, if the 
+	 * user has not the rights for this resource.
+	 */
+	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsProject currentProject, 
+								  String folder, String newFolderName, 
+								  Hashtable metainfos)
+		throws CmsException;
+	
 }

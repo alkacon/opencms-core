@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/05 17:03:09 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/06 17:02:04 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -639,6 +639,34 @@ public class CmsShell implements I_CmsConstants {
 			for( int i = 0; i < projects.size(); i++ ) {
 				System.out.println( (A_CmsProject)projects.elementAt(i) );
 			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+	
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * @param folder The complete path to the folder that will be read.
+	 */
+	public void readFolder(String folder) {
+		try {
+			System.out.println( m_cms.readFolder(folder, "") );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Creates a new folder.
+	 * 
+	 * @param folder The complete path to the folder in which the new folder 
+	 * will be created.
+	 * @param newFolderName The name of the new folder (No pathinformation allowed).
+	 */
+	public void createFolder(String folder, String newFolderName) {
+		try {
+			System.out.println( m_cms.createFolder(folder, newFolderName) );
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		

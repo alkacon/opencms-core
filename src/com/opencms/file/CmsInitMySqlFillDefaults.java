@@ -9,7 +9,7 @@ import com.opencms.core.*;
  * anonymous user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/01/05 17:03:09 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/06 17:02:03 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -36,17 +36,18 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
 			userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectleader-group", C_FLAG_ENABLED, null);
 			
-			userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, "the guest-user", 
-						   new Hashtable(), C_FLAG_ENABLED);
+			A_CmsUser user = userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, 
+											"the guest-user", new Hashtable(), 
+											C_FLAG_ENABLED);
 			userRb.addUser(C_USER_ADMIN, "", C_GROUP_ADMIN, "the admin-user", 
 						   new Hashtable(), C_FLAG_ENABLED);
 			
 			I_CmsRbProject projectRb = new CmsRbProject(
 				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
 			
-			projectRb.createProject(C_PROJECT_ONLINE, "the online-project", new CmsTask(),
-									userRb.readUser(C_USER_ADMIN), 
-									userRb.readGroup(C_GROUP_GUEST), C_FLAG_ENABLED);
+			A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", new CmsTask(),
+														   userRb.readUser(C_USER_ADMIN), 
+														   userRb.readGroup(C_GROUP_GUEST), C_FLAG_ENABLED);
 			
 			I_CmsRbProperty propertyRb = new CmsRbProperty(
 				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
@@ -57,6 +58,32 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 											 "The root-mountpoint"));
 			
 			propertyRb.addProperty( C_PROPERTY_MOUNTPOINT, mount );
+
+			// read all mountpoints from the properties.
+			A_CmsMountPoint mountPoint;
+			Hashtable mountedAccessModules = new Hashtable();
+			Enumeration keys = mount.keys();
+			Object key;
+			
+			// walk throug all mount-points.
+			while(keys.hasMoreElements()) {
+				key = keys.nextElement();
+				mountPoint = (A_CmsMountPoint) mount.get(key);
+					
+				// select the right access-module for the mount-point
+				if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {
+					mountedAccessModules.put(key, new CmsAccessFileMySql(mountPoint));
+				} else {
+					mountedAccessModules.put(key, new CmsAccessFileFilesystem(mountPoint));
+				}
+			}
+			I_CmsAccessFile accessFile = new CmsAccessFile(mountedAccessModules);
+			
+			// create the root-folder
+			accessFile.createFolder(user, project, C_ROOT, C_ACCESS_DEFAULT_FLAGS);
+									
+			I_CmsRbFile fileRb = new CmsRbFile(accessFile);
+			
 			return null;
 	}
 }

@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/05 18:15:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/06 17:02:04 $
  */
  public class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -278,8 +278,8 @@ import com.opencms.core.*;
         output.append(m_userId);
         output.append(" , Group=");
         output.append(m_groupId);
-        output.append(" : Accessflags=");
-        output.append(m_accessFlags);
+        output.append(" : Access=");
+        output.append(getFlagString());
         return output.toString();
       }
                                  
@@ -471,6 +471,26 @@ import com.opencms.core.*;
      public int getLength() {
         return m_size;
      }
-  
-	
+
+	/**
+	 * Creates a Unix-Style string of access rights from the access right flag of a 
+	 * CmsResource
+	 * 
+	 * @return String of access rights
+	 */
+	public String getFlagString()
+	{
+		String str = "";
+		str += ((m_accessFlags & C_ACCESS_OWNER_READ)>0?"r":"-");
+		str += ((m_accessFlags & C_ACCESS_OWNER_WRITE)>0?"w":"-");
+		str += ((m_accessFlags & C_ACCESS_OWNER_VISIBLE)>0?"v":"-");
+		str += ((m_accessFlags & C_ACCESS_GROUP_READ)>0?"r":"-");
+		str += ((m_accessFlags & C_ACCESS_GROUP_WRITE)>0?"w":"-");
+		str += ((m_accessFlags & C_ACCESS_GROUP_VISIBLE)>0?"v":"-");
+		str += ((m_accessFlags & C_ACCESS_PUBLIC_READ)>0?"r":"-");
+		str += ((m_accessFlags & C_ACCESS_PUBLIC_WRITE)>0?"w":"-");
+		str += ((m_accessFlags & C_ACCESS_PUBLIC_VISIBLE)>0?"v":"-");
+		str += ((m_accessFlags & C_ACCESS_INTERNAL_READ)>0?"i":"-");
+		return str;
+	}
 }

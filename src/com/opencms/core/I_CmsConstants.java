@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/01/04 15:32:54 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/06 17:02:03 $
  */
 public interface I_CmsConstants
 {
@@ -218,17 +218,17 @@ public interface I_CmsConstants
 	/**
 	 *  may read this resource
 	 */	
-	 final static int C_ACCESS_PUBLIC_ACCESS_READ		= 64;
+	 final static int C_ACCESS_PUBLIC_READ		= 64;
 	
 	/**
 	 *  may write this resource
 	 */	
-	 final static int C_ACCESS_PUBLIC_ACCESS_WRITE		= 128;
+	 final static int C_ACCESS_PUBLIC_WRITE		= 128;
 
 	/**
 	 *  may view this resource
 	 */
-	 final static int C_ACCESS_PUBLIC_ACCESS_VISIBLE	= 256;
+	 final static int C_ACCESS_PUBLIC_VISIBLE	= 256;
 
 	/**
 	 * This is an internal resource, it can't be launched directly.
@@ -238,17 +238,17 @@ public interface I_CmsConstants
 	/**
 	 * All may read this resource.
 	 */
-	 final static int	C_ACCESS_READ				= C_ACCESS_OWNER_READ + C_ACCESS_GROUP_READ + C_ACCESS_PUBLIC_ACCESS_READ;
+	 final static int	C_ACCESS_READ				= C_ACCESS_OWNER_READ + C_ACCESS_GROUP_READ + C_ACCESS_PUBLIC_READ;
 
 	/**
 	 * All may write this resource.
 	 */
-	 final static int	C_ACCESS_WRITE				= C_ACCESS_OWNER_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_ACCESS_WRITE;
+	 final static int	C_ACCESS_WRITE				= C_ACCESS_OWNER_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_WRITE;
 	
 	/**
 	 * All may view this resource.
 	 */
-	 final static int	C_ACCESS_VISIBLE			= C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_ACCESS_VISIBLE;
+	 final static int	C_ACCESS_VISIBLE			= C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_VISIBLE;
 	
 	/**
 	 * Owner has full access to this resource.
@@ -263,12 +263,12 @@ public interface I_CmsConstants
 	/**
 	 *  has full access to this resource.
 	 */
-	 final static int C_ACCESS_			= C_ACCESS_PUBLIC_ACCESS_READ + C_ACCESS_PUBLIC_ACCESS_WRITE + C_ACCESS_PUBLIC_ACCESS_VISIBLE;
+	 final static int C_ACCESS_PUBLIC			= C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_WRITE + C_ACCESS_PUBLIC_VISIBLE;
 	
 	/**
 	 * The default-flags for a new resource.
 	 */
-	 final static int C_ACCESS_DEFAULT_FLAGS		= C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_ACCESS_READ + C_ACCESS_PUBLIC_ACCESS_VISIBLE;
+	 final static int C_ACCESS_DEFAULT_FLAGS		= C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
 	
 	/**
 	 * Is set, if the resource is unchanged in this project.
@@ -320,10 +320,15 @@ public interface I_CmsConstants
       */
      static final int C_MOUNTPOINT_MYSQL=2;
      
+	 /**
+	  * The folder - seberator in this system
+	  */
+     static final String C_FOLDER_SEPERATOR = "/";
+	 
      /**
       * The name of the rood folder
       */
-     static final String C_ROOT="/";
+     static final String C_ROOT = C_FOLDER_SEPERATOR;
 	 
 	 /**
 	  * The name of the mountpoint-property.

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/01/05 17:03:09 $ 
+ * @version $Revision: 1.13 $ $Date: 2000/01/06 17:02:03 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -491,17 +491,16 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFolder createFolder(String folder, String newFolderName)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.createFolder(m_context.currentUser(), 
+								  m_context.getCurrentProject(), folder, 
+								  newFolderName, new Hashtable() ) );
 	}
 	
 	/**
-	 * Creates a new file with the overgiven content and resourcetype.
+	 * Creates a new folder.
 	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
@@ -515,13 +514,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
 	 * or if the filename is not valid. The CmsException will also be thrown, if the 
 	 * user has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
 	 */
 	public CmsFolder createFolder(String folder, String newFolderName, 
-											 Hashtable metainfos)
+								  Hashtable metainfos)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.createFolder(m_context.currentUser(), 
+								  m_context.getCurrentProject(), folder, 
+								  newFolderName, metainfos ) );
 	}
 
 	/**
@@ -539,7 +538,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFolder readFolder(String folder, String folderName)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readFolder(m_context.currentUser(), 
+								m_context.getCurrentProject(), folder, folderName ) );
 	}
 	
 	/**
