@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/04/10 15:51:53 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2002/06/21 15:35:20 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2002/04/10 15:51:53 $
+ * @version $Revision: 1.37 $ $Date: 2002/06/21 15:35:20 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -94,6 +94,21 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             uriDesc = new CmsUriDescriptor(uri);
             uriLoc = elementCache.getUriLocator();
             cmsUri = uriLoc.get(uriDesc);
+        }
+
+        // check if printversion is requested
+        String replace = req.getParameter("_CMS_ELEMENTREPLACE");
+        boolean elementreplace = false;
+        CmsElementDefinition replaceDef = null;
+        if(replace != null){
+            int index = replace.indexOf(":");
+            if(index != -1){
+                elementreplace = true;
+                cmsUri = null;
+                replaceDef = new CmsElementDefinition(replace.substring(0,index),
+                                        "com.opencms.template.CmsXmlTemplate",
+                                        replace.substring(index+1), null, new Hashtable());
+            }
         }
 
         if(cmsUri == null || !elementCacheEnabled) {
@@ -189,8 +204,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 if((!"datafor".equals(pname)) && (!"_clearcache".equals(pname))) {
                     newParameters.put(datafor + pname, paramValue);
                 }
-            }
-            else {
+            }else {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
                 }
@@ -203,10 +217,18 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             // So create a new URI object with a start element and store it using the UriLocator
             CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
             CmsElementDefinitionCollection eldefs = doc.getElementDefinitionCollection();
-            cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
-                        cms.getRequestContext().currentProject().getId(),
-                        templateName), eldefs, Utils.isHttpsResource(cms, file));
-            elementCache.getUriLocator().put(uriDesc, cmsUri);
+            if(elementreplace){
+                // we cant cach this
+                eldefs.add(replaceDef);
+                cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
+                            cms.getRequestContext().currentProject().getId(),
+                            templateName), eldefs, Utils.isHttpsResource(cms, file));
+            }else{
+                cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
+                            cms.getRequestContext().currentProject().getId(),
+                            templateName), eldefs, Utils.isHttpsResource(cms, file));
+                elementCache.getUriLocator().put(uriDesc, cmsUri);
+            }
         }
 
         if(elementCacheEnabled) {
@@ -225,7 +247,11 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                     }
                 }
                 // now lets get the output
-                output = elementCache.callCanonicalRoot(cms, newParameters);
+                if(elementreplace){
+                    output = cmsUri.callCanonicalRoot(elementCache, cms, newParameters);
+                }else{
+                    output = elementCache.callCanonicalRoot(cms, newParameters);
+                }
         } else {
             // ----- traditional stuff ------
             // Element cache is deactivated. So let's go on as usual.

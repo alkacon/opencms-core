@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2002/01/11 13:36:59 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/06/21 15:35:20 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -98,7 +98,9 @@ public class CmsUri implements I_CmsConstants {
     }
 
     public byte[] callCanonicalRoot(CmsElementCache elementCache, CmsObject cms, Hashtable parameters) throws CmsException  {
+        // check for read access
         checkReadAccess(cms);
+        // get the startelement. If it is not there it will be created.
         A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
 
         if(elem == null){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/11/05 18:34:30 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/06/21 15:35:20 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -86,10 +86,6 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         // Get out own cache directives
         A_CmsCacheDirectives cd = getCacheDirectives();
 
-        // We really don't want to stream here
-        /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
-        cms.getRequestContext().setStreaming(streamable);*/
-        //boolean streamable = false;
         boolean streamable = cms.getRequestContext().isStreaming();
 
         CmsElementVariant variant = null;
@@ -98,7 +94,9 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         if(cd.isInternalCacheable()) {
 
             checkReadAccess(cms);
+            // check if this Element has a date of expiry
             if (cd.isTimeCritical() && (m_timestamp < cd.getTimeout().getLastChange())){
+                // this element is too old, delete the cache
                 if(this.hasDependenciesVariants()){
                     // remove all the variants from the extern dep table
                     cms.getOnlineElementCache().getElementLocator().removeElementFromDependencies(
