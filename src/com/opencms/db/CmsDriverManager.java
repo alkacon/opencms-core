@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/03 16:12:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/04 10:03:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,13 +99,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.10 $ $Date: 2003/06/03 16:12:21 $
+ * @version $Revision: 1.11 $ $Date: 2003/06/04 10:03:50 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.10 $ $Date: 2003/06/03 16:12:21 $
+ * @version $Revision: 1.11 $ $Date: 2003/06/04 10:03:50 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -2539,7 +2539,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             validFilename(name);
             m_propertyDefVectorCache.clear();
             return( m_vfsDriver.createPropertydefinition(name,
-                                                        getResourceType(currentUser,
+            currentProject.getId(), getResourceType(currentUser,
                                                                         currentProject,
                                                                         resourcetype).getResourceType()) );
         } else {
@@ -5366,16 +5366,16 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         return returnValue;
     }
 
-/****************     methods for link management            ****************************/
+    /****************     methods for link management            ****************************/
 
-    /**
-     * deletes all entrys in the link table that belong to the pageId
-     *
-     * @param pageId The resourceId (offline) of the page whose links should be deleted
-     */
-    public void deleteLinkEntrys(CmsUUID pageId)throws CmsException{
-        m_projectDriver.deleteLinkEntrys(pageId);
-    }
+        /**
+         * deletes all entrys in the link table that belong to the pageId
+         *
+         * @param pageId The resourceId (offline) of the page whose links should be deleted
+         */
+        public void deleteLinkEntrys(CmsUUID pageId)throws CmsException{
+            m_projectDriver.deleteLinkEntrys(pageId);
+        }
 
     /**
      * creates a link entry for each of the link targets in the linktable.
@@ -5398,14 +5398,6 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
     }
 
     /**
-     * deletes all entrys in the online link table that belong to the pageId
-     *
-     * @param pageId The resourceId (online) of the page whose links should be deleted
-     */
-    public void deleteOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
-        m_projectDriver.deleteOnlineLinkEntrys(pageId);
-    }
-
     /**
      * creates a link entry for each of the link targets in the online linktable.
      *
@@ -5414,9 +5406,9 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      */
     public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTarget)throws CmsException{
         m_projectDriver.createOnlineLinkEntrys(pageId, linkTarget);
-    }
-
-    /**
+    }     
+    
+    /** 
      * returns a Vector (Strings) with the link destinations of all links on the page with
      * the pageId.
      *
@@ -6425,7 +6417,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
         } else if ("deleted".equalsIgnoreCase(filter)) {
             whereClause = " AND STATE=" + C_STATE_DELETED;
         } else if ("locked".equalsIgnoreCase(filter)) {
-            whereClause = " AND LOCKED_BY != " + C_UNKNOWN_ID;
+            whereClause = " AND LOCKED_BY != '" + CmsUUID.getNullUUID() + "'";
         } else {
             whereClause = " AND STATE != " + C_STATE_UNCHANGED;
         }
@@ -6665,7 +6657,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
         returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
 
         if (returnValue == null){
-            returnValue = m_vfsDriver.readPropertydefinition(name, resType);
+            returnValue = m_vfsDriver.readPropertydefinition(name, currentProject.getId(), resType);
             m_propertyDefCache.put(name + resType.getResourceType(), returnValue);
         }
         return returnValue;
