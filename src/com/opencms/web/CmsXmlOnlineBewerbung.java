@@ -1,25 +1,29 @@
-/**
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
- * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/19 17:09:24 $
- * Version: $Revision: 1.3 $
- * Release: $Name:  $
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
+ * Date   : $Date: 2000/02/20 09:48:31 $
+ * Version: $Revision: 1.4 $
  *
- * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
  *
- * THIS SOFTWARE IS NEITHER FREEWARE NOR PUBLIC DOMAIN!
- *
- * To use this software you must purchease a licencse from Mindfact.
- * In order to use this source code, you need written permission from Mindfact.
- * Redistribution of this source code, in modified or unmodified form,
- * is not allowed.
- *
- * MINDAFCT MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
- * OF THIS SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. MINDFACT SHALL NOT BE LIABLE FOR ANY
- * DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 package com.opencms.web;
@@ -41,8 +45,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/19 17:09:24 $
+ * @author $Author: a.lucas $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/02/20 09:48:31 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -157,6 +161,20 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
         return false;
     }
 	    
+    /**
+     * Reads in the template file and starts the XML parser for the expected
+     * content type <class>CmsXmlWpTemplateFile</code>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param templateFile Filename of the template file.
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     */
+    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
+        return xmlTemplateDocument;
+    }        
 	
     /**
      * Gets the content of a defined section in a given template file and its 
@@ -244,7 +262,8 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		// CententDefinition
 		System.err.println("****->"+templateFile);
-		CmsXmlOnlineBewerbungContentDefinition datablock=new CmsXmlOnlineBewerbungContentDefinition(cms,templateFile);		
+		CmsXmlOnlineBewerbungContentDefinition datablock=(CmsXmlOnlineBewerbungContentDefinition)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+//		CmsXmlOnlineBewerbungContentDefinition datablock=new CmsXmlOnlineBewerbungContentDefinition(cms,templateFile);		
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
@@ -257,7 +276,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		System.err.println("5:");
 		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<41;i++){
+		for(int i=1;i<33;i++){
 			if (newPosition.equals(decodeField(datablock.getNewPosition(i)))) {
 				datablock.setSelected(i,"selected");				
 			} else {
@@ -274,7 +293,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		System.err.println("7:");
 		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<41;i++){
+		for(int i=1;i<5;i++){
 			if (base.equals(decodeField(datablock.getBase(i)))){
 				datablock.setSelected(i,"selected");				
 			} else {
@@ -291,7 +310,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		System.err.println("9:");
 		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<41;i++){
+		for(int i=1;i<8;i++){
 			if (how.equals(decodeField(datablock.getHow(i)))) {
 				datablock.setSelected(i,"selected");				
 			} else {
@@ -308,7 +327,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		System.err.println("11:");
 		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<41;i++){
+		for(int i=1;i<4;i++){
 			if (anrede.equals(decodeField(datablock.getAnrede(i)))){
 				datablock.setSelected(i,"selected");
 			} else {
@@ -325,7 +344,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		System.err.println("13:");
 		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<41;i++){
+		for(int i=1;i<6;i++){
 			if (family.equals(decodeField(datablock.getFamily(i)))) {
 				datablock.setSelected(i,"selected");				
 			} else {
@@ -357,7 +376,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		datablock.setErrorNumber(errorNumber);
 		datablock.setErrorMessage(errorMessage);
 		System.err.println("15:");
-		CmsXmlTemplateFile xmlTemplateDocument=(CmsXmlTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		//CmsXmlTemplateFile xmlTemplateDocument=(CmsXmlTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		System.err.println("16:");
 		if (action.equals("sendMail")) {
 			
@@ -368,7 +387,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				errorNumber=new Integer((new Integer(errorNumber).intValue())-1).toString();
 				datablock.setErrorNumber(errorNumber);
 				datablock.setErrorMessage(datablock.getError(errorMessage));				
-				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, null);
+				return startProcessing(cms, datablock, elementName, parameters, null);
 				
 			} else {
 				
@@ -461,7 +480,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);
 				mail.start();
 				
-				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "Answer");
+				return startProcessing(cms, datablock, elementName, parameters, "Answer");
 			}
 		}
 		System.err.println("17:");
@@ -470,7 +489,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		datablock.setErrorNumber("-2");
 		datablock.setAction("sendMail");
 		datablock.setErrorMessage("");
-		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, null);
+		return startProcessing(cms, datablock, elementName, parameters, null);
 	}
 	
 	
