@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/08/03 09:38:16 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/08/03 11:24:53 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2001/08/03 09:38:16 $
+ * @version $Revision: 1.12 $ $Date: 2001/08/03 11:24:53 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -338,26 +338,23 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // we don't want to use the changeContent method here
             // to avoid overhead by copying, readig, parsing, setting XML and writing again.
             // Instead, we re-use the already parsed XML content of the source
-            // and create a new file.
             hXml.setElementTemplate("body", newbodyPath);
-            Hashtable properties = cms.readAllProperties(source);
-            CmsFile newPageFile = cms.doCreateFile(destinationFolder, destination.substring(destinationFolder.length()), hXml.getXmlText().getBytes(),  I_CmsConstants.C_TYPE_PAGE_NAME, properties);
-
-            cms.doLockResource(destination, true);
+            cms.doCopyFile(source, destination);
+            CmsFile newPageFile = cms.readFile(destination);
+            newPageFile.setContents(hXml.getXmlText().getBytes());
+            cms.writeFile(newPageFile);
 
             // Now the new page file is created. Copy the body file
-            //CmsResourceTypeBody rtbody = new CmsResourceTypeBody();
-            //rtbody.copyResource(cms, bodyPath, newbodyPath, true);
             cms.doCopyFile(bodyPath, newbodyPath);
+            // set access flags, if neccessary
         } else {
             // The body part of the source was not found at
             // the default place. Leave it there, don't make
             // a copy and simply make a copy of the page file.
             // So the new page links to the old body.
             cms.doCopyFile(source, destination);
+            // set access flags, if neccessary
         }
-
-        // set access flags, if neccessary
         if(!keepFlags) {
             setDefaultFlags(cms, destination);
         }
