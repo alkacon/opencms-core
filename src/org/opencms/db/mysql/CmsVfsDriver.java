@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 13:57:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/12 08:59:30 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.16 $ $Date: 2003/08/12 08:59:30 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -107,10 +107,10 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setString(4, fileId.toString());
             stmt.setInt(5, resourceType.getLoaderId());
             stmt.setTimestamp(6, new Timestamp(dateCreated));
-			stmt.setString(7, user.getId().toString());
+            stmt.setString(7, user.getId().toString());
             stmt.setTimestamp(8, new Timestamp(dateCreated));
-			stmt.setString(9, user.getId().toString());
-			stmt.setInt(10, state);
+            stmt.setString(9, user.getId().toString());
+            stmt.setInt(10, state);
             stmt.setInt(11, contents.length);
             //stmt.setString(12, user.getId().toString());
             stmt.setString(12, CmsUUID.getNullUUID().toString());
