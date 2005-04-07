@@ -19,6 +19,7 @@
     <navleft.font>#000000</navleft.font>
     <navleft.img.bg.uri>none</navleft.img.bg.uri>
     <content.bg>#FFFFFF</content.bg>
+    <content.accessible.bg>#EEEEEE</content.accessible.bg>
     <content.border>#CCCCCC</content.border>
     <content.font>#000000</content.font>
     <content.link>#cc0033</content.link>
@@ -54,6 +55,7 @@
     <navleft.font>#000000</navleft.font>
     <navleft.img.bg.uri>none</navleft.img.bg.uri>
     <content.bg>#FFFFFF</content.bg>
+    <content.accessible.bg>#EEEEEE</content.accessible.bg>
     <content.border>#CCCCCC</content.border>
     <content.font>#000000</content.font>
     <content.link>#cc0033</content.link>

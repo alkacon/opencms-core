@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/04/06 11:36:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/07 14:09:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateContentListItem {
     
@@ -58,6 +58,11 @@ public class CmsTemplateContentListItem {
     public static final String C_DISPLAYAREA_LEFT = "right";
     /** The display area of the list: right. */
     public static final String C_DISPLAYAREA_RIGHT = "right";
+    
+    /** The name of the list variation: long. */
+    public static final String C_LISTVARIATION_LONG = "long";
+    /** The name of the list variation: short. */
+    public static final String C_LISTVARIATION_SHORT = "short";
     
     /** Macro used in property definition names to resolve the list index. */
     public static final String C_MACRO_LISTINDEX = "index";
@@ -72,6 +77,8 @@ public class CmsTemplateContentListItem {
     public static final String C_PROPERTY_LAYOUT_FOLDER = "layout.${" + C_MACRO_LISTINDEX + "}.folder";
     /** Name of the property key to set the element type. */
     public static final String C_PROPERTY_LAYOUT_TYPE = "layout.${" + C_MACRO_LISTINDEX + "}.type";
+    /** Name of the property key to set the list variation. */
+    public static final String C_PROPERTY_LAYOUT_VARIATION = "layout.${" + C_MACRO_LISTINDEX + "}.variation";
     
     private String m_collector;
     private int m_count;
@@ -79,6 +86,7 @@ public class CmsTemplateContentListItem {
     private String m_folder;
     private String m_listElement;
     private String m_type;
+    private String m_variation;
     
     /**
      * Factory method to create a new {@link CmsTemplateContentListItem} instance.<p>
@@ -133,8 +141,15 @@ public class CmsTemplateContentListItem {
                 folder = messages.key(keyPrefix + ".folder");
             }
             listItem.setFolder(resolver.resolveMacros(folder));
-            // set the JSP element uri creating the list
-            String listElement = messages.key(keyPrefix + ".listelement");
+            // determine the list variation to use
+            String variation = (String)properties.get(resolver.resolveMacros(C_PROPERTY_LAYOUT_VARIATION));
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(variation)) {
+                variation = "";
+            } else {
+                variation = "." + variation;
+            }
+            // set the JSP element uri creating the list considering the list variation
+            String listElement = messages.key(keyPrefix + ".listelement" + variation);
             listItem.setListElement(listElement);
             // set the display area of the list
             listItem.setDisplayArea(displayArea);
@@ -203,6 +218,16 @@ public class CmsTemplateContentListItem {
     public String getType() {
 
         return m_type;
+    }
+    
+    /**
+     * Returns the list variation.<p>
+     *
+     * @return the list variation
+     */
+    public String getVariation() {
+
+        return m_variation;
     }
     
     /**
@@ -286,5 +311,15 @@ public class CmsTemplateContentListItem {
     protected void setType(String type) {
 
         m_type = type;
+    }
+    
+    /**
+     * Sets the list variation.<p>
+     *
+     * @param variation the list variation to set
+     */
+    protected void setVariation(String variation) {
+
+        m_variation = variation;
     }
 }

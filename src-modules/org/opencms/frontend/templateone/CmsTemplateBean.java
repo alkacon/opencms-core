@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/04/07 07:29:47 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/04/07 14:09:57 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -840,8 +840,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         // check which page version to display
         initPageVersion();
         // check if the head navigation should be shown
-        m_showHeadNavigation = !showAccessibleVersion()
-            && !showPrintVersion()
+        m_showHeadNavigation = !showPrintVersion()
             && Boolean.valueOf(property(C_PROPERTY_SHOW_HEADNAV, "search", "true")).booleanValue();
     }
 
@@ -913,6 +912,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         // fill property Map with necessary parameters for included navigation elements
         getProperties().put(C_PARAM_SITE, getRequestContext().getSiteRoot());
+        getProperties().put(C_PARAM_ACCESSIBLE, "" + showAccessibleVersion());
         getProperties().put(CmsTemplateNavigation.C_PARAM_RESPATH, getResourcePath());
         getProperties().put(CmsTemplateNavigation.C_PARAM_STARTFOLDER, getStartFolder());
         getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_FOLDER, getNavigationStartFolder());

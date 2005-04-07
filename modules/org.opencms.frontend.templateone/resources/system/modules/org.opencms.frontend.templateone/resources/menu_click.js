@@ -262,7 +262,7 @@ function depressButton(button) {
 			childNodeName = button.childNodes[0].tagName;
 		}
 	} catch (e) {}
-		if (browser.isIE || (childNodeName != "IMG")) {
+		if (browser.isIE) {
 		y += 1;
 	}
 	// /AZ

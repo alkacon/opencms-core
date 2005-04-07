@@ -126,6 +126,16 @@ if (cms.template("head")) {
 			//-->
 			</style>
 			<script src="<%= resPath %>page.js" type="text/javascript"></script>
+			<%
+			if (cms.showHeadNavigation()) {
+				boolean menuTypeClick = Boolean.valueOf(cms.getConfigurationValue("headnav.menuclick", "false")).booleanValue();
+				if (menuTypeClick) {
+					%><script src="<%= resPath %>menu_click.js" type="text/javascript"></script><%
+				} else {
+					%><script src="<%= resPath %>menu_over.js" type="text/javascript"></script><%
+				}
+			}
+		%>
 		</head>
 		<body class="main">
 		<div class="mainwrapper">

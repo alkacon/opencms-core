@@ -987,7 +987,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
+					<value><![CDATA[uri;user;params=(accessible)]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>

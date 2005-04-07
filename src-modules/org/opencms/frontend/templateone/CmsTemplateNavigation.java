@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/04/06 11:36:25 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/04/07 14:09:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
@@ -115,6 +115,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
+    
+    /** Indicates if accessible version is shown. */
+    private boolean m_showAccessibleVersion;
 
     /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
@@ -268,7 +271,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
         boolean firstItem = true;
         StringBuffer result = new StringBuffer(1024);
-        result.append("<div class=\"bordermain ");
+        result.append("<div class=\"");
         result.append(styleLink);
         result.append("\">\n");
         result.append("\t<!-- Start Topnavigation -->\n");
@@ -459,8 +462,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         if (showNavLeftTree()) {
             // create navigation tree
             result.append("<!-- Start navigation left -->\n");
-            result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
-
+            if (! showAccessibleVersion()) {
+                result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
+            }
             // get start and end level of the displayed tree
             int startLevel = 1;
             if (showNavLeftSelected()) {
@@ -760,6 +764,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         if (m_locale == null) {
             m_locale = property(I_CmsConstants.C_PROPERTY_LOCALE, "search", "en").toLowerCase();
         }
+        m_showAccessibleVersion = Boolean.valueOf(req.getParameter(CmsTemplateBean.C_PARAM_ACCESSIBLE)).booleanValue();
         m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
         m_showHeadNavImages = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_IMAGES)).booleanValue();
         m_headNavItemDefaultValue = true;
@@ -810,6 +815,16 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     public void setHeadNavItemDefaultValue(boolean defaultValue) {
 
         m_headNavItemDefaultValue = defaultValue;
+    }
+    
+    /**
+     * Returns if the accessible version of the page should be shown.<p>
+     * 
+     * @return true if the accessible version should be shown, otherwise false
+     */
+    public boolean showAccessibleVersion() {
+
+        return m_showAccessibleVersion;
     }
 
     /**

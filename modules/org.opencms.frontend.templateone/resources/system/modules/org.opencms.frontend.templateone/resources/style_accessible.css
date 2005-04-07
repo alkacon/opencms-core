@@ -39,6 +39,7 @@ String navLeftFont = cms.getConfigValue("navleft.font", "#000000");
 String navLeftImgBgUri = cms.link(cms.getConfigValue("navleft.img.bg.uri", "/system/galleries/pics/ocms-templateone/bg_nav.jpg"));
 
 // content area
+String contentAccessibleBg = cms.getConfigValue("content.accessible.bg", "#FFFFFF");
 String contentBg = cms.getConfigValue("content.bg", "#FFFFFF");
 String contentBorder = cms.getConfigValue("content.border", "#CCCCCC");
 String contentFont = cms.getConfigValue("content.font", "#000000");
@@ -98,6 +99,58 @@ a:visited	{	color: <%= contentLinkVisited %>; <%= cms.getFontUnderline("content.
 a:hover		{	color: <%= contentLinkHover %>; <%= cms.getFontUnderline("content.link.underline", "false") %> }
 a:active	{	color: <%= contentLinkActive %>; <%= cms.getFontUnderline("content.link.underline", "false") %> }
 
+/* Head navigation */
+a.navtop,a.navtop:visited,a.navtop:hover { color: <%= headNavFont %>; font-family: <%= navFontFamily %>; font-size: 0.7em; height: 0.7em; vertical-align: middle; white-space: nowrap; padding: 2px; font-weight: normal; text-decoration: none; }
+.navspacer { color: <%= headNavFont %>; font-size: 0.7em; vertical-align: middle; }
+
+/* Head navigation submenu */
+div.menu, div.menu a.mI, div.menu a.mI span.mIText, div.menu a.mI span.mIArrow {
+  font-family: <%= navFontFamily %>;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: normal;
+}
+
+div.menu {
+  font-family: <%= navFontFamily %>;
+  font-size: 0.7em;
+  background-color: <%= headNavBg %>;
+  border: 1px solid <%= headNavBorder %>;
+  text-align: left;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  visibility: hidden;
+  z-index: 101;
+}
+
+div.menu a.mI, div.menu a.mICurrent {
+  color: <%= headNavFont %>;
+  background-color: <%= headNavBg %>;
+  cursor: pointer;
+  display: block;
+  padding: 3px 1em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+div.menu a.mI:hover, div.menu a.mIHighlight, div.menu a.mICurrent, div.menu a.mI:hover span.mIText, div.menu a.mI:hover span.mIArrow {
+  font-family: <%= navFontFamily %>;
+
+  color: <%= headNavFontHover %>;
+  background-color: <%= headNavBgHover %>;
+}
+
+div.menu a.mI span.mIText, div.menu a.mI span.mIArrow {
+  font-family: <%= navFontFamily %>;
+  
+  color: <%= headNavFont %>;
+}
+
+div.menu a.mI span.mIArrow {
+  margin-right: -.75em;
+}
+
 /* head and foot row links */
 a.linksheadfoot,a.linksheadfoot:link { font-family: <%= navFontFamily %>; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; }
 a.linksheadfoot:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
@@ -154,6 +207,22 @@ span.imagelink {
 	cursor: pointer;
 }
 
+/* top navigation row */
+div.navtop {
+	width: 100%;
+	margin: 0 auto;
+	background-color: <%= headNavBg %>;
+	text-align: left;
+	text-indent: 5px;
+	<%
+	if (showMainBorder) {
+		out.print("border-top: 1px solid " + mainBorder + ";");
+		out.print("border-left: 1px solid " + mainBorder + ";");
+		out.print("border-right: 1px solid " + mainBorder + ";");
+	}
+	%>	
+}
+
 /* border of the foot navigation row */
 div.linksfoot {
 	width: 100%;
@@ -174,7 +243,7 @@ div.mainwrapper {
 /* block around main content row (left nav, content, infobox) */
 div.main {
 	width: 100%;
-	background-color: <%= contentBg %>;
+	background-color: <%= contentAccessibleBg %>;
 	<% 
 	if (showMainBorder) {
 		out.print("border: 1px solid " + mainBorder + ";");
@@ -182,7 +251,7 @@ div.main {
 	%>
 }
 
-/* content table cell */
+/* content cell */
 div.content {
 	float: left;
 	width: 60%;
@@ -192,10 +261,7 @@ div.content {
 	font-family: <%= mainFontFamily %>; 
 	font-size: 0.8em;
 	color: <%= contentFont %>;
-	background-color: <%= contentBg %>;
-	border-left: 1px solid <%= contentBorder %>; 
-	border-right: 1px solid <%= contentBorder %>;
-	border-bottom: 1px solid <%= contentBorder %>;
+	background-color: <%= contentAccessibleBg %>;
 }
 
 /* content styles */
@@ -206,6 +272,8 @@ div.element {
 	padding: 3px; 
 	text-align: justify; 
 	clear: both;
+	background-color: <%= contentBg %>;
+	border: 1px solid <%= contentBorder %>;
 }
 
 div.element2 {
@@ -214,6 +282,7 @@ div.element2 {
 	padding: 3px; 
 	text-align: left; 
 	clear: both;
+	background-color: <%= sideBg %>;
 	border: 1px solid <%= contentBorder %>; 
 }
 
@@ -223,7 +292,6 @@ div.infobox {
 	float: right;
 	width: 18%;
 	vertical-align: top;
-	background-color: <%= sideBg %>;
 	height: 100%;
 }
 
@@ -233,7 +301,6 @@ div.navleft {
 	float: left;
 	width: 21%;
 	vertical-align: top;
-	background-color: <%= navLeftBg %>;	
 	height: 100%;
 }
 
@@ -271,6 +338,7 @@ div.sidelist {
 	border: 1px solid <%= contentBorder %>; 
 	text-align: left; 
 	clear: both;
+	background-color: <%= sideBg %>;
 }
 
 p.sidelisthead {
