@@ -81,7 +81,7 @@ String formButtonFont = cms.getConfigValue("form.button.font", footLinksFont);
 
 /* global body settings */
 body.main { text-align: center; }
-body { background-color: <%= mainSidesBg %>; margin: 10px; font-size: 100% }
+body { background-color: <%= mainSidesBg %>; margin: 10px; font-size: 100%; width: 98%; }
 body,ul,ol,li,td,p,div,span,input,textarea,select {	font-family: <%= mainFontFamily %>; color: <%= contentFont %>; }
 
 /* headlines */
@@ -167,7 +167,7 @@ div.linksfoot {
 	clear: both;
 }
 
-div.wrapper {
+div.mainwrapper {
 	margin: 0 auto;
 }
 
@@ -186,12 +186,16 @@ div.main {
 div.content {
 	float: left;
 	width: 60%;
+	height: 100%;
 	vertical-align: top;
 	text-align: left;
 	font-family: <%= mainFontFamily %>; 
 	font-size: 0.8em;
 	color: <%= contentFont %>;
 	background-color: <%= contentBg %>;
+	border-left: 1px solid <%= contentBorder %>; 
+	border-right: 1px solid <%= contentBorder %>;
+	border-bottom: 1px solid <%= contentBorder %>;
 }
 
 /* content styles */
@@ -210,6 +214,7 @@ div.element2 {
 	padding: 3px; 
 	text-align: left; 
 	clear: both;
+	border: 1px solid <%= contentBorder %>; 
 }
 
 /* infobox column */
@@ -219,6 +224,7 @@ div.infobox {
 	width: 18%;
 	vertical-align: top;
 	background-color: <%= sideBg %>;
+	height: 100%;
 }
 
 /* left navigation column */
@@ -227,7 +233,7 @@ div.navleft {
 	float: left;
 	width: 21%;
 	vertical-align: top;
-	background-color: <%= navLeftBg %>;
+	background-color: <%= navLeftBg %>;	
 	height: 100%;
 }
 
