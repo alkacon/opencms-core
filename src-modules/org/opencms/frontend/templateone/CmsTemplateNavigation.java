@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/04/07 14:09:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/07 15:25:18 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
@@ -409,6 +409,10 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             key.append(getMenuDepth());
             key.append("_");
             key.append(showMenus());
+            key.append("_");
+            key.append(showAccessibleVersion());
+            key.append("_");
+            key.append(getLocale());
             cacheKey = key.toString();
             String cachedNav = (String)parts.getPart(cacheKey);
             if (CmsStringUtil.isNotEmpty(cachedNav)) {
@@ -659,7 +663,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     if (ne.isFolderLink() && currentDepth < getMenuDepth()) {
                         navEntries = getNavigation().getNavigationForFolder(resName);
                     }
-                    result.append("<a class=\"");
+                    result.append(" <a class=\"");
                     result.append("mI");
                     result.append("\" href=\"");
                     result.append(link(resName));
@@ -687,6 +691,14 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             result.append("</div>\n");
 
             StringBuffer openTag = new StringBuffer(8);
+            if ("menu0".equals(prefix) && showAccessibleVersion()) {
+                // create div that is displayed for accessible version
+                CmsMessages messages = new CmsMessages(CmsTemplateBean.C_MESSAGE_BUNDLE, getRequestContext().getLocale());
+                openTag.append("<div style=\"visibility: hidden; display:none;\">");
+                openTag.append("<h3>").append(messages.key("headline.accessible.nav.headline")).append("</h3>");
+                openTag.append("<p>").append(messages.key("headline.accessible.nav.text")).append("</p>");
+                openTag.append("</div>");
+            }
             if (entryPresent) {
                 openTag.append("<div class=\"");
                 openTag.append(styleClass);

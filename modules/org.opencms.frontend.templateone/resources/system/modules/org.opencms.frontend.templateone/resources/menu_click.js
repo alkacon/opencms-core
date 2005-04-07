@@ -269,13 +269,16 @@ function depressButton(button) {
 	
 	button.menu.style.left = x + "px";
 	button.menu.style.top  = y + "px";
+	
 	if (browser.isNS) {
-		// AZ: workaround to avoid display issues in NS based browsers
-		tempMenu = button.menu;
-		setTimeout("showMainMenu();", 0);
+		// AZ: workaround to avoid display issues in NS based browsers (disabled)
+		//tempMenu = button.menu;
+		//setTimeout("showMainMenu();", 0);
 	} else {
-		button.menu.style.visibility = "visible";
+		//button.menu.style.visibility = "visible";
 	}
+	button.menu.style.visibility = "visible";
+	
 	// For IE; size, position and show the menu's IFRAME as well.
 
 	if (button.menu.iframeEl != null) {
