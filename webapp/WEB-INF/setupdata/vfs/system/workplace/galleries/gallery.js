@@ -3,12 +3,12 @@
 	function escapeBrackets(s) {
 		var searchResult = s.search(/\[.+/);
 		if(searchResult != -1) {
-			// cut the first '['
+			// cut off the first '['
 			s = s.substring(1,s.length);
 		}
 		searchResult = s.search(/.+\]/);
-		if(searchResult != -1) {
-			// cut the last ']'
+		if(searchResult != -1 && s.charAt(s.length) == ']') {
+			// cut off the last ']'
 			s = s.substring(0,s.length-1);
 		}
 
