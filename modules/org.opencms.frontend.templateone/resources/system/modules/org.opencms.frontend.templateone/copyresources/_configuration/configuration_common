@@ -3,6 +3,7 @@
 <configurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/common.xsd">
   <configuration language="en">
     <area.name/>
+    <layout.version><![CDATA[accessible]]></layout.version>
     <navigation.startfolder/>
     <headnav.menus>true</headnav.menus>
     <headnav.menudepth><![CDATA[2]]></headnav.menudepth>

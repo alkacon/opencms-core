@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/04/06 11:36:25 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/04/07 07:29:47 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -1094,20 +1094,23 @@ public class CmsTemplateBean extends CmsJspActionElement {
      */
     private void initPageVersion() {
 
-        // determine the layout type to evaluate
-        String layout = C_PARAM_COMMON;
         // check if the print version should be shown
         m_showPrintVersion = Boolean.valueOf(getRequest().getParameter(C_PARAM_PRINT)).booleanValue();
         if (! showPrintVersion()) {
             // check if the accessible page layout should be used
-            m_showAccessibleVersion = Boolean.valueOf(getRequest().getParameter(C_PARAM_ACCESSIBLE)).booleanValue();
+            String param = getRequest().getParameter(C_PARAM_ACCESSIBLE);
+            if (CmsStringUtil.isNotEmpty(param)) {
+                m_showAccessibleVersion = Boolean.valueOf(param).booleanValue();
+            } else {
+                m_showAccessibleVersion = getConfigurationValue("layout.version", C_PARAM_COMMON).equals(C_PARAM_ACCESSIBLE);
+            }
+            if (showAccessibleVersion()) {
+                setLayout(C_PARAM_ACCESSIBLE);
+            } else {
+                setLayout(C_PARAM_COMMON);
+            }
         } else {
-            layout = C_PARAM_PRINT;
+            setLayout(C_PARAM_PRINT);
         }
-        if (showAccessibleVersion()) {
-            layout = C_PARAM_ACCESSIBLE;
-        }
-        // set the layout type
-        setLayout(layout);
     }
 }
