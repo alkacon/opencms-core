@@ -35,6 +35,12 @@
 		</parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="microsite" id="19">
+				<properties>
+                    <property>
+                        <name>style_main_configpath</name>
+                        <value><![CDATA[${resource.folder.path}_configuration/]]></value>
+                    </property>
+                </properties>
 				<copy-resources>
 					<copy-resource source="/system/modules/org.opencms.frontend.templateone/copyresources/_configuration" target="${resource.folder.path}" type="new"/>
 				</copy-resources>
