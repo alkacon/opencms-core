@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/03/09 16:51:03 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/04/10 21:00:47 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 5.3.1
  */
@@ -90,17 +90,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The name of the temp file project. */
     public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
 
-    /** The tool manager. */
-    private CmsToolManager m_toolManager;
-
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
 
     /** The default acces for explorer types. */
     private CmsExplorerTypeAccess m_defaultAccess;
-
-    /** The configured default encoding of the workplace. */
-    private String m_defaultEncoding;
 
     /** The configured default locale of the workplace. */
     private Locale m_defaultLocale;
@@ -129,6 +123,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The flag if switching tabs in the advanced property dialog is enabled. */
     private boolean m_enableAdvancedPropertyTabs;
 
+    /** The configured encoding of the workplace. */
+    private String m_encoding;
+
     /** The explorer type settings. */
     private List m_explorerTypeSettings;
 
@@ -153,17 +150,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The configured list of localized workplace folders. */
     private List m_localizedFolders;
 
+    /** The workplace localized messages (mapped to the locales). */
+    private Map m_messages;
+
     /** Indicates if the user managemet icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
     /** The temporary file project used by the editors. */
     private CmsProject m_tempFileProject;
 
+    /** The tool manager. */
+    private CmsToolManager m_toolManager;
+
     /** The configured workplace views. */
     private List m_views;
-    
-    /** The workplace localized messages (mapped to the locales). */
-    private Map m_messages;
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -191,38 +191,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap();
         m_messages = new HashMap();
-    }
-    
-    /**
-     * Returns the workplace messages for the given locale.<p>
-     * 
-     * The workplace messages are a collection of resource bundles, one for the basic
-     * workplace, and (optionally) one for each initialized module.<p>
-     * 
-     * If possible in a workplace class, the method <code>{@link CmsWorkplaceSettings#getMessages()}</code> should be 
-     * used, since this gives a better performance. All classes that inherit from <code>{@link CmsWorkplace}</code> should use 
-     * <code>{@link CmsWorkplace#getSettings()}</code> to obtain a settings object.<p>
-     * 
-     * @param locale the locale to get the messages for
-     * @return the workplace messages for the given locale
-     * 
-     * @see CmsWorkplaceSettings#getMessages()
-     * @see CmsWorkplace#getSettings()
-     */
-    public CmsWorkplaceMessages getMessages(Locale locale) {
-
-        CmsWorkplaceMessages result = (CmsWorkplaceMessages)m_messages.get(locale);
-        if (result != null) {
-            // messages have already been read
-            return result;
-        }
-
-        // massages have not been read so far
-        synchronized (this) {
-            result = new CmsWorkplaceMessages(locale);
-            m_messages.put(locale, result);
-        }
-        return result;
     }
 
     /**
@@ -338,16 +306,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
-     * Returns the tool manager.<p>
-     * 
-     * @return the tool manager
-     */
-    public CmsToolManager getToolManager() {
-
-        return m_toolManager;
-    }
-
-    /**
      * Gets the access object of the type settings.<p>
      * 
      * @return access object of the type settings
@@ -355,16 +313,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public CmsExplorerTypeAccess getDefaultAccess() {
 
         return m_defaultAccess;
-    }
-
-    /**
-     * Returns the default workplace encoding.<p>
-     * 
-     * @return the default workplace encoding
-     */
-    public String getDefaultEncoding() {
-
-        return m_defaultEncoding;
     }
 
     /**
@@ -436,6 +384,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public I_CmsEditorHandler getEditorHandler() {
 
         return m_editorHandler;
+    }
+
+    /**
+     * Returns the configured workplace encoding.<p>
+     * 
+     * @return the configured workplace encoding
+     */
+    public String getEncoding() {
+
+        return m_encoding;
     }
 
     /**
@@ -524,10 +482,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         if (req != null) {
             // set the request character encoding
             try {
-                req.setCharacterEncoding(m_defaultEncoding);
+                req.setCharacterEncoding(m_encoding);
             } catch (UnsupportedEncodingException e) {
                 // should not ever really happen
-                OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_defaultEncoding + "'", e);
+                OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_encoding + "'", e);
             }
             // read workplace settings
             HttpSession session = req.getSession(false);
@@ -563,7 +521,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
         }
 
-        return new CmsI18nInfo(locale, m_defaultEncoding);
+        return new CmsI18nInfo(locale, m_encoding);
     }
 
     /**
@@ -599,6 +557,38 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Returns the workplace messages for the given locale.<p>
+     * 
+     * The workplace messages are a collection of resource bundles, one for the basic
+     * workplace, and (optionally) one for each initialized module.<p>
+     * 
+     * If possible in a workplace class, the method <code>{@link CmsWorkplaceSettings#getMessages()}</code> should be 
+     * used, since this gives a better performance. All classes that inherit from <code>{@link CmsWorkplace}</code> should use 
+     * <code>{@link CmsWorkplace#getSettings()}</code> to obtain a settings object.<p>
+     * 
+     * @param locale the locale to get the messages for
+     * @return the workplace messages for the given locale
+     * 
+     * @see CmsWorkplaceSettings#getMessages()
+     * @see CmsWorkplace#getSettings()
+     */
+    public CmsWorkplaceMessages getMessages(Locale locale) {
+
+        CmsWorkplaceMessages result = (CmsWorkplaceMessages)m_messages.get(locale);
+        if (result != null) {
+            // messages have already been read
+            return result;
+        }
+
+        // massages have not been read so far
+        synchronized (this) {
+            result = new CmsWorkplaceMessages(locale);
+            m_messages.put(locale, result);
+        }
+        return result;
+    }
+
+    /**
      * Returns the id of the temporary file project required by the editors.<p>
      * 
      * @return the id of the temporary file project required by the editors
@@ -610,6 +600,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         } else {
             return -1;
         }
+    }
+
+    /**
+     * Returns the tool manager.<p>
+     * 
+     * @return the tool manager
+     */
+    public CmsToolManager getToolManager() {
+
+        return m_toolManager;
     }
 
     /**
@@ -647,7 +647,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @throws CmsException if something goes wrong
      */
-    public void initialize(CmsObject cms) throws CmsException {
+    public synchronized void initialize(CmsObject cms) throws CmsException {
 
         if (!cms.isAdmin()) {
             // current user has no administration rights, throw exception
@@ -657,7 +657,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         }
 
         // set the workplace encoding
-        m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
 
         // add the additional explorer types found in the modules
         CmsModuleManager moduleManager = OpenCms.getModuleManager();
@@ -712,6 +712,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
         }
         m_toolManager = new CmsToolManager(cms);
+        // throw away all cached message objects
+        m_messages.clear();
     }
 
     /**

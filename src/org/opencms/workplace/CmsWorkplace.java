@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2005/04/10 21:00:47 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  * 
  * @since 5.1
  */
@@ -151,13 +151,22 @@ public abstract class CmsWorkplace {
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
 
+    /** The current JSP action element. */
+    private CmsJspActionElement m_jsp;
+
     /** The macro resolver, this is cached to avoid multiple instance generation. */
     private CmsMacroResolver m_macroResolver;
-    
-    private CmsJspActionElement m_jsp;
+
+    /** The list of multi part file items. */
     private List m_multiPartFileItems;
+
+    /** The current resource URI. */
     private String m_resourceUri;
+
+    /** The current OpenCms users http session. */
     private HttpSession m_session;
+
+    /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
 
     /**
@@ -394,7 +403,8 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
 
         // initialize messages and also store them in settings
-        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(settings.getUserSettings().getLocale());
+        CmsWorkplaceMessages messages = 
+            OpenCms.getWorkplaceManager().getMessages(settings.getUserSettings().getLocale());
         settings.setMessages(messages);
 
         // switch to users preferred site      
@@ -1173,7 +1183,7 @@ public abstract class CmsWorkplace {
      */
     public String getEncoding() {
 
-        return m_settings.getMessages().getEncoding();
+        return OpenCms.getWorkplaceManager().getEncoding();
     }
 
     /**
@@ -1336,7 +1346,7 @@ public abstract class CmsWorkplace {
 
         return m_settings.getMessages().key(keyName);
     }
-    
+
     /**
      * Returns the localized resource string for a given message key,
      * with the provided replacement parameters.<p>
@@ -1353,12 +1363,12 @@ public abstract class CmsWorkplace {
      * @return the resource string for the given key
      * 
      * @see CmsWorkplaceMessages#key(String) 
-     */        
+     */
     public String key(String keyName, Object[] params) {
-        
+
         return m_settings.getMessages().key(keyName, params);
     }
-    
+
     /**
      * Returns the localized resource string for the given message key, 
      * checking the workplace default resources and all module bundles.<p>
@@ -1371,12 +1381,12 @@ public abstract class CmsWorkplace {
      * @return the resource string for the given key it it exists, or the given default if not 
      * 
      * @see CmsWorkplaceMessages#key(String, String)
-     */  
+     */
     public String key(String keyName, String defaultValue) {
-        
+
         return m_settings.getMessages().key(keyName, defaultValue);
     }
-    
+
     /**
      * Returns the empty String "" if the provided value is null, otherwise just returns 
      * the provided value.<p>
@@ -1551,7 +1561,7 @@ public abstract class CmsWorkplace {
         }
         return result.toString();
     }
-    
+
     /**
      * Resolves the macros in the given String and replaces them by their localized keys.<p>
      * 
@@ -1572,9 +1582,8 @@ public abstract class CmsWorkplace {
         if (m_macroResolver == null) {
             // create a new macro resolver "with everything we got"
             m_macroResolver = CmsMacroResolver.newInstance()
-                // initialize resolver with the objects available
-                .setCmsObject(m_cms)
-                .setMessages((m_settings == null) ? null : m_settings.getMessages())
+            // initialize resolver with the objects available
+                .setCmsObject(m_cms).setMessages((m_settings == null) ? null : m_settings.getMessages())
                 .setJspPageContext((m_jsp == null) ? null : m_jsp.getJspContext());
         }
         // resolve the macros

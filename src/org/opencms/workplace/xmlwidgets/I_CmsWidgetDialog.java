@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 21:00:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -36,18 +36,17 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import java.text.ParseException;
 import java.util.Locale;
 
-
 /**
  * Describes a widget enabled dialog.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {
-    
+
     /**
      * Generates a button for the OpenCms workplace.<p>
      * 
@@ -60,7 +59,7 @@ public interface I_CmsWidgetDialog {
      * @return a button for the OpenCms workplace
      */
     String button(String href, String target, String image, String label, int type);
-    
+
     /**
      * Returns the html for an invisible spacer between button bar contents like buttons, labels, etc.<p>
      * 
@@ -68,7 +67,7 @@ public interface I_CmsWidgetDialog {
      * @return the html for the invisible spacer
      */
     String buttonBarSpacer(int width);
-    
+
     /**
      * Displays a javascript calendar element with the standard "opencms" style.<p>
      * 
@@ -77,7 +76,7 @@ public interface I_CmsWidgetDialog {
      * @return the necessary HTML code for the js and stylesheet includes
      */
     String calendarIncludes();
-    
+
     /**
      * Initializes a javascript calendar element to be shown on a page.<p>
      * 
@@ -93,8 +92,16 @@ public interface I_CmsWidgetDialog {
      * @param showTime true if the time selector should be shown, otherwise false
      * @return the HTML code to initialize a calendar poup element
      */
-    String calendarInit(String inputFieldId, String triggerButtonId, String align, boolean singleClick, boolean weekNumbers, boolean mondayFirst, String dateStatusFunc, boolean showTime);
-    
+    String calendarInit(
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc,
+        boolean showTime);
+
     /**
      * Creates the time in milliseconds from the given parameter.<p>
      * 
@@ -104,7 +111,7 @@ public interface I_CmsWidgetDialog {
      * @throws ParseException if something goes wrong
      */
     long getCalendarDate(String dateString, boolean useTime) throws ParseException;
-    
+
     /**
      * Returns the given timestamp as String formatted in a localized pattern.<p>
      * 
@@ -112,21 +119,14 @@ public interface I_CmsWidgetDialog {
      * @return the given timestamp as String formatted in a localized pattern
      */
     String getCalendarLocalizedTime(long timestamp);
-    
+
     /**
      * Returns the current element locale.<p>
      * 
      * @return the current element locale
      */
     Locale getElementLocale();
-    
-    /**
-     * Returns the current workplace encoding.<p>
-     * 
-     * @return the current workplace encoding
-     */
-    String getEncoding();
-    
+
     /**
      * Returns the current users locale setting.<p>
      * 
@@ -137,14 +137,14 @@ public interface I_CmsWidgetDialog {
      * @return the current users locale setting
      */
     Locale getLocale();
-    
+
     /**
      * Returns the current users workplace settings.<p>
      * 
      * @return the current users workplace settings
      */
     CmsWorkplaceSettings getSettings();
-    
+
     /**
      * Returns the localized resource string for a given message key,
      * checking the workplace default resources and all module bundles.<p>
@@ -158,7 +158,7 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplaceMessages#key(String)
      */
     String key(String keyName);
-    
+
     /**
      * Returns the localized resource string for the given message key, 
      * checking the workplace default resources and all module bundles.<p>
@@ -171,6 +171,6 @@ public interface I_CmsWidgetDialog {
      * @return the resource string for the given key it it exists, or the given default if not 
      * 
      * @see org.opencms.workplace.CmsWorkplaceMessages#key(String, String)
-     */      
-    String key(String keyName, String defaultValue);    
+     */
+    String key(String keyName, String defaultValue);
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2005/04/10 21:00:47 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.66 $ $Date: 2005/04/10 21:00:47 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -112,7 +112,7 @@ public class CmsXmlLanguageFile {
             if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): initializing the static encodings");
             synchronized (this) {     
                 m_allEncodings = new HashMap(); 
-                m_workplaceDefaultEncoding = OpenCms.getWorkplaceManager().getDefaultEncoding();
+                m_workplaceDefaultEncoding = OpenCms.getWorkplaceManager().getEncoding();
             }            
         }  
         // initialize the static hash if not already done
