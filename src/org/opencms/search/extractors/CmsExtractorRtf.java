@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorRtf.java,v $
- * Date   : $Date: 2005/03/26 11:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package org.opencms.search.extractors;
 
-import java.io.InputStream;
+import java.io.StringReader;
+import java.util.regex.Pattern;
 
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
@@ -46,7 +47,10 @@ import javax.swing.text.rtf.RTFEditorKit;
 public final class CmsExtractorRtf extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorRtf m_instance = new CmsExtractorRtf();
+    private static final CmsExtractorRtf INSTANCE = new CmsExtractorRtf();
+
+    /** Pattern used to remove {\*\ts...} RTF keywords, which cause NPE in Java 1.4. */
+    private static final Pattern TS_REMOVE_PATTERN = Pattern.compile("\\{\\\\\\*\\\\ts[^\\}]*\\}", Pattern.DOTALL);
 
     /**
      * Hide the public constructor.<p> 
@@ -63,23 +67,49 @@ public final class CmsExtractorRtf extends A_CmsTextExtractor {
      */
     public static I_CmsTextExtractor getExtractor() {
 
-        return m_instance;
+        return INSTANCE;
     }
 
     /**
-     * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
+     * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(byte[], java.lang.String)
      */
-    public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
+    public I_CmsExtractionResult extractText(byte[] content, String encoding) throws Exception {
+
+        // RTF always uses ASCII, so we don't need to care about the encoding
+        String input = new String(content);
+
+        // workaround to remove RTF keywords that cause a NPE in Java 1.4
+        // this is a known bug in Java 1.4 that was fixed in 1.5
+        // please see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5042109 for the official bug report
+        input = TS_REMOVE_PATTERN.matcher(input).replaceAll("");
 
         // use build in RTF parser from Swing API
         RTFEditorKit rtfEditor = new RTFEditorKit();
         Document doc = rtfEditor.createDefaultDocument();
-        rtfEditor.read(in, doc, 0);
+        rtfEditor.read(new StringReader(input), doc, 0);
 
         String result = doc.getText(0, doc.getLength());
         result = removeControlChars(result);
 
         return new CmsExtractionResult(result);
     }
+
+    // this would be the better implementation if the bug mentioned above did not exist in 1.4 
+    //  
+    //    /**
+    //     * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
+    //     */
+    //    public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
+    //
+    //        // use build in RTF parser from Swing API
+    //        RTFEditorKit rtfEditor = new RTFEditorKit();
+    //        Document doc = rtfEditor.createDefaultDocument();
+    //        rtfEditor.read(in, doc, 0);
+    //
+    //        String result = doc.getText(0, doc.getLength());
+    //        result = removeControlChars(result);
+    //
+    //        return new CmsExtractionResult(result);
+    //    }
 
 }

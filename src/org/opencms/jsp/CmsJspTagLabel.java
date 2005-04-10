@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,39 +49,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
-            
-    /**
-     * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
-     */
-    public int doAfterBody() throws JspException {
-        
-        ServletRequest req = pageContext.getRequest();
-        
-        // This will always be true if the page is called through OpenCms 
-        if (CmsFlexController.isCmsRequest(req)) {
-            try {                       
-                
-                // Get label string from the body and reset body 
-                BodyContent body = this.getBodyContent();
-                String label = body.getString();            
-                body.clearBody();                  
-                
-                // Get the result...
-                String result = wpLabelTagAction(label, req);
-                this.getPreviousOut().print(result);
-                
-            } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'label' tag processing", ex);
-                }                
-                throw new javax.servlet.jsp.JspException(ex);
-            }            
-        }
-        return SKIP_BODY;
-    }
 
     /**
      * Internal action method.<p>
@@ -89,12 +59,43 @@ public class CmsJspTagLabel extends BodyTagSupport {
      * @param label the label to look up
      * @param req the current request
      * @return String the value of the selected label
-     */    
+     */
     public static String wpLabelTagAction(String label, ServletRequest req) {
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(controller.getCmsObject().getRequestContext().getLocale());
-        return messages.key(label);                    
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(
+            controller.getCmsObject().getRequestContext().getLocale());
+        return messages.key(label);
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
+     */
+    public int doAfterBody() throws JspException {
+
+        ServletRequest req = pageContext.getRequest();
+
+        // This will always be true if the page is called through OpenCms 
+        if (CmsFlexController.isCmsRequest(req)) {
+            try {
+
+                // Get label string from the body and reset body 
+                BodyContent body = this.getBodyContent();
+                String label = body.getString();
+                body.clearBody();
+
+                // Get the result...
+                String result = wpLabelTagAction(label, req);
+                this.getPreviousOut().print(result);
+
+            } catch (Exception ex) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'label' tag processing", ex);
+                }
+                throw new javax.servlet.jsp.JspException(ex);
+            }
+        }
+        return SKIP_BODY;
     }
 
 }

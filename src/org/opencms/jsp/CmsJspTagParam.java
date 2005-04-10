@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,13 +84,12 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- */ 
+ */
 
 package org.opencms.jsp;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
-
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -105,51 +104,26 @@ import javax.servlet.jsp.tagext.Tag;
  */
 public class CmsJspTagParam extends BodyTagSupport {
 
-    /** The name of the parameter. */
-    protected String m_name;        
-    
-    /** The value of the parameter. */
-    protected String m_value;
-
     /**
      * There used to be an 'encode' attribute; I've left this as a
      * vestige in case custom subclasses want to use our functionality
      * but NOT encode parameters.
      */
     protected boolean m_encode;
-    
+
+    /** The name of the parameter. */
+    protected String m_name;
+
+    /** The value of the parameter. */
+    protected String m_value;
+
     /**
      * Public constructor.<p>
      */
     public CmsJspTagParam() {
+
         super();
         init();
-    }
-
-    /**
-     * Initializes the internal values.<p> 
-     */
-    private void init() {
-        m_name = null;
-        m_value = null;
-    }
-
-    /**
-     * Sets the attribute name.<p>
-     * 
-     * @param name the name to set 
-     */
-    public void setName(String name) {
-        this.m_name = name;
-    }
-
-    /**
-     * Sets the attribute value.<p>
-     * 
-     * @param value the name to set 
-     */
-    public void setValue(String value) {
-        this.m_value = value;
     }
 
     /**
@@ -159,6 +133,7 @@ public class CmsJspTagParam extends BodyTagSupport {
      * @return EVAL_PAGE
      */
     public int doEndTag() throws JspException {
+
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
         if (t == null) {
             throw new JspTagException("Parameter Tag <param> without parent found!");
@@ -179,7 +154,8 @@ public class CmsJspTagParam extends BodyTagSupport {
             }
         }
         if (m_encode) {
-            parent.addParameter(CmsEncoder.encode(m_name, OpenCms.getSystemInfo().getDefaultEncoding()), CmsEncoder.encode(value, OpenCms.getSystemInfo().getDefaultEncoding()));
+            parent.addParameter(CmsEncoder.encode(m_name, OpenCms.getSystemInfo().getDefaultEncoding()), CmsEncoder
+                .encode(value, OpenCms.getSystemInfo().getDefaultEncoding()));
         } else {
             parent.addParameter(m_name, value);
         }
@@ -191,7 +167,36 @@ public class CmsJspTagParam extends BodyTagSupport {
      * Releases any resources we may have (or inherit).<p>
      */
     public void release() {
+
         init();
     }
 
+    /**
+     * Sets the attribute name.<p>
+     * 
+     * @param name the name to set 
+     */
+    public void setName(String name) {
+
+        this.m_name = name;
+    }
+
+    /**
+     * Sets the attribute value.<p>
+     * 
+     * @param value the name to set 
+     */
+    public void setValue(String value) {
+
+        this.m_value = value;
+    }
+
+    /**
+     * Initializes the internal values.<p> 
+     */
+    private void init() {
+
+        m_name = null;
+        m_value = null;
+    }
 }

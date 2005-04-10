@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/04/06 16:00:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,28 +48,35 @@ import java.util.List;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.7.2
  */
 public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
-    
+
     /** The standard priority value if no value was set. */
     public static final int C_PRIORITY_STANDARD = 3;
-    
+
     /** The name of the priority property to read. */
     public static final String C_PROPERTY_PRIORITY = "collector.priority";
-    
+
     /** Static array of the collectors implemented by this class. */
-    private static final String[] m_collectorNames = {
+    private static final String[] COLLECTORS = {
         "allInFolderPriorityDateDesc",
         "allInSubTreePriorityDateDesc",
         "allInFolderPriorityTitleDesc",
-        "allInSubTreePriorityTitleDesc"
-    };
+        "allInSubTreePriorityTitleDesc"};
 
     /** Array list for fast collector name lookup. */
-    private static final List m_collectors = Collections.unmodifiableList(Arrays.asList(m_collectorNames));
+    private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
+     */
+    public List getCollectorNames() {
+
+        return COLLECTORS_LIST;
+    }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
@@ -78,10 +85,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         // if action is not set, use default action
         if (collectorName == null) {
-            collectorName = m_collectorNames[1];
+            collectorName = COLLECTORS[1];
         }
 
-        switch (m_collectors.indexOf(collectorName)) {
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
             case 2:
                 // "allInFolderPriorityDateDesc" or "allInFolderPriorityTitleDesc"
@@ -102,10 +109,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         // if action is not set, use default action
         if (collectorName == null) {
-            collectorName = m_collectorNames[1];
+            collectorName = COLLECTORS[1];
         }
 
-        switch (m_collectors.indexOf(collectorName)) {
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
             case 2:
                 // "allInFolderPriorityDateDesc" or "allInFolderPriorityTitleDesc"
@@ -120,25 +127,17 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
-     */
-    public List getCollectorNames() {
-
-        return m_collectors;
-    }
-
-    /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public List getResults(CmsObject cms, String collectorName, String param) throws CmsException {
 
         // if action is not set use default
         if (collectorName == null) {
-            collectorName = m_collectorNames[0];
+            collectorName = COLLECTORS[0];
         }
 
-        switch (m_collectors.indexOf(collectorName)) {
-            
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
+
             case 0:
                 // "allInFolderPriorityDateDesc"
                 return allInFolderPriorityDate(cms, param, false);
@@ -175,14 +174,14 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
         List result = cms.readResources(foldername, filter, tree);
-        
+
         // create priority comparator to use to sort the resources
         CmsPriorityDateResourceComparator comparator = new CmsPriorityDateResourceComparator(cms);
-        Collections.sort(result, comparator);        
+        Collections.sort(result, comparator);
 
         return shrinkToFit(result, data.getCount());
     }
-    
+
     /**
      * Returns a list of all resource in a specified folder sorted by priority descending, then Title ascending.<p>
      * 
@@ -201,10 +200,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
         List result = cms.readResources(foldername, filter, tree);
-        
+
         // create priority comparator to use to sort the resources
         CmsPriorityTitleResourceComparator comparator = new CmsPriorityTitleResourceComparator(cms);
-        Collections.sort(result, comparator);        
+        Collections.sort(result, comparator);
 
         return shrinkToFit(result, data.getCount());
     }

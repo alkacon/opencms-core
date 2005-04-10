@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.14 $ $Date: 2005/04/10 11:00:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsJspTagEditable extends BodyTagSupport {
@@ -104,9 +104,8 @@ public class CmsJspTagEditable extends BodyTagSupport {
                     if (filename == null) {
                         filename = I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
                     }
-                    context.getRequest().setAttribute(
-                        I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI, 
-                        filename);
+                    context.getRequest()
+                        .setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI, filename);
                     CmsJspTagInclude.includeTagAction(
                         context,
                         filename,
@@ -174,20 +173,44 @@ public class CmsJspTagEditable extends BodyTagSupport {
         // set request parameters required by the included direct edit JSP 
         Map parameterMap = new HashMap();
         CmsJspTagInclude.addParameter(parameterMap, I_CmsConstants.C_PARAMETER_ELEMENT, element, true);
-        CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, editTarget, true);        
-        CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, controller.getCmsObject().getRequestContext().getLocale().toString(), true);        
-        CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());        
-        CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, String.valueOf(settings.getDirectEditButtonStyle()), true);
+        CmsJspTagInclude.addParameter(
+            parameterMap,
+            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET,
+            editTarget,
+            true);
+        CmsJspTagInclude.addParameter(
+            parameterMap, 
+            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, 
+            controller.getCmsObject().getRequestContext().getLocale().toString(), 
+            true);
+        CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());
+        CmsJspTagInclude.addParameter(
+            parameterMap, 
+            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, 
+            String.valueOf(settings.getDirectEditButtonStyle()), 
+            true);
         if (editElement != null) {
-            CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT, editElement, true);  
+            CmsJspTagInclude.addParameter(
+                parameterMap,
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT,
+                editElement,
+                true);
         }
         if (editOptions != null) {
-            CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_OPTIONS, editOptions, true);
+            CmsJspTagInclude.addParameter(
+                parameterMap,
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_OPTIONS,
+                editOptions,
+                true);
         }
         if (createLink != null) {
-            CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_NEWLINK, createLink, true);
-        }        
-        
+            CmsJspTagInclude.addParameter(
+                parameterMap,
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_NEWLINK,
+                createLink,
+                true);
+        }
+
         // save old parameters from current request
         Map oldParameterMap = controller.getCurrentRequest().getParameterMap();
 

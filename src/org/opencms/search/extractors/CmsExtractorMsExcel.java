@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorMsExcel m_instance = new CmsExtractorMsExcel();
+    private static final CmsExtractorMsExcel INSTANCE = new CmsExtractorMsExcel();
 
     /**
      * Hide the public constructor.<p> 
@@ -71,7 +71,7 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
      */
     public static I_CmsTextExtractor getExtractor() {
 
-        return m_instance;
+        return INSTANCE;
     }
 
     /**

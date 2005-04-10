@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -84,7 +84,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     private static Properties m_htmlProps;
 
     /** Required files per database server setup. */
-    public static final String[] requiredDbSetupFiles = {
+    public static final String[] REQUIRED_DB_SETUP_FILES = {
             "step_4_database_setup.jsp",
             "database.properties",
             "create_db.sql",
@@ -394,8 +394,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                         hasMissingSetupFiles = false;
 
                         if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                            for (int j = 0; j < requiredDbSetupFiles.length; j++) {
-                                setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+                            for (int j = 0; j < REQUIRED_DB_SETUP_FILES.length; j++) {
+                                setupFile = new File(childResource.getPath() + File.separator + REQUIRED_DB_SETUP_FILES[j]);
 
                                 if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
                                     hasMissingSetupFiles = true;
@@ -1314,8 +1314,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                         hasMissingSetupFiles = false;
 
                         if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                            for (int j = 0; j < requiredDbSetupFiles.length; j++) {
-                                setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+                            for (int j = 0; j < REQUIRED_DB_SETUP_FILES.length; j++) {
+                                setupFile = new File(childResource.getPath() + File.separator + REQUIRED_DB_SETUP_FILES[j]);
 
                                 if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
                                     hasMissingSetupFiles = true;
@@ -1416,7 +1416,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                             String value = "";
 
                             if (obj != null && obj instanceof Vector) {
-                                String values[] = {};
+                                String[] values = {};
                                 values = (String[]) ((Vector)obj).toArray(values);
                                 StringBuffer buf = new StringBuffer();
 

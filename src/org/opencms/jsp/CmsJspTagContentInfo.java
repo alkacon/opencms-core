@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/03/21 08:08:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,13 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
 
     /** The keys of the supported content info values. */
-    private static final String[] m_keys = {
+    private static final String[] KEYS = {
         "resultSize",
         "resultIndex",
         "pageCount",
@@ -67,14 +67,14 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         "pageNavEndIndex",
         "pageNavLength"};
 
+    /** The keys of the supported content info values as a list. */
+    private static final List KEYS_LIST = Collections.unmodifiableList(Arrays.asList(KEYS));
+
     /** The scopes supported by the page context. */
-    private static final String[] m_scopes = {"application", "session", "request", "page"};
+    private static final String[] SCOPES = {"application", "session", "request", "page"};
 
     /** The scopes supported by the page context as a list. */
-    private static final List m_scopeKeys = Collections.unmodifiableList(Arrays.asList(m_scopes));
-
-    /** The keys of the supported content info values as a list. */
-    private static final List m_valueKeys = Collections.unmodifiableList(Arrays.asList(m_keys));
+    private static final List SCOPES_LIST = Collections.unmodifiableList(Arrays.asList(SCOPES));
 
     /** The scope under which the content info is saved in the page context. */
     private String m_scope;
@@ -157,7 +157,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
             return null;
         }        
 
-        switch (m_valueKeys.indexOf(variableName)) {
+        switch (KEYS_LIST.indexOf(variableName)) {
             case 0:
                 // "resultSize"
                 return Integer.toString(bean.getResultSize());
@@ -275,7 +275,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     protected int getScopeAsInt(String scope) {
 
         int scopeValue;
-        switch (m_scopeKeys.indexOf(scope)) {
+        switch (SCOPES_LIST.indexOf(scope)) {
             case 0:
                 // application
                 scopeValue = PageContext.APPLICATION_SCOPE;

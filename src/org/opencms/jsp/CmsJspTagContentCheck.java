@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsJspTagContentCheck extends TagSupport {
@@ -82,7 +82,7 @@ public class CmsJspTagContentCheck extends TagSupport {
         Locale locale) {
 
         boolean found = false;
-        String elements[] = CmsStringUtil.splitAsArray(elementList, ',');
+        String[] elements = CmsStringUtil.splitAsArray(elementList, ',');
         for (int i = (elements.length - 1); i >= 0; i--) {
             
             String element = CmsXmlUtils.concatXpath(prefix, elements[i].trim());            

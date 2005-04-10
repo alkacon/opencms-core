@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2005/03/15 18:05:55 $
+ * @version $Revision: 1.29 $ $Date: 2005/04/10 11:00:14 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -202,7 +202,7 @@ public final class CmsDbPool extends Object {
         }
         
         List dbPoolNames = new ArrayList();
-        String driverPoolNames[] = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+        String[] driverPoolNames = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
 
         for (int i = 0; i < driverPoolNames.length; i++) { 
             dbPoolNames.add(getDbPoolName(configuration, driverPoolNames[i]));

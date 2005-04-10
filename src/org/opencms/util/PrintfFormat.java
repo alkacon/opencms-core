@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/PrintfFormat.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -508,7 +508,7 @@ public class PrintfFormat {
     private final class ConversionSpecification {
 
         /** Default precision. */
-        private static final int m_defaultDigits = 6;
+        private static final int DEFAULT_DIGITS = 6;
 
         /**
          * For an o conversion, increase the precision to
@@ -879,7 +879,7 @@ public class PrintfFormat {
             if (m_precisionSet) {
                 p = m_precision;
             } else {
-                p = m_defaultDigits - 1;
+                p = DEFAULT_DIGITS - 1;
             }
             if (rPos != -1 && ePos != -1) {
                 ca1 = (sx.substring(0, rPos) + sx.substring(rPos + 1, ePos)).toCharArray();
@@ -1289,7 +1289,7 @@ public class PrintfFormat {
             if (m_precisionSet) {
                 p = m_precision;
             } else {
-                p = m_defaultDigits - 1;
+                p = DEFAULT_DIGITS - 1;
             }
             char[] ca1 = sx.toCharArray();
             char[] ca2 = new char[n1In + n2In];
@@ -2111,7 +2111,7 @@ public class PrintfFormat {
                 }
             } else {
                 if (!m_precisionSet) {
-                    m_precision = m_defaultDigits;
+                    m_precision = DEFAULT_DIGITS;
                 }
                 if (m_precision == 0) {
                     m_precision = 1;

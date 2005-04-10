@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,19 +56,19 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
-    public static final String C_TYPE_NAME = "OpenCmsHtml";
-
-    /** Base type for single type instances, required for XML pages. */
-    private static final I_CmsXmlSchemaType m_baseType = new CmsXmlHtmlValue("base", "1", "1");
+    public static final String TYPE_NAME = "OpenCmsHtml";
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
+
+    /** Base type for single type instances, required for XML pages. */
+    private static final I_CmsXmlSchemaType TYPE_BASE = new CmsXmlHtmlValue("base", "1", "1");
 
     /** The String value of the element node. */
     private String m_stringValue;
@@ -90,7 +90,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public CmsXmlHtmlValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(document, element, locale, m_baseType);
+        super(document, element, locale, TYPE_BASE);
     }
 
     /**
@@ -231,7 +231,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public String getTypeName() {
 
-        return C_TYPE_NAME;
+        return TYPE_NAME;
     }
 
     /**

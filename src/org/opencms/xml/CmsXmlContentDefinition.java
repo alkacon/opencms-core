@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/03/02 13:21:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -113,7 +113,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static final String XSD_ATTRIBUTE_VALUE_ZERO = "0";
 
     /** The opencms default type definition include. */
-    public static final String XSD_INCLUDE_OPENCMS = CmsXmlEntityResolver.C_OPENCMS_SCHEME + "opencms-xmlcontent.xsd";
+    public static final String XSD_INCLUDE_OPENCMS = CmsXmlEntityResolver.OPENCMS_SCHEME + "opencms-xmlcontent.xsd";
 
     /** The schema definition namespace. */
     public static final Namespace XSD_NAMESPACE = Namespace.get("xsd", "http://www.w3.org/2001/XMLSchema");
@@ -214,7 +214,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(CmsObject cms, String resourcename) throws CmsXmlException {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-        String systemId = CmsXmlEntityResolver.C_OPENCMS_SCHEME.concat(resourcename.substring(1));
+        String systemId = CmsXmlEntityResolver.OPENCMS_SCHEME.concat(resourcename.substring(1));
         InputSource source = resolver.resolveEntity(null, systemId);
 
         return unmarshal(source, systemId, resolver);
@@ -356,7 +356,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         if (!XSD_ATTRIBUTE_VALUE_LANGUAGE.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_NAME))) {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
         }
-        if (!CmsXmlLocaleValue.C_TYPE_NAME.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_TYPE))) {
+        if (!CmsXmlLocaleValue.TYPE_NAME.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_TYPE))) {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
         }
         if (!XSD_ATTRIBUTE_VALUE_REQUIRED.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_USE))
@@ -723,7 +723,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         Element language = main.addElement(XSD_NODE_ATTRIBUTE);
         language.addAttribute(XSD_ATTRIBUTE_NAME, XSD_ATTRIBUTE_VALUE_LANGUAGE);
-        language.addAttribute(XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.C_TYPE_NAME);
+        language.addAttribute(XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
         language.addAttribute(XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_REQUIRED);
 
         return schema;

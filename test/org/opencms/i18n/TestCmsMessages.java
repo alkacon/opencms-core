@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessages.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,15 +68,38 @@ public class TestCmsMessages extends TestCase {
         value = "";
         assertFalse(CmsMessages.isUnknownKey(value));
 
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, Locale.ENGLISH);
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
         value = messages.key("name");
         assertFalse(CmsMessages.isUnknownKey(value));
-        assertEquals(value, "English");
+        assertEquals("English", value);
 
         String defaultValue = "This value does not exist!";
         value = messages.key("idontexist", defaultValue);
         assertFalse(CmsMessages.isUnknownKey(defaultValue));
-        assertEquals(value, defaultValue);
+        assertEquals(defaultValue, value);
     }
     
+    /**
+     * Tests parameter replacement in messages.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMessageWithParameters() throws Exception {
+        
+        String value;
+        
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
+        
+        value = messages.key("editor.xmlcontent.validation.error");
+        assertEquals("Invalid value \"{0}\" according to rule {1}", value);
+        
+        value = messages.key("editor.xmlcontent.validation.error", new Object[]{"'value'", "'rule'"});
+        assertEquals("Invalid value \"'value'\" according to rule 'rule'", value);
+        
+        value = messages.key("editor.xmlcontent.validation.warning");
+        assertEquals("Bad value \"{0}\" according to rule {1}", value);
+        
+        value = messages.key("editor.xmlcontent.validation.warning", new Object[]{"some value", "the rule"});
+        assertEquals("Bad value \"some value\" according to rule the rule", value);
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpSession;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexCacheKey {
 
@@ -63,7 +63,7 @@ public class CmsFlexCacheKey {
     private static final String IS_USED = "/ /";
 
     /** The list of keywords of the Flex cache language. */
-    private static final List m_cacheCmds = Arrays.asList(new String[] {
+    private static final List CACHE_COMMANDS = Arrays.asList(new String[] {
             "always",       // 0
             "never",        // 1
             "uri",          // 2
@@ -616,7 +616,7 @@ public class CmsFlexCacheKey {
                 if (DEBUG) {
                     System.err.println("Parsing token:" + t + " key=" + k + " value=" + v);
                 }
-                switch (m_cacheCmds.indexOf(k)) {
+                switch (CACHE_COMMANDS.indexOf(k)) {
                     case 0: // always
                     case 12:
                         m_always = 1;

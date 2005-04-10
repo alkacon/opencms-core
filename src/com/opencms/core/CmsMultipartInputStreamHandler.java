@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2005/02/18 15:18:57 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2005/04/10 11:00:14 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ class CmsMultipartInputStreamHandler {
      * @return Number of bytes read.
      * @throws IOException Throws IOException if any error with the input stream occurs.
      */
-    public int readLine(byte b[], int off, int len) throws IOException {
+    public int readLine(byte[] b, int off, int len) throws IOException {
         if (m_totalRead >= m_totalExpected) {
             return -1;
         } else {

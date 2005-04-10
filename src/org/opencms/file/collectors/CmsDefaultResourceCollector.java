@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,31 +52,30 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
     /** Static array of the collectors implemented by this class. */
-    private static final String[] m_collectorNames = {
+    private static final String[] COLLECTORS = {
         "singleFile",
         "allInFolder",
         "allInFolderDateReleasedDesc",
         "allInFolderNavPos",
         "allInSubTree",
         "allInSubTreeDateReleasedDesc",
-        "allInSubTreeNavPos"
-    };
+        "allInSubTreeNavPos"};
 
     /** Array list for fast collector name lookup. */
-    private static final List m_collectors = Collections.unmodifiableList(Arrays.asList(m_collectorNames));
+    private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
     public List getCollectorNames() {
 
-        return m_collectors;
+        return COLLECTORS_LIST;
     }
 
     /**
@@ -86,10 +85,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // if action is not set, use default action
         if (collectorName == null) {
-            collectorName = m_collectorNames[0];
+            collectorName = COLLECTORS[0];
         }
 
-        switch (m_collectors.indexOf(collectorName)) {
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
                 // "singleFile"
                 return null;
@@ -99,7 +98,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInFolderDateReleasedDesc"
             case 3:
                 // "allInFolderNavPos"
-                return getCreateInFolder(cms, param);                
+                return getCreateInFolder(cms, param);
             case 4:
                 // "allInSubTree"
             case 5:
@@ -119,10 +118,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // if action is not set, use default action
         if (collectorName == null) {
-            collectorName = m_collectorNames[0];
+            collectorName = COLLECTORS[0];
         }
 
-        switch (m_collectors.indexOf(collectorName)) {
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
                 // "singleFile"
                 return null;
@@ -132,7 +131,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInFolderDateReleasedDesc"
             case 3:
                 // "allInFolderNavPos"
-                return param;                
+                return param;
             case 4:
                 // "allInSubTree"
             case 5:
@@ -152,10 +151,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // if action is not set use default
         if (collectorName == null) {
-            collectorName = m_collectorNames[0];
+            collectorName = COLLECTORS[0];
         }
 
-        switch (m_collectors.indexOf(collectorName)) {
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
                 // "singleFile"
                 return getSingleFile(cms, param);
@@ -207,7 +206,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         return shrinkToFit(result, data.getCount());
     }
-    
+
     /**
      * Collects all resources in a folder (or subtree) sorted by the NavPos property.<p>
      * 
@@ -236,7 +235,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             // check if the resource has the NavPos property set or not
             if (navElement != null && navElement.getNavPosition() != Float.MAX_VALUE) {
                 navElementMap.put(navElement, resource);
-            } else if (OpenCms.getLog(this).isInfoEnabled()) {                
+            } else if (OpenCms.getLog(this).isInfoEnabled()) {
                 // printing a log messages makes it a little easier to indentify 
                 // resources having not the NavPos property set
                 OpenCms.getLog(this).info("Resource w/o nav. properties found: " + navElement.getResourceName());

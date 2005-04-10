@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlLocaleValue.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,20 +43,20 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
 
     /** The name of this type as used in the XML schema. */
-    public static final String C_TYPE_NAME = "OpenCmsLocale";
+    public static final String TYPE_NAME = "OpenCmsLocale";
 
     /** The validation rule used for this schema type. */
-    public static final String C_TYPE_RULE = "[a-z]{2}(_[A-Z]{2}(_[a-zA-Z0-9]+){0,1}){0,1}";
+    public static final String TYPE_RULE = "[a-z]{2}(_[A-Z]{2}(_[a-zA-Z0-9]+){0,1}){0,1}";
 
     /** Pre-compiled regular expression pattern for this rule. */
-    private static final Pattern m_pattern = Pattern.compile(C_TYPE_RULE);
-    
+    private static final Pattern TYPE_PATTERN = Pattern.compile(TYPE_RULE);
+
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsLocale".<p>
      */
@@ -104,10 +104,10 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
     public String getSchemaDefinition() {
 
         return "<xsd:simpleType name=\""
-            + C_TYPE_NAME
+            + TYPE_NAME
             + "\"><xsd:restriction base=\"xsd:string\">"
             + "<xsd:pattern value=\""
-            + C_TYPE_RULE
+            + TYPE_RULE
             + "\" /></xsd:restriction></xsd:simpleType>";
     }
 
@@ -116,7 +116,7 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
      */
     public String getTypeName() {
 
-        return C_TYPE_NAME;
+        return TYPE_NAME;
     }
 
     /**
@@ -132,6 +132,6 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
      */
     public boolean validateValue(String value) {
 
-        return m_pattern.matcher(value).matches();
+        return TYPE_PATTERN.matcher(value).matches();
     }
 }

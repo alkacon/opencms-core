@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/04/05 20:06:44 $
- * Version: $Revision: 1.481 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.482 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.481 $ $Date: 2005/04/05 20:06:44 $
+ * @version $Revision: 1.482 $ $Date: 2005/04/10 11:00:14 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -395,7 +395,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // read the pool names to initialize
-        String driverPoolNames[] = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+        String[] driverPoolNames = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
@@ -4570,8 +4570,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public Object newDriverInstance(ExtendedProperties configuration, String driverName, String driverPoolUrl)
     throws CmsException {
 
-        Class initParamClasses[] = {ExtendedProperties.class, String.class, CmsDriverManager.class};
-        Object initParams[] = {configuration, driverPoolUrl, this};
+        Class[] initParamClasses = {ExtendedProperties.class, String.class, CmsDriverManager.class};
+        Object[] initParams = {configuration, driverPoolUrl, this};
 
         Class driverClass = null;
         Object driver = null;

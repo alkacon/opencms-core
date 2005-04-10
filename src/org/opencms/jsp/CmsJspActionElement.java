@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,25 +72,26 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.0 beta 2
  */
 public class CmsJspActionElement extends CmsJspBean {
-    
-    /** JSP navigation builder. */
-    private CmsJspNavBuilder m_navigation;    
-        
+
     /** Error message in case bean was not properly initialized. */
     public static final String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
-    
+
+    /** JSP navigation builder. */
+    private CmsJspNavBuilder m_navigation;
+
     /**
      * Empty constructor, required for every JavaBean.
      */
     public CmsJspActionElement() {
+
         super();
     }
-    
+
     /**
      * Constructor, with parameters.
      * 
@@ -99,9 +100,10 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param res the JSP response 
      */
     public CmsJspActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         super();
         init(context, req, res);
-    }    
+    }
 
     /**
      * Includes direct edit scriptlets, same as 
@@ -111,12 +113,12 @@ public class CmsJspActionElement extends CmsJspBean {
      * @throws JspException if something goes wrong
      */
     public void editable(boolean isEditable) throws JspException {
-        
+
         if (isEditable) {
             CmsJspTagEditable.editableTagAction(getJspContext(), null, getRequest(), getResponse());
         }
     }
-    
+
     /**
      * Includes direct edit scriptlets, same as
      * using the <code>&lt;cms:editable file="..." /&gt;</code>tag.<p>
@@ -126,12 +128,158 @@ public class CmsJspActionElement extends CmsJspBean {
      * @throws JspException if something goes wrong
      */
     public void editable(boolean isEditable, String filename) throws JspException {
-    
+
         if (isEditable) {
             CmsJspTagEditable.editableTagAction(getJspContext(), filename, getRequest(), getResponse());
         }
     }
-    
+
+    /**
+     * Returns the processed output of an OpenCms resource in a String.<p>
+     * 
+     * @param target the target to process
+     * @return the processed output of an OpenCms resource in a String
+     */
+    public String getContent(String target) {
+
+        return getContent(target, null, null);
+    }
+
+    /**
+     * Returns the processed output of an element within an OpenCms resource.<p>
+     * 
+     * @param target the target to process
+     * @param element name of the element
+     * @param locale locale of the element
+     * @return the processed output
+     */
+    public String getContent(String target, String element, Locale locale) {
+
+        I_CmsResourceLoader loader;
+        CmsFile file;
+        target = toAbsolute(target);
+
+        try {
+            file = getCmsObject().readFile(target);
+            loader = OpenCms.getResourceManager().getLoader(file);
+        } catch (ClassCastException e) {
+            // no loader implementation found
+            return CmsMessages.formatUnknownKey(e.getMessage());
+        } catch (CmsException e) {
+            // file might not exist or no read permissions
+            return CmsMessages.formatUnknownKey(e.getMessage());
+        }
+
+        try {
+            byte[] result = loader.dump(getCmsObject(), file, element, locale, getRequest(), getResponse());
+            return new String(result, getRequestContext().getEncoding());
+        } catch (UnsupportedEncodingException uee) {
+            // encoding unsupported
+            return CmsMessages.formatUnknownKey(uee.getMessage());
+        } catch (Throwable t) {
+            // any other exception, check for hidden root cause first
+            Throwable cause = CmsFlexController.getThrowable(getRequest());
+            if (cause == null) {
+                cause = t;
+            }
+            handleException(cause);
+            return CmsMessages.formatUnknownKey(cause.getMessage());
+        }
+    }
+
+    /**
+     * Generates an initialized instance of {@link CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
+     * @param language language indentificator for the locale of the bundle
+     * @return CmsMessages a message bundle initialized with the provided values
+     */
+    public CmsMessages getMessages(String bundleName, String language) {
+
+        return getMessages(bundleName, language, "", "", null);
+    }
+
+    /**
+     * Generates an initialized instance of {@link CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
+     * @param language language indentificator for the locale of the bundle
+     * @param defaultLanguage default for the language, will be used 
+     *         if language is null or empty String "", and defaultLanguage is not null
+     * @return CmsMessages a message bundle initialized with the provided values
+     */
+    public CmsMessages getMessages(String bundleName, String language, String defaultLanguage) {
+
+        return getMessages(bundleName, language, "", "", defaultLanguage);
+    }
+
+    /**
+     * Generates an initialized instance of {@link CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
+     * @param language language indentificator for the locale of the bundle
+     * @param country 2 letter country code for the locale of the bundle 
+     * @param variant a vendor or browser-specific variant code
+     * @param defaultLanguage default for the language, will be used 
+     *         if language is null or empty String "", and defaultLanguage is not null
+     * @return CmsMessages a message bundle initialized with the provided values
+     * 
+     * @see java.util.ResourceBundle
+     * @see org.opencms.i18n.CmsMessages
+     */
+    public CmsMessages getMessages(
+        String bundleName,
+        String language,
+        String country,
+        String variant,
+        String defaultLanguage) {
+
+        try {
+            if ((defaultLanguage != null) && ((language == null) || ("".equals(language)))) {
+                language = defaultLanguage;
+            }
+            if (language == null) {
+                language = "";
+            }
+            if (country == null) {
+                country = "";
+            }
+            if (variant == null) {
+                variant = "";
+            }
+            return new CmsMessages(bundleName, language, country, variant);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return null;
+    }
+
+    /**
+     * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
+     *  
+     * @return CmsJspNavBuilder an initialized <code>CmsJspNavBuilder</code>
+     * 
+     * @see org.opencms.jsp.CmsJspNavBuilder
+     */
+    public CmsJspNavBuilder getNavigation() {
+
+        if (isNotInitialized()) {
+            return null;
+        }
+        try {
+            if (m_navigation == null) {
+                m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
+            }
+            return m_navigation;
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return null;
+    }
+
     /**
      * Include a sub-element without paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="..." /&gt;</code> tag.
@@ -142,9 +290,10 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagInclude
      */
     public void include(String target) throws JspException {
+
         this.include(target, null, null);
     }
-    
+
     /**
      * Include a named sub-element without paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag.
@@ -154,8 +303,9 @@ public class CmsJspActionElement extends CmsJspBean {
      * @throws JspException in case there were problems including the target
      *
      * @see org.opencms.jsp.CmsJspTagInclude
-     */    
+     */
     public void include(String target, String element) throws JspException {
+
         this.include(target, element, null);
     }
 
@@ -169,27 +319,12 @@ public class CmsJspActionElement extends CmsJspBean {
      * @throws JspException in case there were problems including the target
      *
      * @see org.opencms.jsp.CmsJspTagInclude
-     */    
+     */
     public void include(String target, String element, boolean editable) throws JspException {
+
         this.include(target, element, editable, null);
     }
-    
-    /**
-     * Include a named sub-element with paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
-     * with parameters in the tag body.<p>
-     * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
-     * @param element the element (template selector) to display from the target
-     * @param parameterMap a map of the request parameters
-     * @throws JspException in case there were problems including the target
-     * 
-     * @see org.opencms.jsp.CmsJspTagInclude
-     */
-    public void include(String target, String element, Map parameterMap) throws JspException {
-        this.include(target, element, false, parameterMap);
-    }
-    
+
     /**
      * Include a named sub-element with paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
@@ -216,6 +351,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagInclude
      */
     public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
+
         if (isNotInitialized()) {
             return;
         }
@@ -242,9 +378,33 @@ public class CmsJspActionElement extends CmsJspBean {
                 // parameter map is immutable, just use it "as is"
             }
         }
-        CmsJspTagInclude.includeTagAction(getJspContext(), target, element, editable, parameterMap, getRequest(), getResponse());
+        CmsJspTagInclude.includeTagAction(
+            getJspContext(),
+            target,
+            element,
+            editable,
+            parameterMap,
+            getRequest(),
+            getResponse());
     }
-    
+
+    /**
+     * Include a named sub-element with paramters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
+     * with parameters in the tag body.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param parameterMap a map of the request parameters
+     * @throws JspException in case there were problems including the target
+     * 
+     * @see org.opencms.jsp.CmsJspTagInclude
+     */
+    public void include(String target, String element, Map parameterMap) throws JspException {
+
+        this.include(target, element, false, parameterMap);
+    }
+
     /**
      * Includes a named sub-element supressing all Exceptions that occur during the include,
      * otherwise the same as using {@link #include(String, String, Map)}.<p>
@@ -257,12 +417,13 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param element the element (template selector) to display from the target
      */
     public void includeSilent(String target, String element) {
+
         try {
             include(target, element, null);
         } catch (Throwable t) {
             // ignore
         }
-    }  
+    }
 
     /**
      * Includes a named sub-element supressing all Exceptions that occur during the include,
@@ -277,32 +438,13 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param editable flag to indicate if element is editable
      */
     public void includeSilent(String target, String element, boolean editable) {
+
         try {
             include(target, element, editable, null);
         } catch (Throwable t) {
             // ignore
         }
-    } 
-    
-    /**
-     * Includes a named sub-element supressing all Exceptions that occur during the include,
-     * otherwise the same as using {@link #include(String, String, Map)}.<p>
-     * 
-     * This is a convenience method that allows to include elements on a page without checking 
-     * if they exist or not. If the target element does not exist, nothing is printed to 
-     * the JSP output.<p>
-     * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
-     * @param element the element (template selector) to display from the target
-     * @param parameterMap a map of the request parameters
-     */
-    public void includeSilent(String target, String element, Map parameterMap) {
-        try {
-            include(target, element, parameterMap);
-        } catch (Throwable t) {
-            // ignore
-        }
-    }    
+    }
 
     /**
      * Includes a named sub-element supressing all Exceptions that occur during the include,
@@ -318,27 +460,81 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param parameterMap a map of the request parameters
      */
     public void includeSilent(String target, String element, boolean editable, Map parameterMap) {
+
         try {
             include(target, element, editable, parameterMap);
         } catch (Throwable t) {
             // ignore
         }
-    } 
-    
+    }
+
     /**
-     * Converts a relative URI in the OpenCms VFS to an absolute one based on 
-     * the location of the currently processed OpenCms URI.
+     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
-     * @param target the relative URI to convert
-     * @return the target URI converted to an absolute one
+     * This is a convenience method that allows to include elements on a page without checking 
+     * if they exist or not. If the target element does not exist, nothing is printed to 
+     * the JSP output.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param parameterMap a map of the request parameters
      */
-    public String toAbsolute(String target) {
+    public void includeSilent(String target, String element, Map parameterMap) {
+
+        try {
+            include(target, element, parameterMap);
+        } catch (Throwable t) {
+            // ignore
+        }
+    }
+
+    /**
+     * Returns an OpenCms or JVM system info property value, same as using
+     * the <code>&lt;cms:info property="..." /&gt;</code> tag.<p>
+     * 
+     * See the description of the class {@link CmsJspTagInfo} for a detailed list 
+     * of available options for the property value.<p>
+     *  
+     * @param property the property to look up
+     * @return String the value of the system property
+     * @see org.opencms.jsp.CmsJspTagInfo
+     */
+    public String info(String property) {
+
+        try {
+            return CmsJspTagInfo.infoTagAction(property, getRequest());
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return "+++ error reading info property '" + property + "' +++";
+    }
+
+    /**
+     * Returns an OpenCms workplace label.<p>
+     * 
+     * You should consider using a standard 
+     * {@link java.util.ResourceBundle java.util.ResourceBundle} instead of the 
+     * OpenCms workplace language files.
+     * 
+     * @param label the label to look up
+     * @return label the value of the label
+     * 
+     * @see org.opencms.jsp.CmsJspTagLabel
+     */
+    public String label(String label) {
+
         if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
-        return CmsLinkManager.getAbsoluteUri(target, getController().getCurrentRequest().getElementUri());
+        try {
+            return CmsJspTagLabel.wpLabelTagAction(label, getRequest());
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return "+++ error reading workplace label '" + label + "' +++";
     }
-            
+
     /**
      * Calculate a link with the OpenCms link management,
      * same as using the <code>&lt;cms:link&gt;...&lt;/cms:link&gt;</code> tag.<p>
@@ -352,39 +548,84 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagLink
      */
     public String link(String link) {
-        if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
-        }
-        try {        
-            return CmsJspTagLink.linkTagAction(link, getRequest());
-        } catch (Throwable t) {
-            handleException(t);
-        }  
-        return "+++ error generating link to '" + link + "' +++";             
-    }
-    
-    /**
-     * Returns a selected user property, i.e. information about the currently
-     * logged in user, same as using 
-     * the <code>&lt;cms:user property="..." /&gt;</code> tag.<p>
-     * 
-     * @param property the user property to display, please see the tag documentation for valid options
-     * @return the value of the selected user property
-     * 
-     * @see org.opencms.jsp.CmsJspTagUser
-     */
-    public String user(String property) {
+
         if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
         try {
-            return CmsJspTagUser.userTagAction(property, getRequest());
+            return CmsJspTagLink.linkTagAction(link, getRequest());
         } catch (Throwable t) {
             handleException(t);
-        }  
-        return "+++ error reading user property '" + property + "' +++";            
+        }
+        return "+++ error generating link to '" + link + "' +++";
     }
-    
+
+    /**
+     * Returns all properites of the current file.<p>
+     * 
+     * @return Map all properties of the current file
+     */
+    public Map properties() {
+
+        return this.properties(null);
+    }
+
+    /**
+     * Returns all properites of the selected file.<p>
+     * 
+     * Please see the description of the class {@link org.opencms.jsp.CmsJspTagProperty} for
+     * valid options of the <code>file</code> parameter.<p>
+     * 
+     * @param file the file (or folder) to look at for the properties
+     * @return Map all properties of the current file 
+     *     (and optional of the folders containing the file)
+     * 
+     * @see org.opencms.jsp.CmsJspTagProperty
+     */
+    public Map properties(String file) {
+
+        if (isNotInitialized()) {
+            return new HashMap();
+        }
+        Map value = new HashMap();
+        try {
+            if (file == null) {
+                file = CmsJspTagProperty.USE_URI;
+            }
+            switch (CmsJspTagProperty.ACTION_VALUES_LIST.indexOf(file)) {
+                case 0: // USE_URI
+                case 1: // USE_PARENT
+                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getRequestContext().getUri(), false));
+                    break;
+                case 2: // USE_SEARCH
+                case 3: // USE_SEARCH_URI
+                case 4: // USE_SEARCH_PARENT 
+                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getRequestContext().getUri(), true));
+                    break;
+                case 5: // USE_ELEMENT_URI
+                case 6: // USE_THIS
+                    // Read properties of this file            
+                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(
+                        getController().getCurrentRequest().getElementUri(),
+                        false));
+                    break;
+                case 7: // USE_SEARCH_ELEMENT_URI
+                case 8: // USE_SEARCH_THIS
+                    // Try to find property on this file and all parent folders
+                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(
+                        getController().getCurrentRequest().getElementUri(),
+                        true));
+                    break;
+                default:
+                    // Read properties of the file named in the attribute            
+                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(toAbsolute(file), false));
+            }
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return value;
+    }
+
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." /&gt;</code> tag or
@@ -397,9 +638,10 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name) {
-        return this.property(name, null, null, false);       
+
+        return this.property(name, null, null, false);
     }
-        
+
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." file="..." /&gt;</code> tag or
@@ -413,7 +655,8 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file) {
-        return this.property(name, file, null, false);       
+
+        return this.property(name, file, null, false);
     }
 
     /**
@@ -431,9 +674,10 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue) {
+
         return this.property(name, file, defaultValue, false);
     }
-            
+
     /**
      * Returns a selected file property value with optional HTML escaping, same as using 
      * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
@@ -452,6 +696,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
+
         if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
@@ -466,7 +711,7 @@ public class CmsJspActionElement extends CmsJspBean {
             }
         } catch (Throwable t) {
             handleException(t);
-        }   
+        }
         if (defaultValue == null) {
             return "+++ file property '" + name + "' on '" + file + "' not found +++";
         } else {
@@ -474,110 +719,6 @@ public class CmsJspActionElement extends CmsJspBean {
         }
     }
 
-    /**
-     * Returns all properites of the current file.<p>
-     * 
-     * @return Map all properties of the current file
-     */
-    public Map properties() {
-        return this.properties(null);
-    }
-       
-    /**
-     * Returns all properites of the selected file.<p>
-     * 
-     * Please see the description of the class {@link org.opencms.jsp.CmsJspTagProperty} for
-     * valid options of the <code>file</code> parameter.<p>
-     * 
-     * @param file the file (or folder) to look at for the properties
-     * @return Map all properties of the current file 
-     *     (and optional of the folders containing the file)
-     * 
-     * @see org.opencms.jsp.CmsJspTagProperty
-     */
-    public Map properties(String file) {
-        if (isNotInitialized()) {
-            return new HashMap();
-        }
-        Map value = new HashMap();        
-        try {
-            if (file == null) {
-                file = CmsJspTagProperty.USE_URI;
-            }
-            switch (CmsJspTagProperty.m_actionValue.indexOf(file)) {      
-                case 0: // USE_URI
-                case 1: // USE_PARENT
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getRequestContext().getUri(), false));
-                    break;
-                case 2: // USE_SEARCH
-                case 3: // USE_SEARCH_URI
-                case 4: // USE_SEARCH_PARENT 
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getRequestContext().getUri(), true));                        
-                    break;                
-                case 5: // USE_ELEMENT_URI
-                case 6: // USE_THIS
-                    // Read properties of this file            
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getController().getCurrentRequest().getElementUri(), false));
-                    break;
-                case 7: // USE_SEARCH_ELEMENT_URI
-                case 8: // USE_SEARCH_THIS
-                    // Try to find property on this file and all parent folders
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getController().getCurrentRequest().getElementUri(), true));
-                    break;
-                default:
-                    // Read properties of the file named in the attribute            
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(toAbsolute(file), false));
-            }            
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return value;          
-    }
-    
-    /**
-     * Returns an OpenCms or JVM system info property value, same as using
-     * the <code>&lt;cms:info property="..." /&gt;</code> tag.<p>
-     * 
-     * See the description of the class {@link CmsJspTagInfo} for a detailed list 
-     * of available options for the property value.<p>
-     *  
-     * @param property the property to look up
-     * @return String the value of the system property
-     * @see org.opencms.jsp.CmsJspTagInfo
-     */
-    public String info(String property) {
-        try {        
-            return CmsJspTagInfo.infoTagAction(property, getRequest());   
-        } catch (Throwable t) {
-            handleException(t);
-        }  
-        return "+++ error reading info property '" + property + "' +++";
-    }
-    
-    /**
-     * Returns an OpenCms workplace label.<p>
-     * 
-     * You should consider using a standard 
-     * {@link java.util.ResourceBundle java.util.ResourceBundle} instead of the 
-     * OpenCms workplace language files.
-     * 
-     * @param label the label to look up
-     * @return label the value of the label
-     * 
-     * @see org.opencms.jsp.CmsJspTagLabel
-     */
-    public String label(String label) {
-        if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
-        }
-        try {
-            return CmsJspTagLabel.wpLabelTagAction(label, getRequest());
-        } catch (Throwable t) {
-            handleException(t);
-        }  
-        return "+++ error reading workplace label '" + label + "' +++";
-    }    
-    
     /**
      * Checks if a template part should be used or not, same as using 
      * the <code>&lt;cms:template element="..." /&gt;</code> tag.<p>
@@ -588,6 +729,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagUser
      */
     public boolean template(String element) {
+
         return template(element, null, false);
     }
 
@@ -602,6 +744,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagUser
      */
     public boolean template(String elementlist, boolean checkall) {
+
         return template(null, elementlist, checkall);
     }
 
@@ -617,6 +760,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @see org.opencms.jsp.CmsJspTagUser
      */
     public boolean template(String element, String elementlist, boolean checkall) {
+
         if (isNotInitialized()) {
             return true;
         }
@@ -627,140 +771,42 @@ public class CmsJspActionElement extends CmsJspBean {
         }
         return true;
     }
-    
+
     /**
-     * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
-     *  
-     * @return CmsJspNavBuilder an initialized <code>CmsJspNavBuilder</code>
+     * Converts a relative URI in the OpenCms VFS to an absolute one based on 
+     * the location of the currently processed OpenCms URI.
      * 
-     * @see org.opencms.jsp.CmsJspNavBuilder
+     * @param target the relative URI to convert
+     * @return the target URI converted to an absolute one
      */
-    public CmsJspNavBuilder getNavigation() {
+    public String toAbsolute(String target) {
+
         if (isNotInitialized()) {
-            return null;
+            return C_NOT_INITIALIZED;
         }
-        try {
-            if (m_navigation == null) {
-                m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
-            }
-            return m_navigation;
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return null;            
-    }
-    
-    /**
-     * Generates an initialized instance of {@link CmsMessages} for 
-     * convenient access to localized resource bundles.<p>
-     * 
-     * @param bundleName the name of the ResourceBundle to use
-     * @param language language indentificator for the locale of the bundle
-     * @return CmsMessages a message bundle initialized with the provided values
-     */       
-    public CmsMessages getMessages(String bundleName, String language) {
-        return getMessages(bundleName, language, "", "", null);
-    }
-    
-    /**
-     * Generates an initialized instance of {@link CmsMessages} for 
-     * convenient access to localized resource bundles.<p>
-     * 
-     * @param bundleName the name of the ResourceBundle to use
-     * @param language language indentificator for the locale of the bundle
-     * @param defaultLanguage default for the language, will be used 
-     *         if language is null or empty String "", and defaultLanguage is not null
-     * @return CmsMessages a message bundle initialized with the provided values
-     */    
-    public CmsMessages getMessages(String bundleName, String language, String defaultLanguage) {
-        return getMessages(bundleName, language, "", "", defaultLanguage);
-    }
-    
-    /**
-     * Generates an initialized instance of {@link CmsMessages} for 
-     * convenient access to localized resource bundles.<p>
-     * 
-     * @param bundleName the name of the ResourceBundle to use
-     * @param language language indentificator for the locale of the bundle
-     * @param country 2 letter country code for the locale of the bundle 
-     * @param variant a vendor or browser-specific variant code
-     * @param defaultLanguage default for the language, will be used 
-     *         if language is null or empty String "", and defaultLanguage is not null
-     * @return CmsMessages a message bundle initialized with the provided values
-     * 
-     * @see java.util.ResourceBundle
-     * @see org.opencms.i18n.CmsMessages
-     */
-    public CmsMessages getMessages(String bundleName, String language, String country, String variant, String defaultLanguage) {
-        try {
-            if ((defaultLanguage != null) && ((language == null) || ("".equals(language)))) {
-                language = defaultLanguage;
-            }
-            if (language == null) {
-                language = "";
-            }
-            if (country == null) {
-                country = "";
-            }
-            if (variant == null) {
-                variant = "";
-            }
-            return new CmsMessages(bundleName, language, country, variant);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return null;
-    }    
-    
-    /**
-     * Returns the processed output of an OpenCms resource in a String.<p>
-     * 
-     * @param target the target to process
-     * @return the processed output of an OpenCms resource in a String
-     */
-    public String getContent(String target) {
-        return getContent(target, null, null);
+        return CmsLinkManager.getAbsoluteUri(target, getController().getCurrentRequest().getElementUri());
     }
 
     /**
-     * Returns the processed output of an element within an OpenCms resource.<p>
+     * Returns a selected user property, i.e. information about the currently
+     * logged in user, same as using 
+     * the <code>&lt;cms:user property="..." /&gt;</code> tag.<p>
      * 
-     * @param target the target to process
-     * @param element name of the element
-     * @param locale locale of the element
-     * @return the processed output
+     * @param property the user property to display, please see the tag documentation for valid options
+     * @return the value of the selected user property
+     * 
+     * @see org.opencms.jsp.CmsJspTagUser
      */
-    public String getContent(String target, String element, Locale locale) {
+    public String user(String property) {
 
-        I_CmsResourceLoader loader;
-        CmsFile file;
-        target = toAbsolute(target);
-        
-        try {
-            file = getCmsObject().readFile(target);
-            loader = OpenCms.getResourceManager().getLoader(file);
-        } catch (ClassCastException e) {
-            // no loader implementation found
-            return CmsMessages.formatUnknownKey(e.getMessage());
-        } catch (CmsException e) {
-            // file might not exist or no read permissions
-            return CmsMessages.formatUnknownKey(e.getMessage());
+        if (isNotInitialized()) {
+            return C_NOT_INITIALIZED;
         }
-        
         try {
-            byte[] result = loader.dump(getCmsObject(), file, element, locale, getRequest(), getResponse());
-            return new String(result, getRequestContext().getEncoding());                                                                   
-        } catch (UnsupportedEncodingException uee) {
-            // encoding unsupported
-            return CmsMessages.formatUnknownKey(uee.getMessage());
+            return CmsJspTagUser.userTagAction(property, getRequest());
         } catch (Throwable t) {
-            // any other exception, check for hidden root cause first
-            Throwable cause = CmsFlexController.getThrowable(getRequest());
-            if (cause == null) {
-                cause = t;
-            }
-            handleException(cause);
-            return CmsMessages.formatUnknownKey(cause.getMessage());
+            handleException(t);
         }
-    }    
+        return "+++ error reading user property '" + property + "' +++";
+    }
 }

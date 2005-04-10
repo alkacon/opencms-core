@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.jsp;
 
 import org.opencms.file.CmsResource;
@@ -78,58 +78,84 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagInfo extends TagSupport {
-    
+
+    /** Static array with allowed info property values. */
+    private static final String[] SYSTEM_PROPERTIES = {"opencms.version", // 0
+        "opencms.url", // 1
+        "opencms.uri", // 2
+        "opencms.webapp", // 3
+        "opencms.webbasepath", // 4 
+        "opencms.request.uri", // 5
+        "opencms.request.element.uri", // 6
+        "opencms.request.folder", // 7      
+        "opencms.request.encoding", // 8
+        "opencms.request.locale" // 9   
+    };
+
+    /** Array list of allowed property values for more convenient lookup. */
+    private static final List SYSTEM_PROPERTIES_LIST = Arrays.asList(SYSTEM_PROPERTIES);
+
     // member variables    
     private String m_property;
 
-    /** Static array with allowed info property values. */
-    private static final String[] m_systemProperties =
-        {
-            "opencms.version", // 0
-            "opencms.url", // 1
-            "opencms.uri", // 2
-            "opencms.webapp", // 3
-            "opencms.webbasepath", // 4 
-            "opencms.request.uri", // 5
-            "opencms.request.element.uri", // 6
-            "opencms.request.folder", // 7      
-            "opencms.request.encoding", // 8
-            "opencms.request.locale" // 9   
-        };                
-            
-    /** Array list of allowed property values for more convenient lookup. */
-    private static final List m_userProperty =
-        Arrays.asList(m_systemProperties);
-
     /**
-     * Sets the info property name.
+     * Returns the selected info property value based on the provided 
+     * parameters.<p>
      * 
-     * @param name the info property name to set
+     * @param property the info property to look up
+     * @param req the currents request
+     * @return the looked up property value 
      */
-    public void setProperty(String name) {
-        if (name != null) {
-            m_property = name.toLowerCase();
+    public static String infoTagAction(String property, HttpServletRequest req) {
+
+        if (property == null) {
+            return "+++ Invalid info property selected: null +++";
         }
-    }
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
-    /**
-     * Returns the selected info property.
-     * 
-     * @return the selected info property 
-     */
-    public String getProperty() {
-        return m_property != null ? m_property : "";
-    }
+        String result = null;
+        switch (SYSTEM_PROPERTIES_LIST.indexOf(property)) {
+            case 0: // opencms.version
+                result = OpenCms.getSystemInfo().getVersionName();
+                break;
+            case 1: // opencms.url
+                result = req.getRequestURL().toString();
+                break;
+            case 2: // opencms.uri
+                result = req.getRequestURI();
+                break;
+            case 3: // opencms.webapp
+                result = OpenCms.getSystemInfo().getWebApplicationName();
+                break;
+            case 4: // opencms.webbasepath
+                result = OpenCms.getSystemInfo().getWebApplicationRfsPath();
+                break;
+            case 5: // opencms.request.uri
+                result = controller.getCmsObject().getRequestContext().getUri();
+                break;
+            case 6: // opencms.request.element.uri
+                result = controller.getCurrentRequest().getElementUri();
+                break;
+            case 7: // opencms.request.folder
+                result = CmsResource.getParentFolder(controller.getCmsObject().getRequestContext().getUri());
+                break;
+            case 8: // opencms.request.encoding
+                result = controller.getCmsObject().getRequestContext().getEncoding();
+                break;
+            case 9: // opencms.request.locale
+                result = controller.getCmsObject().getRequestContext().getLocale().toString();
+                break;
+            default:
+                result = System.getProperty(property);
+                if (result == null) {
+                    result = "+++ Invalid info property selected: " + property + " +++";
+                }
+        }
 
-    /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
-     */
-    public void release() {
-        super.release();
-        m_property = null;
+        return result;
     }
 
     /**
@@ -157,59 +183,34 @@ public class CmsJspTagInfo extends TagSupport {
     }
 
     /**
-     * Returns the selected info property value based on the provided 
-     * parameters.<p>
+     * Returns the selected info property.
      * 
-     * @param property the info property to look up
-     * @param req the currents request
-     * @return the looked up property value 
-     */    
-    public static String infoTagAction(String property, HttpServletRequest req) {
-        if (property == null) {
-            return "+++ Invalid info property selected: null +++";
-        }
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+     * @return the selected info property 
+     */
+    public String getProperty() {
 
-        String result = null;
-        switch (m_userProperty.indexOf(property)) {
-            case 0 : // opencms.version
-                result = OpenCms.getSystemInfo().getVersionName();
-                break;
-            case 1 : // opencms.url
-                result = req.getRequestURL().toString();
-                break;
-            case 2 : // opencms.uri
-                result = req.getRequestURI();
-                break;
-            case 3 : // opencms.webapp
-                result = OpenCms.getSystemInfo().getWebApplicationName();
-                break;
-            case 4 : // opencms.webbasepath
-                result = OpenCms.getSystemInfo().getWebApplicationRfsPath();
-                break;
-            case 5 : // opencms.request.uri
-                result = controller.getCmsObject().getRequestContext().getUri();
-                break;
-            case 6 : // opencms.request.element.uri
-                result = controller.getCurrentRequest().getElementUri();
-                break;
-            case 7 : // opencms.request.folder
-                result = CmsResource.getParentFolder(controller.getCmsObject().getRequestContext().getUri());
-                break;
-            case 8 : // opencms.request.encoding
-                result = controller.getCmsObject().getRequestContext().getEncoding();
-                break;
-            case 9 : // opencms.request.locale
-                result = controller.getCmsObject().getRequestContext().getLocale().toString();
-                break;                
-            default :
-                result = System.getProperty(property);
-                if (result == null) {
-                    result = "+++ Invalid info property selected: " + property + " +++";
-                }
-        }
+        return m_property != null ? m_property : "";
+    }
 
-        return result;
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    public void release() {
+
+        super.release();
+        m_property = null;
+    }
+
+    /**
+     * Sets the info property name.
+     * 
+     * @param name the info property name to set
+     */
+    public void setProperty(String name) {
+
+        if (name != null) {
+            m_property = name.toLowerCase();
+        }
     }
 
 }

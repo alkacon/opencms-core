@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/03/29 17:53:39 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public interface I_CmsConstants {
 
@@ -233,7 +233,7 @@ public interface I_CmsConstants {
     /**
      * The copyright message for OpenCms.
      */
-    String C_COPYRIGHT[] = {
+    String[] C_COPYRIGHT = {
         "",
         "Copyright (c) 2002-2005 Alkacon Software",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  */
 public class CmsLink {
 
@@ -178,9 +178,9 @@ public class CmsLink {
         }
 
         HashMap parameters = new HashMap();
-        String params[] = CmsStringUtil.splitAsArray(query, '&');
+        String[] params = CmsStringUtil.splitAsArray(query, '&');
         for (int i = 0; i < params.length; i++) {
-            String pair[] = CmsStringUtil.splitAsArray(params[i], '=');
+            String[] pair = CmsStringUtil.splitAsArray(params[i], '=');
             String[] p = (String[])parameters.get(pair[0]);
             if (p == null) {
                 if (pair.length > 1) {
@@ -210,7 +210,7 @@ public class CmsLink {
     private static String[] split(String targetUri) {
 
         URI uri;
-        String components[] = new String[3];
+        String[] components = new String[3];
 
         // malformed uri
         try {
@@ -457,7 +457,7 @@ public class CmsLink {
     private void setComponents(String uri) {
 
         // split the uri into its components and store them in an Array 
-        String components[] = split(uri);
+        String[] components = split(uri);
 
         // set components 
         if (components != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -129,13 +129,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
-        + "${key.editor.xmlcontent.validation.error.1}${validation.value}${key.editor.xmlcontent.validation.error.2}"
-        + "[${validation.regex}]";
+        + "${key.editor.xmlcontent.validation.error|${validation.value}|[${validation.regex}]}";
 
     /** Default message for validation warnings. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
-        + "${key.editor.xmlcontent.validation.warning.1}${validation.value}${key.editor.xmlcontent.validation.warning.2}"
-        + "[${validation.regex}]";
+        + "${key.editor.xmlcontent.validation.warning|${validation.value}|[${validation.regex}]}";
 
     /** The default values for the elements (as defined in the annotations). */
     protected Map m_defaultValues;
@@ -187,8 +185,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // return the default value with processed macros
             CmsMacroResolver resolver = CmsMacroResolver.newInstance()
                 .setCmsObject(cms)
-                .setXmlContentHandler(this)
-                .setLocale(locale);            
+                .setMessages(getMessages(locale));
             return resolver.resolveMacros(defaultValue);
         }
         // no default value is available
@@ -542,7 +539,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance()
             .setCmsObject(cms)
-            .setXmlContentHandler(this)
+            .setMessages(getMessages(cms.getRequestContext().getLocale()))
             .setAdditionalMacros(additionalValues);
         
         return resolver.resolveMacros(message);

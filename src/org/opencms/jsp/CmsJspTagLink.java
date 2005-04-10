@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,41 +46,10 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagLink extends BodyTagSupport {
- 
-    /**
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
-     * @return EVAL_PAGE
-     * @throws JspException in case soemthing goes wrong
-     */
-    public int doEndTag() throws JspException {
-        
-        ServletRequest req = pageContext.getRequest();
-        
-        // This will always be true if the page is called through OpenCms 
-        if (CmsFlexController.isCmsRequest(req)) {
-            try {
-                // Get link-string from the body and reset body 
-                String link = this.getBodyContent().getString();                          
-                this.getBodyContent().clear();            
-                // Calculate the link substitution
-                String newlink = linkTagAction(link, req);
-                // Write the result back to the page                
-                this.getBodyContent().print(newlink);
-                this.getBodyContent().writeOut(pageContext.getOut());
 
-            } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'link' tag processing", ex);
-                }
-                throw new JspException(ex);
-            }            
-        }
-        return EVAL_PAGE;        
-    }
-    
     /**
      * Internal action method.<p>
      * 
@@ -93,11 +62,45 @@ public class CmsJspTagLink extends BodyTagSupport {
      * @see org.opencms.staticexport.CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String)
      */
     public static String linkTagAction(String link, ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         if (link.indexOf(':') >= 0) {
             return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), link);
         } else {
-            return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), CmsLinkManager.getAbsoluteUri(link, controller.getCurrentRequest().getElementUri()));
-        }        
+            return OpenCms.getLinkManager().substituteLink(
+                controller.getCmsObject(),
+                CmsLinkManager.getAbsoluteUri(link, controller.getCurrentRequest().getElementUri()));
+        }
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @return EVAL_PAGE
+     * @throws JspException in case soemthing goes wrong
+     */
+    public int doEndTag() throws JspException {
+
+        ServletRequest req = pageContext.getRequest();
+
+        // This will always be true if the page is called through OpenCms 
+        if (CmsFlexController.isCmsRequest(req)) {
+            try {
+                // Get link-string from the body and reset body 
+                String link = this.getBodyContent().getString();
+                this.getBodyContent().clear();
+                // Calculate the link substitution
+                String newlink = linkTagAction(link, req);
+                // Write the result back to the page                
+                this.getBodyContent().print(newlink);
+                this.getBodyContent().writeOut(pageContext.getOut());
+
+            } catch (Exception ex) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'link' tag processing", ex);
+                }
+                throw new JspException(ex);
+            }
+        }
+        return EVAL_PAGE;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/21 17:22:54 $
- * Version: $Revision: 1.168 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.169 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.168 $
+ * @version $Revision: 1.169 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1572,7 +1572,7 @@ public final class OpenCmsCore {
         }      
         
         // get localized message bundle
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, cms.getRequestContext().getLocale());
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, cms.getRequestContext().getLocale());
         
         // try to get the exception root cause
         Throwable cause = CmsFlexController.getThrowable(request);
@@ -1761,7 +1761,7 @@ public final class OpenCmsCore {
 
         if ((listeners != null) && (listeners.size() > 0)) {
             // handle all event listeners that listen only to this event type
-            I_CmsEventListener list[] = new I_CmsEventListener[0];
+            I_CmsEventListener[] list = new I_CmsEventListener[0];
             synchronized (listeners) {
                 list = (I_CmsEventListener[])listeners.toArray(list);
             }

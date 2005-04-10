@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,10 @@
 package org.opencms.i18n;
 
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -49,7 +51,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.0 beta 2
  */
@@ -74,10 +76,10 @@ public class CmsMessages {
     public static final int SHORT = DateFormat.SHORT;
 
     /** The resource bundle this message object was initialized with. */
-    private ResourceBundle m_bundle;
+    protected ResourceBundle m_bundle;
 
     /** The locale to use for looking up the messages from the bundle. */
-    private Locale m_locale;
+    protected Locale m_locale;
 
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
@@ -340,6 +342,41 @@ public class CmsMessages {
     }
 
     /**
+     * Returns the localized resource string for a given message key,
+     * with the provided replacement parameters.<p>
+     * 
+     * If the key was found in the bundle, it will be formatted using
+     * a <code>{@link MessageFormat}</code> using the provided parameters.<p>
+     * 
+     * If the key was not found in the bundle, the return value is
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * if the bundle was not properly initialized first.
+     * 
+     * @param keyName the key for the desired string 
+     * @param params the parameters to use for formatting
+     * @return the resource string for the given key 
+     */
+    public String key(String keyName, Object[] params) {
+
+        if ((params == null) || (params.length == 0)) {
+            // no parameters available, use simple key method
+            return key(keyName);
+        }
+
+        String result = key(keyName, true);
+        if (result == null) {
+            // key was not found
+            result = formatUnknownKey(keyName);
+        } else {
+            // key was found in the bundle - create and apply the formatter
+            MessageFormat formatter = new MessageFormat(result, m_locale);
+            result = formatter.format(params);
+        }
+        // return the result
+        return result;
+    }
+
+    /**
      * Returns the localized resource string for a given message key.<p>
      * 
      * If the key was not found in the bundle, the provided default value 
@@ -353,5 +390,45 @@ public class CmsMessages {
 
         String result = key(keyName, true);
         return (result == null) ? defaultValue : result;
+    }
+
+    /**
+     * Returns the localized resource string for a given message key,
+     * treating all values appended with "|" as replacement parameters.<p>
+     * 
+     * If the key was found in the bundle, it will be formatted using
+     * a <code>{@link MessageFormat}</code> using the provided parameters.
+     * The parameters have to be appended to the key separated by a "|".
+     * For example, the keyName <code>error.message|First|Second</code>
+     * would use the key <code>error.message</code> with the parameters
+     * <code>First</code> and <code>Second</code>. This would be the same as calling 
+     * <code>{@link CmsMessages#key(String, Object[])}</code>.<p>
+     * 
+     * If no parameters are appended with "|", this is the same as calling 
+     * <code>{@link CmsMessages#key(String)}</code>.<p>
+     * 
+     * If the key was not found in the bundle, the return value is
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * if the bundle was not properly initialized first.
+     * 
+     * @param keyName the key for the desired string, optinally containing parameters appended with a "|"
+     * @return the resource string for the given key 
+     * 
+     * @see #key(String, Object[])
+     * @see #key(String)
+     */
+    public String keyWithParams(String keyName) {
+
+        if (keyName.indexOf('|') == -1) {
+            // no separator found, key has no parameters
+            return key(keyName, false);
+        } else {
+            // this key contains parameters
+            String[] values = CmsStringUtil.splitAsArray(keyName, '|');
+            String cutKeyName = values[0];
+            String[] params = new String[values.length - 1];
+            System.arraycopy(values, 1, params, 0, params.length);
+            return key(cutKeyName, params);
+        }
     }
 }

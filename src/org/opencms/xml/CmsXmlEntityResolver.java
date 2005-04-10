@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,24 +60,15 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
     /** The scheme to identify a file in the OpenCms VFS. */
-    public static final String C_OPENCMS_SCHEME = "opencms://";
+    public static final String OPENCMS_SCHEME = "opencms://";
 
-    /** The location of the XML page XML schema. */
-    private static final String C_XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
-
-    /** The (old) DTD address of the OpenCms xmlpage (used in 5.3.5). */
-    private static final String C_XMLPAGE_OLD_DTD_SYSTEM_ID_1 = "http://www.opencms.org/dtd/6.0/xmlpage.dtd";
-
-    /** The (old) DTD address of the OpenCms xmlpage (used until 5.3.5). */
-    private static final String C_XMLPAGE_OLD_DTD_SYSTEM_ID_2 = "/system/shared/page.dtd";
-
-    /** The location of the xmlpage XSD. */
-    private static final String C_XMLPAGE_XSD_LOCATION = "org/opencms/xml/page/xmlpage.xsd";
+    /** The log object for this class. */
+    private static final Log LOG = OpenCms.getLog(CmsXmlEntityResolver.class);
 
     /** A temporary cache for XML content definitions. */
     private static Map m_cacheContentDefinitions;
@@ -88,11 +79,20 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     /** A temporary cache to avoid multiple readings of often used files from the VFS. */
     private static Map m_cacheTemporary;
 
-    /** The log object for this class. */
-    private static Log m_log;
-
     /** The static default entity resolver for reading / writing xml content. */
     private static CmsXmlEntityResolver m_resolver;
+
+    /** The location of the XML page XML schema. */
+    private static final String XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
+
+    /** The (old) DTD address of the OpenCms xmlpage (used in 5.3.5). */
+    private static final String XMLPAGE_OLD_DTD_SYSTEM_ID_1 = "http://www.opencms.org/dtd/6.0/xmlpage.dtd";
+
+    /** The (old) DTD address of the OpenCms xmlpage (used until 5.3.5). */
+    private static final String XMLPAGE_OLD_DTD_SYSTEM_ID_2 = "/system/shared/page.dtd";
+
+    /** The location of the xmlpage XSD. */
+    private static final String XMLPAGE_XSD_LOCATION = "org/opencms/xml/page/xmlpage.xsd";
 
     /** The cms object to use for VFS access (will be initialized with "Guest" permissions). */
     private CmsObject m_cms;
@@ -108,10 +108,6 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     public CmsXmlEntityResolver(CmsObject cms) {
 
-        if (m_log == null) {
-            m_log = OpenCms.getLog(this);
-        }
-        
         initCaches();
 
         if ((cms != null) && (m_resolver == null)) {
@@ -134,7 +130,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             } catch (CmsException e) {
                 // this should never happen
-                m_log.error("Unable to initialize default guest user");
+                LOG.error("Unable to initialize default guest user");
             }
 
             // register this object as event listener
@@ -206,8 +202,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         m_cacheContentDefinitions.put(cacheKey, contentDefinition);
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Xml entity resolver cached system id " + cacheKey);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Xml entity resolver cached system id " + cacheKey);
         }
     }
 
@@ -223,8 +219,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 // flush cache   
                 m_cacheTemporary.clear();
                 m_cacheContentDefinitions.clear();
-                if (m_log.isDebugEnabled()) {
-                    m_log.debug("Xml entity resolver flushed caches after recieving clearcache event");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Xml entity resolver flushed caches after recieving clearcache event");
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
@@ -254,8 +250,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         CmsXmlContentDefinition result = (CmsXmlContentDefinition)m_cacheContentDefinitions.get(cacheKey);
-        if ((result != null) && m_log.isDebugEnabled()) {
-            m_log.debug("Successful cache lookup for content definition " + cacheKey);
+        if ((result != null) && LOG.isDebugEnabled()) {
+            LOG.debug("Successful cache lookup for content definition " + cacheKey);
         }
         return result;
     }
@@ -276,7 +272,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
             // XML page XSD reference
             try {
-                InputStream stream = getClass().getClassLoader().getResourceAsStream(C_XMLPAGE_XSD_LOCATION);
+                InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_XSD_LOCATION);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
                 for (int b = stream.read(); b > -1; b = stream.read()) {
                     bytes.write(b);
@@ -286,14 +282,14 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                m_log.error("Did not find CmsXmlPage schema XSD at " + C_XMLPAGE_XSD_LOCATION, t);
+                LOG.error("Did not find CmsXmlPage schema XSD at " + XMLPAGE_XSD_LOCATION, t);
             }
 
-        } else if (systemId.equals(C_XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(C_XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
+        } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
 
             // XML page DTD reference
             try {
-                InputStream stream = getClass().getClassLoader().getResourceAsStream(C_XMLPAGE_OLD_DTD_LOCATION);
+                InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_OLD_DTD_LOCATION);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
                 for (int b = stream.read(); b > -1; b = stream.read()) {
                     bytes.write(b);
@@ -303,12 +299,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                m_log.error("Did not find CmsXmlPage DTD at " + C_XMLPAGE_OLD_DTD_LOCATION, t);
+                LOG.error("Did not find CmsXmlPage DTD at " + XMLPAGE_OLD_DTD_LOCATION, t);
             }
-        } else if ((m_cms != null) && systemId.startsWith(C_OPENCMS_SCHEME)) {
+        } else if ((m_cms != null) && systemId.startsWith(OPENCMS_SCHEME)) {
 
             // opencms:// VFS reference
-            String cacheSystemId = systemId.substring(C_OPENCMS_SCHEME.length() - 1);
+            String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
             String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().currentProject().isOnlineProject());
             // look up temporary cache
             content = (byte[])m_cacheTemporary.get(cacheKey);
@@ -323,12 +319,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 content = file.getContents();
                 // store content in cache
                 m_cacheTemporary.put(cacheKey, content);
-                if (m_log.isDebugEnabled()) {
-                    m_log.debug("Xml entity resolver cached system id " + cacheKey);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Xml entity resolver cached system id " + cacheKey);
                 }
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                m_log.error("Could not resolve OpenCms xml entity reference '" + systemId + "'", t);
+                LOG.error("Could not resolve OpenCms xml entity reference '" + systemId + "'", t);
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
@@ -369,8 +365,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         boolean project = (m_cms != null) ? m_cms.getRequestContext().currentProject().isOnlineProject() : false;
 
         // remove opencms:// prefix
-        if (systemId.startsWith(C_OPENCMS_SCHEME)) {
-            systemId = systemId.substring(C_OPENCMS_SCHEME.length() - 1);
+        if (systemId.startsWith(OPENCMS_SCHEME)) {
+            systemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
         }
 
         return getCacheKey(systemId, project);
@@ -387,12 +383,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         Object o;
         o = m_cacheTemporary.remove(getCacheKey(systemId, false));
-        if ((null != o) && m_log.isDebugEnabled()) {
-            m_log.debug("Xml entity resolver uncached system id " + getCacheKey(systemId, false));
+        if ((null != o) && LOG.isDebugEnabled()) {
+            LOG.debug("Xml entity resolver uncached system id " + getCacheKey(systemId, false));
         }
         o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
-        if ((null != o) && m_log.isDebugEnabled()) {
-            m_log.debug("Xml entity resolver uncached content defintion " + getCacheKey(systemId, false));
+        if ((null != o) && LOG.isDebugEnabled()) {
+            LOG.debug("Xml entity resolver uncached content defintion " + getCacheKey(systemId, false));
         }
     }
 }

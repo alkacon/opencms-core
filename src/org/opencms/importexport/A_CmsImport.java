@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/04/05 13:27:18 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -334,7 +334,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     public String convertDigestEncoding(String value) {
         
-        byte data[] = new byte[value.length() / 2];
+        byte[] data = new byte[value.length() / 2];
                 
         for (int i = 0; i < data.length; i++) {
             data[i] = (byte)(Integer.parseInt(value.substring(i*2, i*2+2), 16) - 128); 

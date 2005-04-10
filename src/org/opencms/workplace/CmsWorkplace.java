@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsTree;
@@ -83,7 +84,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  * 
  * @since 5.1
  */
@@ -149,6 +150,10 @@ public abstract class CmsWorkplace {
 
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
+
+    /** The macro resolver, this is cached to avoid multiple instance generation. */
+    private CmsMacroResolver m_macroResolver;
+    
     private CmsJspActionElement m_jsp;
     private List m_multiPartFileItems;
     private String m_resourceUri;
@@ -491,6 +496,30 @@ public abstract class CmsWorkplace {
             }
         }
         return resourceTypes;
+    }
+
+    /**
+     * Returns all present request parameters as String.<p>
+     * 
+     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
+     * 
+     * @return all present request parameters as String
+     */
+    public String allParamsAsRequest() {
+
+        StringBuffer retValue = new StringBuffer(512);
+        HttpServletRequest request = getJsp().getRequest();
+        Iterator paramNames = request.getParameterMap().keySet().iterator();
+        while (paramNames.hasNext()) {
+            String paramName = (String)paramNames.next();
+            String paramValue = request.getParameter(paramName);
+            retValue
+                .append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
+            if (paramNames.hasNext()) {
+                retValue.append("&");
+            }
+        }
+        return retValue.toString();
     }
 
     /**
@@ -1219,30 +1248,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns all present request parameters as String.<p>
-     * 
-     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
-     * 
-     * @return all present request parameters as String
-     */
-    public String allParamsAsRequest() {
-
-        StringBuffer retValue = new StringBuffer(512);
-        HttpServletRequest request = getJsp().getRequest();
-        Iterator paramNames = request.getParameterMap().keySet().iterator();
-        while (paramNames.hasNext()) {
-            String paramName = (String)paramNames.next();
-            String paramValue = request.getParameter(paramName);
-            retValue
-                .append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
-            if (paramNames.hasNext()) {
-                retValue.append("&");
-            }
-        }
-        return retValue.toString();
-    }
-
-    /**
      * Returns the path to the workplace static resources.<p>
      * 
      * Workplaces static resources are images, css files etc.
@@ -1330,6 +1335,28 @@ public abstract class CmsWorkplace {
     public String key(String keyName) {
 
         return m_settings.getMessages().key(keyName);
+    }
+    
+    /**
+     * Returns the localized resource string for a given message key,
+     * with the provided replacement parameters.<p>
+     * 
+     * If the key was found in the bundle, it will be formatted using
+     * a <code>{@link java.text.MessageFormat}</code> using the provided parameters.<p>
+     * 
+     * If the key was not found in the bundle, the return value is
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * if the bundle was not properly initialized first.
+     * 
+     * @param keyName the key for the desired string 
+     * @param params the parameters to use for formatting
+     * @return the resource string for the given key
+     * 
+     * @see CmsWorkplaceMessages#key(String) 
+     */        
+    public String key(String keyName, Object[] params) {
+        
+        return m_settings.getMessages().key(keyName, params);
     }
     
     /**
@@ -1524,19 +1551,34 @@ public abstract class CmsWorkplace {
         }
         return result.toString();
     }
-
+    
     /**
      * Resolves the macros in the given String and replaces them by their localized keys.<p>
      * 
-     * Macros start with "${" and end with "}".<p>
+     * The following macro contexts are available in the Workplace:<ul>
+     * <li>Macros based on the current users OpenCms context (obtained from the current <code>{@link CmsObject}</code>).</li>
+     * <li>Localized key macros (obtained from the current <code>{@link CmsWorkplaceMessages}</code>).</li>
+     * <li>Macros from the current JSP page context (obtained by <code>{@link #getJsp()}</code>).</li>
+     * </ul>
      * 
      * @param input the input String containing the macros
      * @return the resolved String
+     * 
+     * @see CmsMacroResolver#resolveMacros(String)
      */
     public String resolveMacros(String input) {
 
-        CmsLocalizedKeyResolver keyMapper = CmsLocalizedKeyResolver.newInstance().setWorkplaceSettings(m_settings);       
-        return keyMapper.resolveMacros(input);
+        // 
+        if (m_macroResolver == null) {
+            // create a new macro resolver "with everything we got"
+            m_macroResolver = CmsMacroResolver.newInstance()
+                // initialize resolver with the objects available
+                .setCmsObject(m_cms)
+                .setMessages((m_settings == null) ? null : m_settings.getMessages())
+                .setJspPageContext((m_jsp == null) ? null : m_jsp.getJspContext());
+        }
+        // resolve the macros
+        return m_macroResolver.resolveMacros(input);
     }
 
     /**
@@ -1558,7 +1600,7 @@ public abstract class CmsWorkplace {
      */
     public String shortKey(String keyName) {
 
-        String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX, null);
+        String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX, (String)null);
         if (value == null) {
             // short key value not found, return "long" key value
             return key(keyName);

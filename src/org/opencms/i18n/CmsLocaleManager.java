@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -154,7 +154,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
             locale = (Locale)m_localeCache.get(localeName);
             if (locale == null) {
                 try {
-                    String localeNames[] = CmsStringUtil.splitAsArray(localeName, '_');
+                    String[] localeNames = CmsStringUtil.splitAsArray(localeName, '_');
                     locale = new Locale(
                         localeNames[0],
                         (localeNames.length > 1) ? localeNames[1] : "",

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPropertyUtils.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public final class CmsPropertyUtils {
@@ -86,12 +86,12 @@ public final class CmsPropertyUtils {
         for (Iterator i = properties.keySet().iterator(); i.hasNext();) {
             String key = (String)i.next();
             Object obj = properties.get(key);
-            String value[] = {};
+            String[] value = {};
 
             if (obj instanceof Vector) {
                 value = (String[]) ((Vector)obj).toArray(value);
             } else {
-                String v[] = {(String)obj };
+                String[] v = {(String)obj };
                 value = v;
             }
 

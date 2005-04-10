@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsResourceTranslator.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,14 +35,14 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
 public class TestCmsResourceTranslator extends TestCase {
 
     // default rules (same as in "opencms.properties")
-    private static String rules[] = {    
+    private static String[] rules = {    
         "s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#", 
         "s#/default/vfs/pics/system/(.*)#/default/vfs/system/workplace/resources/$1#", 
         "s#/default/vfs/pics/(.*)#/default/vfs/system/galleries/pics/$1#",

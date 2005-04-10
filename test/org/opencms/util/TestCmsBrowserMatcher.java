@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsBrowserMatcher.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,14 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
 public class TestCmsBrowserMatcher extends TestCase {
 
     // default browser match patterns (same as in "opencms.properties")
-    private static String useragent[] = {    
+    private static String[] useragent = {    
         "^Mozilla/4\\.0 \\(compatible; MSIE 6\\.\\d*; .*\\)$",
         "^Mozilla/4\\.0 \\(compatible; MSIE 5\\.[56789]\\d*; .*\\)$",
         "^Mozilla/4\\.0 \\(compatible; MSIE 5\\.[01234]\\d*; .*\\)$",
@@ -56,7 +56,7 @@ public class TestCmsBrowserMatcher extends TestCase {
         ".*"
     };
     
-    private static String browser[] = {
+    private static String[] browser = {
         "MSIE_6.x",
         "MSIE_5.5",
         "MSIE_5.0",
@@ -67,7 +67,7 @@ public class TestCmsBrowserMatcher extends TestCase {
         "other___"
     };
     
-    private static String sampleagent[] = {
+    private static String[] sampleagent = {
         "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)", 
         "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.4b) Gecko/20030507",
         "Mozilla/4.0 (compatible; MSIE 5.0; AOL 7.0; Windows 95; DigExt)",

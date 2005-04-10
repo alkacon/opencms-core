@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
@@ -38,7 +38,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -47,59 +49,93 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagUser extends TagSupport {
-    
-    // internal member variables
-    private String m_property;
-    
+
     /** Static array of the possible user properties. */
-    private static final String[] m_userProperties =
-        {
-            "name",
-            "firstname",
-            "lastname",
-            "email",
-            "street",
-            "zip",
-            "city",
-            "description",
-            "group",
-            "currentgroup",
-            "defaultgroup",
-            "otherstuff" };
+    private static final String[] USER_PROPERTIES = {
+        "name",
+        "firstname",
+        "lastname",
+        "email",
+        "street",
+        "zip",
+        "city",
+        "description",
+        "group",
+        "currentgroup",
+        "defaultgroup",
+        "otherstuff"};
 
     /** Array list for fast lookup. */
-    private static final java.util.List m_userProperty =
-        java.util.Arrays.asList(m_userProperties);
-        
+    private static final List USER_PROPERTIES_LIST = Arrays.asList(USER_PROPERTIES);
+
+    // internal member variables
+    private String m_property;
+
     /**
-     * Sets the property name.<p>
+     * Internal action method.<p>
      * 
-     * @param name the property name
+     * @param property the selected user property
+     * @param req the current request
+     * @return String the value of the selected user property
      */
-    public void setProperty(String name) {
-        if (name != null) {
-            m_property = name.toLowerCase();
+    public static String userTagAction(String property, ServletRequest req) {
+
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+
+        CmsObject cms = controller.getCmsObject();
+        CmsUser user = cms.getRequestContext().currentUser();
+
+        if (property == null) {
+            property = USER_PROPERTIES[0];
         }
-    }
 
-    /**
-     * Returns the property name.<p>
-     * 
-     * @return String the property name
-     */
-    public String getProperty() {
-        return m_property != null ? m_property : "";
-    }
+        String result = null;
+        switch (USER_PROPERTIES_LIST.indexOf(property)) {
+            case 0: // name
+                result = user.getName();
+                break;
+            case 1: // firstname
+                result = user.getFirstname();
+                break;
+            case 2: // lastname
+                result = user.getLastname();
+                break;
+            case 3: // email
+                result = user.getEmail();
+                break;
+            case 4: // street
+                result = user.getAddress();
+                break;
+            case 5: // zip
+                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+                break;
+            case 6: // city
+                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+                break;
+            case 7: // description
+                result = user.getDescription();
+                break;
+            case 8: // group
+            case 9: // currentgroup
+            case 10: // defaultgroup
+                result = "";
+                break;
+            case 11: // otherstuff
+                Iterator it = user.getAdditionalInfo().keySet().iterator();
+                result = "AdditionalInfo:";
+                while (it.hasNext()) {
+                    Object o = it.next();
+                    result += " " + o + "=" + user.getAdditionalInfo((String)o);
+                }
+                break;
+            default:
+                result = "+++ Invalid user property selected: " + property + " +++";
+        }
 
-    /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
-     */
-    public void release() {
-        super.release();
-        m_property = null;
+        return result;
     }
 
     /**
@@ -119,7 +155,7 @@ public class CmsJspTagUser extends TagSupport {
             } catch (Exception ex) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error in Jsp 'user' tag processing", ex);
-                }                    
+                }
                 throw new javax.servlet.jsp.JspException(ex);
             }
         }
@@ -127,67 +163,34 @@ public class CmsJspTagUser extends TagSupport {
     }
 
     /**
-     * Internal action method.<p>
+     * Returns the property name.<p>
      * 
-     * @param property the selected user property
-     * @param req the current request
-     * @return String the value of the selected user property
+     * @return String the property name
      */
-    public static String userTagAction(String property, ServletRequest req) {
+    public String getProperty() {
 
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        return m_property != null ? m_property : "";
+    }
 
-        CmsObject cms = controller.getCmsObject();
-        CmsUser user = cms.getRequestContext().currentUser();
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    public void release() {
 
-        if (property == null) {
-            property = m_userProperties[0];
+        super.release();
+        m_property = null;
+    }
+
+    /**
+     * Sets the property name.<p>
+     * 
+     * @param name the property name
+     */
+    public void setProperty(String name) {
+
+        if (name != null) {
+            m_property = name.toLowerCase();
         }
-
-        String result = null;
-        switch (m_userProperty.indexOf(property)) {
-            case 0 : // name
-                result = user.getName();
-                break;
-            case 1 : // firstname
-                result = user.getFirstname();
-                break;
-            case 2 : // lastname
-                result = user.getLastname();
-                break;
-            case 3 : // email
-                result = user.getEmail();
-                break;
-            case 4 : // street
-                result = user.getAddress();
-                break;
-            case 5 : // zip
-                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
-                break;
-            case 6 : // city
-                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
-                break;
-            case 7 : // description
-                result = user.getDescription();
-                break;
-            case 8 : // group
-            case 9 : // currentgroup
-            case 10 : // defaultgroup
-                result = "";
-                break;
-            case 11 : // otherstuff
-                Iterator it = user.getAdditionalInfo().keySet().iterator();
-                result = "AdditionalInfo:";
-                while (it.hasNext()) {
-                    Object o = it.next();
-                    result += " " + o + "=" + user.getAdditionalInfo((String)o);
-                }
-                break;
-            default :
-                result = "+++ Invalid user property selected: " + property + " +++";
-        }
-
-        return result;
     }
 
 }

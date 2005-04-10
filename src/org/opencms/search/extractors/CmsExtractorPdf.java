@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2005/03/30 10:49:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.pdfbox.util.PDFTextStripper;
 public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorPdf m_instance = new CmsExtractorPdf();
+    private static final CmsExtractorPdf INSTANCE = new CmsExtractorPdf();
     
     /**
      * Hide the public constructor.<p> 
@@ -69,7 +69,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
      * @return an instance of this text extractor
      */
     public static I_CmsTextExtractor getExtractor() {
-        return m_instance;
+        return INSTANCE;
     }
     
     /**

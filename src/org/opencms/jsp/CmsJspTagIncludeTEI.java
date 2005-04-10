@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagIncludeTEI.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.jsp;
 
 import javax.servlet.jsp.tagext.TagData;
@@ -39,17 +39,16 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * the <code>&lt;cms:include /&gt;</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
-    private static final String C_ATTR_PROPERTY = "property";
     private static final String C_ATTR_ATTRIBUTE = "attribute";
     private static final String C_ATTR_FILE = "file";
     private static final String C_ATTR_PAGE = "page";
+    private static final String C_ATTR_PROPERTY = "property";
     private static final String C_ATTR_SUFFIX = "suffix";
-    // final private static String C_ATTR_ELEMENT = "element";
-    
+
     /**
      * Returns true if the given attribute name is specified, false otherwise.<p>
      * 
@@ -58,9 +57,10 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
      * @return  true if the given attribute name is specified, false otherwise
      */
     public static boolean isSpecified(TagData data, String attributeName) {
+
         return (data.getAttribute(attributeName) != null);
     }
-    
+
     /**
      * Checks the validity of the <code>&lt;cms:include /&gt;</code> attributes.<p>
      *
@@ -75,13 +75,13 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
      * @return true if attributes are valid, false otherwise
      */
     public boolean isValid(TagData data) {
-        
+
         boolean hasFile = isSpecified(data, C_ATTR_FILE) || isSpecified(data, C_ATTR_PAGE);
         boolean hasSuffix = isSpecified(data, C_ATTR_SUFFIX);
         boolean hasProperty = isSpecified(data, C_ATTR_PROPERTY);
         boolean hasAttribute = isSpecified(data, C_ATTR_ATTRIBUTE);
         // boolean hasElement = isSpecified(data, C_ATTR_ELEMENT);
-        
+
         if (hasFile && (hasSuffix || hasProperty || hasAttribute)) {
             return false;
         }
@@ -89,9 +89,9 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
             return false;
         }
         if (hasSuffix && !(hasProperty || hasAttribute)) {
-            return false;            
+            return false;
         }
-        
+
         return true;
-    }        
+    }
 }

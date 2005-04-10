@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -88,186 +90,60 @@ import javax.servlet.jsp.tagext.TagSupport;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagProperty extends TagSupport {
-    
-    // internal member variables
-    private String m_propertyName;    
-    private String m_propertyFile;    
-    private String m_defaultValue;
-    private boolean m_escapeHtml;
-    
+
+    /** Accessor constant: Use element uri. */
+    public static final String USE_ELEMENT_URI = "element.uri";
+
+    /** Accessor constant: Use parent (same as USE_URI). */
+    public static final String USE_PARENT = "parent";
+
+    /** Accessor constant: Use search (same as USE_SEARCH_URI). */
+    public static final String USE_SEARCH = "search";
+
+    /** Accessor constant: Use search element uri. */
+    public static final String USE_SEARCH_ELEMENT_URI = "search.element.uri";
+
+    /** Accessor constant: Search parent (same as USE_SEARCH_URI). */
+    public static final String USE_SEARCH_PARENT = "search-parent";
+
+    /** Accessor constant: Use seach this (same as USE_SEARCH_ELEMENT_URI). */
+    public static final String USE_SEARCH_THIS = "search-this";
+
+    /** Accessor constant: Search uri. */
+    public static final String USE_SEARCH_URI = "search.uri";
+
+    /** Accessor constant: Use this (same as USE_ELEMENT_URI). */
+    public static final String USE_THIS = "this";
+
     /** Accessor constant: Use uri. */
     public static final String USE_URI = "uri";
     
-    /** Accessor constant: Use parent (same as USE_URI). */
-    public static final String USE_PARENT = "parent";
-    
-    /** Accessor constant: Use search (same as USE_SEARCH_URI). */
-    public static final String USE_SEARCH = "search";
-    
-    /** Accessor constant: Search uri. */
-    public static final String USE_SEARCH_URI = "search.uri";
-    
-    /** Accessor constant: Search parent (same as USE_SEARCH_URI). */
-    public static final String USE_SEARCH_PARENT = "search-parent";
-    
-    /** Accessor constant: Use element uri. */
-    public static final String USE_ELEMENT_URI = "element.uri";
-    
-    /** Accessor constant: Use this (same as USE_ELEMENT_URI). */
-    public static final String USE_THIS = "this";
-    
-    /** Accessor constant: Use search element uri. */
-    public static final String USE_SEARCH_ELEMENT_URI = "search.element.uri";
-    
-    /** Accessor constant: Use seach this (same as USE_SEARCH_ELEMENT_URI). */
-    public static final String USE_SEARCH_THIS = "search-this";
-    
-    // DEBUG flag
-    private static final int DEBUG = 0;
-    
     /** Static array of the possible "file" properties. */
-    public static final String[] m_actionValues = {
-            USE_URI,
-            USE_PARENT,
-            USE_SEARCH,
-            USE_SEARCH_URI,
-            USE_SEARCH_PARENT,
-            USE_ELEMENT_URI,
-            USE_THIS,
-            USE_SEARCH_ELEMENT_URI,
-            USE_SEARCH_THIS
-        };
+    public static final String[] ACTION_VALUES = {
+        USE_URI,
+        USE_PARENT,
+        USE_SEARCH,
+        USE_SEARCH_URI,
+        USE_SEARCH_PARENT,
+        USE_ELEMENT_URI,
+        USE_THIS,
+        USE_SEARCH_ELEMENT_URI,
+        USE_SEARCH_THIS};
 
     /** Array list for fast lookup. */
-    public static final java.util.List m_actionValue =
-        java.util.Arrays.asList(m_actionValues);    
-    
-    /**
-     * Sets the property name.<p>
-     * 
-     * @param name the property name to set
-     */
-    public void setName(String name) {
-        if (name != null) {
-            m_propertyName = name;
-        }
-    }
-    
-    /**
-     * Returns the property name.<p>
-     * 
-     * @return String the property name
-     */
-    public String getName() {
-        return m_propertyName!=null?m_propertyName:"";
-    }
+    public static final List ACTION_VALUES_LIST = Arrays.asList(ACTION_VALUES);
 
-    /**
-     * Sets the default value.<p>
-     * 
-     * This is used if a selected property is not found.<p>
-     * 
-     * @param def the default value
-     */
-    public void setDefault(String def) {
-        if (def != null) {
-            m_defaultValue = def;
-        }
-    }
-    
-    /**
-     * Returns the default value.<p>
-     * 
-     * @return the default value
-     */
-    public String getDefault() {
-        return m_defaultValue!=null?m_defaultValue:"";
-    }
-    
-    /**
-     * Sets the file name.<p>
-     * 
-     * @param file the file name
-     */
-    public void setFile(String file) {
-        if (file != null) {
-            m_propertyFile = file.toLowerCase();
-        }
-    }
-    
-    /**
-     * Returns the file name.<p>
-     * 
-     * @return the file name
-     */
-    public String getFile() {
-        return m_propertyFile!=null?m_propertyFile:"parent";
-    }
+    // DEBUG flag
+    private static final int DEBUG = 0;
+    private String m_defaultValue;
+    private boolean m_escapeHtml;
+    private String m_propertyFile;
 
-    /**
-     * Set the escape html flag.<p>
-     * 
-     * @param value should be "true" or "false" (all values other then "true" are
-     * considered to be false)
-     */
-    public void setEscapeHtml(String value) {
-        if (value != null) {
-            m_escapeHtml = "true".equalsIgnoreCase(value.trim());
-        }
-    }
-
-    /**
-     * The value of the escape html flag.<p>
-     * 
-     * @return the value of the escape html flag
-     */
-    public String getEscapeHtml() {
-        return "" + m_escapeHtml;
-    }
-        
-    /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
-     */
-    public void release() {
-        super.release();
-        m_propertyFile = null;
-        m_propertyName = null;
-        m_defaultValue = null;
-        m_escapeHtml = false;
-    }    
-    
-    /**
-     * @return SKIP_BODY
-     * @throws JspException in case somethins goes wrong
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
-     */
-    public int doStartTag() throws JspException {
-        
-        ServletRequest req = pageContext.getRequest();
-        
-        // This will always be true if the page is called through OpenCms 
-        if (CmsFlexController.isCmsRequest(req)) {
-            
-            try {       
-                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, req);
-                // Make sure that no null String is returned
-                if (prop == null) {
-                    prop = "";
-                }
-                pageContext.getOut().print(prop);
-                
-            } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'property' tag processing", ex);
-                }
-                throw new javax.servlet.jsp.JspException(ex);
-            }
-        }
-        return SKIP_BODY;
-    }
+    // internal member variables
+    private String m_propertyName;
 
     /**
      * Internal action method.<p>
@@ -282,53 +158,73 @@ public class CmsJspTagProperty extends TagSupport {
      * @throws CmsException if something goes wrong
      */
     public static String propertyTagAction(
-        String property, 
-        String action, 
-        String defaultValue, 
-        boolean escape, 
-        ServletRequest req
-    ) throws CmsException {
+        String property,
+        String action,
+        String defaultValue,
+        boolean escape,
+        ServletRequest req) throws CmsException {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        if (DEBUG > 0) {      
-            System.err.println("propertyTagAction() called!\nproperty=" + property 
-                + "\naction=" + action 
-                + "\ndefaultValue=" + defaultValue 
-                + "\nescape=" + escape);
-            System.err.println("propertyTagAction() request URI=" + controller.getCmsObject().getRequestContext().getUri());
+        if (DEBUG > 0) {
+            System.err.println("propertyTagAction() called!\nproperty="
+                + property
+                + "\naction="
+                + action
+                + "\ndefaultValue="
+                + defaultValue
+                + "\nescape="
+                + escape);
+            System.err.println("propertyTagAction() request URI="
+                + controller.getCmsObject().getRequestContext().getUri());
         }
         String value;
-        
+
         // if action is not set use default
         if (action == null) {
-            action = m_actionValues[0];
+            action = ACTION_VALUES[0];
         }
 
-        switch (m_actionValue.indexOf(action)) {      
+        switch (ACTION_VALUES_LIST.indexOf(action)) {
             case 0: // USE_URI
             case 1: // USE_PARENT
                 // Read properties of parent (i.e. top requested) file
-                value = controller.getCmsObject().readPropertyObject(controller.getCmsObject().getRequestContext().getUri(), property, false).getValue(defaultValue); 
+                value = controller.getCmsObject().readPropertyObject(
+                    controller.getCmsObject().getRequestContext().getUri(),
+                    property,
+                    false).getValue(defaultValue);
                 break;
             case 2: // USE_SEARCH
             case 3: // USE_SEARCH_URI
             case 4: // USE_SEARCH_PARENT 
                 // Try to find property on parent file and all parent folders
-                value = controller.getCmsObject().readPropertyObject(controller.getCmsObject().getRequestContext().getUri(), property, true).getValue(defaultValue);
-                break;                
+                value = controller.getCmsObject().readPropertyObject(
+                    controller.getCmsObject().getRequestContext().getUri(),
+                    property,
+                    true).getValue(defaultValue);
+                break;
             case 5: // USE_ELEMENT_URI
             case 6: // USE_THIS
                 // Read properties of this file            
-                value = controller.getCmsObject().readPropertyObject(controller.getCurrentRequest().getElementUri(), property, false).getValue(defaultValue);
+                value = controller.getCmsObject().readPropertyObject(
+                    controller.getCurrentRequest().getElementUri(),
+                    property,
+                    false).getValue(defaultValue);
                 break;
             case 7: // USE_SEARCH_ELEMENT_URI
             case 8: // USE_SEARCH_THIS
                 // Try to find property on this file and all parent folders
-                value = controller.getCmsObject().readPropertyObject(controller.getCurrentRequest().getElementUri(), property, true).getValue(defaultValue);
+                value = controller.getCmsObject().readPropertyObject(
+                    controller.getCurrentRequest().getElementUri(),
+                    property,
+                    true).getValue(defaultValue);
                 break;
             default:
                 // Read properties of the file named in the attribute            
-                value = controller.getCmsObject().readPropertyObject(CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()), property, false).getValue(defaultValue);
-        }           
+                value = controller.getCmsObject().readPropertyObject(
+                    CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()),
+                    property,
+                    false).getValue(defaultValue);
+        }
         if (escape) {
             value = CmsEncoder.escapeHtml(value);
         }
@@ -336,6 +232,139 @@ public class CmsJspTagProperty extends TagSupport {
             System.err.println("propertyTagAction(): result=" + value);
         }
         return value;
+    }
+
+    /**
+     * @return SKIP_BODY
+     * @throws JspException in case somethins goes wrong
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
+    public int doStartTag() throws JspException {
+
+        ServletRequest req = pageContext.getRequest();
+
+        // This will always be true if the page is called through OpenCms 
+        if (CmsFlexController.isCmsRequest(req)) {
+
+            try {
+                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, req);
+                // Make sure that no null String is returned
+                if (prop == null) {
+                    prop = "";
+                }
+                pageContext.getOut().print(prop);
+
+            } catch (Exception ex) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error in Jsp 'property' tag processing", ex);
+                }
+                throw new javax.servlet.jsp.JspException(ex);
+            }
+        }
+        return SKIP_BODY;
+    }
+
+    /**
+     * Returns the default value.<p>
+     * 
+     * @return the default value
+     */
+    public String getDefault() {
+
+        return m_defaultValue != null ? m_defaultValue : "";
+    }
+
+    /**
+     * The value of the escape html flag.<p>
+     * 
+     * @return the value of the escape html flag
+     */
+    public String getEscapeHtml() {
+
+        return "" + m_escapeHtml;
+    }
+
+    /**
+     * Returns the file name.<p>
+     * 
+     * @return the file name
+     */
+    public String getFile() {
+
+        return m_propertyFile != null ? m_propertyFile : "parent";
+    }
+
+    /**
+     * Returns the property name.<p>
+     * 
+     * @return String the property name
+     */
+    public String getName() {
+
+        return m_propertyName != null ? m_propertyName : "";
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    public void release() {
+
+        super.release();
+        m_propertyFile = null;
+        m_propertyName = null;
+        m_defaultValue = null;
+        m_escapeHtml = false;
+    }
+
+    /**
+     * Sets the default value.<p>
+     * 
+     * This is used if a selected property is not found.<p>
+     * 
+     * @param def the default value
+     */
+    public void setDefault(String def) {
+
+        if (def != null) {
+            m_defaultValue = def;
+        }
+    }
+
+    /**
+     * Set the escape html flag.<p>
+     * 
+     * @param value should be "true" or "false" (all values other then "true" are
+     * considered to be false)
+     */
+    public void setEscapeHtml(String value) {
+
+        if (value != null) {
+            m_escapeHtml = "true".equalsIgnoreCase(value.trim());
+        }
+    }
+
+    /**
+     * Sets the file name.<p>
+     * 
+     * @param file the file name
+     */
+    public void setFile(String file) {
+
+        if (file != null) {
+            m_propertyFile = file.toLowerCase();
+        }
+    }
+
+    /**
+     * Sets the property name.<p>
+     * 
+     * @param name the property name to set
+     */
+    public void setName(String name) {
+
+        if (name != null) {
+            m_propertyName = name;
+        }
     }
 
 }

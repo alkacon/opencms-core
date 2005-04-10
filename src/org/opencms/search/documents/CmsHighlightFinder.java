@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightFinder.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -377,7 +377,7 @@ public final class CmsHighlightFinder {
             }
 
             //extract the text
-            String fragText[] = new String[fragQueue.size()];
+            String[] fragText = new String[fragQueue.size()];
             for (int i = fragText.length - 1; i >= 0; i--) {
                 DocumentFragment frag = (DocumentFragment) fragQueue.pop();
                 fragText[i] =
@@ -422,7 +422,7 @@ public final class CmsHighlightFinder {
         int maxNumFragments,
         String separator)
         throws IOException {
-        String sections[] =
+        String[] sections =
             getBestFragments(text, fragmentSize, maxNumFragments);
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < sections.length; i++) {

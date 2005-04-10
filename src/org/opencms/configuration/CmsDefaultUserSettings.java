@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/03/30 08:47:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,51 +36,28 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.I_CmsWpConstants;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Default user workplace settings, used as default values for worklace settings in the
  * user preferences.<p>
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 
-    /** Parameter for buttonstyle text & image. */
-    private static int C_BUTTONSTYLE_TEXTIMAGE = 1;
-
-    /** Value for preserving siblings in copy dialog settings. */
-    private static String C_COPYMODE_PRESERVE = "preservesiblings";
-
-    /** Value for creating a resource in copy dialog settings. */
-    private static String C_COPYMODE_RESOURCE = "createresource";
-
-    /** Value for creating a sibling in copy dialog settings. */
-    private static String C_COPYMODE_SIBLING = "createsibling";
-
-    /** Value for deleting siblings in delete dialog settings. */
-    private static String C_DELETEMODE_DELETE = "deletesiblings";
-
-    /** Value for preserving siblings in delete dialog settings. */
-    private static String C_DELETEMODE_PRESERVE = "preservesiblings";
-
-    /** Value for publishing only resources in publish dialog settings. */
-    private static String C_PUBLISHMODE_ONLYRESOURCE = "onlyresource";
-
-    /** Value for publishing siblings in publish dialog settings. */
-    private static String C_PUBLISHMODE_SIBLINGS = "allsiblings";
-
     /**  Array of the possible "button styles". */
-    public static final String[] m_buttonStyles = {
-        "image", 
-        "textimage", 
-        "text"};
+    public static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
 
     /** Array list for fast lookup of "button styles". */
-    public static final java.util.List m_buttonStyle = java.util.Arrays.asList(m_buttonStyles);
+    public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
     /** Array of the "task startupfilter" nicenames. */
-    public static final String[] m_startupFilterNames = {
+    public static final String[] FILTER_NAMES = {
         "mynewtasks",
         "mytasksformyroles",
         "alltasks",
@@ -95,10 +72,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         "completedtaskscreatedbyme"};
 
     /** Array list for fast lookup of "task startupfilter" nicenames. */
-    public static final java.util.List m_startupFilterName = java.util.Arrays.asList(m_startupFilterNames);
+    public static final List FILTER_NAMES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_NAMES));
 
     /**  Array of the "task startupfilter" values. */
-    public static final String[] m_startupFilterValues = {
+    public static final String[] FILTER_VALUES = {
         "a1",
         "b1",
         "c1",
@@ -113,22 +90,31 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         "d3"};
 
     /** Array list for fast lookup of "task startupfilter" values. */
-    public static final java.util.List m_startupFilterValue = java.util.Arrays.asList(m_startupFilterValues);
+    public static final List FILTER_VALUES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_VALUES));
 
-    /**
-     * Returns a string representaion of a boolean value.<p>
-     * 
-     * @param value the boolean value to get the string from
-     * @return string representaion of a boolean value
-     */
-    private String getBoolRepresentation(boolean value) {
+    /** Parameter for buttonstyle text & image. */
+    private static final int BUTTONSTYLE_TEXTIMAGE = 1;
 
-        if (value) {
-            return "true";
-        } else {
-            return "false";
-        }
-    }
+    /** Value for preserving siblings in copy dialog settings. */
+    private static final String COPYMODE_PRESERVE = "preservesiblings";
+
+    /** Value for creating a resource in copy dialog settings. */
+    private static final String COPYMODE_RESOURCE = "createresource";
+
+    /** Value for creating a sibling in copy dialog settings. */
+    private static final String COPYMODE_SIBLING = "createsibling";
+
+    /** Value for deleting siblings in delete dialog settings. */
+    private static final String DELETEMODE_DELETE = "deletesiblings";
+
+    /** Value for preserving siblings in delete dialog settings. */
+    private static final String DELETEMODE_PRESERVE = "preservesiblings";
+
+    /** Value for publishing only resources in publish dialog settings. */
+    private static final String PUBLISHMODE_ONLYRESOURCE = "onlyresource";
+
+    /** Value for publishing siblings in publish dialog settings. */
+    private static final String PUBLISHMODE_SIBLINGS = "allsiblings";
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -138,9 +124,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getDialogCopyFileModeString() {
 
         if (getDialogCopyFileMode() == I_CmsConstants.C_COPY_AS_NEW) {
-            return C_COPYMODE_RESOURCE;
+            return COPYMODE_RESOURCE;
         } else {
-            return C_COPYMODE_SIBLING;
+            return COPYMODE_SIBLING;
         }
 
     }
@@ -153,11 +139,11 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getDialogCopyFolderModeString() {
 
         if (getDialogCopyFolderMode() == I_CmsConstants.C_COPY_AS_NEW) {
-            return C_COPYMODE_RESOURCE;
+            return COPYMODE_RESOURCE;
         } else if (getDialogCopyFolderMode() == I_CmsConstants.C_COPY_AS_SIBLING) {
-            return C_COPYMODE_SIBLING;
+            return COPYMODE_SIBLING;
         } else {
-            return C_COPYMODE_PRESERVE;
+            return COPYMODE_PRESERVE;
         }
     }
 
@@ -169,12 +155,12 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getDialogDeleteFileModeString() {
 
         if (getDialogDeleteFileMode() == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
-            return C_DELETEMODE_DELETE;
+            return DELETEMODE_DELETE;
         } else {
-            return C_DELETEMODE_PRESERVE;
+            return DELETEMODE_PRESERVE;
         }
     }
-    
+
     /**
      * Returns the default setting for expanding inherited permissions in the dialog.<p>
      * 
@@ -182,9 +168,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogExpandInheritedPermissionsString() {
 
-        return getBoolRepresentation(getDialogExpandInheritedPermissions());
+        return String.valueOf(getDialogExpandInheritedPermissions());
     }
-    
+
     /**
      * Returns the default setting for expanding the users permissions in the dialog.<p>
      * 
@@ -192,7 +178,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogExpandUserPermissionsString() {
 
-        return getBoolRepresentation(getDialogExpandUserPermissions());
+        return String.valueOf(getDialogExpandUserPermissions());
     }
 
     /**
@@ -202,7 +188,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogPermissionsInheritOnFolderString() {
 
-        return getBoolRepresentation(getDialogPermissionsInheritOnFolder());
+        return String.valueOf(getDialogPermissionsInheritOnFolder());
     }
 
     /**
@@ -213,20 +199,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getDialogPublishSiblingsString() {
 
         if (getDialogPublishSiblings()) {
-            return C_PUBLISHMODE_SIBLINGS;
+            return PUBLISHMODE_SIBLINGS;
         } else {
-            return C_PUBLISHMODE_ONLYRESOURCE;
+            return PUBLISHMODE_ONLYRESOURCE;
         }
-    }
-
-    /**
-     * Determines if the lock dialog should be shown.<p>
-     * 
-     * @return true if the lock dialog is shown, otherwise false
-     */
-    public String getDialogShowLockString() {
-
-        return getBoolRepresentation(getDialogShowLock());
     }
 
     /**
@@ -236,9 +212,19 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogShowExportSettingsString() {
 
-        return getBoolRepresentation(getDialogShowExportSettings());
+        return String.valueOf(getDialogShowExportSettings());
     }
-    
+
+    /**
+     * Determines if the lock dialog should be shown.<p>
+     * 
+     * @return true if the lock dialog is shown, otherwise false
+     */
+    public String getDialogShowLockString() {
+
+        return String.valueOf(getDialogShowLock());
+    }
+
     /**
      * Returns a string representation of the direct edit button style.<p>
      * 
@@ -246,7 +232,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDirectEditButtonStyleString() {
 
-        return m_buttonStyles[getDirectEditButtonStyle()];
+        return BUTTON_STYLES[getDirectEditButtonStyle()];
     }
 
     /**
@@ -256,7 +242,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getEditorButtonStyleString() {
 
-        return m_buttonStyles[getEditorButtonStyle()];
+        return BUTTON_STYLES[getEditorButtonStyle()];
     }
 
     /**
@@ -266,22 +252,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getExplorerButtonStyleString() {
 
-        return m_buttonStyles[getExplorerButtonStyle()];
-    }
-
-    /**
-     * Checks if  a specific explorer setting depending is set.<p>
-     * 
-     * @param setting the settings constant value for the explorer settings
-     * @return "true" if the explorer setting is set, otherwise "false"
-     */
-    private String getExplorerSetting(int setting) {
-
-        if ((getExplorerSettings() & setting) > 0) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return BUTTON_STYLES[getExplorerButtonStyle()];
     }
 
     /**
@@ -291,7 +262,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getRestrictExplorerViewString() {
 
-        return getBoolRepresentation(getRestrictExplorerView());
+        return String.valueOf(getRestrictExplorerView());
     }
 
     /**
@@ -421,7 +392,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getTaskMessageAcceptedString() {
 
-        return getBoolRepresentation(getTaskMessageAccepted());
+        return String.valueOf(getTaskMessageAccepted());
     }
 
     /**
@@ -431,7 +402,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getTaskMessageCompletedString() {
 
-        return getBoolRepresentation(getTaskMessageCompleted());
+        return String.valueOf(getTaskMessageCompleted());
     }
 
     /**
@@ -441,7 +412,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getTaskMessageForwardedString() {
 
-        return getBoolRepresentation(getTaskMessageForwarded());
+        return String.valueOf(getTaskMessageForwarded());
     }
 
     /**
@@ -451,7 +422,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getTaskMessageMembersString() {
 
-        return getBoolRepresentation(getTaskMessageMembers());
+        return String.valueOf(getTaskMessageMembers());
     }
 
     /**
@@ -461,7 +432,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getTaskShowAllProjectsString() {
 
-        return getBoolRepresentation(getTaskShowAllProjects());
+        return String.valueOf(getTaskShowAllProjects());
     }
 
     /**
@@ -471,8 +442,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getTaskStartupFilterDefault() {
 
-        int defaultFilter = m_startupFilterValue.indexOf(getTaskStartupFilter());
-        return m_startupFilterNames[defaultFilter];
+        int defaultFilter = FILTER_VALUES_LIST.indexOf(getTaskStartupFilter());
+        return FILTER_NAMES[defaultFilter];
     }
 
     /**
@@ -482,7 +453,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getUploadAppletString() {
 
-        return getBoolRepresentation(useUploadApplet());
+        return String.valueOf(useUploadApplet());
     }
 
     /**
@@ -492,7 +463,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getWorkplaceButtonStyleString() {
 
-        return m_buttonStyles[getWorkplaceButtonStyle()];
+        return BUTTON_STYLES[getWorkplaceButtonStyle()];
     }
 
     /**
@@ -503,7 +474,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setDialogCopyFileMode(String mode) {
 
         int copyMode = I_CmsConstants.C_COPY_AS_NEW;
-        if (mode.equalsIgnoreCase(C_COPYMODE_SIBLING)) {
+        if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
             copyMode = I_CmsConstants.C_COPY_AS_SIBLING;
         }
         setDialogCopyFileMode(copyMode);
@@ -517,9 +488,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setDialogCopyFolderMode(String mode) {
 
         int copyMode = I_CmsConstants.C_COPY_AS_NEW;
-        if (mode.equalsIgnoreCase(C_COPYMODE_SIBLING)) {
+        if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
             copyMode = I_CmsConstants.C_COPY_AS_SIBLING;
-        } else if (mode.equalsIgnoreCase(C_COPYMODE_PRESERVE)) {
+        } else if (mode.equalsIgnoreCase(COPYMODE_PRESERVE)) {
             copyMode = I_CmsConstants.C_COPY_PRESERVE_SIBLING;
         }
         setDialogCopyFolderMode(copyMode);
@@ -533,12 +504,12 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setDialogDeleteFileMode(String mode) {
 
         int deleteMode = I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
-        if (mode.equalsIgnoreCase(C_DELETEMODE_DELETE)) {
+        if (mode.equalsIgnoreCase(DELETEMODE_DELETE)) {
             deleteMode = I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS;
         }
         setDialogDeleteFileMode(deleteMode);
     }
-    
+
     /**
      * Sets the default setting for expanding inherited permissions in the dialog.<p>
      *
@@ -548,7 +519,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogExpandInheritedPermissions(Boolean.valueOf(dialogExpandInheritedPermissions).booleanValue());
     }
-    
+
     /**
      * Sets the default setting for expanding the users permissions in the dialog.<p>
      *
@@ -558,7 +529,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogExpandUserPermissions(Boolean.valueOf(dialogExpandUserPermissions).booleanValue());
     }
-    
+
     /**
      * Sets the default setting for inheriting permissions on folders.<p>
      *
@@ -577,7 +548,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setDialogPublishSiblings(String mode) {
 
         boolean publishSiblings = false;
-        if (mode.equalsIgnoreCase(C_PUBLISHMODE_SIBLINGS)) {
+        if (mode.equalsIgnoreCase(PUBLISHMODE_SIBLINGS)) {
             publishSiblings = true;
         }
         setDialogPublishSiblings(publishSiblings);
@@ -590,10 +561,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDirectEditButtonStyle(String buttonstyle) {
 
-        int buttonstyleValue = C_BUTTONSTYLE_TEXTIMAGE;
+        int buttonstyleValue = BUTTONSTYLE_TEXTIMAGE;
         try {
             if (buttonstyle != null) {
-                buttonstyleValue = m_buttonStyle.indexOf(buttonstyle);
+                buttonstyleValue = BUTTON_STYLES_LIST.indexOf(buttonstyle);
             }
         } catch (Exception e) {
             // do nothing, use the default value
@@ -608,10 +579,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setEditorButtonStyle(String buttonstyle) {
 
-        int buttonstyleValue = C_BUTTONSTYLE_TEXTIMAGE;
+        int buttonstyleValue = BUTTONSTYLE_TEXTIMAGE;
         try {
             if (buttonstyle != null) {
-                buttonstyleValue = m_buttonStyle.indexOf(buttonstyle);
+                buttonstyleValue = BUTTON_STYLES_LIST.indexOf(buttonstyle);
             }
         } catch (Exception e) {
             // do nothing, use the default value
@@ -626,10 +597,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setExplorerButtonStyle(String buttonstyle) {
 
-        int buttonstyleValue = C_BUTTONSTYLE_TEXTIMAGE;
+        int buttonstyleValue = BUTTONSTYLE_TEXTIMAGE;
         try {
             if (buttonstyle != null) {
-                buttonstyleValue = m_buttonStyle.indexOf(buttonstyle);
+                buttonstyleValue = BUTTON_STYLES_LIST.indexOf(buttonstyle);
             }
         } catch (Exception e) {
             // do nothing, use the default value
@@ -793,6 +764,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     *  Sets if the export part of the secure/export dialog should be shown.<p>
+     * 
+     * @param mode true if the export dialog should be shown, otherwise false
+     */
+    public void setShowExportSettingsDialog(String mode) {
+
+        setDialogShowExportSettings(Boolean.valueOf(mode).booleanValue());
+    }
+
+    /**
      *  Sets if the lock dialog should be shown.<p>
      * 
      * @param mode true if the lock dialog should be shown, otherwise false
@@ -801,16 +782,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setDialogShowLock(Boolean.valueOf(mode).booleanValue());
     }
-    
-    /**
-     *  Sets if the export part of the secure/export dialog should be shown.<p>
-     * 
-     * @param mode true if the export dialog should be shown, otherwise false
-     */
-    public void setShowExportSettingsDialog(String mode) {
-
-        setDialogShowExportSettings(Boolean.valueOf(mode).booleanValue());
-    }    
 
     /**
      * Sets if a message should be sent if the task is accepted.<p>
@@ -873,12 +844,12 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         int defaultFilter = 0;
         try {
             if (filter != null) {
-                defaultFilter = m_startupFilterName.indexOf(filter);
+                defaultFilter = FILTER_NAMES_LIST.indexOf(filter);
             }
         } catch (Exception e) {
             // do nothing, use the default value
         }
-        setTaskStartupFilter(m_startupFilterValues[defaultFilter]);
+        setTaskStartupFilter(FILTER_VALUES[defaultFilter]);
     }
 
     /**
@@ -899,17 +870,32 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setWorkplaceButtonStyle(String buttonstyle) {
 
-        int buttonstyleValue = C_BUTTONSTYLE_TEXTIMAGE;
+        int buttonstyleValue = BUTTONSTYLE_TEXTIMAGE;
 
         try {
             if (buttonstyle != null) {
-                buttonstyleValue = m_buttonStyle.indexOf(buttonstyle);
+                buttonstyleValue = BUTTON_STYLES_LIST.indexOf(buttonstyle);
             }
         } catch (Exception e) {
             // do nothing, use the default value
         }
 
         setWorkplaceButtonStyle(buttonstyleValue);
+    }
+
+    /**
+     * Checks if  a specific explorer setting depending is set.<p>
+     * 
+     * @param setting the settings constant value for the explorer settings
+     * @return "true" if the explorer setting is set, otherwise "false"
+     */
+    private String getExplorerSetting(int setting) {
+
+        if ((getExplorerSettings() & setting) > 0) {
+            return Boolean.TRUE.toString();
+        } else {
+            return Boolean.FALSE.toString();
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2005/02/17 12:44:31 $
+ * @version $Revision: 1.6 $ $Date: 2005/04/10 11:00:14 $
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
@@ -89,7 +89,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
-    public void characters(char buf[], int offset, int len) throws SAXException {
+    public void characters(char[] buf, int offset, int len) throws SAXException {
         if (len == 0) {
             return;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,13 +57,13 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2005/03/31 10:32:12 $
+ * @version $Revision: 1.17 $ $Date: 2005/04/10 11:00:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
-public class CmsCosDocument implements I_CmsCosDocumentFactory {
+public class CmsCosDocument implements I_CmsDocumentFactory {
 
     /** The cos prefix for document keys. */
     public static final String C_DOCUMENT_KEY_PREFIX = "COS";
@@ -76,6 +76,15 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
 
     /** Name of the document type. */
     protected String m_name;
+
+    /** Channel of cos document. */
+    public static final String DOC_CHANNEL = "channel";
+
+    /** Content id of cos document. */
+    public static final String DOC_CONTENT_ID = "contentid";
+
+    /** Content definition of cos document. */
+    public static final String DOC_CONTENT_DEFINITION = "contentdefinition";
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -207,13 +216,13 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, new Date(content.m_dateCreated)));
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, new Date(content.m_dateLastModified)));
 
-        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
-        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource)
+        document.add(Field.Keyword(CmsCosDocument.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
+        document.add(Field.Keyword(CmsCosDocument.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource)
             .getContentDefinition()));
 
         String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));
-        document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
+        document.add(Field.UnIndexed(CmsCosDocument.DOC_CONTENT_ID, resource.getId().toString()));
 
         document
             .add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));

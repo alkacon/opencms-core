@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,22 +54,23 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3
  */
 public class CmsJspLoginBean extends CmsJspActionElement {
-    
+
     /** Flag to indicate if a login was successful. */
     private CmsException m_loginException;
-    
+
     /**
      * Empty constructor, required for every JavaBean.<p>
      */
     public CmsJspLoginBean() {
+
         // noop, you must call the init() method after you create an instance
     }
-    
+
     /**
      * Constructor, with parameters.<p>
      * 
@@ -78,19 +79,21 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @param res the JSP response 
      */
     public CmsJspLoginBean(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         super();
         init(context, req, res);
-    }    
-    
+    }
+
     /**
      * Returns the link to the form that contains the login element.<p>
      * 
      * @return the link to the form that contains the login element
      */
     public String getFormLink() {
+
         return link(getRequestContext().getUri());
     }
-        
+
     /**
      * Returns the exception that was thrown after login, 
      * or null if no Exception was thrown (i.e. login was successul
@@ -99,27 +102,30 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @return the exception thrown after login
      */
     public CmsException getLoginException() {
+
         return m_loginException;
     }
-    
+
     /**
      * Returns the currently logged in user.<p>
      * 
      * @return the currently logged in user
      */
     public CmsUser getUser() {
+
         return getRequestContext().currentUser();
-    }    
-    
+    }
+
     /**
      * Returns the username of the currently logged in user.<p>
      * 
      * @return the username of the currently logged in user
      */
     public String getUserName() {
+
         return getRequestContext().currentUser().getName();
     }
-    
+
     /**
      * Returns true if the current user is not the guest user, 
      * i.e. if he already has logged in with some other user account.<p>
@@ -127,15 +133,17 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @return true if the current user is already logged in
      */
     public boolean isLoggedIn() {
+
         return !getCmsObject().getRequestContext().currentUser().isGuestUser();
     }
-        
+
     /**
      * Indicates if a login was successful or not.<p>
      * 
      * @return true if the login was successful
      */
     public boolean isLoginSuccess() {
+
         return (m_loginException == null);
     }
 
@@ -146,11 +154,12 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @param password the password
      * 
      * @throws IOException in case redirect after login was not successful
-     */    
+     */
     public void login(String username, String password) throws IOException {
+
         login(username, password, null);
-    }    
-    
+    }
+
     /**
      * Logs a system user in to OpenCms.<p>
      * 
@@ -159,11 +168,12 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @param login_project the project to switch to after login (if null project is not switched)
      * 
      * @throws IOException in case redirect after login was not successful
-     */    
+     */
     public void login(String username, String password, String login_project) throws IOException {
+
         login(username, password, login_project, null);
-    }    
-    
+    }
+
     /**
      * Logs a system user in to OpenCms.<p>
      * 
@@ -175,15 +185,20 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @throws IOException in case redirect after login was not successful
      */
     public void login(String username, String password, String login_project, String login_redirect) throws IOException {
+
         HttpSession session = null;
         m_loginException = null;
         try {
             // login the user and create a new session
-            getCmsObject().loginUser(username, password, getRequestContext().getRemoteAddress(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            getCmsObject().loginUser(
+                username,
+                password,
+                getRequestContext().getRemoteAddress(),
+                I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             // make sure we have a new session after login for security reasons
             session = getRequest().getSession(false);
             if (session != null) {
-                session.invalidate();       
+                session.invalidate();
             }
             session = getRequest().getSession(true);
             if (login_project != null) {
@@ -193,27 +208,35 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             // any exception here indicates that the login has failed
             m_loginException = e;
             if (session != null) {
-                session.invalidate();       
+                session.invalidate();
             }
         }
         if (m_loginException == null) {
             // login was successful
             if (OpenCms.getLog(CmsJspLoginBean.class).isInfoEnabled()) {
-                OpenCms.getLog(CmsJspLoginBean.class).info("Login of user '" + username + "' on page " + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+                OpenCms.getLog(CmsJspLoginBean.class).info(
+                    "Login of user '"
+                        + username
+                        + "' on page "
+                        + getRequestContext().addSiteRoot(getRequestContext().getUri()));
             }
             if (login_redirect != null) {
-                getResponse().sendRedirect(link(login_redirect));    
+                getResponse().sendRedirect(link(login_redirect));
             } else {
-                getResponse().sendRedirect(getFormLink());  
+                getResponse().sendRedirect(getFormLink());
             }
         } else {
             // login was not successful
             if (OpenCms.getLog(CmsJspLoginBean.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsJspLoginBean.class).warn("Failed login attempt for user '" + username + "' on page " + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+                OpenCms.getLog(CmsJspLoginBean.class).warn(
+                    "Failed login attempt for user '"
+                        + username
+                        + "' on page "
+                        + getRequestContext().addSiteRoot(getRequestContext().getUri()));
             }
         }
     }
-    
+
     /**
      * Logs a user out, i.e. destroys the current users session,
      * after that the current page will be redirected it itself one time to ensure
@@ -222,13 +245,18 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @throws IOException if redirect after logout fails
      */
     public void logout() throws IOException {
+
         HttpSession session = getRequest().getSession(false);
         if (session != null) {
             session.invalidate();
         }
         // login was successful
         if (OpenCms.getLog(CmsJspLoginBean.class).isDebugEnabled()) {
-            OpenCms.getLog(CmsJspLoginBean.class).debug("Logout of user '" + getUserName() + "' on page " + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+            OpenCms.getLog(CmsJspLoginBean.class).debug(
+                "Logout of user '"
+                    + getUserName()
+                    + "' on page "
+                    + getRequestContext().addSiteRoot(getRequestContext().getUri()));
         }
         getResponse().sendRedirect(getFormLink());
     }

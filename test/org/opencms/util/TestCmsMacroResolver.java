@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2005/04/02 07:32:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,18 @@
  
 package org.opencms.util;
 
+import org.opencms.i18n.CmsMessages;
+import org.opencms.workplace.CmsWorkplaceMessages;
+
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 /** 
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com}
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -48,6 +53,93 @@ public class TestCmsMacroResolver extends TestCase {
      */
     public TestCmsMacroResolver(String arg0) {
         super(arg0);
+    }
+    
+    /**
+     * Tests the macro resolver "recursive" functions.<p>
+     */
+    public void testResolveLocalizedMacros() {
+        
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        
+        // add the messages to the resolver
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);        
+        resolver.setMessages(messages);
+        
+        // resgister some macros for the validation
+        resolver.addMacro("onesecond", "This is the final result");
+        resolver.addMacro("twofirst", "second");
+        resolver.addMacro("three", "first");
+        
+        String value1, value2;
+        String keyName;
+        
+        keyName = "editor.xmlcontent.validation.error";
+        value1 = messages.key(keyName);
+        value2 = resolver.resolveMacros("${key." + keyName + "}");
+        assertEquals("Invalid value \"{0}\" according to rule {1}", value1);
+        assertEquals(value1, value2);
+        
+        value1 = messages.key(keyName, new Object[]{"'value'", "'rule'"});
+        value2 = resolver.resolveMacros("${key." + keyName + "|'value'|'rule'}");
+        assertEquals("Invalid value \"'value'\" according to rule 'rule'", value1);
+        assertEquals(value1, value2);
+        
+        value1 = messages.key(keyName, new Object[]{"This is the final result", "second"});
+        value2 = resolver.resolveMacros("${key." + keyName + "|${one${two${three}}}|${two${three}}}");
+        assertEquals("Invalid value \"This is the final result\" according to rule second", value1);
+        assertEquals(value1, value2);    
+        
+        keyName = "editor.xmlcontent.validation.warning";
+        value1 = messages.key(keyName);
+        value2 = resolver.resolveMacros("${key." + keyName + "}");
+        assertEquals("Bad value \"{0}\" according to rule {1}", value1);
+        assertEquals(value1, value2);
+        
+        value1 = messages.key(keyName, new Object[]{"some value", "the rule"});
+        value2 = resolver.resolveMacros("${key." + keyName + "|some value|the rule}");
+        assertEquals("Bad value \"some value\" according to rule the rule", value1);
+        assertEquals(value1, value2);    
+        
+        value1 = messages.key(keyName, new Object[]{"This is the final result", "second"});
+        value2 = resolver.resolveMacros("${key." + keyName + "|${one${two${three}}}|${two${three}}}");
+        assertEquals("Bad value \"This is the final result\" according to rule second", value1);
+        assertEquals(value1, value2);    
+    }
+    
+    
+    /**
+     * Tests the macro resolver "nested macro" functions.<p>
+     */
+    public void testResolveNestedMacros() {
+        
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        resolver.addMacro("onesecond", "This is the final result");
+        resolver.addMacro("twofirst", "second");
+        resolver.addMacro("three", "first");
+     
+        String content, result;
+        
+        content = "${three}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("first", result);  
+        
+        content = "${two${three}}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("second", result);  
+                
+        content = "${one${two${three}}}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("This is the final result", result);
+        
+        content = "${one ${two${three}}}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("", result);    
+        
+        resolver.setKeepEmptyMacros(true);
+        content = "${one ${two${three}}}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("${one second}", result);    
     }
     
     /**

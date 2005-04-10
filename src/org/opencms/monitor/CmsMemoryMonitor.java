@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.45 $ $Date: 2005/03/19 13:58:19 $
+ * @version $Revision: 1.46 $ $Date: 2005/04/10 11:00:14 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -757,7 +757,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         long totalSize = 0;
         for (Iterator keys = keyList.iterator(); keys.hasNext();) {
             String key = (String)keys.next();
-            String shortKeys[] = key.split("\\.");
+            String[] shortKeys = key.split("\\.");
             String shortKey = shortKeys[shortKeys.length - 2] + "." + shortKeys[shortKeys.length - 1];
             PrintfFormat form = new PrintfFormat("%9s");
             Object obj = m_monitoredObjects.get(key);

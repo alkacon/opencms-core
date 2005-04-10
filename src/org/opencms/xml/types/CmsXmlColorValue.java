@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,20 +43,20 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.2
  */
 public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
 
     /** The name of this type as used in the XML schema. */
-    public static final String C_TYPE_NAME = "OpenCmsColor";
+    public static final String TYPE_NAME = "OpenCmsColor";
 
     /** The validation rule used for this schema type. */
-    public static final String C_TYPE_RULE = "#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?";
+    public static final String TYPE_RULE = "#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?";
 
     /** Pre-compiled regular expression pattern for this rule. */
-    private static final Pattern m_pattern = Pattern.compile(C_TYPE_RULE);
-    
+    private static final Pattern TYPE_PATTERN = Pattern.compile(TYPE_RULE);
+
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsColor".<p>
      */
@@ -115,10 +115,10 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
     public String getSchemaDefinition() {
 
         return "<xsd:simpleType name=\""
-            + C_TYPE_NAME
+            + TYPE_NAME
             + "\"><xsd:restriction base=\"xsd:string\">"
             + "<xsd:pattern value=\""
-            + C_TYPE_RULE
+            + TYPE_RULE
             + "\" /></xsd:restriction></xsd:simpleType>";
     }
 
@@ -127,7 +127,7 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
      */
     public String getTypeName() {
 
-        return C_TYPE_NAME;
+        return TYPE_NAME;
     }
 
     /**
@@ -143,6 +143,6 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
      */
     public boolean validateValue(String value) {
 
-        return m_pattern.matcher(value).matches();
+        return TYPE_PATTERN.matcher(value).matches();
     }
 }

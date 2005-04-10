@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/04/02 07:32:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,11 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.jsp.PageContext;
@@ -59,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -149,14 +147,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Indicates if unresolved macros should be kept "as is" or replaced by an empty String. */
     protected boolean m_keepEmptyMacors;
 
-    /** The Locale to use for resolving macros. */
-    protected Locale m_locale;
+    /** The messages resource bundle to resolve localized keys with. */
+    protected CmsMessages m_messages;
 
     /** The resource name to use for resolving macros. */
     protected String m_resourceName;
-
-    /** The XML content handler to use for resolving macros. */
-    protected I_CmsXmlContentHandler m_xmlContentHandler;
 
     /**
      * Adds macro delelimiters to the given input, 
@@ -222,7 +217,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      * 
      * @return the input with all macros resolved
      */
-    public static String resolveMacros(String input, I_CmsMacroResolver resolver) {
+    public static String resolveMacros(final String input, I_CmsMacroResolver resolver) {
 
         int len;
         if ((input == null) || ((len = input.length()) < 3)) {
@@ -240,6 +235,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         int np, pp1, pp2, e;
         String macro, value;
         boolean keep = resolver.isKeepEmptyMacros();
+        boolean resolvedNone = true;
 
         // append chars before the first delimiter found
         result.append(input.substring(0, p));
@@ -270,6 +266,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     if (value != null) {
                         // macro was successfully resolved
                         result.append(value);
+                        resolvedNone = false;
                     } else if (keep) {
                         // macro was unknown, but should be kept
                         result.append(input.substring(p, e));
@@ -288,6 +285,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             p = np;
         } while (p < len);
 
+        if (resolvedNone && keep) {
+            // nothing was resolved and macros should be kept, return original input
+            return input;
+        }
+
+        // input was changed during resolving of macros
         return result.toString();
     }
 
@@ -311,6 +314,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public String getMacroValue(String macro) {
 
+        if (m_messages != null) {
+            if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
+                String keyName = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());                
+                return m_messages.keyWithParams(keyName);
+            }
+        }
+        
         if (m_jspPageContext != null) {
 
             if (macro.startsWith(CmsMacroResolver.C_KEY_REQUEST_PARAM)) {
@@ -381,7 +391,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
                 String originalKey = macro;
                 macro = macro.substring(CmsMacroResolver.C_KEY_OPENCMS.length());
-                int index = CmsMacroResolver.C_VALUE_NAMES_OPENCMS.indexOf(macro);
+                int index = C_VALUE_NAMES_OPENCMS.indexOf(macro);
                 String value = null;
 
                 switch (index) {
@@ -474,23 +484,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         }
 
-        if (m_locale != null) {
-            if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
-
-                String keyName = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());
-                CmsMessages messages = m_xmlContentHandler.getMessages(m_locale);
-                if (messages != null) {
-                    return messages.key(keyName);
-                }
-                return CmsMessages.formatUnknownKey(keyName);
-            }
-
-            if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
-                // leave macros for localized keys unchanged if no locale available
-                return CmsMacroResolver.formatMacro(macro);
-            }
-        }
-
         if (CmsMacroResolver.KEY_CURRENT_TIME.equals(macro)) {
             // the key is the current system time
             return String.valueOf(System.currentTimeMillis());
@@ -512,11 +505,30 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
+     * Resolves the macros in the given input.<p>
+     * 
+     * Calls <code>{@link #resolveMacros(String)}</code> until no more macros can 
+     * be resolved in the input. This way "nested" macros in the input are resolved as well.<p> 
+     * 
      * @see org.opencms.util.I_CmsMacroResolver#resolveMacros(java.lang.String)
      */
     public String resolveMacros(String input) {
 
-        return CmsMacroResolver.resolveMacros(input, this);
+        String result = input;
+
+        if (input != null) {
+            String lastResult;
+            do {
+                // save result for next comparison
+                lastResult = result;
+                // resolve the macros
+                result = CmsMacroResolver.resolveMacros(result, this);
+                // if nothing changes then the final result is found
+            } while (!result.equals(lastResult));
+        }
+
+        // return the result
+        return result;
     }
 
     /**
@@ -577,18 +589,19 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
-     * Provides a Locale to this macro resolver, required to resolve certain macros.<p>
+     * Provides a set of <code>{@link CmsMessages}</code> to this macro resolver, 
+     * required to resolve localized macros.<p>
      * 
-     * @param locale the Locale to use
+     * @param messages the message resource bundle to use
      * 
      * @return this instance of the macro resolver
      */
-    public CmsMacroResolver setLocale(Locale locale) {
+    public CmsMacroResolver setMessages(CmsMessages messages) {
 
-        m_locale = locale;
+        m_messages = messages;
         return this;
     }
-
+    
     /**
      * Provides a resource name to this macro resolver, required to resolve certain macros.<p>
      * 
@@ -599,19 +612,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public CmsMacroResolver setResourceName(String resourceName) {
 
         m_resourceName = resourceName;
-        return this;
-    }
-
-    /**
-     * Provides a {@link I_CmsXmlContentHandler} to this macro resolver, required to resolve certain macros.<p>
-     * 
-     * @param xmlContentHandler the XML content handler to use
-     * 
-     * @return this instance of the macro resolver
-     */
-    public CmsMacroResolver setXmlContentHandler(I_CmsXmlContentHandler xmlContentHandler) {
-
-        m_xmlContentHandler = xmlContentHandler;
         return this;
     }
 }

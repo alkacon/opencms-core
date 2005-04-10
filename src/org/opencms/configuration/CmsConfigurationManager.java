@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private static final long C_MAX_BACKUP_DAYS = 15;
 
     /** Date format for the backup file time prefix. */
-    private static final SimpleDateFormat m_backupDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
+    private static final SimpleDateFormat BACKUP_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
 
     /** The folder where to store the backup files of the configuration. */
     private File m_backupFolder;
@@ -404,7 +404,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private void backupXmlConfiguration(I_CmsXmlConfiguration configuration) {
 
         String fromName = m_baseFolder.getAbsolutePath() + File.separatorChar + configuration.getXmlFileName();
-        String toDatePrefix = m_backupDateFormat.format(new Date());
+        String toDatePrefix = BACKUP_DATE_FORMAT.format(new Date());
         String toName = m_backupFolder.getAbsolutePath()
             + File.separatorChar
             + toDatePrefix

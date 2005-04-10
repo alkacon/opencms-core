@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorHtml.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.InputStream;
 public final class CmsExtractorHtml extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorHtml m_instance = new CmsExtractorHtml();
+    private static final CmsExtractorHtml INSTANCE = new CmsExtractorHtml();
 
     /**
      * Hide the public constructor.<p> 
@@ -64,7 +64,7 @@ public final class CmsExtractorHtml extends A_CmsTextExtractor {
      */
     public static I_CmsTextExtractor getExtractor() {
 
-        return m_instance;
+        return INSTANCE;
     }
     
     /**

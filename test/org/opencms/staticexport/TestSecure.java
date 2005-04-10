@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestSecure.java,v $
- * Date   : $Date: 2005/03/30 09:49:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,17 +55,17 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.0
  */
 public class TestSecure extends OpenCmsTestCase {
 
     /** the prefix of the secure server. */
-    private static final String m_secureServer = "https://localhost";
+    private static final String SERVER_SECURE = "https://localhost";
 
     /** the prefix of the normal server. */
-    private static final String m_normalServer = "http://localhost";
+    private static final String SERVER_NORMAL = "http://localhost";
 
     /**
      * Test suite for this test class.<p>
@@ -125,7 +125,7 @@ public class TestSecure extends OpenCmsTestCase {
         assertTrue(CmsSiteManager.getCurrentSite(cms).hasSecureServer());
 
         // test, if the secure server is 'https:www.mysite.com'
-        assertEquals(m_secureServer, CmsSiteManager.getCurrentSite(cms).getSecureUrl());
+        assertEquals(SERVER_SECURE, CmsSiteManager.getCurrentSite(cms).getSecureUrl());
 
     }
 
@@ -190,7 +190,7 @@ public class TestSecure extends OpenCmsTestCase {
         String element = "body";
 
         String text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertTrue(text.indexOf(m_secureServer) != -1);
+        assertTrue(text.indexOf(SERVER_SECURE) != -1);
 
     }
 
@@ -230,18 +230,18 @@ public class TestSecure extends OpenCmsTestCase {
         
         System.out.println(text);
         
-        assertTrue(text.indexOf(m_secureServer) != -1);
-        assertTrue(text.indexOf(m_normalServer) != -1);
+        assertTrue(text.indexOf(SERVER_SECURE) != -1);
+        assertTrue(text.indexOf(SERVER_NORMAL) != -1);
     }
 
     private void assertHasSecurePrefix(String link) {
 
-        assertTrue(link.startsWith(m_secureServer));
+        assertTrue(link.startsWith(SERVER_SECURE));
     }
 
     private void assertHasNormalPrefix(String link) {
 
-        assertTrue(link.startsWith(m_normalServer));
+        assertTrue(link.startsWith(SERVER_NORMAL));
     }
 
     private void assertHasNoPrefix(String link) {

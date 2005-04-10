@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlWidgetCollector.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,13 +52,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static Log m_log = OpenCms.getLog(CmsXmlWidgetCollector.class);
+    private static final Log LOG = OpenCms.getLog(CmsXmlWidgetCollector.class);
     
     /** The locale to get the values from. */
     private Locale m_locale;
@@ -139,8 +139,8 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
      */
     public void visit(I_CmsXmlContentValue value) {
 
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Visiting " + value.getPath());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Visiting " + value.getPath());
         }
 
         if (value.isSimpleType()) {
@@ -155,13 +155,13 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
                     }
                     m_widgets.put(value.getPath(), widget);
                     m_values.put(value.getPath(), value);
-                    if (m_log.isDebugEnabled()) {
-                        m_log.debug("Added " + value.getPath() + " to widgets.");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Added " + value.getPath() + " to widgets.");
                     }
                 } catch (CmsXmlException e) {
                     // should usually not happen
-                    if (m_log.isErrorEnabled()) {
-                        m_log.error("Could not access widget for content value " + value, e);
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error("Could not access widget for content value " + value, e);
                     }
                 }
             }

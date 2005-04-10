@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -137,7 +137,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                 OpenCms.getLog(this).debug("Calling master module table setup script for " + dbName);
             }
             
-            String modulePath[] = (String[])module.getResources().toArray(new String[1]);
+            String[] modulePath = (String[])module.getResources().toArray(new String[1]);
             
             String scriptPath;
             if (dbName.toLowerCase().startsWith("mysql")) {

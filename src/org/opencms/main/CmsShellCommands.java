@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -340,7 +340,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         while (tok.hasMoreTokens()) {
             paths.addElement(tok.nextToken());
         }
-        String exportPaths[] = new String[paths.size()];
+        String[] exportPaths = new String[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
             exportPaths[i] = (String)paths.elementAt(i);
         }
@@ -374,7 +374,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         while (tok.hasMoreTokens()) {
             paths.addElement(tok.nextToken());
         }
-        String exportPaths[] = new String[paths.size()];
+        String[] exportPaths = new String[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
             exportPaths[i] = (String)paths.elementAt(i);
         }

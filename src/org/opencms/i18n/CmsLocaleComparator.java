@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleComparator.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,12 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class CmsLocaleComparator implements Comparator {
 
     /** Static locale comparator. */
-    private static final Comparator m_localeComparator = new CmsLocaleComparator();
+    private static final Comparator LOCALE_COMPARATOR = new CmsLocaleComparator();
 
     /**
      * Hides the public constructor.<p> 
@@ -61,7 +61,7 @@ public final class CmsLocaleComparator implements Comparator {
      */
     public static Comparator getComparator() {
 
-        return m_localeComparator;
+        return LOCALE_COMPARATOR;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsWord.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.textmining.text.extraction.WordExtractor;
 public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorMsWord m_instance = new CmsExtractorMsWord();
+    private static final CmsExtractorMsWord INSTANCE = new CmsExtractorMsWord();
 
     /**
      * Hide the public constructor.<p> 
@@ -65,7 +65,7 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
      */
     public static I_CmsTextExtractor getExtractor() {
 
-        return m_instance;
+        return INSTANCE;
     }
 
     /** 

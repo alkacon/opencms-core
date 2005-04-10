@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -157,7 +157,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             if ((m == null) || (m.size() == 0)) {
                 return true;
             }
-            Object entries[] = m.values().toArray();
+            Object[] entries = m.values().toArray();
             synchronized (m_variationCache) {
                 for (int i = 0, s = entries.length; i < s; i++) {
                     CmsFlexCacheEntry e = (CmsFlexCacheEntry)entries[i];

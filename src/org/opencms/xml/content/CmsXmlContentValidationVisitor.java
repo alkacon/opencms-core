@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValidationVisitor.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static Log m_log = OpenCms.getLog(CmsXmlContentValidationVisitor.class);
+    private static final Log LOG = OpenCms.getLog(CmsXmlContentValidationVisitor.class);
 
     /** The initialized OpenCms user context (required for VFS access). */
     CmsObject m_cms;
@@ -87,8 +87,8 @@ class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
      */
     public void visit(I_CmsXmlContentValue value) {
 
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Visiting " + value.getPath());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Visiting " + value.getPath());
         }
 
         m_errorHandler = value.getContentDefinition().getContentHandler().resolveValidation(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,20 +43,20 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
 
     /** The name of this type as used in the XML schema. */
-    public static final String C_TYPE_NAME = "OpenCmsDateTime";
+    public static final String TYPE_NAME = "OpenCmsDateTime";
 
     /** The validation rule used for this schema type. */
-    public static final String C_TYPE_RULE = "\\p{Digit}+";
+    public static final String TYPE_RULE = "\\p{Digit}+";
 
     /** Pre-compiled regular expression pattern for this rule. */
-    private static final Pattern m_pattern = Pattern.compile(C_TYPE_RULE);
-    
+    private static final Pattern TYPE_PATTERN = Pattern.compile(TYPE_RULE);
+
     /** The long value (timestamp). */
     private long m_dateTime;
 
@@ -132,7 +132,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
      */
     public String getSchemaDefinition() {
 
-        return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:decimal\" /></xsd:simpleType>";
+        return "<xsd:simpleType name=\"" + TYPE_NAME + "\"><xsd:restriction base=\"xsd:decimal\" /></xsd:simpleType>";
     }
 
     /**
@@ -140,7 +140,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
      */
     public String getTypeName() {
 
-        return C_TYPE_NAME;
+        return TYPE_NAME;
     }
 
     /**
@@ -156,6 +156,6 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
      */
     public boolean validateValue(String value) {
 
-        return m_pattern.matcher(value).matches();
+        return TYPE_PATTERN.matcher(value).matches();
     }
 }

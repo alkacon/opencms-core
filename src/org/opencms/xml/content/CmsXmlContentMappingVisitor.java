@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/10 11:00:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,13 +46,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.4
  */
 class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static Log m_log = OpenCms.getLog(CmsXmlContentMappingVisitor.class);
+    private static final Log LOG = OpenCms.getLog(CmsXmlContentMappingVisitor.class);
 
     /** The initialized OpenCms user context (required for VFS access). */
     CmsObject m_cms;
@@ -91,14 +91,14 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
      */
     public void visit(I_CmsXmlContentValue value) {
 
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Visiting " + value.getPath());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Visiting " + value.getPath());
         }
 
         try {
             value.getContentDefinition().getContentHandler().resolveMapping(m_cms, m_content, value);
         } catch (CmsException e) {
-            m_log.error("Unable to resolve mapping for value " + value.getPath(), e);
+            LOG.error("Unable to resolve mapping for value " + value.getPath(), e);
         }
     }
 }
