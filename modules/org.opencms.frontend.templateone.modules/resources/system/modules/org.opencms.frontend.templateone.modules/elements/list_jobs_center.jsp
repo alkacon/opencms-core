@@ -45,7 +45,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <p>
 <b><cms:contentshow element="Title" /></b><br>
 <cms:contentshow element="ShortDescription" /><br>
-<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>"><fmt:message key="item.readmore" /></a></small>
+<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>
 </cms:contentload><%--
 --%></fmt:bundle>

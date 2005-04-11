@@ -54,7 +54,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 %>
 <small><fmt:message key="eventarticle.registrationclose" />: <fmt:formatDate value="${date}" /></small><br>
 </cms:contentcheck>
-<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>"><fmt:message key="item.readmore" /></a></small>
+<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>
 </cms:contentload><%--
 --%></fmt:bundle>

@@ -72,7 +72,7 @@ if (cms.hasCategoryFolders()) {
 <c:if test="${shownumber == 'true'}"></p></c:if>
 </c:if>
 <p style="margin: 0px 0px 4px;">
-<a href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
+<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
 </p>
 
 <div style="margin-bottom: 8px;"><p style="margin-top: 0px;">

@@ -53,7 +53,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 %>
 <small><fmt:formatDate value="${date}" type="date" dateStyle="long"  /></small><br>
 </cms:contentcheck>
-<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>"><fmt:message key="item.readmore" /></a></small>
+<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>
 </cms:contentload><%--
 --%></fmt:bundle>

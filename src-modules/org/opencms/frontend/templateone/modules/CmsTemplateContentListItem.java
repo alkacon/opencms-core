@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/04/07 14:09:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/11 15:55:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.frontend.templateone.modules;
 
-import org.opencms.frontend.templateone.CmsTemplateBean;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -48,7 +47,7 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTemplateContentListItem {
     
@@ -94,7 +93,7 @@ public class CmsTemplateContentListItem {
      * If no type for the specified index can be found, null is returned.<p>
      * 
      * @param messages the workplace messages holding the default values for collector and count
-     * @param properties the properties to use to get the information
+     * @param properties the properties to use to get the list information
      * @param microSiteFolder the folder URI of the current microsite
      * @param displayArea the area where to build the lists (left, center or right)
      * @param index the index of the content list item to create
@@ -249,7 +248,6 @@ public class CmsTemplateContentListItem {
             properties.put(CmsTemplateModules.C_PARAM_ELEMENTCOUNT, Integer.toString(getCount()));
         }
         properties.put(CmsTemplateModules.C_PARAM_FOLDER, getFolder());
-        properties.put(CmsTemplateBean.C_PARAM_SITE, jsp.getRequestContext().getSiteRoot());
         jsp.include(getListElement(), null, properties);
     }
     

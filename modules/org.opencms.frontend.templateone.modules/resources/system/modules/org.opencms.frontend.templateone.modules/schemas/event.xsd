@@ -23,7 +23,7 @@
 			<xsd:element name="Number" type="OpenCmsString" />
 			<xsd:element name="ShortDescription" type="OpenCmsString" />	
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />				
-			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" />
 			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
@@ -52,7 +52,7 @@
 			<validationrules/>
 			<defaults>
 				<default element="RegistrationClose" value="${currenttime}"/>
-				<default element="Priority" value="0:${key.priority.minimum}|1:${key.priority.verylow}|2:${key.priority.low}|3:${key.priority.standard}*|4:${key.priority.high}|5:${key.priority.veryhigh}|6:${key.priority.maximum}"/>
+				<default element="Priority" value="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3:${key.priority.standard}*|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}"/>
 			</defaults>
 		</xsd:appinfo>
 

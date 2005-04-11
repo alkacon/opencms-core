@@ -9,12 +9,17 @@ CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 String locale = cms.getRequestContext().getLocale().toString();
 pageContext.setAttribute("locale", locale);
 
+String folder = request.getParameter("folder");
+String folderTitle = cms.property("Title", folder, "");
+
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><div class="sidelist"><p class="sidelisthead"><fmt:message key="jobs.headline" /></p><cms:contentload collector="${param.collector}" param="${param.folder}job_${number}.html|45|${param.count}" editable="true">
+--%><div class="sidelist">
+<p class="sidelisthead"><% if (!"".equals(folderTitle)) { out.print(folderTitle); } else { %><fmt:message key="jobs.headline" /><% } %></p>
+<cms:contentload collector="${param.collector}" param="${param.folder}job_${number}.html|45|${param.count}" editable="true">
 
-<p class="sidelistitem"><a class="sidelistitemhead" href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>"><cms:contentshow element="Title" /></a><br>
+<p class="sidelistitem"><a class="sidelistitemhead" href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><cms:contentshow element="Title" /></a><br>
 <cms:contentcheck ifexists="Date">
 <c:set var="dateString">
 	<cms:contentshow element="Date" />

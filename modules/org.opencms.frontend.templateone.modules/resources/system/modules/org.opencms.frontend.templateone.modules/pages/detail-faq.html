@@ -5,6 +5,12 @@
 
 CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
+String uri = request.getParameter("uri");
+String oldUri = cms.getRequestContext().getUri();
+if (CmsStringUtil.isNotEmpty(uri)) {
+	cms.getRequestContext().setUri(uri);
+}
+
 // get currently active locale to initialize message bundle
 String locale = cms.getRequestContext().getLocale().toString();
 pageContext.setAttribute("locale", locale);
@@ -12,8 +18,13 @@ pageContext.setAttribute("locale", locale);
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:include property="template" element="head" />
+--%><cms:include property="template" element="head" /><%
 
+if (CmsStringUtil.isNotEmpty(uri)) {
+	cms.getRequestContext().setUri(oldUri);
+}
+
+%>
 <div class="element">
 
 <cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">

@@ -50,7 +50,7 @@
 			<defaults>
 				<default element="Date" value="${currenttime}"/>
 				<default element="Author" value="${currentuser.fullname}"/>
-				<default element="Priority" value="0:${key.priority.minimum}|1:${key.priority.verylow}|2:${key.priority.low}|3:${key.priority.standard}*|4:${key.priority.high}|5:${key.priority.veryhigh}|6:${key.priority.maximum}"/>
+				<default element="Priority" value="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3:${key.priority.standard}*|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}"/>
 			</defaults>
 		</xsd:appinfo>
 
