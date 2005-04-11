@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/11 17:44:39 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.0 beta 2
  */
@@ -62,18 +62,6 @@ public class CmsMessages {
 
     /** Prefix / Suffix for unknown keys. */
     public static final String C_UNKNOWN_KEY_EXTENSION = "???";
-
-    /** Full date / time format (this is more complete then LONG). */
-    public static final int FULL = DateFormat.FULL;
-
-    /** Long date / time format. */
-    public static final int LONG = DateFormat.LONG;
-
-    /** Medium date / time format. */
-    public static final int MEDIUM = DateFormat.MEDIUM;
-
-    /** Short date / time format. */
-    public static final int SHORT = DateFormat.SHORT;
 
     /** The resource bundle this message object was initialized with. */
     protected ResourceBundle m_bundle;
@@ -188,7 +176,7 @@ public class CmsMessages {
 
     /**
      * Returns a formated date String from a Date value,
-     * the format being {@link CmsMessages#SHORT} and the locale
+     * the format being {@link DateFormat#SHORT} and the locale
      * based on this instance.<p>
      * 
      * @param date the Date object to format as String
@@ -196,7 +184,7 @@ public class CmsMessages {
      */
     public String getDate(Date date) {
 
-        return CmsDateUtil.getDate(date, SHORT, m_locale);
+        return CmsDateUtil.getDate(date, DateFormat.SHORT, m_locale);
     }
 
     /**
@@ -215,7 +203,7 @@ public class CmsMessages {
 
     /**
      * Returns a formated date String from a timestamp value,
-     * the format being {@link CmsMessages#SHORT} and the locale
+     * the format being {@link DateFormat#SHORT} and the locale
      * based on this instance.<p>
      * 
      * @param time the time value to format as date
@@ -223,12 +211,12 @@ public class CmsMessages {
      */
     public String getDate(long time) {
 
-        return CmsDateUtil.getDate(new Date(time), SHORT, m_locale);
+        return CmsDateUtil.getDate(new Date(time), DateFormat.SHORT, m_locale);
     }
 
     /**
      * Returns a formated date and time String from a Date value,
-     * the format being {@link CmsMessages#SHORT} and the locale
+     * the format being {@link DateFormat#SHORT} and the locale
      * based on this instance.<p>
      * 
      * @param date the Date object to format as String
@@ -236,7 +224,7 @@ public class CmsMessages {
      */
     public String getDateTime(Date date) {
 
-        return CmsDateUtil.getDateTime(date, SHORT, m_locale);
+        return CmsDateUtil.getDateTime(date, DateFormat.SHORT, m_locale);
     }
 
     /**
@@ -255,7 +243,7 @@ public class CmsMessages {
 
     /**
      * Returns a formated date and time String from a timestamp value,
-     * the format being {@link CmsMessages#SHORT} and the locale
+     * the format being {@link DateFormat#SHORT} and the locale
      * based on this instance.<p>
      * 
      * @param time the time value to format as date
@@ -263,7 +251,7 @@ public class CmsMessages {
      */
     public String getDateTime(long time) {
 
-        return CmsDateUtil.getDateTime(new Date(time), SHORT, m_locale);
+        return CmsDateUtil.getDateTime(new Date(time), DateFormat.SHORT, m_locale);
     }
 
     /**

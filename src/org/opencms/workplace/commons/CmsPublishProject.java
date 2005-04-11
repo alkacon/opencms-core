@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/03/03 15:44:57 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/11 17:44:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.commons;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -46,6 +45,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -405,7 +405,7 @@ public class CmsPublishProject extends CmsReport {
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             setParamResourcename(res.getName());
-            setParamModifieddate(CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), CmsMessages.SHORT, getLocale()));
+            setParamModifieddate(CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.SHORT, getLocale()));
             setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
         } catch (CmsException e) {
             OpenCms.getLog(this).error("Error computing publish resources", e);

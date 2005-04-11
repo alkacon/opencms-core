@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2005/03/31 13:57:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/11 17:44:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 
 import java.text.DateFormat;
@@ -46,7 +45,7 @@ import java.util.TimeZone;
  * Utilities to get and set formated dates in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public final class CmsDateUtil {
 
@@ -74,7 +73,7 @@ public final class CmsDateUtil {
      * the formatting based on the provided options.<p>
      * 
      * @param date the Date object to format as String
-     * @param format the format to use, see {@link CmsMessages} for possible values
+     * @param format the format to use, see {@link DateFormat} for possible values
      * @param locale the locale to use
      * @return the formatted date 
      */
@@ -87,14 +86,14 @@ public final class CmsDateUtil {
     /**
      * Returns a formated date String form a timestamp value,
      * the formatting based on the OpenCms system default locale
-     * and the {@link CmsMessages#SHORT} date format.<p>
+     * and the {@link DateFormat#SHORT} date format.<p>
      * 
      * @param time the time value to format as date
      * @return the formatted date 
      */
     public static String getDateShort(long time) {
 
-        return getDate(new Date(time), CmsMessages.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
+        return getDate(new Date(time), DateFormat.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
     }
 
     /**
@@ -102,7 +101,7 @@ public final class CmsDateUtil {
      * the formatting based on the provided options.<p>
      * 
      * @param date the Date object to format as String
-     * @param format the format to use, see {@link CmsMessages} for possible values
+     * @param format the format to use, see {@link DateFormat} for possible values
      * @param locale the locale to use
      * @return the formatted date 
      */
@@ -120,14 +119,14 @@ public final class CmsDateUtil {
     /**
      * Returns a formated date and time String form a timestamp value,
      * the formatting based on the OpenCms system default locale
-     * and the {@link CmsMessages#SHORT} date format.<p>
+     * and the {@link DateFormat#SHORT} date format.<p>
      * 
      * @param time the time value to format as date
      * @return the formatted date 
      */
     public static String getDateTimeShort(long time) {
 
-        return getDateTime(new Date(time), CmsMessages.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
+        return getDateTime(new Date(time), DateFormat.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
     }
 
     /**
