@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/03/10 16:23:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/11 17:46:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,16 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.quartz.CronTrigger;
@@ -70,7 +74,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -171,7 +175,14 @@ public class CmsScheduleManager implements Job {
         }
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Scheduler: Finished job '" + jobInfo.getJobName() + "'");
+            Date nextExecution = jobInfo.getExecutionTimeNext();
+            OpenCms.getLog(this).debug(
+                "Scheduler: Finished job '"
+                    + jobInfo.getJobName()
+                    + "', next execution "
+                    + ((nextExecution != null) 
+                        ? CmsDateUtil.getDateTime(nextExecution, DateFormat.MEDIUM, Locale.getDefault()) 
+                        : " (no more executions)"));
         }
     }
 
@@ -300,15 +311,10 @@ public class CmsScheduleManager implements Job {
         m_jobCount++;
 
         // generate Quartz job detail
-        JobDetail jobDetail = new JobDetail(
-            "cmsJob" + m_jobCount, 
-            Scheduler.DEFAULT_GROUP, 
-            CmsScheduleManager.class);
+        JobDetail jobDetail = new JobDetail("cmsJob" + m_jobCount, Scheduler.DEFAULT_GROUP, CmsScheduleManager.class);
 
         // generate Quartz job trigger
-        CronTrigger trigger = new CronTrigger(
-            "cmsTrigger" + m_jobCount, 
-            Scheduler.DEFAULT_GROUP);
+        CronTrigger trigger = new CronTrigger("cmsTrigger" + m_jobCount, Scheduler.DEFAULT_GROUP);
 
         try {
             trigger.setCronExpression(jobInfo.getCronExpression());
@@ -323,6 +329,9 @@ public class CmsScheduleManager implements Job {
             // can not continue
             return;
         }
+
+        // add the trigger to the job info
+        jobInfo.setTrigger(trigger);
 
         // now set the job data
         JobDataMap jobData = new JobDataMap();
@@ -358,7 +367,9 @@ public class CmsScheduleManager implements Job {
                     + "' for class '"
                     + jobInfo.getClassName()
                     + "' with user "
-                    + jobInfo.getContextInfo().getUserName());
+                    + jobInfo.getContextInfo().getUserName()
+                    + ", first execution "
+                    + CmsDateUtil.getDateTime(jobInfo.getExecutionTimeNext(), DateFormat.MEDIUM, Locale.getDefault()));
         }
     }
 

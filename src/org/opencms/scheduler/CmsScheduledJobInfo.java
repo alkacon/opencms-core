@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/11 17:46:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,11 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.quartz.Trigger;
 
 /**
  * Describes a scheduled job for the OpenCms scheduler.<p>
@@ -360,6 +363,9 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /** Indicates if the job instance should be re-used if the job is run. */
     private boolean m_reuseInstance;
 
+    /** The (cron) trigger used for scheduling this job. */
+    private Trigger m_trigger;
+
     /**
      * Default constructor.<p>
      */
@@ -427,6 +433,56 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the next time at which this job will be executed, after the given time.<p>
+     * 
+     * If this job will not be executed after the given time, <code>null</code> will be returned..<p>
+     * 
+     * @param date the after which the next execution time should be calculated
+     * @return the next time at which this job will be executed, after the given time
+     */
+    public Date getExecutionTimeAfter(Date date) {
+
+        return m_trigger.getFireTimeAfter(date);
+    }
+
+    /**
+     * Returns the last time at which this job will be executed, 
+     * if this job will repeat indefinitely, <code>null</code> will be returned.<p>
+     * 
+     * Note that the return time *may* be in the past.<p> 
+     * 
+     * @return the last time at which this job will be executed
+     */
+    public Date getExecutionTimeFinal() {
+
+        return m_trigger.getFinalFireTime();
+    }
+
+    /**
+     * Returns the next time at which this job will be executed.<p> 
+     * 
+     * If the job will not execute again, <code>null</code> will be returned.<p>
+     * 
+     * @return the next time at which this job will be executed
+     */
+    public Date getExecutionTimeNext() {
+
+        return m_trigger.getNextFireTime();
+    }
+
+    /**
+     * Returns the previous time at which this job will be executed.<p>
+     * 
+     * If this job has not yet been executed, <code>null</code> will be returned.
+     * 
+     * @return the previous time at which this job will be executed
+     */
+    public Date getExecutionTimePrevious() {
+
+        return m_trigger.getPreviousFireTime();
+    }
+
+    /**
      * Returns an instance of the configured job class.<p>
      * 
      * If any error occurs during class invocaion, the error 
@@ -437,11 +493,12 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public synchronized I_CmsScheduledJob getJobInstance() {
 
         if (m_jobInstance != null) {
-            
+
             if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Scheduler: Re-using instance of '" + m_jobInstance.getClass().getName() + "'");
+                OpenCms.getLog(this).debug(
+                    "Scheduler: Re-using instance of '" + m_jobInstance.getClass().getName() + "'");
             }
-            
+
             // job instance already initialized
             return m_jobInstance;
         }
@@ -460,15 +517,15 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         } catch (ClassCastException e) {
             OpenCms.getLog(this).error("Scheduler: Scheduled class does not implement scheduler interface", e);
         }
-                
+
         if (m_reuseInstance) {
             // job instance must be re-used
             m_jobInstance = job;
         }
-        
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Scheduler: Created a new instance of '" + getClassName() + "'");
-        }        
+        }
 
         return job;
     }
@@ -601,5 +658,22 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         }
 
         m_reuseInstance = reuseInstance;
+    }
+
+    /**
+     * Sets the (cron) trigger used for scheduling this job.<p>
+     *
+     * This is an internal operation that should only by performed by the 
+     * <code>{@link CmsScheduleManager}</code>, never by using this API directly.<p>
+     *
+     * @param trigger the (cron) trigger to set
+     */
+    protected void setTrigger(Trigger trigger) {
+
+        if (m_frozen) {
+            throw new RuntimeException(C_MESSAGE_FROZEN);
+        }
+
+        m_trigger = trigger;
     }
 }
