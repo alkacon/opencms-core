@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/04/11 15:55:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/12 15:38:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.frontend.templateone.modules;
 
+import org.opencms.frontend.templateone.CmsTemplateBean;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateContentListItem {
     
@@ -109,7 +110,7 @@ public class CmsTemplateContentListItem {
         
         // try to get the list type from the properties
         String type = (String)properties.get(resolver.resolveMacros(C_PROPERTY_LAYOUT_TYPE));
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(type) && !"none".equals(type)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(type) && !CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(type)) {
             // type is specified, create new instance and fill members
             CmsTemplateContentListItem listItem = new CmsTemplateContentListItem();
             listItem.setType(type);
@@ -239,7 +240,7 @@ public class CmsTemplateContentListItem {
      */
     public void includeListItem(CmsJspActionElement jsp, boolean showPageLinks) throws JspException {
 
-        Map properties = new HashMap(5);
+        Map properties = new HashMap(4);
         properties.put(CmsTemplateModules.C_PARAM_COLLECTOR, getCollector());
         properties.put(CmsTemplateModules.C_PARAM_COUNT, Integer.toString(getCount()));
         if (showPageLinks) {
