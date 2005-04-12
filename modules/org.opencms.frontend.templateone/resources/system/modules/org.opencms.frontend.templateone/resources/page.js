@@ -14,7 +14,13 @@ function parseSearchQuery(theForm, message) {
 
 /* open the print version popup window */
 function openPrintVersion() {
-	window.open(document.location.pathname + "?print=true", "print", "width=670,height=750,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes");
+	var params = "print=true";
+	if (document.location.search != "") {
+		params = document.location.search + "&" + params;		
+	} else {
+		params = "?" + params;
+	}
+	window.open(document.location.pathname + params, "print", "width=670,height=750,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes");
 }
 
 /* open the imprint popup window */
