@@ -22,8 +22,9 @@
 			<xsd:element name="Subtitle" type="OpenCmsString" />
 			<xsd:element name="Number" type="OpenCmsString" />
 			<xsd:element name="ShortDescription" type="OpenCmsString" />	
-			<xsd:element name="LongDescription" type="OpenCmsHtml" />				
-			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" />
+			<xsd:element name="LongDescription" type="OpenCmsHtml" />
+			<xsd:element name="EventDate" type="OpenCmsDateTime" />			
+			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" minOccurs="0" />
 			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
@@ -44,7 +45,7 @@
 				<mapping element="Release" mapto="attribute:datereleased" />
 				<mapping element="Expiration" mapto="attribute:dateexpired" />
 				<mapping element="Priority" mapto="property:collector.priority" />
-				<mapping element="RegistrationClose" mapto="property:collector.date" />
+				<mapping element="EventDate" mapto="property:collector.date" />
 			</mappings>
 			<layouts>
 				<layout element="Priority" widget="SelectorWidget" />

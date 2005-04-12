@@ -39,6 +39,16 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </b></p>
 <%-- end short description --%>
 
+<%-- begin date --%>
+<c:set var="dateString">
+	<cms:contentshow element="EventDate" />
+</c:set>
+<%
+	cms.setDate("dateString");
+%>
+<p><fmt:message key="eventarticle.eventdate" />: <fmt:formatDate value="${date}" /></p>
+<%-- end date --%>
+
 
 <%-- begin event number --%>
 <cms:contentcheck ifexists="Number">
@@ -55,10 +65,10 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 
 <%-- begin "end of registration" --%>
-<cms:contentcheck ifexists="EndOfRegistration">
+<cms:contentcheck ifexists="RegistrationClose">
 
 <c:set var="dateString">
-	<cms:contentshow element="EndOfRegistration" />
+	<cms:contentshow element="RegistrationClose" />
 </c:set><%
 
 	cms.setDate("dateString");

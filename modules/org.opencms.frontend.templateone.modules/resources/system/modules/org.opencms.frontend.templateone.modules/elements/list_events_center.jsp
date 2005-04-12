@@ -45,6 +45,13 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <p>
 <b><cms:contentshow element="Title" /></b><br>
 <cms:contentshow element="ShortDescription" /><br>
+<c:set var="dateString">
+	<cms:contentshow element="EventDate" />
+</c:set>
+<%
+	cms.setDate("dateString");
+%>
+<small><fmt:message key="eventarticle.eventdate" />: <fmt:formatDate value="${date}" /></small><br>
 <cms:contentcheck ifexists="RegistrationClose">
 <c:set var="dateString">
 	<cms:contentshow element="RegistrationClose" />

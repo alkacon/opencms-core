@@ -20,8 +20,8 @@ String folderTitle = cms.property("Title", folder, "");
 <cms:contentload collector="${param.collector}" param="${param.folder}event_${number}.html|40|${param.count}" editable="true">
 
 <p class="sidelistitem"><a class="sidelistitemhead" href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><cms:contentshow element="Title" /></a><br>
-<cms:contentcheck ifexists="RegistrationClose"><c:set var="dateString">
-	<cms:contentshow element="RegistrationClose" />
+<cms:contentcheck ifexists="EventDate"><c:set var="dateString">
+	<cms:contentshow element="EventDate" />
 </c:set>
 <%
 	cms.setDate("dateString");
