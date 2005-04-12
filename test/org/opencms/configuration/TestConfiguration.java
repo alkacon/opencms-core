@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/12 14:47:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,11 @@ public class TestConfiguration extends OpenCmsTestCase {
     public void testLoadXmlConfiguration() throws Exception {
 
         // get URL of test input resource
-        URL inputUrl = ClassLoader.getSystemResource("org/opencms/configuration/");
+        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource("org/opencms/configuration/");//ClassLoader.getSystemResource("org/opencms/configuration/");
+        if(! inputUrl.toExternalForm().endsWith("/")){
+          inputUrl = new URL(inputUrl.toExternalForm()+"/");
+        }
+        
         // generate the configuration manager
         CmsConfigurationManager manager = new CmsConfigurationManager(inputUrl.getFile());
         // now digest the XML
