@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/12 10:52:13 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.5.0
  */
@@ -214,6 +214,10 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html?a=b&language=de\">link</a>");                
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&language=de\">link</a>", text);
+        
+        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html?a=b&product=somthing\">link</a>");                
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&product=somthing\">link</a>", text);
     }
     
     /**
