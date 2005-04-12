@@ -17,14 +17,18 @@
 
 	<xsd:complexType name="OpenCmsNewsArticle">
 		<xsd:sequence>
+			<xsd:element name="SuperTitle" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="SubTitle" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Author" type="OpenCmsString" />
+			<xsd:element name="AuthorMail" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Teaser" type="OpenCmsString" />
 			<xsd:element name="Text" type="OpenCmsHtml" />
 			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Date" type="OpenCmsDateTime" />			
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="Contact" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="10"/>
 			<xsd:element name="Attachment" type="OpenCmsAttachment" minOccurs="0" maxOccurs="5"/>			
 			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
@@ -50,6 +54,7 @@
 			<defaults>
 				<default element="Date" value="${currenttime}"/>
 				<default element="Author" value="${currentuser.fullname}"/>
+				<default element="AuthorMail" value="${currentuser.email}"/>
 				<default element="Priority" value="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3:${key.priority.standard}*|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}"/>
 			</defaults>
 		</xsd:appinfo>
