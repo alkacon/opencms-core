@@ -20,19 +20,6 @@ ShowContextMenu();
 ContextMenuAction(itemIndex);
 </script>
 
-<script language="JavaScript" for="EDIT_HTML" event="onkeyup">
-// EVENT HANDLER: Delete empty A tags after key was pressed
-function checkContentByKeyUp() {
-    var cBackSpace  = 8;
-    var cDelete     = 46;
-    var cReturn     = 13;
-    var keyPressed = document.EDITOR.EDIT_HTML.DOM.parentWindow.event.keyCode;      
-    if (keyPressed == cBackSpace || keyPressed == cDelete || keyPressed == cReturn) {
-        deleteEmptyATags();
-    }
-}
-checkContentByKeyUp();
-</script>
 
 <script type="text/javascript" for="edit1" event="onkeydown">
 // EVENT HANDLER: handle tab key in text edit mode

@@ -1024,21 +1024,6 @@ function initStyles() {
 	resetStyles();
 }
 
-// Delete all empty <a>-Tags
-function deleteEmptyATags() {
-	var allLinks = EDITOR.EDIT_HTML.DOM.all.tags("A");
-	var allImgLinks;
-
-	for(var i = 0; i < allLinks.length; i++) {
-		if (allLinks[i].innerText == "") {
-			allImgLinks = allLinks[i].all.tags("IMG"); 
-			if (allImgLinks.length == 0) {
-				allLinks[i].removeNode();
-			}
-		}
-	}
-}
-
 // Remove server name from image path
 // Example: http://10.0.0.0:8080/system/test -> /system/test
 function makeImageLinks() {
