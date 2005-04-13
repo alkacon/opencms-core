@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/13 12:53:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.2
  */
@@ -151,8 +151,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html
                         .append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     // file target
-                    CmsFile file = getCms().readFile(getCms().getSitePath(res));
-                    String linkTarget = new String(file.getContents());
+                    String linkTarget = getCms().getSitePath(res);
                     html.append("<tr align=\"left\">");
                     html.append("<td width=\"35%\"><b>");
                     html.append(key("input.linkto"));
