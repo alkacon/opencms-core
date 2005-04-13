@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/04/05 20:06:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/13 09:54:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsResource;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.io.ByteArrayOutputStream;
@@ -41,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,6 +127,44 @@ public final class CmsFileUtil {
     }
 
     /**
+     * Returns the absolute path name for the given relative 
+     * path name if it was found by the context Classloader of the 
+     * current Thread.<p>
+     * 
+     * The argument has to denote a resource within the Classloaders 
+     * scope. A java.net.URLClassloader implementation for example would 
+     * try to match a given path name to some resource under it's URL 
+     * entries. </p>
+     * 
+     * As the result is internally obtained as an URL it is reduced to 
+     * a file path by the call to {@link java.net.URL#getFile()}. Therefore 
+     * the returned String will start with a '/' (no problem for java.io). </p>
+     * 
+     * This implementation will only work for local resources ("file://..."). 
+     * A result might be returned for a remote location (found for a remote URL). 
+     * But the returned path information would be useless without the protocol and 
+     * host part. </p>
+     * 
+     * @see Thread#getContextClassLoader()
+     * @param fileName
+     * @return The absolute path name for the given relative 
+     *   path name if it was found by the context Classloader of the 
+     *   current Thread.
+     */
+    public static String getResourcePathFromClassloader(String fileName) {
+
+        boolean isFolder = CmsResource.isFolder(fileName);
+
+        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
+        String result = inputUrl.getFile();
+        if (isFolder && !CmsResource.isFolder(result)) {
+            result = result + '/';
+        }
+
+        return result;
+    }
+
+    /**
      * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path,
      * the path separator char is {@link File#separatorChar}.<p>
      * 
@@ -164,7 +204,7 @@ public final class CmsFileUtil {
             // resolve all '../' or './' elements in the path
             path = CmsLinkManager.getAbsoluteUri(path, "/");
             // re-append drive if required
-            if (drive != null) {                
+            if (drive != null) {
                 path = drive.concat(path);
             }
             // still some '//' elements might persist
