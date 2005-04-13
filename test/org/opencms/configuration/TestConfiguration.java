@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/04/12 14:47:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/13 10:20:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.CmsResource;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -70,15 +72,12 @@ public class TestConfiguration extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     public void testLoadXmlConfiguration() throws Exception {
-
-        // get URL of test input resource
-        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource("org/opencms/configuration/");//ClassLoader.getSystemResource("org/opencms/configuration/");
-        if(! inputUrl.toExternalForm().endsWith("/")){
-          inputUrl = new URL(inputUrl.toExternalForm()+"/");
-        }
+            
+        // get the file name of the input resource
+        String inputFile = CmsFileUtil.getResourcePathFromClassloader("org/opencms/configuration/");
         
         // generate the configuration manager
-        CmsConfigurationManager manager = new CmsConfigurationManager(inputUrl.getFile());
+        CmsConfigurationManager manager = new CmsConfigurationManager(inputFile);
         // now digest the XML
         manager.loadXmlConfiguration();
         // generate an output XML format
@@ -89,7 +88,7 @@ public class TestConfiguration extends OpenCmsTestCase {
         Iterator i = allConfigurations.iterator();
         while (i.hasNext()) {
             I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
-            String xmlOrigFile = inputUrl.getFile() + config.getXmlFileName();
+            String xmlOrigFile = inputFile + config.getXmlFileName();
             System.out.println("\n\nConfiguration instance: " + config + ":\n");
 
             // gernerate XML document for the configuration
