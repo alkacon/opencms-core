@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/13 07:37:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsPropertyUtils;
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -106,7 +106,7 @@ public final class OpenCmsTestProperties {
         }
 
         try {
-            props = CmsPropertyUtils.loadProperties(m_testSingleton.m_basePath + "test.properties");
+            props = CmsPropertyUtils.loadProperties(Thread.currentThread().getContextClassLoader().getResource("test.properties").getFile());
         } catch (IOException e) {
             e.printStackTrace(System.out);
             throw new RuntimeException(e);
