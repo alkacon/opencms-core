@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/04/13 13:24:52 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2005/04/13 17:38:53 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 5.3.5
  */
@@ -124,11 +124,15 @@ public class OpenCmsTestCase extends TestCase {
         /** Unequal node2. */
         public Node m_node2 = null;
 
-        /** 
-         /**
+        /**
+         * 
+         * @param n1 a Document to compare. 
+         * @param n2 the 2nd Document to compare. 
+         * 
          * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Node, org.dom4j.Node)
+         * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second. See {@link java.lang.Comparator#compare(Object,Object)}.
          */
-        public int compare(Node n1, Node n2) {
+        public int compare(Document n1, Document n2) {
 
             int result = super.compare(n1, n2);
             if (result != 0 && m_node1 == null) {
