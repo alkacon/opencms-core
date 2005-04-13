@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2005/04/13 12:46:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/13 13:25:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -76,6 +76,8 @@ public final class OpenCmsTestProperties {
      */
     private String m_dbProduct;
 
+    
+    private static ExtendedProperties m_configuration;
     /**
      * private default constructor.
      */
@@ -84,6 +86,7 @@ public final class OpenCmsTestProperties {
         // noop
     }
 
+    
     /**
      * @return the singleton instance
      */
@@ -106,7 +109,6 @@ public final class OpenCmsTestProperties {
             return;
         }
 
-        ExtendedProperties props = null;
         String testPropPath;
         m_testSingleton = new OpenCmsTestProperties();
 
@@ -124,15 +126,15 @@ public final class OpenCmsTestProperties {
             if(!f.exists()){
                 throw new RuntimeException("Test property file ('test.properties') could not be found. Context Classloader suggested location: "+testPropPath); 
             }
-            props = CmsPropertyUtils.loadProperties(testPropPath);
+            m_configuration = CmsPropertyUtils.loadProperties(testPropPath);
         } catch (IOException e) {
             e.printStackTrace(System.out);
             throw new RuntimeException(e);
         }
 
-        m_testSingleton.m_testDataPath = props.getString("test.data.path");
-        m_testSingleton.m_testWebappPath = props.getString("test.webapp.path");
-        m_testSingleton.m_dbProduct = props.getString("db.product");
+        m_testSingleton.m_testDataPath = m_configuration.getString("test.data.path");
+        m_testSingleton.m_testWebappPath = m_configuration.getString("test.webapp.path");
+        m_testSingleton.m_dbProduct = m_configuration.getString("db.product");
         
     }
 
@@ -168,5 +170,18 @@ public final class OpenCmsTestProperties {
     
         return m_dbProduct;
     }
+
+
+    /**
+     * @return the parsed configuration file ('test.properties')
+     */
+    
+    public ExtendedProperties getConfiguration() {
+    
+        return m_configuration;
+    }
+    
+
+    
     
 }
