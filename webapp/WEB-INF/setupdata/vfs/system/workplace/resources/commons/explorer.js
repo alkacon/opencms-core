@@ -487,12 +487,11 @@ function printList(wo) {
 
 		if (vi.liste[i].isInsideCurrentProject) {
 			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
-			// the ressource is in the current project, so display the lock and projectstate
+			// the resource is in the current project, so display the lock and project state
 
 			var lockIcon;
 
 			if (vi.liste[i].lockedBy != "") {
-				//if ((vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vi.liste[i].project)) {
 				if ((vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vr.actProject)) {
 					if (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2) {
 						lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
@@ -502,8 +501,8 @@ function printList(wo) {
 				} else {
 					lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 				}
-				lockedBystring = "alt=\"" + vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName + "\"";
-				wo.write("<img src='" + lockIcon + "' " + lockedBystring + " border=0 width=16 height=16></a>");
+				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
+				wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 			}
 			wo.write("</td>");
 
@@ -523,7 +522,7 @@ function printList(wo) {
 				projectAltText = "";
 			}
 
-			wo.write("<img src='" + projectIcon + "' alt='" + projectAltText + "' border=0 width=16 height=16></a>");
+			wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 			wo.write("</td>\n");
 		} else {
 			// nothing to do here
