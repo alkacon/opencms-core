@@ -4,13 +4,13 @@ package org.opencms.util.ant;
 import javax.swing.UIManager;
 
 /**
- * Ant task for swing gui based module selection.<p>
+ * Ant task for a highly configurable Swing GUI based selection dialog.<p>
  * 
- * Task that prompts user for property values to allow interactive builds.<p>
+ * Task that prompts user for selection to allow interactive builds.<p>
  *
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.1 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.2 $
+ * @since 5.7.3
  */
 public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
 
@@ -25,7 +25,7 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     private String m_title = "Selection Dialog";
 
     /**
-     * PropertyPrompt default constructor.<p>
+     * Default constructor.<p>
      */
     public CmsAntTaskSelectionPrompt() {
 
@@ -33,12 +33,12 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Run the ModulePrompt task.<p>
+     * Run the task.<p>
      * 
      * Sets the given property to <code>__ABORT__</code> if canceled,
      * or to a list of selected modules if not.<p>
      * 
-     * @exception org.apache.tools.ant.BuildException
+     * @throws org.apache.tools.ant.BuildException
      *
      * @see org.apache.tools.ant.Task#execute()
      */

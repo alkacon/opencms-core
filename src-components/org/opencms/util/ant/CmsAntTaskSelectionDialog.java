@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/03/10 15:35:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 10:53:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,33 +31,19 @@
 
 package org.opencms.util.ant;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
 /**
- * This is a swing gui dialog for OpenCms module selection.<p>
+ * This is a highly configurable Swing GUI dialog for selection.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
+ * 
+ * @see CmsAntTaskSelectionPrompt
  */
 public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
 
@@ -82,7 +68,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     private final JButton m_selNone = new JButton("None");
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      * 
      * @param promptTask the <code>{@link CmsAntTaskSelectionPrompt}</code> object.<p>
      */
@@ -174,7 +160,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
      * Returns <code>null</code> if the dialog was canceled, 
      * or a list of selected items if not.<p>
      * 
-     * @return the user selection. 
+     * @return the user selection
      */
     public String getSelection() {
 
@@ -196,7 +182,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     }
 
     /**
-     * centers the dialog on the screen.<p>
+     * Centers the dialog on the screen.<p>
      *
      * If the size of the dialog exceeds that of the screen, 
      * then the size of the dialog is reset to the size of the screen.<p>
@@ -217,6 +203,15 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         setLocation(xCoord, yCoord);
     }
 
+    /**
+     * Looks for the position of a string in an array of string,
+     * performing triming and taking into account the null cases.<p>
+     * 
+     * @param array the string array to search in
+     * @param item the item to search for
+     * 
+     * @return the position of the item in the array or -1 if not found
+     */
     private int firstPositionOfItemInArray(String[] array, String item) {
 
         for (int i = 0; i < array.length; i++) {
@@ -233,6 +228,11 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         return -1;
     }
 
+    /**
+     * Returns the array of items selected by default, if no one is given all items will be considered.<p>
+     * 
+     * @return the array of items selected by default
+     */
     private String[] getDefaultList() {
 
         if (m_promptTask.getDefaultValue() == null || m_promptTask.getDefaultValue().trim().equals("")) {
