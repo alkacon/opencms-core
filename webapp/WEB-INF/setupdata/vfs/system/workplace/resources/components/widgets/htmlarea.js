@@ -65,10 +65,14 @@ function initHtmlAreas() {
 
 	var tas = document.getElementsByTagName("textarea");
 	for (var i=0; i<tas.length; i++) {
-		textAreas[textAreas.length] = tas[i];
-		var ha = new HTMLArea(tas[i], config);
-		htmlAreas[htmlAreas.length] = ha;
-		ha.generate();
+		var idAttr = tas[i].getAttribute("id");
+		if (idAttr != null && idAttr != "") {
+			// only use textareas with "id" attribute value set
+			textAreas[textAreas.length] = tas[i];
+			var ha = new HTMLArea(tas[i], config);
+			htmlAreas[htmlAreas.length] = ha;
+			ha.generate();
+		}
 	}
 }
 

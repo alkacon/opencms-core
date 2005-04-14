@@ -107,6 +107,7 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget"/>
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlSelectorWidget" alias="SelectorWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget"/>
 			</widgets>
 			<schematypes>
