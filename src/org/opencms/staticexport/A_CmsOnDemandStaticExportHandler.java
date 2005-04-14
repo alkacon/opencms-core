@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/04/06 06:29:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/14 10:42:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,15 +52,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The <code>CmsOnDemandStaticExportHandler</code> is the default implementation
- * for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
+ * Abstract implementation for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
  * 
  * This handler is most suitable for dynamic sites that use the static export 
  * as optimization for non-dynamic content.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.9 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.10 $
+ * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */
 public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExportHandler {

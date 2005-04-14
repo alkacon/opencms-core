@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskService.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/14 10:44:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,22 +41,21 @@ import org.opencms.main.CmsException;
 import java.util.List;
 
 /**
- * The <code>CmsTaskService</code> class is just a convinience wrapper for 
+ * Just a convinience wrapper for 
  * workflow related methods.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * 
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.6 $
+ * @since 5.7.3
  */
 public class CmsTaskService {
 
-    /**
-     * The request context.
-     */
+    /** The request context.     */
     protected CmsRequestContext m_context;
 
-    /**
-     * The security manager to access the cms.
-     */
+    /** The security manager to access the cms.     */
     protected CmsSecurityManager m_securityManager;
 
     /**
@@ -64,7 +63,6 @@ public class CmsTaskService {
      * 
      * @param context the request context that contains the user authentification
      * @param securityManager the security manager
-     * 
      */
     public CmsTaskService(CmsRequestContext context, CmsSecurityManager securityManager) {
 

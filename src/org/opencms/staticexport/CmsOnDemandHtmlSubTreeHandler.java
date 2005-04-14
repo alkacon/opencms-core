@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandHtmlSubTreeHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/14 10:42:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,15 +38,13 @@ import java.io.FileFilter;
 import java.util.List;
 
 /**
- * The <code>CmsOnDemandStaticExportHandler</code> is the default implementation
- * for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
+ * Concrete OnDemandExportHandler.<p>
  * 
- * This handler is most suitable for dynamic sites that use the static export 
- * as optimization for non-dynamic content.<p>
+ * The published files and folders are purged, as also all the html files in each subtree.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.4 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.5 $
+ * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */
 public class CmsOnDemandHtmlSubTreeHandler extends A_CmsOnDemandStaticExportHandler {
