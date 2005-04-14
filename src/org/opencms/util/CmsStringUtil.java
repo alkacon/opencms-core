@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/04/14 11:44:57 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.workplace.I_CmsWpConstants;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -51,7 +50,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -62,14 +61,10 @@ public final class CmsStringUtil {
     /** Regular expression that matches the HTML body start tag. */
     public static final String C_BODY_START_REGEX = "<\\s*body[^>]*>";
 
-    /**
-     * just a convienient shorthand to the line separator constant.<p>
-     */
+    /** a convienient shorthand to the line separator constant. */
     public static final String C_LINE_SEPARATOR = System.getProperty("line.separator");
 
-    /**
-     * just a convienient shorthand to the tabulation constant.<p>
-     */
+    /** a convienient shorthand for tabulations.  */
     public static final String C_TABULATOR = "  ";
 
     /** Regex pattern that matches an end body tag. */
@@ -114,52 +109,6 @@ public final class CmsStringUtil {
     private CmsStringUtil() {
 
         // empty
-    }
-
-    /**
-     * Returns a block of html code.<p>
-     * 
-     * It appends a line separator at the end of the given string
-     * and the number of specified tabulators in front of each line.<p>
-     * 
-     * @param tabs the number of tabulators to insert
-     * @param htmlCode the code
-     * 
-     * @return html code
-     */
-    public static String code(int tabs, String htmlCode) {
-
-        if (tabs <= 0) {
-            return htmlCode.endsWith(C_LINE_SEPARATOR) ? htmlCode : htmlCode + C_LINE_SEPARATOR;
-        }
-        String newCode = "";
-        List lines = splitAsList(htmlCode, C_LINE_SEPARATOR);
-        Iterator itLines = lines.iterator();
-        while (itLines.hasNext()) {
-            String line = (String)itLines.next();
-            if (line.trim().length() == 0) {
-                continue;
-            }
-            newCode += C_TABULATOR + line;
-            if (!newCode.endsWith(C_LINE_SEPARATOR)) {
-                newCode += C_LINE_SEPARATOR;
-            }
-        }
-        return code(tabs - 1, newCode);
-    }
-
-    /**
-     * Returns a block of html code.<p>
-     * 
-     * It appends a line separator at the end of the given string.<p>
-     * 
-     * @param htmlCode the code
-     * 
-     * @return html code
-     */
-    public static String code(String htmlCode) {
-
-        return code(0, htmlCode);
     }
 
     /**
