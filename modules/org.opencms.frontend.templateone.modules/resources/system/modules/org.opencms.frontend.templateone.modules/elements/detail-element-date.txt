@@ -5,5 +5,5 @@
 <%
 	cms.setDate("dateString");
 %>
-<p><small><fmt:formatDate value="${date}" /></small></p>
+<p><small><fmt:formatDate value="${date}" dateStyle="long" /></small></p>
 </cms:contentcheck>
