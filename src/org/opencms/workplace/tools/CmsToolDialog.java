@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 13:53:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -151,7 +151,7 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
         html.append("</div>\n");
-        return html.toString();
+        return resolveMacros(html.toString());
     }
 
     /**
