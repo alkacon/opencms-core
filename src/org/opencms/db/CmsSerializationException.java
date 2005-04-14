@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSerializationException.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 10:31:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ package org.opencms.db;
  * Signals that an attempt to (un)marshall an object was not successfull.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2005/02/17 12:43:47 $
- * @since 6.0
+ * @version $Revision: 1.4 $ $Date: 2005/04/14 10:31:52 $
+ * @since 5.7.3
  */
 public class CmsSerializationException extends CmsDataAccessException {
 

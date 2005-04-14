@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 10:31:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,10 @@ import org.opencms.main.CmsException;
  * Used to signal data access related issues, i.e. db or ldap access.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
- * @since 6.0
+ * @version $Revision: 1.4 $
+ * @since 5.7.3
  */
 public class CmsDataAccessException extends CmsException {
-
-    /** Consistency check exception. */
-    public static final int C_DA_CONSISTENCY_EXCEPTION = 303;
 
     // the allowed type range for this exception is >=300 and <400    
 
@@ -52,6 +49,9 @@ public class CmsDataAccessException extends CmsException {
 
     /** ldap exception. */
     public static final int C_DA_LDAP_EXCEPTION = 302;
+
+    /** Consistency check exception. */
+    public static final int C_DA_CONSISTENCY_EXCEPTION = 303;
 
     /** Object not found exception. */
     public static final int C_DA_OBJECT_NOT_FOUND_EXCEPTION = 304;
@@ -71,7 +71,7 @@ public class CmsDataAccessException extends CmsException {
     /* 305 */"Serialization Exception"};
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      */
     public CmsDataAccessException() {
 
@@ -79,7 +79,7 @@ public class CmsDataAccessException extends CmsException {
     }
 
     /**
-     * Constructs a exception with the specified description message and type.<p>
+     * Constructs a exception with the specified type.<p>
      * 
      * @param type the type of the exception
      */
@@ -89,7 +89,7 @@ public class CmsDataAccessException extends CmsException {
     }
 
     /**
-     * Constructs a exception with the specified description message and root exception.<p>
+     * Constructs a exception with the specified type and root exception.<p>
      * 
      * @param type the type of the exception
      * @param rootCause root cause exception
@@ -100,9 +100,7 @@ public class CmsDataAccessException extends CmsException {
     }
 
     /**
-     * This ctor replaces the some use cases of the 
-     * <code>CmsException.C_UNKNOWN_EXCEPTION</code> 
-     * exception type.<p>
+     * Constructs a exception with the specified description message.<p>
      * 
      * @param message the error message
      */
@@ -123,9 +121,8 @@ public class CmsDataAccessException extends CmsException {
     }
 
     /**
-     * Ctor given the originator, the statement, the type and the exception.<p>
-     * 
-     * It generates an error log entry, if enabled.<p> 
+     * Constructs a exception with the specified description message, 
+     * type and root exception.<p>
      * 
      * @param message the description message, may be <code>null</code>
      * @param type the type of the exception, may be <code>null</code> for the default sql error
@@ -137,9 +134,7 @@ public class CmsDataAccessException extends CmsException {
     }
 
     /**
-     * This ctor replaces the some use cases of the 
-     * <code>CmsException.C_UNKNOWN_EXCEPTION</code> 
-     * exception type.<p>
+     * Constructs a exception with the specified description message and root exception.<p>
      * 
      * @param message the error message
      * @param rootCause the root cause
@@ -150,9 +145,7 @@ public class CmsDataAccessException extends CmsException {
     }
 
     /**
-     * This ctor replaces the most use cases of the 
-     * <code>CmsException.C_UNKNOWN_EXCEPTION</code> 
-     * exception type.<p>
+     * Constructs a exception with the specified root exception.<p>
      * 
      * @param rootCause the root cause
      */
@@ -179,6 +172,7 @@ public class CmsDataAccessException extends CmsException {
      * Returns the description String for the provided CmsException type.<p>
      * 
      * @param type exception error code 
+     * 
      * @return the description String for the provided CmsException type
      */
     protected String getErrorDescription(int type) {

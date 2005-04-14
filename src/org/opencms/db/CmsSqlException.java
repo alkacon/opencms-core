@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSqlException.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 10:31:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,13 +41,13 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
- * @since 6.0
+ * @version $Revision: 1.4 $
+ * @since 5.7.3
  */
 public class CmsSqlException extends CmsDataAccessException {
 
     /**
-     * Ctor given the originator, the statement and the exception.<p>
+     * Constructor given the originator, the statement and the exception.<p>
      * 
      * It generates an error log entry, if enabled.<p> 
      * 
@@ -109,7 +109,7 @@ public class CmsSqlException extends CmsDataAccessException {
     }
 
     /**
-     * This method returns a description for a exception.<p>
+     * Returns a description for a exception.<p>
      * 
      * @param rootCause the root cause
      * 

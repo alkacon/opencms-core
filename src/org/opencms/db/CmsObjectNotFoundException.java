@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsObjectNotFoundException.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 10:31:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ package org.opencms.db;
  * is supposed to be there, was not successfull.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/02/17 12:43:46 $
- * @since 6.0
+ * @version $Revision: 1.3 $ $Date: 2005/04/14 10:31:52 $
+ * @since 5.7.3
  */
 public class CmsObjectNotFoundException extends CmsDataAccessException {
 
