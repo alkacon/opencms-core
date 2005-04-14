@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObjectContainer.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 11:47:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,22 +39,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is the default implementation of a named object container. <p>
+ * Default implementation of a named object container. <p>
  * 
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
 
     /**
-     * This internal class is just for taking care of the positions in the container.<p>
+     * Internal class just for taking care of the positions in the container.<p>
      * 
-     * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
-     * @version $Revision: 1.2 $
-     * @since 6.0
+     * @author Michael Moossen (m.moossen@alkacon.com) 
+     * @version $Revision: 1.3 $
+     * @since 5.7.3
      */
     private class CmsNamedObjectElement {
 
@@ -62,7 +62,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
         private final float m_position;
 
         /**
-         * Default Ctor.<p>
+         * Default Constructor.<p>
          * 
          * @param object the object
          * @param position the relative position
@@ -102,7 +102,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
     private final boolean m_uniqueNames;
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      * 
      * @param uniqueNames if the list show check for unique names
      * @param relativeOrdered if the list show use relative ordering, instead of absolute ordering
@@ -227,7 +227,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
     }
 
     /**
-     * This method returns the object with the given name.<p>
+     * Returns the object with the given name.<p>
      * 
      * if <code>uniqueNames</code> is set to <code>false</code> a <code>{@link CmsNamedObject}</code> 
      * containing a <code>{@link List}</code> is returned.<p>

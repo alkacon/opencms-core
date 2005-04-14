@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObject.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 11:47:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.util;
 /**
  * Wrapper for objects to become named.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsNamedObject implements I_CmsNamedObject {
 
@@ -44,7 +44,7 @@ public class CmsNamedObject implements I_CmsNamedObject {
     private final Object m_object;
 
     /**
-     * Default CTor.<p>
+     * Default Constructor.<p>
      * 
      * @param name the name
      * @param object the object
@@ -72,6 +72,5 @@ public class CmsNamedObject implements I_CmsNamedObject {
 
         return m_object;
     }
-
 
 }
