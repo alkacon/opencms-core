@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 13:40:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * Container for menu items that generates the necesary html code.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAdminMenuGroup implements I_CmsNamedObject {
@@ -195,7 +195,7 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
         html.append("admin/images/topright.gif' border='0' alt=''/></td>\n");
         html.append("\t\t\t\t</tr>\n");
         html.append("\t\t\t</table>\n");
-        html.append("<\t\t/td>\n");
+        html.append("\t\t</td>\n");
         html.append("\t</tr><tr>\n");
         html.append("\t\t<td>\n");
         html.append("\t\t\t<div class='tree'>\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 13:40:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * i18n of group names. <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -218,7 +218,7 @@ public class CmsToolManager {
             html = link + C_NAVBAR_SEPARATOR + html;
         }
 
-        return "<div class='pathbar'>&nbsp;" + html + "&nbsp;</div>";
+        return wp.resolveMacros("<div class='pathbar'>&nbsp;" + html + "&nbsp;</div>");
     }
 
     /**
