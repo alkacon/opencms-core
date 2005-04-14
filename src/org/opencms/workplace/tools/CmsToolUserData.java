@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolUserData.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsUser;
@@ -36,12 +36,12 @@ import org.opencms.util.CmsNamedObjectContainer;
 import org.opencms.util.I_CmsNamedObject;
 
 /**
- * This class is just for storing some administration view parameters,
- * for each user, by the <code>{@link CmsToolManager}</code>.<p>
+ * Store for some administration view parameters,
+ * for each user, used by the <code>{@link CmsToolManager}</code>.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsToolUserData implements I_CmsNamedObject {
 
@@ -49,14 +49,14 @@ public class CmsToolUserData implements I_CmsNamedObject {
     private String m_rootTool;
     private String m_currentToolPath;
     private final CmsNamedObjectContainer m_tools = new CmsNamedObjectContainer(true, false);
-    
+
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      * 
      * @param user the cms user
      */
     public CmsToolUserData(CmsUser user) {
-        
+
         m_user = user;
     }
 
@@ -77,6 +77,7 @@ public class CmsToolUserData implements I_CmsNamedObject {
 
         return m_currentToolPath;
     }
+
     /**
      * Sets the current tool path.<p>
      *
@@ -86,6 +87,7 @@ public class CmsToolUserData implements I_CmsNamedObject {
 
         m_currentToolPath = currentToolPath;
     }
+
     /**
      * Returns the root tool.<p>
      *
@@ -95,6 +97,7 @@ public class CmsToolUserData implements I_CmsNamedObject {
 
         return m_rootTool;
     }
+
     /**
      * Sets the root tool.<p>
      *
@@ -104,7 +107,7 @@ public class CmsToolUserData implements I_CmsNamedObject {
 
         m_rootTool = rootTool;
     }
-    
+
     /**
      * Returns the user.<p>
      *
@@ -114,13 +117,14 @@ public class CmsToolUserData implements I_CmsNamedObject {
 
         return m_user;
     }
-    
+
     /**
      * Returns the registered tools.<p>
      * 
      * @return the registered tools
      */
     public CmsNamedObjectContainer getTools() {
+
         return m_tools;
     }
 }

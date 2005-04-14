@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Just a help class that encapsulates all the code for the "new" 
+ * Helper class that encapsulates all the code for the "new" 
  * style of the administration dialogs.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
 
@@ -64,7 +64,7 @@ public class CmsToolDialog extends CmsWorkplace {
     private String m_paramStyle;
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      * 
      * @param jsp the jsp action element
      */
@@ -83,24 +83,24 @@ public class CmsToolDialog extends CmsWorkplace {
     public String dialogScriptSubmit() {
 
         StringBuffer html = new StringBuffer(512);
-        html.append(CmsStringUtil.code("function submitAction(actionValue, theForm, formName) {"));
-        html.append(CmsStringUtil.code(1, "if (theForm == null) {"));
-        html.append(CmsStringUtil.code(2, "theForm = document.forms[formName];"));
-        html.append(CmsStringUtil.code(1, "}"));
-        html.append(CmsStringUtil.code(1, "theForm." + CmsDialog.PARAM_FRAMENAME + ".value = window.name;"));
-        html.append(CmsStringUtil.code(1, "if (actionValue == '" + CmsDialog.DIALOG_OK + "') {"));
-        html.append(CmsStringUtil.code(2, "loadingOn();"));
-        html.append(CmsStringUtil.code(2, "return true;"));
-        html.append(CmsStringUtil.code(1, "}"));
-        html.append(CmsStringUtil.code(1, "theForm." + CmsDialog.PARAM_ACTION + ".value = actionValue;"));
-        html.append(CmsStringUtil.code(1, "submitForm(theForm);"));
-        html.append(CmsStringUtil.code(1, "return true;"));
-        html.append(CmsStringUtil.code("}"));
+        html.append("function submitAction(actionValue, theForm, formName) {\n");
+        html.append("\tif (theForm == null) {\n");
+        html.append("\t\ttheForm = document.forms[formName];\n");
+        html.append("\t}\n");
+        html.append("\ttheForm." + CmsDialog.PARAM_FRAMENAME + ".value = window.name;\n");
+        html.append("\tif (actionValue == '" + CmsDialog.DIALOG_OK + "') {\n");
+        html.append("\t\tloadingOn();\n");
+        html.append("\t\treturn true;\n");
+        html.append("\t}\n");
+        html.append("\ttheForm." + CmsDialog.PARAM_ACTION + ".value = actionValue;\n");
+        html.append("\tsubmitForm(theForm);\n");
+        html.append("\treturn true;\n");
+        html.append("}\n");
         return html.toString();
     }
 
     /**
-     * This method generates the standard new style dialog title row, and tool grouping.<p>
+     * Generates the standard new style dialog title row, and tool grouping.<p>
      * 
      * It is called by the <code>{@link org.opencms.workplace.CmsDialog#dialog(int, String)}</code> method.<p>
      * 
@@ -114,41 +114,43 @@ public class CmsToolDialog extends CmsWorkplace {
         String upLevelLink = getToolManager().cmsLinkForPath(getJsp(), parentPath);
         String parentName = getToolManager().resolveAdminTool(getCms(), parentPath).getName();
 
-        html.append(CmsStringUtil.code(4, getToolManager().generateNavBar(toolPath, this)));
+        html.append(getToolManager().generateNavBar(toolPath, this));
         // build titel
-        html.append(CmsStringUtil.code(4, "<div class='screenTitle'>"));
-        html.append(CmsStringUtil.code(5, "<table width='100%' cellspacing='0'>"));
-        html.append(CmsStringUtil.code(6, "<tr>"));
-        html.append(CmsStringUtil.code(7, "<td>" + resolveMacros(getAdminTool().getName()) + "</td>"));
+        html.append("<div class='screenTitle'>\n");
+        html.append("\t<table width='100%' cellspacing='0'>\n");
+        html.append("\t\t<tr>\n");
+        html.append("\t\t\t<td>");
+        html.append(getAdminTool().getName());
+        html.append("\t\t\t</td>");
         // uplevel button only if needed
         if (getParentPath() != toolPath) {
-            html.append(CmsStringUtil.code(7, "<td class='uplevel'>"));
-            html.append(CmsStringUtil.code(8, "<div class='commonButton' id='id-up-level' title='"
-                + key("admin.view.uplevel")
-                + "' onMouseOver=\"mouseHelpEvent('"
-                + "uplevel-tip"
-                + "', true);\" onMouseOut=\"mouseHelpEvent('"
-                + "uplevel-tip"
-                + "', false);\" onClick=\"openPage('"
-                + upLevelLink
-                + "'); \">"));
-            html.append(CmsStringUtil.code(9, "<button name='name_up_level'>"
-                + key("admin.view.uplevel")
-                + "</button><span style=\'background-image: url("
-                + getSkinUri()
-                + "buttons/up.gif"
-                + ")\' >"
-                + key("admin.view.uplevel")
-                + "</span>"));
-            html.append(CmsStringUtil.code(9, "<div class='tip' id='" + "uplevel-tip" + "'>"));
-            html.append(CmsStringUtil.code(10, resolveMacros(parentName)));
-            html.append(CmsStringUtil.code(9, "</div>"));
-            html.append(CmsStringUtil.code(8, "</div>"));
-            html.append(CmsStringUtil.code(7, "</td>"));
+            html.append("\t\t\t<td class='uplevel'>\n");
+            html.append("\t\t\t\t<div class='commonButton' id='id-up-level' title='");
+            html.append(key("admin.view.uplevel"));
+            html.append("' onMouseOver=\"mouseHelpEvent('");
+            html.append("uplevel-tip");
+            html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
+            html.append("uplevel-tip");
+            html.append("', false);\" onClick=\"openPage('");
+            html.append(upLevelLink);
+            html.append("'); \">\n");
+            html.append("\t\t\t\t\t<button name='name_up_level'>");
+            html.append(key("admin.view.uplevel"));
+            html.append("\t\t\t\t\t</button><span style=\'background-image: url(");
+            html.append(getSkinUri());
+            html.append("buttons/up.gif");
+            html.append(")\' >");
+            html.append(key("admin.view.uplevel"));
+            html.append("\t\t\t\t\t</span>\n");
+            html.append("\t\t\t\t\t<div class='tip' id='uplevel-tip'>\n");
+            html.append(parentName);
+            html.append("\t\t\t\t\t</div>\n");
+            html.append("\t\t\t\t</div>\n");
+            html.append("\t\t\t</td>\n");
         }
-        html.append(CmsStringUtil.code(6, "</tr>"));
-        html.append(CmsStringUtil.code(5, "</table>"));
-        html.append(CmsStringUtil.code(4, "</div>"));
+        html.append("\t\t</tr>\n");
+        html.append("\t</table>\n");
+        html.append("</div>\n");
         return html.toString();
     }
 
@@ -236,24 +238,21 @@ public class CmsToolDialog extends CmsWorkplace {
 
         StringBuffer retValue = new StringBuffer(512);
         if (segment == HTML_START) {
-            retValue.append(CmsStringUtil.code("<p>&nbsp;</p>"));
-            retValue.append(CmsStringUtil.code("<!-- icons block area start -->"));
-            retValue.append(CmsStringUtil
-                .code("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >"));
-            retValue.append(CmsStringUtil.code(1, "<div class=\"dialogblock\" unselectable=\"on\">"));
-            retValue.append(CmsStringUtil.code(2, "<span class=\"dialogblockhead\" unselectable=\"on\">"));
-            retValue.append(CmsStringUtil.code(3, headline));
-            retValue.append(CmsStringUtil.code(2, "</span>"));
-            retValue.append(CmsStringUtil.code(
-                2,
-                "<table class='toolsArea' width='100%' cellspacing='0' cellpadding='0' border='0'>"));
-            retValue.append(CmsStringUtil.code(3, "<tr><td>"));
+            retValue.append("<p>&nbsp;</p>\n");
+            retValue.append("<!-- icons block area start -->\n");
+            retValue.append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
+            retValue.append("\t<div class=\"dialogblock\" unselectable=\"on\">\n");
+            retValue.append("\t\t<span class=\"dialogblockhead\" unselectable=\"on\">\n");
+            retValue.append(headline);
+            retValue.append("\t\t</span>\n");
+            retValue.append("\t\t<table class='toolsArea' width='100%' cellspacing='0' cellpadding='0' border='0'>\n");
+            retValue.append("\t\t\t<tr><td>\n");
         } else {
-            retValue.append(CmsStringUtil.code(3, "</td></tr>"));
-            retValue.append(CmsStringUtil.code(2, "</table>"));
-            retValue.append(CmsStringUtil.code(1, "</div>"));
-            retValue.append(CmsStringUtil.code("</div>"));
-            retValue.append(CmsStringUtil.code("<!-- icons block area end -->"));
+            retValue.append("\t\t\t</td></tr>\n");
+            retValue.append("\t\t</table>\n");
+            retValue.append("\t</div>\n");
+            retValue.append("</div>\n");
+            retValue.append("<!-- icons block area end -->\n");
         }
         return retValue.toString();
     }
@@ -295,42 +294,38 @@ public class CmsToolDialog extends CmsWorkplace {
             Map data = CmsStringUtil.extendAttribute(parameters, "onLoad", "bodyLoad();");
             String onLoad = (String)data.get("value");
             String myPars = (String)data.get("text");
-            data = CmsStringUtil.extendAttribute(parameters, "onUnload", "bodyUnload();");
+            data = CmsStringUtil.extendAttribute(myPars, "onUnload", "bodyUnload();");
             String onUnload = (String)data.get("value");
             myPars = (String)data.get("text");
             if (segment == HTML_START) {
                 StringBuffer html = new StringBuffer(512);
-                html.append(CmsStringUtil.code(1, "<body onLoad="
-                    + onLoad
-                    + " onUnload="
-                    + onUnload
-                    + (CmsStringUtil.isNotEmpty(className) ? " class='" + className + "'" : "")
-                    + (CmsStringUtil.isNotEmpty(myPars) ? " " + myPars : "")
-                    + ">"));
-                html.append(CmsStringUtil.code(2, "<a href='#' name='top' id='top'></a>"));
-                html.append(CmsStringUtil.code(
-                    2,
-                    "<table border='0' cellspacing='0' cellpadding='0' id='loaderContainer' onClick='return false;'>"));
-                html.append(CmsStringUtil.code(3, "<tr><td id='loaderContainerH'><div id='loader'>"));
-                html.append(CmsStringUtil.code(
-                    4,
-                    "<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td>"));
-                html.append(CmsStringUtil.code(5, "<p><img src='"
-                    + getSkinUri()
-                    + "commons/wait.gif"
-                    + "' height='32' width='32' alt=''/>"));
-                html.append(CmsStringUtil.code(5, "<strong>" + key("admin.view.loading") + "</strong></p>"));
-                html.append(CmsStringUtil.code(4, "</td></tr></table>"));
-                html.append(CmsStringUtil.code(3, "</div></td></tr>"));
-                html.append(CmsStringUtil.code(2, "</table>"));
-                html.append(CmsStringUtil.code(
-                    2,
-                    "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr><td id='screenH'>"));
+                html.append("<body onLoad=");
+                html.append(onLoad);
+                html.append(" onUnload=");
+                html.append(onUnload);
+                html.append(CmsStringUtil.isNotEmpty(className) ? " class='" + className + "'" : "");
+                html.append(CmsStringUtil.isNotEmpty(myPars) ? " " + myPars : "");
+                html.append(">\n");
+                html.append("\t<a href='#' name='top' id='top'></a>\n");
+                html.append("\t<table border='0' cellspacing='0' cellpadding='0' id='loaderContainer' onClick='return false;'>\n");
+                html.append("\t\t<tr><td id='loaderContainerH'><div id='loader'>\n");
+                html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td>\n");
+                html.append("\t\t\t\t<p><img src='");
+                html.append(getSkinUri());
+                html.append("commons/wait.gif");
+                html.append("' height='32' width='32' alt=''/>\n");
+                html.append("\t\t\t\t<strong>");
+                html.append(key("admin.view.loading"));
+                html.append("</strong></p>\n");
+                html.append("\t\t\t</td></tr></table>\n");
+                html.append("\t\t</div></td></tr>\n");
+                html.append("\t</table>\n");
+                html.append("\t<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr><td id='screenH'>\n");
                 return html.toString();
             } else {
                 StringBuffer html = new StringBuffer(128);
-                html.append(CmsStringUtil.code(2, "</td></tr></table>"));
-                html.append(CmsStringUtil.code(1, "</body>"));
+                html.append("\t</td></tr></table>\n");
+                html.append("</body>");
                 return html.toString();
             }
         }
@@ -346,49 +341,46 @@ public class CmsToolDialog extends CmsWorkplace {
         }
 
         StringBuffer html = new StringBuffer(512);
-        html
-            .append(CmsStringUtil
-                .code("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"));
-        html.append(CmsStringUtil.code("<html>"));
-        html.append(CmsStringUtil.code(1, "<head>"));
+        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+        html.append("<html>\n");
+        html.append("\t<head>\n");
         if (title != null) {
-            html.append(CmsStringUtil.code(2, "<title>" + resolveMacros(title) + "</title>"));
+            html.append("\t\t<title>");
+            html.append(title);
+            html.append("</title>\n");
         }
-        html.append(CmsStringUtil.code(2, "<meta http-equiv='Content-Type' content='text/html; charset="
-            + getEncoding()
-            + "' >"));
-        html.append(CmsStringUtil.code(2, "<link rel='stylesheet' type='text/css' href='"
-            + getStyleUri(getJsp())
-            + "new_admin.css"
-            + "'>"));
-        html.append(CmsStringUtil.code(2, "<script language='javascript' type='text/javascript' src='"
-            + getSkinUri()
-            + "admin/javascript/general.js"
-            + "'></script>"));
-        html.append(CmsStringUtil.code(1, "</head>"));
-        html.append(CmsStringUtil.code(1, "<style type='text/css'>"));
-        html.append(CmsStringUtil.code(2, "#loaderContainer td {"));
-        html.append(CmsStringUtil.code(3, "background-image: url("
-            + getSkinUri()
-            + "admin/images/semi-transparent.gif"
-            + ");"));
-        html.append(CmsStringUtil.code(2, "}"));
-        html.append(CmsStringUtil.code(1, "</style>"));
-        html.append(CmsStringUtil.code(1, "<script language='javascript' type='text/javascript'><!--"));
-        html.append(CmsStringUtil.code(2, "function bodyLoad() {"));
-        html.append(CmsStringUtil.code(3, "setContext(\""
-            + CmsStringUtil.escapeJavaScript(resolveMacros(getAdminTool().getHelpText()))
-            + "\");"));
-        html.append(CmsStringUtil.code(3, "setActiveItemByName(\"" + getCurrentToolPath() + "\");"));
-        html.append(CmsStringUtil.code(3, "loadingOff();"));
-        html.append(CmsStringUtil.code(
-            3,
-            "document.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;"));
-        html.append(CmsStringUtil.code(2, "}"));
-        html.append(CmsStringUtil.code(2, "function bodyUnload() {"));
-        html.append(CmsStringUtil.code(3, "loadingOn();"));
-        html.append(CmsStringUtil.code(2, "}"));
-        html.append(CmsStringUtil.code(1, "// --></script>"));
+        html.append("\t\t<meta http-equiv='Content-Type' content='text/html; charset=");
+        html.append(getEncoding());
+        html.append("' >\n");
+        html.append("\t\t<link rel='stylesheet' type='text/css' href='");
+        html.append(getStyleUri(getJsp()));
+        html.append("new_admin.css'>\n");
+        html.append("\t\t<script language='javascript' type='text/javascript' src='");
+        html.append(getSkinUri());
+        html.append("admin/javascript/general.js'></script>\n");
+        html.append("\t</head>\n");
+        html.append("\t<style type='text/css'>\n");
+        html.append("\t\t#loaderContainer td {\n");
+        html.append("\t\t\tbackground-image: url(\n");
+        html.append(getSkinUri());
+        html.append("admin/images/semi-transparent.gif);\n");
+        html.append("\t\t}\n");
+        html.append("\t</style>\n");
+        html.append("\t<script language='javascript' type='text/javascript'><!--\n");
+        html.append("\t\tfunction bodyLoad() {\n");
+        html.append("\t\t\tsetContext(\"");
+        html.append(CmsStringUtil.escapeJavaScript(resolveMacros(getAdminTool().getHelpText())));
+        html.append("\");\n");
+        html.append("\t\t\tsetActiveItemByName(\"");
+        html.append(getCurrentToolPath());
+        html.append("\");\n");
+        html.append("\t\t\tloadingOff();\n");
+        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
+        html.append("\t\t}\n");
+        html.append("\t\tfunction bodyUnload() {\n");
+        html.append("\t\t\tloadingOn();\n");
+        html.append("\t\t}\n");
+        html.append("\t// --></script>\n");
         return html.toString();
     }
 

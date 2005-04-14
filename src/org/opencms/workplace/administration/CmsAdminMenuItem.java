@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,17 @@
 
 package org.opencms.workplace.administration;
 
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.CmsHtmlUtil;
 
 /**
- * This is a html icon button implementation that generates the
+ * Html icon button implementation that generates the
  * required html code for a menu item.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsAdminMenuItem implements I_CmsNamedObject {
 
@@ -55,7 +54,7 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
     private final String m_target;
 
     /**
-     * Default Ctor.<p> 
+     * Default Constructor.<p> 
      * 
      * @param name the name of the item
      * @param iconPath the icon to display
@@ -146,84 +145,95 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
     /**
      * Returns the necessary html code.<p>
      * 
-     * @param page the jsp page to write the code to
+     * @param wp the workplace
      * 
      * @return html code
      */
-    public String itemHtml(CmsWorkplace page) {
+    public String itemHtml(CmsWorkplace wp) {
 
-        StringBuffer html = new StringBuffer(512);
-        html.append(CmsStringUtil
-            .code("<table border='0' cellspacing='0' cellpadding='0' width='100%' class='node' id='" + getId() + "'>"));
-        html.append(CmsStringUtil.code(1, "<tr>"));
-        html.append(CmsStringUtil.code(2, "<td class='nodeImage'>"));
+        StringBuffer html = new StringBuffer(1024);
+        html.append("<table border='0' cellspacing='0' cellpadding='0' width='100%' class='node' id='");
+        html.append(getId());
+        html.append("'>\n");
+        html.append("\t<tr>\n");
+        html.append("\t\t<td class='nodeImage'>\n");
         if (isEnabled()) {
-            html.append(CmsStringUtil.code(3, generatelink(page)));
+            html.append(generatelink(wp));
         } else {
-            html.append(CmsStringUtil.code(3, "<span onMouseOver=\"mouseHelpEvent('"
-                + getId()
-                + "Help', true)\" onMouseOut=\"mouseHelpEvent('"
-                + getId()
-                + "Help', false)\">"));
+            html.append("<span onMouseOver=\"mouseHelpEvent('");
+            html.append(getId());
+            html.append("Help', true)\" onMouseOut=\"mouseHelpEvent('");
+            html.append(getId());
+            html.append("Help', false)\">");
         }
-        html.append(CmsStringUtil.code(4, "<img src='"
-            + page.getJsp().link(page.resolveMacros(getIconPath()))
-            + "' width='16' height='16' border='0' alt='"
-            + page.resolveMacros(getName())
-            + "'>"));
+        html.append("\t\t<img src='");
+        html.append(wp.getJsp().link(getIconPath()));
+        html.append("' width='16' height='16' border='0' alt='");
+        html.append(getName());
+        html.append("'>\n");
         if (isEnabled()) {
-            html.append(CmsStringUtil.code(3, "</a>"));
+            html.append("</a>");
         }
-        html.append(CmsStringUtil.code(2, "</td>"));
-        html.append(CmsStringUtil.code(2, "<td width='100%'><span class='name'>"));
+        html.append("\t\t</td>\n");
+        html.append("\t\t<td width='100%'><span class='name'>\n");
         if (isEnabled()) {
-            html.append(CmsStringUtil.code(3, generatelink(page)));
+            html.append(generatelink(wp));
         }
-        html.append(CmsStringUtil.code(4, page.resolveMacros(getName())));
+        html.append(getName());
         if (isEnabled()) {
-            html.append(CmsStringUtil.code(3, "</a>"));
+            html.append("</a>");
         } else {
-            html.append(CmsStringUtil.code(3, "</span>"));
+            html.append("</span>");
         }
-        html.append(CmsStringUtil.code(3, "<div class='tip' id='" + getId() + "Help'>"));
+        html.append("\t\t\t<div class='tip' id='" + getId() + "Help'>\n");
         if (!isEnabled()) {
-            html.append(CmsStringUtil.code(4, page.key("widget.button.disabled.helptext") + " "));
+            html.append(wp.key("widget.button.disabled.helptext") + " ");
         }
-        html.append(CmsStringUtil.code(4, page.resolveMacros(getHelpText())));
-        html.append(CmsStringUtil.code(3, "</div>"));
-        html.append(CmsStringUtil.code(2, "</span></td>"));
-        html.append(CmsStringUtil.code(1, "</tr>"));
-        html.append(CmsStringUtil.code("</table>"));
-        return page.resolveMacros(html.toString());
+        html.append(getHelpText());
+        html.append("</div>\n");
+        html.append("\t\t</span></td>\n");
+        html.append("\t</tr>\n");
+        html.append("</table>\n");
+        return wp.resolveMacros(html.toString());
     }
 
-    private String generatelink(CmsWorkplace page) {
+    /**
+     * Generates a link, differentiating internal and external links.<p>
+     * 
+     * @param wp the workplace
+     * 
+     * @return html code
+     */
+    private String generatelink(CmsWorkplace wp) {
 
+        StringBuffer html = new StringBuffer(1024);
         if (m_target.toString().indexOf("_") != 0) {
-            return "<a href='#' title='"
-                + getName()
-                + "' onClick=\"return openView('"
-                + getId()
-                + "', '"
-                + page.getJsp().link(page.resolveMacros(m_link))
-                + "', '"
-                + m_target
-                + "');\" onMouseOver=\"mouseHelpEvent('"
-                + getId()
-                + "Help', true)\" onMouseOut=\"mouseHelpEvent('"
-                + getId()
-                + "Help', false)\">";
+            html.append("<a href='#' title='");
+            html.append(getName());
+            html.append("' onClick=\"return openView('");
+            html.append(getId());
+            html.append("', '");
+            html.append(wp.getJsp().link(m_link));
+            html.append("', '");
+            html.append(m_target);
+            html.append("');\" onMouseOver=\"mouseHelpEvent('");
+            html.append(getId());
+            html.append("Help', true)\" onMouseOut=\"mouseHelpEvent('");
+            html.append(getId());
+            html.append("Help', false)\">");
+        } else {
+            html.append("<a target='");
+            html.append(m_target);
+            html.append("' href='");
+            html.append(wp.getJsp().link(m_link));
+            html.append("' title='");
+            html.append(getName());
+            html.append("' onMouseOver=\"mouseHelpEvent('");
+            html.append(getId());
+            html.append("Help', true)\" onMouseOut=\"mouseHelpEvent('");
+            html.append(getId());
+            html.append("Help', false)\">");
         }
-        return "<a target='"
-            + m_target
-            + "' href='"
-            + page.getJsp().link(page.resolveMacros(m_link))
-            + "' title='"
-            + getName()
-            + "' onMouseOver=\"mouseHelpEvent('"
-            + getId()
-            + "Help', true)\" onMouseOut=\"mouseHelpEvent('"
-            + getId()
-            + "Help', false)\">";
+        return html.toString();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminFrameset.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,16 +44,16 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * It allows to specify if you want or not an left side menu.<p>
  * 
- * The following files use this class:
+ * The following files use this class:<br>
  * <ul>
  * <li>/views/admin/external-fs.html</li>
  * <li>/views/admin/admin-fs.html</li>
  * </ul>
+ * <p>
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
- * 
- * @since 6.0
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsAdminFrameset extends CmsToolDialog {
 

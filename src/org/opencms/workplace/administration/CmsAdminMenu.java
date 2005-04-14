@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * This class is the implementation of the administration view leftside's menu.<p>
+ * Implementation of the administration view leftside's menu.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsAdminMenu extends CmsToolDialog {
 
@@ -62,7 +62,7 @@ public class CmsAdminMenu extends CmsToolDialog {
     private I_CmsNamedObjectContainer m_groupContainer = new CmsNamedObjectContainer(true, true);
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      * 
      * @param jsp the jsp context
      */
@@ -160,17 +160,17 @@ public class CmsAdminMenu extends CmsToolDialog {
     /**
      * Generates the necesary html code for the groups.<p>
      * 
-     * @param page the page for which the code is generated
+     * @param wp the page for which the code is generated
      * 
      * @return html code
      */
-    public String groupHtml(CmsWorkplace page) {
+    public String groupHtml(CmsWorkplace wp) {
 
-        StringBuffer html = new StringBuffer(512);
+        StringBuffer html = new StringBuffer(2048);
         Iterator itHtml = m_groupContainer.elementList().iterator();
         while (itHtml.hasNext()) {
             CmsAdminMenuGroup group = (CmsAdminMenuGroup)itHtml.next();
-            html.append(CmsStringUtil.code(8, group.groupHtml(page)));
+            html.append(group.groupHtml(wp));
         }
         return html.toString();
     }

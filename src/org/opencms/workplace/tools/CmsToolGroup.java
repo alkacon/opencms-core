@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -43,9 +42,9 @@ import java.util.List;
  * This is an admin tool group, it just generates the html code for
  * the group structure.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsToolGroup implements I_CmsNamedObject {
 
@@ -54,7 +53,7 @@ public class CmsToolGroup implements I_CmsNamedObject {
     private final String m_name;
 
     /**
-     * Default Ctor.<p> 
+     * Default Constructor.<p> 
      * 
      * @param name the name of the group
      */
@@ -136,20 +135,20 @@ public class CmsToolGroup implements I_CmsNamedObject {
     /**
      * Returns the necessary html code.<p>
      * 
-     * @param page the jsp page to write the code to
+     * @param wp the jsp page to write the code to
      * 
      * @return html code
      */
-    public String groupHtml(CmsWorkplace page) {
+    public String groupHtml(CmsWorkplace wp) {
 
-        StringBuffer html = new StringBuffer(512);
-        html.append(((CmsToolDialog)page).iconsBlockAreaStart(page.resolveMacros(getName())));
+        StringBuffer html = new StringBuffer(2048);
+        html.append(((CmsToolDialog)wp).iconsBlockAreaStart(wp.resolveMacros(getName())));
         Iterator itItem = m_container.elementList().iterator();
         while (itItem.hasNext()) {
             CmsTool item = (CmsTool)itItem.next();
-            html.append(CmsStringUtil.code(1, item.buttonHtml(page)));
+            html.append(item.buttonHtml(wp));
         }
-        html.append(((CmsToolDialog)page).iconsBlockAreaEnd());
+        html.append(((CmsToolDialog)wp).iconsBlockAreaEnd());
         return html.toString();
     }
 

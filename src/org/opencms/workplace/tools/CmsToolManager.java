@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,15 +51,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class manages the configuration settings for the administration view.<p>
+ * Manages the configuration settings for the administration view.<p>
  * 
  * It mantains a <code>{@link CmsToolUserData}</code> object for each logged-in user.
  * This information is updated everytime an admin tool is displayed, mainly, due to 
  * i18n of group names. <p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsToolManager {
 
@@ -86,7 +86,7 @@ public class CmsToolManager {
     private final CmsNamedObjectContainer m_userDataContainer = new CmsNamedObjectContainer(true, false);
 
     /**
-     * Default Ctor, called by the <code>{@link org.opencms.workplace.CmsWorkplaceManager#initialize(CmsObject)}</code> method.<p>
+     * Default Constructor, called by the <code>{@link org.opencms.workplace.CmsWorkplaceManager#initialize(CmsObject)}</code> method.<p>
      * 
      * @param cms the cms context
      */
@@ -193,35 +193,32 @@ public class CmsToolManager {
      * Returns the navegation bar html code for the given tool path.<p>
      * 
      * @param toolPath the path
-     * @param page the jsp page
+     * @param wp the jsp page
      * 
      * @return the html code
      */
-    public String generateNavBar(String toolPath, CmsWorkplace page) {
+    public String generateNavBar(String toolPath, CmsWorkplace wp) {
 
-        String html = "";
-        if (toolPath.equals(getRootToolPath(page.getCms()))) {
+        if (toolPath.equals(getRootToolPath(wp.getCms()))) {
             return "<div class='pathbar'>&nbsp;</div>";
         }
-        CmsTool adminTool = resolveAdminTool(page.getCms(), toolPath);
-        html += page.resolveMacros(adminTool.getName());
+        CmsTool adminTool = resolveAdminTool(wp.getCms(), toolPath);
+        String html = adminTool.getName();
         String parent = toolPath;
-        while (!parent.equals(getRootToolPath(page.getCms()))) {
-            parent = getParent(page.getCms(), parent);
-            adminTool = resolveAdminTool(page.getCms(), parent);
+        while (!parent.equals(getRootToolPath(wp.getCms()))) {
+            parent = getParent(wp.getCms(), parent);
+            adminTool = resolveAdminTool(wp.getCms(), parent);
 
-            String link = "<a href='"
-                + cmsLinkForPath(page.getJsp(), parent)
-                + "' onClick='loadingOn();'>"
-                + page.resolveMacros(adminTool.getName())
-                + "</a>";
-            html = CmsStringUtil.code(link + C_NAVBAR_SEPARATOR) + html;
+            StringBuffer link = new StringBuffer(512);
+            link.append("<a href='");
+            link.append(cmsLinkForPath(wp.getJsp(), parent));
+            link.append("' onClick='loadingOn();'>");
+            link.append(adminTool.getName());
+            link.append("</a>\n");
+            html = link + C_NAVBAR_SEPARATOR + html;
         }
 
-        html = CmsStringUtil.code("<div class='pathbar'>&nbsp;")
-            + CmsStringUtil.code(1, html)
-            + CmsStringUtil.code("&nbsp;</div>");
-        return html;
+        return "<div class='pathbar'>&nbsp;" + html + "&nbsp;</div>";
     }
 
     /**
@@ -365,20 +362,20 @@ public class CmsToolManager {
     /**
      * This method initializes the tool manager for the current user.<p>
      * 
-     * @param page the jsp page comming from
+     * @param wp the jsp page comming from
      * @param toolPath the current tool path
      * @param rootToolPath the root tool path
      */
-    public void initParams(CmsWorkplace page, String toolPath, String rootToolPath) {
+    public void initParams(CmsWorkplace wp, String toolPath, String rootToolPath) {
 
-        setCurrentToolPath(page.getCms(), toolPath);
-        setRootToolPath(page.getCms(), rootToolPath);
+        setCurrentToolPath(wp.getCms(), toolPath);
+        setRootToolPath(wp.getCms(), rootToolPath);
 
         // if the current tool path is not under the current root, set the current root as the current tool
-        if (!getCurrentToolPath(page.getCms()).startsWith(getRootToolPath(page.getCms()))) {
-            setCurrentToolPath(page.getCms(), getRootToolPath(page.getCms()));
+        if (!getCurrentToolPath(wp.getCms()).startsWith(getRootToolPath(wp.getCms()))) {
+            setCurrentToolPath(wp.getCms(), getRootToolPath(wp.getCms()));
         }
-        registerHandlerList(page);
+        registerHandlerList(wp);
 
     }
 
@@ -501,15 +498,15 @@ public class CmsToolManager {
         }
     }
 
-    private void registerAdminTool(CmsWorkplace page, CmsTool adminTool, CmsToolInstallPoint iPoint) {
+    private void registerAdminTool(CmsWorkplace wp, CmsTool adminTool, CmsToolInstallPoint iPoint) {
 
         // check visibility
-        if (!page.getCms().existsResource(adminTool.getLink())) {
+        if (!wp.getCms().existsResource(adminTool.getLink())) {
             return;
         }
 
         //validate path
-        if (!validatePath(page.getCms(), iPoint.getPath())) {
+        if (!validatePath(wp.getCms(), iPoint.getPath())) {
             // log failure
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
@@ -520,16 +517,16 @@ public class CmsToolManager {
         
         // root tool special case
         if (iPoint.getPath().equals(C_TOOLPATH_SEPARATOR)) {
-            getUserData(page.getCms()).getTools().addNamedObject(new CmsNamedObject(iPoint.getPath(), adminTool));
+            getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(iPoint.getPath(), adminTool));
             return;
         }
 
         // locate group
         CmsToolGroup group = null;
-        String groupName = page.resolveMacros(iPoint.getGroup());
+        String groupName = wp.resolveMacros(iPoint.getGroup());
 
         // in the parent tool
-        CmsTool parentTool = resolveAdminTool(page.getCms(), getParent(page.getCms(), iPoint.getPath()));
+        CmsTool parentTool = resolveAdminTool(wp.getCms(), getParent(wp.getCms(), iPoint.getPath()));
         group = parentTool.getToolGroup(groupName);
         if (group == null) {
             // if does not exist, create it
@@ -539,22 +536,22 @@ public class CmsToolManager {
         // add to group
         group.addAdminTool(adminTool, iPoint.getPosition());
         // register
-        getUserData(page.getCms()).getTools().addNamedObject(new CmsNamedObject(iPoint.getPath(), adminTool));
+        getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(iPoint.getPath(), adminTool));
     }
 
-    private void registerHandlerList(CmsWorkplace page) {
+    private void registerHandlerList(CmsWorkplace wp) {
 
-        CmsToolUserData userData = getUserData(page.getCms());
+        CmsToolUserData userData = getUserData(wp.getCms());
         synchronized (userData) {
             userData.getTools().clear();
-            String tmpRoot = getRootToolPath(page.getCms());
-            setRootToolPath(page.getCms(), C_TOOLPATH_SEPARATOR);
-            registerHandlerList(page, 1);
-            setRootToolPath(page.getCms(), tmpRoot);
+            String tmpRoot = getRootToolPath(wp.getCms());
+            setRootToolPath(wp.getCms(), C_TOOLPATH_SEPARATOR);
+            registerHandlerList(wp, 1);
+            setRootToolPath(wp.getCms(), tmpRoot);
         }
     }
 
-    private void registerHandlerList(CmsWorkplace page, int len) {
+    private void registerHandlerList(CmsWorkplace wp, int len) {
 
         boolean found = false;
         Iterator it = m_handlers.iterator();
@@ -565,8 +562,8 @@ public class CmsToolManager {
             Iterator itIPoints = handler.getInstallPoints().iterator();
             while (itIPoints.hasNext()) {
                 CmsToolInstallPoint iPoint = (CmsToolInstallPoint)itIPoints.next();
-                if (resolveAdminTool(page.getCms(), iPoint.getPath()) != null) {
-                    adminTool = resolveAdminTool(page.getCms(), iPoint.getPath());
+                if (resolveAdminTool(wp.getCms(), iPoint.getPath()) != null) {
+                    adminTool = resolveAdminTool(wp.getCms(), iPoint.getPath());
                 }
                 int myLen = CmsStringUtil.splitAsArray(iPoint.getPath(), C_TOOLPATH_SEPARATOR).length;
                 if (len == myLen && !iPoint.getPath().equals(C_TOOLPATH_SEPARATOR)) {
@@ -584,17 +581,17 @@ public class CmsToolManager {
                     String name = handler.getName();
                     String helpText = handler.getHelpText();
                     adminTool = new CmsTool(name, handler.getIconPath(), handler.getLink(), helpText, handler
-                        .isEnabled(page.getCms()));
+                        .isEnabled(wp.getCms()));
                 }
                 Iterator itFoundIPs = installPoints.iterator();
                 while (itFoundIPs.hasNext()) {
                     CmsToolInstallPoint iPoint = (CmsToolInstallPoint)itFoundIPs.next();
-                    registerAdminTool(page, adminTool, iPoint);
+                    registerAdminTool(wp, adminTool, iPoint);
                 }
             }
         }
         if (found) {
-            registerHandlerList(page, len + 1);
+            registerHandlerList(wp, len + 1);
         }
 
     }

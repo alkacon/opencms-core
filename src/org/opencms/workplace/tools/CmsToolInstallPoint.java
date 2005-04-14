@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsToolInstallPoint.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ package org.opencms.workplace.tools;
  * The <code>position</code> is a number for relative ordering, 
  * following the small-number-first rule.<p> 
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsToolInstallPoint {
 
@@ -75,7 +75,7 @@ public class CmsToolInstallPoint {
     }
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      * 
      * @param path the path to install an admin tool
      * @param group the group in that path

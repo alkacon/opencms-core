@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * This class is the default admin tool handler.<p>
+ * Default admin tool handler.<p>
  * 
  * It takes the icon path from <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVIMAGE}</code> property, 
  * or uses a default icon if undefined, the name is taken from the 
@@ -64,9 +64,9 @@ import java.util.Map;
  * the first one will be used as a group icon (bigger), and the second as an menu icon (smaller). If you specify only,
  * one icon path it should be a big one, which will be scaled to be used in the menu.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.3 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.4 $
+ * @since 5.7.3
  */
 public class CmsDefaultToolHandler extends A_CmsToolHandler {
 

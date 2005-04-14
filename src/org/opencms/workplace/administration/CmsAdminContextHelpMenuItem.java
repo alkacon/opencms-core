@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminContextHelpMenuItem.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,19 @@
 
 package org.opencms.workplace.administration;
 
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
- * This class is a menu item that works as an context help text container.<p>
+ * Menu item implementation that works as an context help text container.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsAdminContextHelpMenuItem extends CmsAdminMenuItem {
 
     /**
-     * Default Ctor.<p>
+     * Default Constructor.<p>
      */
     public CmsAdminContextHelpMenuItem() {
 
@@ -54,17 +53,16 @@ public class CmsAdminContextHelpMenuItem extends CmsAdminMenuItem {
     /**
      * @see org.opencms.workplace.administration.CmsAdminMenuItem#itemHtml(CmsWorkplace)
      */
-    public String itemHtml(CmsWorkplace page) {
+    public String itemHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
-        html.append(CmsStringUtil
-            .code("<table border='0' cellspacing='0' cellpadding='0' width='100%' id='conhelp' class='node'>"));
-        html.append(CmsStringUtil.code(1, "<tr>"));
-        html.append(CmsStringUtil.code(2, "<td width='100%'><div id='contexthelp'><div>"));
-        html.append(CmsStringUtil.code(3, "<span id='contexthelp_text' class='hint'></span>"));
-        html.append(CmsStringUtil.code(2, "</div></div></td>"));
-        html.append(CmsStringUtil.code(1, "</tr>"));
-        html.append(CmsStringUtil.code("</table>"));
+        html.append("<table border='0' cellspacing='0' cellpadding='0' width='100%' id='conhelp' class='node'>\n");
+        html.append("\t<tr>\n");
+        html.append("\t\t<td width='100%'><div id='contexthelp'><div>\n");
+        html.append("\t\t\t<span id='contexthelp_text' class='hint'></span>\n");
+        html.append("\t\t</div></div></td>\n");
+        html.append("\t</tr>\n");
+        html.append("</table>\n");
         return html.toString();
     }
 

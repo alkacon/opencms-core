@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.administration;
 
 import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.CmsHtmlUtil;
@@ -41,20 +40,21 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a container for menu items that generates the necesary html code.<p>
+ * Container for menu items that generates the necesary html code.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsAdminMenuGroup implements I_CmsNamedObject {
+
     private final String m_id;
     private final String m_name;
 
     private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
 
     /**
-     * Default Ctor.<p> 
+     * Default Constructor.<p> 
      * 
      * @param name the name of the group
      */
@@ -136,18 +136,19 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
     /**
      * Returns the necessary html code.<p>
      * 
-     * @param page the jsp page to write the code to
+     * @param wp the jsp page to write the code to
      * 
      * @return html code
      */
-    public String groupHtml(CmsWorkplace page) {
+    public String groupHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
-        html.append(htmlStart(page));
+        html.append(htmlStart(wp));
         Iterator itItem = m_container.elementList().iterator();
         while (itItem.hasNext()) {
             CmsAdminMenuItem item = (CmsAdminMenuItem)itItem.next();
-            html.append(CmsStringUtil.code(7, item.itemHtml(page)));
+            html.append(item.itemHtml(wp));
+            html.append("\n");
         }
         html.append(htmlEnd());
         return html.toString();
@@ -156,52 +157,51 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
     private String htmlEnd() {
 
         StringBuffer html = new StringBuffer(512);
-        html.append(CmsStringUtil.code(6, "</td>"));
-        html.append(CmsStringUtil.code(5, "</tr>"));
-        html.append(CmsStringUtil.code(4, "</table>"));
-        html.append(CmsStringUtil.code(3, "</div>"));
-        html.append(CmsStringUtil.code(2, "</td>"));
-        html.append(CmsStringUtil.code(1, "</tr>"));
-        html.append(CmsStringUtil.code("</table>"));
+        html.append("\t\t\t\t\t\t</td>\n");
+        html.append("\t\t\t\t\t</tr>\n");
+        html.append("\t\t\t\t</table>\n");
+        html.append("\t\t\t</div>\n");
+        html.append("\t\t</td>\n");
+        html.append("\t</tr>\n");
+        html.append("</table>\n");
         return html.toString();
     }
 
-    private String htmlStart(CmsWorkplace page) {
+    private String htmlStart(CmsWorkplace wp) {
 
-        StringBuffer html = new StringBuffer(512);
-        html.append(CmsStringUtil
-            .code("<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navOpened' id='"
-                + getId()
-                + "'>"));
-        html.append(CmsStringUtil.code(1, "<tr>"));
-        html.append(CmsStringUtil.code(2, "<td>"));
-        html.append(CmsStringUtil
-            .code(
-                3,
-                "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('"
-                    + getId()
-                    + "');\" >"));
-        html.append(CmsStringUtil.code(4, "<tr>"));
-        html.append(CmsStringUtil.code(5, "<td class='titleLeft'><img src='"
-            + CmsWorkplace.getSkinUri()
-            + "admin/images/topleft.gif"
-            + "' border='0' alt=''/></td>"));
-        html.append(CmsStringUtil.code(5, "<td class='titleText' width='100%'>" + page.resolveMacros(getName()) + "</td>"));
-        html.append(CmsStringUtil.code(5, "<td class='titleHandle'><img src='"
-            + CmsWorkplace.getSkinUri() + "admin/images/1x1.gif"
-            + "' width='20' height='1' border='0' alt=''/></td>"));
-        html.append(CmsStringUtil.code(5, "<td class='titleRight'><img src='"
-            + CmsWorkplace.getSkinUri() + "admin/images/topright.gif"
-            + "' border='0' alt=''/></td>"));
-        html.append(CmsStringUtil.code(4, "</tr>"));
-        html.append(CmsStringUtil.code(3, "</table>"));
-        html.append(CmsStringUtil.code(2, "</td>"));
-        html.append(CmsStringUtil.code(1, "</tr><tr>"));
-        html.append(CmsStringUtil.code(2, "<td>"));
-        html.append(CmsStringUtil.code(3, "<div class='tree'>"));
-        html.append(CmsStringUtil.code(4, "<table border='0' cellspacing='0' cellpadding='0' width='100%'>"));
-        html.append(CmsStringUtil.code(5, "<tr>"));
-        html.append(CmsStringUtil.code(6, "<td>"));
+        StringBuffer html = new StringBuffer(1024);
+        html.append("<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navOpened' id='");
+        html.append(getId());
+        html.append("'>\n");
+        html.append("\t<tr>\n");
+        html.append("\t\t<td>\n");
+        html
+            .append("\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('");
+        html.append(getId());
+        html.append("');\" >\n");
+        html.append("\t\t\t\t<tr>\n");
+        html.append("\t\t\t\t\t<td class='titleLeft'><img src='");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("admin/images/topleft.gif");
+        html.append("' border='0' alt=''/></td>\n");
+        html.append("\t\t\t\t\t<td class='titleText' width='100%'>");
+        html.append(wp.resolveMacros(getName()));
+        html.append("</td>\n");
+        html.append("\t\t\t\t\t<td class='titleHandle'><img src='");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("admin/images/1x1.gif' width='20' height='1' border='0' alt=''/></td>\n");
+        html.append("\t\t\t\t\t<td class='titleRight'><img src='");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("admin/images/topright.gif' border='0' alt=''/></td>\n");
+        html.append("\t\t\t\t</tr>\n");
+        html.append("\t\t\t</table>\n");
+        html.append("<\t\t/td>\n");
+        html.append("\t</tr><tr>\n");
+        html.append("\t\t<td>\n");
+        html.append("\t\t\t<div class='tree'>\n");
+        html.append("\t\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%'>\n");
+        html.append("\t\t\t\t\t<tr>\n");
+        html.append("\t\t\t\t\t\t<td>\n");
         return html.toString();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsHtmlUtil.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@ package org.opencms.workplace.tools;
 /**
  * This is an util class for html code related tasks.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public final class CmsHtmlUtil {
 
@@ -50,7 +50,7 @@ public final class CmsHtmlUtil {
     }
 
     /**
-     * Returns a unique id for dhtml code, based on an element name.<p>
+     * Returns an unique id for dhtml code, based on an element name.<p>
      * 
      * @param name the html element name
      * 

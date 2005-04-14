@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.tools;
 
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -41,16 +40,16 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is the implementation of an administration tool.<p>
+ * Implementation of an administration tool.<p>
  * 
  * An admin tool can be a link to itself through 
  * the <code>{@link #buttonHtml(CmsWorkplace)}</code> method,
  * as also a group of <code>{@link CmsToolGroup}</code>s through the 
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.3 $
+ * @since 5.7.3
  */
 public class CmsTool implements I_CmsNamedObject {
 
@@ -63,7 +62,7 @@ public class CmsTool implements I_CmsNamedObject {
     private final String m_name;
 
     /**
-     * Default Ctor.<p> 
+     * Default Constructor.<p> 
      * 
      * @param name the name of the item
      * @param iconPath the icon to display
@@ -94,7 +93,7 @@ public class CmsTool implements I_CmsNamedObject {
     }
 
     /**
-     * Adds a menu item at the given position.<p>
+     * Adds a group at the given position.<p>
      * 
      * @param group the group
      * @param position the position
@@ -107,53 +106,59 @@ public class CmsTool implements I_CmsNamedObject {
     }
 
     /**
-     * Returns the necessary html code.<p>
+     * Returns the necessary html code for a link to this tool.<p>
      * 
-     * @param page the jsp page to write the code to
+     * @param wp the jsp page to write the code to
      * 
      * @return html code
      */
-    public String buttonHtml(CmsWorkplace page) {
+    public String buttonHtml(CmsWorkplace wp) {
 
-        String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkFromContext(page.getJsp(), this);
+        String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkFromContext(wp.getJsp(), this);
         StringBuffer html = new StringBuffer(512);
-        html.append(CmsStringUtil.code("<"
-            + (isEnabled() ? "div" : "span")
-            + " class='commonButton' style='background-image: url("
-            + page.getJsp().link(page.resolveMacros(getIconPath()))
-            + ")' title='"
-            + page.resolveMacros(getName())
-            + "' onMouseOver=\"mouseHelpEvent('"
-            + getId()
-            + "', true);\"  onMouseOut=\"mouseHelpEvent('"
-            + getId()
-            + "', false);\""
-            + (isEnabled() ? " onClick=\"openPage('" + link + "');\"" : "")
-            + ">"));
-        html.append(CmsStringUtil.code(1, "<button name='"
-            + getId()
-            + "'"
-            + (isEnabled() ? "" : " disabled")
-            + ">"
-            + page.resolveMacros(getName())
-            + "</button>"));
-        html.append(CmsStringUtil.code(1, "<span>" + page.resolveMacros(getName()) + "</span>"));
-        html.append(CmsStringUtil.code(1, "<div class='tip' id='" + getId() + "'>"));
+        html.append("<");
+        html.append(isEnabled() ? "div" : "span");
+        html.append(" class='commonButton' style='background-image: url(");
+        html.append(wp.getJsp().link(getIconPath()));
+        html.append(")' title='");
+        html.append(getName());
+        html.append("' onMouseOver=\"mouseHelpEvent('");
+        html.append(getId());
+        html.append("', true);\"  onMouseOut=\"mouseHelpEvent('");
+        html.append(getId());
+        html.append("', false);\"");
+        html.append(isEnabled() ? " onClick=\"openPage('" + link + "');\"" : "");
+        html.append(">");
+        html.append("<button name='");
+        html.append(getId());
+        html.append("'");
+        html.append(isEnabled() ? "" : " disabled");
+        html.append(">");
+        html.append(getName());
+        html.append("</button>");
+        html.append("<span>");
+        html.append(getName());
+        html.append("</span>");
+        html.append("<div class='tip' id='");
+        html.append(getId());
+        html.append("'>");
         if (!isEnabled()) {
-            html.append(CmsStringUtil.code(2, page.key("widget.button.disabled.helptext") + " "));
+            html.append(wp.key("widget.button.disabled.helptext"));
+            html.append(" ");
         }
-        html.append(CmsStringUtil.code(2, page.resolveMacros(getHelpText())));
-        html.append(CmsStringUtil.code(1, "</div>"));
-        html.append(CmsStringUtil.code("</" + (isEnabled() ? "div" : "span") + ">"));
-        return page.resolveMacros(html.toString());
+        html.append(getHelpText());
+        html.append("</div></");
+        html.append(isEnabled() ? "div" : "span");
+        html.append(">");
+        return wp.resolveMacros(html.toString());
     }
 
     /**
-     * Compares to admin tools by name.<p>
+     * Compares two tools by name.<p>
      * 
-     * @param that the other object
+     * @param that the other tool
      * 
-     * @return <code>true</code> if the objects are equal
+     * @return <code>true</code> if the tools have the same name
      */
     public boolean equals(Object that) {
 
@@ -238,19 +243,19 @@ public class CmsTool implements I_CmsNamedObject {
     }
 
     /**
-     * Returns the necessary html code.<p>
+     * Returns the necessary html code for the tool subgroups.<p>
      * 
-     * @param page the jsp page to write the code to
+     * @param wp the jsp page to write the code to
      * 
      * @return html code
      */
-    public String groupHtml(CmsWorkplace page) {
+    public String groupHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
         Iterator itHtml = getToolGroups().iterator();
         while (itHtml.hasNext()) {
             CmsToolGroup group = (CmsToolGroup)itHtml.next();
-            html.append(CmsStringUtil.code(1, group.groupHtml(page)));
+            html.append(group.groupHtml(wp));
         }
         return html.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsGenericToolHandler.java,v $
- * Date   : $Date: 2005/03/14 13:10:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/14 13:11:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * This class parses a parameter to obtain all the required information.<p>
+ * This Tool Handler obtains all the info it need from a single argument.<p>
  * 
- * The formatting of this parameter should be a list of parameters given its name and value,
+ * The formatting of this argument should be a list of parameters given its name and value,
  * this is done separating each parameter from another with a pipe ("<code>|</code>") character,
  * for separating name from value use a colon ("<code>:</code>").<p>  
  * 
- * Used parameters are:<br>
+ * known parameters are:<br>
  * <ul>
  *  <li><code>name</code>: the name of the admin tool.</li>
  *  <li><code>iconpath</code>: the path to the icon of the admin tool.</li>
@@ -57,9 +57,9 @@ import java.util.Map;
  *  <li><code>installpoints</code>: a list of installation points for this admin tool.</li>
  * </ul><p>
  * 
- * The <code>name</code> and <code>helptext</code> can use macros, for i18n.
+ * The <code>name</code> and <code>helptext</code> can use macros, ie. for i18n.
  * 
- * For more information about installation points, see <code>{@link org.opencms.workplace.tools.CmsToolInstallPoint}</code>.<p>
+ * For more information about installation points, see <code>{@link CmsToolInstallPoint}</code>.<p>
  * 
  * An example for a full argument is:<p>
  * <code>name:Users|iconpath:/resources/icons/users.gif|helptext:This tool manages user accounts|installpoints:/@Principal Management#2,/groups@User Management#1|onlyadmin:true</code><p>
@@ -72,9 +72,9 @@ import java.util.Map;
  *  <li>in the groups tool "/groups", in group "User Management", at first position.</li>
  * </ul>
  * 
- * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.3 $
- * @since 6.0
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.4 $
+ * @since 5.7.3
  */
 public class CmsGenericToolHandler extends A_CmsToolHandler {
 
@@ -147,6 +147,11 @@ public class CmsGenericToolHandler extends A_CmsToolHandler {
         return ret;
     }
 
+    /**
+     * Parses the installPoint parameter.<p>
+     * 
+     * @param installPoints the installPoint parameter
+     */
     private void parseInstallPoints(String installPoints) {
 
         Iterator itIPoints = CmsStringUtil.splitAsList(installPoints, C_INSTALLPOINT_SEPARATOR).iterator();
