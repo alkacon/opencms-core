@@ -1,0 +1,10 @@
+<c:set var="linkTarget">
+	<cms:contentshow element="NewWin" />
+</c:set>
+<c:set var="desc">
+	<cms:contentshow element="Description" />
+</c:set>
+<c:set var="href">
+	<cms:contentshow element="Href" />
+</c:set>
+<fmt:message key="editor.label.ExternalLink.Link" />:&nbsp;<%= cms.getAnchor("href", "desc", "linkTarget") %>

@@ -29,62 +29,130 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
 
-<h1><cms:contentshow element="Title" /></h1>
-<h3><cms:contentshow element="Subtitle" /></h3>
-
+<table border="0">
+<tr><td colspan="2">
+<h1><cms:contentcheck ifexists="SuperTitle"><span style="font-size: 0.7em;"><cms:contentshow element="SuperTitle" /></span><br></cms:contentcheck><cms:contentshow element="Title" /></h1>
+<cms:contentcheck ifexists="SubTitle"><p><span style="font-weight: bold;"><cms:contentshow element="SubTitle" /></span></p></cms:contentcheck>
 
 <%-- begin short description --%>
-<p><b>
-<cms:contentshow element="ShortDescription" />
-</b></p>
+<b><cms:contentshow element="ShortDescription" /></b>
+<hr noshade="noshade" size="1">
 <%-- end short description --%>
+</td></tr>
 
 <%-- begin date --%>
+<cms:contentcheck ifexists="EventDates/EventDate">
 <c:set var="dateString">
-	<cms:contentshow element="EventDate" />
+	<cms:contentshow element="EventDates/EventDate" />
 </c:set>
 <%
 	cms.setDate("dateString");
 %>
-<p><fmt:message key="eventarticle.eventdate" />: <fmt:formatDate value="${date}" /></p>
+<tr><td class="nowrap"><fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="both" /></td></tr>
+</cms:contentcheck>
 <%-- end date --%>
 
-
-<%-- begin event number --%>
-<cms:contentcheck ifexists="Number">
-<p><fmt:message key="editor.label.EventArticle.Number" />:&nbsp;<cms:contentshow element="Number" /></p>
+<%-- begin additional dates --%>
+<cms:contentcheck ifexistsone="EventDates/AdditionalDate">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventDate.AdditionalDate" />:&nbsp;</td><td><cms:contentloop element="EventDates/AdditionalDate"><%--
+--%><c:set var="dateString"><%--
+	--%><cms:contentshow  /><%--
+--%></c:set><%
+	cms.setDate("dateString");
+%><c:if test="${next == 'true'}">, </c:if><fmt:formatDate value="${date}" dateStyle="long" type="both" /><c:set var="next" value="true" /><%--
+--%></cms:contentloop></td></tr>
 </cms:contentcheck>
-<%-- end event number --%>
+<%-- end additional dates --%>
 
-
-<%-- begin long description --%>
-<p>
-<cms:contentshow element="LongDescription" />
-</p>
-<%-- end long description --%>
-
+<%-- begin date remark --%>
+<cms:contentcheck ifexists="EventDates/DateRemark">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventDate.DateRemark" />:&nbsp;</td><td><cms:contentshow element="EventDates/DateRemark" /></td></tr>
+</cms:contentcheck>
+<%-- end date remark --%>
 
 <%-- begin "end of registration" --%>
-<cms:contentcheck ifexists="RegistrationClose">
-
+<cms:contentcheck ifexists="EventDates/RegistrationClose">
 <c:set var="dateString">
-	<cms:contentshow element="RegistrationClose" />
+	<cms:contentshow element="EventDates/RegistrationClose" />
 </c:set><%
-
 	cms.setDate("dateString");
-
 %>
-
-<p><fmt:message key="editor.label.EventArticle.RegistrationClose" />:&nbsp;<fmt:formatDate value="${date}" /></p>
+<tr><td class="nowrap"><fmt:message key="editor.label.EventDate.RegistrationClose" />:&nbsp;</td><td><fmt:formatDate value="${date}" dateStyle="long" /></td></tr>
 </cms:contentcheck>
 <%-- end "end of registration" --%>
 
+<%-- begin event number --%>
+<cms:contentcheck ifexists="Number">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventArticle.Number" />:&nbsp;</td><td><cms:contentshow element="Number" /></td></tr>
+</cms:contentcheck>
+<%-- end event number --%>
 
-<%-- begin event organizers --%>
-<cms:contentcheck ifexistsone="EventOrganizer">
-<p><fmt:message key="detail.label.EventArticle.EventOrganizer" />:</p>
-<ul>
-<cms:contentloop element="EventOrganizer">
+<%-- begin event referent --%>
+<cms:contentcheck ifexists="Referent">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventArticle.Referent" />:&nbsp;</td><td><cms:contentshow element="Referent" /></td></tr>
+</cms:contentcheck>
+<%-- end event referent --%>
+
+<%-- begin long description --%>
+<tr><td colspan="2">
+<hr noshade="noshade" size="1">
+<cms:contentshow element="LongDescription" />
+<hr noshade="noshade" size="1">
+</td></tr>
+<%-- end long description --%>
+
+<cms:contentcheck ifexistsone="Note, TargetGroup, ParticipantPrecondition">
+
+<%-- begin note --%>
+<cms:contentcheck ifexists="Note">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventArticle.Note" />:&nbsp;</td><td>
+<cms:contentshow element="Note" />
+</td></tr>
+</cms:contentcheck>
+<%-- end note --%>
+
+<%-- begin target group --%>
+<cms:contentcheck ifexists="TargetGroup">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventArticle.TargetGroup" />:&nbsp;</td><td>
+<cms:contentshow element="TargetGroup" />
+</td></tr>
+</cms:contentcheck>
+<%-- end target group --%>
+
+<%-- begin precondition --%>
+<cms:contentcheck ifexists="ParticipantPrecondition">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventArticle.ParticipantPrecondition" />:&nbsp;</td><td>
+<cms:contentshow element="ParticipantPrecondition" />
+</td></tr>
+</cms:contentcheck>
+<%-- end precondition --%>
+
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="EventCharges">
+<cms:contentloop element="EventCharges">
+
+<%-- begin price --%>
+<cms:contentcheck ifexists="Price">
+<tr><td class="nowrap"><fmt:message key="editor.label.EventCharge.Price" />:&nbsp;</td><td>
+<cms:contentshow element="Price" />
+</td></tr>
+</cms:contentcheck>
+<%-- end price --%>
+
+<%-- begin price remark --%>
+<cms:contentcheck ifexists="Remark">
+<tr><td>&nbsp;</td><td>
+<cms:contentshow element="Remark" />
+</td></tr>
+</cms:contentcheck>
+<%-- end price remark --%>
+
+<%-- begin price link --%>
+<cms:contentcheck ifexists="InternalLink">
+<tr><td>&nbsp;</td><td>
+<cms:contentloop element="InternalLink">
 <c:set var="linkTarget">
 	<cms:contentshow element="NewWin" />
 </c:set>
@@ -94,61 +162,81 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <c:set var="href">
 	<cms:contentshow element="Href" />
 </c:set>
-<li><%= cms.getAnchor("href", "desc", "linkTarget") %></li>
+<%= cms.getAnchor("href", "desc", "linkTarget") %>
 </cms:contentloop>
-</ul>
+</td></tr>
 </cms:contentcheck>
-<%-- end event organizers --%>
+<%-- end price link --%>
 
+</cms:contentloop>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
 
-<%-- begin event locations --%>
-<cms:contentcheck ifexistsone="EventLocation">
-<p><fmt:message key="detail.label.EventArticle.EventLocation" />:</p>
-<ul>
+<%-- begin event location --%>
+<cms:contentcheck ifexists="EventLocation">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventAddress.EventLocation" />:&nbsp;</td><td>
 <cms:contentloop element="EventLocation">
-<c:set var="linkTarget">
-	<cms:contentshow element="NewWin" />
-</c:set>
-<c:set var="desc">
-	<cms:contentshow element="Description" />
-</c:set>
-<c:set var="href">
-	<cms:contentshow element="Href" />
-</c:set>
-<li><%= cms.getAnchor("href", "desc", "linkTarget") %></li>
+<%@ include file="../elements/detail-element-eventaddress.txt" %>
 </cms:contentloop>
-</ul>
+</td></tr>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
 </cms:contentcheck>
-<%-- end event locations --%>
+<%-- end event location --%>
 
-
-<%-- begin event directors --%>
-<cms:contentcheck ifexistsone="EventDirector">
-<p><fmt:message key="detail.label.EventArticle.EventDirector" />:</p>
+<%-- begin event director --%>
+<cms:contentcheck ifexists="EventDirector">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventAddress.EventDirector" />:&nbsp;</td><td>
 <cms:contentloop element="EventDirector">
-<p>
-<cms:contentshow element="Company" /><br>
-<cms:contentloop element="Name"><cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Street"><cms:contentshow /><br></cms:contentloop>
-<cms:contentcheck ifexists="ZIP"><cms:contentshow element="ZIP" /></cms:contentcheck>
-<cms:contentcheck ifexists="City"><cms:contentshow element="City" /></cms:contentcheck>
-<cms:contentcheck ifexistsone="ZIP,City"><br></cms:contentcheck>
-<cms:contentloop element="Country"><cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Phone">Phone: <cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Fax">Fax: <cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Email">Email: <a href="mailto:<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
-<cms:contentloop element="ContactData"><cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Link"><a href="<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
-</p>
+<%@ include file="../elements/detail-element-eventaddress.txt" %>
+</cms:contentloop>
+</td></tr>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+<%-- end event director --%>
+
+<%-- begin event organization --%>
+<cms:contentcheck ifexists="EventOrganization">
+<cms:contentloop element="EventOrganization">
+
+<cms:contentcheck ifexistsone="Registration,Phone,Fax,Email,Link">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventOrganization.Registration" />:&nbsp;</td><td>
+<cms:contentcheck ifexists="Registration"><cms:contentshow element="Registration" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Phone"><fmt:message key="editor.label.EventOrganization.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Fax"><fmt:message key="editor.label.EventOrganization.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Email"><fmt:message key="editor.label.EventOrganization.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br></cms:contentcheck>
+<cms:contentcheck ifexists="Link">
+<cms:contentloop element="Link">
+<%@ include file="../elements/detail-element-eventlink.txt" %>
+</cms:contentloop>
+</td></tr>
+</cms:contentcheck>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<cms:contentcheck ifexistsone="Consulting,ConPhone,ConFax,ConEmail,ConLink">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventOrganization.Consulting" />:&nbsp;</td><td>
+<cms:contentcheck ifexists="Consulting"><cms:contentshow element="Consulting" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConPhone"><fmt:message key="editor.label.EventOrganization.ConPhone" />:&nbsp;<cms:contentshow element="ConPhone" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConFax"><fmt:message key="editor.label.EventOrganization.ConFax" />:&nbsp;<cms:contentshow element="ConFax" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConEmail"><fmt:message key="editor.label.EventOrganization.ConEmail" />:&nbsp;<a href="mailto:<cms:contentshow element="ConEmail" />"><cms:contentshow element="ConEmail" /></a><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConLink">
+<cms:contentloop element="ConLink">
+<%@ include file="../elements/detail-element-eventlink.txt" %>
+</cms:contentloop>
+</td></tr>
+</cms:contentcheck>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
 </cms:contentloop>
 </cms:contentcheck>
-<%-- end event directors --%>
+<%-- end event organization --%>
 
+<tr><td colspan="2">
 
 <%-- begin images --%>
 <%@ include file="../elements/detail-element-image.txt" %>
 <%-- end images --%>
-
 
 <%-- begin external links --%>
 <cms:contentcheck ifexistsone="ExternalLink">
@@ -157,8 +245,10 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </cms:contentcheck>
 <%-- end external links --%>
 
-</cms:contentload>
+</td></tr>
+</table>
 
+</cms:contentload>
 </div>
 
 <cms:include property="template" element="foot" /><%--

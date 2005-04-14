@@ -392,3 +392,7 @@ td.imprint { vertical-align: top; font-size: 9pt; }
 /* default styles for the online forms */
 input.onlineform, select.onlineform, textarea.onlineform { width: 300px; border: 1px solid <%= contentFont %>;  }
 textarea.onlineform { height: 80px; }
+
+/* default styles */
+.nowrap { white-space: nowrap; }
+.bold { font-weight: bold; }

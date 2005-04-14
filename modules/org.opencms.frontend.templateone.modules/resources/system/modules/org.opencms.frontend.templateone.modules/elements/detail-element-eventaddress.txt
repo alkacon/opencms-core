@@ -1,0 +1,45 @@
+<cms:contentcheck ifexists="Company">
+	<cms:contentshow element="Company" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Description">
+	<cms:contentshow element="Description" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="RoomOrDirection">
+	<cms:contentshow element="RoomOrDirection" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Street">
+	<cms:contentshow element="Street" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="ZIP">
+	<cms:contentshow element="ZIP" />
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="City">
+	<cms:contentshow element="City" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Country">
+	<cms:contentshow element="Country" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Phone">
+	<fmt:message key="editor.label.EventAddress.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Fax">
+	<fmt:message key="editor.label.EventAddress.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="Email">
+	<fmt:message key="editor.label.EventAddress.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br>
+</cms:contentcheck>
+
+<cms:contentcheck ifexists="ExternalLink">
+<cms:contentloop element="ExternalLink">
+<%@ include file="../elements/detail-element-eventlink.txt" %>
+</cms:contentloop>
+</cms:contentcheck>

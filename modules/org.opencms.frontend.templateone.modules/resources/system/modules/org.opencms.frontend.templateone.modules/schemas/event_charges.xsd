@@ -1,0 +1,29 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd"/>
+		
+	<xsd:element name="EventCharges" type="OpenCmsEventCharges"/>
+	
+	<xsd:complexType name="OpenCmsEventCharges">
+		<xsd:sequence>
+			<xsd:element name="EventCharge" type="OpenCmsEventCharge" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsEventCharge">
+		<xsd:sequence>
+			<xsd:element name="Price" type="OpenCmsString" />
+			<xsd:element name="Remark" type="OpenCmsString" minOccurs="0" />	
+			<xsd:element name="InternalLink" type="OpenCmsInternalLink" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>		
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

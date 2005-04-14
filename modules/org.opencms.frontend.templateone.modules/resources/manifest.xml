@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 2 Corrin</opencms_version>
-		<createdate>4/11/05 2:24 PM</createdate>
+		<createdate>4/14/05 11:24 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -140,7 +140,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 11 Apr 2005 11:36:18 GMT</datecreated>
+			<datecreated>Wed, 13 Apr 2005 07:32:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -253,7 +253,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:19:38 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Apr 2005 13:24:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -266,7 +266,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>bf2685cf-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 12:49:23 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Apr 2005 13:24:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:28:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -278,7 +278,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:19:38 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Apr 2005 13:24:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -350,7 +350,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/events/event_0001.html</destination>
 			<type>event</type>
 			<uuidresource>c8c1fd86-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 11:41:50 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Apr 2005 10:23:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 11 Apr 2005 13:22:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -358,7 +358,11 @@
 			<properties>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1106670480000]]></value>
+					<value><![CDATA[1124879400000]]></value>
+				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -555,6 +559,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventaddress.txt</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventaddress.txt</destination>
+			<type>plain</type>
+			<uuidresource>af200746-acb5-11d9-bf5c-15f264efb4e6</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 07:39:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Apr 2005 07:20:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventlink.txt</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-eventlink.txt</destination>
+			<type>plain</type>
+			<uuidresource>36b3729b-acb8-11d9-bf5c-15f264efb4e6</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 07:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Apr 2005 07:38:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-externallink.txt</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-externallink.txt</destination>
 			<type>plain</type>
@@ -598,7 +628,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>192353ad-a512-11d9-bbc8-916a98ed6cbb</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:15:35 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Apr 2005 14:04:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Apr 2005 14:01:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -628,7 +658,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_right.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d273f7c2-a5b1-11d9-9d1d-916a98ed6cbb</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:12:33 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Apr 2005 14:04:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 09:05:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -833,7 +863,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</destination>
 			<type>jsp</type>
 			<uuidresource>3c595376-5331-11d9-b7cd-5777c119166f</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:14:07 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Apr 2005 09:29:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Dec 2004 09:18:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -988,7 +1018,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</destination>
 			<type>plain</type>
 			<uuidresource>fe568d16-5295-11d9-a418-5777c119166f</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 12:47:43 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Apr 2005 15:10:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Dec 2004 14:46:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -996,7 +1026,79 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[XSD for articles]]></value>
+					<value><![CDATA[XSD for events]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_address.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_address.xsd</destination>
+			<type>plain</type>
+			<uuidresource>b60b9914-abf9-11d9-af0f-15f264efb4e6</uuidresource>
+			<datelastmodified>Wed, 13 Apr 2005 12:51:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 08:54:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for event address]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_charges.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_charges.xsd</destination>
+			<type>plain</type>
+			<uuidresource>7ce076d4-abf6-11d9-af0f-15f264efb4e6</uuidresource>
+			<datelastmodified>Wed, 13 Apr 2005 15:09:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 08:31:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for event charges]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_dates.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_dates.xsd</destination>
+			<type>plain</type>
+			<uuidresource>4b5161be-abf2-11d9-af0f-15f264efb4e6</uuidresource>
+			<datelastmodified>Wed, 13 Apr 2005 09:37:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 08:01:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for event dates]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd</destination>
+			<type>plain</type>
+			<uuidresource>4e0d084a-abfe-11d9-af0f-15f264efb4e6</uuidresource>
+			<datelastmodified>Wed, 13 Apr 2005 09:32:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 09:27:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for event organization]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1180,7 +1282,7 @@
 			<destination>xmlmodules/events/event_0001.html</destination>
 			<type>event</type>
 			<uuidresource>687cb2d5-5436-11d9-a9f0-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 11:41:50 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Apr 2005 10:23:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 16:27:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1188,11 +1290,15 @@
 			<properties>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1106670480000]]></value>
+					<value><![CDATA[1124879400000]]></value>
 				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[This is the title of event 0001]]></value>
+				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[3]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1321,24 +1427,6 @@
 				<property>
 					<name>style_news_articles</name>
 					<value><![CDATA[/xmlmodules/news/]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>xmlmodules/news/index.html</source>
-			<destination>xmlmodules/news/index.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>734ff15f-501e-11d9-b83c-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 20 Dec 2004 08:32:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 17 Dec 2004 11:26:09 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -46,7 +46,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <b><cms:contentshow element="Title" /></b><br>
 <cms:contentshow element="ShortDescription" /><br>
 <c:set var="dateString">
-	<cms:contentshow element="EventDate" />
+	<cms:contentshow element="EventDates/EventDate" />
 </c:set>
 <%
 	cms.setDate("dateString");
