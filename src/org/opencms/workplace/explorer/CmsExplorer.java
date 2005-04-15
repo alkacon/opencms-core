@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/03/17 09:05:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/15 10:34:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -67,7 +68,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -178,6 +179,11 @@ public class CmsExplorer extends CmsWorkplace {
 
         content.append("top.showlinks=");
         content.append(showVfsLinks);
+        content.append(";\n");
+        
+        // the resource id of plain resources
+        content.append("top.plainresid=");
+        content.append(CmsResourceTypePlain.getStaticTypeId());
         content.append(";\n");
 
         // the autolock setting

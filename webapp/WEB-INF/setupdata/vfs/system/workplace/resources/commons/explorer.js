@@ -43,6 +43,8 @@ var showKon=true;
 
 var autolock = false;
 
+var plainresid = -1;
+
 var win;
 
 var buttonType = 1;
@@ -423,7 +425,6 @@ function printList(wo) {
 		var vi_icon;
 		var vi_text;
 		var noaccess = false;
-		var plainresid = 3;
 
 		if (typeof vi.resource[vi.liste[i].type] == 'undefined') {
 			// type does not exist, the user has no access to this resource type
@@ -487,7 +488,7 @@ function printList(wo) {
 
 		if (vi.liste[i].isInsideCurrentProject) {
 			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
-			// the resource is in the current project, so display the lock and project state
+			// the ressource is in the current project, so display the lock and project state
 
 			var lockIcon;
 
