@@ -325,7 +325,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Link Gallery Overview]]></value>
+					<value><![CDATA[Table Gallery Overview]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -751,7 +751,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Link Gallery Overview]]></value>
+					<value><![CDATA[Table Gallery Overview]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -12,20 +12,16 @@ case CmsNewResourceUpload.ACTION_CANCEL:
 	wp.actionCloseDialog();
 break;
 
-
 case CmsNewResourceUpload.ACTION_OK:
 //////////////////// ACTION: ok button pressed
 	wp.actionSelect();
 break;
-
 
 case CmsNewResourceUpload.ACTION_SUBMITFORM2:
 //////////////////// ACTION: upload name specified and form submitted
 	wp.actionUpdateFile();
 	wp.actionEditProperties(); // redirects only if the edit properties option was checked
 break;
-
-
 
 case CmsNewResourceUpload.ACTION_SUBMITFORM:
 //////////////////// ACTION: upload name specified and form submitted
@@ -40,7 +36,6 @@ case CmsNewResourceUpload.ACTION_SUBMITFORM:
 		// in case of an upload error, interrupt here
 		break;
 	}
-
 
 case CmsNewResourceUpload.ACTION_NEWFORM2:
 //////////////////// ACTION: show the form to specify the resource name and the edit properties checkbox
@@ -170,32 +165,58 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.dialogBlockStart(wp.key("label.conversionsettings")) %>
+<%= wp.dialogBlockStart(wp.key("label.selectfile")) %>
+
+<table border="0" class="maxwidth">
+
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.file") %></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" size="60" class="maxwidth" onchange="checkValue();"></td>
+</tr> 
+
+</table>
+
+<%= wp.dialogBlockEnd() %>
+
+
+<%= wp.dialogBlockStart(wp.key("label.pastecsvcontent")) %>
 
 <table border="0" width="100%">
 
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" size="60" class="maxwidth" onchange="checkValue();"></td>
-</tr> 
+<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.data") %></td>
+
+<td>
+<textarea name="csvcontent" cols="48" rows="10" onchange="checkValue();">
+</textarea>
+</td>
+</tr>
 
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.xsltfile") %></td>
-	<td class="maxwidth">
-          <%= wp.buildXsltSelect() %>
-        </td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.filename") %></td>
+	<td class="maxwidth"><input name="filename" type="textfield" value="" size="60" class="maxwidth"></td>
 </tr> 
+
+</table>
+
+<%= wp.dialogBlockEnd() %>
+
+<%= wp.dialogBlockStart(wp.key("label.conversionsettings")) %>
+
+<table border="0" width="100%">
+
+<%= wp.buildXsltSelect() %>
 
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.delimiter") %></td>
 	<td class="maxwidth">
           <select name="delimiter">
-            <option value=";" checked="checked">Semicolon (;)</option>
-            <option value=",">Comma (,)</option>
-            <option value="\n">Tab</option>
+            <option value=";" checked="checked"><%= wp.key("input.semicolon") %></option>
+            <option value=","><%= wp.key("input.comma") %></option>
+            <option value="tab"><%= wp.key("input.tab") %></option>
           </select>
         </td>
-</tr> 
+</tr>
 
 </table>
 
@@ -203,7 +224,7 @@ default:
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonsNextCancel("id=\"nextButton\" disabled=\"disabled\"", null) %>
+<%= wp.dialogButtonsNextCancel("id=\"nextButton\"", null) %>
 </form>
 <%= wp.dialogEnd() %>
 

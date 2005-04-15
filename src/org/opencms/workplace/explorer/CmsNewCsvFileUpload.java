@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Attic/CmsNewCsvFileUpload.java,v $
- * Date   : $Date: 2005/04/15 09:08:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/15 15:59:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -80,20 +79,23 @@ import org.w3c.dom.Document;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
 public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
-
-    /** The delimiter, the fields of the CVS are separated with. */
-    public static String FIELD_DELIMITER = ";";
 
     /** The XSLT File to transform the table with. */
     private String m_paramXsltFile;
 
     /** The delimiter to separate the CVS values. */
     private String m_paramDelimiter;
+
+    /** The pasted cvs content. */
+    private String m_paramCsvContent;
+
+    /** The filename. */
+    private String m_paramFileName;
     
     /** The delimiter to separate the text. */
     private static final char C_TEXT_DELIMITER = '"';
@@ -170,76 +172,88 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
         String errorMsgSuffix = "";
 
         try {
-            // get the file item from the multipart request
-            Iterator i = getMultiPartFileItems().iterator();
-            FileItem fi = null;
-            while (i.hasNext()) {
-                fi = (FileItem)i.next();
-                if (fi.getName() != null) {
-                    // found the file object, leave iteration
-                    break;
-                } else {
-                    // this is no file object, check next item
-                    continue;
-                }
-            }
-
-            if (fi != null) {
-                String fileName = fi.getName();
-                long size = fi.getSize();
-                long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
-                // check file size
-                if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
-                    // file size is larger than maximum allowed file size, throw an error
-                    errorMsgSuffix = "size";
-                    throw new CmsException("File size larger than maximum allowed upload size, currently set to "
-                        + (maxFileSizeBytes / 1024)
-                        + " kb");
-                }
-                byte[] content = fi.get();
-                fi.delete();
-
-                // single file upload
-                String newResname = getCms().getRequestContext().getFileTranslator().translateResource(
-                    CmsResource.getName(fileName.replace('\\', '/')));
-                newResname = CmsStringUtil.changeFileNameSuffixTo(newResname, "html");
-                setParamNewResourceName(newResname);
-                setParamResource(newResname);
-                setParamResource(computeFullResourceName());
-                //int resTypeId = CmsResourceTypePlain.getStaticTypeId();
-                int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-
-                String xmlContent = "";
-                CmsProperty styleProp = CmsProperty.getNullProperty();
-                try {
-                    xmlContent = convertCsvToXml(new InputStreamReader(new ByteArrayInputStream(content), "ISO-8859-1"));
-                } catch (UnsupportedEncodingException e) {
-                    // 
-                }
-                if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
-                    
-                    String m_xsltFilesPath = I_CmsWpConstants.C_VFS_PATH_MODULES + "de.bvi.internet.frontend/xslt/";
-                    xmlContent = applyXslTransformation(m_xsltFilesPath + getParamXsltFile(), xmlContent);
-                    styleProp = getCms().readPropertyObject(
-                        m_xsltFilesPath + getParamXsltFile(),
-                        I_CmsConstants.C_PROPERTY_STYLESHEET,
-                        true);
-                }
-                content = xmlContent.getBytes();
-
-                try {
-                    // create the resource
-                    getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
-                } catch (CmsException e) {
-                    // resource was present, overwrite it
-                    getCms().lockResource(getParamResource());
-                    getCms().replaceResource(getParamResource(), resTypeId, content, null);
-                }
-                // copy xslt stylesheet-property to the new resource
-                getCms().writePropertyObject(getParamResource(), styleProp);
+            byte[] content = null;
+            String fileName = "";
+            if (CmsStringUtil.isNotEmpty(getParamCsvContent())) {
+                fileName = getParamFileName();
+                content = getParamCsvContent().getBytes();
             } else {
-                throw new CmsException("Upload file not found");
+                // get the file item from the multipart request
+                Iterator i = getMultiPartFileItems().iterator();
+                FileItem fi = null;
+                while (i.hasNext()) {
+                    fi = (FileItem)i.next();
+                    if (fi.getName() != null) {
+                        // found the file object, leave iteration
+                        break;
+                    } else {
+                        // this is no file object, check next item
+                        continue;
+                    }
+                }
+
+                if (fi != null) {
+                    fileName = fi.getName();
+                    long size = fi.getSize();
+                    long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
+                    // check file size
+                    if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
+                        // file size is larger than maximum allowed file size, throw an error
+                        errorMsgSuffix = "size";
+                        throw new CmsException("File size larger than maximum allowed upload size, currently set to "
+                            + (maxFileSizeBytes / 1024)
+                            + " kb");
+                    }
+                    content = fi.get();
+                    fi.delete();
+                } else {
+                    throw new CmsException("Upload file not found");
+                }
             }
+
+            // single file upload
+            String newResname = getCms().getRequestContext().getFileTranslator().translateResource(
+                CmsResource.getName(fileName.replace('\\', '/')));
+            newResname = CmsStringUtil.changeFileNameSuffixTo(newResname, "html");
+            setParamNewResourceName(newResname);
+            setParamResource(newResname);
+            setParamResource(computeFullResourceName());
+            int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
+
+            String xmlContent = "";
+            CmsProperty styleProp = CmsProperty.getNullProperty();
+            if ("tab".equals(getParamDelimiter())) {
+                setParamDelimiter("\t");
+            }
+            try {
+                xmlContent = convertCsvToXml(
+                    new InputStreamReader(new ByteArrayInputStream(content), "ISO-8859-1"),
+                    getParamDelimiter());
+            } catch (Exception e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(e);
+                }
+            }
+            if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
+
+                xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
+                styleProp = getCms().readPropertyObject(
+                    getParamXsltFile(),
+                    I_CmsConstants.C_PROPERTY_STYLESHEET,
+                    true);
+            }
+            content = xmlContent.getBytes();
+
+            try {
+                // create the resource
+                getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
+            } catch (CmsException e) {
+                // resource was present, overwrite it
+                getCms().lockResource(getParamResource());
+                getCms().replaceResource(getParamResource(), resTypeId, content, null);
+            }
+            // copy xslt stylesheet-property to the new resource
+            getCms().writePropertyObject(getParamResource(), styleProp);
         } catch (CmsException e) {
             // error uploading file, show error dialog
             setAction(ACTION_SHOWERROR);
@@ -259,25 +273,21 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
      * 
      * @return a XML representation of the csv data
      * @param r the csv data to convert
+     * @param delimiter the delimiter to separate the values with
+     * @throws IOException if there is an IO problem
      */
-    public String convertCsvToXml(Reader r) {
+    public static String convertCsvToXml(Reader r, String delimiter) throws IOException {
 
         StringBuffer xml = new StringBuffer("<table>\n");
         String line;
         BufferedReader br = new BufferedReader(r);
-        try {
-            while ((line = br.readLine()) != null) {
-                xml.append("<tr>");
-                String[] words = CmsStringUtil.splitAsArray(line, getParamDelimiter());
-                for (int i = 0; i < words.length; i++) {
-                    xml.append("<td>").append(removeStringDelimiters(words[i])).append("</td>");
-                }
-                xml.append("</tr>\n");
+        while ((line = br.readLine()) != null) {
+            xml.append("<tr>");
+            String[] words = CmsStringUtil.splitAsArray(line, delimiter);
+            for (int i = 0; i < words.length; i++) {
+                xml.append("<td>").append(removeStringDelimiters(words[i])).append("</td>");
             }
-        } catch (IOException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
-            }
+            xml.append("</tr>\n");
         }
         return xml.append("</table>").toString();
     }
@@ -322,14 +332,21 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
      */
     public String buildXsltSelect() {
 
-        StringBuffer result = new StringBuffer("<select name=\"xsltfile\">\n<option value=\"\"></option>");
-        Iterator i = getXsltFiles().iterator();
-        String fileName;
+        StringBuffer result = new StringBuffer();
+        List xsltFiles = getXsltFiles();
+        Iterator i = xsltFiles.iterator();
+        if (xsltFiles.size() != 0) {
+            result.append("<tr><td style=\"white-space: nowrap;\" unselectable=\"on\">");
+            result.append(key("input.xsltfile"));
+            result.append("</td><td class=\"maxwidth\"><select name=\"xsltfile\">\n<option value=\"\">");
+            result.append(key("input.nostyle"));
+            result.append("</option>");
+        }
+
         CmsResource resource;
         CmsProperty titleProp = null;
         while (i.hasNext()) {
             resource = (CmsResource)i.next();
-            fileName = resource.getName();
 
             try {
                 titleProp = getCms().readPropertyObject(resource.getRootPath(), I_CmsConstants.C_PROPERTY_TITLE, false);
@@ -338,15 +355,19 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
                     OpenCms.getLog(this).error(e);
                 }
             }
-            result.append("<option value=\"").append(fileName).append("\">");
+            result.append("<option value=\"").append(resource.getRootPath()).append("\">");
             if (titleProp.isNullProperty()) {
-                result.append('[').append(fileName).append(']');
+                result.append('[').append(resource.getName()).append(']');
             } else {
                 result.append(titleProp.getValue());
             }
+
             result.append("</option>\n");
         }
-        return result.append("</select>").toString();
+        if (xsltFiles.size() != 0) {
+            result.append("</td></tr>\n</select>");
+        }
+        return result.toString();
     }
 
     /**
@@ -363,7 +384,7 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
             String moduleName = (String)moduleNames.next();
             String xsltDirPath = I_CmsWpConstants.C_VFS_PATH_MODULES + moduleName + "/xslt/";
             if (getCms().existsResource(xsltDirPath)) {
-                try {                
+                try {
                     xsltFiles.addAll(getCms().readResources(xsltDirPath, CmsResourceFilter.DEFAULT_FILES, true));
                 } catch (CmsException e) {
                     // error reading resources
@@ -372,9 +393,9 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
                     }
                 } catch (NullPointerException e) {
                     // ignore this exception    
-                }                    
-            }        
-        }       
+                }
+            }
+        }
 
         return xsltFiles;
     }
@@ -387,7 +408,7 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
      *                                                                                                                               
      * @return The key without delimiters.                                                                                           
      */
-    private String removeStringDelimiters(String key) {
+    private static String removeStringDelimiters(String key) {
 
         String k = key.trim();
         if (k.charAt(0) == C_TEXT_DELIMITER) {
@@ -397,5 +418,45 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
             k = k.substring(0, k.length() - 1);
         }
         return k;
+    }
+
+    /**
+     * Returns the pasted csv content.<p>
+     *
+     * @return the csv content
+     */
+    public String getParamCsvContent() {
+
+        return m_paramCsvContent;
+    }
+
+    /**
+     * Sets the pasted csv content.<p>
+     *
+     * @param csvContent the csv content to set
+     */
+    public void setParamCsvContent(String csvContent) {
+
+        m_paramCsvContent = csvContent;
+    }
+    
+    /**
+     * Returns the filename.<p>
+     *
+     * @return the filename
+     */
+    public String getParamFileName() {
+
+        return m_paramFileName;
+    }
+    
+    /**
+     * Sets the filename.<p>
+     *
+     * @param fileName the filename to set
+     */
+    public void setParamFileName(String fileName) {
+
+        m_paramFileName = fileName;
     }
 }
