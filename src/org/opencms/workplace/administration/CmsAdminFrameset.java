@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminFrameset.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/15 13:04:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAdminFrameset extends CmsToolDialog {
@@ -60,6 +60,7 @@ public class CmsAdminFrameset extends CmsToolDialog {
     /** Request parameter name for the "with menu" flag. */
     public static final String PARAM_MENU = "menu";
 
+    /** Request parameter value. */
     private String m_paramMenu;
 
     /**

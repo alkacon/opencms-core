@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/04/14 10:31:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/15 13:00:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,17 +37,17 @@ import org.opencms.main.CmsException;
  * Used to signal data access related issues, i.e. db or ldap access.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsDataAccessException extends CmsException {
 
     // the allowed type range for this exception is >=300 and <400    
 
-    /** general da exception. */
+    /** General data access exception. */
     public static final int C_DA_EXCEPTION = 300;
 
-    /** ldap exception. */
+    /** Ldap exception. */
     public static final int C_DA_LDAP_EXCEPTION = 302;
 
     /** Consistency check exception. */
@@ -59,9 +59,10 @@ public class CmsDataAccessException extends CmsException {
     /** Serialization exception. */
     public static final int C_DA_SERIALIZATION_EXCEPTION = 305;
 
-    /** sql exception. */
+    /** Sql exception. */
     public static final int C_DA_SQL_EXCEPTION = 301;
 
+    /** Error messages. */
     private static final String[] C_ERROR_MESSAGES = {
     /* 300 */"Data Access Exception",
     /* 301 */"SQL Exception",

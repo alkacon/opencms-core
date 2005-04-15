@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/04/14 13:40:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/15 13:04:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,18 @@ import java.util.List;
  * Container for menu items that generates the necesary html code.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsAdminMenuGroup implements I_CmsNamedObject {
 
+    /** Dhtml id, from name. */
     private final String m_id;
+
+    /** Name of the group. */
     private final String m_name;
 
+    /** Item container. */
     private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
 
     /**
@@ -154,6 +158,11 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
         return html.toString();
     }
 
+    /**
+     * Generates the last part of the html code.<p>
+     * 
+     * @return html code
+     */
     private String htmlEnd() {
 
         StringBuffer html = new StringBuffer(512);
@@ -167,6 +176,13 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
         return html.toString();
     }
 
+    /**
+     * Generates the first part of the html code.<p>
+     * 
+     * @param wp the workplace
+     * 
+     * @return html code
+     */
     private String htmlStart(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(1024);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObject.java,v $
- * Date   : $Date: 2005/04/14 11:47:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/15 13:02:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,15 @@ package org.opencms.util;
  * Wrapper for objects to become named.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsNamedObject implements I_CmsNamedObject {
 
+    /** Name of the object. */
     private final String m_name;
+
+    /** Associated object. */
     private final Object m_object;
 
     /**

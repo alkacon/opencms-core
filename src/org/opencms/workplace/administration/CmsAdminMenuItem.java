@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/15 13:04:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,17 +40,30 @@ import org.opencms.workplace.tools.CmsHtmlUtil;
  * required html code for a menu item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAdminMenuItem implements I_CmsNamedObject {
 
+    /** Enabled flag. */
     private boolean m_enabled;
+
+    /** Help text. */
     private final String m_helpText;
+
+    /** Path to the icon. */
     private final String m_iconPath;
+
+    /** Dhtml id, from name. */
     private final String m_id;
+
+    /** Link to follow when selected. */
     private final String m_link;
+
+    /** Display name of the item. */
     private final String m_name;
+
+    /** Target frame. */
     private final String m_target;
 
     /**

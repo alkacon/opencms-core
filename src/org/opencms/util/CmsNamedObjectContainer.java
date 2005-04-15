@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObjectContainer.java,v $
- * Date   : $Date: 2005/04/14 11:47:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/15 13:02:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
@@ -53,12 +53,15 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * @since 5.7.3
      */
     private class CmsNamedObjectElement {
 
+        /** Named object. */
         private final I_CmsNamedObject m_object;
+
+        /** Relative position. */
         private final float m_position;
 
         /**
@@ -96,9 +99,16 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
 
     }
 
+    /** List of objects. */
     private final List m_objectList = new ArrayList();
+
+    /** Map of objects onlz used if uniqueNames flag set. */
     private final Map m_objectsByName = new HashMap();
+
+    /** Flag for managing absolute and relative ordering. */
     private final boolean m_relativeOrdered;
+
+    /** Flag for managing uniqueness check. */
     private final boolean m_uniqueNames;
 
     /**
