@@ -34,7 +34,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
 
-<h1><cms:contentcheck ifexists="SuperTitle"><span style="font-size: 0.7em;"><cms:contentshow element="SuperTitle" /></span><br></cms:contentcheck><cms:contentshow element="Title" /></h1>
+<h1><cms:contentshow element="Title" /></h1>
 
 <%-- create a date object from date value --%>
 <c:set var="dateString">

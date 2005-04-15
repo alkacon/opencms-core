@@ -2,10 +2,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_address.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_charges.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_dates.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_extended.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
 		
@@ -19,26 +17,17 @@
 
 	<xsd:complexType name="OpenCmsEventArticle">
 		<xsd:sequence>
-			<xsd:element name="SuperTitle" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="SubTitle" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Number" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Referent" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="ShortDescription" type="OpenCmsString" />	
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />
-			<xsd:element name="Note" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="EventDates" type="OpenCmsEventDate" />
-			<xsd:element name="TargetGroup" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="ParticipantPrecondition" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="EventCharges" type="OpenCmsEventCharge" minOccurs="0" />
-			<xsd:element name="EventLocation" type="OpenCmsEventAddress" minOccurs="0" />
-			<xsd:element name="EventDirector" type="OpenCmsEventAddress" minOccurs="0" />
-			<xsd:element name="EventOrganization" type="OpenCmsEventOrganization" minOccurs="0" maxOccurs="5"/>
 			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
 			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="10"/>
 			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="Extended" type="OpenCmsEventExtended" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -54,6 +43,7 @@
 			</mappings>
 			<layouts>
 				<layout element="Priority" widget="SelectorWidget" />
+				<layout element="ShortDescription" widget="TextareaWidget" />
 			</layouts>
 			<validationrules/>
 			<defaults>

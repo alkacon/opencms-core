@@ -23,7 +23,10 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>		
+			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<layouts>
+				<layout element="Remark" widget="TextareaWidget" />
+			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

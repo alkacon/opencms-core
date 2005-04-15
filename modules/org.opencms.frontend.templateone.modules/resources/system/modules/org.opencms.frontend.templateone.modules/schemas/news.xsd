@@ -17,7 +17,6 @@
 
 	<xsd:complexType name="OpenCmsNewsArticle">
 		<xsd:sequence>
-			<xsd:element name="SuperTitle" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="SubTitle" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Author" type="OpenCmsString" />
@@ -49,6 +48,7 @@
 			</mappings>
 			<layouts>
 				<layout element="Priority" widget="SelectorWidget" />
+				<layout element="Teaser" widget="TextareaWidget" />
 			</layouts>
 			<validationrules/>
 			<defaults>

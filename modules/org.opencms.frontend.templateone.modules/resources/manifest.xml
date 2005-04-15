@@ -1086,6 +1086,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_extended.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_extended.xsd</destination>
+			<type>plain</type>
+			<uuidresource>0d1d72b6-acfc-11d9-a7de-15f264efb4e6</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 15:51:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Apr 2005 15:44:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for extended events]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_organization.xsd</destination>
 			<type>plain</type>

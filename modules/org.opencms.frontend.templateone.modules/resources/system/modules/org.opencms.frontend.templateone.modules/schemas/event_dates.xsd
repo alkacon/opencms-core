@@ -26,6 +26,9 @@
 			<mappings>
 				<mapping element="EventDate" mapto="property:collector.date" />
 			</mappings>
+			<layouts>
+				<layout element="DateRemark" widget="TextareaWidget" />
+			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
