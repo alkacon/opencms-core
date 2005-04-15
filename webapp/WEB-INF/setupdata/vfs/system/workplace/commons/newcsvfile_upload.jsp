@@ -7,26 +7,6 @@
 	
 switch (wp.getAction()) {
 
-case CmsNewResourceUpload.ACTION_APPLET:
-//////////////////// ACTION: use the upload applet
-	
-	wp.setParamAction(wp.DIALOG_SUBMITFORM2);
-
-%><%= wp.htmlStart("help.explorer.new.file") %>
-<%= wp.bodyStart("dialog") %>
-<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
-<tr><td>&nbsp;<br>&nbsp;</td></tr>
-<tr><td align="center" valign="middle">
-
-<%= wp.createAppletCode() %>
-
-</td></tr>
-</table>
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %>
-<%
-break;
-
 case CmsNewResourceUpload.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 	wp.actionCloseDialog();
@@ -136,7 +116,7 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 <%
 break;
 
-
+case CmsNewResourceUpload.ACTION_APPLET:
 case CmsNewResourceUpload.ACTION_NEWFORM:
 case CmsNewResourceUpload.ACTION_DEFAULT:
 default:
