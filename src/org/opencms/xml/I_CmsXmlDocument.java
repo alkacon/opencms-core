@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/15 22:47:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
@@ -69,9 +69,9 @@ public interface I_CmsXmlDocument {
     CmsXmlContentDefinition getContentDefinition();
 
     /**
-     * Returns the content converison parameter used for this XML document.<p>
+     * Returns the content conversion parameter used for this XML document.<p>
      * 
-     * @return the content converison parameter used for this XML document
+     * @return the content conversion parameter used for this XML document
      */
     String getConversion();
 
