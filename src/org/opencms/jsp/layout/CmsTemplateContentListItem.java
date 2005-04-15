@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/layout/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/04/15 15:21:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/15 15:55:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateContentListItem {
     
@@ -126,7 +126,9 @@ public class CmsTemplateContentListItem {
         for (int i=0; i<resTypes.size(); i++) {
             I_CmsResourceType type = (I_CmsResourceType)resTypes.get(i);
             if (type.isAdditionalModuleResourceType()) {
+                // only look for keys if the resource type is an additional one
                 for (int k=0; k< DISPLAYAREAS.length; k++) {
+                    // loop over the possible display areas
                     String area = DISPLAYAREAS[k];
                     String typeName = type.getTypeName();
                     StringBuffer keyPrefix = new StringBuffer(8);
