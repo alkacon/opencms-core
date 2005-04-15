@@ -107,7 +107,7 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDownloadGalleryWidget" alias="DownloadGalleryWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlGalleryWidget" alias="HtmlGalleryWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTableGalleryWidget" alias="HtmlTableGalleryWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTableGalleryWidget" alias="TableGalleryWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget" alias="TextareaWidget" />
 			</widgets>
 			<schematypes>

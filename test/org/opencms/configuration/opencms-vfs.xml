@@ -99,7 +99,10 @@
 						<copy-resource source="/system/index3.html" target="${resource.folder.path}" type="sibling" />
 					</copy-resources>
 					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
-				</type>					
+				</type>	
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsTableGallery</param>
+				</type>										
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>				
 			</resourcetypes>
 			<collectors>
@@ -139,6 +142,7 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget"/>
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlSelectorWidget" alias="SelectorWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget"/>
 			</widgets>

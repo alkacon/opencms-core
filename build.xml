@@ -247,6 +247,7 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
+            source="1.4"
             deprecation="on">
        	</javac>
 		
