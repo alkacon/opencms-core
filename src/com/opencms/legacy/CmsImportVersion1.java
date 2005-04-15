@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/04/15 15:46:12 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package com.opencms.legacy;
 
 import org.opencms.importexport.CmsCompatibleCheck;
@@ -40,21 +41,19 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
-import com.opencms.template.*;
+import com.opencms.template.CmsXmlTemplateLinkConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.xml.sax.InputSource;
 
 /**
@@ -75,17 +74,18 @@ import org.xml.sax.InputSource;
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsImportVersion1 extends CmsImportVersion2 {
-    
+
     /** The version number of this import implementation. */
     private static final int C_IMPORT_VERSION = 1;
 
     /** The path to the bodies in OpenCms 4.x. */
     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
-    
+
     /**
      * @see org.opencms.importexport.I_CmsImport#getVersion()
      */
     public int getVersion() {
+
         return CmsImportVersion1.C_IMPORT_VERSION;
     }
 
@@ -97,6 +97,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * @return the converted filecontent
      */
     private byte[] convertFile(String filename, byte[] byteContent) {
+
         byte[] returnValue = byteContent;
         if (!filename.startsWith("/")) {
             filename = "/" + filename;
@@ -112,13 +113,17 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             } catch (UnsupportedEncodingException e) {
                 // encoding not supported, we use the default and hope we are lucky
                 if (DEBUG > 0) {
-                    System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not supported, using default encoding.");
+                    System.err.println("["
+                        + this.getClass().getName()
+                        + ".convertFile()]: Encoding not supported, using default encoding.");
                 }
             }
         } else {
             // encoding not found, set encoding of xml files to default
             if (DEBUG > 0) {
-                System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
+                System.err.println("["
+                    + this.getClass().getName()
+                    + ".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
             }
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             fileContent = setEncoding(fileContent, encoding);
@@ -155,18 +160,19 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * @param fileName the name of the file 
      * @return String the modified filecontent
      */
+
     private String convertPageBody(String content, String fileName) {
-        
+
         String nodeName = null;
-        
+
         // variables needed for the creation of <template> elements
         boolean createTemplateTags = false;
         Hashtable templateElements = new Hashtable();
-        
+
         // first check if any contextpaths are in the content String
         boolean found = false;
         for (int i = 0; i < m_webAppNames.size(); i++) {
-            if (content.indexOf((String) m_webAppNames.get(i)) != -1) {
+            if (content.indexOf((String)m_webAppNames.get(i)) != -1) {
                 found = true;
             }
         }
@@ -174,73 +180,90 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
         if (content.indexOf("<edittemplate>") != -1 || content.indexOf("<EDITTEMPLATE>") != -1) {
             found = true;
         }
-        
+
         // only build document when some paths were found or <edittemplate> is missing!
         if (found) {
             InputStream in = new ByteArrayInputStream(content.getBytes());
             String editString, templateString;
             try {
                 // create DOM document
-                Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
-                
+                InputSource source = new InputSource(in);
+                Document doc = CmsXmlUtils.unmarshalHelper(source, null);
+
+                System.err.println("document: \n" + content);
                 // get all <edittemplate> nodes to check their content
                 nodeName = "edittemplate";
-                NodeList editNodes = contentXml.getElementsByTagName(nodeName.toLowerCase());
-                if (editNodes == null || editNodes.getLength() == 0) {
-                    editNodes = contentXml.getElementsByTagName(nodeName.toUpperCase());
-                }
-                
+                Element root = doc.getRootElement();
+                List editNodes = root.elements(nodeName.toLowerCase());
+                editNodes.addAll(root.elements(nodeName.toUpperCase()));
+                System.err.println("editNodes: " + editNodes.toString());
                 // no <edittemplate> tags present, create them!
-                if (editNodes.getLength() < 1) {
+                if (editNodes.size() < 1) {
                     if (DEBUG > 0) {
-                        System.err.println("[" + this.getClass().getName() + ".convertPageBody()]: No <edittemplate> found, creating it.");
+                        System.err.println("["
+                            + this.getClass().getName()
+                            + ".convertPageBody()]: No <edittemplate> found, creating it.");
                     }
-                    
+
                     createTemplateTags = true;
-                    
+
                     nodeName = "TEMPLATE";
-                    NodeList templateNodes = contentXml.getElementsByTagName(nodeName.toLowerCase());
-                    if (templateNodes == null || templateNodes.getLength() == 0) {
-                        templateNodes = contentXml.getElementsByTagName(nodeName.toUpperCase());
-                    }
-                    
+                    List templateNodes = root.elements(nodeName.toLowerCase());
+                    List attributes;
+                    templateNodes.addAll(root.elements(nodeName.toUpperCase()));
+                    System.err.println("templateNodes: " + templateNodes.toString());
+
                     // create an <edittemplate> tag for each <template> tag
-                    for (int i = 0; i < templateNodes.getLength(); i++) {
-                        
+                    Element templateTag;
+                    for (int i = 0; i < templateNodes.size(); i++) {
+
                         // get the CDATA content of the <template> tags
-                        editString = templateNodes.item(i).getFirstChild().getNodeValue();
+                        templateTag = (Element)templateNodes.get(i);
+                        System.err.println("templateTag: " + templateTag.toString());
+                        editString = templateTag.getText();
+                        System.err.println("editString: " + editNodes.toString());
+
                         templateString = editString;
-                        
+
                         // substitute the links in the <template> tag String
                         try {
-                            templateString = CmsXmlTemplateLinkConverter.convertFromImport(templateString, m_webappUrl, fileName);
+                            templateString = CmsXmlTemplateLinkConverter.convertFromImport(
+                                templateString,
+                                m_webappUrl,
+                                fileName);
+                            System.err.println("templateSring: " + templateString);
                         } catch (CmsException e) {
-                            throw new CmsException("[" + this.getClass().getName() + ".convertPageBody()] can't parse the content: ", e);
+                            throw new CmsException("["
+                                + this.getClass().getName()
+                                + ".convertPageBody()] can't parse the content: ", e);
                         }
-                        
+
                         // look for the "name" attribute of the <template> tag
-                        NamedNodeMap attrs = templateNodes.item(i).getAttributes();
+                        attributes = ((Element)templateNodes.get(i)).attributes();
+
                         String templateName = "";
-                        if (attrs.getLength() > 0) {
-                            templateName = attrs.item(0).getNodeValue();
+
+                        if (attributes.size() > 0) {
+                            templateName = ((Attribute)attributes.get(0)).getName();
                         }
-                        
+
                         // create the new <edittemplate> node
                         nodeName = "edittemplate";
-                        Element newNode = contentXml.createElement(nodeName.toLowerCase());
+                        Element newNode = DocumentHelper.createElement(nodeName.toLowerCase());
                         if (newNode == null) {
-                            newNode = contentXml.createElement(nodeName.toUpperCase());
+                            newNode = root.addElement(nodeName.toUpperCase());
                         }
-                        
-                        CDATASection newText = contentXml.createCDATASection(editString);
-                        newNode.appendChild(newText);
+                        newNode.addCDATA(editString);
                         // set the "name" attribute, if necessary
-                        attrs = newNode.getAttributes();
+                        attributes = newNode.attributes();
                         if (!templateName.equals("")) {
-                            newNode.setAttribute("name", templateName);
+                            newNode.addAttribute("name", templateName);
                         }
+                        System.err.println("newNode: " + newNode.toString());
+
                         // append the new edittemplate node to the document
-                        contentXml.getElementsByTagName("XMLTEMPLATE").item(0).appendChild(newNode);
+                        ((Element)root.elements("XMLTEMPLATE").get(0)).add(newNode);
+                        System.err.println("root(newnode): " + root.toString());
                         // store modified <template> node Strings in Hashtable
                         if (templateName.equals("")) {
                             templateName = "noNameKey";
@@ -248,31 +271,45 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                         templateElements.put(templateName, templateString);
                     }
                     // finally, delete old <TEMPLATE> tags from document
-                    while (templateNodes.getLength() > 0) {
-                        contentXml.getElementsByTagName("XMLTEMPLATE").item(0).removeChild(templateNodes.item(0));
+                    while (templateNodes.size() > 0) {
+                        ((Element)root.elements("XMLTEMPLATE").get(0)).remove((Element)templateNodes.get(0));
                     }
+                    System.err.println("root(after remove): " + root.toString());
+
                 }
                 // check the content of the <edittemplate> nodes
-                for (int i = 0; i < editNodes.getLength(); i++) {
-                    editString = editNodes.item(i).getFirstChild().getNodeValue();
+                Element editTemplate;
+                for (int i = 0; i < editNodes.size(); i++) {
+                    // editString = editNodes.item(i).getFirstChild().getNodeValue();
+                    editTemplate = (Element)editNodes.get(i);
+                    editString = editTemplate.getText();
+                    System.err.println("editString: " + editNodes.toString());
                     for (int k = 0; k < m_webAppNames.size(); k++) {
-                        editString = CmsStringUtil.substitute(editString, (String) m_webAppNames.get(k), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
+                        editString = CmsStringUtil.substitute(
+                            editString,
+                            (String)m_webAppNames.get(k),
+                            I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
+                        System.err.println("editString (mod): " + editNodes.toString());
                     }
-                    editNodes.item(i).getFirstChild().setNodeValue(editString);
+
+                    // There is a setText(String) but no corresponding setCDATA in dom4j.
+                    editTemplate.clearContent();
+                    editTemplate.addCDATA(editString);
+                    System.err.println("editNodes.get(i): " + editNodes.get(i).toString());
+
                 }
                 // convert XML document back to String
-                CmsXmlXercesParser parser = new CmsXmlXercesParser();
-                Writer out = new StringWriter();
-                parser.getXmlText(contentXml, out);
-                content = out.toString();
+
+                content = CmsXmlUtils.marshal(doc, OpenCms.getSystemInfo().getDefaultEncoding());
+                System.err.println("content: " + content.toString());
                 // rebuild the template tags in the document!
                 if (createTemplateTags) {
                     content = content.substring(0, content.lastIndexOf("</XMLTEMPLATE>"));
                     // get the keys
                     Enumeration en = templateElements.keys();
                     while (en.hasMoreElements()) {
-                        String key = (String) en.nextElement();
-                        String value = (String) templateElements.get(key);
+                        String key = (String)en.nextElement();
+                        String value = (String)templateElements.get(key);
                         // create the default template
                         if (key.equals("noNameKey")) {
                             content += "\n<TEMPLATE><![CDATA[" + value;
@@ -299,9 +336,14 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * @return modified content
      */
     private String scanFrameTemplate(String content) {
+
         // no Meta-Tag present, insert it!
         if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
-            content = CmsStringUtil.substitute(content, "</head>", "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
+            content = CmsStringUtil
+                .substitute(
+                    content,
+                    "</head>",
+                    "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
         } else {
             // Meta-Tag present
             if (content.toLowerCase().indexOf("charset=]]><method name=\"getencoding\"/>") == -1) {
@@ -313,8 +355,8 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             }
         }
         return content;
-    }        
-    
+    }
+
     /**
      * Performs all required pre-import steps.<p>
      * 
@@ -323,14 +365,21 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * 
      * @see org.opencms.importexport.CmsImportVersion2#convertContent(java.lang.String, java.lang.String, byte[], java.lang.String)
      */
-    protected byte[] convertContent(String source, String destination, byte[] content, String resType) {        
+    protected byte[] convertContent(String source, String destination, byte[] content, String resType) {
+
         // check and convert old import files    
         if (getVersion() < 2) {
             // convert content from pre 5.x must be activated
             if ("page".equals(resType) || ("plain".equals(resType)) || ("XMLTemplate".equals(resType))) {
                 if (DEBUG > 0) {
                     System.err.println("#########################");
-                    System.err.println("[" + this.getClass().getName() + ".convertContent()]: starting conversion of \"" + resType + "\" resource " + source + ".");
+                    System.err.println("["
+                        + this.getClass().getName()
+                        + ".convertContent()]: starting conversion of \""
+                        + resType
+                        + "\" resource "
+                        + source
+                        + ".");
                 }
                 // change the filecontent for encoding if necessary
                 content = convertFile(source, content);
@@ -343,8 +392,8 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                     m_report.print(m_report.key("report.must_set_to") + resType + " ", I_CmsReport.C_FORMAT_WARNING);
                 }
             }
-        } 
-        
+        }
+
         // drag the content also through the conversion method in the super class
         return super.convertContent(source, destination, content, resType);
     }
@@ -356,7 +405,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * @return a dom4j document
      * @throws CmsXmlException if something goes wrong
      */
-    public static org.dom4j.Document getXmlDocument(InputStream stream) throws CmsXmlException {
+    public static Document getXmlDocument(InputStream stream) throws CmsXmlException {
 
         return CmsXmlUtils.unmarshalHelper(new InputSource(stream), null);
     }
