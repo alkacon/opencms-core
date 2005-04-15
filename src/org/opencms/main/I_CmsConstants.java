@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/04/15 09:08:31 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/04/15 15:50:41 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public interface I_CmsConstants {
 
@@ -859,6 +859,9 @@ public interface I_CmsConstants {
     /** Property to boost certain search results. */
     String C_PROPERTY_SEARCH_PRIORITY = "search.priority";
 
+    /** Property to define a bean for search content extraction. */
+    String C_PROPERTY_SEARCH_EXTRACTIONCLASS = "search.extractionclass";
+    
     /** Property to sort search results in categories. */
     String C_PROPERTY_SEARCH_CATEGORY = "category";
     

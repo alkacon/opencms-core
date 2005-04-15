@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/04/15 15:51:08 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
-import org.opencms.search.extractors.I_CmsExtractionResult;
 
 import java.util.List;
 
@@ -43,11 +42,11 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.19 $ $Date: 2005/03/26 11:36:35 $
+ * @version $Revision: 1.20 $ $Date: 2005/04/15 15:51:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
-public interface I_CmsDocumentFactory {
+public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
 
     /** Contains the (optional) category of the document. */
     String DOC_CATEGORY = "category";
@@ -99,18 +98,6 @@ public interface I_CmsDocumentFactory {
 
     /** Value for "normal" search priority. */
     String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
-
-    /**
-     * Extractes the content of a given resource according to the resource file type.<p>
-     * 
-     * @param cms the cms object
-     * @param resource a cms resource
-     * @param language the requested language
-     * @return the extracted content of the resource
-     * @throws CmsException if somethin goes wrong
-     */
-    I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
-    throws CmsException;
 
     /**
      * Returns the document key for the search manager.<p>

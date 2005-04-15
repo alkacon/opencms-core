@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPlainText.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/15 15:51:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * Lucene document factory class to extract index data from a cms resource 
  * containing plain text data.<p>
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentPlainText extends A_CmsVfsDocument {
@@ -71,15 +71,32 @@ public class CmsDocumentPlainText extends A_CmsVfsDocument {
     throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
-        CmsFile file = readFile(cms, resource);
-
+        String result = null;
+        
         try {
             String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            CmsProperty encoding = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
-            String result = new String(
-                file.getContents(), 
-                encoding.getValue(OpenCms.getSystemInfo().getDefaultEncoding()));
-            return new CmsExtractionResult(result);
+            CmsProperty extractionClass = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_EXTRACTIONCLASS, true);            
+            if (extractionClass != CmsProperty.getNullProperty()) {
+                Object ext = Class.forName(extractionClass.getValue()).newInstance();
+                
+                if (ext instanceof I_CmsSearchExtractor) {
+                    
+                    I_CmsSearchExtractor extractor = (I_CmsSearchExtractor)ext;
+                    return extractor.extractContent(cms, indexResource, language);
+                } else {
+                    throw new CmsIndexException("Extracting text from resource "
+                        + resource.getRootPath()
+                        + " failed: "
+                        + "invalid extractionclass " + ext.getClass().getName());
+                }
+            } else {
+                CmsProperty encoding = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
+                CmsFile file = readFile(cms, resource);
+                result = new String(
+                    file.getContents(), 
+                    encoding.getValue(OpenCms.getSystemInfo().getDefaultEncoding()));
+                return new CmsExtractionResult(result);
+            }
         } catch (Exception e) {
             throw new CmsIndexException("Extracting text from resource "
                 + resource.getRootPath()

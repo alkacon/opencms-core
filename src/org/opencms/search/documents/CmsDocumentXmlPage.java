@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/15 15:51:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,11 @@ package org.opencms.search.documents;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
@@ -53,7 +55,7 @@ import java.util.Locale;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2005/03/31 10:32:12 $
+ * @version $Revision: 1.4 $ $Date: 2005/04/15 15:51:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentXmlPage extends A_CmsVfsDocument {
@@ -80,6 +82,8 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
         String result = null;
 
         try {
+            String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            
             CmsFile file = CmsFile.upgrade(resource, cms);
             String absolutePath = cms.getSitePath(file);
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
@@ -104,10 +108,25 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
             result = CmsHtmlExtractor.extractText(content.toString(), page.getEncoding());
 
+            CmsProperty extractionClass = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_EXTRACTIONCLASS, true);            
+            if (extractionClass != CmsProperty.getNullProperty()) {
+                Object ext = Class.forName(extractionClass.getValue()).newInstance();
+                
+                if (ext instanceof I_CmsSearchExtractor) {
+                    I_CmsSearchExtractor extra = (I_CmsSearchExtractor)ext;
+                    result = result + "\n" + extra.extractContent(cms, indexResource, language).getContent();
+                } else {
+                    throw new CmsIndexException("Extracting text from resource "
+                        + resource.getRootPath()
+                        + " failed: "
+                        + "invalid extractionclass " + ext.getClass().getName());
+                }
+            } 
+            
+            return new CmsExtractionResult(result);
+            
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed", exc);
         }
-
-        return new CmsExtractionResult(result);
     }
 }
