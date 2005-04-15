@@ -4050,6 +4050,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/newcsvfile.jsp</source>
+			<destination>system/workplace/commons/newcsvfile.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>5f30dbeb-ab24-11d9-a409-c958787aaa00</uuidresource>
+			<datelastmodified>Wed, 13 Apr 2005 09:09:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Apr 2005 07:27:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - New CSV File]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/newcsvfile_upload.jsp</source>
+			<destination>system/workplace/commons/newcsvfile_upload.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>4c2f3576-ab3c-11d9-a93e-c958787aaa00</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 10:36:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Apr 2005 10:19:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - New CSV file upload]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<source>system/workplace/commons/newresource_xmlcontent.jsp</source>
 			<destination>system/workplace/commons/newresource_xmlcontent.jsp</destination>
 			<type>jsp</type>
@@ -11260,6 +11312,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/tablegallery.gif</source>
+			<destination>system/workplace/resources/buttons/tablegallery.gif</destination>
+			<type>image</type>
+			<uuidresource>2cf16d6b-ac24-11d9-ab25-c958787aaa00</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 11:02:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 13:58:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<source>system/workplace/resources/buttons/image.gif</source>
 			<destination>system/workplace/resources/buttons/image.gif</destination>
 			<type>image</type>
@@ -12700,6 +12765,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/components/widgets/tablegallery.js</source>
+			<destination>system/workplace/resources/components/widgets/tablegallery.js</destination>
+			<type>plain</type>
+			<uuidresource>c08c2603-ad71-11d9-b7eb-c958787aaa00</uuidresource>
+			<datelastmodified>Fri, 15 Apr 2005 05:51:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Apr 2005 05:46:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open table gallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<destination>system/workplace/resources/editors</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 17 Aug 2004 12:34:57 CEST</datelastmodified>
@@ -13079,6 +13162,19 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tablegallery.gif</source>
+			<destination>system/workplace/resources/filetypes/tablegallery.gif</destination>
+			<type>image</type>
+			<uuidresource>1e6f052d-ac25-11d9-87f9-c958787aaa00</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 11:02:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 14:05:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/resources/filetypes/gallery.gif</source>
 			<destination>system/workplace/resources/filetypes/gallery.gif</destination>

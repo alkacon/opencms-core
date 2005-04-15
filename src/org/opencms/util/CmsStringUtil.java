@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/04/14 11:44:57 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/04/15 09:08:31 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -394,7 +394,7 @@ public final class CmsStringUtil {
 
         return (value != null) && (value.length() != 0);
     }
-    
+
     /**
      * Returns <code>true</code> if the provided String is neither <code>null</code>
      * nor contains only white spaces.<p> 
@@ -439,7 +439,7 @@ public final class CmsStringUtil {
         }
         return true;
     }
-    
+
     /**
      * Applies white space padding to the left of the given String.<p>
      * 
@@ -449,7 +449,7 @@ public final class CmsStringUtil {
      * @return the input padded to the left
      */
     public static String padLeft(String input, int size) {
-        
+
         return (new PrintfFormat("%" + size + "s")).sprintf(input);
     }
 
@@ -462,7 +462,7 @@ public final class CmsStringUtil {
      * @return the input padded to the right
      */
     public static String padRight(String input, int size) {
-        
+
         return (new PrintfFormat("%-" + size + "s")).sprintf(input);
     }
 
@@ -654,7 +654,7 @@ public final class CmsStringUtil {
         sb.append(content.substring(start, end));
         return sb.toString();
     }
-    
+
     /**
      * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
      * special variable so that the content also runs if the context path of the server changes.<p>
@@ -693,6 +693,24 @@ public final class CmsStringUtil {
             }
         }
         return content;
+    }
+
+    /**
+     * Changes the filename suffix. 
+     * 
+     * @param filename the filename to be changed
+     * @param suffix the new suffix of the file
+     * @return the filename with the replaced suffix
+     */
+    public static String changeFileNameSuffixTo(String filename, String suffix) {
+
+        int dotPos = filename.lastIndexOf('.');
+        if (dotPos != -1) {
+            return filename.substring(0, dotPos + 1) + suffix;
+        } else {
+            // the string has no suffix
+            return filename;
+        }
     }
 
     /**

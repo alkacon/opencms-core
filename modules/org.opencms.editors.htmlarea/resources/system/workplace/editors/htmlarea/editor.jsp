@@ -229,7 +229,12 @@ function buttonAction(para) {
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
-		break;			
+		break;		
+	case 18:
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;		
     }
 }
 
@@ -502,6 +507,7 @@ config.registerButton("imagegallery", "<%= wp.key("button.imagelist") %>", __edi
 config.registerButton("downloadgallery", "<%= wp.key("button.downloadlist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/downloadgallery.gif"), false, function(e) { buttonAction(15); });
 config.registerButton("linkgallery", "<%= wp.key("button.linklist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/linkgallery.gif"), false, function(e) { buttonAction(16); });
 config.registerButton("htmlgallery", "<%= wp.key("button.htmllist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/htmlgallery.gif"), false, function(e) { buttonAction(17); });
+config.registerButton("tablegallery", "<%= wp.key("button.tablelist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/tablegallery.gif"), false, function(e) { buttonAction(18); });
 
 
 <%
@@ -547,6 +553,9 @@ if (options.showElement("gallery.image", displayOptions) || options.showElement(
 	}
 	if (options.showElement("gallery.html", displayOptions)) {
 		insertButtons.append(", \"htmlgallery\"");
+	}	
+	if (options.showElement("gallery.html", displayOptions)) {
+		insertButtons.append(", \"tablegallery\"");
 	}	
 }
 

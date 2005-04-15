@@ -864,6 +864,19 @@ The version of HtmlArea is 3.0 RC1.</p>
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/tablegallery.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/tablegallery.gif</destination>
+			<type>image</type>
+			<uuidresource>7705eca5-ac23-11d9-ab25-c958787aaa00</uuidresource>
+			<datelastmodified>Wed, 13 Apr 2005 13:53:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 13:53:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<source>system/workplace/resources/editors/htmlarea/images/opencms/imagegallery.gif</source>
 			<destination>system/workplace/resources/editors/htmlarea/images/opencms/imagegallery.gif</destination>
 			<type>image</type>

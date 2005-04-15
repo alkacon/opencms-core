@@ -22,17 +22,18 @@
 		<dateinstalled/>
 		<dependencies/>
 		<exportpoints/>
-		<resources>
-			<resource uri="/system/workplace/admin/galleryoverview/"/>
-			<resource uri="/system/workplace/administration/galleryoverview/"/>
-			<resource uri="/system/workplace/resources/admin/ic_linkgallery.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_imagegallery.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_htmlgallery_in.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_htmlgallery.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_downloadgallery_in.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_downloadgallery.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_galleryoverview.gif"/>
-		</resources>
+            <resources>
+                <resource uri="/system/workplace/admin/galleryoverview/"/>
+                <resource uri="/system/workplace/administration/galleryoverview/"/>
+                <resource uri="/system/workplace/resources/admin/ic_downloadgallery.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_downloadgallery_in.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_galleryoverview.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_htmlgallery.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_htmlgallery_in.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_imagegallery.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_linkgallery.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_tablegallery.gif"/>
+            </resources>
 		<parameters/>
 	</module>
 	<files>
@@ -256,6 +257,79 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/admin/galleryoverview/tablegallery</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 14 Apr 2005 12:08:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Apr 2005 12:03:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.admin.galleryoverview.groups.tablegallery}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.admin.tablegallery.description}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/system/workplace/resources/admin/ic_tablegallery.gif]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.icon.tablegallery}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Table Gallery]]></value>
+				</property>
+				<property>
+					<name>internal</name>
+					<value><![CDATA[5]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/galleryoverview/tablegallery/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 12:03:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link Gallery Overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>	
 		<file>
 			<destination>system/workplace/admin/galleryoverview/imagegallery</destination>
 			<type>folder</type>
@@ -634,6 +708,55 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/administration/galleryoverview/tablegallery</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 15 Apr 2005 08:37:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Apr 2005 08:37:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[50]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.tablegallery]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[admin/ic_tablegallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/tablegallery/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+			<datelastmodified>Fri, 15 Apr 2005 08:34:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link Gallery Overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -707,6 +830,19 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_tablegallery.gif</source>
+			<destination>system/workplace/resources/admin/ic_tablegallery.gif</destination>
+			<type>image</type>
+			<uuidresource>c8c15b64-acea-11d9-b6ff-c958787aaa00</uuidresource>
+			<datelastmodified>Thu, 14 Apr 2005 13:40:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Apr 2005 13:40:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/resources/admin/ic_htmlgallery_in.gif</source>
 			<destination>system/workplace/resources/admin/ic_htmlgallery_in.gif</destination>

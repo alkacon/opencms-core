@@ -70,7 +70,10 @@
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
-				</type>						
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsTableGallery</param>
+				</type>
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>					
 			</resourcetypes>
 			<collectors>
@@ -104,7 +107,7 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDownloadGalleryWidget" alias="DownloadGalleryWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlGalleryWidget" alias="HtmlGalleryWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget" alias="TextareaWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTableGalleryWidget" alias="HtmlTableGalleryWidget" />
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
