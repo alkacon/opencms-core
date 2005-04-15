@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/04/07 14:09:57 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/04/15 15:21:24 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.frontend.templateone.modules.CmsTemplateContentListItem;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.jsp.layout.CmsTemplateContentListItem;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -168,8 +168,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
     /** Name of the property key to set the start folder for navigation and search results. */
     public static final String C_PROPERTY_STARTFOLDER = "style_main_startfolder";
 
-    /** Proprty value "none" for overriding certain properties. */
-    public static final String C_PROPERTY_VALUE_NONE = "none";
+    /** Property value "none" for overriding certain properties. */
+    public static final String C_PROPERTY_VALUE_NONE = CmsTemplateContentListItem.PROPERTY_VALUE_NONE;
     
     /** Resource type name for the microsite folders specifying a configurable subsite. */
     public static final String C_RESOURCE_TYPE_MICROSITE_NAME = "microsite";
@@ -179,6 +179,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
     
     /** The current layout to parse. */
     private String m_layout;
+    
+    /** The default values for building lists of XMLContents. */
+    private Map m_listDefaults;
     
     /** Stores the localized resource Strings. */
     private CmsMessages m_messages;
@@ -742,7 +745,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         List contents = new ArrayList();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configFile) && !C_PROPERTY_VALUE_NONE.equals(configFile)) {
             // get the content list(s) for the center area
-            contents = getContentListItems(configFile, CmsTemplateContentListItem.C_DISPLAYAREA_CENTER);
+            contents = getContentListItems(configFile, CmsTemplateContentListItem.DISPLAYAREA_CENTER);
         }
         // determine if list can show page links
         int size = contents.size();
@@ -812,7 +815,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         String configFile = (String)getProperties().get(C_PROPERTY_LAYOUT_RIGHT);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configFile) && !C_PROPERTY_VALUE_NONE.equals(configFile)) {
-            List contents = getContentListItems(configFile, CmsTemplateContentListItem.C_DISPLAYAREA_RIGHT);
+            List contents = getContentListItems(configFile, CmsTemplateContentListItem.DISPLAYAREA_RIGHT);
             int size = contents.size();          
             for (int i=0; i<size; i++) {
                 CmsTemplateContentListItem item = (CmsTemplateContentListItem)contents.get(i);
@@ -1016,14 +1019,13 @@ public class CmsTemplateBean extends CmsJspActionElement {
     private List getContentListItems(String configFile, String displayArea) {
 
         List result = new ArrayList();
-        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(getRequestContext().getLocale());
         // read all properties of configuration file
         Map properties = properties(configFile);
         int i = 1;
         boolean cont = true;
         do {
             // create a list item
-            CmsTemplateContentListItem item = CmsTemplateContentListItem.newInstance(messages, properties, getStartFolder(), displayArea, i);
+            CmsTemplateContentListItem item = CmsTemplateContentListItem.newInstance(getListDefaults(), properties, getStartFolder(), displayArea, i);
             if (item == null) {
                 // no item created, stop loop
                 cont = false;
@@ -1034,6 +1036,20 @@ public class CmsTemplateBean extends CmsJspActionElement {
             }
         } while (cont);
         return result;
+    }
+    
+    /**
+     * Gets the default list configuration values from the workplace messages.<p>
+     * 
+     * @return the default list configuration values from the workplace messages
+     */
+    private Map getListDefaults() {
+
+        if (m_listDefaults == null) {
+            CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(getRequestContext().getLocale());
+            m_listDefaults = CmsTemplateContentListItem.getDefaultValuesFromMessages(messages);
+        }
+        return m_listDefaults;
     }
 
     /**

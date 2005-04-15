@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/04/06 16:00:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/15 15:21:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.frontend.templateone.modules.CmsTemplateContentListItem;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.jsp.layout.CmsTemplateContentListItem;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -297,9 +297,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_SIDE_URI, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_SIDE_URI, editable));                        
         
         // build center layout selector
-        result.append(buildPropertySelectbox(CmsTemplateContentListItem.C_DISPLAYAREA_CENTER, CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER, editable));
+        result.append(buildPropertySelectbox(CmsTemplateContentListItem.DISPLAYAREA_CENTER, CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER, editable));
         // build right layout selector
-        result.append(buildPropertySelectbox(CmsTemplateContentListItem.C_DISPLAYAREA_RIGHT, CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, editable));
+        result.append(buildPropertySelectbox(CmsTemplateContentListItem.DISPLAYAREA_RIGHT, CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, editable));
         
         // build configuration path search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_CONFIGPATH, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_CONFIGPATH, editable));
@@ -795,7 +795,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         List result = new ArrayList();
         String configFolder;
-        if (listType.equals(CmsTemplateContentListItem.C_DISPLAYAREA_CENTER)) {
+        if (listType.equals(CmsTemplateContentListItem.DISPLAYAREA_CENTER)) {
             configFolder = C_VFS_PATH_CONFIGFILES_CENTER;
         } else {
             configFolder = C_VFS_PATH_CONFIGFILES_RIGHT;

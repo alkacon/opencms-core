@@ -1530,7 +1530,7 @@
 				</property>
 				<property>
 					<name>layout.1.type</name>
-					<value><![CDATA[events]]></value>
+					<value><![CDATA[event]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1556,7 +1556,7 @@
 				</property>
 				<property>
 					<name>layout.1.type</name>
-					<value><![CDATA[faqs]]></value>
+					<value><![CDATA[faq]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1582,7 +1582,7 @@
 				</property>
 				<property>
 					<name>layout.1.type</name>
-					<value><![CDATA[jobs]]></value>
+					<value><![CDATA[job]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1645,7 +1645,7 @@
 				</property>
 				<property>
 					<name>layout.1.type</name>
-					<value><![CDATA[events]]></value>
+					<value><![CDATA[event]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1667,7 +1667,7 @@
 				</property>
 				<property>
 					<name>layout.2.type</name>
-					<value><![CDATA[events]]></value>
+					<value><![CDATA[event]]></value>
 				</property>
 				<property>
 					<name>layout.1.count</name>
