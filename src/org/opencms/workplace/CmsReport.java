@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/03/03 15:44:57 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/15 22:48:36 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.10
  */
@@ -378,14 +378,16 @@ public class CmsReport extends CmsDialog {
      */
     public void setParamThread(String value) {
 
-        try {
-            m_paramThread = new CmsUUID(value);
-        } catch (Exception e) {
-            // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+        m_paramThread = CmsUUID.getNullUUID();
+        if (value != null) {
+            try {
+                m_paramThread = new CmsUUID(value);
+            } catch (Exception e) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Unable to create a report Thread with ID " + value, e);
+                }
             }
-            m_paramThread = CmsUUID.getNullUUID();
         }
     }
 

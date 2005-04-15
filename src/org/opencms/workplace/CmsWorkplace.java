@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/04/10 21:00:47 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2005/04/15 22:48:36 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  * 
  * @since 5.1
  */
@@ -1099,7 +1099,7 @@ public abstract class CmsWorkplace {
                 // get the parameter value from the request
                 value = request.getParameter(name);
             }
-            if ("".equals(value)) {
+            if (CmsStringUtil.isEmpty(value)) {
                 value = null;
             }
             value = fillParamValuesDecode(name, value);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/15 22:48:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 
 package org.opencms.search.extractors;
+
+import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -139,6 +141,11 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     protected String removeControlChars(String content) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(content)) {
+            // to avoid later null pointer exceptions an empty String is returned
+            return "";
+        }
+        
         char[] chars = content.toCharArray();
         StringBuffer result = new StringBuffer(chars.length);
         boolean wasUnwanted = false;
