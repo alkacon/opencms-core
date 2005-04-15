@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/04/04 13:17:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/04/15 15:51:39 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.26 $ $Date: 2005/04/04 13:17:48 $
+ * @version $Revision: 1.27 $ $Date: 2005/04/15 15:51:39 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -393,7 +393,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public String getSearchParameters() {
 
-        if (m_searchParameters == null) {
+        // if (m_searchParameters == null) {
             StringBuffer params = new StringBuffer(128);
             params.append("?action=search&query=");
             String query = CmsStringUtil.substitute(m_query, "+", "%2B");
@@ -405,20 +405,54 @@ public class CmsSearch implements Serializable, Cloneable {
             params.append(this.getDisplayPages());
             params.append("&index=");
             params.append(CmsEncoder.encode(m_indexName));
-            params.append("&searchRoot=");
+
+            if (m_sortOrder != SORT_DEFAULT) {
+                params.append("&sort=");
+                // TODO: find a better way to name sort
+                if (m_sortOrder == CmsSearch.SORT_TITLE) {
+                    params.append("title");
+                } else if (m_sortOrder == CmsSearch.SORT_DATE_CREATED) {
+                    params.append("date-created");
+                } else if (m_sortOrder == CmsSearch.SORT_DATE_LASTMODIFIED) {
+                    params.append("date-lastmodified");
+                }
+            }
+            
+            if (m_categories != null) {
+                params.append("&category=");
+                for (int c = 0; c < m_categories.length; c++) {
+                    if (c > 0) {
+                        params.append(",");
+                    }
+                    params.append(m_categories[c]);
+                }
+            }
+            
+            if (m_searchRoots != null) {
+                params.append("&searchRoot=");
+                for (int c = 0; c < m_searchRoots.length; c++) {
+                    if (c > 0) {
+                        params.append(",");
+                    }
+                    params.append(CmsEncoder.encode(m_searchRoots[c]));
+                }
+            }
             
             // TODO: Better move this whole method into class "CmsSearchParameters"
             int todo = 0;
             // TODO: handle the multiple search roots (could be easy, just use multiple parameters?)
             // TODO: handle the categories
             // TODO: handle the search fields
+            // params.append("&searchRoot=");
+            // params.append(CmsEncoder.encode(m_searchRoots[0]));
             
-            params.append(CmsEncoder.encode(m_searchRoots[0]));
-            m_searchParameters = params.toString();
+            return params.toString();
+            // cw: cannot store searchParameters any longer since resultRestrictions changes query
+            // m_searchParameters = params.toString();
+            // return m_searchParameters;
+        /* } else {
             return m_searchParameters;
-        } else {
-            return m_searchParameters;
-        }
+        } */
     }
 
     /**
@@ -702,6 +736,10 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public void setQuery(String query) {
 
+        // do not replace +/- 
+        query = CmsStringUtil.substitute(query, "+", "%2B");
+        query = CmsStringUtil.substitute(query, "-", "%2D");
+        
         m_query = CmsEncoder.decode(query, OpenCms.getSystemInfo().getDefaultEncoding());
         resetLastResult();
     }
@@ -741,7 +779,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public void setSearchRoot(String searchRoot) {
 
-        setSearchRoots(new String[] {searchRoot});
+        setSearchRoots(CmsStringUtil.splitAsArray(searchRoot,","));
     }
 
     /**
