@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/04/14 11:49:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/15 22:56:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,24 +132,19 @@ public final class CmsFileUtil {
      * current Thread.<p>
      * 
      * The argument has to denote a resource within the Classloaders 
-     * scope. A java.net.URLClassloader implementation for example would 
+     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would 
      * try to match a given path name to some resource under it's URL 
-     * entries. <p>
+     * entries.<p>
      * 
      * As the result is internally obtained as an URL it is reduced to 
-     * a file path by the call to {@link java.net.URL#getFile()}. Therefore 
-     * the returned String will start with a '/' (no problem for java.io). <p>
+     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore 
+     * the returned String will start with a '/' (no problem for java.io).<p>
      * 
-     * This implementation will only work for local resources ("file://..."). 
-     * A result might be returned for a remote location (found for a remote URL). 
-     * But the returned path information would be useless without the protocol and 
-     * host part. <p>
+     * @param fileName the filename to return the path from the Classloader for
      * 
-     * @param fileName the filename
-     * 
-     * @return The absolute path name for the given relative 
+     * @return the absolute path name for the given relative 
      *   path name if it was found by the context Classloader of the 
-     *   current Thread.
+     *   current Thread
      * 
      * @see Thread#getContextClassLoader()
      */
