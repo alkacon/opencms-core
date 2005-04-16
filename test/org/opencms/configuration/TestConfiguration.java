@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/04/13 10:20:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/16 06:05:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,12 @@
 
 package org.opencms.configuration;
 
-import org.opencms.file.CmsResource;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
 import java.io.FileInputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
