@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/03/02 14:59:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -809,7 +809,7 @@ public abstract class CmsEditor extends CmsDialog {
         // reading of file contents failed, show error dialog
         setAction(ACTION_SHOW_ERRORMESSAGE);
         if (exception != null) {
-            setParamErrorstack(exception.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(exception));
         } else {
             setParamErrorstack(null);
         }

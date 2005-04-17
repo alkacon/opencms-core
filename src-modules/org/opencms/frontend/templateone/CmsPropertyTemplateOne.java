@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/04/15 15:21:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -183,7 +183,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }    
         } catch (CmsException e) {
             // Cms error defining property, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         } catch (Exception e) {

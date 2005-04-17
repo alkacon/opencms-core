@@ -25,6 +25,7 @@
 				<name>Test job name</name>
 				<class>org.opencms.scheduler.TestScheduledJob</class>
 				<reuseinstance>false</reuseinstance>
+				<active>true</active>
 				<cronexpression><![CDATA[0/2 * * * * ?]]></cronexpression>
 				<context>
 					<user>Admin</user>
@@ -39,6 +40,22 @@
 					<param name="param1">value1</param>
 					<param name="param2">value2</param>
 				</parameters>
+			</job>		
+			<job>
+				<name>Another job name</name>
+				<class>org.opencms.scheduler.TestScheduledJob</class>
+				<reuseinstance>true</reuseinstance>
+				<active>false</active>
+				<cronexpression><![CDATA[0/10 * * * * ?]]></cronexpression>
+				<context>
+					<user>Admin</user>
+					<project>Offline</project>
+					<siteroot>/sites/default</siteroot>
+					<requesteduri>/index.html</requesteduri>
+					<locale>en</locale>
+					<encoding>UTF-8</encoding>
+					<remoteaddr>127.0.0.1</remoteaddr>
+				</context>
 			</job>			
 		</scheduler>			
 	   	<versionhistory enabled="true" count="10"/>

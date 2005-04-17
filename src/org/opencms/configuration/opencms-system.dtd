@@ -94,7 +94,7 @@
 
 <!ELEMENT scheduler (job*)>
 
-<!ELEMENT job (name?, class, reuseinstance?, cronexpression, context, parameters?)>
+<!ELEMENT job (name?, class, reuseinstance?, active?, cronexpression, context, parameters?)>
 
 <!--
 # The job name is optional and used for information purposes only (e.g. in the log file).
@@ -117,6 +117,16 @@
 # If the result is "true", the class instance will be re-used.
 -->
 <!ELEMENT reuseinstance (#PCDATA)>
+
+<!--
+# Optional configuration that controls if the job is active or not. If a job is not
+# active, it is still kept in the job list, but not executed. This is intended for 
+# jobs that are frequently but not always used.
+# 
+# The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
+# If the result is "true", the class instance will be re-used.
+-->
+<!ELEMENT active (#PCDATA)>
 
 <!--
 # The cron expression to use for the job schedule.

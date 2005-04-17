@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2005/03/17 10:31:10 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2005/04/17 18:07:17 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2005/03/17 10:31:10 $
+ * @version $Revision: 1.17 $ $Date: 2005/04/17 18:07:17 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -189,7 +189,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                 xmlTemplateDocument.setData("LINKVALUE", content);
                 templateSelector = "change";
             } catch (CmsException e){
-                error = e.getShortException();
+                error = e.getMessage();
             }
         }
 
@@ -267,7 +267,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
 
                     // now return to appropriate filelist
                 } catch (CmsException e){
-                    error = e.getShortException();
+                    error = e.getMessage();
                 }
 
                 if(checkurl && ("".equals(error.trim()))){

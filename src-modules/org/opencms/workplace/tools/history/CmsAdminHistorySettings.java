@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -167,7 +167,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
         } catch (CmsException e) {
             // error setting history values, show error dialog
             setParamMessage(key("error.message.historysettings"));
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }

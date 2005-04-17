@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2005/02/17 12:44:41 $
+ * @version $Revision: 1.12 $ $Date: 2005/04/17 18:07:17 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
@@ -81,20 +81,7 @@ public class CmsLockException extends CmsException {
     public CmsLockException(String message, int type) {
         super(message, type, null);
     }
-    
-    /**
-     * Returns the exception description message.<p>
-     *
-     * @return the exception description message
-     */
-    public String getMessage() {
-        if (m_message != null) {
-            return getClass().getName() + ": " + m_message;
-        } else {
-            return getClass().getName() + ": " + getErrorDescription(getType());
-        }
-    }
-    
+
     /**
      * Returns the description String for the provided CmsException type.<p>
      * 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2005/02/18 15:18:50 $
-* Version: $Revision: 1.145 $
+* Date   : $Date: 2005/04/17 18:07:16 $
+* Version: $Revision: 1.146 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.145 $ $Date: 2005/02/18 15:18:50 $
+ * @version $Revision: 1.146 $ $Date: 2005/04/17 18:07:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -671,7 +671,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             } catch (CmsException e){
                 // there was an exception while the file should be saved
                 // return to the editor and show the exception so the user can save the changes
-                saveerror = e.getShortException();
+                saveerror = e.getMessage();
                 if(content != null){
                     session.putValue(C_PARA_CONTENT, content);
                 }

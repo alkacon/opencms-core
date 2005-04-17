@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.scheduler.CmsScheduledJobInfo;
 
 import java.util.Locale;
 
@@ -45,17 +44,23 @@ import java.util.Locale;
  */
 public class CmsContextInfo {
 
+    /** Error message when changing a frozen configuration. */
+    private static final String C_MESSAGE_FROZEN = "Context configuration has been frozen and can not longer be changed!";
+
     /** The encoding to create the context with. */
     private String m_encoding;
 
     /** Indicates if the configuration if this context info can still be changed or not. */
     private boolean m_frozen;
-    
+
     /** The locale to create the context with. */
     private Locale m_locale;
 
     /** The locale name to create the context with. */
     private String m_localeName;
+
+    /** The project to create the context with. */
+    private CmsProject m_project;
 
     /** The user name to create the context with. */
     private String m_projectName;
@@ -69,14 +74,11 @@ public class CmsContextInfo {
     /** The site root to create the context with. */
     private String m_siteRoot;
 
-    /** The user name to create the context with. */
-    private String m_userName;
-    
     /** The user to create the context with. */
     private CmsUser m_user;
-    
-    /** The project to create the context with. */
-    private CmsProject m_project;
+
+    /** The user name to create the context with. */
+    private String m_userName;
 
     /**
      * Creates a new instance, initializing the variables with some reasonable default values.<p>
@@ -101,50 +103,6 @@ public class CmsContextInfo {
         setLocaleName(OpenCms.getLocaleManager().getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(I_CmsConstants.C_IP_LOCALHOST);
-    }
-
-    /**
-     * Creates a new instance, initializing the user name as provided and 
-     * all other vaiables with the same default values as in {@link #CmsContextInfo()}.<p>
-     * 
-     * @param userName the user name to create the context with
-     * 
-     * @see #CmsContextInfo()
-     */
-    public CmsContextInfo(String userName) {
-
-        this();
-        setUserName(userName);
-    }
-    
-    /**
-     * Creates a new instance with all context variables initialized.<p>
-     *
-     * @param userName the user name to create the context with
-     * @param projectName the project name to create the context with
-     * @param requestedUri the request URI to create the context with
-     * @param siteRoot the site root to create the context with
-     * @param localeName the locale name to create the context with
-     * @param encoding the encoding to create the context with
-     * @param remoteAddr the remote ip address to create the context with
-     */
-    public CmsContextInfo(
-        String userName,
-        String projectName,
-        String requestedUri,
-        String siteRoot,
-        String localeName,
-        String encoding,
-        String remoteAddr) {
-
-        super();
-        setUserName(userName);
-        setProjectName(projectName);
-        setRequestedUri(requestedUri);
-        setSiteRoot(siteRoot);
-        setLocaleName(localeName);
-        setEncoding(encoding);
-        setRemoteAddr(remoteAddr);
     }
 
     /**
@@ -177,8 +135,52 @@ public class CmsContextInfo {
         setLocale(locale);
         setEncoding(encoding);
         setRemoteAddr(remoteAddr);
-    }    
-    
+    }
+
+    /**
+     * Creates a new instance, initializing the user name as provided and 
+     * all other vaiables with the same default values as in {@link #CmsContextInfo()}.<p>
+     * 
+     * @param userName the user name to create the context with
+     * 
+     * @see #CmsContextInfo()
+     */
+    public CmsContextInfo(String userName) {
+
+        this();
+        setUserName(userName);
+    }
+
+    /**
+     * Creates a new instance with all context variables initialized.<p>
+     *
+     * @param userName the user name to create the context with
+     * @param projectName the project name to create the context with
+     * @param requestedUri the request URI to create the context with
+     * @param siteRoot the site root to create the context with
+     * @param localeName the locale name to create the context with
+     * @param encoding the encoding to create the context with
+     * @param remoteAddr the remote ip address to create the context with
+     */
+    public CmsContextInfo(
+        String userName,
+        String projectName,
+        String requestedUri,
+        String siteRoot,
+        String localeName,
+        String encoding,
+        String remoteAddr) {
+
+        super();
+        setUserName(userName);
+        setProjectName(projectName);
+        setRequestedUri(requestedUri);
+        setSiteRoot(siteRoot);
+        setLocaleName(localeName);
+        setEncoding(encoding);
+        setRemoteAddr(remoteAddr);
+    }
+
     /**
      * Finalizes (freezes) the configuration of this context information.<p>
      * 
@@ -200,7 +202,7 @@ public class CmsContextInfo {
 
         return m_encoding;
     }
-    
+
     /**
      * Returns the locale.<p>
      *
@@ -219,6 +221,22 @@ public class CmsContextInfo {
     public String getLocaleName() {
 
         return m_localeName;
+    }
+
+    /**
+     * Returns the project, or <code>null</code> if the project 
+     * has not been configured.<p>
+     * 
+     * If the project has not been configured, at last the 
+     * project name will be available.<p> 
+     * 
+     * @return the project
+     * 
+     * @see #getProjectName()
+     */
+    public CmsProject getProject() {
+
+        return m_project;
     }
 
     /**
@@ -264,6 +282,22 @@ public class CmsContextInfo {
     }
 
     /**
+     * Returns the user, or <code>null</code> if the user 
+     * has not been configured.<p>
+     * 
+     * If the user has not been configured, at last the 
+     * user name will be available.<p> 
+     * 
+     * @return the user
+     * 
+     * @see #getUserName()
+     */
+    public CmsUser getUser() {
+
+        return m_user;
+    }
+
+    /**
      * Returns the username.<p>
      *
      * @return the username
@@ -283,12 +317,12 @@ public class CmsContextInfo {
     public void setEncoding(String encoding) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_encoding = CmsEncoder.lookupEncoding(encoding, OpenCms.getSystemInfo().getDefaultEncoding());
     }
-    
+
     /**
      * Sets the locale.<p>
      *
@@ -302,9 +336,9 @@ public class CmsContextInfo {
     public void setLocale(Locale locale) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
-        
+
         m_locale = locale;
         m_localeName = m_locale.toString();
     }
@@ -322,7 +356,7 @@ public class CmsContextInfo {
     public void setLocaleName(String localeName) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_localeName = localeName;
@@ -337,7 +371,7 @@ public class CmsContextInfo {
     public void setProjectName(String projectName) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_projectName = projectName;
@@ -351,7 +385,7 @@ public class CmsContextInfo {
     public void setRemoteAddr(String remoteAddr) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_remoteAddr = remoteAddr;
@@ -365,7 +399,7 @@ public class CmsContextInfo {
     public void setRequestedUri(String requestedUri) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_requestedUri = requestedUri;
@@ -379,7 +413,7 @@ public class CmsContextInfo {
     public void setSiteRoot(String siteRoot) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_siteRoot = siteRoot;
@@ -393,42 +427,10 @@ public class CmsContextInfo {
     public void setUserName(String userName) {
 
         if (m_frozen) {
-            throw new RuntimeException(CmsScheduledJobInfo.C_MESSAGE_FROZEN);
+            throw new RuntimeException(C_MESSAGE_FROZEN);
         }
 
         m_userName = userName;
     }
-    
-    /**
-     * Returns the project, or <code>null</code> if the project 
-     * has not been configured.<p>
-     * 
-     * If the project has not been configured, at last the 
-     * project name will be available.<p> 
-     * 
-     * @return the project
-     * 
-     * @see #getProjectName()
-     */
-    public CmsProject getProject() {
 
-        return m_project;
-    }
-    
-    /**
-     * Returns the user, or <code>null</code> if the user 
-     * has not been configured.<p>
-     * 
-     * If the user has not been configured, at last the 
-     * user name will be available.<p> 
-     * 
-     * @return the user
-     * 
-     * @see #getUserName()
-     */
-    public CmsUser getUser() {
-
-        return m_user;
-    }
-    
 }

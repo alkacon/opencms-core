@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -277,14 +277,14 @@ public class CmsPreferences extends CmsTabDialog {
             } catch (CmsSecurityException e) {
                 // the specified username + old password do not match
                 setAction(ACTION_ERROR);
-                setParamErrorstack(e.getStackTraceAsString());
+                setParamErrorstack(CmsException.getStackTraceAsString(e));
                 setParamMessage(key("error.message.chpwd"));
                 setParamReasonSuggestion(key("error.reason.chpwd4") + "<br>\n" + key("error.suggestion.chpwd3") + "\n");
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);                
             } catch (CmsException e) {
                 // failed setting the new password, show error dialog
                 setAction(ACTION_ERROR);
-                setParamErrorstack(e.getStackTraceAsString());
+                setParamErrorstack(CmsException.getStackTraceAsString(e));
                 setParamMessage(key("error.message.chpwd"));
                 setParamReasonSuggestion(key("error.reason.chpwd2") + "<br>\n" + key("error.suggestion.chpwd2") + "\n");
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
@@ -293,7 +293,7 @@ public class CmsPreferences extends CmsTabDialog {
             // form wasn't filled out correctly, show error dialog
             CmsException e = new CmsException("The password values you entered are not valid.");
             setAction(ACTION_ERROR);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.chpwd"));
             setParamReasonSuggestion(key("error.reason.chpwd2") + "<br>\n" + key("error.suggestion.chpwd2") + "\n");
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);

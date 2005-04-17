@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -117,7 +117,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             }    
         } catch (CmsException e) {
             // Cms error defining property, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         } catch (Exception e) {
@@ -392,7 +392,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } catch (CmsException e) {
             // error reading file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             try {
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);

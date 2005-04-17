@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -301,7 +301,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
         } catch (CmsException e) {
             // error defining property, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.newprop"));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
@@ -330,7 +330,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             } catch (CmsException e) {
                 // error deleting the resource, show error dialog
                 getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                setParamErrorstack(e.getStackTraceAsString());
+                setParamErrorstack(CmsException.getStackTraceAsString(e));
                 setParamReasonSuggestion(getErrorSuggestionDefault());
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             }
@@ -352,7 +352,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }         
         } catch (CmsException e) {
             // error editing property, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         } 

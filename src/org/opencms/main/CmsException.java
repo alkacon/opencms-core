@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,11 @@
 
 package org.opencms.main;
 
-import java.io.*;
-import java.util.*;
+import org.opencms.i18n.CmsMessageContainer;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Locale;
 
 /**
  * Master exception type for all exceptions caused in OpenCms.<p>
@@ -41,9 +44,9 @@ import java.util.*;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
-public class CmsException extends Exception {
+public class CmsException extends Exception implements I_CmsThrowable {
 
     /** Error code for bad name exception. */
     public static final int C_BAD_NAME = 3;
@@ -51,68 +54,68 @@ public class CmsException extends Exception {
     /** Error code for ClassLoader errors. */
     public static final int C_CLASSLOADER_ERROR = 29;
 
-
     /**
      * This array provides descriptions for the error codes stored as
      * constants in the CmsExeption class.
      */
-    public static final String[] C_ERROR_DESCRIPTION =
-        {
-  /*  0 */  "Unknown exception",
-  /*  1 */  "Access denied",
-  /*  2 */  "(code 5: moved to CmsVfsResourceNotFoundException)",
-  /*  3 */  "Bad name",
-  /*  4 */  "(code 4: moved to and extended by CmsDataAccessException)",  
-  /*  5 */  "(code 5: moved to CmsVfsException-C_VFS_FOLDER_NOT_EMPTY)",         
-  /*  6 */  "Admin access required",
-  /*  7 */  "(code 7: moved to CmsSerializationException)", 
-  /*  8 */  "Unknown User Group",
-  /*  9 */  "Group not empty",
-  /* 10 */  "Unknown User",
-  /* 11 */  "No removal from Default Group",
-  /* 12 */  "(code 12: moved to CmsVfsException-C_VFS_RESOURCE_ALREADY_EXISTS)",
-  /* 13 */  "File not found exception",
-  /* 14 */  "Filesystem exception",
-  /* 15 */  "Internal use only",
-  /* 16 */  "Deprecated exception: File-property is mandatory",
-  /* 17 */  "Service unavailable",
-  /* 18 */  "Unknown XML datablock",
-  /* 19 */  "Corrupt internal structure",
-  /* 20 */  "Wrong XML content type",
-  /* 21 */  "XML parsing error",
-  /* 22 */  "Could not process OpenCms special XML tag",
-  /* 23 */  "Could not call user method",
-  /* 24 */  "Could not call process method",
-  /* 25 */  "XML tag missing",
-  /* 26 */  "Wrong XML template class",
-  /* 27 */  "No XML template class",
-  /* 28 */  "(code 28: moved to CmsLoaderException)",
-  /* 29 */  "OpenCms class loader error",
-  /* 30 */  "New password is too short",
-  /* 31 */  "(code 31: unused)",
-  /* 32 */  "(code 32: moved to CmsVfsException-C_VFS_RESOURCE_DELETED)",
-  /* 33 */  "DriverManager init error",
-  /* 34 */  "Registry error",
-  /* 35 */  "Security Manager initialization error",
-  /* 36 */  "(code 36: unused)",
-  /* 37 */  "Wrong scheme for http resource",
-  /* 38 */  "Wrong scheme for https resource",
-  /* 39 */  "Error in Flex cache",
-  /* 40 */  "Error in Flex loader",
-  /* 41 */  "Group already exists",
-  /* 42 */  "User already exists",
-  /* 43 */  "Import error",
-  /* 44 */  "Export error"
-        };
+    public static final String[] C_ERROR_DESCRIPTION = {
+    /*  0 */"Unknown exception",
+    /*  1 */"Access denied",
+    /*  2 */null, // moved to CmsVfsResourceNotFoundException
+    /*  3 */"Bad name",
+    /*  4 */null, // moved to and extended by CmsDataAccessException
+    /*  5 */null, // moved to CmsVfsException-C_VFS_FOLDER_NOT_EMPTY)
+    /*  6 */"Admin access required",
+    /*  7 */null, // moved to CmsSerializationException
+    /*  8 */"Unknown User Group",
+    /*  9 */"Group not empty",
+    /* 10 */"Unknown User",
+    /* 11 */"No removal from Default Group",
+    /* 12 */null, // moved to CmsVfsException-C_VFS_RESOURCE_ALREADY_EXISTS
+    /* 13 */"File not found exception",
+    /* 14 */"Filesystem exception",
+    /* 15 */"Internal use only",
+    /* 16 */"Deprecated exception: File-property is mandatory",
+    /* 17 */"Service unavailable",
+    /* 18 */"Unknown XML datablock",
+    /* 19 */"Corrupt internal structure",
+    /* 20 */"Wrong XML content type",
+    /* 21 */"XML parsing error",
+    /* 22 */"Could not process OpenCms special XML tag",
+    /* 23 */"Could not call user method",
+    /* 24 */"Could not call process method",
+    /* 25 */"XML tag missing",
+    /* 26 */"Wrong XML template class",
+    /* 27 */"No XML template class",
+    /* 28 */null, // moved to CmsLoaderException
+    /* 29 */"OpenCms class loader error",
+    /* 30 */"New password is too short",
+    /* 31 */null, // unused
+    /* 32 */null, // moved to CmsVfsException-C_VFS_RESOURCE_DELETED
+    /* 33 */"DriverManager init error",
+    /* 34 */"Registry error",
+    /* 35 */"Security Manager initialization error",
+    /* 36 */null, // unused
+    /* 37 */"Wrong scheme for http resource",
+    /* 38 */"Wrong scheme for https resource",
+    /* 39 */"Error in Flex cache",
+    /* 40 */"Error in Flex loader",
+    /* 41 */"Group already exists",
+    /* 42 */"User already exists",
+    /* 43 */"Import error",
+    /* 44 */"Export error"};
+
+    /** Error code for export issues. */
+    public static final int C_EXPORT_ERROR = 42;
 
     /** 
      * Error code for file exists exception.<p>
      * 
      * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */    
+     */
     public static final int C_FILE_EXISTS = 12;
 
-    /** Error code for file not found exception. */    
+    /** Error code for file not found exception. */
     public static final int C_FILE_NOT_FOUND = 13;
 
     /** Error code filesystem error. */
@@ -124,6 +127,9 @@ public class CmsException extends Exception {
     /** Error code for Flex loader. */
     public static final int C_FLEX_LOADER = 40;
 
+    /** Error code that a group to be created already exists. */
+    public static final int C_GROUP_ALREADY_EXISTS = 41;
+
     /** Error code for group not empty exception. */
     public static final int C_GROUP_NOT_EMPTY = 9;
 
@@ -133,19 +139,16 @@ public class CmsException extends Exception {
     /** Error code for HTTPS streaming error. */
     public static final int C_HTTPS_REQUEST_ERROR = 38;
 
+    /** Error code for import issues. */
+    public static final int C_IMPORT_ERROR = 41;
+
     /** Error code internal file. */
     public static final int C_INTERNAL_FILE = 15;
-    
-    /** Error code that a group to be created already exists. */
-    public static final int C_GROUP_ALREADY_EXISTS = 41;
-    
-    /** Error code that a user to be created already exists. */
-    public static final int C_USER_ALREADY_EXISTS = 42;    
 
     /** 
      * Error code for access denied exception for vfs resources.
      * @deprecated use a <code>{@link org.opencms.security.CmsSecurityException}</code> instead
-     */    
+     */
     public static final int C_NO_ACCESS = 1;
 
     /** Error code for no default group exception. */
@@ -164,7 +167,7 @@ public class CmsException extends Exception {
      * Error code for not empty exception.<p>
      * 
      * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */    
+     */
     public static final int C_NOT_EMPTY = 5;
 
     /** 
@@ -172,7 +175,7 @@ public class CmsException extends Exception {
      * 
      * @deprecated use a <code>{@link org.opencms.db.CmsObjectNotFoundException}</code> 
      *    or <code>{@link org.opencms.file.CmsVfsResourceNotFoundException}</code> instead
-     */    
+     */
     public static final int C_NOT_FOUND = 2;
 
     /** Error code for driver manager initialization errors. */
@@ -181,14 +184,11 @@ public class CmsException extends Exception {
     /** Error code for Registry exception. */
     public static final int C_REGISTRY_ERROR = 34;
 
-    /** Error code for security manager initialization error. */
-    public static final int C_SM_INIT_ERROR = 35;
-
     /** 
      * Error code for accessing a deleted resource.<p>
      * 
      * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */    
+     */
     public static final int C_RESOURCE_DELETED = 32;
 
     /** 
@@ -201,12 +201,15 @@ public class CmsException extends Exception {
     /** Error code service unavailable. */
     public static final int C_SERVICE_UNAVAILABLE = 17;
 
+    /** Error code for security manager initialization error. */
+    public static final int C_SM_INIT_ERROR = 35;
+
     /** 
      * Error code for sql exception.<p>
      * 
      * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
      *      or one of their subclasses instead
-     */    
+     */
     public static final int C_SQL_ERROR = 4;
 
     /** 
@@ -216,6 +219,9 @@ public class CmsException extends Exception {
      *      or one of their subclasses instead
      */
     public static final int C_UNKNOWN_EXCEPTION = 0;
+
+    /** Error code that a user to be created already exists. */
+    public static final int C_USER_ALREADY_EXISTS = 42;
 
     /** Error code for corrupt internal structure. */
     public static final int C_XML_CORRUPT_INTERNAL_STRUCTURE = 19;
@@ -247,102 +253,104 @@ public class CmsException extends Exception {
     /** Error code for wrong XML template class. */
     public static final int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
-    /** Error code for import issues. */
-    public static final int C_IMPORT_ERROR = 41;
-
-    /** Error code for export issues. */
-    public static final int C_EXPORT_ERROR = 42;
-
-    /** A string message describing the CmsEception. */
-    protected String m_message;
-
-    /** Stores a forwarded exception. */
-    protected Throwable m_rootCause;
+    /** The container for the localized message.  */
+    protected CmsMessageContainer m_message;
 
     /** Stores the error code of the CmsException. */
     protected int m_type;
 
-    /** Flag to set processing of a saved forwared root exception. */
-    protected boolean m_useRootCause;
-
     /**
-     * Constructs a simple CmsException.<p>
+     * Creates a simple CmsException.<p>
      */
     public CmsException() {
-        this("", 0, null, false);
+
+        super();
     }
 
     /**
-     * Constructs a CmsException with the provided error code, 
+     * Creates a new localized Exception.<p>
+     * 
+     * @param message the localized message container to use
+     */
+    public CmsException(CmsMessageContainer message) {
+
+        super(message.getKey());
+        m_message = message;
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param message the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsException(CmsMessageContainer message, Throwable cause) {
+
+        super(message.getKey(), cause);
+        m_message = message;
+    }
+
+    /**
+     * Creates a CmsException with the provided error code, 
      * the error codes used should be the constants from the CmsEception class or subclass.<p>
      *
      * @param type exception error code
      */
     public CmsException(int type) {
-        this("CmsException ID: " + type, type, null, false);
+
+        super();
+        m_type = type;
     }
 
     /**
-     * Constructs a CmsException with the provided error code and
+     * Creates a CmsException with the provided error code and
      * a given root cause.<p>
      * 
      * The error codes used should be the constants from the CmsEception class or subclass.<p>
      *
      * @param type exception error code
-     * @param rootCause root cause exception
+     * @param cause root cause exception
      */
-    public CmsException(int type, Throwable rootCause) {
-        this("CmsException ID: " + type, type, rootCause, false);
+    public CmsException(int type, Throwable cause) {
+
+        super(cause);
+        m_type = type;
     }
 
     /**
-     * Constructs a CmsException with the provided description message.<p>
+     * Creates a CmsException with the provided description message.<p>
      *
      * @param message the description message
      */
     public CmsException(String message) {
-        this(message, 0, null, false);
+
+        super(message);
     }
 
     /**
-     * Contructs a CmsException with the provided description message and error code.<p>
+     * Creates a CmsException with the provided description message and error code.<p>
      * 
      * @param message the description message
      * @param type exception error code
      */
     public CmsException(String message, int type) {
-        this(message, type, null, false);
+
+        super(message);
+        m_type = type;
     }
 
     /**
-     * Construtcs a CmsException with the provided description message, error code and 
+     * Creates a CmsException with the provided description message, error code and 
      * a given root cause.<p>
      *
      * @param message the description message
      * @param type exception error code
-     * @param rootCause root cause exception
+     * @param cause root cause exception
      */
-    public CmsException(String message, int type, Throwable rootCause) {
-        this(message, type, rootCause, false);
-    }
+    public CmsException(String message, int type, Throwable cause) {
 
-    /**
-     * Construtcs a CmsException with the provided description message, error code and 
-     * a given root cause, 
-     * the further processing of the exception can be controlled 
-     * with the <code>useRoot</code> parameter.
-     *
-     * @param message the description message
-     * @param type exception error code
-     * @param rootCause root cause exception
-     * @param useRoot if true, use root case for exception display  
-     */
-    public CmsException(String message, int type, Throwable rootCause, boolean useRoot) {
-        super(CmsException.class.getName() + ": " + message);
-        this.m_message = message;
-        this.m_type = type;
-        this.m_rootCause = rootCause;
-        this.m_useRootCause = useRoot;
+        super(message, cause);
+        m_type = type;
     }
 
     /**
@@ -350,131 +358,75 @@ public class CmsException extends Exception {
      * a given root cause.<p>
      *
      * @param message the description message
-     * @param rootCause root cause exception
+     * @param cause root cause exception
      */
-    public CmsException(String message, Throwable rootCause) {
-        this(message, 0, rootCause, false);
+    public CmsException(String message, Throwable cause) {
+
+        super(message, cause);
     }
-    
+
     /**
-     * Returns the description String for the provided CmsException type, subclasses of 
-     * CmsException should overwrite this method for the types they define.<p>
+     * Returns the stack trace (including the message) of an exception as a String.<p>
      * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
+     * If the exception is a CmsException, 
+     * also writes the root cause to the String.<p>
+     * 
+     * @param e the exception to get the stack trace from
+     * @return the stack trace of an exception as a String
      */
-    protected String getErrorDescription(int type) {
-        if (CmsException.C_ERROR_DESCRIPTION.length >= type) {
-            return CmsException.C_ERROR_DESCRIPTION[type];
-        } else {
-            return this.getClass().getName();
-        }
+    public static String getStackTraceAsString(Throwable e) {
+
+        StringWriter stringWriter = new StringWriter();
+        e.printStackTrace(new PrintWriter(stringWriter));
+        return stringWriter.toString();
     }
 
     /**
-     * Get the root cause Exception which was provided
-     * when this exception was thrown.<p>
-     *
-     * @return the root cause Exception
+     * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage()
      */
-    public Exception getException() {
-        if (m_useRootCause) {
-            return null;
+    public String getLocalizedMessage() {
+
+        if (m_message == null) {
+            return super.getLocalizedMessage();
         }
-        try {
-            return (Exception)getRootCause();
-        } catch (ClassCastException e) {
-            return null;
-        }
+        return m_message.key();
     }
 
     /**
-     * Returns the exception description message.<p>
-     *
-     * @return the exception description message
+     * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage(Locale)
+     */
+    public String getLocalizedMessage(Locale locale) {
+
+        return m_message.key(locale);
+    }
+
+    /**
+     * @see java.lang.Throwable#getMessage()
      */
     public String getMessage() {
-        return (m_message != null) ? getClass().getName() + ": " + m_message : getClass().getName();
-    }
 
-    /**
-     * Returns the description message.<p>
-     * 
-     * @return the description message
-     */
-    public String getShortMessage() {
-        return m_message; 
-    }
-    
-    /**
-     * Get the root cause Throwable which was provided
-     * when this exception was thrown.<p>
-     *
-     * @return the root cause Throwable
-     */
-    public Throwable getRootCause() {
-        return m_rootCause;
-    }
-
-    /**
-     * Returns a short String describing this exception.<p>
-     *
-     * @return a short String describing this exception
-     */
-    public String getShortException() {
-        return getMessage() + " [Code " + getType() + " - " + getErrorDescription(getType()) + "]";
-    }
-
-    /**
-     * Return a string with the stacktrace for this exception
-     * and for all encapsulated exceptions.<p>
-     *
-     * @return java.lang.String
-     */
-    public String getStackTraceAsString() {
-        java.io.StringWriter sw = new java.io.StringWriter();
-        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
-
-        if (m_useRootCause && (m_rootCause != null)) {
-            // use stack trace of root cause
-            m_rootCause.printStackTrace(pw);
-        } else {
-            // use stack trace of this eception and add the root case 
-            super.printStackTrace(pw);
-
-            // if there are any encapsulated exceptions, write them also.
-            if (m_rootCause != null) {
-                StringWriter _sw = new StringWriter();
-                PrintWriter _pw = new PrintWriter(_sw);
-                _pw.println("-----------");
-                _pw.println("Root cause:");
-                m_rootCause.printStackTrace(_pw);
-                _pw.close();
-                try {
-                    _sw.close();
-                } catch (Exception exc) {
-
-                    // ignore the exception
-                }
-                StringTokenizer st = new StringTokenizer(_sw.toString(), "\n");
-                while (st.hasMoreElements()) {
-                    String s = ">" + (String)st.nextElement();
-                    while ((s != null) && (!"".equals(s)) && ((s.endsWith("\r") || s.endsWith("\n") || s.endsWith(">")))) {
-                        s = s.substring(0, s.length() - 1);
-                    }
-                    if ((s != null) && (!"".equals(s))) {
-                        pw.println(s);
-                    }
-                }
-            }
+        if (m_message != null) {
+            // localized message is available
+            return getLocalizedMessage();
         }
-        pw.close();
-        try {
-            sw.close();
-        } catch (Exception exc) {
-            // ignore the exception
+
+        StringBuffer result = new StringBuffer(256);
+        result.append(super.getMessage());
+
+        if (getType() > 0) {
+            result.append(' ');
+            result.append(getErrorDescription(getType()));
         }
-        return sw.toString();
+
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsThrowable#getMessageContainer()
+     */
+    public CmsMessageContainer getMessageContainer() {
+
+        return m_message;
     }
 
     /**
@@ -483,75 +435,23 @@ public class CmsException extends Exception {
      * @return the type of the CmsException
      */
     public int getType() {
+
         return m_type;
     }
 
     /**
-     * Prints the exception stack trace to System.out.<p>
-     */
-    public void printStackTrace() {
-        printStackTrace(System.out);
-    }
-
-    /**
-     * Prints this CmsException and it's stack trace to the
-     * specified print stream.<p>
+     * Returns the description String for the provided CmsException type, subclasses of 
+     * CmsException should overwrite this method for the types they define.<p>
      * 
-     * @param s the stream to print to
+     * @param type exception error code 
+     * @return the description String for the provided CmsException type
      */
-    public void printStackTrace(java.io.PrintStream s) {
-        s.println(getStackTraceAsString());
-    }
+    protected String getErrorDescription(int type) {
 
-    /**
-     * Prints this CmsException and it's backtrace to the specified
-     * print writer.<p>
-     * 
-     * @param s the print writer to print to
-     */
-    public void printStackTrace(java.io.PrintWriter s) {
-        s.println(getStackTraceAsString());
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        StringBuffer result = new StringBuffer();
-        result.append(getShortException());
-        if (m_rootCause != null) {
-            result.append("\nRoot cause was: ");
-            result.append(m_rootCause);
+        if ((type < CmsException.C_ERROR_DESCRIPTION.length) && (type > 0)) {
+            return CmsException.C_ERROR_DESCRIPTION[type];
+        } else {
+            return this.getClass().getName();
         }
-        return result.toString();
-    }
-
-    /**
-     * Returns the stack trace of an exception as a String.<p>
-     * 
-     * If the exception is a CmsException, 
-     * also writes the root cause to the String.<p>
-     * 
-     * @param e the exception to get the stack trace from
-     * @return the stack trace of an exception as a String
-     */
-    public static String getStackTraceAsString(Throwable e) {    
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        e.printStackTrace(writer);
-        if (e instanceof CmsException) {
-            // if the exception is a CmsException, also write the root cause to the String
-            CmsException cmsException = (CmsException)e;
-            if (cmsException.getException() != null) {
-                cmsException.getException().printStackTrace(writer);
-            }
-        }
-        try {
-            writer.close();
-            stringWriter.close();
-        } catch (Throwable t) {
-            // ignore
-        }
-        return stringWriter.toString();
     }
 }

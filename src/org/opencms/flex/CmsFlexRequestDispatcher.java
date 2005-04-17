@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/03/23 16:02:47 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
@@ -211,8 +211,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         entry.service(w_req, w_res);
                     } catch (CmsException e) {
                         Throwable t;
-                        if (e.getRootCause() != null) {
-                            t = e.getRootCause();
+                        if (e.getCause() != null) {
+                            t = e.getCause();
                         } else {
                             t = e;
                         }

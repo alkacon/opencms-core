@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.0
  */
@@ -136,7 +136,7 @@ public class CmsReplace extends CmsDialog {
         } catch (CmsException e) {
             // error replacing file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.upload"));
             setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix) + "<br>\n" + key("error.suggestion.upload" + errorMsgSuffix) + "\n");
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);

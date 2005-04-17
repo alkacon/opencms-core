@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2005/02/18 15:18:57 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2005/04/17 18:07:17 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -291,7 +291,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("title", CmsEncoder.escape(title,
                     cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
-                error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
+                error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getMessage();
                 template.setData("error", error);
                 //log
                 exc.printStackTrace(System.err);
@@ -327,7 +327,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 template.setData("title", CmsEncoder.escape(title,
                     cms.getRequestContext().getEncoding()));
                 template.setData("parentName", parentName);
-                error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
+                error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getMessage();
                 template.setData("error", error);
                 //log
                 exc.printStackTrace(System.err);

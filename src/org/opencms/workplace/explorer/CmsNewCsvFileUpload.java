@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Attic/CmsNewCsvFileUpload.java,v $
- * Date   : $Date: 2005/04/15 15:59:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.w3c.dom.Document;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -258,7 +258,7 @@ public class CmsNewCsvFileUpload extends CmsNewResourceUpload {
             // error uploading file, show error dialog
             setAction(ACTION_SHOWERROR);
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.upload"));
             setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix)
                 + "<br>\n"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/03/29 18:17:36 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -220,6 +220,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The node name for the job "reuseinstance" value. */
     protected static final String N_REUSEINSTANCE = "reuseinstance"; 
+    
+    /** The node name for the job "active" value. */
+    protected static final String N_ACTIVE = "active"; 
     
     /** The node name for the runtime info. */
     protected static final String N_RUNTIMECLASSES = "runtimeclasses";
@@ -464,6 +467,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CLASS, "className");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CRONEXPRESSION, "cronExpression");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_REUSEINSTANCE, "reuseInstance");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_ACTIVE, "active");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, "addJobFromConfiguration");
         
         // add job context creation rule
@@ -627,6 +631,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             jobElement.addElement(N_NAME).addText(jobInfo.getJobName());
             jobElement.addElement(N_CLASS).addText(jobInfo.getClassName());
             jobElement.addElement(N_REUSEINSTANCE).addText(String.valueOf(jobInfo.isReuseInstance()));
+            jobElement.addElement(N_ACTIVE).addText(String.valueOf(jobInfo.isActive()));
             jobElement.addElement(N_CRONEXPRESSION).addCDATA(jobInfo.getCronExpression());
             Element contextElement = jobElement.addElement(N_CONTEXT);
             contextElement.addElement(N_USERNAME).setText(jobInfo.getContextInfo().getUserName());
@@ -636,9 +641,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             contextElement.addElement(N_LOCALE).setText(jobInfo.getContextInfo().getLocaleName());
             contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
             contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
-            Element parameterElement = jobElement.addElement(N_PARAMETERS);
             Map jobParameters = jobInfo.getConfiguration();
-            if (jobParameters != null) {
+            if ((jobParameters != null) && (jobParameters.size() > 0)) {
+                Element parameterElement = jobElement.addElement(N_PARAMETERS);
                 Iterator it = jobParameters.keySet().iterator();
                 while (it.hasNext()) {
                     String name = (String)it.next();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/04/05 20:06:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0
  */
@@ -343,7 +343,7 @@ public class CmsSecure extends CmsDialog {
             actionCloseDialog();
         } catch (CmsException e) {
             // error during change of settings, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message." + getParamDialogtype()));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
@@ -440,7 +440,7 @@ public class CmsSecure extends CmsDialog {
 
         } catch (CmsException e) {
             // error during chnav, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message." + getParamDialogtype()));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
@@ -297,7 +297,7 @@ public class CmsDialogElements extends CmsDialog {
             }                       
         } catch (CmsException e) {
             // show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.editor.elements"));
             String reason = key("error.reason.editor.elements") + "<br>\n" + key("error.suggestion.editor.elements") + "\n";
             setParamReasonSuggestion(reason);

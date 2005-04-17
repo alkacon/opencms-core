@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -187,7 +187,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         } catch (CmsException e) {
             // error creating folder, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.newresource"));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);

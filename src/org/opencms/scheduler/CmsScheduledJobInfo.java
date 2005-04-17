@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/04/11 17:46:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,16 @@ package org.opencms.scheduler;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.apache.commons.logging.Log;
 
 import org.quartz.Trigger;
 
@@ -336,8 +340,11 @@ import org.quartz.Trigger;
  */
 public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
-    /** Error message if a configuration change is attempted after configuration is frozen. */
-    public static final String C_MESSAGE_FROZEN = "Job configuration has been frozen and can not longer be changed!";
+    /** The static log. */
+    public static final Log LOG = OpenCms.getLog(CmsScheduleManager.class);
+
+    /** Indicates if this job is currently active in the scheduler or not. */
+    private boolean m_active;
 
     /** The name of the class to schedule. */
     private String m_className;
@@ -351,6 +358,9 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /** Indicates if the configuration of this job is finalized (frozen). */
     private boolean m_frozen;
 
+    /** The id of this job. */
+    private String m_id;
+
     /** Instance object of the scheduled job (only required when instance is re-used). */
     private I_CmsScheduledJob m_jobInstance;
 
@@ -358,7 +368,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     private String m_jobName;
 
     /** The parameters used for this job entry. */
-    private Map m_parameters;
+    private SortedMap m_parameters;
 
     /** Indicates if the job instance should be re-used if the job is run. */
     private boolean m_reuseInstance;
@@ -375,6 +385,41 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         m_frozen = false;
         // parameters are stored in a tree map 
         m_parameters = new TreeMap();
+        // a job is active by default
+        m_active = true;
+    }
+
+    /**
+     * Constructor for creating a new job with all required parameters.<p> 
+     * 
+     * @param id the id of the job of <code>null</code> if a new id should be automatically generated
+     * @param jobName the display name of the job 
+     * @param className the class name of the job, must be an instance of <code>{@link I_CmsScheduledJob}</code>
+     * @param context the OpenCms user context information to use when executing the job
+     * @param cronExpression the cron expression for scheduling the job
+     * @param reuseInstance indicates if the job class should be re-used
+     * @param active indicates if the job should be active in the scheduler
+     * @param parameters the job parameters
+     */
+    public CmsScheduledJobInfo(
+        String id,
+        String jobName,
+        String className,
+        CmsContextInfo context,
+        String cronExpression,
+        boolean reuseInstance,
+        boolean active,
+        Map parameters) {
+
+        m_id = id;
+        m_jobName = jobName;
+        m_className = className;
+        m_context = context;
+        m_cronExpression = cronExpression;
+        m_reuseInstance = reuseInstance;
+        m_active = active;
+        m_parameters = new TreeMap(parameters);
+        m_frozen = false;
     }
 
     /**
@@ -384,10 +429,45 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         // add the configured parameter
         m_parameters.put(paramName, paramValue);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(org.opencms.configuration.Messages.get().key(
+                org.opencms.configuration.Messages.LOG_ADD_CONFIG_PARAM_CALLED_3,
+                paramName,
+                paramValue,
+                this));
         }
+    }
+
+    /**
+     * Creates a clone of this scheduled job.<p>
+     * 
+     * The clone will not be active in the scheduler until it is scheduled
+     * with <code>{@link CmsScheduleManager#scheduleJob(org.opencms.file.CmsObject, CmsScheduledJobInfo)}</code>. 
+     * The job id returned by <code>{@link #getId()}</code> will be the same.
+     * The <code>{@link #isActive()}</code> flag will be set to false. 
+     * The clones job instance class will be the same 
+     * if the <code>{@link #isReuseInstance()}</code> flag is set.<p>
+     * 
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+
+        CmsScheduledJobInfo result = new CmsScheduledJobInfo();
+
+        result.m_id = m_id;
+        result.m_active = false;
+        result.m_frozen = false;
+        result.m_className = m_className;
+        if (isReuseInstance()) {
+            result.m_jobInstance = m_jobInstance;
+        }
+        result.m_context = m_context;
+        result.m_cronExpression = m_cronExpression;
+        result.m_jobName = m_jobName;
+        result.m_parameters = new TreeMap(m_parameters);
+        result.m_trigger = null;
+
+        return result;
     }
 
     /**
@@ -406,8 +486,10 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public Map getConfiguration() {
 
         // this configuration does not support parameters
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(org.opencms.configuration.Messages.get().key(
+                org.opencms.configuration.Messages.LOG_GET_CONFIGURATION_1,
+                this));
         }
         return getParameters();
     }
@@ -442,20 +524,12 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public Date getExecutionTimeAfter(Date date) {
 
+        if (!m_active || (m_trigger == null)) {
+            // if the job is not active, no time can be calculated
+            return null;
+        }
+
         return m_trigger.getFireTimeAfter(date);
-    }
-
-    /**
-     * Returns the last time at which this job will be executed, 
-     * if this job will repeat indefinitely, <code>null</code> will be returned.<p>
-     * 
-     * Note that the return time *may* be in the past.<p> 
-     * 
-     * @return the last time at which this job will be executed
-     */
-    public Date getExecutionTimeFinal() {
-
-        return m_trigger.getFinalFireTime();
     }
 
     /**
@@ -466,6 +540,11 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      * @return the next time at which this job will be executed
      */
     public Date getExecutionTimeNext() {
+
+        if (!m_active || (m_trigger == null)) {
+            // if the job is not active, no time can be calculated
+            return null;
+        }
 
         return m_trigger.getNextFireTime();
     }
@@ -479,7 +558,25 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public Date getExecutionTimePrevious() {
 
+        if (!m_active || (m_trigger == null)) {
+            // if the job is not active, no time can be calculated
+            return null;
+        }
+
         return m_trigger.getPreviousFireTime();
+    }
+
+    /**
+     * Returns the internal id of this job in the scheduler.<p>
+     * 
+     * Can be used to remove this job from the scheduler with 
+     * <code>{@link CmsScheduleManager#unscheduleJob(org.opencms.file.CmsObject, String)}</code>.<p> 
+     * 
+     * @return the internal id of this job in the scheduler
+     */
+    public String getId() {
+
+        return m_id;
     }
 
     /**
@@ -494,9 +591,8 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         if (m_jobInstance != null) {
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(
-                    "Scheduler: Re-using instance of '" + m_jobInstance.getClass().getName() + "'");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_REUSING_INSTANCE_1, m_jobInstance.getClass().getName()));
             }
 
             // job instance already initialized
@@ -509,13 +605,13 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             // create an instance of the OpenCms job class
             job = (I_CmsScheduledJob)Class.forName(getClassName()).newInstance();
         } catch (ClassNotFoundException e) {
-            OpenCms.getLog(this).error("Scheduler: Scheduled class not found '" + getClassName() + "'", e);
+            LOG.error(Messages.get().key(Messages.LOG_CLASS_NOT_FOUND_1, getClassName()), e);
         } catch (IllegalAccessException e) {
-            OpenCms.getLog(this).error("Scheduler: Illegal access", e);
+            LOG.error(Messages.get().key(Messages.LOG_ILLEGAL_ACCESS_0), e);
         } catch (InstantiationException e) {
-            OpenCms.getLog(this).error("Scheduler: Instantiation error", e);
+            LOG.error(Messages.get().key(Messages.LOG_INSTANCE_GENERATION_0), e);
         } catch (ClassCastException e) {
-            OpenCms.getLog(this).error("Scheduler: Scheduled class does not implement scheduler interface", e);
+            LOG.error(Messages.get().key(Messages.LOG_BAD_INTERFACE_0), e);
         }
 
         if (m_reuseInstance) {
@@ -523,8 +619,8 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             m_jobInstance = job;
         }
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Scheduler: Created a new instance of '" + getClassName() + "'");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_JOB_CREATED_1, getClassName()));
         }
 
         return job;
@@ -562,11 +658,22 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void initConfiguration() {
 
         // simple default configuration does not need to be initialized
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(org.opencms.configuration.Messages.get().key(
+                org.opencms.configuration.Messages.LOG_INIT_CONFIGURATION_1,
+                this));
         }
-        m_parameters = Collections.unmodifiableMap(m_parameters);
-        m_frozen = true;
+        setFrozen(true);
+    }
+
+    /**
+     * Returns <code>true</code> if this job is currently active in the scheduler.<p>
+     *
+     * @return <code>true</code> if this job is currently active in the scheduler
+     */
+    public boolean isActive() {
+
+        return m_active;
     }
 
     /**
@@ -580,6 +687,20 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Sets the active state of this job.<p>
+     *
+     * @param active the active state to set
+     */
+    public void setActive(boolean active) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
+        }
+
+        m_active = active;
+    }
+
+    /**
      * Sets the name of the class to schedule.<p>
      * 
      * @param className the class name to set
@@ -587,7 +708,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setClassName(String className) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
 
         m_className = className;
@@ -610,7 +731,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setContextInfo(CmsContextInfo contextInfo) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
 
         contextInfo.freeze();
@@ -625,7 +746,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setCronExpression(String cronExpression) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
 
         m_cronExpression = cronExpression;
@@ -639,7 +760,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setJobName(String jobName) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
 
         m_jobName = jobName;
@@ -654,10 +775,47 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setReuseInstance(boolean reuseInstance) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
 
         m_reuseInstance = reuseInstance;
+    }
+
+    /**
+     * Sets the "frozen" state of this job.<p>
+     *
+     * This is an internal operation to be used only by the <code>{@link CmsScheduleManager}</code>.<p>
+     *
+     * @param frozen the "frozen" state to set
+     */
+    protected synchronized void setFrozen(boolean frozen) {
+
+        if (frozen && !m_frozen) {
+            // "freeze" the job configuration
+            m_parameters = Collections.unmodifiableSortedMap(m_parameters);
+            m_frozen = true;
+        } else if (!frozen && m_frozen) {
+            // "unfreeze" the job configuration
+            m_parameters = new TreeMap(m_parameters);
+            m_frozen = false;
+        }
+    }
+
+    /**
+     * Sets the is used for scheduling this job.<p>
+     *
+     * This is an internal operation that should only by performed by the 
+     * <code>{@link CmsScheduleManager}</code>, never by using this API directly.<p>
+     * 
+     * @param id the id to set
+     */
+    protected void setId(String id) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
+        }
+
+        m_id = id;
     }
 
     /**
@@ -665,13 +823,13 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * This is an internal operation that should only by performed by the 
      * <code>{@link CmsScheduleManager}</code>, never by using this API directly.<p>
-     *
+     * 
      * @param trigger the (cron) trigger to set
      */
     protected void setTrigger(Trigger trigger) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
 
         m_trigger = trigger;

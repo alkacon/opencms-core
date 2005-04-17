@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/04/11 13:34:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -189,7 +189,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         } catch (CmsException e) {
             // error updating file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.upload"));
             setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
@@ -272,7 +272,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             // error uploading file, show error dialog
             setAction(ACTION_SHOWERROR);
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
+            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.upload"));
             setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix)
                 + "<br>\n"

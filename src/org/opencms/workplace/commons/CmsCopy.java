@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/17 18:07:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -307,14 +307,14 @@ public class CmsCopy extends CmsDialog {
                     getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM); 
                 } else {
                     // file type is different, create error message
-                    setParamErrorstack(e.getStackTraceAsString());
+                    setParamErrorstack(CmsException.getStackTraceAsString(e));
                     setParamMessage(message);
                     setParamReasonSuggestion(key("error.reason.copyexists") + "<br>\n" + key("error.suggestion.copyexists") + "\n");
                     getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);      
                 }
             } else {                
                 // error during copy, show error dialog
-                setParamErrorstack(e.getStackTraceAsString());
+                setParamErrorstack(CmsException.getStackTraceAsString(e));
                 setParamMessage(message + key("error.message." + getParamDialogtype()));
                 setParamReasonSuggestion(getErrorSuggestionDefault());
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);

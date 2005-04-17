@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/03/13 09:49:30 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/04/17 18:07:17 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -79,7 +79,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /** Handler implementation names. */
     private static final String[] C_HANDLER_NAMES = {"404", "500"};
-
+    
     /**
      * OpenCms servlet main request handling method.<p>
      * 
@@ -87,10 +87,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
+        int runlevel = OpenCmsCore.getInstance().getRunLevel();
+        
         // write OpenCms server identification in the response header
         res.setHeader(I_CmsConstants.C_HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
 
-        int runlevel = OpenCmsCore.getInstance().getRunLevel();
         if (runlevel != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
             if (runlevel == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                 // we have shell runlevel only, upgrade to servlet runlevel (required after setup wizard)
