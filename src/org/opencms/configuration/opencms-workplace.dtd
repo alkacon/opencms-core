@@ -173,72 +173,6 @@
 <!ELEMENT defaultaccesscontrol (accesscontrol)>
 
 
-
-<!--
-# Define here the properties which can be edited in the new resource dialog.
-# If the enabled attribute is false, the special property dialog will not be used.
-# If the shownavigation attribute is true, navigation properties can be editied in the special property dialog.
--->
-<!ELEMENT defaultproperties (property*)>
-<!ATTLIST defaultproperties 
-    enabled (true|false|TRUE|FALSE) #REQUIRED
-	shownavigation (true|false|TRUE|FALSE) #IMPLIED>
-
-<!--
-# This defines the context menu appearance of the current explorer type.
-# A list of entry and separator nodes is needed here.
-# An entry node needs the following attributes:
-# key: the name for the localized key of the menu entry.
-# uri: the OpenCms VFS URI of the dialog.
-#
-# rules:	The display rules for the current menu entry. 
-#			The rule characters have been separated by spaces for better readability.
-#
-#			Example: "d d iiii aaai dddd"
-#					  1 2    3    4    5 
-# 
-# 			Each rule is separated into 5 blocks (see above).
-#           A block describes a resource condition in the context 
-#           of the current user:
-#
-#			1: Appearance in the "Online" project
-#			2: Appearance if the resource is not part of the current offline project
-#			3: Appearance if the resource is unlocked
-#			4: Appearance if the resource is exclusively locked by the current user in the current project	
-#			5: Appearance for all other lock states (locked by other user, locked in other project, shared lock, etc.)
-#
-#			The meaning of the parameter characters is: 
-#           d = deactivated (invisible), i = inactive, a = active
-#
-#           Blocks 1 and 2 require only one parameter since a resource 
-#           does not have a state if it is not part of the current project.
-#
-#           Blocks 3, 4 and 5 require four parameters. The parameters control the appearance
-#           of the context menu entry if the resource is in one of the 4 possible states:
-#			1 = unchanged, 2 = changed, 3 = new, 4 = deleted
-#           This is e.g. required to show the "undelete" option on the 
-#           menu only if the resource is deleted. 
-#
-# order: the order of the entry (display position in the menu).
-# isxml: optional, if the URI leads to a legacy XMLTemplate based dialog, set this attribute to true.
-# A separator node only needs the order attribute to be displayed properly.
--->
-<!ELEMENT contextmenu (
-	entry*,
-	separator*)*>
-	
-<!ELEMENT entry EMPTY>
-<!ATTLIST entry 
-	key CDATA #REQUIRED 
-	uri CDATA #REQUIRED 
-	rules CDATA #REQUIRED 
-	order CDATA #REQUIRED 
-	target CDATA #IMPLIED
-	isxml (true|false|TRUE|FALSE) #IMPLIED>
-	
-<!ELEMENT separator EMPTY>
-<!ATTLIST separator order CDATA #REQUIRED>
-
 <!--
 # <importexport> node options.
 # In this node the import and export options are configured.
@@ -593,3 +527,10 @@
 <!ELEMENT message-forwarded (#PCDATA)>	
 <!ELEMENT message-completed (#PCDATA)>	
 <!ELEMENT informrolemembers (#PCDATA)>	
+
+
+<!--
+# Include the explorer types DTD.
+-->
+<!ENTITY % opencms-explorertypes SYSTEM "http://www.opencms.org/dtd/6.0/opencms-explorertypes.dtd"> 
+%opencms-explorertypes;

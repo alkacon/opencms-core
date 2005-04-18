@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/18 09:36:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -60,7 +61,7 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -328,6 +329,26 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
+        } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(CmsConfigurationManager.C_DEFAULT_DTD_PREFIX)) {
+            
+            // default DTD location in the org.opencms.configuration package
+            String location = null;
+            try {
+                String dtdFilename = systemId.substring(systemId.lastIndexOf("/") + 1);
+                location = CmsConfigurationManager.C_DEFAULT_DTD_LOCATION + dtdFilename;
+                InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
+                for (int b = stream.read(); b > -1; b = stream.read()) {
+                    bytes.write(b);
+                }
+                content = bytes.toByteArray();
+                // cache the DTD
+                m_cachePermanent.put(systemId, content);
+                return new InputSource(new ByteArrayInputStream(content));
+            } catch (Throwable t) {
+                LOG.error("Did not find DTD at " + location, t);
+            }            
+            
         }
 
         // use the default behaviour (i.e. resolve through external URL)
