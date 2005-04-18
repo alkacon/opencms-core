@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/18 11:18:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,15 +99,15 @@ public class TestCmsMessageBundles extends TestCase {
                     fail("No message for '" + key + "' in bundle " + bundle.getBundleName());
                 }
                 
-                // ensure key has the form "{ERR|LOG}_KEYNAME_{0-9}";
+                // ensure key has the form "{ERR|LOG|INIT|GUI}_KEYNAME_{0-9}";
                 if (key.length() < 7) {
                     fail("Key '" + key + "' in bundle " + bundle.getBundleName() + " is to short (length must be at last 7)");
                 }       
                 if (! key.equals(key.toUpperCase())) {
                     fail("Key '" + key + "' in bundle " + bundle.getBundleName() + " must be all upper case");
                 }
-                if ((key.charAt(key.length() - 2) != '_') || (!key.startsWith("ERR_") && !key.startsWith("LOG_") && !key.startsWith("INIT_"))) {
-                    fail("Key '" + key + "' in bundle " + bundle.getBundleName() + " must have the form {ERR|LOG|INIT}_KEYNAME_{0-9}");                    
+                if ((key.charAt(key.length() - 2) != '_') || (!key.startsWith("ERR_") && !key.startsWith("LOG_") && !key.startsWith("INIT_") && !key.startsWith("GUI_"))) {
+                    fail("Key '" + key + "' in bundle " + bundle.getBundleName() + " must have the form {ERR|LOG|INIT|GUI}_KEYNAME_{0-9}");                    
                 }
                 int argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
         
