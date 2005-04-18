@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/04/18 09:39:16 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -216,7 +216,6 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void convertPointerToSiblings() {
         
-        Set checkedProperties = new HashSet();
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
         int i = 0;
@@ -232,6 +231,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     key = (String)keys.next();
                     link = (String)m_linkStorage.get(key);
                     List properties = (List)m_linkPropertyStorage.get(key);
+                    CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
                     
                     m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
@@ -278,17 +278,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                         }                              
         
                     } else {
-                        
-                        // make sure all found properties are already defined
-                        for (int j = 0, n = properties.size(); j < n; j++) {
-                            CmsProperty property = (CmsProperty)properties.get(j);
-                            
-                            if (!checkedProperties.contains(property)) {
-                                // check the current property and create it, if necessary
-                                checkPropertyDefinition(property.getName());
-                                checkedProperties.add(property);                        
-                            }
-                        }
                         
                         m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
@@ -341,23 +330,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         }
         
         return new String(Base64.encodeBase64(data));
-    }
-    
-    /**
-     * Tries to read the property definition for a specified key.<p>
-     * The property defintion gets created if it is missing.<p>
-     *
-     * @param key the key of the property
-     * @throws CmsException if something goes wrong
-     */
-    private void checkPropertyDefinition(String key) throws CmsException {
-        try {
-            // try to read the property definition
-            m_cms.readPropertyDefinition(key);
-        } catch (CmsException exc) {
-            // create missing property definitions
-            m_cms.createPropertyDefinition(key);
-        }
     }
 
     /**
@@ -447,13 +419,12 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param ignoredPropertyKeys a list of properies to be ignored
      * 
      * @return a list with all properties
-     * @throws CmsException if something goes wrong
      */
     protected List readPropertiesFromManifest(
         Element parentElement,
         String propertyKey,
         String propertyValue,
-        List ignoredPropertyKeys) throws CmsException {
+        List ignoredPropertyKeys) {
 
         // all imported Cms property objects are collected in map first forfaster access
         Map properties = new HashMap();
@@ -467,7 +438,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         Attribute attrib = null;
 
         if (propertyKey != null && propertyValue != null && !"".equals(propertyKey)) {
-            checkPropertyDefinition(propertyKey);
             properties.put(propertyKey, propertyValue);
         }
 
@@ -501,8 +471,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                 // it is an individual/structure value
                 property.setStructureValue(value);
             }
-
-            checkPropertyDefinition(key);
         }
 
         return new ArrayList(properties.values());

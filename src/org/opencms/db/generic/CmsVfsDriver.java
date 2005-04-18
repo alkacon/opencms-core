@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.231 $
+ * Date   : $Date: 2005/04/18 09:39:16 $
+ * Version: $Revision: 1.232 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.231 $ $Date: 2005/03/19 13:58:18 $
+ * @version $Revision: 1.232 $ $Date: 2005/04/18 09:39:16 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1886,7 +1886,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             // read the property definition
             propertyDefinition = readPropertyDefinition(dbc, property.getName(), project.getId());
-        } catch (CmsDataAccessException e) {
+        } catch (CmsException e) {
             propertyDefinition = null;
         }
 
