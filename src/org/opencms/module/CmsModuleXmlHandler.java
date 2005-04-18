@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/18 09:39:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -318,7 +318,7 @@ public class CmsModuleXmlHandler {
         List explorerTypes = module.getExplorerTypes();
         if (explorerTypes.size() > 0) {
             Element explorerTypesElement = moduleElement.addElement(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            CmsWorkplaceConfiguration.generateExplorerTypesXml(explorerTypesElement, explorerTypes);
+            CmsWorkplaceConfiguration.generateExplorerTypesXml(explorerTypesElement, explorerTypes, true);
         }
 
         // return the modules node
@@ -424,6 +424,7 @@ public class CmsModuleXmlHandler {
      */
     public void addExplorerTypeSetting(CmsExplorerTypeSettings settings) {
 
+        settings.setAddititionalModuleExplorerType(true);
         m_explorerTypeSettings.add(settings);
     }
 

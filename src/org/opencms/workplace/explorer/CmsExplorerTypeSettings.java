@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/18 09:39:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -71,6 +71,9 @@ public class CmsExplorerTypeSettings implements Comparable {
    
     private boolean m_showNavigation;
     
+    /** Flag for showing that this is an additional resource type which defined in a module. */
+    private boolean m_addititionalModuleExplorerType;    
+    
     /**
      * Default constructor.<p>
      */
@@ -82,6 +85,7 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_hasEditOptions = false;
         m_propertiesEnabled = false;
         m_showNavigation = false;
+        m_addititionalModuleExplorerType = false;
     }
     
     
@@ -512,4 +516,25 @@ public class CmsExplorerTypeSettings implements Comparable {
         setIcon(icon);        
         setReference(reference);
     }
+    
+    /**
+     * Indicates that this is an additional explorer type which is defined in a module.<p>
+     * 
+     * @return true or false
+     */
+    public boolean isAddititionalModuleExplorerType() {
+
+        return m_addititionalModuleExplorerType;
+    }
+    
+    /**
+     * Sets the additional explorer type flag.<p>
+     * 
+     * @param addititionalModuleExplorerType true or false
+     */
+    public void setAddititionalModuleExplorerType(boolean addititionalModuleExplorerType) {
+
+        m_addititionalModuleExplorerType = addititionalModuleExplorerType;
+    }
+    
 }

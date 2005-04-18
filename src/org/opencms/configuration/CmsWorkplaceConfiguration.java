@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/04/18 09:39:43 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -395,83 +395,87 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      * 
      * @param startNode the startnode to add all rescource types to
      * @param explorerTypes the list of explorer types
+     * @param module true if the XML tree for the module config should be generated, false otherwise
      */
-    public static void generateExplorerTypesXml(Element startNode, List explorerTypes) {
+    public static void generateExplorerTypesXml(Element startNode, List explorerTypes, boolean module) {
         
         Iterator i = explorerTypes.iterator();
         while (i.hasNext()) {
             // create an explorer type node
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
-            explorerTypeElement.addAttribute(A_NAME, settings.getName());
-            explorerTypeElement.addAttribute(A_KEY, settings.getKey());
-            explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
-            if (settings.getReference() != null) {
-                explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
-            }
-            // create subnode <newresource>
-            Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
-            if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
-                newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
-            }
-            newResElement.addAttribute(A_URI, settings.getNewResourceUri());
-            newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
-            // create subnode <accesscontrol>            
-            List accessEntries = new ArrayList(); 
-            // sort accessEntries   
-            CmsExplorerTypeAccess access = settings.getAccess();
-            Iterator iter = access.getAccessEntries().keySet().iterator();
-            while (iter.hasNext()) {
-                accessEntries.add(iter.next());                 
-            }
-            Collections.sort(accessEntries);
             
-            if (accessEntries.size() >0) {
-                Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
-                Iterator k = accessEntries.iterator();
-            
-                while (k.hasNext()) {
-                    String key = (String)k.next();
-                    String value = (String)settings.getAccess().getAccessEntries().get(key);
-                    Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
-                    accessEntryElement.addAttribute(A_PRINCIPAL, key);
-                    accessEntryElement.addAttribute(A_PERMISSIONS, value);
-                }        
-            }
-            // create subnode <editoptions>
-            if (settings.hasEditOptions()) {
-                Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
-                Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
-                defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
-                defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
-                Iterator m = settings.getProperties().iterator();
-                while (m.hasNext()) {
-                    defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
+            if (settings.isAddititionalModuleExplorerType() == module) {
+                Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
+                explorerTypeElement.addAttribute(A_NAME, settings.getName());
+                explorerTypeElement.addAttribute(A_KEY, settings.getKey());
+                explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+                if (settings.getReference() != null) {
+                    explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
                 }
-                Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
-                m = settings.getContextMenuEntries().iterator();
-                while (m.hasNext()) {
-                    CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
-                    Element itemElement;
-                    if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
-                        // create an <entry> node
-                        itemElement = contextMenuElement.addElement(N_ENTRY);
-                        itemElement.addAttribute(A_KEY, item.getKey());
-                        itemElement.addAttribute(A_URI, item.getUri());
-                        if (item.isXml()) {
-                            itemElement.addAttribute(A_ISXML, "" + item.isXml());
-                        }
-                        if (item.getTarget() != null) {
-                            itemElement.addAttribute(A_TARGET, item.getTarget());
-                        }
-                        itemElement.addAttribute(A_RULES, item.getRules());
-                    } else {
-                        // create a <separator> node
-                        itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                // create subnode <newresource>
+                Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
+                if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
+                    newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
+                }
+                newResElement.addAttribute(A_URI, settings.getNewResourceUri());
+                newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
+                // create subnode <accesscontrol>            
+                List accessEntries = new ArrayList(); 
+                // sort accessEntries   
+                CmsExplorerTypeAccess access = settings.getAccess();
+                Iterator iter = access.getAccessEntries().keySet().iterator();
+                while (iter.hasNext()) {
+                    accessEntries.add(iter.next());                 
+                }
+                Collections.sort(accessEntries);
+                
+                if (accessEntries.size() >0) {
+                    Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
+                    Iterator k = accessEntries.iterator();
+                
+                    while (k.hasNext()) {
+                        String key = (String)k.next();
+                        String value = (String)settings.getAccess().getAccessEntries().get(key);
+                        Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                        accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                        accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                    }        
+                }
+                // create subnode <editoptions>
+                if (settings.hasEditOptions()) {
+                    Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
+                    Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
+                    defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
+                    defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
+                    Iterator m = settings.getProperties().iterator();
+                    while (m.hasNext()) {
+                        defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
                     }
-                    itemElement.addAttribute(A_ORDER, "" + item.getOrder());
-                }
-            }            
+                    Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
+                    m = settings.getContextMenuEntries().iterator();
+                    while (m.hasNext()) {
+                        CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
+                        Element itemElement;
+                        if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
+                            // create an <entry> node
+                            itemElement = contextMenuElement.addElement(N_ENTRY);
+                            itemElement.addAttribute(A_KEY, item.getKey());
+                            itemElement.addAttribute(A_URI, item.getUri());
+                            if (item.isXml()) {
+                                itemElement.addAttribute(A_ISXML, "" + item.isXml());
+                            }
+                            if (item.getTarget() != null) {
+                                itemElement.addAttribute(A_TARGET, item.getTarget());
+                            }
+                            itemElement.addAttribute(A_RULES, item.getRules());
+                        } else {
+                            // create a <separator> node
+                            itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                        }
+                        itemElement.addAttribute(A_ORDER, "" + item.getOrder());
+                    }
+                }            
+            }
         }
     }
 
@@ -720,7 +724,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add <explorertypes> node
         Element explorerTypesElement = workplaceElement.addElement(N_EXPLORERTYPES);
         List explorerTypes = m_workplaceManager.getExplorerTypeSettings();
-        generateExplorerTypesXml(explorerTypesElement, explorerTypes);
+        generateExplorerTypesXml(explorerTypesElement, explorerTypes, false);
              
         // add the <defaultaccesscontrol> node
         Element defaultAccessControlElement = explorerTypesElement.addElement(N_DEFAULTACCESSCONTROL);

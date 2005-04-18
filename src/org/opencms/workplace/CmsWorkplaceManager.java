@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/04/10 21:00:47 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/04/18 09:39:43 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.3.1
  */
@@ -705,6 +705,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         while (j.hasNext()) {
             I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
             if (resourceType instanceof CmsResourceTypeFolderExtended) {
+                int todo = 0;
+                // TODO: this is not correct since not all extended folders are galleries
                 // found a configured gallery resource type
                 CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
                 // store the gallery class name with the type name as lookup key 
