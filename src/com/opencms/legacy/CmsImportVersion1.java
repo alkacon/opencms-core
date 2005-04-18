@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/18 07:15:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
-import com.opencms.template.*;
+import com.opencms.template.CmsXmlTemplateLinkConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -190,13 +190,11 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                 InputSource source = new InputSource(in);
                 Document doc = CmsXmlUtils.unmarshalHelper(source, null);
 
-                System.err.println("document: \n" + content);
                 // get all <edittemplate> nodes to check their content
                 nodeName = "edittemplate";
                 Element root = doc.getRootElement();
                 List editNodes = root.elements(nodeName.toLowerCase());
                 editNodes.addAll(root.elements(nodeName.toUpperCase()));
-                System.err.println("editNodes: " + editNodes.toString());
                 // no <edittemplate> tags present, create them!
                 if (editNodes.size() < 1) {
                     if (DEBUG > 0) {
@@ -211,7 +209,6 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                     List templateNodes = root.elements(nodeName.toLowerCase());
                     List attributes;
                     templateNodes.addAll(root.elements(nodeName.toUpperCase()));
-                    System.err.println("templateNodes: " + templateNodes.toString());
 
                     // create an <edittemplate> tag for each <template> tag
                     Element templateTag;
@@ -219,10 +216,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
 
                         // get the CDATA content of the <template> tags
                         templateTag = (Element)templateNodes.get(i);
-                        System.err.println("templateTag: " + templateTag.toString());
                         editString = templateTag.getText();
-                        System.err.println("editString: " + editNodes.toString());
-
                         templateString = editString;
 
                         // substitute the links in the <template> tag String
@@ -231,7 +225,6 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                                 templateString,
                                 m_webappUrl,
                                 fileName);
-                            System.err.println("templateSring: " + templateString);
                         } catch (CmsException e) {
                             throw new CmsException("["
                                 + this.getClass().getName()
@@ -259,11 +252,9 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                         if (!templateName.equals("")) {
                             newNode.addAttribute("name", templateName);
                         }
-                        System.err.println("newNode: " + newNode.toString());
 
                         // append the new edittemplate node to the document
                         ((Element)root.elements("XMLTEMPLATE").get(0)).add(newNode);
-                        System.err.println("root(newnode): " + root.toString());
                         // store modified <template> node Strings in Hashtable
                         if (templateName.equals("")) {
                             templateName = "noNameKey";
@@ -274,7 +265,6 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                     while (templateNodes.size() > 0) {
                         ((Element)root.elements("XMLTEMPLATE").get(0)).remove((Element)templateNodes.get(0));
                     }
-                    System.err.println("root(after remove): " + root.toString());
 
                 }
                 // check the content of the <edittemplate> nodes
@@ -283,25 +273,21 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                     // editString = editNodes.item(i).getFirstChild().getNodeValue();
                     editTemplate = (Element)editNodes.get(i);
                     editString = editTemplate.getText();
-                    System.err.println("editString: " + editNodes.toString());
                     for (int k = 0; k < m_webAppNames.size(); k++) {
                         editString = CmsStringUtil.substitute(
                             editString,
                             (String)m_webAppNames.get(k),
                             I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
-                        System.err.println("editString (mod): " + editNodes.toString());
                     }
 
                     // There is a setText(String) but no corresponding setCDATA in dom4j.
                     editTemplate.clearContent();
                     editTemplate.addCDATA(editString);
-                    System.err.println("editNodes.get(i): " + editNodes.get(i).toString());
 
                 }
                 // convert XML document back to String
 
                 content = CmsXmlUtils.marshal(doc, OpenCms.getSystemInfo().getDefaultEncoding());
-                System.err.println("content: " + content.toString());
                 // rebuild the template tags in the document!
                 if (createTemplateTags) {
                     content = content.substring(0, content.lastIndexOf("</XMLTEMPLATE>"));
