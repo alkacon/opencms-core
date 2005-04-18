@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.171 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.170 $
+ * @version $Revision: 1.171 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -129,7 +129,7 @@ public final class OpenCmsCore {
     private static OpenCmsCore m_instance;
     
     /** Lock object for synchronization. */
-    private static Object m_lock = new Object();
+    private static final Object LOCK = new Object();
 
     /** URI of the authentication form (read from properties) in case of form based authentication. */
     private String m_authenticationFormURI;
@@ -160,9 +160,6 @@ public final class OpenCmsCore {
 
     /** The lock manager used for the locking mechanism. */
     private CmsLockManager m_lockManager;
-
-    /** The OpenCms log to write all log messages to. */
-    private CmsLog m_log;
 
     /** The memory monitor for the collection of memory and runtime statistics. */
     private CmsMemoryMonitor m_memoryMonitor;
@@ -220,7 +217,10 @@ public final class OpenCmsCore {
     
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-        
+
+    /** Indicates if the configuration was sucessfully finished or not. */
+    private static long m_lastInitErrorTime;
+    
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -229,7 +229,7 @@ public final class OpenCmsCore {
      */
     private OpenCmsCore() throws CmsInitException {
         
-        synchronized (m_lock) {
+        synchronized (LOCK) {
             if (m_instance != null && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
                 throw new CmsInitException("OpenCms already initialized!");
             }
@@ -246,6 +246,15 @@ public final class OpenCmsCore {
      */
     protected static OpenCmsCore getInstance() {
         
+        if (m_lastInitErrorTime > 0) {
+            // OpenCms is not properly initialized
+            if ((System.currentTimeMillis() - m_lastInitErrorTime) < 10000) {
+                // last startup try was less then 10 seconds ago
+                throw new RuntimeException("Unable to initialize OpenCms");
+            }
+            // reset the error state and try again
+            m_lastInitErrorTime = 0;
+        }
         if (m_instance == null) {
             try {
                 // create a new core object with runlevel 1
@@ -253,7 +262,7 @@ public final class OpenCmsCore {
             } catch (CmsInitException e) {
                 // already initialized, this is all we need
             }
-        }
+        } 
         return m_instance;
     }
 
@@ -304,14 +313,12 @@ public final class OpenCmsCore {
         for (int i = 0; i < names.length; i++) {
             String name = names[i];
             if (m_requestHandlers.get(name) != null) {
-                if (getLog(this).isErrorEnabled()) {
-                    getLog(this).error("Duplicate OpenCms request handler, ignoring '" + name + "'");
-                }
+                CmsLog.LOG.error("Duplicate OpenCms request handler, ignoring '" + name + "'");
                 continue;
             }
             m_requestHandlers.put(name, handler);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Added RequestHandler : " + name + " (" + handler.getClass().getName() + ")");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(". Added RequestHandler : " + name + " (" + handler.getClass().getName() + ")");
             }
         }
     }
@@ -321,16 +328,16 @@ public final class OpenCmsCore {
      */
     protected void destroy() {
 
-        synchronized (m_lock) {
+        synchronized (LOCK) {
             if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {                
                 
                 System.err.println("\n\nShutting down OpenCms, version " + getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(".");
-                    getLog(CmsLog.CHANNEL_INIT).info(".");
-                    getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-                    getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
-                    getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(".");
+                    CmsLog.LOG.info(".");
+                    CmsLog.LOG.info(".                      ...............................................................");
+                    CmsLog.LOG.info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
+                    CmsLog.LOG.info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
                 }
                 
                 // take the system offline
@@ -341,42 +348,42 @@ public final class OpenCmsCore {
                         m_staticExportManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    getLog(CmsLog.CHANNEL_INIT).error(". Error during static export manager shutdown: " + e.toString(), e);
+                    CmsLog.LOG.error(". Error during static export manager shutdown: " + e.toString(), e);
                 }
                 try {
                     if (m_moduleManager != null) {
                         m_moduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    getLog(CmsLog.CHANNEL_INIT).error(". Error during module manager shutdown: " + e.toString(), e);
+                    CmsLog.LOG.error(". Error during module manager shutdown: " + e.toString(), e);
                 }
                 try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    getLog(CmsLog.CHANNEL_INIT).error(". Error during schedule manager shutdown: " + e.toString(), e);
+                    CmsLog.LOG.error(". Error during schedule manager shutdown: " + e.toString(), e);
                 }                
                 try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
                 } catch (Throwable e) {
-                    getLog(CmsLog.CHANNEL_INIT).error(". Error during security manager shutdown: " + e.toString(), e);
+                    CmsLog.LOG.error(". Error during security manager shutdown: " + e.toString(), e);
                 }
                 try {
                     if (m_threadStore != null) {
                         m_threadStore.shutDown();
                     }
                 } catch (Throwable e) {
-                    getLog(CmsLog.CHANNEL_INIT).error(". Error during thread store shutdown: " + e.toString(), e);
+                    CmsLog.LOG.error(". Error during thread store shutdown: " + e.toString(), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);
-                    getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-                    getLog(CmsLog.CHANNEL_INIT).info(".");
-                    getLog(CmsLog.CHANNEL_INIT).info(".");
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(". OpenCms stopped!     : Total uptime was " + runtime);
+                    CmsLog.LOG.info(".                      ...............................................................");
+                    CmsLog.LOG.info(".");
+                    CmsLog.LOG.info(".");
                 }
                 System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
                 
@@ -493,10 +500,7 @@ public final class OpenCmsCore {
      */
     protected Log getLog(Object obj) {
 
-        if ((obj == null) || (!m_log.isInitialized())) {
-            return m_log;
-        }
-        return m_log.getLogger(obj);
+        return CmsLog.getLog(obj);
     }
 
     /**
@@ -796,14 +800,14 @@ public final class OpenCmsCore {
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". System file.encoding : " + systemEncoding);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". System file.encoding : " + systemEncoding);
         }
         
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Ethernet address used: " + ethernetAddress);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Ethernet address used: " + ethernetAddress);
         }
         CmsUUID.init(ethernetAddress);
 
@@ -816,23 +820,20 @@ public final class OpenCmsCore {
 
         // check the installed Java SDK
         try {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            if (CmsLog.LOG.isInfoEnabled()) {
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                getLog(CmsLog.CHANNEL_INIT).info(". Java VM in use       : " + jdkinfo);
+                CmsLog.LOG.info(". Java VM in use       : " + jdkinfo);
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                getLog(CmsLog.CHANNEL_INIT).info(". Operating sytem      : " + osinfo);
+                CmsLog.LOG.info(". Operating sytem      : " + osinfo);
             }
         } catch (Exception e) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "2", e);
-            }
             // any exception here is fatal and will cause a stop in processing
-            throw e;
+            throwInitException(new CmsInitException(OpenCmsCore.C_MSG_CRITICAL_ERROR + "2", e));
         }           
         
         // initialize the memory monitor
@@ -853,11 +854,10 @@ public final class OpenCmsCore {
         String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
         if (defaultEncoding == null) {
             String msg = "OpenCms startup failure: Configured encoding '" + setEncoding + "' not supported by the Java VM";
-            getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
-            throw new Exception(msg);            
+            throwInitException(new CmsInitException(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg));           
         }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms encoding     : " + defaultEncoding);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". OpenCms encoding     : " + defaultEncoding);
         }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
         
@@ -880,8 +880,8 @@ public final class OpenCmsCore {
         while (it.hasNext()) {
             I_CmsRequestHandler handler = (I_CmsRequestHandler)it.next();
             addRequestHandler(handler);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Request handler class: " + handler.getClass().getName() + " activated");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.warn(". Request handler class: " + handler.getClass().getName() + " activated");
             }                    
         }    
         
@@ -903,19 +903,19 @@ public final class OpenCmsCore {
         // try to initialize the flex cache
         CmsFlexCache flexCache = null;
         try {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : starting");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(". Flex cache init      : starting");
             }
             // get the flex cache configuration from the SystemConfiguration
             CmsFlexCacheConfiguration flexCacheConfiguration = systemConfiguration.getCmsFlexCacheConfiguration();
             // pass configuration to flex cache for initialization
             flexCache = new CmsFlexCache(flexCacheConfiguration);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : finished");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(". Flex cache init      : finished");
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Flex cache init      : non-critical error " + e.toString());
+            if (CmsLog.LOG.isWarnEnabled()) {
+                CmsLog.LOG.warn(". Flex cache init      : non-critical error " + e.toString());
             }
         }   
         
@@ -953,16 +953,8 @@ public final class OpenCmsCore {
         // get the password handler
         m_passwordHandler = systemConfiguration.getPasswordHandler();
                 
-        try {
-            // init the OpenCms security manager
-            m_securityManager = CmsSecurityManager.newInstance(m_configurationManager, systemConfiguration.getRuntimeInfoFactory());
-        } catch (Exception e) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "3", e);
-            }
-            // any exception here is fatal and will cause a stop in processing
-            throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
-        }      
+        // init the OpenCms security manager
+        m_securityManager = CmsSecurityManager.newInstance(m_configurationManager, systemConfiguration.getRuntimeInfoFactory());
 
         // initialize the Thread store
         m_threadStore = new CmsThreadStore();
@@ -1023,15 +1015,14 @@ public final class OpenCmsCore {
         // read the the OpenCms servlet mapping from the servlet context parameters
         String servletMapping = context.getInitParameter("OpenCmsServlet");
         if (servletMapping == null) {
-            m_instance = null;
-            throw new CmsInitException("OpenCms servlet mapping not configured in 'web.xml', please set the 'OpenCmsServlet' parameter.");
+            throwInitException(new CmsInitException("OpenCms servlet mapping not configured in 'web.xml', please set the 'OpenCmsServlet' parameter."));
         }
 
         // check for OpenCms home (base) directory path
-        String base = context.getInitParameter("opencms.home");
-        if (base == null || "".equals(base)) {
-            base = searchWebInfFolder(context.getRealPath("/"));
-            if (base == null || "".equals(base)) {
+        String webInfPath = context.getInitParameter("opencms.home");
+        if (CmsStringUtil.isEmpty(webInfPath)) {
+            webInfPath = searchWebInfFolder(context.getRealPath("/"));
+            if (CmsStringUtil.isEmpty(webInfPath)) {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
         }
@@ -1048,7 +1039,7 @@ public final class OpenCmsCore {
         String webApplicationContext = context.getInitParameter("WebApplicationContext");
         
         // now initialize the system info with the path and mapping information
-        getSystemInfo().init(base, servletMapping, webApplicationContext, defaultWebApplication);
+        getSystemInfo().init(webInfPath, servletMapping, webApplicationContext, defaultWebApplication);
 
         // Collect the configurations 
         ExtendedProperties configuration = null;
@@ -1060,21 +1051,9 @@ public final class OpenCmsCore {
         
         // check if the wizard is enabled, if so stop initialization     
         if (configuration.getBoolean("wizard.enabled", true)) {
-            m_instance = null;
             throw new CmsInitException("OpenCms setup wizard is enabled, unable to start OpenCms", CmsInitException.C_INIT_WIZARD_ENABLED);
-        }
-        
-        // set path to log file
-        String logfile = (String)configuration.get("log.file");
-        if (logfile != null) {
-            logfile = getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(logfile);
-            configuration.put("log.file", logfile);
-        }
-        getSystemInfo().setLogFileRfsPath(logfile);
+        }       
 
-        // initialize the logging
-        m_log.init(configuration, getSystemInfo().getConfigurationFileRfsPath());
-        
         // output startup message to STDERR
         System.err.println("\n\nStarting OpenCms, version " + OpenCms.getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
         for (int i = 0; i < I_CmsConstants.C_COPYRIGHT.length; i++) {
@@ -1083,36 +1062,32 @@ public final class OpenCmsCore {
         System.err.println();
 
         // output startup message to logfile
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version " + OpenCms.getSystemInfo().getVersionName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(".");
+            CmsLog.LOG.info(".");
+            CmsLog.LOG.info(".");
+            CmsLog.LOG.info(".");
+            CmsLog.LOG.info(". OpenCms version " + OpenCms.getSystemInfo().getVersionName());
             for (int i = 0; i < I_CmsConstants.C_COPYRIGHT.length; i++) {
-                getLog(CmsLog.CHANNEL_INIT).info(". " + I_CmsConstants.C_COPYRIGHT[i]);
+                CmsLog.LOG.info(". " + I_CmsConstants.C_COPYRIGHT[i]);
             }
-            getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-            getLog(CmsLog.CHANNEL_INIT).info(". Startup time         : " + (new Date(System.currentTimeMillis())));
-            getLog(CmsLog.CHANNEL_INIT).info(". Servlet container    : " + context.getServerInfo());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version      : " + getSystemInfo().getVersionName());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms webapp name  : " + getSystemInfo().getWebApplicationName());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms servlet path : " + getSystemInfo().getServletPath());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context      : " + getSystemInfo().getOpenCmsContext());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms WEB-INF path : " + getSystemInfo().getWebInfRfsPath());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms property file: " + getSystemInfo().getConfigurationFileRfsPath());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms log file     : " + getSystemInfo().getLogFileRfsPath());
+            CmsLog.LOG.info(".                      ...............................................................");
+            CmsLog.LOG.info(". Startup time         : " + (new Date(System.currentTimeMillis())));
+            CmsLog.LOG.info(". Servlet container    : " + context.getServerInfo());
+            CmsLog.LOG.info(". OpenCms version      : " + getSystemInfo().getVersionName());
+            CmsLog.LOG.info(". OpenCms webapp name  : " + getSystemInfo().getWebApplicationName());
+            CmsLog.LOG.info(". OpenCms servlet path : " + getSystemInfo().getServletPath());
+            CmsLog.LOG.info(". OpenCms context      : " + getSystemInfo().getOpenCmsContext());
+            CmsLog.LOG.info(". OpenCms WEB-INF path : " + getSystemInfo().getWebInfRfsPath());
+            CmsLog.LOG.info(". OpenCms property file: " + getSystemInfo().getConfigurationFileRfsPath());
+            CmsLog.LOG.info(". OpenCms log file     : " + getSystemInfo().getLogFileRfsPath());
         }
 
         try {
             // initialize the configuration
             initConfiguration(configuration);
-        } catch (CmsException cmsex) {
-            if (cmsex.getType() == CmsException.C_RB_INIT_ERROR) {
-                throwInitException(new CmsInitException(C_ERRORMSG + "Could not connect to the database. Is the database up and running?\n\n", cmsex));
-            }
-        } catch (Exception exc) {
-            throwInitException(new CmsInitException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc));
+        } catch (Exception e) {
+            throwInitException(new CmsInitException(C_ERRORMSG + "Unable to initialize the OpenCms configuration", e));
         }
 
         // check if basic or form based authentication should be used      
@@ -1121,11 +1096,11 @@ public final class OpenCmsCore {
 
         // check if the session manager is initialized (will be initialized from servlet listener)
         if (m_sessionManager != null) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Session manager      : initialized");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(". Session manager      : initialized");
             }
         } else {
-            getLog(CmsLog.CHANNEL_INIT).error(". Session manager      : NOT initialized");
+            CmsLog.LOG.error(". Session manager      : NOT initialized");
         }        
     }
     
@@ -1134,8 +1109,7 @@ public final class OpenCmsCore {
      */
     protected void initMembers() {
 
-        synchronized (m_lock) {
-            m_log = new CmsLog();
+        synchronized (LOCK) {
             m_resourceInitHandlers = new ArrayList();
             m_eventListeners = new HashMap();
             m_requestHandlers = new HashMap();
@@ -1266,14 +1240,14 @@ public final class OpenCmsCore {
      */
     protected void initServlet(OpenCmsServlet servlet) {
 
-        synchronized (m_lock) {
+        synchronized (LOCK) {
             // add the servlets request handler
             addRequestHandler(servlet);
             // output the final 'startup is finished' message
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". OpenCms is running!  : Total startup time was " + CmsStringUtil.formatRuntime(getSystemInfo().getRuntime()));
-                getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-                getLog(CmsLog.CHANNEL_INIT).info(".");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(". OpenCms is running!  : Total startup time was " + CmsStringUtil.formatRuntime(getSystemInfo().getRuntime()));
+                CmsLog.LOG.info(".                      ...............................................................");
+                CmsLog.LOG.info(".");
             }
         }
     }
@@ -1307,7 +1281,7 @@ public final class OpenCmsCore {
             return null;
         }
 
-        File configFile = new File(f, I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE.replace('/', File.separatorChar));
+        File configFile = new File(f, "config/opencms.xml".replace('/', File.separatorChar));
         if (configFile.exists() && configFile.isFile()) {
             return f.getAbsolutePath();
         }
@@ -1389,14 +1363,14 @@ public final class OpenCmsCore {
      */
     protected OpenCmsCore upgradeRunlevel(ExtendedProperties configuration) {
         
-        synchronized (m_lock) {
+        synchronized (LOCK) {
             if ((m_instance != null) && (getRunLevel() >= OpenCms.RUNLEVEL_2_INITIALIZING)) {
                 // instance already in runlevel 3 or 4
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).error("Wrong init sequence, can not upgrade to runlevel 3 from runlevel " + getRunLevel());
+                if (CmsLog.LOG.isErrorEnabled()) {
+                    CmsLog.LOG.error("Wrong init sequence, can not upgrade to runlevel 3 from runlevel " + getRunLevel());
                 }
                 return m_instance;
             }
@@ -1408,10 +1382,9 @@ public final class OpenCmsCore {
                 // upgrade the runlevel - OpenCms shell is available
                 setRunLevel(OpenCms.RUNLEVEL_3_SHELL_ACCESS);
             } catch (Throwable t) {
-                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
-                }
+                CmsLog.LOG.fatal("Critical error during OpenCms initialization", t);
                 m_instance = null;
+                m_lastInitErrorTime = System.currentTimeMillis();
             }
             return m_instance;
         }
@@ -1429,15 +1402,13 @@ public final class OpenCmsCore {
      */
     protected OpenCmsCore upgradeRunlevel(ServletContext context) {
         
-        synchronized (m_lock) {
+        synchronized (LOCK) {
             if ((m_instance != null) && (getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS)) {
                 // instance already in runlevel 5 or 6
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).error("Wrong init sequence, can not upgrade to runlevel 4 from runlevel " + getRunLevel());
-                }
+                CmsLog.LOG.error("Wrong init sequence, can not upgrade to runlevel 4 from runlevel " + getRunLevel());
                 return m_instance;
             }
             try {
@@ -1448,19 +1419,10 @@ public final class OpenCmsCore {
                 // initialization successfully finished - OpenCms servlet is online
                 // the runlevel will change from 2 directly to 4, this is on purpose
                 setRunLevel(OpenCms.RUNLEVEL_4_SERVLET_ACCESS);
-            } catch (CmsInitException e) {
-                if (e.getType() != CmsInitException.C_INIT_WIZARD_ENABLED) {
-                    // do not output the "wizard enabled" message on the log
-                    if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", e);
-                    }
-                }
-                m_instance = null;
             } catch (Throwable t) {
-                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
-                }
+                CmsLog.LOG.fatal("Critical error during OpenCms initialization", t);
                 m_instance = null;
+                m_lastInitErrorTime = System.currentTimeMillis();
             }
             return m_instance;
         }
@@ -1565,10 +1527,8 @@ public final class OpenCmsCore {
         Properties htmlProps = new Properties();
         try {
             htmlProps.load(getClass().getClassLoader().getResourceAsStream(C_FILE_HTML_MESSAGES));
-        } catch (Throwable thr) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Could not load " + C_FILE_HTML_MESSAGES, thr);
-            }
+        } catch (Throwable th) {
+            CmsLog.LOG.error("Could not load " + C_FILE_HTML_MESSAGES, th);
         }      
         
         // get localized message bundle
@@ -2076,8 +2036,8 @@ public final class OpenCmsCore {
         if (m_instance != null) {
             if (m_instance.m_runLevel >= OpenCms.RUNLEVEL_1_CORE_OBJECT) {
                 // otherwise the log is not available
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(
                         ". Runlevel change      : Switching from " + m_instance.m_runLevel + " to " + level);
                 }
             }
@@ -2099,9 +2059,7 @@ public final class OpenCmsCore {
         }
         System.err.println("\n--------------------\nCritical error during OpenCms context init phase:\n" + message);
         System.err.println("Giving up, unable to start OpenCms.\n--------------------");
-        if (getLog(this).isFatalEnabled()) {
-            getLog(this).fatal("Unable to start OpenCms", cause);
-        }
+        // no need to log the cause here, this will be done later by the calling classes
         throw cause;
     }
 

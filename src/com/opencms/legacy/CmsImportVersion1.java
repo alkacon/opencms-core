@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2005/04/18 07:15:37 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
-import com.opencms.template.CmsXmlTemplateLinkConverter;
+import com.opencms.template.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

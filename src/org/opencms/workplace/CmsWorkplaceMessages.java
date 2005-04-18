@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/04/10 21:00:47 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -73,7 +74,7 @@ public class CmsWorkplaceMessages extends CmsMessages {
     public static final String NULL_STRING = "null";
 
     /** Static reference to the log. */
-    private static final Log LOG = OpenCms.getLog(CmsWorkplaceMessages.class);
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceMessages.class);
 
     /** List of resource bundles from the installed modules. */
     private List m_bundles;

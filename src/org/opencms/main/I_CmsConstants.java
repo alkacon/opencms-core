@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/04/15 15:50:41 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public interface I_CmsConstants {
 
@@ -205,9 +205,6 @@ public interface I_CmsConstants {
 
     /** "driver.project" string in the configuration-file. */
     String C_CONFIGURATION_PROJECT = "driver.project";
-
-    /** Path to the "opencms.properties" file relative to the "WEB-INF" directory of the application. */
-    String C_CONFIGURATION_PROPERTIES_FILE = "config/opencms.properties";
 
     /** "registry" string in the configuration-file. */
     String C_CONFIGURATION_REGISTRY = "registry";

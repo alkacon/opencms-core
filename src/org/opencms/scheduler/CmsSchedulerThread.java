@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThread.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,22 @@
 
 package org.opencms.scheduler;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
+
+import org.apache.commons.logging.Log;
 
 /**
  * A worker thread for the OpenCms scheduler.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsSchedulerThread extends Thread {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSchedulerThread.class);
 
     /** The scheduler thread pool this thread belongs to. */
     private CmsSchedulerThreadPool m_pool;
@@ -117,9 +122,9 @@ public class CmsSchedulerThread extends Thread {
                     m_runnable.run();
                 }
             } catch (InterruptedException e) {
-                OpenCms.getLog(this).error("Scheduler thread '" + getName() + "' interrupted", e);
+                LOG.error(Messages.get().key(Messages.LOG_THREAD_INTERRUPTED_1, getName()), e);
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Scheduler error in thread '" + getName() + "' while executing", t);
+                LOG.error(Messages.get().key(Messages.LOG_THREAD_ERROR_1, getName()), t);
             } finally {
                 if (runOnce) {
                     m_run = false;
@@ -127,8 +132,8 @@ public class CmsSchedulerThread extends Thread {
                 m_runnable = null;
             }
         }
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Scheduler thread '" + getName() + "' is shutting down");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_THREAD_SHUTDOWN_1, getName()));
         }
     }
 

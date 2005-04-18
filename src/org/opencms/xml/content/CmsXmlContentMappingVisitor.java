@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import org.apache.commons.logging.Log;
@@ -46,13 +46,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static final Log LOG = OpenCms.getLog(CmsXmlContentMappingVisitor.class);
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentMappingVisitor.class);
 
     /** The initialized OpenCms user context (required for VFS access). */
     CmsObject m_cms;

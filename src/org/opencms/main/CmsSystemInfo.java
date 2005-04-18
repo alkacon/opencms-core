@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/03/13 09:49:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -77,9 +77,6 @@ public class CmsSystemInfo {
 
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
-
-    /** The  abolute path to the OpenCms log file (in the "real" file system). */
-    private String m_logFileRfsPath;
 
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
@@ -188,7 +185,7 @@ public class CmsSystemInfo {
             // apparently this is an absolute path already
             return f.getAbsolutePath();
         }
-        return CmsFileUtil.normalizePath(m_webInfRfsPath + path);
+        return CmsFileUtil.normalizePath(getWebInfRfsPath() + path);
     }
 
     /**
@@ -199,7 +196,7 @@ public class CmsSystemInfo {
     public String getConfigurationFileRfsPath() {
 
         if (m_configurationFileRfsPath == null) {
-            m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE);
+            m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf("config/opencms.properties");
         }
         return m_configurationFileRfsPath;
     }
@@ -253,11 +250,14 @@ public class CmsSystemInfo {
     /**
      * Returns the filename of the logfile (in the "real" file system).<p>
      * 
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     * 
      * @return the filename of the logfile (in the "real" file system)
      */
     public String getLogFileRfsPath() {
 
-        return m_logFileRfsPath;
+        return CmsLog.getLogFileRfsPath();
     }
 
     /**
@@ -574,19 +574,6 @@ public class CmsSystemInfo {
         m_defaultEncoding = encoding.intern();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
-        }
-    }
-
-    /**
-     * Sets the absolute path to the OpenCms logfile (in the "real" file system).<p>
-     *  
-     * @param logFileRfsPath the absolute path to the OpenCms logfile
-     */
-    protected void setLogFileRfsPath(String logFileRfsPath) {
-
-        m_logFileRfsPath = logFileRfsPath;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileRfsPath);
         }
     }
 

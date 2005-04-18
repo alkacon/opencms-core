@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/Messages.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,9 +88,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_CLASS_NOT_FOUND_1 = "LOG_CLASS_NOT_FOUND_1";
 
     /** Message contant for key in the resource bundle. */
-    public static final String LOG_JOB_EXECUTED_1 = "LOG_JOB_EXECUTED_1";
-
-    /** Message contant for key in the resource bundle. */
     public static final String LOG_ILLEGAL_ACCESS_0 = "LOG_ILLEGAL_ACCESS_0";
 
     /** Constant for message LOG_INSTANCE_GENERATION_0. */
@@ -103,7 +100,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_JOB_CREATED_1 = "LOG_JOB_CREATED_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_JOB_EXECUTED_1 = "LOG_JOB_EXECUTED_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_JOB_EXECUTION_ERROR_1 = "LOG_JOB_EXECUTION_ERROR_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_JOB_EXECUTION_OK_2 = "LOG_JOB_EXECUTION_OK_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_JOB_NEXT_EXECUTION_2 = "LOG_JOB_NEXT_EXECUTION_2";
@@ -127,10 +130,34 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SHUTDOWN_ERROR_0 = "LOG_SHUTDOWN_ERROR_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREAD_ERROR_1 = "LOG_THREAD_ERROR_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREAD_INTERRUPTED_1 = "LOG_THREAD_INTERRUPTED_1";
+
+    /** Name of the used resource bundle. */
+    public static final String LOG_THREAD_POOL_SHUTDOWN_0 = "LOG_THREAD_POOL_SHUTDOWN_0";
+
+    /** Name of the used resource bundle. */
+    public static final String LOG_THREAD_POOL_STILL_ACTIVE_1 = "LOG_THREAD_POOL_STILL_ACTIVE_1";
+
+    /** Name of the used resource bundle. */
+    public static final String LOG_THREAD_POOL_UNAVAILABLE_0 = "LOG_THREAD_POOL_UNAVAILABLE_0";
+
+    /** Name of the used resource bundle. */
+    public static final String LOG_THREAD_POOL_WAITING_1 = "LOG_THREAD_POOL_WAITING_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREAD_SHUTDOWN_1 = "LOG_THREAD_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_UNSCHEDULED_JOB_1 = "LOG_UNSCHEDULED_JOB_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_UNSCHEDULING_ERROR_1 = "LOG_UNSCHEDULING_ERROR_1";
+
+    /** Name of the used resource bundle. */
+    public static final String LOG_USING_THREAD_CLASSLOADER_1 = "LOG_USING_THREAD_CLASSLOADER_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.scheduler.messages";

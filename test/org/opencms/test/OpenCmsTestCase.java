@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/04/14 10:24:35 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.CmsShell;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -85,7 +84,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * 
  * @since 5.3.5
  */
@@ -222,11 +221,7 @@ public class OpenCmsTestCase extends TestCase {
             initConfiguration();
 
             // set "OpenCmsLog" system property to enable the logger
-            System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
             OpenCmsTestLogAppender.setBreakOnError(true);
-        } else {
-            // set "OpenCmsLog" system property to enable the logger
-            System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
         }
     }
 

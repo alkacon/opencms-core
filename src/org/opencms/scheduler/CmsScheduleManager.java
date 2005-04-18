@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.scheduler;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
@@ -74,7 +75,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -84,8 +85,8 @@ public class CmsScheduleManager implements Job {
     /** Key for the scheduled job description in the job data map. */
     public static final String C_SCHEDULER_JOB_INFO = "org.opencms.scheduler.CmsScheduledJobInfo";
 
-    /** The static log. */
-    public static final Log LOG = OpenCms.getLog(CmsScheduleManager.class);
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsScheduleManager.class);
 
     /** The Admin context used for creation of users for the individual jobs. */
     private static CmsObject m_adminCms;
@@ -121,13 +122,9 @@ public class CmsScheduleManager implements Job {
         if (m_configuredJobs != null) {
             size = m_configuredJobs.size();
         }
-        
-        int todo = 0;
-        // TODO: write to the right log channel
-        // TODO: move log4 configuration out of opencms.properties, remove code crap
-        
-        if (LOG.isInfoEnabled()) {                       
-            LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
+
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
         }
     }
 
@@ -171,7 +168,7 @@ public class CmsScheduleManager implements Job {
 
                 String result = job.launch(cms, jobInfo.getParameters());
                 if (CmsStringUtil.isNotEmpty(result) && LOG.isInfoEnabled()) {
-                    LOG.info(jobInfo.getJobName() + ": " + result);
+                    LOG.info(Messages.get().key(Messages.LOG_JOB_EXECUTION_OK_2, jobInfo.getJobName(), result));
                 }
             } catch (Throwable t) {
                 LOG.error(Messages.get().key(Messages.LOG_JOB_EXECUTION_ERROR_1, jobInfo.getJobName()), t);
@@ -241,8 +238,8 @@ public class CmsScheduleManager implements Job {
             return;
         }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_INITIALIZED_0));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_INITIALIZED_0));
         }
 
         if (m_configuredJobs != null) {
@@ -262,9 +259,9 @@ public class CmsScheduleManager implements Job {
             return;
         }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_STARTED_0));
-            LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_CONFIG_FINISHED_0));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_STARTED_0));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_CONFIG_FINISHED_0));
         }
     }
 
@@ -402,8 +399,8 @@ public class CmsScheduleManager implements Job {
 
         m_adminCms = null;
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
 
         if (m_scheduler != null) {

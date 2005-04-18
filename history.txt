@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/04/18 11:25:21 $
- * Version: $Revision: 1.626 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.627 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,10 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 * Applied PostgeSQL patches supplied by Antonio
 ! It's now possible to add the Workplace context menu configuration for a new resource type in a module
 - Shared parts of DTD's in the OpenCms configuration are now included as sub-DTD's, not copied
+- Updated log4j.jar to latest version 1.2.9
+- Updated quartz.jar to latest version 1.4.5
+- Removed logging configuration from opencms.properties to default log4j.properties file
+- Improved logging configuration on system startup to allow static log members in all classes
 
 OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 * Fixed SQL statement compatibility issue with MySQL 3.2.x

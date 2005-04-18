@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,194 +31,110 @@
 
 package org.opencms.main;
 
-import org.opencms.util.CmsStringUtil;
+import org.opencms.file.CmsResource;
+import org.opencms.util.CmsFileUtil;
+
+import java.io.File;
+import java.net.URL;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.helpers.Loader;
 
 /**
  * Provides the OpenCms logging mechanism.<p>
  * 
- * Different logging channels are supported and can be
- * activated by the log settings in the property file.
- * For every log channel a log level is supported.<p>
+ * The OpenCms logging mechanism is based on Apache Commons Logging. 
+ * However, log4j is shipped with OpenCms and assumed to be used as default logging mechanism.
+ * Since apparently Commons Logging logging may cause issues in more complex classloader scenarios,
+ * we will probably switch the logging interface to <code>UGLI</code> once the final release is available.<p>
+ * 
+ * The log4j configuration file shipped with OpenCms is located 
+ * in <code>${opencms.WEB-INF}/classes/log4j.properties</code>. OpenCms will auto-configure itself 
+ * to write it's log file to <code>${opencms.WEB-INF}/logs/opencms.log</code>. This default behaviour
+ * can be supressed by either using a log4j configuration file from another location, or by setting the
+ * special property <code>${opencms.set.logfile}</code> in the log4j configuration file to <code>false</code>. 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
-public class CmsLog implements Log {
+public final class CmsLog {
 
     /** Initialization messages. */
     public static final String CHANNEL_INIT = "org.opencms.init";
 
-    /** System property that indicates if logged errors should throw a RuntimeException (for Junit tests). */
-    public static final String SYSPROP_BREAKONERROR = "OpenCmsLogBreakOnError";
-
-    /** System property that points to the OpenCms log file (userd for Junit test cases). */
-    public static final String SYSPROP_LOGFILE = "OpenCmsLog";
-
-    /** The path to the loggers configuration file. */
-    private String m_configFile;
+    /** Log for initialization messages. */
+    public static final Log LOG = LogFactory.getLog(CHANNEL_INIT);
+    
+    /** The  abolute path to the OpenCms log file (in the "real" file system). */
+    private static String m_logFileRfsPath;
 
     /**
-     * Creates a new OpenCms logger.<p>
+     * Hides the public constructor.<p>
      */
-    protected CmsLog() {
+    private CmsLog() {
 
-        // check for "OpenCmsLog" system variable (used for testing)
-        String openCmsLog = System.getProperty(SYSPROP_LOGFILE);
-        if (openCmsLog != null) {
-            m_configFile = openCmsLog;
+        // hides the public constructor
+    }
+
+    /**
+     * Initializes the OpenCms logger configuration.<p>
+     */
+    static {
+        try {
+            // look for the log4j.properties that shipped with OpenCms
+            URL url = Loader.getResource("log4j.properties");
+            if (url != null) {
+                // found some log4j properties, let's see if these are the ones used by OpenCms
+                String path = new File(url.getPath()).getAbsolutePath();
+                // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
+                String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(url.getPath()));
+                // check for the OpenCms configuration file
+                String configFilePath = webInfPath + "config/opencms.xml";
+                File configFile = new File(configFilePath);
+                if (configFile.exists()) {
+                    // assume this is a default OpenCms log configuration                
+                    ExtendedProperties configuration = new ExtendedProperties(path);
+                    // check if OpenCms should set the log file environment variable
+                    boolean setLogFile = configuration.getBoolean("opencms.set.logfile", false);
+                    if (setLogFile) {
+                        // set "opencms.log" variable 
+                        String logFilePath = CmsFileUtil.normalizePath(webInfPath + "logs/opencms.log", '/');
+                        File logFile = new File(logFilePath);
+                        m_logFileRfsPath = logFile.getAbsolutePath();
+                        System.setProperty("opencms.logfile", m_logFileRfsPath);
+                        // re-read the configuration with the new environment variable available
+                        PropertyConfigurator.configure(path);
+                    }
+                }
+                // can't localize this message since this would end in an endless logger init loop
+                LOG.info(". Log4j config file    : " + path);
+            }
+        } catch (SecurityException e) {
+            // ignore, may be caused if environment can't be written
+        } catch (Exception e) {
+            // unexpected but nothing we can do about it, print stack trace and continue
+            e.printStackTrace(System.err);
         }
     }
-
+    
     /**
-     * @see org.apache.commons.logging.Log#debug(java.lang.Object)
+     * Returns the filename of the logfile (in the "real" file system).<p>
+     * 
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     * 
+     * @return the filename of the logfile (in the "real" file system)
      */
-    public void debug(Object message) {
+    protected static String getLogFileRfsPath() {
 
-        doLog(message, null);
+        return m_logFileRfsPath;
     }
-
-    /**
-     * @see org.apache.commons.logging.Log#debug(java.lang.Object, java.lang.Throwable)
-     */
-    public void debug(Object message, Throwable t) {
-
-        doLog(message, t);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#error(java.lang.Object)
-     */
-    public void error(Object message) {
-
-        doLog(message, null);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#error(java.lang.Object, java.lang.Throwable)
-     */
-    public void error(Object message, Throwable t) {
-
-        doLog(message, t);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#fatal(java.lang.Object)
-     */
-    public void fatal(Object message) {
-
-        doLog(message, null);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#fatal(java.lang.Object, java.lang.Throwable)
-     */
-    public void fatal(Object message, Throwable t) {
-
-        doLog(message, t);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#info(java.lang.Object)
-     */
-    public void info(Object message) {
-
-        doLog(message, null);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#info(java.lang.Object, java.lang.Throwable)
-     */
-    public void info(Object message, Throwable t) {
-
-        doLog(message, t);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#isDebugEnabled()
-     */
-    public boolean isDebugEnabled() {
-
-        return false;
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#isErrorEnabled()
-     */
-    public boolean isErrorEnabled() {
-
-        return true;
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#isFatalEnabled()
-     */
-    public boolean isFatalEnabled() {
-
-        return true;
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#isInfoEnabled()
-     */
-    public boolean isInfoEnabled() {
-
-        return false;
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#isTraceEnabled()
-     */
-    public boolean isTraceEnabled() {
-
-        return false;
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#isWarnEnabled()
-     */
-    public boolean isWarnEnabled() {
-
-        return false;
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#trace(java.lang.Object)
-     */
-    public void trace(Object message) {
-
-        doLog(message, null);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#trace(java.lang.Object, java.lang.Throwable)
-     */
-    public void trace(Object message, Throwable t) {
-
-        doLog(message, t);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#warn(java.lang.Object)
-     */
-    public void warn(Object message) {
-
-        doLog(message, null);
-    }
-
-    /**
-     * @see org.apache.commons.logging.Log#warn(java.lang.Object, java.lang.Throwable)
-     */
-    public void warn(Object message, Throwable t) {
-
-        doLog(message, t);
-    }
-
+    
+    
     /**
      * Returns the log for the selected object.<p>
      * 
@@ -229,7 +145,7 @@ public class CmsLog implements Log {
      * @param obj the object channel to use
      * @return the log for the selected object channel
      */
-    protected Log getLogger(Object obj) {
+    public static Log getLog(Object obj) {
 
         if (obj instanceof String) {
             return LogFactory.getLog((String)obj);
@@ -237,66 +153,6 @@ public class CmsLog implements Log {
             return LogFactory.getLog((Class)obj);
         } else {
             return LogFactory.getLog(obj.getClass());
-        }
-    }
-
-    /**
-     * Initializes the OpenCms logger.<p>
-     * 
-     * @param configuration the OpenCms configuration
-     * @param configFile the path to the logger configuration file 
-     */
-    protected void init(ExtendedProperties configuration, String configFile) {
-
-        m_configFile = configFile;
-        // clean up previously initialized loggers
-        LogFactory.releaseAll();
-        try {
-            // set "opencms.log" variable 
-            System.setProperty("opencms.log", configuration.getString("log.file"));
-            // set property values for log4j configuration, will be ignored if log4j is not used
-            String log4jDebug = configuration.getString("log.log4j.debug");
-            if (log4jDebug != null) {
-                // enable log4j debug output 
-                System.setProperty("log4j.debug", log4jDebug);
-            }
-            String log4jPath = configuration.getString("log.log4j.configuration");
-            if (CmsStringUtil.isNotEmpty(log4jPath)) {
-                // set the log4j configuration path
-                log4jPath = log4jPath.trim();
-                if ("this".equalsIgnoreCase(log4jPath)) {
-                    log4jPath = m_configFile;
-                }
-                System.setProperty("log4j.configuration", "file:" + log4jPath);
-                // Required for Tomcat5, or else log4j will not properly initialize
-                PropertyConfigurator.configure(log4jPath);
-            }
-        } catch (SecurityException e) {
-            // ignore, in this case log settings must be provided by environment or servlet context
-        }
-    }
-
-    /**
-     * Returns true if the log already has been initialitzed.<p>
-     * 
-     * @return true if the log already has been initialitzed
-     */
-    protected boolean isInitialized() {
-
-        return (m_configFile != null);
-    }
-
-    /**
-     * Writes a log message and an optional Throwable to System.err.<p>
-     * 
-     * @param message the message to log
-     * @param t the Throwable to log (if null nothing is logged)
-     */
-    private void doLog(Object message, Throwable t) {
-
-        System.err.println(message);
-        if (t != null) {
-            t.printStackTrace(System.err);
         }
     }
 }

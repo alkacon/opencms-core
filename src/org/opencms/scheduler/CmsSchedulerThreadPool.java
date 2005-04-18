@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2005/02/18 14:23:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,9 @@
 
 package org.opencms.scheduler;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
+
+import org.apache.commons.logging.Log;
 
 import org.quartz.SchedulerConfigException;
 import org.quartz.spi.ThreadPool;
@@ -70,10 +72,13 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
 public class CmsSchedulerThreadPool implements ThreadPool {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSchedulerThreadPool.class);
 
     private int m_currentThreadCount;
 
@@ -192,8 +197,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         }
 
         if (m_inheritLoader) {
-            OpenCms.getLog(this).debug(
-                "Job execution threads will use class loader of thread: " + Thread.currentThread().getName());
+            LOG.debug(Messages.get().key(Messages.LOG_USING_THREAD_CLASSLOADER_1, Thread.currentThread().getName()));
         }
 
         // create the worker threads and start them
@@ -221,7 +225,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         }
 
         if (m_isShutdown) {
-            OpenCms.getLog(this).error("Scheduler thread pool was already shut down, could not execute runnable.");
+            LOG.debug(Messages.get().key(Messages.LOG_THREAD_POOL_UNAVAILABLE_0));
             return false;
         }
 
@@ -308,8 +312,8 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                 for (int i = 0; i < m_currentThreadCount; i++) {
                     if (m_workers[i].isAlive()) {
                         try {
-                            if (OpenCms.getLog(this).isDebugEnabled()) {
-                                OpenCms.getLog(this).debug("Waiting for thread no. " + i + " to shut down");
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(Messages.get().key(Messages.LOG_THREAD_POOL_WAITING_1, new Integer(i)));
                             }
 
                             // note: with waiting infinite - join(0) - the application 
@@ -325,11 +329,11 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             }
 
             int activeCount = m_threadGroup.activeCount();
-            if (activeCount > 0 && OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("There are still " + activeCount + " worker threads active.");
+            if (activeCount > 0 && LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().key(Messages.LOG_THREAD_POOL_STILL_ACTIVE_1, new Integer(activeCount)));
             }
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Scheduler has been shut down");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_THREAD_POOL_SHUTDOWN_0));
             }
         }
     }
@@ -378,8 +382,8 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                         m_threadPriority, 
                         m_makeThreadsDaemons);
                 if (m_inheritLoader) {
-                    m_workers[m_currentThreadCount].setContextClassLoader(Thread.currentThread()
-                        .getContextClassLoader());
+                    m_workers[m_currentThreadCount].setContextClassLoader(
+                        Thread.currentThread().getContextClassLoader());
                 }
                 // increas the current size
                 m_currentThreadCount++;

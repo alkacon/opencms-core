@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.scheduler;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 
 import java.util.Collections;
 import java.util.Date;
@@ -340,8 +340,8 @@ import org.quartz.Trigger;
  */
 public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
-    /** The static log. */
-    public static final Log LOG = OpenCms.getLog(CmsScheduleManager.class);
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsScheduledJobInfo.class);
 
     /** Indicates if this job is currently active in the scheduler or not. */
     private boolean m_active;

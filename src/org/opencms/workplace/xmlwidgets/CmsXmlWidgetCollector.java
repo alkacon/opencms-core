@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlWidgetCollector.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/18 21:21:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.xmlwidgets;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.I_CmsXmlContentValueVisitor;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -52,13 +52,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.4
  */
 public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static final Log LOG = OpenCms.getLog(CmsXmlWidgetCollector.class);
+    private static final Log LOG = CmsLog.getLog(CmsXmlWidgetCollector.class);
     
     /** The locale to get the values from. */
     private Locale m_locale;
