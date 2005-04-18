@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/04/18 09:37:17 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -233,7 +233,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      * 
      * @param startNode the startnode to add all rescource types to
      * @param resourceTypes the list of resource types
-     * @param module flag, signaling to add them modile resource types or not
+     * @param module flag, signaling to add them module resource types or not
      */
     public static void generateResourceTypeXml(Element startNode, List resourceTypes, boolean module) {
 
