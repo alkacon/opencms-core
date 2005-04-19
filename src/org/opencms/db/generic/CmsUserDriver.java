@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.81 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.82 $ $Date: 2005/04/19 17:20:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -426,8 +426,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception e) {
-            throw new CmsDataAccessException(e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -545,7 +543,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).error("Initialization of default users and groups failed", e);
             }
-            throw new RuntimeException(e);            
+            throw new RuntimeException(e);
         }
         
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
@@ -874,9 +872,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             return user;
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (CmsDataAccessException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new CmsDataAccessException(e);
+        } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -907,10 +905,10 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (CmsDataAccessException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new CmsDataAccessException(e);
+        } catch (ClassNotFoundException e) {
+            throw new CmsDataAccessException(e);            
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -946,9 +944,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             return user;
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (CmsDataAccessException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new CmsDataAccessException(e);
+        } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -983,7 +981,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new CmsDataAccessException(e);
+        } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -1014,7 +1014,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new CmsDataAccessException(e);
+        } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);

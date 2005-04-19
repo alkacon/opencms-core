@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -77,7 +77,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private List m_availableLocales;
 
     /** The default locale, this is the first configured locale. */
-    private Locale m_defaultLocale;
+    private static Locale m_defaultLocale;
 
     /** The default locale names (must be a subset of the available locale names). */
     private List m_defaultLocales;
@@ -147,7 +147,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     public static Locale getLocale(String localeName) {
 
         if (localeName == null) {
-            return OpenCms.getLocaleManager().getDefaultLocale();
+            return getDefaultLocale();
         }
         Locale locale;
         synchronized (m_localeCache) {
@@ -164,7 +164,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
                         "Could not create a Locale out of '" + localeName + "'",
                         t);
                     // map this error to the default locale
-                    locale = OpenCms.getLocaleManager().getDefaultLocale();
+                    locale = getDefaultLocale();
                 }
                 m_localeCache.put(localeName, locale);
             }
@@ -376,7 +376,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      *
      * @return the default locale
      */
-    public Locale getDefaultLocale() {
+    public static Locale getDefaultLocale() {
 
         return m_defaultLocale;
     }

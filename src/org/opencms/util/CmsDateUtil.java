@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2005/04/11 17:44:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.util;
 
-import org.opencms.main.OpenCms;
+import org.opencms.i18n.CmsLocaleManager;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -45,7 +45,7 @@ import java.util.TimeZone;
  * Utilities to get and set formated dates in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public final class CmsDateUtil {
 
@@ -93,7 +93,7 @@ public final class CmsDateUtil {
      */
     public static String getDateShort(long time) {
 
-        return getDate(new Date(time), DateFormat.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
+        return getDate(new Date(time), DateFormat.SHORT, CmsLocaleManager.getDefaultLocale());
     }
 
     /**
@@ -126,7 +126,7 @@ public final class CmsDateUtil {
      */
     public static String getDateTimeShort(long time) {
 
-        return getDateTime(new Date(time), DateFormat.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
+        return getDateTime(new Date(time), DateFormat.SHORT, CmsLocaleManager.getDefaultLocale());
     }
 
     /**

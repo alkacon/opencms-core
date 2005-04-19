@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.46 $ $Date: 2005/04/10 11:00:14 $
+ * @version $Revision: 1.47 $ $Date: 2005/04/19 17:20:51 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -82,6 +82,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMemoryMonitor.class);
+    
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
 
@@ -322,9 +325,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
         }
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
-            OpenCms.getLog(this).debug(
+            LOG.debug(
                 " New instance of CmsMemoryMonitor created at " + (new Date(System.currentTimeMillis())));
         }
 
@@ -418,8 +421,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             return;
         }
         m_lastClearCache = System.currentTimeMillis();
-        if (OpenCms.getLog(this).isWarnEnabled()) {
-            OpenCms.getLog(this).warn("Clearing caches because memory consumption has reached a critical level");
+        if (LOG.isWarnEnabled()) {
+            LOG.warn("Clearing caches because memory consumption has reached a critical level");
         }
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         System.gc();
@@ -501,8 +504,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // this might happen since even the .toArray() method internally creates an iterator
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Caught throwable " + t.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Caught throwable " + t.getMessage());
             }
         }
 
@@ -584,8 +587,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // this might happen since even the .toArray() method internally creates an iterator
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Caught throwable " + t.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Caught throwable " + t.getMessage());
             }
         }
 
@@ -632,8 +635,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // this might happen since even the .toArray() method internally creates an iterator
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Caught throwable " + t.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Caught throwable " + t.getMessage());
             }
         }
 
@@ -795,8 +798,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 email.setMsg(content);
                 new CmsMailTransport(email).send();
             }
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Memory Monitor " + (warning ? "warning" : "status") + " email send");
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Memory Monitor " + (warning ? "warning" : "status") + " email send");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -810,12 +813,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     private void monitorWriteLog(boolean warning) {
         
-        Log log = OpenCms.getLog(this);
-        
-        if (!log.isWarnEnabled()) {
+        if (!LOG.isWarnEnabled()) {
             // we need at last warn level for this output
             return;
-        } else if ((!warning) && (!log.isInfoEnabled())) {
+        } else if ((!warning) && (!LOG.isInfoEnabled())) {
             // if not warning we need info level
             return;
         } else if (warning
@@ -833,7 +834,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            log.warn(
+            LOG.warn(
                 " W A R N I N G Memory consumption of "
                     + m_memoryCurrent.getUsage()
                     + "% has reached a critical level"
@@ -883,11 +884,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             + m_memoryAverage.getCount();
         
         if (warning) {
-            log.warn(memStatus);
+            LOG.warn(memStatus);
         } else {
 
             m_logCount++;
-            log.info(
+            LOG.info(
                 "Memory monitor log for server "
                     + OpenCms.getSystemInfo().getServerName().toUpperCase()
                     + " ("
@@ -908,7 +909,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                log.info(
+                LOG.info(
                     "    "
                         + "Monitored: "
                         + name1.sprintf(key)
@@ -927,13 +928,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + " mb)";
             
-            log.info(memStatus);
-            log.info(avgStatus);
+            LOG.info(memStatus);
+            LOG.info(avgStatus);
 
             CmsSessionManager sm = OpenCms.getSessionManager();
 
             if (sm != null) {
-                log.info(
+                LOG.info(
                     "Sessions users: "
                         + sm.getSessionCountAuthenticated()
                         + " current: "
@@ -943,7 +944,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             sm = null;
             
-            log.info("OpenCms startup time was: " 
+            LOG.info("OpenCms startup time was: " 
                 + CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime())
                 + " - current runtime is: "
                 + CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime()));            

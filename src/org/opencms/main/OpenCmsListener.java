@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2005/03/06 09:26:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides the OpenCms system with information from the servlet context.<p>
  * 
@@ -48,18 +50,27 @@ import javax.servlet.http.HttpSessionListener;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class OpenCmsListener implements ServletContextListener, HttpSessionListener {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(OpenCmsListener.class);
 
     /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent event) {
 
-        // destroy the OpenCms instance
-        OpenCmsCore.getInstance().destroy();
+        try {
+            // destroy the OpenCms instance
+            OpenCmsCore.getInstance().destroy();
+        } catch (CmsInitException e) {
+            if (e.isNewError()) {
+                LOG.error(e);
+            }
+        }
     }
 
     /**
@@ -67,8 +78,14 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
      */
     public void contextInitialized(ServletContextEvent event) {
 
-        // upgrade the OpenCms runlevel
-        OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
+        try {
+            // upgrade the OpenCms runlevel
+            OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
+        } catch (CmsInitException e) {
+            if (e.isNewError()) {
+                LOG.error(e);
+            }
+        }
     }
 
     /**
@@ -76,8 +93,14 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
      */
     public void sessionCreated(HttpSessionEvent event) {
 
-        // inform the OpenCms session manager
-        OpenCmsCore.getInstance().getSessionManager().sessionCreated(event);
+        try {
+            // inform the OpenCms session manager
+            OpenCmsCore.getInstance().getSessionManager().sessionCreated(event);
+        } catch (CmsInitException e) {
+            if (e.isNewError()) {
+                LOG.error(e);
+            }
+        }
     }
 
     /**
@@ -85,7 +108,13 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
      */
     public void sessionDestroyed(HttpSessionEvent event) {
 
-        // inform the OpenCms session manager
-        OpenCmsCore.getInstance().getSessionManager().sessionDestroyed(event);
+        try {
+            // inform the OpenCms session manager
+            OpenCmsCore.getInstance().getSessionManager().sessionDestroyed(event);
+        } catch (CmsInitException e) {
+            if (e.isNewError()) {
+                LOG.error(e);
+            }
+        }
     }
 }

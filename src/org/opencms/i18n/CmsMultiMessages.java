@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/04/19 12:00:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,9 @@ import org.apache.commons.logging.Log;
  * it will be used only from the resource bundle where it was first found in. The resource bundle order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a resource bundle.<p>
  * 
- * @author  Michael Moossen (m.mmoossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Alexnader Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Moossen (m.mmoossen@alkacon.com)
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.3
  */
@@ -98,15 +99,13 @@ public class CmsMultiMessages extends CmsMessages {
      */
     public CmsMultiMessages(List messages) {
 
-        // dummy super constructor call
-        super("dummy", OpenCms.getLocaleManager().getDefaultLocale());
+        super();
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable();
         // set messages
         m_messages = messages;
     }
-    
-    
+
     /**
      * @see org.opencms.i18n.CmsMessages#getString(java.lang.String)
      */
@@ -115,15 +114,14 @@ public class CmsMultiMessages extends CmsMessages {
         return resolveKey(keyName);
     }
 
-    
     /**
      * @see org.opencms.i18n.CmsMessages#isInitialized()
      */
     public boolean isInitialized() {
 
-        return m_messages!=null && !m_messages.isEmpty();
+        return (m_messages != null) && !m_messages.isEmpty();
     }
-    
+
     /**
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, boolean)
      */

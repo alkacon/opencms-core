@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ public class CmsContextInfo {
         setProjectName(I_CmsConstants.C_PROJECT_ONLINE);
         setRequestedUri("/");
         setSiteRoot("/");
-        setLocaleName(OpenCms.getLocaleManager().getDefaultLocale().toString());
+        setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(I_CmsConstants.C_IP_LOCALHOST);
     }

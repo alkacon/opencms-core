@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/03/29 18:19:15 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,13 +59,20 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
 
     /** Error message if a configuration change is attempted after configuration is frozen. */
     public static final String C_MESSAGE_FROZEN = "Site configuration has been frozen and can not longer be changed!";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSiteManager.class);
+
+    /** The site that is configured at the moment, need to be recorded for the case that
+     * alias server are added during configuration. */
+    private List m_aliases;
 
     /** The default site root. */
     private CmsSite m_defaultSite;
@@ -88,13 +95,6 @@ public final class CmsSiteManager implements Cloneable {
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
 
-    /** The site that is configured at the moment, need to be recorded for the case that
-     * alias server are added during configuration. */
-    private List m_aliases;
-
-    /** The log object for this class. */
-    private static Log m_log;
-
     /**
      * Creates a new CmsSiteManager.<p>
      *
@@ -105,12 +105,8 @@ public final class CmsSiteManager implements Cloneable {
         m_siteRoots = new HashSet();
         m_aliases = new ArrayList();
 
-        if (m_log == null) {
-            m_log = OpenCms.getLog(this);
-        }
-
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site configuration   : starting");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Site configuration   : starting");
         }
     }
 
@@ -168,13 +164,15 @@ public final class CmsSiteManager implements Cloneable {
                 try {
                     CmsResource res = cms.readResource(folder);
                     if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
-                        String title = cms.readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false)
-                            .getValue();
+                        String title = cms.readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                         if (title == null) {
                             title = folder;
                         }
-                        result.add(new CmsSite(folder, res.getStructureId(), title, (CmsSiteMatcher)siteServers
-                            .get(folder)));
+                        result.add(new CmsSite(
+                            folder,
+                            res.getStructureId(),
+                            title,
+                            (CmsSiteMatcher)siteServers.get(folder)));
                     }
 
                 } catch (CmsException e) {
@@ -182,8 +180,8 @@ public final class CmsSiteManager implements Cloneable {
                 }
             }
         } catch (Throwable t) {
-            if (m_log.isErrorEnabled()) {
-                m_log.error("Error reading site properties", t);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("Error reading site properties", t);
             }
         } finally {
             // restore the user's current context 
@@ -260,6 +258,17 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
+     * Adds an alias to the currently configured site.
+     * 
+     * @param alias the url of the alias server
+     */
+    public void addAliasToConfigSite(String alias) {
+
+        CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias);
+        m_aliases.add(siteMatcher);
+    }
+
+    /**
      * Adds a new CmsSite to the list of configured sites, 
      * this is only allowed during configuration.<p>
      * 
@@ -284,48 +293,20 @@ public final class CmsSiteManager implements Cloneable {
             site.setSecureServer(matcher);
             addServer(matcher, site);
         }
-        
+
         // Note that Digester first calls the addAliasToConfigSite method.
         // Therefore, the aliases are already 
         site.setAliases(m_aliases);
         Iterator i = m_aliases.iterator();
         while (i.hasNext()) {
             matcher = (CmsSiteMatcher)i.next();
-            addServer(matcher, site);    
+            addServer(matcher, site);
         }
         m_aliases = new ArrayList();
         m_siteRoots.add(site.getSiteRoot());
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Site root added      : " + site.toString());
         }
-    }
-
-    /**
-     * Adds an alias to the currently configured site.
-     * 
-     * @param alias the url of the alias server
-     */
-    public void addAliasToConfigSite(String alias) {
-        CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias);
-        m_aliases.add(siteMatcher);      
-    }
-
-    /**
-     * Adds a new Sitematcher object to the map of server names.
-     * 
-     * If this method  
-     * a <code>RuntimeException</code> is thrown.<p>
-     * 
-     * @param server, the SiteMatcher of the server
-     * @param site the site to add
-     * @throws CmsConfigurationException, if the site contains a servername, that is already assigned
-     */
-    private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
-
-        if (m_sites.containsKey(server)) {
-            throw new CmsConfigurationException("Duplicate server name " + server.getUrl());
-        }
-        m_sites.put(server, site);
     }
 
     /**
@@ -397,9 +378,8 @@ public final class CmsSiteManager implements Cloneable {
      */
     public void initialize(CmsObject cms) {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Site roots configured: " + (m_sites.size() + ((m_defaultUri != null) ? 1 : 0)));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Site roots configured: " + (m_sites.size() + ((m_defaultUri != null) ? 1 : 0)));
         }
 
         // check the presence of sites in VFS
@@ -410,9 +390,8 @@ public final class CmsSiteManager implements Cloneable {
                 try {
                     cms.readResource(site.getSiteRoot());
                 } catch (Throwable t) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                            "Root folder for site " + site + " does not exist (ignoring this site entry)");
+                    if (CmsLog.LOG.isWarnEnabled()) {
+                        CmsLog.LOG.warn("Root folder for site " + site + " does not exist (ignoring this site entry)");
                     }
                 }
             }
@@ -426,26 +405,24 @@ public final class CmsSiteManager implements Cloneable {
             try {
                 cms.readResource(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                        "Root folder for default site "
-                            + m_defaultSite
-                            + " does not exist (setting default site root to '/')");
+                if (CmsLog.LOG.isWarnEnabled()) {
+                    CmsLog.LOG.warn("Root folder for default site "
+                        + m_defaultSite
+                        + " does not exist (setting default site root to '/')");
                 }
             }
         }
         if (m_defaultSite == null) {
             m_defaultSite = new CmsSite("/", CmsSiteMatcher.C_DEFAULT_MATCHER);
         }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Site root default    : " + (m_defaultSite != null ? "" + m_defaultSite : "(not configured)"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Site root default    : "
+                + (m_defaultSite != null ? "" + m_defaultSite : "(not configured)"));
         }
         m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Site of workplace    : "
-                    + (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Site of workplace    : "
+                + (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)"));
         }
 
         // set site lists to unmodifiable 
@@ -490,9 +467,9 @@ public final class CmsSiteManager implements Cloneable {
 
         CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
         CmsSite site = matchSite(matcher);
-        if (m_log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
-            m_log.debug("Matching request [" + requestServer + "] to site " + site.toString());
+            LOG.debug("Matching request [" + requestServer + "] to site " + site.toString());
         }
         return site;
     }
@@ -544,5 +521,23 @@ public final class CmsSiteManager implements Cloneable {
             throw new RuntimeException(C_MESSAGE_FROZEN);
         }
         m_workplaceServer = workplaceServer;
+    }
+
+    /**
+     * Adds a new Sitematcher object to the map of server names.
+     * 
+     * If this method  
+     * a <code>RuntimeException</code> is thrown.<p>
+     * 
+     * @param server, the SiteMatcher of the server
+     * @param site the site to add
+     * @throws CmsConfigurationException, if the site contains a servername, that is already assigned
+     */
+    private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
+
+        if (m_sites.containsKey(server)) {
+            throw new CmsConfigurationException("Duplicate server name " + server.getUrl());
+        }
+        m_sites.put(server, site);
     }
 }

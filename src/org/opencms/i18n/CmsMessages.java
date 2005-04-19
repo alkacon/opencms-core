@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/04/11 17:44:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.0 beta 2
  */
@@ -69,6 +69,14 @@ public class CmsMessages {
     /** The locale to use for looking up the messages from the bundle. */
     protected Locale m_locale;
 
+    /**
+     * Empty constructor for subclassing.<p>
+     */
+    protected CmsMessages() {
+        
+        // empty constructor for subclassing
+    }
+    
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
      * 

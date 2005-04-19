@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.main.OpenCms;
-
 import java.util.Locale;
 
 /**
@@ -52,6 +50,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
 
         return new I_CmsMessageBundle[] {
             org.opencms.configuration.Messages.get(),
+            org.opencms.main.Messages.get(),
             org.opencms.scheduler.Messages.get()};
     }
 
@@ -100,7 +99,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
      */
     public CmsMessages getBundle() {
 
-        Locale locale = OpenCms.getLocaleManager().getDefaultLocale();
+        Locale locale = CmsLocaleManager.getDefaultLocale();
         if (locale == null) {
             locale = Locale.getDefault();
         }

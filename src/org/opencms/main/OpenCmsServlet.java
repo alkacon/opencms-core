@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+
 /**
  * This the main servlet of the OpenCms system.<p>
  * 
@@ -70,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -79,7 +81,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /** Handler implementation names. */
     private static final String[] C_HANDLER_NAMES = {"404", "500"};
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(OpenCmsServlet.class);
+
     /**
      * OpenCms servlet main request handling method.<p>
      * 
@@ -88,7 +93,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
         int runlevel = OpenCmsCore.getInstance().getRunLevel();
-        
+
         // write OpenCms server identification in the response header
         res.setHeader(I_CmsConstants.C_HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
 
@@ -152,10 +157,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {
                     // unlikley to happen 
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn(
-                            "Error initializing CmsObject in " + name + " handler for '" + path + "'",
-                            e);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn("Error initializing CmsObject in " + name + " handler for '" + path + "'", e);
                     }
                 }
                 if (exportData != null) {
@@ -166,8 +169,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                             // export the resource and set the response status according to the result
                             res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
                         } catch (Throwable t) {
-                            if (OpenCms.getLog(this).isWarnEnabled()) {
-                                OpenCms.getLog(this).warn("Error exporting " + exportData, t);
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn("Error exporting " + exportData, t);
                             }
                             openErrorHandler(req, res, errorCode);
                         }
@@ -187,15 +190,17 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public synchronized void init(ServletConfig config) throws ServletException {
 
         super.init(config);
-        // upgrade the runlevel 
-        // usually this should have already been done by the context listener
-        // however, after a fresh install / setup this will be done from here
-        OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());
-        // finalize OpenCms initialization
-        OpenCmsCore.getInstance().initServlet(this);
-        // check if initialization was successfull
-        if (OpenCmsCore.getInstance().getRunLevel() != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
-            throw new ServletException("OpenCms not properly configured!");
+        try {
+            // upgrade the runlevel 
+            // usually this should have already been done by the context listener
+            // however, after a fresh install / setup this will be done from here
+            OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());
+            // finalize OpenCms initialization
+            OpenCmsCore.getInstance().initServlet(this);
+        } catch (CmsInitException e) {
+            LOG.error(e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e);
         }
     }
 
@@ -240,10 +245,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             cms.getRequestContext().setUri(handlerUri);
         } catch (CmsException e) {
             // unlikely to happen 
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "Error initializing CmsObject in " + errorCode + " URI handler for '" + handlerUri + "'",
-                    e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn("Error initializing CmsObject in " + errorCode + " URI handler for '" + handlerUri + "'", e);
             }
         }
         CmsFile file;
@@ -265,4 +268,3 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         }
     }
 }
-

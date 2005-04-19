@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -206,7 +207,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         file = cms.readFile("/importtest/index.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -234,7 +235,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         file = cms.readFile("/importtest/page2.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -252,7 +253,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         assertEquals(CmsResourceTypeXmlPage.getStaticTypeId(), file.getTypeId());        
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -284,7 +285,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         file = cms.readFile("/index.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -361,7 +362,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         file = cms.readFile("/importtest/index.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -388,7 +389,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         file = cms.readFile("/importtest/page2.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -407,7 +408,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         assertEquals(CmsResourceTypeXmlPage.getStaticTypeId(), file.getTypeId());        
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {
@@ -434,7 +435,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         file = cms.readFile("/othertest/index.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
-        table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
+        table = page.getLinkTable("body", CmsLocaleManager.getDefaultLocale());
         links = new ArrayList();
         i = table.iterator();
         while (i.hasNext()) {

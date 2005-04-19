@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,89 +28,83 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.main;
 
+import org.opencms.i18n.CmsMessageContainer;
 
 /**
- * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
+ * Describes errors that occur in the context of OpenCms the initialization, this is fatal
+ * and prevents OpenCms from starting.<p>
+ * 
+ * If an Exception of this class is thrown, OpenCms is set to an error state and 
+ * the system won't try to start up again.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
- * @since 5.1.4
+ * @since 5.7.3
  */
-public class CmsInitException extends CmsException {
-    
-    // the allowed type range for this exception is >=400 and <500    
-    
-    /** Generic init error. */
-    public static final int C_INIT_UNSPECIFIED_ERROR = 400;
-    
-    /** Wizard still enabled error. */
-    public static final int C_INIT_WIZARD_ENABLED = 401; 
+class CmsInitException extends CmsRuntimeException implements I_CmsThrowable {
 
-    /** Admin permissions required. */
-    public static final int C_INIT_NO_ADMIN_PERMISSIONS = 402;
-    
+    /** Indicates that this exception describes a new error. */
+    private boolean m_newError;
+
     /**
-     * Default constructor for a CmsInitException.<p>
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
      */
-    public CmsInitException() {
-        super();
+    public CmsInitException(CmsMessageContainer container) {
+
+        this(container, true);
     }
-    
+
     /**
-     * Constructs a CmsInitException with the specified description message and type.<p>
+     * Creates a new localized Exception.<p>
      * 
-     * @param type the type of the exception
+     * @param container the localized message container to use
+     * @param newError indicates that the error is new, and OpenCms should be stopped
      */
-    public CmsInitException(int type) {
-        super(type);
-    }
-        
-    /**
-     * Constructs a CmsInitException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsInitException(String message, int type) {
-        super(message, type);
-    }
-    
-    /**
-     * Constructs a CmsInitException with the specified description message.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsInitException(String message) {
-        super(message, C_INIT_UNSPECIFIED_ERROR);
-    }    
-    
-    /**
-     * Constructs a CmsInitException with the specified description message and root cause.<p>
-     * 
-     * @param message the description message
-     * @param rootCause the root cause
-     */
-    public CmsInitException(String message, Throwable rootCause) {
-        super(message, C_INIT_UNSPECIFIED_ERROR, rootCause);
-    }        
-    
-    /**
-     * Returns the description String for the provided CmsException type.<p>
-     * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
-     */    
-    protected String getErrorDescription(int type) {
-        switch (type) {
-            case C_INIT_UNSPECIFIED_ERROR:
-                return "OpenCms init error";
-            case C_INIT_NO_ADMIN_PERMISSIONS:
-                return "Admin permissions required to perform this operation";
-            default:
-                return super.getErrorDescription(type);
+    public CmsInitException(CmsMessageContainer container, boolean newError) {
+
+        super(container);
+        m_newError = newError;
+        if (m_newError) {
+            setErrorCondition();
         }
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsInitException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+        m_newError = true;
+        setErrorCondition();
+    }
+
+    /**
+     * Indicates that this exception describes a new error that was not already logged.<p>
+     * 
+     * @return <code>true</code> if this exception describes a new error that was not already logged
+     */
+    public boolean isNewError() {
+
+        return m_newError;
+    }
+
+    /**
+     * Prints an error message to the System.err stream, indicating that OpenCms
+     * is unable to start up.<p>
+     */
+    private void setErrorCondition() {
+
+        CmsMessageContainer errorCondition = getMessageContainer();
+        OpenCmsCore.setErrorCondition(errorCondition);
+
+        System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
     }
 }

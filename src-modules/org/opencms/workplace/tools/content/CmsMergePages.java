@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/03/17 10:31:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/19 17:20:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  */
 public class CmsMergePages extends CmsReport {
@@ -196,7 +196,7 @@ public class CmsMergePages extends CmsReport {
         int size = m_foldersEqualnames.size();
         if (size > 0) {
             m_report.println(m_report.key("report.mergepages.mergepages") , I_CmsReport.C_FORMAT_HEADLINE);
-            String defaultLocale = OpenCms.getLocaleManager().getDefaultLocale().toString();
+            String defaultLocale = CmsLocaleManager.getDefaultLocale().toString();
             String locale2 = m_cms.readPropertyObject(getParamFolder2(), "locale", true).getValue(defaultLocale);                        
                    
             // lock the source and the target folder
@@ -334,7 +334,7 @@ public class CmsMergePages extends CmsReport {
      * @throws CmsException
      */
     private void collectResources() throws CmsException {
-        String defaultLocale = OpenCms.getLocaleManager().getDefaultLocale().toString();
+        String defaultLocale = CmsLocaleManager.getDefaultLocale().toString();
         String locale1 = m_cms.readPropertyObject(getParamFolder1(), "locale", true).getValue(defaultLocale);
         String locale2 = m_cms.readPropertyObject(getParamFolder2(), "locale", true).getValue(defaultLocale);
         m_report.println(m_report.key("report.mergepages.folder")+ " " + getParamFolder1() + ": Locale = "+locale1);
