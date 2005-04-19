@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/layout/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/04/15 15:55:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/19 08:59:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,14 +51,14 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTemplateContentListItem {
     
     /** The display area of the list: center. */
     public static final String DISPLAYAREA_CENTER = "center";
     /** The display area of the list: left. */
-    public static final String DISPLAYAREA_LEFT = "right";
+    public static final String DISPLAYAREA_LEFT = "left";
     /** The display area of the list: right. */
     public static final String DISPLAYAREA_RIGHT = "right";
     
