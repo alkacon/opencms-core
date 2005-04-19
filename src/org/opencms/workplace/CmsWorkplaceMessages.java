@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/04/19 12:04:28 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,14 @@
 package org.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsLog;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.Set;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the localized messages for the workplace.<p>
@@ -61,26 +55,14 @@ import org.apache.commons.logging.Log;
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
-public class CmsWorkplaceMessages extends CmsMessages {
+public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /** The name of the property file. */
     public static final String DEFAULT_WORKPLACE_MESSAGE_BUNDLE = "org.opencms.workplace.workplace";
-
-    /** Null String value for caching of null message results. */
-    public static final String NULL_STRING = "null";
-
-    /** Static reference to the log. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkplaceMessages.class);
-
-    /** List of resource bundles from the installed modules. */
-    private List m_bundles;
-
-    /** A cache for the messages to prevent multiple lookups in many bundles. */
-    private Map m_messageCache;
 
     /**
      * Constructor for creating a new messages object
@@ -90,25 +72,7 @@ public class CmsWorkplaceMessages extends CmsMessages {
      */
     public CmsWorkplaceMessages(Locale locale) {
 
-        super(DEFAULT_WORKPLACE_MESSAGE_BUNDLE, locale);
-        // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
-        m_messageCache = new Hashtable();
-        // collect the messages from the available modules
-        m_bundles = collectModuleMessages(locale);
-    }
-
-    /**
-     * @see org.opencms.i18n.CmsMessages#key(java.lang.String, boolean)
-     */
-    public String key(String keyName, boolean allowNull) {
-
-        // special implementation since the workplace uses several bundles for the messages
-        String result = resolveKey(keyName);
-        if ((result == null) && !allowNull) {
-            result = formatUnknownKey(keyName);
-        }
-
-        return result;
+        super(collectModuleMessages(locale));
     }
 
     /**
@@ -122,91 +86,57 @@ public class CmsWorkplaceMessages extends CmsMessages {
      * 
      * @return an initialized set of module messages
      */
-    private synchronized List collectModuleMessages(Locale locale) {
+    private static synchronized List collectModuleMessages(Locale locale) {
 
+//////////// collect the workplace.properties ////////////////
+        
         // create a new list and add the base bundle
         ArrayList result = new ArrayList();
-        result.add(m_bundle);
+        // try to load the default resource bundle
+        CmsMessages wpMsg = new CmsMessages(DEFAULT_WORKPLACE_MESSAGE_BUNDLE, locale);
+        // bundle was loaded, add to list of bundles
+        if (wpMsg.isInitialized()) {
+            result.add(wpMsg);
+        }
 
         Set names = OpenCms.getModuleManager().getModuleNames();
         if (names != null) {
             // iterate all module names
             Iterator i = names.iterator();
             while (i.hasNext()) {
-                String bundleName = ((String)i.next()) + ".workplace";
                 // this should result in a name like "my.module.name.workplace"
-                try {
-                    // try to load a bundle with the module names
-                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
-                    // bundle was loaded, add to list of bundles
-                    result.add(bundle);
-                } catch (MissingResourceException e) {
-                    // can usually be ignored
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(e);
-                    }
+                String bundleName = ((String)i.next()) + ".workplace";
+                // try to load a bundle with the module names
+                CmsMessages msg = new CmsMessages(bundleName, locale);
+                // bundle was loaded, add to list of bundles
+                if (msg.isInitialized()) {
+                    result.add(msg);
                 }
+            }
+        }
+        
+        
+////////////collect the messages.properties ////////////////
+        
+        List msgs = new ArrayList(names);
+        if (names!=null) {
+            msgs.addAll(names);
+        }
+        // add additional core workplace packages, like administration, tools, etc
+        msgs.add("org.opencms.workplace.list");
+        // iterate all module names
+        Iterator i = msgs.iterator();
+        while (i.hasNext()) {
+            // this should result in a name like "org.opencms.workplace.xxx.messages"
+            String bundleName = ((String)i.next()) + ".messages";
+            // try to load a bundle with the module names
+            CmsMessages msg = new CmsMessages(bundleName, locale);
+            // bundle was loaded, add to list of bundles
+            if (msg.isInitialized()) {
+                result.add(msg);
             }
         }
         return result;
     }
 
-    /**
-     * Returns the localized resource string for a given message key,
-     * checking the workplace default resources and all module bundles.<p>
-     * 
-     * If the key was not found, <code>null</code> is returned.<p>
-     * 
-     * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
-     */
-    private String resolveKey(String keyName) {
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Resolving workplace message key '" + keyName + "'");
-        }
-
-        String result = (String)m_messageCache.get(keyName);
-        if (result == NULL_STRING) {
-            // key was already checked and not found   
-            return null;
-        }
-        if (result == null) {
-            // so far not in the cache
-            for (int i = 0; (result == null) && (i < m_bundles.size()); i++) {
-                try {
-                    result = ((ResourceBundle)m_bundles.get(i)).getString(keyName);
-                    // if no exception is thrown here we have found the result
-                } catch (MissingResourceException e) {
-                    // can usually be ignored
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(e);
-                    }
-                }
-            }
-        } else {
-            // result was found in cache
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("'" + keyName + "' found in message cache, result is '" + result + "'");
-            }
-            return result;
-        }
-        if (result == null) {
-            // key was not found in "regular" bundle as well as module messages
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("'" + keyName + "' not found in all module messages");
-            }
-            // ensure null values are also cached
-            m_messageCache.put(keyName, NULL_STRING);
-        } else {
-            // optional debug output
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Workplace message for key '" + keyName + "' is '" + result + "'");
-            }
-            // cache the result
-            m_messageCache.put(keyName, result);
-        }
-        // return the result        
-        return result;
-    }
 }
