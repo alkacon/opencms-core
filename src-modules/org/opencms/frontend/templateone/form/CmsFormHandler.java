@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/19 08:14:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
     
@@ -360,7 +360,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setTo(createInternetAddresses(getFormConfiguration().getMailTo()));
                 theMail.setCc(createInternetAddresses(getFormConfiguration().getMailCC()));
                 theMail.setBcc(createInternetAddresses(getFormConfiguration().getMailBCC()));
-                theMail.setSubject(getFormConfiguration().getMailSubject());
+                theMail.setSubject(getFormConfiguration().getMailSubjectPrefix() + getFormConfiguration().getMailSubject());
                 theMail.setHtmlMsg(createMailTextFromFields(true, false));
                 theMail.setTextMsg(createMailTextFromFields(false, false));
                 // send the mail
@@ -374,7 +374,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setTo(createInternetAddresses(getFormConfiguration().getMailTo()));
                 theMail.setCc(createInternetAddresses(getFormConfiguration().getMailCC()));
                 theMail.setBcc(createInternetAddresses(getFormConfiguration().getMailBCC()));
-                theMail.setSubject(getFormConfiguration().getMailSubject());
+                theMail.setSubject(getFormConfiguration().getMailSubjectPrefix() + getFormConfiguration().getMailSubject());
                 theMail.setMsg(createMailTextFromFields(false, false));               
                 // send the mail
                 theMail.send();

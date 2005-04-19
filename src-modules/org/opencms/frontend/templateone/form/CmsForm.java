@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/19 08:14:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsForm {
     
@@ -163,6 +163,7 @@ public class CmsForm {
     private String m_mailCC;   
     private String m_mailFrom;
     private String m_mailSubject;
+    private String m_mailSubjectPrefix;
     private String m_mailText;
     private String m_mailTextPlain;
     private String m_mailTo;
@@ -341,6 +342,16 @@ public class CmsForm {
     public String getMailSubject() {
 
         return m_mailSubject;
+    }
+    
+    /**
+     * Returns the mail subject prefix.<p>
+     * 
+     * @return the mail subject prefix
+     */
+    public String getMailSubjectPrefix() {
+
+        return m_mailSubjectPrefix;
     }
     
     /**
@@ -548,7 +559,7 @@ public class CmsForm {
     }
     
     /**
-     * Sets the subject of the optional confirmation mailt.<p>
+     * Sets the subject of the optional confirmation mail.<p>
      *
      * @param confirmationMailSubject the subject of the optional confirmation mail
      */
@@ -688,6 +699,16 @@ public class CmsForm {
     }
     
     /**
+     * Sets the mail subject prefix.<p>
+     * 
+     * @param mailSubjectPrefix the mail subject prefix
+     */
+    protected void setMailSubjectPrefix(String mailSubjectPrefix) {
+
+        m_mailSubjectPrefix = mailSubjectPrefix;
+    }
+    
+    /**
      * Sets the mail text.<p>
      * 
      * @param mailText the mail text
@@ -805,7 +826,16 @@ public class CmsForm {
         setMailTo(getConfigurationValue(stringValue, ""));      
         // get the mail subject
         stringValue = content.getStringValue(cms, C_NODE_MAILSUBJECT, locale);
-        setMailSubject(getConfigurationValue(stringValue, ""));
+        setMailSubject(getConfigurationValue(stringValue, ""));      
+        // get the optional mail subject prefix from localized messages
+        stringValue = messages.key("form.mailsubject.prefix");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(stringValue)) {
+            // prefix present, set it
+            setMailSubjectPrefix(stringValue + " ");
+        } else {
+            // no prefix present
+            setMailSubjectPrefix("");    
+        }
         // get the mail text as plain text
         CmsXmlHtmlValue mailTextValue = (CmsXmlHtmlValue)content.getValue(C_NODE_MAILTEXT, locale);
         stringValue = mailTextValue.getPlainText(cms);
