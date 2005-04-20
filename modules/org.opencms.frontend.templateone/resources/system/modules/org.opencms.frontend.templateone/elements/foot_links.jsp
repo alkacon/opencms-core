@@ -60,5 +60,5 @@ if (CmsTemplateBean.C_PARAM_ACCESSIBLE.equals(cms.getLayout())) {
 %><script type="text/javascript">
 	var imprintNode = document.getElementById("imprintlink");
 	imprintNode.setAttribute("href", "#");
-	imprintNode.removeAttributeNode(imprintNode.getAttributeNode("target"));
+	imprintNode.removeAttribute("target");
 </script>
