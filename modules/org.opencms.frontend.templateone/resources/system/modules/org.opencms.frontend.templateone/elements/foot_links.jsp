@@ -34,7 +34,7 @@ if (CmsTemplateBean.C_PARAM_ACCESSIBLE.equals(cms.getLayout())) {
 	| <a class="linksheadfoot" title="<%= cms.key("link.help") %>" href="<%= cms.link(cms.getRequestContext().removeSiteRoot(helpUri)) %>"><%= cms.key("link.help") %></a>
 	<% } %>
 	| <a class="linksheadfoot" title="<%= cms.key("link.version.common") %>" href="<%= linkUri %>?accessible=false"><%= cms.key("link.version.common") %></a>
-	| <a class="linksheadfoot" title="<%= cms.key("link.imprint") %>" href="javascript:openImprint('<%= systemUri %>imprint.html', '<%= cms.getRequestContext().getUri() %>', '<%= cms.getRequestContext().getLocale() %>', '<%= siteRoot %>');"><%= cms.key("link.imprint") %></a>&nbsp;
+	| <a class="linksheadfoot" title="<%= cms.key("link.imprint") %>" target="_blank" id="imprintlink" href="<%= systemUri %>imprint.html?uri=<%= cms.getRequestContext().getUri() %>&locale=<%= cms.getRequestContext().getLocale() %>&site=<%= siteRoot %>" onclick="javascript:openImprint('<%= systemUri %>imprint.html', '<%= cms.getRequestContext().getUri() %>', '<%= cms.getRequestContext().getLocale() %>', '<%= siteRoot %>');"><%= cms.key("link.imprint") %></a>&nbsp;
 	</div>
 	<!-- Ende Footer-Links -->
 	<%
@@ -52,9 +52,13 @@ if (CmsTemplateBean.C_PARAM_ACCESSIBLE.equals(cms.getLayout())) {
 	&nbsp;<a class="linksheadfoot" title="<%= cms.key("link.help") %>" href="<%= cms.link(cms.getRequestContext().removeSiteRoot(helpUri)) %>"><%= cms.key("link.help") %></a>
 	<% } %>
 	&nbsp;<a class="linksheadfoot" title="<%= cms.key("link.version.accessible") %>" href="<%= linkUri %>?accessible=true"><%= cms.key("link.version.accessible") %></a>
-	&nbsp;<a class="linksheadfoot" title="<%= cms.key("link.imprint") %>" href="javascript:openImprint('<%= systemUri %>imprint.html', '<%= cms.getRequestContext().getUri() %>', '<%= cms.getRequestContext().getLocale() %>', '<%= siteRoot %>');"><%= cms.key("link.imprint") %></a>&nbsp;
+	&nbsp;<a class="linksheadfoot" title="<%= cms.key("link.imprint") %>" target="_blank" id="imprintlink" href="<%= systemUri %>imprint.html?uri=<%= cms.getRequestContext().getUri() %>&locale=<%= cms.getRequestContext().getLocale() %>&site=<%= siteRoot %>" onclick="javascript:openImprint('<%= systemUri %>imprint.html', '<%= cms.getRequestContext().getUri() %>', '<%= cms.getRequestContext().getLocale() %>', '<%= siteRoot %>');"><%= cms.key("link.imprint") %></a>&nbsp;
 	</div>
 	<!-- Ende Footer-Links -->
 	<%
 }
-%>
+%><script type="text/javascript">
+	var imprintNode = document.getElementById("imprintlink");
+	imprintNode.setAttribute("href", "#");
+	imprintNode.removeAttributeNode(imprintNode.getAttributeNode("target"));
+</script>
