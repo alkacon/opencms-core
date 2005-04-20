@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/04/18 11:18:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/20 08:32:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -133,7 +133,7 @@ public class TestCmsMessageBundles extends TestCase {
         
         CmsMessages messages = bundle.getBundle();
         
-        Enumeration bundleKeys = messages.m_bundle.getKeys();
+        Enumeration bundleKeys = messages.m_resourceBundle.getKeys();
         while (bundleKeys.hasMoreElements()) {
             String bundleKey  = (String)bundleKeys.nextElement();
             if (! keys.contains(bundleKey)) {

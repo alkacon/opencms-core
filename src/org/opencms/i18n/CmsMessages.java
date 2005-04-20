@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/20 08:32:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.0 beta 2
  */
@@ -63,20 +63,12 @@ public class CmsMessages {
     /** Prefix / Suffix for unknown keys. */
     public static final String C_UNKNOWN_KEY_EXTENSION = "???";
 
-    /** The resource bundle this message object was initialized with. */
-    protected ResourceBundle m_bundle;
-
     /** The locale to use for looking up the messages from the bundle. */
     protected Locale m_locale;
 
-    /**
-     * Empty constructor for subclassing.<p>
-     */
-    protected CmsMessages() {
-        
-        // empty constructor for subclassing
-    }
-    
+    /** The resource bundle this message object was initialized with. */
+    protected ResourceBundle m_resourceBundle;
+
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
      * 
@@ -87,9 +79,9 @@ public class CmsMessages {
 
         try {
             m_locale = locale;
-            m_bundle = ResourceBundle.getBundle(baseName, m_locale);
+            m_resourceBundle = ResourceBundle.getBundle(baseName, m_locale);
         } catch (MissingResourceException e) {
-            m_bundle = null;
+            m_resourceBundle = null;
         }
     }
 
@@ -148,6 +140,14 @@ public class CmsMessages {
     }
 
     /**
+     * Empty constructor for subclassing.<p>
+     */
+    protected CmsMessages() {
+
+        // empty constructor for subclassing
+    }
+
+    /**
      * Formats an unknown key.<p>
      * 
      * @param keyName the key to format
@@ -180,6 +180,16 @@ public class CmsMessages {
     public static boolean isUnknownKey(String value) {
 
         return (value == null) || (value.startsWith(C_UNKNOWN_KEY_EXTENSION));
+    }
+
+    /**
+     * Returns the resource bundle this message object was initialized with.<p>
+     * 
+     * @return the resource bundle this message object was initialized with
+     */
+    public ResourceBundle getBundle() {
+
+        return m_resourceBundle;
     }
 
     /**
@@ -263,6 +273,16 @@ public class CmsMessages {
     }
 
     /**
+     * Returns the locale to use for looking up this messages.<p>
+     * 
+     * @return the locale to use for looking up this messages
+     */
+    public Locale getLocale() {
+
+        return m_locale;
+    }
+
+    /**
      * Directly calls the getString(String) method of the wrapped ResourceBundle.<p>
      * 
      * If you use this this class on a template, you should consider using 
@@ -275,8 +295,8 @@ public class CmsMessages {
      */
     public String getString(String keyName) throws MissingResourceException {
 
-        if (m_bundle != null) {
-            return m_bundle.getString(keyName);
+        if (m_resourceBundle != null) {
+            return m_resourceBundle.getString(keyName);
         } else {
             throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
         }
@@ -289,7 +309,7 @@ public class CmsMessages {
      */
     public boolean isInitialized() {
 
-        return (m_bundle != null);
+        return (m_resourceBundle != null);
     }
 
     /**
@@ -325,8 +345,8 @@ public class CmsMessages {
     public String key(String keyName, boolean allowNull) {
 
         try {
-            if (m_bundle != null) {
-                return m_bundle.getString(keyName);
+            if (m_resourceBundle != null) {
+                return m_resourceBundle.getString(keyName);
             }
         } catch (MissingResourceException e) {
             // not found, return warning

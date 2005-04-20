@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/20 08:32:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexnader Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.7.3
  */
@@ -100,10 +100,15 @@ public class CmsMultiMessages extends CmsMessages {
     public CmsMultiMessages(List messages) {
 
         super();
+        if ((messages == null) || (messages.size() == 0)) {
+            throw new IllegalArgumentException("At last one OpenCms message bundle must be provided.");
+        }
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable();
         // set messages
         m_messages = messages;
+        // set the locale
+        m_locale = ((CmsMessages)m_messages.get(0)).getLocale();
     }
 
     /**
