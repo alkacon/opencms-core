@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/20 10:37:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CRITICAL_INIT_ADMINCMS_0 = "ERR_CRITICAL_INIT_ADMINCMS_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_CRITICAL_INIT_DATABASE_0 = "ERR_CRITICAL_INIT_DATABASE_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_INIT_ENCODING_1 = "ERR_CRITICAL_INIT_ENCODING_1";
 
     /** Message contant for key in the resource bundle. */
@@ -57,9 +60,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_INIT_GENERIC_1 = "ERR_CRITICAL_INIT_GENERIC_1";
 
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_CRITICAL_INIT_DATABASE_0 = "ERR_CRITICAL_INIT_DATABASE_0";
-    
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_INIT_MANAGERS_0 = "ERR_CRITICAL_INIT_MANAGERS_0";
 
@@ -77,9 +77,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_INIT_XML_0 = "ERR_CRITICAL_INIT_XML_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_FAILURE_MESSAGE_1 = "LOG_INIT_FAILURE_MESSAGE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_INIT_INVALID_ERROR_2 = "LOG_INIT_INVALID_ERROR_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.main.messages";

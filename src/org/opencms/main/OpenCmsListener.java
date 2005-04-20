@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/20 10:37:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  */
 public class OpenCmsListener implements ServletContextListener, HttpSessionListener {
@@ -65,7 +65,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
 
         try {
             // destroy the OpenCms instance
-            OpenCmsCore.getInstance().destroy();
+            OpenCmsCore.getInstance().shutDown();
         } catch (CmsInitException e) {
             if (e.isNewError()) {
                 LOG.error(e);

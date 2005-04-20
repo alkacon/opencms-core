@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/20 08:28:04 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2005/04/20 10:37:48 $
+ * Version: $Revision: 1.174 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.173 $
+ * @version $Revision: 1.174 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -270,14 +270,23 @@ public final class OpenCmsCore {
      */
     protected static void setErrorCondition(CmsMessageContainer errorCondition) {
 
-        if (! Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(errorCondition.getKey())) {
-            // if wizard is still enabled allow retry of initialization (for setup wizard)
-            m_errorCondition = errorCondition;
-            // output an error message to the console
-            System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
+        // init exceptions should only be thrown during setp process
+        if ((m_instance != null) && (m_instance.getRunLevel() < OpenCms.RUNLEVEL_3_SHELL_ACCESS)) {
+            if (!Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(errorCondition.getKey())) {
+                // if wizard is still enabled allow retry of initialization (for setup wizard)
+                m_errorCondition = errorCondition;
+                // output an error message to the console
+                System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
+            }
+            LOG.error(Messages.get().key(errorCondition.getKey(), errorCondition.getArgs()));
+            m_instance = null;
+        } else if (m_instance != null) {
+            // OpenCms already was successfull initialized
+            LOG.warn(Messages.get().key(
+                Messages.LOG_INIT_INVALID_ERROR_2,
+                new Integer(m_instance.getRunLevel()),
+                errorCondition.key()));
         }
-        LOG.error(Messages.get().key(errorCondition.getKey(), errorCondition.getArgs()));
-        m_instance = null;
     }
 
     /**
@@ -335,79 +344,6 @@ public final class OpenCmsCore {
             if (CmsLog.LOG.isInfoEnabled()) {
                 CmsLog.LOG.info(". Added RequestHandler : " + name + " (" + handler.getClass().getName() + ")");
             }
-        }
-    }
-
-    /**
-     * Destroys this OpenCms instance, called if the servlet (or shell) is shut down.<p> 
-     */
-    protected void destroy() {
-
-        synchronized (LOCK) {
-            if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {                
-                
-                System.err.println("\n\nShutting down OpenCms, version "
-                    + getSystemInfo().getVersionName()
-                    + " in web application '"
-                    + getSystemInfo().getWebApplicationName()
-                    + "'");
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(".");
-                    CmsLog.LOG.info(".");
-                    CmsLog.LOG.info(".                      ...............................................................");
-                    CmsLog.LOG.info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
-                    CmsLog.LOG.info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
-                }
-
-                // take the system offline
-                setRunLevel(OpenCms.RUNLEVEL_0_OFFLINE);
-
-                try {
-                    if (m_staticExportManager != null) {
-                        m_staticExportManager.shutDown();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.LOG.error(". Error during static export manager shutdown: " + e.toString(), e);
-                }
-                try {
-                    if (m_moduleManager != null) {
-                        m_moduleManager.shutDown();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.LOG.error(". Error during module manager shutdown: " + e.toString(), e);
-                }
-                try {
-                    if (m_scheduleManager != null) {
-                        m_scheduleManager.shutDown();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.LOG.error(". Error during schedule manager shutdown: " + e.toString(), e);
-                }
-                try {
-                    if (m_securityManager != null) {
-                        m_securityManager.destroy();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.LOG.error(". Error during security manager shutdown: " + e.toString(), e);
-                }
-                try {
-                    if (m_threadStore != null) {
-                        m_threadStore.shutDown();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.LOG.error(". Error during thread store shutdown: " + e.toString(), e);
-                }
-                String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(". OpenCms stopped!     : Total uptime was " + runtime);
-                    CmsLog.LOG.info(".                      ...............................................................");
-                    CmsLog.LOG.info(".");
-                    CmsLog.LOG.info(".");
-                }
-                System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
-
-            }
-            m_instance = null;
         }
     }
 
@@ -1101,7 +1037,7 @@ public final class OpenCmsCore {
                 getSystemInfo().getConfigurationFileRfsPath()), e);
         }
 
-        // check if the wizard is enabled, if so stop initialization     
+        // check if the wizard is enabled, if so stop initialization
         if (configuration.getBoolean("wizard.enabled", true)) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_WIZARD_0));
         }
@@ -1410,6 +1346,80 @@ public final class OpenCmsCore {
 
         } catch (Throwable t) {
             errorHandling(cms, req, res, t);
+        }
+    }
+
+    /**
+     * Destroys this OpenCms instance, called if the servlet (or shell) is shut down.<p> 
+     */
+    protected void shutDown() {
+
+        synchronized (LOCK) {
+            if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {                
+                
+                System.err.println("\n\nShutting down OpenCms, version "
+                    + getSystemInfo().getVersionName()
+                    + " in web application '"
+                    + getSystemInfo().getWebApplicationName()
+                    + "'");
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(".");
+                    CmsLog.LOG.info(".");
+                    CmsLog.LOG.info(".                      ...............................................................");
+                    CmsLog.LOG.info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
+                    CmsLog.LOG.info(". Current runlevel     : " + getRunLevel());
+                    CmsLog.LOG.info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
+                }
+
+                // take the system offline
+                setRunLevel(OpenCms.RUNLEVEL_0_OFFLINE);
+
+                try {
+                    if (m_staticExportManager != null) {
+                        m_staticExportManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.LOG.error(". Error during static export manager shutdown: " + e.toString(), e);
+                }
+                try {
+                    if (m_moduleManager != null) {
+                        m_moduleManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.LOG.error(". Error during module manager shutdown: " + e.toString(), e);
+                }
+                try {
+                    if (m_scheduleManager != null) {
+                        m_scheduleManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.LOG.error(". Error during schedule manager shutdown: " + e.toString(), e);
+                }
+                try {
+                    if (m_securityManager != null) {
+                        m_securityManager.destroy();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.LOG.error(". Error during security manager shutdown: " + e.toString(), e);
+                }
+                try {
+                    if (m_threadStore != null) {
+                        m_threadStore.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.LOG.error(". Error during thread store shutdown: " + e.toString(), e);
+                }
+                String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(". OpenCms stopped!     : Total uptime was " + runtime);
+                    CmsLog.LOG.info(".                      ...............................................................");
+                    CmsLog.LOG.info(".");
+                    CmsLog.LOG.info(".");
+                }
+                System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
+
+            }
+            m_instance = null;
         }
     }
 

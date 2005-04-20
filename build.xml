@@ -248,6 +248,7 @@ ${opencms.inputlib.textextraction}
             debug="on"
             optimize="on"
             deprecation="on">
+       		<!-- compilerarg value="-Xlint:unchecked"/ -->
        	</javac>
 		
         <copy todir="${opencms.output.classes}">
