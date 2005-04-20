@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/04/06 11:36:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/20 15:41:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.frontend.templateone;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -46,7 +47,7 @@ import org.apache.commons.collections.map.LRUMap;
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
     
@@ -166,13 +167,16 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             part = (String)m_parts.get(partKey);
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
-                part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());   
-                m_parts.put(partKey, part);
+                part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());
+                if (part != null && !part.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                    // only add part to map if a valid content was found
+                    m_parts.put(partKey, part);
+                    // save modified class to runtime properties
+                    OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
+                }
                 if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
                     OpenCms.getLog(CmsTemplateParts.class).debug("Value for key \"" + partKey + "\" not found, including JSP");
                 }
-                // save modified class to runtime properties
-                OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
             } else if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
                 OpenCms.getLog(CmsTemplateParts.class).debug("Retrieved value for key \"" + partKey + "\" from Map");
             }
