@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2005/04/20 14:27:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/04/20 15:10:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -136,7 +136,7 @@ public class CmsLruCache extends java.lang.Object {
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts() > m_maxObjectCosts)) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.ERR_CACHE_COSTS_TOO_HIGH_2, new Integer(theCacheObject.getLruCacheCosts()), new Integer(m_maxObjectCosts)));
+                LOG.info(Messages.get().key(Messages.LOG_CACHE_COSTS_TOO_HIGH_2, new Integer(theCacheObject.getLruCacheCosts()), new Integer(m_maxObjectCosts)));
             }
             return false;
         }
@@ -206,7 +206,7 @@ public class CmsLruCache extends java.lang.Object {
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>m_maxObjectCosts)) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.ERR_CACHE_COSTS_TOO_HIGH_2, new Integer(theCacheObject.getLruCacheCosts()), new Integer(m_maxObjectCosts)));
+                LOG.info(Messages.get().key(Messages.LOG_CACHE_COSTS_TOO_HIGH_2, new Integer(theCacheObject.getLruCacheCosts()), new Integer(m_maxObjectCosts)));
             }
             remove(theCacheObject);
             return false;

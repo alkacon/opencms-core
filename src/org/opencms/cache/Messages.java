@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/Messages.java,v $
- * Date   : $Date: 2005/04/20 14:27:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/20 15:10:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CACHE_COSTS_TOO_HIGH_2 = "ERR_CACHE_COSTS_TOO_HIGH_2";    
+    public static final String LOG_CACHE_COSTS_TOO_HIGH_2 = "LOG_CACHE_COSTS_TOO_HIGH_2";    
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.cache.messages";
