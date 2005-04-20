@@ -2,11 +2,10 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/address.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/job_extended.xsd"/>
 		
 	<xsd:element name="JobArticles" type="OpenCmsJobArticles"/>
 	
@@ -20,14 +19,17 @@
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="ShortDescription" type="OpenCmsString" />
-			<xsd:element name="LongDescription" type="OpenCmsHtml" />
+			<xsd:element name="LongDescription" type="OpenCmsHtml" />			
+			<xsd:element name="Company" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Location" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Date" type="OpenCmsDateTime" />	
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
 			<xsd:element name="Contact" type="OpenCmsAddress" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="10"/>					
-			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>					
+			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Extended" type="OpenCmsJobExtended" minOccurs="0" />			
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

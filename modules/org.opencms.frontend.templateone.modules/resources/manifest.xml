@@ -624,6 +624,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-internallink.txt</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-internallink.txt</destination>
+			<type>plain</type>
+			<uuidresource>5b50d97e-b19c-11d9-a035-2104bf2980ca</uuidresource>
+			<datelastmodified>Wed, 20 Apr 2005 13:02:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Apr 2005 13:01:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file> 
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</destination>
 			<type>jsp</type>
@@ -1229,6 +1242,24 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/job_extended.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/job_extended.xsd</destination>
+			<type>plain</type>
+			<uuidresource>2f7b9c73-b0cb-11d9-9e09-2104bf2980ca</uuidresource>
+			<datelastmodified>Tue, 19 Apr 2005 13:07:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Apr 2005 12:04:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for extended jobs]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file> 
 		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</destination>

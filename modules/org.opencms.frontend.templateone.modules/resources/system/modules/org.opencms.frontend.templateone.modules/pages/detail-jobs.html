@@ -25,9 +25,12 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 }
 
 %>
-<div class="element">
+<div class="element"><%--
 
-<cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
+--%><cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
+
+<table border="0">
+<tr><td colspan="2">
 
 <h1><cms:contentshow element="Title" /></h1>
 
@@ -43,6 +46,31 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%@ include file="../elements/detail-element-date.txt" %>
 <%-- end date --%>
 
+</td></tr>
+
+<cms:contentcheck ifexistsone="Company,Location">
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+
+<%-- begin company --%>
+<cms:contentcheck ifexists="Company">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobArticle.Company" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Company" />
+</td></tr>
+</cms:contentcheck>
+<%-- end company --%>
+
+<%-- begin location --%>
+<cms:contentcheck ifexists="Location">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobArticle.Location" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Location" />
+</td></tr>
+</cms:contentcheck>
+<%-- end location --%>
+
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<tr><td colspan="2">
 
 <%-- begin long description --%>
 <p>
@@ -50,14 +78,110 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </p>
 <%-- end long description --%>
 
+</td></tr>
+
+<%-- begin extended nodes --%>
+
+<cms:contentcheck ifexistsone="Extended/Qualification,Extended/Area,Extended/Salary">
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<%-- begin qualification --%>
+<cms:contentcheck ifexists="Extended/Qualification">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Qualification" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Extended/Qualification" />
+</td></tr>
+</cms:contentcheck>
+<%-- end qualification --%>
+
+<%-- begin area --%>
+<cms:contentcheck ifexists="Extended/Area">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Area" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Extended/Area" />
+</td></tr>
+</cms:contentcheck>
+<%-- end area --%>
+
+<%-- begin salary --%>
+<cms:contentcheck ifexists="Extended/Salary">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Salary" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Extended/Salary" />
+</td></tr>
+</cms:contentcheck>
+<%-- end salary --%>
+
+<cms:contentcheck ifexistsone="Extended/Begin,Extended/DateLimit,Extended/ClosingDate">
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<%-- begin begindate --%>
+<cms:contentcheck ifexists="Extended/Begin">
+<c:set var="dateString">
+	<cms:contentshow element="Extended/Begin" />
+</c:set>
+<%
+	cms.setDate("dateString");
+%>
+<tr><td class="nowrap"><fmt:message key="editor.label.JobExtended.Begin" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
+</cms:contentcheck>
+<%-- end begindate --%>
+
+<%-- begin datelimit --%>
+<cms:contentcheck ifexists="Extended/DateLimit">
+<c:set var="dateString">
+	<cms:contentshow element="Extended/DateLimit" />
+</c:set>
+<%
+	cms.setDate("dateString");
+%>
+<tr><td class="nowrap"><fmt:message key="editor.label.JobExtended.DateLimit" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
+</cms:contentcheck>
+<%-- end datelimit --%>
+
+<%-- begin closingdate --%>
+<cms:contentcheck ifexists="Extended/ClosingDate">
+<c:set var="dateString">
+	<cms:contentshow element="Extended/ClosingDate" />
+</c:set>
+<%
+	cms.setDate("dateString");
+%>
+<tr><td class="nowrap"><fmt:message key="editor.label.JobExtended.ClosingDate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
+</cms:contentcheck>
+<%-- end closingdate --%>
+
+<cms:contentcheck ifexistsone="Extended/Id,Extended/Information">
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+</cms:contentcheck>
+
+<%-- begin id --%>
+<cms:contentcheck ifexists="Extended/Id">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Id" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Extended/Id" />
+</td></tr>
+</cms:contentcheck>
+<%-- end id --%>
+
+<%-- begin information --%>
+<cms:contentcheck ifexists="Extended/Information">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Information" />:&nbsp;</td><td style="width: 100%;">
+<cms:contentshow element="Extended/Information" />
+</td></tr>
+</cms:contentcheck>
+<%-- end information --%>
+
+<%-- end extended nodes --%>
 
 <%-- begin contact info --%>
 <cms:contentcheck ifexists="Contact">
-<p><fmt:message key="detail.label.JobArticle.Contact" />:<p>
+<tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr>
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="detail.label.JobArticle.Contact" />:&nbsp;</td><td style="width: 100%;">
 <%@ include file="../elements/detail-element-address.txt" %>
+</td></tr>
 </cms:contentcheck>
 <%-- end contact info --%>
 
+<tr><td colspan="2">
 
 <%-- begin images --%>
 <%@ include file="../elements/detail-element-image.txt" %>
@@ -70,10 +194,11 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </cms:contentcheck>
 <%-- end external links --%>
 
+</td></tr>
+</table>
 
 </cms:contentload>
+</div><%--
 
-</div>
-
-<cms:include property="template" element="foot" /><%--
+--%><cms:include property="template" element="foot" /><%--
 --%></fmt:bundle>

@@ -1,9 +1,9 @@
-<%@ page session="false" import="org.opencms.jsp.*, org.opencms.util.*, java.util.*" %><%--
+<%@ page session="false" import="org.opencms.frontend.templateone.modules.*, org.opencms.util.*, java.util.*" %><%--
 --%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
 --%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
 --%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
 
-CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
 String uri = request.getParameter("uri");
 String oldUri = cms.getRequestContext().getUri();
@@ -34,7 +34,23 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
 
-<h1><cms:contentshow element="Title" /></h1>
+<%-- first generate variables holding images --%>
+<c:set var="firstimage" value="" />
+<c:set var="nextimages" value="" />
+<cms:contentcheck ifexists="Image">
+<c:set var="count" value="1" />
+<cms:contentloop element="Image">
+	<c:if test="${count == 1}">
+		<c:set var="firstimage"><img src="<cms:link><cms:contentshow element="Image" /></cms:link>" border="0" alt="<cms:contentshow element="Description" />" title="<cms:contentshow element="Description" />" align="right" hspace="5"></c:set>
+	</c:if>
+	<c:if test="${count > 1}">
+		<c:set var="nextimages"><c:out value="${nextimages}" escapeXml="false" /><p><img src="<cms:link><cms:contentshow element="Image" /></cms:link>" border="0" alt="<cms:contentshow element="Description" />" title="<cms:contentshow element="Description" />"><br clear="all"><small><cms:contentshow element="Description" /></small></p></c:set>
+	</c:if>
+	<c:set var="count" value="${count + 1}" />
+</cms:contentloop>
+</cms:contentcheck>
+
+<h1><c:out value="${firstimage}" escapeXml="false" /><cms:contentshow element="Title" /></h1>
 
 <%-- create a date object from date value --%>
 <c:set var="dateString">
@@ -67,13 +83,6 @@ try {
 </td></tr></table>
 </cms:contentcheck>
 
-<%-- show images --%>
-<cms:contentcheck ifexists="Image">
-<cms:contentloop element="Image">
-<p><img src="<cms:link><cms:contentshow element="Image" /></cms:link>" border="0" alt="<cms:contentshow element="Description" />"><br clear="all"><small><cms:contentshow element="Description" /></small></p>
-</cms:contentloop>
-</cms:contentcheck>
-
 <%-- show attachments --%>
 <cms:contentcheck ifexists="Attachment">
 <table border="0">
@@ -87,65 +96,19 @@ try {
 </table>
 </cms:contentcheck>
 
+<c:out value="${nextimages}" escapeXml="false" />
+
 <%-- show links --%>
 <cms:contentcheck ifexistsone="ExternalLink,InternalLink">
 <table border="0">
 <tr>
-<td valign="top"><b><fmt:message key="newsarticle.links" /></b></td><td valign="top"><ul>
+<td valign="top"><b><fmt:message key="newsarticle.links" /></b></td><td valign="top">
 
-<cms:contentloop element="InternalLink">
-<c:set var="linkTarget">
-	<cms:contentshow element="NewWin" />
-</c:set>
-<c:set var="desc">
-	<cms:contentshow element="Description" />
-</c:set>
-<c:set var="href">
-	<cms:contentshow element="Href" />
-</c:set><%
+<%@ include file="../elements/detail-element-internallink.txt" %>
 
-newWin = Boolean.valueOf((String)pageContext.getAttribute("linkTarget")).booleanValue();
-targetAttr = "";
-if (newWin) {
-	targetAttr = " target=\"_blank\"";
-}
-link = (String)pageContext.getAttribute("href");
-description = (String)pageContext.getAttribute("desc");
-if (CmsStringUtil.isEmpty(description) || description.startsWith("???")) {
-	description = link;
-}
+<%@ include file="../elements/detail-element-externallink.txt" %>
 
-%>
-<li><a href="<cms:link><cms:contentshow element="Href" /></cms:link>" title="<%= description %>"<%= targetAttr %>><%= description %></a></li>
-</cms:contentloop>
-
-<cms:contentloop element="ExternalLink">
-<c:set var="linkTarget">
-	<cms:contentshow element="NewWin" />
-</c:set>
-<c:set var="desc">
-	<cms:contentshow element="Description" />
-</c:set>
-<c:set var="href">
-	<cms:contentshow element="Href" />
-</c:set><%
-
-newWin = Boolean.valueOf((String)pageContext.getAttribute("linkTarget")).booleanValue();
-targetAttr = "";
-if (newWin) {
-	targetAttr = " target=\"_blank\"";
-}
-link = (String)pageContext.getAttribute("href");
-description = (String)pageContext.getAttribute("desc");
-if (CmsStringUtil.isEmpty(description) || description.startsWith("???")) {
-	description = link;
-}
-
-%>
-<li><a href="<cms:link><cms:contentshow element="Href" /></cms:link>" title="<%= description %>"<%= targetAttr %>><%= description %></a></li>
-</cms:contentloop>
-
-</ul></td>
+</td>
 </tr>
 </table>
 </cms:contentcheck>
