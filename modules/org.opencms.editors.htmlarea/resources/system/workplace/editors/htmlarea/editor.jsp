@@ -540,24 +540,8 @@ if (options.showElement("option.images", displayOptions)) {
 	insertButtons.append(", \"separator\", \"insertimage\"");
 }
 // determine if the image gallery button should be shown
-if (options.showElement("gallery.image", displayOptions) || options.showElement("gallery.download", displayOptions) || options.showElement("gallery.externlink", displayOptions) || options.showElement("gallery.html", displayOptions)) {
-	insertButtons.append(", \"separator\"");
-	if (options.showElement("gallery.image", displayOptions)) {
-		insertButtons.append(", \"imagegallery\"");
-	}
-	if (options.showElement("gallery.download", displayOptions)) {
-		insertButtons.append(", \"downloadgallery\"");
-	}
-	if (options.showElement("gallery.externlink", displayOptions)) {
-		insertButtons.append(", \"linkgallery\"");
-	}
-	if (options.showElement("gallery.html", displayOptions)) {
-		insertButtons.append(", \"htmlgallery\"");
-	}	
-	if (options.showElement("gallery.html", displayOptions)) {
-		insertButtons.append(", \"tablegallery\"");
-	}	
-}
+
+insertButtons.append(wp.buildGalleryButtons(options, displayOptions));
 
 // determine if the insert special characters button should be shown
 if (options.showElement("option.specialchars", displayOptions)) {

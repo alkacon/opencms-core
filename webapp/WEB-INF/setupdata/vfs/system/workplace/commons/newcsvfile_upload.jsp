@@ -1,7 +1,7 @@
 <%@ page import="org.opencms.workplace.explorer.*" buffer="none" %><%	
 
 	// initialize the workplace class
-	CmsNewCsvFileUpload wp = new CmsNewCsvFileUpload(pageContext, request, response);
+	CmsNewCsvFile wp = new CmsNewCsvFile(pageContext, request, response);
 
 //////////////////// start of switch statement 
 	
@@ -26,12 +26,6 @@ break;
 case CmsNewResourceUpload.ACTION_SUBMITFORM:
 //////////////////// ACTION: upload name specified and form submitted
 	wp.actionUpload();
-	if (wp.unzipUpload()) {
-		if (wp.getAction() != CmsNewResourceUpload.ACTION_SHOWERROR) {
-			wp.actionCloseDialog();
-		}
-		break;
-	}
 	if (wp.getAction() == CmsNewResourceUpload.ACTION_SHOWERROR) {
 		// in case of an upload error, interrupt here
 		break;
@@ -71,9 +65,11 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 			theButton.value = labelFinish;
 		}
 	}
+
+
 //-->
 </script>
-<%= wp.bodyStart("dialog") %>
+<%= wp.bodyStart("dialog","onload=\"checkValue();\"") %>
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
@@ -83,7 +79,7 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 <input type="hidden" name="<%= wp.PARAM_DIALOGTYPE %>" value="<%= wp.getParamDialogtype() %>">
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
-<input type="hidden" name="newresourcetype" value="plain">  <!-- uploaded xml content is always plain text -->
+<input type="hidden" name="<%= wp.PARAM_NEWRESOURCETYPE %>" value="plain">  <!-- uploaded xml content is always plain text -->
 
 <table border="0" width="100%">
 <tr>
@@ -118,6 +114,7 @@ default:
 //////////////////// ACTION: show the form to specify the upload file and the unzip option
 	
 	wp.setParamAction(wp.DIALOG_SUBMITFORM);
+        wp.setParamTitle(wp.key("title.newtable"));
 
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
@@ -127,8 +124,9 @@ default:
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
+		var pastedData = document.getElementById("csvcontent").value;
 		var theButton = document.getElementById("nextButton");
-		if (resName.length == 0) { 
+		if (resName.length == 0 && pastedData.length == 0) { 
 			if (theButton.disabled == false) {
 				theButton.disabled =true;
 			}
@@ -178,43 +176,40 @@ default:
 
 <%= wp.dialogBlockEnd() %>
 
+<%= wp.dialogSpacer() %>
 
 <%= wp.dialogBlockStart(wp.key("label.pastecsvcontent")) %>
 
-<table border="0" width="100%">
+<table border="0" class="maxwidth">
 
 <tr>
 <td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.data") %></td>
 
-<td>
-<textarea name="csvcontent" cols="48" rows="10" onchange="checkValue();">
-</textarea>
+<td class="maxwidth">
+<textarea id="csvcontent" class="maxwidth" name="<%= wp.PARAM_CSVCONTENT %>" cols="48" rows="7" onselect="checkValue();" onchange="checkValue();"><% 
+	if (wp.getParamCsvContent() != null) {
+		out.print(wp.getParamCsvContent());
+	} 
+%></textarea>
 </td>
 </tr>
-
-<tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.filename") %></td>
-	<td class="maxwidth"><input name="filename" type="textfield" value="" size="60" class="maxwidth"></td>
-</tr> 
 
 </table>
 
 <%= wp.dialogBlockEnd() %>
 
+<%= wp.dialogSpacer() %>
+
 <%= wp.dialogBlockStart(wp.key("label.conversionsettings")) %>
 
-<table border="0" width="100%">
+<table border="0" class="maxwidth">
 
 <%= wp.buildXsltSelect() %>
 
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.delimiter") %></td>
 	<td class="maxwidth">
-          <select name="delimiter">
-            <option value=";" checked="checked"><%= wp.key("input.semicolon") %></option>
-            <option value=","><%= wp.key("input.comma") %></option>
-            <option value="tab"><%= wp.key("input.tab") %></option>
-          </select>
+          <%= wp.buildDelimiterSelect() %>
         </td>
 </tr>
 
@@ -224,7 +219,7 @@ default:
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonsNextCancel("id=\"nextButton\"", null) %>
+<%= wp.dialogButtonsNextCancel("id=\"nextButton\" disabled=\"disabled\"", null) %>
 </form>
 <%= wp.dialogEnd() %>
 

@@ -31,19 +31,9 @@ if (options.showElement("option.links", displayOptions)) {
 if (options.showElement("option.images", displayOptions)) {
 	%><%= wp.buttonBarSeparator(5, 5) %>
 	<%= wp.button("javascript:doEditHTML(42);", null, "image", "button.image", buttonStyle) %><%
-}					
-if (options.showElement("gallery.image", displayOptions)) {%>
-	<%= wp.button("javascript:doEditHTML(43);", null, "imagegallery", "button.imagelist", buttonStyle) %><%
-}
-if (options.showElement("gallery.download", displayOptions)) {%>
-	<%= wp.button("javascript:doEditHTML(44);", null, "downloadgallery", "button.downloadlist", buttonStyle) %><%
-}
-if (options.showElement("gallery.externlink", displayOptions)) {%>
-	<%= wp.button("javascript:doEditHTML(56);", null, "linkgallery", "button.linklist", buttonStyle) %><%
-}
-if (options.showElement("gallery.html", displayOptions)) {%>
-	<%= wp.button("javascript:doEditHTML(57);", null, "htmlgallery", "button.htmllist", buttonStyle) %><%
-}
+} %>
+<%= wp.buildGalleryButtons(options,buttonStyle,displayOptions) %>
+<%
 if (options.showElement("option.specialchars", displayOptions)) {
 	%><%= wp.button("javascript:doEditHTML(48);", null, "specialchar", "button.specialchars", buttonStyle) %><%
 }

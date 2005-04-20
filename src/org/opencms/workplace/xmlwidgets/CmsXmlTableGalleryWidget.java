@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlTableGalleryWidget.java,v $
- * Date   : $Date: 2005/04/15 09:08:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/20 16:06:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.1 $
- * @since 6.0
+ * @version $Revision: 1.2 $
+ * @since 5.7.3
  */
 public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
 
@@ -66,7 +66,7 @@ public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition) {
         
-        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/TableGallery.js");
+        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tablegallery.js");
     }
     
     /**
@@ -87,8 +87,8 @@ public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
         
         StringBuffer result = new StringBuffer(16);
         result.append("function initTableGallery() {\n");
-        result.append("\tTableGalleryPath = \"");
-        result.append(A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=TableGallery");
+        result.append("\ttableGalleryPath = \"");
+        result.append(A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=tablegallery");
         result.append("\";\n");
         result.append("}\n");        
         return result.toString();
@@ -121,7 +121,7 @@ public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
         result.append("\"><div>");
         result.append("</td>");
         result.append(widgetDialog.buttonBarSpacer(1));
-        result.append(widgetDialog.button("javascript:openTableGallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "TableGallery", "button.tablelist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
+        result.append(widgetDialog.button("javascript:openTableGallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "tablegallery", "button.tablelist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         result.append(widgetDialog.button("javascript:resetTableGallery('" + id + "');", null, "erase", "button.erase", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         result.append("</tr>");
         result.append("<script type=\"text/javascript\">checkTableContent('");

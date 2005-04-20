@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/20 16:06:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.util.Iterator;
+import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -52,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -197,4 +200,23 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
     }
 
+    /**
+     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
+     */
+    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
+
+        StringBuffer result = new StringBuffer();
+        Iterator galleries = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
+        while (galleries.hasNext()) {
+            String galleryType = (String)galleries.next();
+            if (options.showElement("gallery." + galleryType.replaceFirst("gallery", ""), displayOptions)) {
+                if (result.length() == 0) {
+                    result.append(", \"separator\"");
+                }
+                result.append(", \"" + galleryType + "\"");
+            }
+        }
+        return result.toString();
+    }
+    
 }

@@ -118,9 +118,16 @@
 		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
 	%>
 		top.window.opener.document.getElementById("<%= wp.getParamFieldId() %>").value  = newContent;
-		top.window.opener.checkHtmlContent("<%= wp.getParamFieldId() %>");
+	<% 	
+                if (wp instanceof CmsTableGallery) {
+	%>
+			top.window.opener.checkTableContent("<%= wp.getParamFieldId() %>");        
+	<%
+		} else if (wp instanceof CmsHtmlGallery) {
+	%>
+			top.window.opener.checkHtmlContent("<%= wp.getParamFieldId() %>");
 	<%	
-		} else { 
+		} } else { 
 	%>		
 		top.window.opener.insertHtml(top.preview_fs.gallery_preview.document.getElementById("icontent").innerHTML);		
 	<%

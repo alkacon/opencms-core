@@ -112,6 +112,9 @@
 			<explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="imagegallery">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40"/>
 			</explorertype>
+			<explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="imagegallery">
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50"/>
+			</explorertype>			
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
 				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500"/>
 				<accesscontrol>

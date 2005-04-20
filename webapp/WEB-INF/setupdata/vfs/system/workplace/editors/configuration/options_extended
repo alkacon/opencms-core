@@ -25,9 +25,10 @@ option.sourcecode=true
 
 # galleries
 gallery.download=true
-gallery.externlink=true
+gallery.link=true
 gallery.image=true
 gallery.html=true
+gallery.table=true
 
 # link & anchor options
 option.links=true

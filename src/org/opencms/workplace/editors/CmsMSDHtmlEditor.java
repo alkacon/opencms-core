@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/20 16:06:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace.editors;
 
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -37,8 +38,11 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +55,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -107,6 +111,24 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         int currentIndex = valuesFinal.indexOf(getParamEditormode());
         return buildSelect(attributes, namesFinal, valuesFinal, currentIndex, false);
     }
+    
+    /**
+     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
+     */
+    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
+
+        StringBuffer result = new StringBuffer();        
+        Iterator galleries = OpenCms.getWorkplaceManager().getGalleries().entrySet().iterator();
+        while (galleries.hasNext()) {
+            Entry galleryInfo = (Entry)galleries.next();
+            int typeId = ((CmsResourceTypeFolderExtended)galleryInfo.getValue()).getTypeId();
+            String galleryType = ((String)galleryInfo.getKey()).replaceFirst("gallery", "");
+            if (options.showElement("gallery." + galleryType, displayOptions)) {
+                result.append(button("javascript:doEditHTML(" + (typeId+50) + ");", null, galleryType + "gallery", "button." + galleryType + "list", buttonStyle));
+            }
+        }
+        return result.toString();
+    }        
     
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()

@@ -621,16 +621,6 @@ function doEditHTML(para) {
 		_editor.ExecCommand(DECMD_IMAGE, 1);
 		makeImageLinks();
 		break;
-	case 43:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 44:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
 	case 45:
 		_editor.ExecCommand(DECMD_HYPERLINK, 2, EDITOR.URL.value);
 		break;
@@ -694,16 +684,31 @@ function doEditHTML(para) {
 			alert (LANG_NOSELECTION);
 		}
 		break;
-	case 56:
+	case 58:
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;
+	case 59:
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;	
+	case 60:
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
-	case 57:
+	case 61:
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
+	case 62:
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;		
 	default:
 		alert("Sorry, the requested function " + para + " is not implemented.");
 	}
@@ -1022,6 +1027,21 @@ function resetStyles() {
 function initStyles() {
 	getStyles();
 	resetStyles();
+}
+
+// Delete all empty <a>-Tags
+function deleteEmptyATags() {
+	var allLinks = EDITOR.EDIT_HTML.DOM.all.tags("A");
+	var allImgLinks;
+
+	for(var i = 0; i < allLinks.length; i++) {
+		if (allLinks[i].innerText == "") {
+			allImgLinks = allLinks[i].all.tags("IMG"); 
+			if (allImgLinks.length == 0) {
+				allLinks[i].removeNode();
+			}
+		}
+	}
 }
 
 // Remove server name from image path

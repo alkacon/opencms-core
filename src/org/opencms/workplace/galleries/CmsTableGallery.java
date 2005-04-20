@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/04/15 09:08:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/20 16:06:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTableGallery extends CmsHtmlGallery {
 
@@ -117,5 +117,15 @@ public class CmsTableGallery extends CmsHtmlGallery {
         result.append(super.buildGalleryItemPreview());
         return result.toString();
     }
+    
+    /**
+     * Returns the height of the head frameset.<p>
+     * 
+     * @return the height of the head frameset
+     */
+    public String getHeadFrameSetHeight() {
+
+        return "440";
+    }    
 
 }

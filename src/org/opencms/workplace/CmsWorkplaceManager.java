@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/04/18 09:39:43 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/04/20 16:06:16 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,10 +59,19 @@ import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -74,7 +83,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 5.3.1
  */
@@ -469,7 +478,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public String getGalleryClassName(String galleryTypeName) {
 
-        return (String)m_galleries.get(galleryTypeName);
+        return ((CmsResourceTypeFolderExtended)m_galleries.get(galleryTypeName)).getFolderClassName();
+    }
+
+    /**
+     * Returns a collection of all gallery class names.<p>
+     * 
+     * @return a collection of all gallery class names
+     */
+    public Map getGalleries() {
+
+        return m_galleries;
     }
 
     /**
@@ -705,12 +724,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         while (j.hasNext()) {
             I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
             if (resourceType instanceof CmsResourceTypeFolderExtended) {
-                int todo = 0;
-                // TODO: this is not correct since not all extended folders are galleries
                 // found a configured gallery resource type
                 CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
-                // store the gallery class name with the type name as lookup key 
-                m_galleries.put(galleryType.getTypeName(), galleryType.getFolderClassName());
+                try {
+                    // check, if the folder class is a subclass of A_CmsGallery
+                    if (A_CmsGallery.class.isAssignableFrom(Class.forName(galleryType.getFolderClassName()))) {
+                        // store the gallery class name with the type name as lookup key                        
+                        m_galleries.put(galleryType.getTypeName(), galleryType);
+                    }
+                } catch (ClassNotFoundException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error(e);
+                    }
+                }
             }
         }
         m_toolManager = new CmsToolManager(cms);
