@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/20 08:28:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,5 @@ class CmsInitException extends CmsRuntimeException implements I_CmsThrowable {
 
         CmsMessageContainer errorCondition = getMessageContainer();
         OpenCmsCore.setErrorCondition(errorCondition);
-
-        System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
     }
 }

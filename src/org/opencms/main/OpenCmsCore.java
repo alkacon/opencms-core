@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.172 $
+ * Date   : $Date: 2005/04/20 08:28:04 $
+ * Version: $Revision: 1.173 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.172 $
+ * @version $Revision: 1.173 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -125,6 +125,9 @@ public final class OpenCmsCore {
 
     /** Lock object for synchronization. */
     private static final Object LOCK = new Object();
+    
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(OpenCmsCore.class);
 
     /** Indicates if the configuration was sucessfully finished or not. */
     private static CmsMessageContainer m_errorCondition;
@@ -267,7 +270,13 @@ public final class OpenCmsCore {
      */
     protected static void setErrorCondition(CmsMessageContainer errorCondition) {
 
-        m_errorCondition = errorCondition;
+        if (! Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(errorCondition.getKey())) {
+            // if wizard is still enabled allow retry of initialization (for setup wizard)
+            m_errorCondition = errorCondition;
+            // output an error message to the console
+            System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
+        }
+        LOG.error(Messages.get().key(errorCondition.getKey(), errorCondition.getArgs()));
         m_instance = null;
     }
 
@@ -751,8 +760,8 @@ public final class OpenCmsCore {
         if (adminCms == null || !adminCms.isAdmin()) {
             if (!user.equals(getDefaultUsers().getUserGuest()) && !user.equals(getDefaultUsers().getUserExport())) {
                 // if no admin object is provided, only "Guest" or "Export" user can be generated
-                if (getLog(this).isWarnEnabled()) {
-                    getLog(this).warn(
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(
                         "Invalid access to user '"
                             + user
                             + "' attempted"
