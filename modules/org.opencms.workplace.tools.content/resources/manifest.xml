@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 beta 1 Corrin</opencms_version>
-		<createdate>2/15/05 10:30 AM</createdate>
+		<opencms_version>6.0 beta 2 Corrin</opencms_version>
+		<createdate>4/21/05 10:44 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,9 +13,8 @@
 		<nicename><![CDATA[OpenCms 6.0 Content management administration tools]]></nicename>
 		<class/>
 		<description><![CDATA[This module contains the OpenCms administration tools for managing the content of resources, this includes property tools and element tools.
-(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).
-]]></description>
-		<version>0.9.0</version>
+(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.5</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Tue, 15 Feb 2005 09:16:06 GMT</datecreated>
@@ -27,20 +26,25 @@
 			<resource uri="/system/workplace/admin/contenttools/"/>
 			<resource uri="/system/workplace/administration/contenttools/"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_contentmerge.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_renameelement.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_properties_delete.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_properties_change.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_contenttools_in.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_contenttools.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_contenttools_in.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_htmlimport.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_properties_change.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_properties_delete.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_renameelement.gif"/>
+			<resource uri="/system/workplace/resources/ic_htmlimport.gif"/>
 		</resources>
+		<parameters>
+			<param name="additionalresources">/system/workplace/admin/contenttools/;/system/workplace/administration/contenttools/;/system/workplace/resources/admin/ic_admin_contentmerge.gif;/system/workplace/resources/admin/ic_admin_contenttools.gif;/system/workplace/resources/admin/ic_admin_contenttools_in.gif;/system/workplace/resources/admin/ic_admin_htmlimport.gif;/system/workplace/resources/admin/ic_admin_properties_change.gif;/system/workplace/resources/admin/ic_admin_properties_delete.gif;/system/workplace/resources/admin/ic_admin_renameelement.gif;/system/workplace/resources/ic_htmlimport.gif</param>
+		</parameters>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<datelastmodified>Wed, 22 Sep 2004 08:53:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Feb 2005 09:27:53 GMT</datecreated>
+			<datecreated>Wed, 30 Mar 2005 13:13:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -54,8 +58,22 @@
 			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/admin</destination>
@@ -65,7 +83,12 @@
 			<datecreated>Tue, 18 Jan 2005 09:18:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -244,6 +267,76 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Delete property]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/contenttools/htmlimport</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 19 Apr 2005 10:56:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Apr 2005 07:41:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.4028235E38]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.admin.contenttools.groups.import}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.admin.htmlimport.description}]]></value>
+				</property>
+				<property>
+					<name>visiblemethod</name>
+					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/system/workplace/resources/admin/ic_admin_htmlimport.gif]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.title.htmlimport}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Extended Htmlimport]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/htmlimport/index.html</source>
+			<destination>system/workplace/admin/contenttools/htmlimport/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>3ad7a370-1e8e-11d9-bcb3-991ab7e63e0b</uuidresource>
+			<datelastmodified>Thu, 21 Apr 2005 08:30:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 09:40:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -514,6 +607,51 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/administration/contenttools/htmlimport</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 15 Oct 2004 09:49:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Apr 2005 07:36:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>visiblemethod</name>
+					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[org_opencms_modules_htmlimport_HtmlImportBackoffice.icon.text]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_htmlimport]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/contenttools/htmlimport/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>3ad7a370-1e8e-11d9-bcb3-991ab7e63e0b</uuidresource>
+			<datelastmodified>Thu, 21 Apr 2005 08:30:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 09:40:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/administration/contenttools/merge</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 12 Jan 2005 10:31:38 GMT</datelastmodified>
@@ -606,85 +744,25 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/admin</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_admin_contenttools.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_contenttools.gif</destination>
-			<type>image</type>
-			<uuidresource>2707a14e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_admin_contenttools_in.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_contenttools_in.gif</destination>
-			<type>image</type>
-			<uuidresource>270ecd44-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_admin_properties_change.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_properties_change.gif</destination>
-			<type>image</type>
-			<uuidresource>5e5dcc66-3253-11d9-997d-dd5f89ac8843</uuidresource>
-			<datelastmodified>Tue, 09 Nov 2004 14:29:23 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Nov 2004 14:29:23 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_admin_properties_delete.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_properties_delete.gif</destination>
-			<type>image</type>
-			<uuidresource>5e74afc9-3253-11d9-997d-dd5f89ac8843</uuidresource>
-			<datelastmodified>Tue, 09 Nov 2004 16:02:35 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Nov 2004 14:29:23 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file> 
-		<file>
-			<source>system/workplace/resources/admin/ic_admin_renameelement.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_renameelement.gif</destination>
-			<type>image</type>
-			<uuidresource>a2780842-5019-11d9-8515-01dd5ed54f5e</uuidresource>
-			<datelastmodified>Fri, 17 Dec 2004 11:51:41 CET</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 17 Dec 2004 11:51:41 CET</datecreated>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -695,13 +773,103 @@
 			<destination>system/workplace/resources/admin/ic_admin_contentmerge.gif</destination>
 			<type>image</type>
 			<uuidresource>0d255ab8-6485-11d9-a4f6-dfcae9eb3953</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 16:50:57 CET</datelastmodified>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 11:30:59 CET</datecreated>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file>		
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_contenttools.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_contenttools.gif</destination>
+			<type>image</type>
+			<uuidresource>2707a14e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_contenttools_in.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_contenttools_in.gif</destination>
+			<type>image</type>
+			<uuidresource>270ecd44-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_htmlimport.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_htmlimport.gif</destination>
+			<type>image</type>
+			<uuidresource>776ea7d2-1e8e-11d9-bcb3-991ab7e63e0b</uuidresource>
+			<datelastmodified>Fri, 15 Oct 2004 09:45:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 09:42:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_properties_change.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_properties_change.gif</destination>
+			<type>image</type>
+			<uuidresource>5e5dcc66-3253-11d9-997d-dd5f89ac8843</uuidresource>
+			<datelastmodified>Tue, 09 Nov 2004 13:29:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Nov 2004 13:29:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_properties_delete.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_properties_delete.gif</destination>
+			<type>image</type>
+			<uuidresource>5e74afc9-3253-11d9-997d-dd5f89ac8843</uuidresource>
+			<datelastmodified>Tue, 09 Nov 2004 15:02:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Nov 2004 13:29:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_renameelement.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_renameelement.gif</destination>
+			<type>image</type>
+			<uuidresource>a2780842-5019-11d9-8515-01dd5ed54f5e</uuidresource>
+			<datelastmodified>Fri, 17 Dec 2004 10:51:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:51:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/ic_htmlimport.gif</destination>
+			<type>image</type>
+			<uuidresource>776ea7d2-1e8e-11d9-bcb3-991ab7e63e0b</uuidresource>
+			<datelastmodified>Fri, 15 Oct 2004 09:45:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 09:42:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>
