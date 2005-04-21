@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/04/20 16:06:16 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/04/21 16:31:52 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
@@ -83,7 +84,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 5.3.1
  */
@@ -724,17 +725,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         while (j.hasNext()) {
             I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
             if (resourceType instanceof CmsResourceTypeFolderExtended) {
-                // found a configured gallery resource type
+                // found a configured extended folder resource type
                 CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
-                try {
-                    // check, if the folder class is a subclass of A_CmsGallery
-                    if (A_CmsGallery.class.isAssignableFrom(Class.forName(galleryType.getFolderClassName()))) {
-                        // store the gallery class name with the type name as lookup key                        
-                        m_galleries.put(galleryType.getTypeName(), galleryType);
-                    }
-                } catch (ClassNotFoundException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);
+                String folderClassName = galleryType.getFolderClassName();
+                if (CmsStringUtil.isNotEmpty(folderClassName)) {
+                    // only process this as a gallery if the folder name is not empty
+                    try {
+                        // check, if the folder class is a subclass of A_CmsGallery
+                        if (A_CmsGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
+                            // store the gallery class name with the type name as lookup key                        
+                            m_galleries.put(galleryType.getTypeName(), galleryType);
+                        }
+                    } catch (ClassNotFoundException e) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error(e);
+                        }
                     }
                 }
             }

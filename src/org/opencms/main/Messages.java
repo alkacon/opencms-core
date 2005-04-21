@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/04/20 10:37:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/21 16:31:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** The copyright message for OpenCms. */
+    public static final String[] COPYRIGHT_BY_ALKACON = {
+        "",
+        "Copyright (c) 2002-2005 Alkacon Software",
+        "OpenCms comes with ABSOLUTELY NO WARRANTY",
+        "This is free software, and you are welcome to",
+        "redistribute it under certain conditions.",
+        "Please see the GNU Lesser General Public Licence for",
+        "further details.",
+        ""};
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_ALREADY_INITIALIZED_0 = "ERR_ALREADY_INITIALIZED_0";
 
@@ -79,10 +90,133 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CRITICAL_INIT_XML_0 = "ERR_CRITICAL_INIT_XML_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_ADDED_REQUEST_HANDLER_2 = "INIT_ADDED_REQUEST_HANDLER_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_CURRENT_RUNLEVEL_1 = "INIT_CURRENT_RUNLEVEL_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_DOT_0 = "INIT_DOT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_ETHERNET_ADDRESS_1 = "INIT_ETHERNET_ADDRESS_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_FILE_ENCODING_1 = "INIT_FILE_ENCODING_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_FLEX_CACHE_ERROR_1 = "INIT_FLEX_CACHE_ERROR_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_FLEX_CACHE_FINISHED_0 = "INIT_FLEX_CACHE_FINISHED_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_FLEX_CACHE_STARTING_0 = "INIT_FLEX_CACHE_STARTING_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_JAVA_VM_1 = "INIT_JAVA_VM_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_LINE_0 = "INIT_LINE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_LOG_FILE_1 = "INIT_LOG_FILE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_OPENCMS_CONTEXT_1 = "INIT_OPENCMS_CONTEXT_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_OPENCMS_ENCODING_1 = "INIT_OPENCMS_ENCODING_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_OPENCMS_STOPPED_1 = "INIT_OPENCMS_STOPPED_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_OPENCMS_VERSION_1 = "INIT_OPENCMS_VERSION_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_OPERATING_SYSTEM_1 = "INIT_OPERATING_SYSTEM_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_PROPERTY_FILE_1 = "INIT_PROPERTY_FILE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_REQUEST_HANDLER_CLASS_1 = "INIT_REQUEST_HANDLER_CLASS_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_RUNLEVEL_CHANGE_2 = "INIT_RUNLEVEL_CHANGE_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_SERVLET_CONTAINER_1 = "INIT_SERVLET_CONTAINER_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_SERVLET_PATH_1 = "INIT_SERVLET_PATH_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_SHUTDOWN_START_1 = "INIT_SHUTDOWN_START_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_SHUTDOWN_TIME_1 = "INIT_SHUTDOWN_TIME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_STARTUP_TIME_1 = "INIT_STARTUP_TIME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_SYSTEM_RUNNING_1 = "INIT_SYSTEM_RUNNING_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_WEBAPP_NAME_1 = "INIT_WEBAPP_NAME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_WEBINF_PATH_1 = "INIT_WEBINF_PATH_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_AUTHENTICATE_PROPERTY_2 = "LOG_AUTHENTICATE_PROPERTY_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_CONSOLE_TOTAL_RUNTIME_1 = "LOG_CONSOLE_TOTAL_RUNTIME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DUPLICATE_REQUEST_HANDLER_1 = "LOG_DUPLICATE_REQUEST_HANDLER_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_EXPORT_SHUTDOWN_1 = "LOG_ERROR_EXPORT_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_MODULE_SHUTDOWN_1 = "LOG_ERROR_MODULE_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_READING_AUTH_PROP_2 = "LOG_ERROR_READING_AUTH_PROP_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_SCHEDULE_SHUTDOWN_1 = "LOG_ERROR_SCHEDULE_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_SECURITY_SHUTDOWN_1 = "LOG_ERROR_SECURITY_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_WRITING_CONFIG_1 = "LOG_ERROR_WRITING_CONFIG_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_FAILURE_MESSAGE_1 = "LOG_INIT_FAILURE_MESSAGE_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_INVALID_ERROR_2 = "LOG_INIT_INVALID_ERROR_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SHUTDOWN_CONSOLE_NOTE_2 = "LOG_SHUTDOWN_CONSOLE_NOTE_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_STARTUP_CONSOLE_NOTE_2 = "LOG_STARTUP_CONSOLE_NOTE_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_WRONG_INIT_SEQUENCE_2 = "LOG_WRONG_INIT_SEQUENCE_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.main.messages";

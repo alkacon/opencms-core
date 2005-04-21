@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/21 16:31:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,9 @@ package org.opencms.scheduler;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -75,7 +74,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -199,16 +198,18 @@ public class CmsScheduleManager implements Job {
     /**
      * Initializes the OpenCms scheduler.<p> 
      * 
-     * @param adminCms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the user has insufficient role permissions
      */
-    public synchronized void initialize(CmsObject adminCms) throws CmsException {
+    public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
 
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) || (adminCms != null)) {
-            // simple unit tests will have runlevel 2 and no CmsObject
-            if ((adminCms == null) || !adminCms.isAdmin()) {
-                throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            // simple unit tests will have runlevel 1 and no CmsObject
+            if ((cms == null) || !cms.isAdmin()) {
+                throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_REQUIRED_ROLE_NOT_AVAILABLE_1,
+                    OpenCms.getDefaultUsers().getGroupAdministrators()));
             }
         }
 
@@ -216,7 +217,7 @@ public class CmsScheduleManager implements Job {
         m_jobs = new ArrayList();
 
         // save the admin cms
-        m_adminCms = adminCms;
+        m_adminCms = cms;
 
         // Quartz scheduler settings
         Properties properties = new Properties();
@@ -245,7 +246,13 @@ public class CmsScheduleManager implements Job {
         if (m_configuredJobs != null) {
             // add all jobs from the system configuration
             for (int i = 0; i < m_configuredJobs.size(); i++) {
-                scheduleJob(adminCms, (CmsScheduledJobInfo)m_configuredJobs.get(i));
+                try {
+                    CmsScheduledJobInfo job = (CmsScheduledJobInfo)m_configuredJobs.get(i);
+                    scheduleJob(cms, job);
+                } catch (CmsSchedulerException e) {
+                    // ignore this job, but keep scheduling the other jobs
+                    // note: the log is has already been written
+                }
             }
         }
 
@@ -271,14 +278,18 @@ public class CmsScheduleManager implements Job {
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @param jobInfo the job info describing the job to schedule
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the user has insufficient role permissions
+     * @throws CmsSchedulerException if the job could not be scheduled for any reason
      */
-    public synchronized void scheduleJob(CmsObject cms, CmsScheduledJobInfo jobInfo) throws CmsException {
+    public synchronized void scheduleJob(CmsObject cms, CmsScheduledJobInfo jobInfo)
+    throws CmsRoleViolationException, CmsSchedulerException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
             if ((cms == null) || !cms.isAdmin()) {
-                throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+                throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_REQUIRED_ROLE_NOT_AVAILABLE_1,
+                    OpenCms.getDefaultUsers().getGroupAdministrators()));
             }
         }
 
@@ -422,14 +433,16 @@ public class CmsScheduleManager implements Job {
      * 
      * @return <code>true</code> if the job was sucessfully unscheduled, <code>false</code> otherwise
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the user has insufficient role permissions
      */
-    public synchronized boolean unscheduleJob(CmsObject cms, String jobId) throws CmsException {
+    public synchronized boolean unscheduleJob(CmsObject cms, String jobId) throws CmsRoleViolationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
             if ((cms == null) || !cms.isAdmin()) {
-                throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+                throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_REQUIRED_ROLE_NOT_AVAILABLE_1,
+                    OpenCms.getDefaultUsers().getGroupAdministrators()));
             }
         }
 

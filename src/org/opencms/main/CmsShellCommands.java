@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/04/12 14:11:33 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/04/21 16:31:52 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -203,7 +203,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void copyright() {
 
-        String[] copy = I_CmsConstants.C_COPYRIGHT;
+        String[] copy = Messages.COPYRIGHT_BY_ALKACON;
         for (int i = 0; i < copy.length; i++) {
             System.out.println(copy[i]);
         }

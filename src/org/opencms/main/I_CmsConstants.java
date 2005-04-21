@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/04/21 16:31:52 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public interface I_CmsConstants {
 
@@ -226,19 +226,6 @@ public interface I_CmsConstants {
 
     /** Copy mode to preserve siblings during copy. */
     int C_COPY_PRESERVE_SIBLING = 3;
-
-    /**
-     * The copyright message for OpenCms.
-     */
-    String[] C_COPYRIGHT = {
-        "",
-        "Copyright (c) 2002-2005 Alkacon Software",
-        "OpenCms comes with ABSOLUTELY NO WARRANTY",
-        "This is free software, and you are welcome to",
-        "redistribute it under certain conditions.",
-        "Please see the GNU Lesser General Public Licence for",
-        "further details.",
-        ""};
 
     /** Flag for leaving a date unchanged during a touch operation. */
     long C_DATE_UNCHANGED = -1;

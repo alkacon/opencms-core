@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/04/21 16:31:52 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsShell;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsShellCommands;
+import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.module.CmsModule;
@@ -76,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -1249,7 +1250,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         System.out.println();
         System.out.println("Starting Workplace import and database setup for OpenCms!");
         
-        String[] copy = I_CmsConstants.C_COPYRIGHT;
+        String[] copy = Messages.COPYRIGHT_BY_ALKACON;
         for (int i = copy.length-1; i >= 0; i--) {
             System.out.println(copy[i]);
         }        
