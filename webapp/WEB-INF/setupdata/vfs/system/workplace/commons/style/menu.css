@@ -1,8 +1,8 @@
-<%@ page pageEncoding="ISO-8859-1" %><%@ page import="org.opencms.jsp.*,java.net.*" %>
+<%@ page import="org.opencms.jsp.*,java.net.*" %>
 
 <%
 
-    // Create a JSP action elementCmsJspActionElement 
+    // Create a JSP action element 
     CmsJspActionElement cms = new CmsJspActionElement(pageContext,request,response);
 
 
@@ -38,41 +38,30 @@ body {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
-	color: #000000;
-	<% if (style == NEW_ADMIN) { %>
-    background-color: #f6f6f6; 
-    <% } else {%>
-    padding: 0 12px;
-    margin: 0;
-    background-color: #6e89dd; 
-    <% } %>
-}
-
-a:link {
-  color: #0240a3;
-}
-
-a:visited {
-  color: #0240a3;
-}
-
-a:active {
-  color: #000000;
+	color: WindowText;
+   <% if (style == NEW_ADMIN) { %>
+	background-color: Window;     
+	padding-bottom: 20px;
+   <% } else {%>
+	padding: 0 12px;
+	margin: 0;
+	background-color: ThreeDFace; 
+	background-image: url(http://localhost:9080/opencms/resources/admin/images/border.gif);
+	background-position: right;
+	background-repeat: repeat-y;
+	background-attachment: fixed;
+  <% } %>
 }
 
 img {
   border: none;
 }
 
-legend {
-  white-space: nowrap;
-}
-
 .tip {
-    background: #FFFF99;
+    background: InfoBackground;
     position: absolute;
     z-index:3;
-    border: 1px inset #000000;
+    border: 1px solid ActiveBorder;
     padding: 2px;
     display: none;
     text-align: left;
@@ -89,7 +78,7 @@ legend {
 
 #loader td {
   padding: 0px;
-  background: #ffffff;
+  background: Window;
   border: 1px solid black;
 }
 
@@ -127,6 +116,7 @@ legend {
 	padding-top: 150px;
 	vertical-align: top;
 	text-align: center;
+	background-image: url(http://localhost:9080/opencms/resources/admin/images/semi-transparent.gif);
 }
 
 #loaderContainer td td {
@@ -134,10 +124,68 @@ legend {
 	text-align: left;
 }
 
+/* ---------- common buttons --------- */
+
+.commonButton {
+  display: inline;
+}
+
+.commonButton button,
+.commonButton {
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  color: WindowText;
+  background-color: transparent;
+}
+
+.commonButton button {
+  border: 0 solid Window;
+  background-repeat: no-repeat;
+}
+
+span.commonButton button,
+span.commonButton span {
+  color: GrayText;
+}  
+
+div.commonButton span {
+  text-decoration: none;
+  color: WindowText;
+}
+
+div.commonButton:hover span {
+  text-decoration: underline;
+  color: #000088;
+}
+
 <% } 
 
    if(style == MENU) { %>
 
+.commonButton {
+  padding-left: 0px;
+  vertical-align: middle;
+  background: none;
+}
+
+
+.commonButton button {
+  display: none;
+}
+
+.commonButton span {
+  background-position: 0 1px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  padding-left: 20px;
+  text-decoration: none;
+  cursor: hand;
+  cursor: pointer;
+  padding-top: 1px;
+  padding-bottom: 4px;
+}
+
+/* navegation area */
 
 #navArea img {
   display: block;
@@ -147,6 +195,14 @@ legend {
 #navArea {
   padding-top: 12px;
   padding-bottom: 60px;
+}
+
+.navOpened,
+.navClosed {
+  border-top: 2px solid ThreeDHighlight;
+  border-left: 2px solid ThreeDHighlight;
+  border-right: 2px solid ThreeDShadow;
+  border-bottom: 2px solid ThreeDShadow;
 }
 
 #navArea .node img,
@@ -159,10 +215,8 @@ legend {
 /* opened tab */
 
 .navOpened {
-  background-position: right;
-  background-repeat: repeat-y;
   margin-bottom: 15px;
-  background-color: #ffffff;
+  background-color: ActiveCaption;
 }
 
 .navTitle,
@@ -172,6 +226,15 @@ legend {
   -moz-user-select: none;
 }
 
+.titleBorder {
+   border: 3px solid ThreeDFace;  
+   border-bottom: 0px solid ThreeDFace; 
+ }
+
+.treeBorder {
+   border: 3px solid ThreeDFace;  
+ }
+
 .navOpened .navTitle,
 .navOpened .navTitleOver {
   height: 22px;
@@ -180,53 +243,25 @@ legend {
 .navOpened .navTitle .titleText {
   font-weight: bold;
   vertical-align: middle;
-  color: #215dc6;
+  color: CaptionText;
 }
 
 .navOpened .navTitleOver .titleText {
   font-weight: bold;
   vertical-align: middle;
-  color: #428eff;
-}
-
-.navOpened .titleLeft {
-  width: 14px;
-  vertical-align: top;
-}
-
-.navOpened .titleRight {
-  width: 3px;
-  vertical-align: top;
-}
-
-.navOpened .titleHandle {
-  background-position: left top;
-  background-repeat: no-repeat;
+  color: InactiveCaptionText;
 }
 
 .navClosed {
   background-position: right;
   background-repeat: repeat-y;
   margin-bottom: 15px;
-  background-color: #ffffff;
+  background-color: InactiveCaption;
 }
 
 .navClosed .navTitle,
 .navClosed .navTitleOver {
   height: 22px;
-}
-
-.navTitle .titleHandle,
-.navTitleOver .titleHandle {
-  width: 20px;
-}
-
-.navTitle .titleHandle {
-  background-color: #215dc6;
-}
-
-.navTitleOver .titleHandle {
-  background-color: #428eff;
 }
 
 .navClosed .navTitle .titleText,
@@ -235,36 +270,25 @@ legend {
   vertical-align: middle;
 }
 
-.navClosed .titleLeft {
-  width: 14px;
-  vertical-align: top;
-}
-
-.navClosed .titleRight {
-  width: 3px;
-  vertical-align: top;
-}
-
-.navClosed .titleHandle {
-  background-position: left top;
-  background-repeat: no-repeat;
+.titleText {
+  padding-left: 20px;
+  padding-top: 3px;
 }
 
 .navClosed .navTitle .titleText {
-  color: #215dc6;
+  color: InactiveCaptiontext;
 }
 
 .navClosed .navTitleOver .titleText {
-  color: #428eff;
+  color: CaptionText;
 }
 
 div.tree {
-  margin-left: 1px;
-  margin-right: 1px;
   padding: 2px;
   padding-top: 3px;
   padding-bottom: 10px;
-  background-color: #d6dff7; 
+  background-color: Window; 
+  border: 1px solid WindowText;
 }
 
 .navOpened .tree {
@@ -282,73 +306,20 @@ div.tree {
   vertical-align: middle;
 }
 
-.node .name,
-.nodeActive .name {
-  padding: 2px 3px;
-  margin-left: 2px;
-}
-
-.nodeActive .name {
-  background-color: #3878bf;
-}
-
-.nodeImage {
-  background-position: right; 
-  background-repeat: no-repeat;
-  padding-left: 11px;
-  width: 27px;
-}
-
-#navLayout .nodeActive .name a,
-#navLayout .nodeActive .name a:hover,
-#navLayout .nodeActive .name a:visited,
-#navLayout .nodeActive .name a:active {
-  text-decoration: none;
-  color: white;
-}
-
-#navLayout .name a,
-#navLayout .name a:hover,
-#navLayout .name a:visited,
-#navLayout .name a:active {
-  text-decoration: underline;
-  color: #215dc6;
-}
-
-#navLayout .name a:hover {
-  color: #428eff;
-}
-
 #contexthelp {
   font-size: 11px;
-  color: #555555;
   text-align: left;
   padding-top: 5px;
   margin: 0 15px 0 10px;
   height: 100px;
-  border-top: 1px solid #A7B8EB;
 }
 
-#contextinfo {
-  font-size: 11px;
-  color: #555555;
-  text-align: left;
-  padding-top: 5px;
-  margin: 0 15px 0 10px;
-  border-top: 1px solid #A7B8EB;
-}
-
-/* style definitions valid only for NEW_ADMIN style */
+<% /* style definitions valid only for NEW_ADMIN style */ %>
 <% } else if(style == NEW_ADMIN) { %>
 
 body, form {
   margin: 0;
   padding: 0;
-}
-
-body {
-  padding-bottom: 20px;
-  background: #F9F8F8;
 }
 
 td {
@@ -359,16 +330,12 @@ th {
   vertical-align: middle;
   text-align: center;
   white-space: nowrap;
-/*  background: "#D6DFF7";*/
-  border-right: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
 }
 
 .pathbar {
-	padding-top: 10px;
-	padding-left: 4px;
-   background: #ffffff;
-   color: #444444;
+   padding-top: 10px;
+   padding-left: 4px;
+   background-color: ThreeDFace;
 }
 
 .screenBody {
@@ -382,8 +349,8 @@ th {
 .screenTitle {
   margin: 0;
   vertical-align: middle;
-  background: #ffffff;
-  border-bottom: 1px solid #cccccc;
+  background-color: ThreeDFace;
+  border-bottom: 1px solid ActiveBorder;
 }
 
 .screenTitle td {
@@ -391,7 +358,7 @@ th {
   vertical-align: middle;
   font-size: 18px;
   font-family: "Franklin Gothic Medium", Verdana, Geneva, Arial, Helvetica, sans-serif;
-  color: #000000;
+  color: WindowText;
 }
 
 
@@ -447,54 +414,35 @@ hr {
 .misc input {
   margin-left: 7px;
 }
+
 .misc .commonButton {
   padding-left: 14px;
-  vertical-align: 0 3px;
+  vertical-align: middle;
+}
+
+.uplevel .commonButton {
+  vertical-align: middle;
+  padding-top: 3px;
+}
+
+.pathbar .commonButton {
+  padding-left: 0px;
+  vertical-align: middle;
+}
+
+.list .commonButton {
+  padding-left: 4px;
+  vertical-align: middle;
 }
 
 .toolsArea {
   padding: 8px 0 0 0;
 }
 
-.commonButton {
-  display: inline;
-}
-
-.pathbar a:link,
-.pathbar a:visited {
-  color: #444444;
-}
-
-.screenTitle .name,
-.screenTitle b {
-  font-weight: normal; 
-  color: #0D1DE0; 
-}
-
-
-/* ---------- common buttons --------- */
-
-.commonButton button,
-.commonButton {
-  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-  font-size: 11px;
-  color: #000000;
-  background-color: transparent;
-}
-
-.commonButton button {
-  border: 0 solid white;
-  background-repeat: no-repeat;
-}
-
-.commonButton button[disabled] {
-  color: #999999;
-}  
-
 /* ---------- big icon buttons  --------- */
 .iconblock {
     margin: auto; 
-    width: 80%;
+    width: 95%;
 }
 
 .toolsArea .commonButton {
@@ -510,9 +458,10 @@ hr {
   float: left;
 }
 
+.pathbar span.commonButton,
 .toolsArea span.commonButton {
   cursor: default;
-  color: #999999;
+  color: WindowText;
   text-decoration: none;
 }
 
@@ -524,23 +473,38 @@ hr {
   background: none;
 }
 
+.pathbar .commonButton,
+.list .commonButton,
 .buttons .commonButton,
 .uplevel .commonButton {
   background: none;
 }
 
+.pathbar .commonButton button,
+.list .commonButton button,
 .listArea .buttons .commonButton button,
 .uplevel .commonButton button {
 	display: none;
 }
 
+.pathbar .commonButton span {
+  background-position: 0 1px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  padding-top: 0px;
+  text-decoration: none;
+  cursor: hand;
+  cursor: pointer;
+}
+
+.list .commonButton span,
 .buttons .commonButton span,
 .uplevel .commonButton span {
   background-position: 0 1px;
   background-repeat: no-repeat;
   background-color: transparent;
   padding-left: 20px;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: hand;
   cursor: pointer;
   padding-top: 1px;
@@ -765,7 +729,7 @@ span.separator {
 	<% } %>
 	padding: 15px;
 	<% if(style == NEW_ADMIN) { %>
-    width: 80%;
+    width: 95%;
     margin: auto;
 	<% } %>
 }
@@ -809,7 +773,7 @@ span.dialogblockhead {
 	<% if(style == WORKPLACE) { %>
 	background-color: ThreeDFace;
 	<% } else if(style == NEW_ADMIN) { %>
-	background-color: #F9F8F8;
+	background-color: Window;
 	<% } %>
 	padding: 0 3px;
 	white-space: nowrap;
@@ -1156,6 +1120,30 @@ body.dialogadmin {
 /* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
    this must ALWAYS stay at the end of the css! */
 body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }
+
+  <% } else { %>
+
+.list th { 
+	white-space: nowrap; 
+	background-color:ThreedFace; 
+	border-right: 1px solid ThreedDarkShadow; 
+	border-top: 1px solid ThreeDHighlight; 
+	border-bottom: 1px solid ThreedDarkShadow; 
+	border-left: 1px solid ThreeDHighlight; 
+} 
+
+th a:link, th a:visited, th a:active {
+  color: WindowText;
+  text-decoration: none;
+}
+
+.evenrowbg {
+	background-color: InfoBackground; 
+}
+
+.oddrowbg {
+	background-color: Window;
+}
 
   <% } %>
 

@@ -10601,78 +10601,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/images/1x1.gif</source>
-			<destination>system/workplace/resources/admin/images/1x1.gif</destination>
+			<source>system/workplace/resources/admin/images/border.gif</source>
+			<destination>system/workplace/resources/admin/images/border.gif</destination>
 			<type>image</type>
-			<uuidresource>5a2d1b68-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:11 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Feb 2005 09:56:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/arrow_down.gif</source>
-			<destination>system/workplace/resources/admin/images/arrow_down.gif</destination>
-			<type>image</type>
-			<uuidresource>c2d757ed-6e28-11d9-94af-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 24 Jan 2005 16:55:33 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/arrow_up.gif</source>
-			<destination>system/workplace/resources/admin/images/arrow_up.gif</destination>
-			<type>image</type>
-			<uuidresource>48db834a-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:32:42 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/bth_default-button_bg.gif</source>
-			<destination>system/workplace/resources/admin/images/bth_default-button_bg.gif</destination>
-			<type>image</type>
-			<uuidresource>5a429f3b-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/btn_bg-disabled.gif</source>
-			<destination>system/workplace/resources/admin/images/btn_bg-disabled.gif</destination>
-			<type>image</type>
-			<uuidresource>5a5f27ee-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/btn_bg.gif</source>
-			<destination>system/workplace/resources/admin/images/btn_bg.gif</destination>
-			<type>image</type>
-			<uuidresource>5a723ac1-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:12 GMT</datecreated>
+			<datecreated>Fri, 11 Feb 2005 09:56:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -10692,140 +10626,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/images/delete.gif</source>
-			<destination>system/workplace/resources/admin/images/delete.gif</destination>
-			<type>image</type>
-			<uuidresource>70d7e909-6af5-11d9-b9f2-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 15:10:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 15:10:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/navclosed.gif</source>
-			<destination>system/workplace/resources/admin/images/navclosed.gif</destination>
-			<type>image</type>
-			<uuidresource>5ae4abb9-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:12 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/navopened.gif</source>
-			<destination>system/workplace/resources/admin/images/navopened.gif</destination>
-			<type>image</type>
-			<uuidresource>5af7be8c-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:12 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/nav_bg.jpg</source>
-			<destination>system/workplace/resources/admin/images/nav_bg.jpg</destination>
-			<type>image</type>
-			<uuidresource>5ac0f710-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:12 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/newuser.gif</source>
-			<destination>system/workplace/resources/admin/images/newuser.gif</destination>
-			<type>image</type>
-			<uuidresource>8f197d34-6afe-11d9-95c8-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 16:15:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 16:15:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/search.gif</source>
-			<destination>system/workplace/resources/admin/images/search.gif</destination>
-			<type>image</type>
-			<uuidresource>c0041e53-6af4-11d9-b9f2-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 15:05:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 15:05:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/admin/images/semi-transparent.gif</source>
 			<destination>system/workplace/resources/admin/images/semi-transparent.gif</destination>
 			<type>image</type>
 			<uuidresource>5b0d1b52-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:13 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/showall.gif</source>
-			<destination>system/workplace/resources/admin/images/showall.gif</destination>
-			<type>image</type>
-			<uuidresource>c0316fe6-6af4-11d9-b9f2-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 15:05:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 15:05:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/topleft.gif</source>
-			<destination>system/workplace/resources/admin/images/topleft.gif</destination>
-			<type>image</type>
-			<uuidresource>5b3a6ceb-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:13 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/topright.gif</source>
-			<destination>system/workplace/resources/admin/images/topright.gif</destination>
-			<type>image</type>
-			<uuidresource>5b4653ce-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 10:33:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 10:33:13 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/images/uplevel.gif</source>
-			<destination>system/workplace/resources/admin/images/uplevel.gif</destination>
-			<type>image</type>
-			<uuidresource>5b523ab1-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
 			<datelastmodified>Tue, 18 Jan 2005 10:33:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 18 Jan 2005 10:33:13 GMT</datecreated>
@@ -13344,6 +13148,118 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/list</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/1leftarrow.png</source>
+			<destination>system/workplace/resources/list/1leftarrow.png</destination>
+			<type>image</type>
+			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:55:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/1rightarrow.png</source>
+			<destination>system/workplace/resources/list/1rightarrow.png</destination>
+			<type>image</type>
+			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:55:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/arrow_down.gif</source>
+			<destination>system/workplace/resources/list/arrow_down.gif</destination>
+			<type>image</type>
+			<uuidresource>c2d757ed-6e28-11d9-94af-2f77a917d9ae</uuidresource>
+			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:55:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/arrow_up.gif</source>
+			<destination>system/workplace/resources/list/arrow_up.gif</destination>
+			<type>image</type>
+			<uuidresource>48db834a-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
+			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Jan 2005 10:32:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/delete.gif</source>
+			<destination>system/workplace/resources/list/delete.gif</destination>
+			<type>image</type>
+			<uuidresource>70d7e909-6af5-11d9-b9f2-2f77a917d9ae</uuidresource>
+			<datelastmodified>Thu, 20 Jan 2005 15:10:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Jan 2005 15:10:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/reload.gif</source>
+			<destination>system/workplace/resources/list/reload.gif</destination>
+			<type>image</type>
+			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:55:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/search.gif</source>
+			<destination>system/workplace/resources/list/search.gif</destination>
+			<type>image</type>
+			<uuidresource>c0041e53-6af4-11d9-b9f2-2f77a917d9ae</uuidresource>
+			<datelastmodified>Thu, 20 Jan 2005 15:05:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Jan 2005 15:05:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/showall.gif</source>
+			<destination>system/workplace/resources/list/showall.gif</destination>
+			<type>image</type>
+			<uuidresource>c0316fe6-6af4-11d9-b9f2-2f77a917d9ae</uuidresource>
+			<datelastmodified>Thu, 20 Jan 2005 15:05:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Jan 2005 15:05:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tree</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -15834,7 +15750,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[name:${key.admin.view.name}|iconpath:/system/workplace/resources/admin/images/deficon.png|helptext:${key.admin.view.helptext}|installpoints:/@#1]]></value>
+					<value><![CDATA[name:${key.admin.view.name}|iconpath:/system/workplace/resources/admin/images/deficon.png|helptext:${key.admin.view.helptext}|path:/|group:|position:1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

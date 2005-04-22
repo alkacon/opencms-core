@@ -133,7 +133,7 @@ function mouseHelpEvent(obj_id, open) {
  * on the page.
  */
 function loadingOn(target) {
-    if (undefined == target) {
+    if (undefined == target || target == '') {
         // set default target
         target = this;
     }
@@ -176,7 +176,7 @@ function loadingOn(target) {
  * enables every combobox on the page.
  */
 function loadingOff(target) {
-    if (undefined == target) {
+    if (undefined == target || target == '') {
         // set default target
         target = this;
     }

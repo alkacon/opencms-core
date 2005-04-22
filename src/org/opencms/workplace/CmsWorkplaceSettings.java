@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/04/22 08:38:52 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.list.CmsHtmlList;
 
 import org.opencms.file.CmsUser;
 
@@ -45,7 +46,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -71,6 +72,7 @@ public class CmsWorkplaceSettings {
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
     private String m_viewUri;
+    private CmsHtmlList m_list;
 
     /**
      * Constructor, only package visible.<p>
@@ -547,5 +549,25 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setViewUri(String string) {
         m_viewUri = string;
+    }
+    
+    /**
+     * Returns the last user used list state.<p>
+     *
+     * @return the list
+     */
+    public CmsHtmlList getList() {
+
+        return m_list;
+    }
+    
+    /**
+     * Sets the list state.<p>
+     *
+     * @param list the list to set
+     */
+    public synchronized void setList(CmsHtmlList list) {
+
+        m_list = list;
     }
 }

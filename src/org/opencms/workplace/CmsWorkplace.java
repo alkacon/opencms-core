@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/04/15 22:48:36 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2005/04/22 08:38:52 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.108 $
+ * @version $Revision: 1.109 $
  * 
  * @since 5.1
  */
@@ -403,8 +403,8 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
 
         // initialize messages and also store them in settings
-        CmsWorkplaceMessages messages = 
-            OpenCms.getWorkplaceManager().getMessages(settings.getUserSettings().getLocale());
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(
+            settings.getUserSettings().getLocale());
         settings.setMessages(messages);
 
         // switch to users preferred site      
@@ -506,6 +506,31 @@ public abstract class CmsWorkplace {
             }
         }
         return resourceTypes;
+    }
+
+    /**
+     * Returns all parameters of the current workplace class 
+     * as hidden field tags that can be inserted in a form.<p>
+     * 
+     * @return all parameters of the current workplace class
+     * as hidden field tags that can be inserted in a html form
+     */
+    public String allParamsAsHidden() {
+
+        StringBuffer result = new StringBuffer(512);
+        Map params = allParamValues();
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String param = (String)i.next();
+            Object value = params.get(param);
+            result.append("<input type=\"hidden\" name=\"");
+            result.append(param);
+            result.append("\" value=\"");
+            String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
+            result.append(encoded);
+            result.append("\">\n");
+        }
+        return result.toString();
     }
 
     /**
@@ -1615,6 +1640,40 @@ public abstract class CmsWorkplace {
             return key(keyName);
         }
         return value;
+    }
+
+    /**
+     * Returns the values of all parameter methods of this workplace class instance.<p>
+     * 
+     * @return the values of all parameter methods of this workplace class instance
+     */
+    protected Map allParamValues() {
+
+        List methods = paramGetMethods();
+        Map map = new HashMap(methods.size());
+        Iterator i = methods.iterator();
+        while (i.hasNext()) {
+            Method m = (Method)i.next();
+            Object o = null;
+            try {
+                o = m.invoke(this, new Object[0]);
+            } catch (InvocationTargetException ite) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(ite);
+                }
+            } catch (IllegalAccessException eae) {
+                // can usually be ignored
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(eae);
+                }
+            }
+            if (o == null) {
+                o = "";
+            }
+            map.put(m.getName().substring(8).toLowerCase(), o);
+        }
+        return map;
     }
 
     /**
