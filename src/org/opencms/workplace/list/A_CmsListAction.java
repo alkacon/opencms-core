@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,27 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 /**
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
 
     /** Confirmation Message. */
-    private final String m_confirmationMsg;
+    private final CmsMessageContainer m_confirmationMsg;
 
-    /** The associated list. */
-    private final CmsHtmlList m_list;
+    /** The id of the associated list. */
+    private final String m_listId;
 
     /**
      * Default Constructor.<p>
      * 
-     * @param list the list
+     * @param listId the id of the list
      * @param id unique id
      * @param name the name
      * @param iconPath the link to the icon
@@ -58,16 +60,16 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
      * @param confirmationMessage the confirmation message
      */
     public A_CmsListAction(
-        CmsHtmlList list,
+        String listId,
         String id,
-        String name,
+        CmsMessageContainer name,
         String iconPath,
-        String helpText,
+        CmsMessageContainer helpText,
         boolean enabled,
-        String confirmationMessage) {
+        CmsMessageContainer confirmationMessage) {
 
         super(id, name, helpText, enabled, iconPath);
-        m_list = list;
+        m_listId = listId;
         m_confirmationMsg = confirmationMessage;
 
     }
@@ -75,17 +77,17 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     /**
      * @see org.opencms.workplace.list.I_CmsListAction#getConfirmationMessage()
      */
-    public String getConfirmationMessage() {
+    public CmsMessageContainer getConfirmationMessage() {
 
         return m_confirmationMsg;
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListAction#getList()
+     * @see org.opencms.workplace.list.I_CmsListAction#getListId()
      */
-    public CmsHtmlList getList() {
+    public String getListId() {
 
-        return m_list;
+        return m_listId;
     }
 
 }

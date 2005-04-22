@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiAction.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -38,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default implementation of a list multi action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListMultiAction extends A_CmsListAction {
@@ -46,7 +47,7 @@ public class CmsListMultiAction extends A_CmsListAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param list the list
+     * @param listId the id of the associated list
      * @param id unique id
      * @param name the name
      * @param iconPath the link to the icon
@@ -55,15 +56,15 @@ public class CmsListMultiAction extends A_CmsListAction {
      * @param confirmationMessage the confirmation message
      */
     public CmsListMultiAction(
-        CmsHtmlList list,
+        String listId,
         String id,
-        String name,
+        CmsMessageContainer name,
         String iconPath,
-        String helpText,
+        CmsMessageContainer helpText,
         boolean enabled,
-        String confirmationMessage) {
+        CmsMessageContainer confirmationMessage) {
 
-        super(list, id, name, iconPath, helpText, enabled, confirmationMessage);
+        super(listId, id, name, iconPath, helpText, enabled, confirmationMessage);
     }
 
     /**
@@ -72,8 +73,14 @@ public class CmsListMultiAction extends A_CmsListAction {
     public String buttonHtml(CmsWorkplace wp) {
 
         if (isEnabled()) {
-            String onClic = getList().getId() + "ListMultiAction('" +getId() + "', '" + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage())) + "');";
-            return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName(), getHelpText(), isEnabled(), getIconPath(), onClic);            
+            String onClic = getListId()
+                + "ListMultiAction('"
+                + getId()
+                + "', '"
+                + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+                + "');";
+            return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
+                wp.getLocale()), isEnabled(), getIconPath(), onClic);
         }
         return "";
     }

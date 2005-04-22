@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMacroFormatter.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,42 +31,43 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.i18n.CmsMessageContainer;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * This list formatter uses the <code>{@link MessageFormat}</code> class for macro like formatting.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListMacroFormatter implements I_CmsListFormatter {
 
     /** pattern for <code>{@link MessageFormat}</code>. */
-    private final String m_mask;
+    private final CmsMessageContainer m_mask;
 
     /**
      * Default constructor that sets the mask to use.<p>
      * 
      * @param mask pattern for <code>{@link MessageFormat}</code>
      */
-    public CmsListMacroFormatter(String mask) {
+    public CmsListMacroFormatter(CmsMessageContainer mask) {
 
         m_mask = mask;
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
      */
-    public String format(Object data, CmsWorkplace wp) {
+    public String format(Object data, Locale locale) {
 
         if (data==null) {
             return null;
         }
-        String locMask = wp.resolveMacros(m_mask);
-        MessageFormat formatter = new MessageFormat(locMask, wp.getLocale());
+        String locMask = m_mask.key(locale);
+        MessageFormat formatter = new MessageFormat(locMask, locale);
         return formatter.format(new Object[] {data});
     }
 }

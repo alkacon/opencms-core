@@ -22,7 +22,7 @@ switch (wp.getAction()) {
     //////////////////// ACTION: execute single list action
     case CmsListDialog.ACTION_LIST_SINGLE_ACTION:
          wp.executeListSingleActions();
-         if (wp.getParamListAction().equals(wp.key("admin.users.list.actions.edituser.name"))) {
+         if (wp.getParamListAction().equals(CmsUsersAdminTool.LIST_ACTION_EDIT)) {
              // due to a redirect
              return;
          }

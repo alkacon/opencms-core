@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsListDialog.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class CmsListDialog extends CmsDialog {
@@ -126,46 +124,42 @@ public abstract class CmsListDialog extends CmsDialog {
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
+     * @param sortedColId the a priory sorted column
      */
-    public CmsListDialog(CmsJspActionElement jsp) {
+    protected CmsListDialog(CmsJspActionElement jsp, String sortedColId) {
 
         super(jsp);
         // try to read the list from the session
         listRecovery();
         // initialization 
         if (getList() == null) {
-            // create the metadata
-            createListDefinition();
+            // create the list
+            setList(createList());
             // set the number of items per page from the user settings
-            getList().getMetadata().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
-            // build the content
-            fillList();
+            getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
+            // fill the content
+            getList().addAllItems(getListItems());
+            // sort the list
+            getList().setSortedColumn(sortedColId, getLocale());
             // save the current state of the list
             listSave();
         }
     }
 
     /**
-     * creates the definition of the list.<p>
+     * Should generate the metadata definition of the list, and return a 
+     * new list object associated to it.<p>
+     * 
+     * @return The list to display in this dialog
      */
-    protected abstract void createListDefinition();
+    protected abstract CmsHtmlList createList();
 
     /**
      * Fill the list with data.<p>
-     */
-    protected abstract void fillList();
-
-    /**
-     * Public constructor with JSP variables.<p>
      * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
+     * @return a list of <code>{@link CmsListItem}</code>s.
      */
-    public CmsListDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
+    protected abstract List getListItems();
 
     /**
      * Recover the last list instance that is read from the request attributes.<p>
@@ -198,7 +192,7 @@ public abstract class CmsListDialog extends CmsDialog {
         int cPage = getList().getCurrentPage();
         CmsListOrderEnum order = getList().getCurrentSortOrder();
         getList().clear(getLocale());
-        fillList();
+        getList().addAllItems(getListItems());
         getList().setSearchFilter(sFilter, getLocale());
         getList().setSortedColumn(sCol, getLocale());
         if (order == CmsListOrderEnum.DescendingOrder) {
@@ -427,5 +421,20 @@ public abstract class CmsListDialog extends CmsDialog {
     public void setParamSortCol(String sortCol) {
 
         m_paramSortCol = sortCol;
+    }
+    
+    /**
+     * A convenient method to throw a list unsupported
+     * action runtime exception.<p>
+     * 
+     * Should be triggered if your list implementation does not 
+     * support the <code>{@link #getParamListAction()}</code>
+     * action.<p>
+     */
+    protected void throwListUnsupportedActionException() {
+        throw new RuntimeException(Messages.get().key(
+            Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
+            getList().getName(),
+            getParamListAction()));
     }
 }

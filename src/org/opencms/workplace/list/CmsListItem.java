@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,13 @@ import java.util.Map;
  * Generic list item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListItem {
 
-    /** Associated list. */
-    private final CmsHtmlList m_list;
+    /** Associated list definition. */
+    private final CmsListMetadata m_metadata;
 
     /** Item values. */
     private final Map m_values = new HashMap();
@@ -56,11 +56,11 @@ public class CmsListItem {
      * Default Constructor.<p>
      * 
      * @param id the id of the item has to be unique
-     * @param list the corresponding list
+     * @param metadata the corresponding list definition
      */
-    public CmsListItem(CmsHtmlList list, String id) {
+    public CmsListItem(CmsListMetadata metadata, String id) {
 
-        m_list = list;
+        m_metadata = metadata;
         m_id = id;
     }
 
@@ -73,20 +73,20 @@ public class CmsListItem {
      */
     public Object get(String columnId) {
 
-        if (m_list.getMetadata().getColumnDefinition(columnId) == null) {
+        if (getMetadata().getColumnDefinition(columnId) == null) {
             throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }
         return m_values.get(columnId);
     }
 
     /**
-     * Returns the list.<p>
+     * Returns the metadata.<p>
      *
-     * @return the list
+     * @return the metadata
      */
-    public CmsHtmlList getList() {
+    public CmsListMetadata getMetadata() {
 
-        return m_list;
+        return m_metadata;
     }
 
     /**
@@ -111,7 +111,7 @@ public class CmsListItem {
      */
     public Object set(String columnName, Object value) {
 
-        if (m_list.getMetadata().getColumnDefinition(columnName) == null) {
+        if (getMetadata().getColumnDefinition(columnName) == null) {
             throw new IllegalArgumentException("unknown column id");
         }
         return m_values.put(columnName, value);

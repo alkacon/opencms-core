@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/I_CmsHtmlButton.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,17 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.util.I_CmsNamedObject;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Interface for html buttons.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
-public interface I_CmsHtmlButton extends I_CmsNamedObject {
+public interface I_CmsHtmlButton {
 
     /**
      * Returns the necessary html code.<p>
@@ -57,7 +57,7 @@ public interface I_CmsHtmlButton extends I_CmsNamedObject {
      *
      * @return the help text
      */
-    String getHelpText();
+    CmsMessageContainer getHelpText();
 
     /**
      * Returns the id of the html component.<p>
@@ -65,6 +65,13 @@ public interface I_CmsHtmlButton extends I_CmsNamedObject {
      * @return the id
      */
     String getId();
+
+    /**
+     * Returns the display name.<p>
+     *
+     * @return the display name
+     */
+    CmsMessageContainer getName();
 
     /**
      * Returns if enabled or disabled.<p>

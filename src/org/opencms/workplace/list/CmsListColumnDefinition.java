@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -39,12 +40,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -65,7 +67,7 @@ public class CmsListColumnDefinition {
     private String m_id;
 
     /** Display name. */
-    private String m_name;
+    private CmsMessageContainer m_name;
 
     /** Sorteable flag. */
     private boolean m_sorteable = true;
@@ -78,7 +80,7 @@ public class CmsListColumnDefinition {
 
     /** the data formatter. */
     private I_CmsListFormatter m_formatter;
-    
+
     /**
      * Default Constructor.<p>
      *  
@@ -87,15 +89,13 @@ public class CmsListColumnDefinition {
      * @param width the width
      * @param align the alignment
      */
-    public CmsListColumnDefinition(String id, String name, String width, CmsListColumnAlignEnum align) {
+    public CmsListColumnDefinition(String id, CmsMessageContainer name, String width, CmsListColumnAlignEnum align) {
 
         m_id = id;
         m_name = name;
         m_width = width;
         m_align = align;
     }
-    
-  
 
     /**
      * Returns the data formatter.<p>
@@ -106,6 +106,7 @@ public class CmsListColumnDefinition {
 
         return m_formatter;
     }
+
     /**
      * Sets the data formatter.<p>
      *
@@ -115,7 +116,7 @@ public class CmsListColumnDefinition {
 
         m_formatter = formatter;
     }
-    
+
     /**
      * Adds a new action to the column.<p>
      * 
@@ -185,7 +186,7 @@ public class CmsListColumnDefinition {
      *
      * @return the name
      */
-    public String getName() {
+    public CmsMessageContainer getName() {
 
         return m_name;
     }
@@ -228,7 +229,7 @@ public class CmsListColumnDefinition {
             m_defaultAction.setItem(item);
             html.append(m_defaultAction.buttonHtml(wp));
         } else {
-            if (m_formatter==null) {
+            if (m_formatter == null) {
                 // unformatted output
                 if (item.get(m_id) != null) {
                     // null values are not showed by default
@@ -236,7 +237,7 @@ public class CmsListColumnDefinition {
                 }
             } else {
                 // formatted output
-                html.append(m_formatter.format(item.get(m_id), wp));
+                html.append(m_formatter.format(item.get(m_id), wp.getLocale()));
             }
         }
         html.append("\n</td>\n");
@@ -247,14 +248,20 @@ public class CmsListColumnDefinition {
      * Returns the html code for a column header.<p>
      * 
      * @param list the list to generate the header code for
+     * @param locale the locale for localized messages
      * 
      * @return html code
      */
-    public String htmlHeader(CmsHtmlList list) {
+    public String htmlHeader(CmsHtmlList list, Locale locale) {
 
         if (!isVisible()) {
             return "";
         }
+        
+        String listId = list.getId();
+        String sortedCol = list.getSortedColumn();
+        CmsListOrderEnum order = list.getCurrentSortOrder();
+        
         StringBuffer html = new StringBuffer(512);
         html.append("<th");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth())) {
@@ -264,21 +271,33 @@ public class CmsListColumnDefinition {
         }
         html.append(">\n");
 
-        boolean isSorted = getId().equals(list.getSortedColumn());
+        boolean isSorted = getId().equals(sortedCol);
         CmsListOrderEnum nextOrder = CmsListOrderEnum.AscendingOrder;
-        if (isSorted && list.getCurrentSortOrder() == CmsListOrderEnum.AscendingOrder) {
+        if (isSorted && order == CmsListOrderEnum.AscendingOrder) {
             nextOrder = CmsListOrderEnum.DescendingOrder;
         }
         // button
-        String id = list.getId() + getId() + "Sort";
-        String onClic = list.getId() + "ListSort('" +getId() + "');";
+        String id = listId + getId() + "Sort";
+        String onClic = listId + "ListSort('" + getId() + "');";
         String helpText = "";
         if (nextOrder.equals(CmsListOrderEnum.AscendingOrder)) {
-            helpText = "${key." + Messages.GUI_LIST_COLUMN_ASC_SORT_1 + "|" + getName() + "}";
+            helpText = Messages.get().key(
+                locale,
+                Messages.GUI_LIST_COLUMN_ASC_SORT_1,
+                new Object[] {getName().key(locale)});
         } else {
-            helpText = "${key." + Messages.GUI_LIST_COLUMN_DESC_SORT_1 + "|" + getName() + "}";
+            helpText = Messages.get().key(
+                locale,
+                Messages.GUI_LIST_COLUMN_DESC_SORT_1,
+                new Object[] {getName().key(locale)});
         }
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, getName(), helpText, isSorteable(), null, onClic));
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            id,
+            getName().key(locale),
+            helpText,
+            isSorteable(),
+            null,
+            onClic));
         // sort order marker
         if (isSorted) {
             if (nextOrder == CmsListOrderEnum.AscendingOrder) {
@@ -354,7 +373,7 @@ public class CmsListColumnDefinition {
      *
      * @param name the name to set
      */
-    public void setName(String name) {
+    public void setName(CmsMessageContainer name) {
 
         m_name = name;
     }

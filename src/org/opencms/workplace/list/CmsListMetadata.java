@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -57,12 +58,6 @@ public class CmsListMetadata {
 
     /** Map for column definitions. */
     private Map m_columnMap = new HashMap();
-
-    /** Associated list. */
-    private CmsHtmlList m_list;
-
-    /** Maximum number of items per page. */
-    private int m_maxItemsPerPage = 20;
 
     /** List of multi actions. */
     private List m_multiActions = new ArrayList();
@@ -162,16 +157,6 @@ public class CmsListMetadata {
     }
 
     /**
-     * Returns the maximum number of items per page.<p>
-     *
-     * @return the maximum number of items per page
-     */
-    public int getMaxItemsPerPage() {
-
-        return m_maxItemsPerPage;
-    }
-
-    /**
      * Returns the search action.<p>
      *
      * @return the search action
@@ -245,18 +230,18 @@ public class CmsListMetadata {
     /**
      * Generates the hml code for an empty table.<p>
      * 
+     * @param locale for localization
+     * 
      * @return html code
      */
-    public String htmlEmptyTable() {
+    public String htmlEmptyTable(Locale locale) {
 
         StringBuffer html = new StringBuffer(512);
         html.append("<tr class='oddrowbg'>\n");
         html.append("\t<td align='center' colspan='");
-        html.append(m_columnList.size()+(m_multiActions.isEmpty()?0:1));
+        html.append(m_columnList.size() + (m_multiActions.isEmpty() ? 0 : 1));
         html.append("'>\n");
-        html.append("${key.");
-        html.append(Messages.GUI_LIST_EMPTY_0);
-        html.append("}");
+        html.append(Messages.get().key(locale, Messages.GUI_LIST_EMPTY_0, null));
         html.append("\t</td>\n");
         html.append("</tr>\n");
         return html.toString();
@@ -265,23 +250,26 @@ public class CmsListMetadata {
     /**
      * Returns the html code for the header of the list.<p>
      * 
+     * @param list the list to generate the code for
+     * @param locale the locale to generate the code for
+     * 
      * @return html code
      */
-    public String htmlHeader() {
+    public String htmlHeader(CmsHtmlList list, Locale locale) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr>\n");
         Iterator itCols = m_columnList.iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            html.append(col.htmlHeader(m_list));
+            html.append(col.htmlHeader(list, locale));
         }
         if (!m_multiActions.isEmpty()) {
             html.append("\t<th width='0' class='select'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='");
-            html.append(m_list.getId());
+            html.append(list.getId());
             html.append("ListSelectAll' value='true' onClick='");
-            html.append(m_list.getId());
+            html.append(list.getId());
             html.append("ListSelect()'\n>");
             html.append("\t</th>\n");
         }
@@ -292,13 +280,14 @@ public class CmsListMetadata {
     /**
      * Returns the html code for a list item.<p>
      * 
+     * @param listId the id of the associated list
      * @param item the list item to render
      * @param wp the workplace context
      * @param odd if the position is odd or even
      * 
      * @return html code
      */
-    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd) {
+    public String htmlItem(String listId, CmsListItem item, CmsWorkplace wp, boolean odd) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr class='");
@@ -313,7 +302,7 @@ public class CmsListMetadata {
         if (!m_multiActions.isEmpty()) {
             html.append("\t<td class='select' align='center' >\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='");
-            html.append(m_list.getId());
+            html.append(listId);
             html.append("MultiAction' value='");
             html.append(item.getId());
             html.append("'>\n");
@@ -352,11 +341,12 @@ public class CmsListMetadata {
     /**
      * Generates the html code for the search bar.<p>
      * 
+     * @param listId the id of the list to generate the code for
      * @param wp the workplace context
      * 
      * @return html code
      */
-    public String htmlSearchBar(CmsWorkplace wp) {
+    public String htmlSearchBar(String listId, CmsWorkplace wp) {
 
         if (!isSearchable()) {
             return "";
@@ -365,7 +355,7 @@ public class CmsListMetadata {
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
         html.append("\t\t<input type='text' name='");
-        html.append(m_list.getId());
+        html.append(listId);
         html.append("Filter' id='searchInput' value='' size='20' maxlength='245'>\n");
         html.append(m_searchAction.buttonHtml(wp));
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
@@ -402,33 +392,6 @@ public class CmsListMetadata {
             }
         }
         return false;
-    }
-
-    /**
-     * This method asociates this metadata object to a list.<p>
-     * 
-     * Once this object is asociated to a list, it can not be asociated to another list, 
-     * this method can be called only once.<p> 
-     * 
-     * @param list the list to asociate with
-     */
-    //throws IllegalArgumentException if the column name is already present
-    public void setList(CmsHtmlList list) {
-
-        if (m_list != null) {
-            throw new IllegalStateException(Messages.get().key(Messages.ERR_LIST_METADATA_EXISTS_0));
-        }
-        m_list = list;
-    }
-
-    /**
-     * Sets the maximum number of items per page.<p>
-     *
-     * @param maxItemsPerPage the maximum number of items per page to set
-     */
-    public void setMaxItemsPerPage(int maxItemsPerPage) {
-
-        this.m_maxItemsPerPage = maxItemsPerPage;
     }
 
     /**

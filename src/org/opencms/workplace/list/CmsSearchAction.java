@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsSearchAction.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,23 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 /**
  * Default implementation for a seach action in an html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsSearchAction extends CmsListIndependentAction {
 
     /** The action id for the search action. */
     public static final String SEARCH_ACTION_ID = "search";
-    
+
     /** The action id for the show all action. */
     public static final String SHOWALL_ACTION_ID = "showall";
-    
+
     /** A default show all action. */
     public final I_CmsListAction m_defaultShowAllAction;
 
@@ -58,41 +60,54 @@ public class CmsSearchAction extends CmsListIndependentAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param list the list
-     * @param columnId the column to sort
+     * @param listId the id of the associated list
+     * @param columnId the column to search in
+     * @param colName the name of the column to search in
      */
-    public CmsSearchAction(CmsHtmlList list, String columnId) {
+    public CmsSearchAction(String listId, String columnId, String colName) {
 
         this(
-            list,
-            SEARCH_ACTION_ID, "${key." + Messages.GUI_LIST_ACTION_SEARCH_NAME_0 + "}",
-            "${key." + Messages.GUI_LIST_ACTION_SEARCH_ICON_0 + "}",
-            "${key." + Messages.GUI_LIST_ACTION_SEARCH_HELP_1 + "|" + list.getMetadata().getColumnDefinition(columnId).getName() + "}",
+            listId,
+            SEARCH_ACTION_ID,
+            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_NAME_0),
+            Messages.get().key(Messages.GUI_LIST_ACTION_SEARCH_ICON_0),
+            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_HELP_1, new Object[] {"${key."
+                + colName
+                + "}"}),
+            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_CONF_0),
             columnId);
     }
 
     /**
      * Customized Constructor.<p>
      * 
-     * @param list the list
+     * @param listId the id of the associated list
      * @param id unique id
      * @param name the name
      * @param icon the icon
      * @param helpText the help text
+     * @param confirmationMessage the confirmation message
      * @param columnId the column to sort
      */
-    public CmsSearchAction(CmsHtmlList list, String id, String name, String icon, String helpText, String columnId) {
+    public CmsSearchAction(
+        String listId,
+        String id,
+        CmsMessageContainer name,
+        String icon,
+        CmsMessageContainer helpText,
+        CmsMessageContainer confirmationMessage,
+        String columnId) {
 
-        super(list, id, name, icon, helpText, true, ""); 
+        super(listId, id, name, icon, helpText, true, confirmationMessage);
         m_columnId = columnId;
         m_defaultShowAllAction = new CmsListIndependentAction(
-            list,
+            listId,
             SHOWALL_ACTION_ID,
-            "${key." + Messages.GUI_LIST_ACTION_SHOWALL_NAME_0 + "}",
-            "${key." + Messages.GUI_LIST_ACTION_SHOWALL_ICON_0 + "}",
-            "${key." + Messages.GUI_LIST_ACTION_SHOWALL_HELP_0 + "}",
+            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_NAME_0),
+            Messages.get().key(Messages.GUI_LIST_ACTION_SHOWALL_ICON_0),
+            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_HELP_0),
             true,
-            null);
+            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_CONF_0));
     }
 
     /**

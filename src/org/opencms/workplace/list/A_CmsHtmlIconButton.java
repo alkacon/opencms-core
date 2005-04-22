@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -38,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_CmsHtmlIconButton {
@@ -55,7 +56,7 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
      * @param enabled if enabled or not
      * @param iconPath the path to the icon
      */
-    public A_CmsHtmlIconButton(String id, String name, String helpText, boolean enabled, String iconPath) {
+    public A_CmsHtmlIconButton(String id, CmsMessageContainer name, CmsMessageContainer helpText, boolean enabled, String iconPath) {
 
         super(id, name, helpText, enabled);
         m_iconPath = iconPath;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListAction.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,13 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 /**
  * Interface for list actions.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public interface I_CmsListAction extends I_CmsHtmlIconButton {
@@ -47,13 +49,13 @@ public interface I_CmsListAction extends I_CmsHtmlIconButton {
      * 
      * @return confirmation message
      */
-    String getConfirmationMessage();
+    CmsMessageContainer getConfirmationMessage();
 
     /**
-     * Returns the list.<p>
+     * Returns the id of the associated list.<p>
      * 
-     * @return the list
+     * @return the id of the associated list
      */
-    CmsHtmlList getList();
+    String getListId();
 
 }

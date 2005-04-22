@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -38,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Implementation of a default action in a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
@@ -49,7 +50,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param list the list 
+     * @param listId the id of the associated list
      * @param id unique id
      * @param name the name
      * @param iconPath the path to the icon
@@ -58,15 +59,15 @@ public class CmsListDefaultAction extends CmsListDirectAction {
      * @param confirmationMessage the confirmation message
      */
     public CmsListDefaultAction(
-        CmsHtmlList list,
+        String listId,
         String id,
-        String name,
+        CmsMessageContainer name,
         String iconPath,
-        String helpText,
+        CmsMessageContainer helpText,
         boolean enabled,
-        String confirmationMessage) {
+        CmsMessageContainer confirmationMessage) {
 
-        super(list, id, name, iconPath, helpText, enabled, confirmationMessage);
+        super(listId, id, name, iconPath, helpText, enabled, confirmationMessage);
     }
 
     /**
@@ -75,17 +76,17 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     public String buttonHtml(CmsWorkplace wp) {
 
         String id = getId() + getItem().getId();
-        String name = (getItem().get(m_column) != null) ? getItem().get(m_column).toString() : getName();
-        String onClic = getList().getId()
+        String name = (getItem().get(m_column) != null) ? getItem().get(m_column).toString() : getName().key(wp.getLocale());
+        String onClic = getListId()
             + "ListAction('"
             + getId()
             + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage()))
+            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
             + "', '"
             + CmsStringUtil.escapeJavaScript(getItem().getId())
             + "');";
 
-        return A_CmsHtmlIconButton.defaultButtonHtml(id, name, getHelpText(), isEnabled(), getIconPath(), onClic);
+        return A_CmsHtmlIconButton.defaultButtonHtml(id, name, getHelpText().key(wp.getLocale()), isEnabled(), getIconPath(), onClic);
     }
 
     /**

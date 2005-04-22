@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,30 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_COLUMN_EXISTS_1 = "ERR_LIST_COLUMN_EXISTS_1";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_ENUM_PARSE_2 = "ERR_LIST_ENUM_PARSE_2";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_INVALID_COLUMN_1 = "ERR_LIST_INVALID_COLUMN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_INVALID_PAGE_1 = "ERR_LIST_INVALID_PAGE_1";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_UNSUPPORTED_ACTION_2 = "ERR_LIST_UNSUPPORTED_ACTION_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_DISABLED_0 = "GUI_LIST_ACTION_DISABLED_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_NO_SELECTION_0 = "GUI_LIST_ACTION_NO_SELECTION_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_SEARCH_CONF_0 = "GUI_LIST_ACTION_SEARCH_CONF_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SEARCH_HELP_1 = "GUI_LIST_ACTION_SEARCH_HELP_1";
@@ -56,6 +74,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SEARCH_NAME_0 = "GUI_LIST_ACTION_SEARCH_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_SHOWALL_CONF_0 = "GUI_LIST_ACTION_SHOWALL_CONF_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SHOWALL_HELP_0 = "GUI_LIST_ACTION_SHOWALL_HELP_0";
@@ -104,24 +125,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_TITLE_TEXT_4 = "GUI_LIST_TITLE_TEXT_4";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_INVALID_PAGE_1 = "ERR_LIST_INVALID_PAGE_1";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_ENUM_PARSE_2 = "ERR_LIST_ENUM_PARSE_2";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_INVALID_COLUMN_1 = "ERR_LIST_INVALID_COLUMN_1";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_COLUMN_EXISTS_1 = "ERR_LIST_COLUMN_EXISTS_1";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_METADATA_EXISTS_0 = "ERR_LIST_METADATA_EXISTS_0";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_UNSUPPORTED_ACTION_2 = "ERR_LIST_UNSUPPORTED_ACTION_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.list.messages";

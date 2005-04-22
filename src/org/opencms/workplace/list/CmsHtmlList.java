@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,13 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -46,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -63,14 +65,17 @@ public class CmsHtmlList {
     /** Filtered list of items or <code>null</code> if no filter is set. */
     private List m_filteredItems;
 
-    /** Dhtml id, from name. */
+    /** Dhtml id. */
     private final String m_id;
+
+    /** Maximum number of items per page. */
+    private int m_maxItemsPerPage = 20;
 
     /** Metadata for building the list. */
     private final CmsListMetadata m_metadata;
 
     /** Display Name of the list. */
-    private final String m_name;
+    private final CmsMessageContainer m_name;
 
     /** Really content of the list. */
     private final List m_originalItems = new ArrayList();
@@ -87,17 +92,28 @@ public class CmsHtmlList {
     /**
      * Default Constructor.<p>
      * 
-     * @param id unique id
-     * @param name the name of the list, is used as name for controls and js functions and vars
+     * @param id unique id of the list, is used as name for controls and js functions and vars
+     * @param name the display name 
      * @param metadata the list's metadata
      */
-    public CmsHtmlList(String id, String name, CmsListMetadata metadata) {
+    public CmsHtmlList(String id, CmsMessageContainer name, CmsListMetadata metadata) {
 
         m_id = id;
         m_name = name;
         m_metadata = metadata;
-        metadata.setList(this);
         m_currentPage = 1;
+    }
+
+    /**
+     * Adds a collection new list items to the content of the list.<p>
+     * 
+     * @param listItems the collection of list items to add
+     * 
+     * @see List#addAll(Collection)
+     */
+    public void addAllItems(Collection listItems) {
+
+        m_originalItems.addAll(listItems);
     }
 
     /**
@@ -220,6 +236,16 @@ public class CmsHtmlList {
     }
 
     /**
+     * Returns the maximum number of items per page.<p>
+     *
+     * @return the maximum number of items per page
+     */
+    public int getMaxItemsPerPage() {
+
+        return m_maxItemsPerPage;
+    }
+
+    /**
      * Returns the metadata.<p>
      *
      * @return the metadata
@@ -234,7 +260,7 @@ public class CmsHtmlList {
      * 
      * @return the list's name
      */
-    public String getName() {
+    public CmsMessageContainer getName() {
 
         return m_name;
     }
@@ -248,7 +274,7 @@ public class CmsHtmlList {
      */
     public int getNumberOfPages() {
 
-        return (int)Math.ceil((double)getSize() / m_metadata.getMaxItemsPerPage());
+        return (int)Math.ceil((double)getSize() / getMaxItemsPerPage());
     }
 
     /**
@@ -290,7 +316,7 @@ public class CmsHtmlList {
      */
     public int getTotalNumberOfPages() {
 
-        return (int)Math.ceil((double)m_originalItems.size() / m_metadata.getMaxItemsPerPage());
+        return (int)Math.ceil((double)m_originalItems.size() / getMaxItemsPerPage());
     }
 
     /**
@@ -324,20 +350,20 @@ public class CmsHtmlList {
         html.append(htmlTitle(wp));
         html.append(htmlToolBar(wp));
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
-        html.append(m_metadata.htmlHeader());
+        html.append(m_metadata.htmlHeader(this, wp.getLocale()));
         if (m_visibleItems.isEmpty()) {
-            html.append(m_metadata.htmlEmptyTable());
+            html.append(m_metadata.htmlEmptyTable(wp.getLocale()));
         } else {
             Iterator itItems = m_visibleItems.iterator();
             boolean odd = true;
             while (itItems.hasNext()) {
                 CmsListItem item = (CmsListItem)itItems.next();
-                html.append(m_metadata.htmlItem(item, wp, odd));
+                html.append(m_metadata.htmlItem(getId(), item, wp, odd));
                 odd = !odd;
             }
         }
         html.append("</table>\n");
-        html.append(htmlPagingBar());
+        html.append(htmlPagingBar(wp.getLocale()));
         html.append(htmlEnd(wp));
         return wp.resolveMacros(html.toString());
     }
@@ -528,7 +554,7 @@ public class CmsHtmlList {
      */
     public CmsListItem newItem(String id) {
 
-        return new CmsListItem(this, id);
+        return new CmsListItem(this.getMetadata(), id);
     }
 
     /**
@@ -559,12 +585,24 @@ public class CmsHtmlList {
 
         if (getSize() != 0) {
             if (currentPage < 1 || currentPage > getNumberOfPages()) {
-                throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_PAGE_1, new Integer(currentPage)));
+                throw new IllegalArgumentException(Messages.get().key(
+                    Messages.ERR_LIST_INVALID_PAGE_1,
+                    new Integer(currentPage)));
             }
             m_currentPage = currentPage;
         } else {
             m_currentPage = 0;
         }
+    }
+
+    /**
+     * Sets the maximum number of items per page.<p>
+     *
+     * @param maxItemsPerPage the maximum number of items per page to set
+     */
+    public void setMaxItemsPerPage(int maxItemsPerPage) {
+
+        this.m_maxItemsPerPage = maxItemsPerPage;
     }
 
     /**
@@ -654,7 +692,7 @@ public class CmsHtmlList {
     private int displayedFrom() {
 
         if (getSize() != 0) {
-            return (getCurrentPage() - 1) * m_metadata.getMaxItemsPerPage() + 1;
+            return (getCurrentPage() - 1) * getMaxItemsPerPage() + 1;
         }
         return 0;
     }
@@ -667,8 +705,8 @@ public class CmsHtmlList {
     private int displayedTo() {
 
         if (getSize() != 0) {
-            if (getCurrentPage() * m_metadata.getMaxItemsPerPage() < getSize()) {
-                return getCurrentPage() * m_metadata.getMaxItemsPerPage();
+            if (getCurrentPage() * getMaxItemsPerPage() < getSize()) {
+                return getCurrentPage() * getMaxItemsPerPage();
             }
         }
         return getSize();
@@ -685,7 +723,7 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         html.append("<div class='listArea'>\n");
-        html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_START, m_name, false));
+        html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_START, m_name.key(wp.getLocale()), false));
         html.append("\t\t<table width='100%' cellspacing='0' cellpadding='0' border='0'>\n");
         html.append("\t\t\t<tr><td>\n");
         return html.toString();
@@ -703,7 +741,7 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         html.append("\t\t\t</td></tr>\n");
         html.append("\t\t</table>\n");
-        html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name, false));
+        html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name.key(wp.getLocale()), false));
         html.append("</div>\n");
         html.append("<script language='javascript'>\n");
         html.append("\tvar form = document.forms['");
@@ -721,9 +759,11 @@ public class CmsHtmlList {
     /**
      * Generates the needed html code for the paging bar.<p>
      * 
+     * @param locale for message localization
+     * 
      * @return html code
      */
-    private String htmlPagingBar() {
+    private String htmlPagingBar(Locale locale) {
 
         if (getNumberOfPages() < 2) {
             return "";
@@ -734,19 +774,25 @@ public class CmsHtmlList {
         html.append("\t\t<td class='main'>\n");
         // prev button
         String id = m_id + "PrevHelp";
-        String name = "${key." + Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0 + "}";
-        String iconPath = "${key." + Messages.GUI_LIST_PAGING_PREVIOUS_ICON_0 + "}";
-        String helpText = "${key." + Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0 + "}";
+        String name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
+        String iconPath = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_ICON_0, null);
+        String helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
         String onClic = m_id + "ListSetPage(" + (getCurrentPage() - 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, getCurrentPage() > 1, iconPath, onClic));            
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, getCurrentPage() > 1, iconPath, onClic));
         html.append("\n");
         // next button
         id = m_id + "NextHelp";
-        name = "${key." + Messages.GUI_LIST_PAGING_NEXT_NAME_0 + "}";
-        iconPath = "${key." + Messages.GUI_LIST_PAGING_NEXT_ICON_0 + "}";
-        helpText = "${key." + Messages.GUI_LIST_PAGING_NEXT_HELP_0 + "}";
+        name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
+        iconPath = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_ICON_0, null);
+        helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
         onClic = m_id + "ListSetPage(" + (getCurrentPage() + 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, getCurrentPage() < getNumberOfPages(), iconPath, onClic));            
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            id,
+            name,
+            helpText,
+            getCurrentPage() < getNumberOfPages(),
+            iconPath,
+            onClic));
         html.append("\n");
         // page selection list
         html.append("\t\t\t<select name='");
@@ -755,9 +801,8 @@ public class CmsHtmlList {
         html.append(m_id);
         html.append("ListSetPage(this.value);'>\n");
         for (int i = 0; i < getNumberOfPages(); i++) {
-            int displayedFrom = i * m_metadata.getMaxItemsPerPage() + 1;
-            int displayedTo = (i + 1) * m_metadata.getMaxItemsPerPage() < getSize() ? (i + 1)
-                * m_metadata.getMaxItemsPerPage() : getSize();
+            int displayedFrom = i * getMaxItemsPerPage() + 1;
+            int displayedTo = (i + 1) * getMaxItemsPerPage() < getSize() ? (i + 1) * getMaxItemsPerPage() : getSize();
             html.append("\t\t\t\t<option value='");
             html.append(i + 1);
             html.append("'");
@@ -771,23 +816,20 @@ public class CmsHtmlList {
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
         if (m_filteredItems == null) {
-            html.append("${key.");
-            html.append(Messages.GUI_LIST_PAGING_TEXT_2);
-            html.append("|");
-            html.append(m_name);
-            html.append("|");
-            html.append(getTotalSize());
-            html.append("}");
+            html.append(Messages.get().key(
+                locale,
+                Messages.GUI_LIST_PAGING_TEXT_2,
+                new Object[] {
+                    m_name.key(locale),
+                    new Integer(getTotalSize())}));
         } else {
-            html.append("${key.");
-            html.append(Messages.GUI_LIST_PAGING_FILTER_TEXT_3);
-            html.append("|");
-            html.append(m_name);
-            html.append("|");
-            html.append(getSize());
-            html.append("|");
-            html.append(getTotalSize());
-            html.append("}");
+            html.append(Messages.get().key(
+                locale,
+                Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
+                new Object[] {
+                    m_name.key(locale),
+                    new Integer(getSize()),
+                    new Integer(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
@@ -808,33 +850,28 @@ public class CmsHtmlList {
         html.append("<table width='100%' cellspacing='0' class='buttons'>");
         html.append("\t<tr>\n");
         html.append("\t\t<td>\n");
+        html.append("\t\t\t");
         if (m_filteredItems == null) {
-            html.append("\t\t\t${key.");
-            html.append(Messages.GUI_LIST_TITLE_TEXT_4);
-            html.append("|");
-            html.append(m_name);
-            html.append("|");
-            html.append(displayedFrom());
-            html.append("|");
-            html.append(displayedTo());
-            html.append("|");
-            html.append(getTotalSize());
-            html.append("}\n");
+            html.append(Messages.get().key(
+                wp.getLocale(),
+                Messages.GUI_LIST_TITLE_TEXT_4,
+                new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(displayedFrom()),
+                    new Integer(displayedTo()),
+                    new Integer(getTotalSize())}));
         } else {
-            html.append("\t\t\t${key.");
-            html.append(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5);
-            html.append("|");
-            html.append(m_name);
-            html.append("|");
-            html.append(displayedFrom());
-            html.append("|");
-            html.append(displayedTo());
-            html.append("|");
-            html.append(getSize());
-            html.append("|");
-            html.append(getTotalSize());
-            html.append("}\n");
+            html.append(Messages.get().key(
+                wp.getLocale(),
+                Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
+                new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(displayedFrom()),
+                    new Integer(displayedTo()),
+                    new Integer(getSize()),
+                    new Integer(getTotalSize())}));
         }
+        html.append("\n");
         html.append("\t\t</td>\n\t\t");
         html.append(getMetadata().htmlActionBar(wp));
         html.append("\n\t</tr>\n");
@@ -854,7 +891,7 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         html.append("<table width='100%' cellspacing='0' class='buttons'>\n");
         html.append("\t<tr>\n");
-        html.append(m_metadata.htmlSearchBar(wp));
+        html.append(m_metadata.htmlSearchBar(getId(), wp));
         html.append(m_metadata.htmlMultiActionBar(wp));
         html.append("\t</tr>\n");
         html.append("</table>\n");

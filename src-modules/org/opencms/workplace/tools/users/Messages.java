@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/22 08:51:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_UNSUPPORTED_ACTION_2 = "ERR_LIST_UNSUPPORTED_ACTION_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_ADMIN_TOOL_GROUP_0";

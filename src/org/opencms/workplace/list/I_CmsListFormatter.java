@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListFormatter.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
  
 package org.opencms.workplace.list;
 
-import org.opencms.workplace.CmsWorkplace;
+import java.util.Locale;
 
 /**
  * Provides an interface for list data formatting.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public interface I_CmsListFormatter {
@@ -48,11 +48,10 @@ public interface I_CmsListFormatter {
      * Take care of <code>null</code> data.<p>
      * 
      * @param data the data to format
-     * @param wp workplace object with everything needed for formatting, 
-     *              like macro resolver and locale.
+     * @param locale the locale for formatting
      * 
      * @return formatted data
      */
-    String format(Object data, CmsWorkplace wp);
+    String format(Object data, Locale locale);
 
 }

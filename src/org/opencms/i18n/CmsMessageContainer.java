@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessageContainer.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,18 @@ public class CmsMessageContainer {
 
     /** The message key to use. */
     protected String m_key;
+
+    /**
+     * Creates a new message container for a key without arguments.<p>
+     * 
+     * @param bundle the OpenCms message bundle to read the message from
+     * @param key the message key to use
+     */
+    public CmsMessageContainer(I_CmsMessageBundle bundle, String key) {
+
+        m_bundle = bundle;
+        m_key = key;
+    }
 
     /**
      * Creates a new message container.<p>

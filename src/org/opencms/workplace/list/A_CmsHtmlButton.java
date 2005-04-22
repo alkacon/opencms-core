@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlButton.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:44:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,13 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 /**
  * Default skeleton for an html button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
@@ -44,13 +46,13 @@ public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
     private boolean m_enabled;
 
     /** Help text or description. */
-    private final String m_helpText;
+    private final CmsMessageContainer m_helpText;
 
     /** unique id. */
     private final String m_id;
 
     /** Display name. */
-    private final String m_name;
+    private final CmsMessageContainer m_name;
 
     /**
      * Default Constructor.<p>
@@ -60,7 +62,7 @@ public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
      * @param helpText the help text
      * @param enabled if enabled or disabled
      */
-    public A_CmsHtmlButton(String id, String name, String helpText, boolean enabled) {
+    public A_CmsHtmlButton(String id, CmsMessageContainer name, CmsMessageContainer helpText, boolean enabled) {
 
         m_id = id;
         m_name = name;
@@ -71,7 +73,7 @@ public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
     /**
      * @see org.opencms.workplace.list.I_CmsHtmlButton#getHelpText()
      */
-    public String getHelpText() {
+    public CmsMessageContainer getHelpText() {
 
         return m_helpText;
     }
@@ -85,9 +87,9 @@ public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
     }
 
     /**
-     * @see org.opencms.util.I_CmsNamedObject#getName()
+     * @see org.opencms.workplace.list.I_CmsHtmlButton#getName()
      */
-    public String getName() {
+    public CmsMessageContainer getName() {
 
         return m_name;
     }
