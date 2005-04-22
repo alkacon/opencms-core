@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/04/22 14:38:35 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.flex;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
 
@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Contains the contents of a cached resource.<p>
@@ -69,15 +71,15 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexCacheEntry.class);
+    
     /** Initial size for lists. */
     public static final int C_INITIAL_CAPACITY_LISTS = 10;
-    
-    /** Debug switch. */
-    private static final int DEBUG = 0;
     
     /** The CacheEntry's size in bytes. */
     private int m_byteSize;
@@ -191,8 +193,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public void addToLruCache() {
         // do nothing here...
-        if (DEBUG>0) {
-            System.out.println("Added cache entry to the LRU cache: " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_ADDED_ENTRY_1, this));
         }
     }
     
@@ -213,9 +215,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         if (m_elements != null) {
             m_elements = Collections.unmodifiableList(m_elements);
         }
-        if (DEBUG > 1) {
-            System.err.println("CmsFlexCacheEntry: New entry completed:\n" + toString());
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_ENTRY_COMPLETED_1, toString()));
+        }        
     }
     
     /**
@@ -291,9 +293,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         if ((m_variationMap != null) &&  (m_variationKey != null)) {
             m_variationMap.remove(m_variationKey);
         }
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Removed entry for variation: " + m_variationKey + " from the FlexCache");
-        }        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_REMOVED_ENTRY_FOR_VARIATION_1, m_variationKey));
+        }              
         clear();
     }
 
@@ -347,10 +349,12 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
                     } catch (IOException e) {
-                        String err = getClass().getName() + ": Could not write to response OutputStream. ";
-                        if (DEBUG > 0) {
-                            System.err.println(err);
-                        }
+                                                
+                        String err = Messages.get().key(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, getClass().getName());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(err);
+                        }                        
+
                         throw new CmsException(err + "\n" + e, e);
                     }
                 }
@@ -367,9 +371,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     public synchronized void setDateExpires(long dateExpires) {
         
         m_dateExpires = dateExpires;
-        if (DEBUG > 2) {
+        if (LOG.isDebugEnabled()) {
             long now = System.currentTimeMillis();
-            System.err.println("FlexCacheEntry: New entry expiration=" + m_dateExpires + " now=" + now + " remaining=" + (m_dateExpires - now));
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_SET_EXPIRATION_DATE_3, new Long(m_dateExpires), new Long(now), new Long(m_dateExpires - now)));
         }
     }     
     

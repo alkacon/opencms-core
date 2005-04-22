@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/04/05 20:06:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/22 14:38:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,15 +43,20 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Controller for getting access to the CmsObject, should be used as a 
  * request attribute.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsFlexController {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexController.class);
     
     /** Constant for the controller request attribute name. */
     public static final String ATTRIBUTE_NAME = "org.opencms.flex.CmsFlexController";
@@ -473,9 +478,9 @@ public class CmsFlexController {
             m_throwable = throwable;
             m_throwableResourceUri = resource;
         } else {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Ignored additional exception" + ((resource!=null)?" on resource " + resource:""), throwable);
-            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1, ((resource!=null) ? "on resource " + resource : "")));
+            }            
         }
         return m_throwable;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/04/22 14:38:35 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
@@ -42,6 +43,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Wrapper class for a HttpServletRequest.<p>
  *
@@ -49,18 +52,18 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexRequest.class);
     
     /** Attribute name used for checking if _flex request parameters have already been processed. */
     public static final String C_ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
     
     /** Request parameter for FlexCache commands. */
     public static final String C_PARAMETER_FLEX = "_flex";
-    
-    /** Debug flag. */
-    private static final boolean DEBUG = false;
     
     /** Flag to decide if this request can be cached or not. */
     private boolean m_canCache;
@@ -158,9 +161,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         }  
         m_canCache = (((m_isOnline || m_controller.getCmsCache().cacheOffline()) && ! nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
-        if (DEBUG) {
-            System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_elementUri);
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUEST_CREATED_NEW_REQUEST_1, m_elementUri));
+        }        
     }
         
     /** 
@@ -180,9 +183,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();
         m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();        
         m_parameters = req.getParameterMap();
-        if (DEBUG) {
-            System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_elementUri);
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUEST_REUSING_FLEX_REQUEST_1, m_elementUri));
+        }        
     }
     
     /**

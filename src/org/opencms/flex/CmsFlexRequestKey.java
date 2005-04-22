@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/22 14:38:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,21 +33,26 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Describes the caching behaviour (or caching options) for a Flex request.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexRequestKey {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexRequestKey.class); 
 
     /** The request context this request was made in. */
     private CmsRequestContext m_context;
@@ -84,8 +89,8 @@ public class CmsFlexRequestKey {
         // calculate the resource name
         m_resource = CmsFlexCacheKey.getKeyName(m_context.addSiteRoot(target), online);
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Creating CmsFlexCacheKey for resource: " + m_resource);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));
         }
     }
 
