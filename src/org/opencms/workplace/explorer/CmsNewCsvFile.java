@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/04/20 16:06:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/22 14:55:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.3
  */
@@ -153,11 +153,13 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     private static String removeStringDelimiters(String key) {
 
         String k = key.trim();
-        if (k.charAt(0) == TEXT_DELIMITER) {
-            k = k.substring(1);
-        }
-        if (k.charAt(k.length() - 1) == TEXT_DELIMITER) {
-            k = k.substring(0, k.length() - 1);
+        if (CmsStringUtil.isNotEmpty(k)) {
+            if (k.charAt(0) == TEXT_DELIMITER) {
+                k = k.substring(1);
+            }
+            if (k.charAt(k.length() - 1) == TEXT_DELIMITER) {
+                k = k.substring(0, k.length() - 1);
+            }
         }
         return k;
     }
@@ -273,7 +275,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             }
         }
     }
-    
+
     /**
      * Returns the content of the file upload and sets the resource name.<p>
      * 
@@ -312,14 +314,13 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             }
             content = fi.get();
             fi.delete();
-            setParamResource(fi.getName());       
+            setParamResource(fi.getName());
 
         } else {
             throw new FileNotFoundException("Upload file not found");
         }
         return content;
     }
-    
 
     /**
      * Applies a XSLT Transformation to the xmlContent.<p>
@@ -329,6 +330,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * @return the transformed xml
      */
     public String applyXslTransformation(String xsltFile, String xmlContent) {
+
         try {
             TransformerFactory factory = TransformerFactory.newInstance();
 
@@ -346,7 +348,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 OpenCms.getLog(this).error(e);
             }
             return "";
-        } 
+        }
     }
 
     /**
