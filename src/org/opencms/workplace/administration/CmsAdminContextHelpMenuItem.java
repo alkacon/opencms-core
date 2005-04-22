@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminContextHelpMenuItem.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Menu item implementation that works as an context help text container.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAdminContextHelpMenuItem extends CmsAdminMenuItem {
@@ -47,7 +47,7 @@ public class CmsAdminContextHelpMenuItem extends CmsAdminMenuItem {
      */
     public CmsAdminContextHelpMenuItem() {
 
-        super("Context Help", "", "", "", true, null);
+        super("conhelp", "Context Help", "", "", "", true, null);
     }
 
     /**

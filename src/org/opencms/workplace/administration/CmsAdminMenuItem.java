@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/04/15 13:04:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,14 @@ package org.opencms.workplace.administration;
 
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.CmsHtmlUtil;
+import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
 /**
  * Html icon button implementation that generates the
  * required html code for a menu item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsAdminMenuItem implements I_CmsNamedObject {
@@ -69,6 +69,7 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
     /**
      * Default Constructor.<p> 
      * 
+     * @param id a unique id
      * @param name the name of the item
      * @param iconPath the icon to display
      * @param link the link to open when selected
@@ -76,9 +77,16 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
      * @param enabled if enabled or not
      * @param target the target frame to open the link into
      */
-    public CmsAdminMenuItem(String name, String iconPath, String link, String helpText, boolean enabled, String target) {
+    public CmsAdminMenuItem(
+        String id,
+        String name,
+        String iconPath,
+        String link,
+        String helpText,
+        boolean enabled,
+        String target) {
 
-        m_id = CmsHtmlUtil.getId(name);
+        m_id = id;
         m_name = name;
         m_iconPath = iconPath;
         m_link = link;
@@ -169,84 +177,21 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
         html.append(getId());
         html.append("'>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td class='nodeImage'>\n");
-        if (isEnabled()) {
-            html.append(generatelink(wp));
-        } else {
-            html.append("<span onMouseOver=\"mouseHelpEvent('");
-            html.append(getId());
-            html.append("Help', true)\" onMouseOut=\"mouseHelpEvent('");
-            html.append(getId());
-            html.append("Help', false)\">");
-        }
-        html.append("\t\t<img src='");
-        html.append(wp.getJsp().link(getIconPath()));
-        html.append("' width='16' height='16' border='0' alt='");
-        html.append(getName());
-        html.append("'>\n");
-        if (isEnabled()) {
-            html.append("</a>");
-        }
+        html.append("\t\t<td>\n");
+        String id = getId() + "Help";
+        String onClic = "return openView('" + getId() + "', '" + wp.getJsp().link(m_link) + "', '" + m_target + "');";
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            id,
+            getName(),
+            getHelpText(),
+            isEnabled(),
+            getIconPath(),
+            onClic));
+
         html.append("\t\t</td>\n");
-        html.append("\t\t<td width='100%'><span class='name'>\n");
-        if (isEnabled()) {
-            html.append(generatelink(wp));
-        }
-        html.append(getName());
-        if (isEnabled()) {
-            html.append("</a>");
-        } else {
-            html.append("</span>");
-        }
-        html.append("\t\t\t<div class='tip' id='" + getId() + "Help'>\n");
-        if (!isEnabled()) {
-            html.append(wp.key("widget.button.disabled.helptext") + " ");
-        }
-        html.append(getHelpText());
-        html.append("</div>\n");
-        html.append("\t\t</span></td>\n");
         html.append("\t</tr>\n");
         html.append("</table>\n");
         return wp.resolveMacros(html.toString());
     }
 
-    /**
-     * Generates a link, differentiating internal and external links.<p>
-     * 
-     * @param wp the workplace
-     * 
-     * @return html code
-     */
-    private String generatelink(CmsWorkplace wp) {
-
-        StringBuffer html = new StringBuffer(1024);
-        if (m_target.toString().indexOf("_") != 0) {
-            html.append("<a href='#' title='");
-            html.append(getName());
-            html.append("' onClick=\"return openView('");
-            html.append(getId());
-            html.append("', '");
-            html.append(wp.getJsp().link(m_link));
-            html.append("', '");
-            html.append(m_target);
-            html.append("');\" onMouseOver=\"mouseHelpEvent('");
-            html.append(getId());
-            html.append("Help', true)\" onMouseOut=\"mouseHelpEvent('");
-            html.append(getId());
-            html.append("Help', false)\">");
-        } else {
-            html.append("<a target='");
-            html.append(m_target);
-            html.append("' href='");
-            html.append(wp.getJsp().link(m_link));
-            html.append("' title='");
-            html.append(getName());
-            html.append("' onMouseOver=\"mouseHelpEvent('");
-            html.append(getId());
-            html.append("Help', true)\" onMouseOut=\"mouseHelpEvent('");
-            html.append(getId());
-            html.append("Help', false)\">");
-        }
-        return html.toString();
-    }
 }

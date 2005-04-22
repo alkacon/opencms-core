@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/04/14 10:53:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,31 +40,45 @@ import javax.swing.border.Border;
  * This is a highly configurable Swing GUI dialog for selection.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  * 
  * @see CmsAntTaskSelectionPrompt
  */
 public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
 
-    private static final int BORDER_SIZE = 10;
+    /** Constant for border width. */
+    private static final int C_BORDER_SIZE = 10;
 
     /** Aborted flag. */
     protected boolean m_aborted = true;
 
+    /** Array of all entries. */
     private String[] m_allList = null;
+    /** Array of by default selected items. */
     private String[] m_defList = null;
+    /** Associated ant task. */
     private final CmsAntTaskSelectionPrompt m_promptTask;
     
-    private final Border m_border = BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE);
+    /** Border. */
+    private final Border m_border = BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, 0, C_BORDER_SIZE);
+    /** Label for prompt. */
     private JLabel m_label = null;
+    /** Main Panel. */
     private final JPanel m_content = new JPanel();
+    /** Scrollable view. */
     private final JScrollPane m_view = new JScrollPane(m_content);
+    /** Array of selection buttons, check boxes or radio buttons. */
     private JToggleButton[] m_selections = null;
+    /** Panel for buttons. */
     private final JPanel m_buttons = new JPanel();
+    /** Ok button. */
     private final JButton m_ok = new JButton("Ok");
+    /** Cancel button. */
     private final JButton m_cancel = new JButton("Cancel");
+    /** Select all button. */
     private final JButton m_selAll = new JButton("All");
+    /** Select none button. */
     private final JButton m_selNone = new JButton("None");
 
     /**
@@ -127,7 +141,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         } 
         getContentPane().add(m_view, BorderLayout.CENTER);
 
-        m_buttons.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE / 2, BORDER_SIZE));
+        m_buttons.setBorder(BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, C_BORDER_SIZE / 2, C_BORDER_SIZE));
         m_ok.addActionListener(this);
         m_buttons.add(m_ok);
         m_cancel.addActionListener(this);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.util.I_CmsNamedObject;
 
-import java.util.List;
-
 /**
  * Interface for an admin tool handler.<p>
  * 
@@ -44,10 +42,17 @@ import java.util.List;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public interface I_CmsToolHandler extends I_CmsNamedObject {
+
+    /**
+     * Returns the group.<p>
+     *
+     * @return the group
+     */
+    String getGroup();
 
     /**
      * Returns the help text.<p>
@@ -64,25 +69,32 @@ public interface I_CmsToolHandler extends I_CmsNamedObject {
     String getIconPath();
 
     /**
+     * Returns the link to the tool.<p>
+     * 
+     * @return the link
+     */
+    String getLink();
+
+    /**
+     * Returns the tool path to install the tool in.<p>
+     *
+     * @return the path
+     */
+    String getPath();
+
+    /**
+     * Returns the relative position in the group.<p>
+     *
+     * @return the position
+     */
+    float getPosition();
+
+    /**
      * Returns the path to an optional small(16x16) icon.<p>
      * 
      * @return the path to an optional small(16x16) icon
      */
     String getSmallIconPath();
-
-    /**
-     * Returns a list of install points where to install the tool.<p>
-     * 
-     * @return a list of <code>{@link CmsToolInstallPoint}</code>'s.
-     */
-    List getInstallPoints();
-
-    /**
-     * Returns the link to the admin tool.<p>
-     * 
-     * @return the link
-     */
-    String getLink();
 
     /**
      * Returns the state of the admin tool for a given cms context.<p>
@@ -92,7 +104,16 @@ public interface I_CmsToolHandler extends I_CmsNamedObject {
      * @return <code>true</code> if enabled
      */
     boolean isEnabled(CmsObject cms);
-    
+
+    /**
+     * Returns the visibility flag for a given cms context.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return <code>true</code> if visible
+     */
+    boolean isVisible(CmsObject cms);
+
     /**
      * Main method that somehow setups the admin tool handler.<p>
      * 
@@ -101,5 +122,5 @@ public interface I_CmsToolHandler extends I_CmsNamedObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    void setup(CmsObject cms, String resourcePath) throws CmsException; 
+    void setup(CmsObject cms, String resourcePath) throws CmsException;
 }

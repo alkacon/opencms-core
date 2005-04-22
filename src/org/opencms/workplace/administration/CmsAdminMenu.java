@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/04/15 13:04:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.util.I_CmsNamedObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.CmsToolDialog;
-import org.opencms.workplace.tools.CmsToolInstallPoint;
 import org.opencms.workplace.tools.CmsToolManager;
 import org.opencms.workplace.tools.I_CmsToolHandler;
 
@@ -51,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Implementation of the administration view leftside's menu.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsAdminMenu extends CmsToolDialog {
@@ -126,10 +125,12 @@ public class CmsAdminMenu extends CmsToolDialog {
         groupName = resolveMacros(groupName);
         CmsAdminMenuGroup group = getGroup(groupName);
         if (group == null) {
-            group = new CmsAdminMenuGroup(groupName);
+            String gid = "group" + m_groupContainer.elementList().size();
+            group = new CmsAdminMenuGroup(gid, groupName);
             addGroup(group);
         }
-        CmsAdminMenuItem item = new CmsAdminMenuItem(name, icon, link, helpText, enabled, target);
+        String id = "item" + group.getMenuItems().size();
+        CmsAdminMenuItem item = new CmsAdminMenuItem(id, name, icon, link, helpText, enabled, target);
         group.addMenuItem(item);
         return item;
     }
@@ -179,13 +180,13 @@ public class CmsAdminMenu extends CmsToolDialog {
     /**
      * Creates the default menu as the root tool structure.<p>
      */
-    public void installMenu() {
+    public synchronized void installMenu() {
 
         // initialize the menu groups
         m_groupContainer.clear();
 
         // creates the context help menu
-        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup(key("admin.menu.groups.help"));
+        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", key("admin.menu.groups.help"));
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 
@@ -193,42 +194,41 @@ public class CmsAdminMenu extends CmsToolDialog {
         while (itElems.hasNext()) {
             I_CmsToolHandler handler = (I_CmsToolHandler)itElems.next();
             // check visibility
-            if (!getCms().existsResource(handler.getLink())) {
+            if (!getCms().existsResource(handler.getLink()) || !handler.isVisible(getCms())) {
                 continue;
             }
-            Iterator itIPoints = handler.getInstallPoints().iterator();
-            while (itIPoints.hasNext()) {
-                CmsToolInstallPoint iPoint = (CmsToolInstallPoint)itIPoints.next();
 
-                // leave out everything above the root
-                if (!iPoint.getPath().startsWith(getToolManager().getRootToolPath(getCms()))) {
-                    continue;
+            // leave out everything above the root
+            if (!handler.getPath().startsWith(getToolManager().getRootToolPath(getCms()))) {
+                continue;
+            }
+            // cut out the root
+            String path = handler.getPath().substring(getToolManager().getRootToolPath(getCms()).length());
+            // special case of the root tool
+            if (CmsStringUtil.isEmpty(path)) {
+                continue;
+            }
+            // skip initial '/'
+            int pos = handler.getPath().indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR);
+            // only install if at first level
+            if (path.indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR, pos + 1) < 0) {
+                String groupName = resolveMacros(handler.getGroup());
+                CmsAdminMenuGroup group = getGroup(groupName);
+                if (group == null) {
+                    String gid = "group" + m_groupContainer.elementList().size();
+                    group = new CmsAdminMenuGroup(gid, groupName);
+                    addGroup(group, handler.getPosition());
                 }
-                // cut out the root
-                String path = iPoint.getPath().substring(getToolManager().getRootToolPath(getCms()).length());
-                // special case of the root tool
-                if (CmsStringUtil.isEmpty(path)) {
-                    continue;
-                }
-                // skip initial '/'
-                int pos = iPoint.getPath().indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR);
-                // only install if at first level
-                if (path.indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR, pos + 1) < 0) {
-                    String groupName = resolveMacros(iPoint.getGroup());
-                    CmsAdminMenuGroup group = getGroup(groupName);
-                    if (group == null) {
-                        group = new CmsAdminMenuGroup(groupName);
-                        addGroup(group, iPoint.getPosition());
-                    }
-                    CmsAdminMenuItem item = new CmsAdminMenuItem(
-                        handler.getName(),
-                        handler.getSmallIconPath(),
-                        getToolManager().linkForPath(iPoint.getPath()),
-                        handler.getHelpText(),
-                        handler.isEnabled(getCms()),
-                        CmsAdminMenu.DEFAULT_TARGET);
-                    group.addMenuItem(item, iPoint.getPosition());
-                }
+                String id = "item" + group.getMenuItems().size();
+                CmsAdminMenuItem item = new CmsAdminMenuItem(
+                    id,
+                    handler.getName(),
+                    handler.getSmallIconPath(),
+                    getToolManager().linkForPath(handler.getPath()),
+                    handler.getHelpText(),
+                    handler.isEnabled(getCms()),
+                    CmsAdminMenu.DEFAULT_TARGET);
+                group.addMenuItem(item, handler.getPosition());
             }
         }
     }

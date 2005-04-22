@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/04/15 13:04:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.administration;
 import org.opencms.util.CmsNamedObjectContainer;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.CmsHtmlUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +42,7 @@ import java.util.List;
  * Container for menu items that generates the necesary html code.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsAdminMenuGroup implements I_CmsNamedObject {
@@ -60,12 +59,13 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
     /**
      * Default Constructor.<p> 
      * 
+     * @param id a unique id
      * @param name the name of the group
      */
-    public CmsAdminMenuGroup(String name) {
+    public CmsAdminMenuGroup(String id, String name) {
 
+        m_id = id;
         m_name = name;
-        m_id = CmsHtmlUtil.getId(name);
     }
 
     /**
@@ -190,30 +190,20 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
         html.append(getId());
         html.append("'>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td>\n");
+        html.append("\t\t<td class='titleBorder'>\n");
         html
             .append("\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('");
         html.append(getId());
         html.append("');\" >\n");
         html.append("\t\t\t\t<tr>\n");
-        html.append("\t\t\t\t\t<td class='titleLeft'><img src='");
-        html.append(CmsWorkplace.getSkinUri());
-        html.append("admin/images/topleft.gif");
-        html.append("' border='0' alt=''/></td>\n");
         html.append("\t\t\t\t\t<td class='titleText' width='100%'>");
         html.append(wp.resolveMacros(getName()));
         html.append("</td>\n");
-        html.append("\t\t\t\t\t<td class='titleHandle'><img src='");
-        html.append(CmsWorkplace.getSkinUri());
-        html.append("admin/images/1x1.gif' width='20' height='1' border='0' alt=''/></td>\n");
-        html.append("\t\t\t\t\t<td class='titleRight'><img src='");
-        html.append(CmsWorkplace.getSkinUri());
-        html.append("admin/images/topright.gif' border='0' alt=''/></td>\n");
         html.append("\t\t\t\t</tr>\n");
         html.append("\t\t\t</table>\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr><tr>\n");
-        html.append("\t\t<td>\n");
+        html.append("\t\t<td class='treeBorder'>\n");
         html.append("\t\t\t<div class='tree'>\n");
         html.append("\t\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%'>\n");
         html.append("\t\t\t\t\t<tr>\n");

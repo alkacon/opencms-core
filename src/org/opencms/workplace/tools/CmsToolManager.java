@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/04/14 13:40:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.util.CmsNamedObjectContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,31 +59,33 @@ import java.util.List;
  * i18n of group names. <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsToolManager {
 
-    /**  This is the root location of the administration view. */
+    /**  Root location of the administration view. */
     public static final String C_ADMIN_ROOT = CmsWorkplace.C_PATH_WORKPLACE + "views/admin";
 
-    /**  This is the property definition name to look for. */
+    /**  Property definition name to look for. */
     public static final String C_HANDLERCLASS_PROPERTY = "admintoolhandler-class";
 
-    /**  This is the navegation bar separator. */
+    /**  Navegation bar separator. */
     public static final String C_NAVBAR_SEPARATOR = "&nbsp;&gt;&nbsp;";
 
-    /**  This is the tool path separator. */
+    /**  Tool path separator. */
     public static final String C_TOOLPATH_SEPARATOR = "/";
 
-    /**  This is the root location for the tools. */
+    /**  Root location for the tools. */
     public static final String C_TOOLS_ROOT = CmsWorkplace.C_PATH_WORKPLACE + "admin";
 
-    /** The location of the admin view jsp page. */
+    /** Location of the admin view jsp page. */
     public static final String C_VIEW_JSPPAGE_LOCATION = C_ADMIN_ROOT + "/admin-main.html";
 
+    /** List of tool registered handlers. */
     private List m_handlers = new ArrayList();
 
+    /** Container for user data. */
     private final CmsNamedObjectContainer m_userDataContainer = new CmsNamedObjectContainer(true, false);
 
     /**
@@ -99,7 +102,7 @@ public class CmsToolManager {
             }
             return;
         }
-        try {            
+        try {
             I_CmsToolHandler rootHandler = new CmsGenericToolHandler();
             rootHandler.setup(cms, C_VIEW_JSPPAGE_LOCATION);
             m_handlers.add(rootHandler);
@@ -203,18 +206,27 @@ public class CmsToolManager {
             return "<div class='pathbar'>&nbsp;</div>";
         }
         CmsTool adminTool = resolveAdminTool(wp.getCms(), toolPath);
-        String html = adminTool.getName();
+        String html = A_CmsHtmlIconButton.defaultButtonHtml(
+            adminTool.getId(),
+            adminTool.getName(),
+            null,
+            false,
+            null,
+            null);
         String parent = toolPath;
         while (!parent.equals(getRootToolPath(wp.getCms()))) {
             parent = getParent(wp.getCms(), parent);
             adminTool = resolveAdminTool(wp.getCms(), parent);
 
-            StringBuffer link = new StringBuffer(512);
-            link.append("<a href='");
-            link.append(cmsLinkForPath(wp.getJsp(), parent));
-            link.append("' onClick='loadingOn();'>");
-            link.append(adminTool.getName());
-            link.append("</a>\n");
+            String id = "nav" + adminTool.getId();
+            String onClic = "loadingOn('');window.location.href='" + cmsLinkForPath(wp.getJsp(), parent) + "';";
+            String link = A_CmsHtmlIconButton.defaultButtonHtml(
+                id,
+                adminTool.getName(),
+                adminTool.getHelpText(),
+                true,
+                null,
+                onClic);
             html = link + C_NAVBAR_SEPARATOR + html;
         }
 
@@ -348,8 +360,8 @@ public class CmsToolManager {
      */
     public CmsToolUserData getUserData(CmsObject cms) {
 
-        CmsToolUserData userData = (CmsToolUserData)m_userDataContainer.getObject(cms.getRequestContext()
-            .currentUser().getId().toString());
+        CmsToolUserData userData = (CmsToolUserData)m_userDataContainer.getObject(cms.getRequestContext().currentUser()
+            .getId().toString());
         if (userData == null) {
             userData = new CmsToolUserData(cms.getRequestContext().currentUser());
             m_userDataContainer.addNamedObject(userData);
@@ -498,47 +510,63 @@ public class CmsToolManager {
         }
     }
 
-    private void registerAdminTool(CmsWorkplace wp, CmsTool adminTool, CmsToolInstallPoint iPoint) {
+    /**
+     * Registers a new tool at a given install point.<p>
+     * 
+     * @param wp the workplace object
+     * @param handler the handler to install
+     */
+    private void registerAdminTool(CmsWorkplace wp, I_CmsToolHandler handler) {
 
         // check visibility
-        if (!wp.getCms().existsResource(adminTool.getLink())) {
+        if (!wp.getCms().existsResource(handler.getLink())) {
             return;
         }
 
+        String id = "tool" + getUserData(wp.getCms()).getTools().elementList().size();
+        CmsTool adminTool = new CmsTool(id, handler.getName(), handler.getIconPath(), handler.getLink(), handler
+            .getHelpText(), handler.isEnabled(wp.getCms()), handler.isVisible(wp.getCms()));
+
         //validate path
-        if (!validatePath(wp.getCms(), iPoint.getPath())) {
+        if (!validatePath(wp.getCms(), handler.getPath())) {
             // log failure
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                    ". Administration init  : tool " + adminTool.getName() + " could not be installed at " + iPoint);
-            }  
+                    ". Administration init  : tool " + adminTool.getName() + " could not be installed at " + handler);
+            }
             return;
         }
-        
+
         // root tool special case
-        if (iPoint.getPath().equals(C_TOOLPATH_SEPARATOR)) {
-            getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(iPoint.getPath(), adminTool));
+        if (handler.getPath().equals(C_TOOLPATH_SEPARATOR)) {
+            getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(handler.getPath(), adminTool));
             return;
         }
 
         // locate group
         CmsToolGroup group = null;
-        String groupName = wp.resolveMacros(iPoint.getGroup());
+        String groupName = wp.resolveMacros(handler.getGroup());
 
         // in the parent tool
-        CmsTool parentTool = resolveAdminTool(wp.getCms(), getParent(wp.getCms(), iPoint.getPath()));
+        CmsTool parentTool = resolveAdminTool(wp.getCms(), getParent(wp.getCms(), handler.getPath()));
         group = parentTool.getToolGroup(groupName);
         if (group == null) {
             // if does not exist, create it
-            group = new CmsToolGroup(groupName);
-            parentTool.addToolGroup(group, iPoint.getPosition());
+            String gid = "group" + parentTool.getToolGroups().size();
+            group = new CmsToolGroup(gid, groupName);
+            parentTool.addToolGroup(group, handler.getPosition());
         }
         // add to group
-        group.addAdminTool(adminTool, iPoint.getPosition());
+        group.addAdminTool(adminTool, handler.getPosition());
         // register
-        getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(iPoint.getPath(), adminTool));
+        getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(handler.getPath(), adminTool));
     }
 
+    /**
+     * Registers the whole handler list for the current user.<p>
+     * 
+     * @param wp the workplace object
+     */
     private void registerHandlerList(CmsWorkplace wp) {
 
         CmsToolUserData userData = getUserData(wp.getCms());
@@ -551,43 +579,23 @@ public class CmsToolManager {
         }
     }
 
+    /**
+     * Registers all tool handlers recursively.<p> 
+     * 
+     * @param wp the workplace object
+     * @param len the recursion level
+     */
     private void registerHandlerList(CmsWorkplace wp, int len) {
 
         boolean found = false;
         Iterator it = m_handlers.iterator();
         while (it.hasNext()) {
             I_CmsToolHandler handler = (I_CmsToolHandler)it.next();
-            CmsTool adminTool = null;
-            List installPoints = new ArrayList();
-            Iterator itIPoints = handler.getInstallPoints().iterator();
-            while (itIPoints.hasNext()) {
-                CmsToolInstallPoint iPoint = (CmsToolInstallPoint)itIPoints.next();
-                if (resolveAdminTool(wp.getCms(), iPoint.getPath()) != null) {
-                    adminTool = resolveAdminTool(wp.getCms(), iPoint.getPath());
-                }
-                int myLen = CmsStringUtil.splitAsArray(iPoint.getPath(), C_TOOLPATH_SEPARATOR).length;
-                if (len == myLen && !iPoint.getPath().equals(C_TOOLPATH_SEPARATOR)) {
-                    installPoints.add(iPoint);
-                }
-                if (len == 1 && iPoint.getPath().equals(C_TOOLPATH_SEPARATOR)) {
-                    // root tool special case
-                    installPoints.add(iPoint);
-                    break;
-                }
-            }
-            if (!installPoints.isEmpty()) {
+            int myLen = CmsStringUtil.splitAsArray(handler.getPath(), C_TOOLPATH_SEPARATOR).length;
+            if ((len == myLen && !handler.getPath().equals(C_TOOLPATH_SEPARATOR))
+                || (len == 1 && handler.getPath().equals(C_TOOLPATH_SEPARATOR))) {
                 found = true;
-                if (adminTool == null) {
-                    String name = handler.getName();
-                    String helpText = handler.getHelpText();
-                    adminTool = new CmsTool(name, handler.getIconPath(), handler.getLink(), helpText, handler
-                        .isEnabled(wp.getCms()));
-                }
-                Iterator itFoundIPs = installPoints.iterator();
-                while (itFoundIPs.hasNext()) {
-                    CmsToolInstallPoint iPoint = (CmsToolInstallPoint)itFoundIPs.next();
-                    registerAdminTool(wp, adminTool, iPoint);
-                }
+                registerAdminTool(wp, handler);
             }
         }
         if (found) {
@@ -599,7 +607,10 @@ public class CmsToolManager {
     /**
      * Tests if the full tool path is available.<p>
      * 
+     * @param cms the cms context
      * @param toolPath the path
+     * 
+     * @return if valid or not
      */
     private boolean validatePath(CmsObject cms, String toolPath) {
 

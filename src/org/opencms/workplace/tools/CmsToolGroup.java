@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,24 +43,30 @@ import java.util.List;
  * the group structure.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsToolGroup implements I_CmsNamedObject {
 
+    /** Container for the items. */
     private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
+
+    /** Dhtml id. */
     private final String m_id;
+
+    /** Display name. */
     private final String m_name;
 
     /**
      * Default Constructor.<p> 
      * 
+     * @param id a unique id
      * @param name the name of the group
      */
-    public CmsToolGroup(String name) {
+    public CmsToolGroup(String id, String name) {
 
+        m_id = id;
         m_name = name;
-        m_id = CmsHtmlUtil.getId(name);
     }
 
     /**

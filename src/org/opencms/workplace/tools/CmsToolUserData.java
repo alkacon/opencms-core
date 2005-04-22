@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolUserData.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,21 @@ import org.opencms.util.I_CmsNamedObject;
  * for each user, used by the <code>{@link CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsToolUserData implements I_CmsNamedObject {
 
+    /** Associated user. */
     private final CmsUser m_user;
+
+    /** Root tool for the user. */
     private String m_rootTool;
+
+    /** Current used tool path. */
     private String m_currentToolPath;
+
+    /** List of All available tools. */
     private final CmsNamedObjectContainer m_tools = new CmsNamedObjectContainer(true, false);
 
     /**

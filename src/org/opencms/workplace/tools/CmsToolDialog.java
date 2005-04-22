@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/04/14 13:53:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -47,20 +48,27 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
 
     /** Request parameter name for the tool path. */
     public static final String PARAM_PATH = "path";
+
     /** Request parameter name for the root tool path. */
     public static final String PARAM_ROOT = "root";
+
     /** Request parameter name for the style type. */
     public static final String PARAM_STYLE = "style";
 
+    /** Path parameter value. */
     private String m_paramPath;
+
+    /** Root parameter value. */
     private String m_paramRoot;
+
+    /** Style parameter value. */
     private String m_paramStyle;
 
     /**
@@ -89,7 +97,9 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t}\n");
         html.append("\ttheForm." + CmsDialog.PARAM_FRAMENAME + ".value = window.name;\n");
         html.append("\tif (actionValue == '" + CmsDialog.DIALOG_OK + "') {\n");
-        html.append("\t\tloadingOn();\n");
+        if (!(this instanceof CmsReport)) {
+            html.append("\t\tloadingOn('');\n");
+        }
         html.append("\t\treturn true;\n");
         html.append("\t}\n");
         html.append("\ttheForm." + CmsDialog.PARAM_ACTION + ".value = actionValue;\n");
@@ -240,7 +250,8 @@ public class CmsToolDialog extends CmsWorkplace {
         if (segment == HTML_START) {
             retValue.append("<p>&nbsp;</p>\n");
             retValue.append("<!-- icons block area start -->\n");
-            retValue.append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
+            retValue
+                .append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
             retValue.append("\t<div class=\"dialogblock\" unselectable=\"on\">\n");
             retValue.append("\t\t<span class=\"dialogblockhead\" unselectable=\"on\">\n");
             retValue.append(headline);
@@ -307,7 +318,8 @@ public class CmsToolDialog extends CmsWorkplace {
                 html.append(CmsStringUtil.isNotEmpty(myPars) ? " " + myPars : "");
                 html.append(">\n");
                 html.append("\t<a href='#' name='top' id='top'></a>\n");
-                html.append("\t<table border='0' cellspacing='0' cellpadding='0' id='loaderContainer' onClick='return false;'>\n");
+                html
+                    .append("\t<table border='0' cellspacing='0' cellpadding='0' id='loaderContainer' onClick='return false;'>\n");
                 html.append("\t\t<tr><td id='loaderContainerH'><div id='loader'>\n");
                 html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td>\n");
                 html.append("\t\t\t\t<p><img src='");
@@ -341,7 +353,8 @@ public class CmsToolDialog extends CmsWorkplace {
         }
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+        html
+            .append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
         html.append("<html>\n");
         html.append("\t<head>\n");
         if (title != null) {
@@ -374,11 +387,14 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t\t\tsetActiveItemByName(\"");
         html.append(getCurrentToolPath());
         html.append("\");\n");
-        html.append("\t\t\tloadingOff();\n");
-        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
+        html.append("\t\t\tloadingOff('');\n");
+        html
+            .append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
         html.append("\t\t}\n");
         html.append("\t\tfunction bodyUnload() {\n");
-        html.append("\t\t\tloadingOn();\n");
+        if (!(this instanceof CmsReport)) {
+            html.append("\t\t\tloadingOn('');\n");
+        }
         html.append("\t\t}\n");
         html.append("\t// --></script>\n");
         return html.toString();
@@ -433,5 +449,4 @@ public class CmsToolDialog extends CmsWorkplace {
 
         fillParamValues(request);
     }
-
 }

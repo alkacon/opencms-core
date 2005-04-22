@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,50 +32,78 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
-    /** The args separator in the property value.<p> */
+    /** Args separator in the property value.<p> */
     public static final String C_ARGS_SEPARATOR = "|";
 
-    /** The name of the only-admin parameter.<p> */
+    /** Name of the only-admin parameter.<p> */
     public static final String C_PARAM_ONLYADMIN = "onlyadmin";
 
-    /** The name of the only-offline parameter.<p> */
+    /** Name of the only-offline parameter.<p> */
     public static final String C_PARAM_ONLYOFFLINE = "onlyoffline";
 
-    /** The property for the args.<p> */
+    /** Parameter name for the visibility flag. */
+    public static final String C_PARAM_VISIBLE = "visible";
+
+    /** Property for the args.<p> */
     public static final String C_PROPERTY_DEFINITION = "admintoolhandler-args";
 
-    /** The arg-name and arg-value separator.<p> */
+    /** Arg-name and arg-value separator.<p> */
     public static final String C_VALUE_SEPARATOR = ":";
 
+    /** Group to be included in. */
+    private String m_group;
+
+    /** Help text or description. */
     private String m_helpText;
+
+    /** Icon path (32x32). */
     private String m_iconPath;
-    private String m_smallIconPath;
-    private List m_installPoints = new ArrayList();
+
+    /** Link pointer. */
     private String m_link;
+
+    /** Display name. */
     private String m_name;
 
-    /**
-     * Adds an install points.<p>
-     *
-     * @param installPoint the install point to add
-     */
-    public void addInstallPoint(CmsToolInstallPoint installPoint) {
+    /** Only admin-user flag. */
+    private boolean m_onlyAdmin = false;
 
-        m_installPoints.add(installPoint);
+    /** Only offline-project flag. */
+    private boolean m_onlyOffline = false;
+
+    /** Tool path to install in. */
+    private String m_path;
+
+    /** Relative position in group. */
+    private float m_position;
+
+    /** Small icon path (16x16). */
+    private String m_smallIconPath;
+
+    /** visibility flag. */
+    private boolean m_visible = true;
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getGroup()
+     */
+    public String getGroup() {
+
+        return m_group;
     }
 
     /**
@@ -92,23 +120,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getIconPath() {
 
         return m_iconPath;
-    }
-
-    
-    /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#getSmallIconPath()
-     */
-    public String getSmallIconPath() {
-
-        return m_smallIconPath;
-    }
-    
-    /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#getInstallPoints()
-     */
-    public List getInstallPoints() {
-
-        return Collections.unmodifiableList(m_installPoints);
     }
 
     /**
@@ -128,11 +139,82 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getPath()
+     */
+    public String getPath() {
+
+        return m_path;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getPosition()
+     */
+    public float getPosition() {
+
+        return m_position;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getSmallIconPath()
+     */
+    public String getSmallIconPath() {
+
+        return m_smallIconPath;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
     public boolean isEnabled(CmsObject cms) {
 
+        if (m_onlyOffline && cms.getRequestContext().currentProject().isOnlineProject()) {
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Returns the only Admin user flag.<p>
+     *
+     * @return the only Admin user flag
+     */
+    public boolean isOnlyAdmin() {
+
+        return m_onlyAdmin;
+    }
+
+    /**
+     * Returns the only Offline project flag.<p>
+     *
+     * @return the only Offline project flag
+     */
+    public boolean isOnlyOffline() {
+
+        return m_onlyOffline;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
+     */
+    public boolean isVisible(CmsObject cms) {
+
+        if (!m_visible) {
+            return m_visible;
+        }
+        if (m_onlyAdmin && !cms.isAdmin()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Sets the group.<p>
+     *
+     * @param group the group to set
+     */
+    public void setGroup(String group) {
+
+        m_group = group;
     }
 
     /**
@@ -156,16 +238,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * Sets the small icon path.<p>
-     *
-     * @param smallIconPath the samll icon path to set
-     */
-    public void setSmallIconPath(String smallIconPath) {
-
-        m_smallIconPath = smallIconPath;
-    }
-
-    /**
      * Sets the link.<p>
      *
      * @param link the link to set
@@ -185,4 +257,99 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         m_name = name;
     }
 
+    /**
+     * Sets the only Admin user flag.<p>
+     *
+     * @param onlyAdmin the only Admin user flag to set
+     */
+    public void setOnlyAdmin(boolean onlyAdmin) {
+
+        m_onlyAdmin = onlyAdmin;
+    }
+
+    /**
+     * Sets the only Offline project flag.<p>
+     *
+     * @param onlyOffline the only Offline project flag to set
+     */
+    public void setOnlyOffline(boolean onlyOffline) {
+
+        m_onlyOffline = onlyOffline;
+    }
+
+    /**
+     * Sets the path.<p>
+     *
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+
+        m_path = path;
+    }
+
+    /**
+     * Sets the position.<p>
+     *
+     * @param position the position to set
+     */
+    public void setPosition(float position) {
+
+        m_position = position;
+    }
+
+    /**
+     * Sets the small icon path.<p>
+     *
+     * @param smallIconPath the samll icon path to set
+     */
+    public void setSmallIconPath(String smallIconPath) {
+
+        m_smallIconPath = smallIconPath;
+    }
+
+    /**
+     * Sets the visible.<p>
+     *
+     * @param visible the visible to set
+     */
+    public void setVisible(boolean visible) {
+
+        m_visible = visible;
+    }
+
+    /**
+     * Parses the common parameters like OnlyOffline, OnlyAdmin and Visible.<p>
+     * 
+     * @param args the argument string
+     */
+    protected void readCommonParams(String args) {
+
+        if (args==null) {
+            return;
+        }
+        Map argsMap = new HashMap();
+        Iterator itArgs = CmsStringUtil.splitAsList(args, C_ARGS_SEPARATOR).iterator();
+        while (itArgs.hasNext()) {
+            String arg = (String)itArgs.next();
+            int pos = arg.indexOf(C_VALUE_SEPARATOR);
+            argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
+        }
+        if (argsMap.get(C_PARAM_ONLYOFFLINE) != null) {
+            setOnlyOffline(true);
+        }
+        if (argsMap.get(C_PARAM_ONLYADMIN) != null) {
+            setOnlyAdmin(true);
+        }
+        if (argsMap.get(C_PARAM_VISIBLE) != null) {
+            setVisible(false);
+        }        
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_path + " - " + m_group + " - " + m_position;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Default admin tool handler.<p>
@@ -55,28 +52,31 @@ import java.util.Map;
  * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_DESCRIPTION}</code> property or a
  * default text if undefined.<p> 
  * 
- * Only one single install point is created, and the group is taken from the 
+ * The group is taken from the 
  * <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVINFO}</code> property,
  * the position from the <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_NAVPOS}</code>
  * and the install path is given by the folder structure.<p>
  * 
  * For the icon path you can specify 2 paths separated by a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code>, 
- * the first one will be used as a group icon (bigger), and the second as an menu icon (smaller). If you specify only,
- * one icon path it should be a big one, which will be scaled to be used in the menu.<p>
+ * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsDefaultToolHandler extends A_CmsToolHandler {
 
+    /** Default group name. */
     private static final String C_DEFAULT_GROUP = "${key.admin.admintool.defaults.group}";
-    private static final String C_DEFAULT_HELPTEXT = "${key.admin.admintool.defaults.helptext}";
-    private static final String C_DEFAULT_ICONPATH = "${key.admin.admintool.defaults.icon}";
-    private static final String C_DEFAULT_NAME = "${key.admin.admintool.defaults.name}";
 
-    private boolean m_onlyAdmin = false;
-    private boolean m_onlyOffline = false;
+    /** Default help text. */
+    private static final String C_DEFAULT_HELPTEXT = "${key.admin.admintool.defaults.helptext}";
+
+    /** Default icon path. */
+    private static final String C_DEFAULT_ICONPATH = "${key.admin.admintool.defaults.icon}";
+
+    /** Default display name. */
+    private static final String C_DEFAULT_NAME = "${key.admin.admintool.defaults.name}";
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
@@ -148,7 +148,7 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
                     cms.readResource(defFile);
                     setLink(defFile);
                 }
-            } 
+            }
 
         } catch (CmsException e) {
             // noop
@@ -156,37 +156,16 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
         path = resourcePath.substring(CmsToolManager.C_TOOLS_ROOT.length(), resourcePath
             .lastIndexOf(CmsToolManager.C_TOOLPATH_SEPARATOR));
 
-        addInstallPoint(new CmsToolInstallPoint(path, group, navElem.getNavPosition()));
+        // install point
+        setPath(path);
+        setGroup(group);
+        setPosition(navElem.getNavPosition());
 
         try {
-            Map argsMap = new HashMap();
-            Iterator itArgs = CmsStringUtil.splitAsList(
-                cms.readPropertyObject(resourcePath, C_PROPERTY_DEFINITION, false).getValue(),
-                C_ARGS_SEPARATOR).iterator();
-            while (itArgs.hasNext()) {
-                String arg = (String)itArgs.next();
-                int pos = arg.indexOf(C_VALUE_SEPARATOR);
-                argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
-            }
-            if (argsMap.get(C_PARAM_ONLYOFFLINE) != null) {
-                m_onlyOffline = true;
-            }
-            if (argsMap.get(C_PARAM_ONLYADMIN) != null) {
-                m_onlyAdmin = true;
-            }
-        } catch (Exception e) {
-            //noop
+            readCommonParams(cms.readPropertyObject(resourcePath, C_PROPERTY_DEFINITION, false).getValue());
+        } catch (CmsException e1) {
+            // noop
         }
     }
 
-    /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
-     */
-    public boolean isEnabled(CmsObject cms) {
-
-        boolean ret = super.isEnabled(cms);
-        ret = ret && (cms.isAdmin() || !m_onlyAdmin);
-        ret = ret && (!cms.getRequestContext().currentProject().isOnlineProject() || !m_onlyOffline);
-        return ret;
-    }
 }

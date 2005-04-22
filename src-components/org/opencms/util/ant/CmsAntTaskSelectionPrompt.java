@@ -9,19 +9,25 @@ import javax.swing.UIManager;
  * Task that prompts user for selection to allow interactive builds.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
 
-    /** the module list separator constant. */
+    /** Options list separator constant. */
     public static final String LIST_SEPARATOR = ",";
 
+    /** List of all options. */
     private String m_allValues; // required
+    /** List of by default selected options. */
     private String m_defaultValue = "";
+    /** Prompt message. */
     private String m_prompt = "Please make your choice:";
+    /** Destination property. */
     private String m_property; // required
+    /** Mode flag. */
     private boolean m_singleSelection = false;
+    /** Title message. */
     private String m_title = "Selection Dialog";
 
     /**

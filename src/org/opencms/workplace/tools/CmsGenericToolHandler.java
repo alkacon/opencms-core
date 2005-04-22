@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsGenericToolHandler.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,40 +54,49 @@ import java.util.Map;
  *  <li><code>helptext</code>: the help text of the admin tool.</li>
  *  <li><code>onlyadmin</code>: the admin tool can only be used as administrator (optional, default:false).</li>
  *  <li><code>onlyoffline</code>: the admin tool can only be used in the offline project (optional, default:false).</li>
- *  <li><code>installpoints</code>: a list of installation points for this admin tool.</li>
+ *  <li><code>path</code>: the abstract path to install the tool.</li>
+ *  <li><code>group</code>: the group in that path.</li>
+ *  <li><code>position</code>: the relative position in that group.</li>
  * </ul><p>
  * 
- * The <code>name</code> and <code>helptext</code> can use macros, ie. for i18n.
- * 
- * For more information about installation points, see <code>{@link CmsToolInstallPoint}</code>.<p>
+ * Almost any parameter can use be described by macros, ie. for i18n.
  * 
  * An example for a full argument is:<p>
- * <code>name:Users|iconpath:/resources/icons/users.gif|helptext:This tool manages user accounts|installpoints:/@Principal Management#2,/groups@User Management#1|onlyadmin:true</code><p>
+ * <code>name:Users|iconpath:/resources/icons/users.gif|helptext:This tool manages user accounts|path:/|group:Principal Management|position:2|onlyadmin:true</code><p>
  * 
  * This means that the given resource will be named "Users", the display icon is located under the 
  * path "/resources/icons/users.gif", the displayed help text will be "This tool manages user accounts", 
- * and the tool will be installed in 2 different installation points:<p>
+ * and the tool will be installed at the following installation point:<p>
  * <ul>
- *  <li>in the root tool "/", in group "Principal Management", at second position (if there is something at first position), and</li>
- *  <li>in the groups tool "/groups", in group "User Management", at first position.</li>
+ *  <li>in the root tool "/", in group "Principal Management", at second position (if there is something at first position)</li>
  * </ul>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsGenericToolHandler extends A_CmsToolHandler {
 
-    private static final String C_INSTALLPOINT_SEPARATOR = ",";
+    /** Parameter name for the help text. */
     private static final String C_PARAM_HELPTEXT = "helptext";
+
+    /** Parameter name for the icon path. */
     private static final String C_PARAM_ICONPATH = "iconpath";
+
+    /** Parameter name for the small icon path. */
     private static final String C_PARAM_SMALLICONPATH = "smalliconpath";
-    private static final String C_PARAM_INSTALLPOINTS = "installpoints";
 
+    /** Parameter name for the path. */
+    private static final String C_PARAM_PATH = "path";
+
+    /** Parameter name for the group. */
+    private static final String C_PARAM_GROUP = "group";
+
+    /** Parameter name for the position. */
+    private static final String C_PARAM_POSITION = "position";
+
+    /** Parameter name for the display name. */
     private static final String C_PARAM_NAME = "name";
-    private boolean m_onlyAdmin = false;
-
-    private boolean m_onlyOffline = false;
 
     /**
      * Default setup method. <p>
@@ -97,8 +106,7 @@ public class CmsGenericToolHandler extends A_CmsToolHandler {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void setup(CmsObject cms, String resourcePath)
-    throws CmsException {
+    public void setup(CmsObject cms, String resourcePath) throws CmsException {
 
         setup(resourcePath, cms.readPropertyObject(resourcePath, C_PROPERTY_DEFINITION, false).getValue());
     }
@@ -127,37 +135,16 @@ public class CmsGenericToolHandler extends A_CmsToolHandler {
             setSmallIconPath((String)argsMap.get(C_PARAM_SMALLICONPATH));
         }
         setHelpText((String)argsMap.get(C_PARAM_HELPTEXT));
-        parseInstallPoints((String)argsMap.get(C_PARAM_INSTALLPOINTS));
-        if (argsMap.get(C_PARAM_ONLYOFFLINE) != null) {
-            m_onlyOffline = true;
+        if (getName().equals("${key.admin.view.name}")) {
+            // TODO: remove this admin-main case ASAP...
+            setPath("/");
+            setGroup(".");
+            setPosition(1);
+        } else {
+            setPath((String)argsMap.get(C_PARAM_PATH));
+            setGroup((String)argsMap.get(C_PARAM_GROUP));
+            setPosition(Integer.parseInt((String)argsMap.get(C_PARAM_POSITION)));
         }
-        if (argsMap.get(C_PARAM_ONLYADMIN) != null) {
-            m_onlyAdmin = true;
-        }
+        readCommonParams(args);
     }
-
-    /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
-     */
-    public boolean isEnabled(CmsObject cms) {
-
-        boolean ret = super.isEnabled(cms);
-        ret = ret && (cms.isAdmin() || !m_onlyAdmin);
-        ret = ret && (!cms.getRequestContext().currentProject().isOnlineProject() || !m_onlyOffline);
-        return ret;
-    }
-
-    /**
-     * Parses the installPoint parameter.<p>
-     * 
-     * @param installPoints the installPoint parameter
-     */
-    private void parseInstallPoints(String installPoints) {
-
-        Iterator itIPoints = CmsStringUtil.splitAsList(installPoints, C_INSTALLPOINT_SEPARATOR).iterator();
-        while (itIPoints.hasNext()) {
-            addInstallPoint(new CmsToolInstallPoint((String)itIPoints.next()));
-        }
-    }
-
 }

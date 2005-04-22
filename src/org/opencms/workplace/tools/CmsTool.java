@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/04/14 13:11:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/22 08:39:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,36 +48,62 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsTool implements I_CmsNamedObject {
 
+    /** Sub-tools container. */
     private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
+
+    /** Enabled flag. */
     private boolean m_enabled;
+
+    /** Help text or description. */
     private final String m_helpText;
+
+    /** Icon path. */
     private final String m_iconPath;
+
+    /** Dhtml id, from name. */
     private final String m_id;
+
+    /** Link pointer. */
     private final String m_link;
+
+    /** Display name. */
     private final String m_name;
+
+    /** Visibility flag. */
+    private final boolean m_visible;
 
     /**
      * Default Constructor.<p> 
      * 
+     * @param id a unique id
      * @param name the name of the item
      * @param iconPath the icon to display
      * @param link the link to open when selected
      * @param helpText the help text to display
      * @param enabled if enabled or not
+     * @param visible if visible or not
      */
-    public CmsTool(String name, String iconPath, String link, String helpText, boolean enabled) {
+    public CmsTool(
+        String id,
+        String name,
+        String iconPath,
+        String link,
+        String helpText,
+        boolean enabled,
+        boolean visible) {
 
+        m_id = id;
         m_name = name;
-        m_id = CmsHtmlUtil.getId(name);
         m_iconPath = iconPath;
         m_link = link;
         m_helpText = helpText;
         m_enabled = enabled;
+        m_visible = visible;
     }
 
     /**
@@ -114,12 +140,16 @@ public class CmsTool implements I_CmsNamedObject {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
+        if (!isVisible()) {
+            return ""; 
+        }
         String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkFromContext(wp.getJsp(), this);
-        StringBuffer html = new StringBuffer(512);
+        StringBuffer html = new StringBuffer(1024);
         html.append("<");
         html.append(isEnabled() ? "div" : "span");
         html.append(" class='commonButton' style='background-image: url(");
-        html.append(wp.getJsp().link(getIconPath()));
+        html.append(CmsWorkplace.getSkinUri());
+        html.append(getIconPath());
         html.append(")' title='");
         html.append(getName());
         html.append("' onMouseOver=\"mouseHelpEvent('");
@@ -128,29 +158,30 @@ public class CmsTool implements I_CmsNamedObject {
         html.append(getId());
         html.append("', false);\"");
         html.append(isEnabled() ? " onClick=\"openPage('" + link + "');\"" : "");
-        html.append(">");
-        html.append("<button name='");
+        html.append(">\n");
+        html.append("\t<button name='");
         html.append(getId());
         html.append("'");
         html.append(isEnabled() ? "" : " disabled");
-        html.append(">");
+        html.append(">\n\t\t");
         html.append(getName());
-        html.append("</button>");
-        html.append("<span>");
+        html.append("\n\t</button>\n");
+        html.append("\t<span>\n\t\t");
         html.append(getName());
-        html.append("</span>");
-        html.append("<div class='tip' id='");
+        html.append("\t</span>\n");
+        html.append("\t<div class='tip' id='");
         html.append(getId());
-        html.append("'>");
+        html.append("'>\n\t\t");
         if (!isEnabled()) {
             html.append(wp.key("widget.button.disabled.helptext"));
             html.append(" ");
         }
         html.append(getHelpText());
-        html.append("</div></");
+        html.append("\n\t</div>\n</");
         html.append(isEnabled() ? "div" : "span");
-        html.append(">");
-        return wp.resolveMacros(html.toString());
+        html.append(">\n");
+
+        return wp.resolveMacros(html.toString());  
     }
 
     /**
@@ -276,5 +307,15 @@ public class CmsTool implements I_CmsNamedObject {
     public boolean isEnabled() {
 
         return m_enabled;
+    }
+
+    /**
+     * Returns visibility flag.<p>
+     *
+     * @return visibility flag
+     */
+    public boolean isVisible() {
+
+        return m_visible;
     }
 }
