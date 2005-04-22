@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/Messages.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/22 14:39:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,97 +42,97 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_CRON_EXPRESSION_2 = "ERR_BAD_CRON_EXPRESSION_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_COULD_NOT_SCHEDULE_JOB_2 = "ERR_COULD_NOT_SCHEDULE_JOB_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_JOB_CONFIGURATION_0 = "ERR_INVALID_JOB_CONFIGURATION_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_JOB_CLASS_NOT_FOUND_1 = "ERR_JOB_CLASS_NOT_FOUND_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_JOB_INFO_FROZEN_1 = "ERR_JOB_INFO_FROZEN_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_JOB_WITH_ID_DOES_NOT_EXIST_1 = "ERR_JOB_WITH_ID_DOES_NOT_EXIST_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_SCHEDULER_1 = "ERR_NO_SCHEDULER_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SCHEDULER_CONFIG_FINISHED_0 = "INIT_SCHEDULER_CONFIG_FINISHED_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SCHEDULER_CREATED_1 = "INIT_SCHEDULER_CREATED_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SCHEDULER_INITIALIZED_0 = "INIT_SCHEDULER_INITIALIZED_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SCHEDULER_STARTED_0 = "INIT_SCHEDULER_STARTED_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SHUTDOWN_1 = "INIT_SHUTDOWN_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_BAD_INTERFACE_0 = "LOG_BAD_INTERFACE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CANNOT_START_SCHEDULER_0 = "LOG_CANNOT_START_SCHEDULER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CLASS_NOT_FOUND_1 = "LOG_CLASS_NOT_FOUND_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_ILLEGAL_ACCESS_0 = "LOG_ILLEGAL_ACCESS_0";
 
     /** Constant for message LOG_INSTANCE_GENERATION_0. */
     public static final String LOG_INSTANCE_GENERATION_0 = "LOG_INSTANCE_GENERATION_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INVALID_JOB_1 = "LOG_INVALID_JOB_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_CREATED_1 = "LOG_JOB_CREATED_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_EXECUTED_1 = "LOG_JOB_EXECUTED_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_EXECUTION_ERROR_1 = "LOG_JOB_EXECUTION_ERROR_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_EXECUTION_OK_2 = "LOG_JOB_EXECUTION_OK_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_NEXT_EXECUTION_2 = "LOG_JOB_NEXT_EXECUTION_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_SCHEDULED_4 = "LOG_JOB_SCHEDULED_4";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_JOB_STARTING_1 = "LOG_JOB_STARTING_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_MULTIPLE_JOBS_FOUND_1 = "LOG_MULTIPLE_JOBS_FOUND_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_SCHEDULER_0 = "LOG_NO_SCHEDULER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_REUSING_INSTANCE_1 = "LOG_REUSING_INSTANCE_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SHUTDOWN_ERROR_0 = "LOG_SHUTDOWN_ERROR_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_THREAD_ERROR_1 = "LOG_THREAD_ERROR_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_THREAD_INTERRUPTED_1 = "LOG_THREAD_INTERRUPTED_1";
 
     /** Name of the used resource bundle. */
@@ -147,13 +147,13 @@ public final class Messages extends A_CmsMessageBundle {
     /** Name of the used resource bundle. */
     public static final String LOG_THREAD_POOL_WAITING_1 = "LOG_THREAD_POOL_WAITING_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_THREAD_SHUTDOWN_1 = "LOG_THREAD_SHUTDOWN_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_UNSCHEDULED_JOB_1 = "LOG_UNSCHEDULED_JOB_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_UNSCHEDULING_ERROR_1 = "LOG_UNSCHEDULING_ERROR_1";
 
     /** Name of the used resource bundle. */
