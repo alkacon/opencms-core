@@ -27,6 +27,7 @@
 			<resource uri="/system/workplace/administration/searchindex/"/>
 			<resource uri="/system/workplace/resources/admin/ic_updateindex.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_searchindex.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_searchindex_sm.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_search.gif"/>
 		</resources>
 		<parameters/>
@@ -96,7 +97,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_searchindex.gif]]></value>
+					<value><![CDATA[admin/ic_searchindex.gif:admin/ic_searchindex_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -140,7 +141,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_search.gif]]></value>
+					<value><![CDATA[admin/ic_search.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -210,7 +211,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_updateindex.gif]]></value>
+					<value><![CDATA[admin/ic_updateindex.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -469,6 +470,18 @@
 			<destination>system/workplace/resources/admin/ic_searchindex.gif</destination>
 			<type>image</type>
 			<uuidresource>3e449d84-5bd7-11d8-9fd1-f4fdb0085a76</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Feb 2004 15:41:42 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_searchindex_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_searchindex_sm.gif</destination>
+			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 10 Feb 2004 15:41:42 CET</datecreated>

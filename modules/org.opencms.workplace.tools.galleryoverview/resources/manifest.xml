@@ -27,6 +27,7 @@
                 <resource uri="/system/workplace/administration/galleryoverview/"/>
                 <resource uri="/system/workplace/resources/admin/ic_downloadgallery.gif"/>
                 <resource uri="/system/workplace/resources/admin/ic_downloadgallery_in.gif"/>
+                <resource uri="/system/workplace/resources/admin/ic_downloadgallery_sm.gif"/>
                 <resource uri="/system/workplace/resources/admin/ic_galleryoverview.gif"/>
                 <resource uri="/system/workplace/resources/admin/ic_htmlgallery.gif"/>
                 <resource uri="/system/workplace/resources/admin/ic_htmlgallery_in.gif"/>
@@ -97,7 +98,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_galleryoverview.gif]]></value>
+					<value><![CDATA[admin/ic_galleryoverview.gif:admin/ic_galleryoverview_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -141,7 +142,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_downloadgallery.gif]]></value>
+					<value><![CDATA[admin/ic_downloadgallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -215,7 +216,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_htmlgallery.gif]]></value>
+					<value><![CDATA[admin/ic_htmlgallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -288,7 +289,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_tablegallery.gif]]></value>
+					<value><![CDATA[admin/ic_tablegallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -361,7 +362,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_imagegallery.gif]]></value>
+					<value><![CDATA[admin/ic_imagegallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -434,7 +435,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_linkgallery.gif]]></value>
+					<value><![CDATA[admin/ic_linkgallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -786,6 +787,18 @@
 			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_galleryoverview_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_galleryoverview_sm.gif</destination>
+			<type>image</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

@@ -30,7 +30,9 @@
 			<resource uri="/system/workplace/administration/reinitworkplace/"/>
 			<resource uri="/system/workplace/administration/reinitworkplace/"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_flexcache.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_flexcache_sm.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_reinitworkplace.gif"/>            
+			<resource uri="/system/workplace/resources/admin/ic_reinitworkplace_sm.gif"/>            
 		</resources>
 		<parameters/>
 	</module>
@@ -104,7 +106,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_flexcache.gif]]></value>
+					<value><![CDATA[admin/ic_admin_flexcache.gif:admin/ic_admin_flexcache_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -174,7 +176,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_reinitworkplace.gif]]></value>
+					<value><![CDATA[admin/ic_reinitworkplace.gif:admin/ic_reinitworkplace_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -358,10 +360,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/admin/ic_admin_flexcache_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_flexcache_sm.gif</destination>
+			<type>image</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/admin/ic_reinitworkplace.gif</source>
 			<destination>system/workplace/resources/admin/ic_reinitworkplace.gif</destination>
 			<type>image</type>
 			<uuidresource>eddc2443-9e96-11d8-aa6e-3dcab3747faf</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 May 2004 15:20:08 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_reinitworkplace_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_reinitworkplace_sm.gif</destination>
+			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 May 2004 15:20:08 CEST</datecreated>

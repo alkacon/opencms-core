@@ -27,6 +27,7 @@
 			<resource uri="/system/workplace/administration/staticexport/"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_staticexport_in.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_staticexport.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_staticexport_sm.gif"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -99,7 +100,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_staticexport.gif]]></value>
+					<value><![CDATA[admin/ic_admin_staticexport.gif:admin/ic_admin_staticexport_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -216,6 +217,18 @@
 			<destination>system/workplace/resources/admin/ic_admin_staticexport_in.gif</destination>
 			<type>image</type>
 			<uuidresource>271ab430-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_staticexport_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_staticexport_sm.gif</destination>
+			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>

@@ -27,6 +27,7 @@
 			<resource uri="/system/workplace/administration/linkmanagement/"/>
 			<resource uri="/system/workplace/resources/admin/ic_linkmanagement_in.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_linkmanagement.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_linkmanagement_sm.gif"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -91,7 +92,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_linkmanagement.gif]]></value>
+					<value><![CDATA[admin/ic_linkmanagement.gif:admin/ic_linkmanagement_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -139,7 +140,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_linkmanagement.gif]]></value>
+					<value><![CDATA[admin/ic_linkmanagement.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -173,8 +174,8 @@
 			<datecreated>Wed, 09 Feb 2005 08:12:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
+			<properties/>
+				<!--property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[onlyoffline:true]]></value>
 				</property>
@@ -200,7 +201,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_linkmanagement.gif]]></value>
+					<value><![CDATA[admin/ic_linkmanagement.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -210,7 +211,7 @@
 					<name>Title</name>
 					<value><![CDATA[VFS Link Checking]]></value>
 				</property>
-			</properties>
+			</properties-->
 			<accesscontrol/>
 		</file>
 		<file>
@@ -417,6 +418,18 @@
 			<destination>system/workplace/resources/admin/ic_linkmanagement_in.gif</destination>
 			<type>image</type>
 			<uuidresource>2819d4b2-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_linkmanagement_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_linkmanagement_sm.gif</destination>
+			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>

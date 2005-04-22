@@ -28,6 +28,7 @@
 			<resource uri="/system/workplace/resources/admin/ic_admin_contentmerge.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_contenttools.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_contenttools_in.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_contenttools_sm.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_htmlimport.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_properties_change.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_properties_delete.gif"/>
@@ -118,7 +119,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_contenttools.gif]]></value>
+					<value><![CDATA[admin/ic_admin_contenttools.gif:admin/ic_admin_contenttools_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -162,7 +163,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_properties_change.gif]]></value>
+					<value><![CDATA[admin/ic_admin_properties_change.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -232,7 +233,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_properties_delete.gif]]></value>
+					<value><![CDATA[admin/ic_admin_properties_delete.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -306,7 +307,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_htmlimport.gif]]></value>
+					<value><![CDATA[admin/ic_admin_htmlimport.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -372,7 +373,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_contentmerge.gif]]></value>
+					<value><![CDATA[admin/ic_admin_contentmerge.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -438,7 +439,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_renameelement.gif]]></value>
+					<value><![CDATA[admin/ic_admin_renameelement.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -799,6 +800,18 @@
 			<destination>system/workplace/resources/admin/ic_admin_contenttools_in.gif</destination>
 			<type>image</type>
 			<uuidresource>270ecd44-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_contenttools_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_contenttools_sm.gif</destination>
+			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>

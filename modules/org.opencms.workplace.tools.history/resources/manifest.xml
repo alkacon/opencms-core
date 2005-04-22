@@ -28,6 +28,7 @@
 			<resource uri="/system/workplace/resources/admin/ic_admin_history_settings.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_history_clear.gif"/>
 			<resource uri="/system/workplace/resources/admin/ic_admin_history.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_history_sm.gif"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -106,7 +107,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_history.gif]]></value>
+					<value><![CDATA[admin/ic_admin_history.gif:admin/ic_admin_history_sm.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -150,7 +151,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_history_clear.gif]]></value>
+					<value><![CDATA[admin/ic_admin_history_clear.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -216,7 +217,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/system/workplace/resources/admin/ic_admin_history_settings.gif]]></value>
+					<value><![CDATA[admin/ic_admin_history_settings.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -403,6 +404,18 @@
 			<destination>system/workplace/resources/admin/ic_admin_history.gif</destination>
 			<type>image</type>
 			<uuidresource>cf4fa5a8-e1e6-11d7-a7da-80d3313d8d30</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 12:25:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_history_sm.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_history_sm.gif</destination>
+			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 08 Sep 2003 12:25:46 CEST</datecreated>
