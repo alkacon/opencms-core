@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -47,6 +48,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Validates HTML links in the (body) content of Cms resources in the OpenCms VFS. HTML links are 
@@ -59,7 +62,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2005/02/17 12:44:41 $
+ * @version $Revision: 1.26 $ $Date: 2005/04/22 08:45:59 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -68,6 +71,9 @@ public class CmsHtmlLinkValidator extends Object {
      * The driver manager.<p>
      */
     protected CmsDriverManager m_driverManager;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlLinkValidator.class);
 
     /**
      * Default constructor.<p>
@@ -145,9 +151,7 @@ public class CmsHtmlLinkValidator extends Object {
                     }
                 }
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error retrieving resource type of " + resourceName, e);
-                }
+                LOG.error(Messages.get().key(Messages.LOG_RETRIEVAL_RESOURCE_1, resourceName), e);
             }
         }
 
@@ -179,9 +183,7 @@ public class CmsHtmlLinkValidator extends Object {
                     report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 }
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error finding links in " + resourceName, e);
-                }
+                LOG.error(Messages.get().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
             }
         }
 

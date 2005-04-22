@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/04/15 09:08:31 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.main.CmsLog;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.nio.charset.Charset;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
 
@@ -50,7 +52,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -93,8 +95,8 @@ public final class CmsStringUtil {
     /** Regex that matches an xml head. */
     private static final Pattern C_XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
 
-    /** DEBUG flag. */
-    private static final int DEBUG = 0;
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
 
     /** OpenCms context replace String, static for performance reasons. */
     private static String m_contextReplace;
@@ -141,9 +143,6 @@ public final class CmsStringUtil {
      */
     public static String escapePattern(String source) {
 
-        if (DEBUG > 0) {
-            System.err.println("[CmsStringSubstitution]: escaping String: " + source);
-        }
         if (source == null) {
             return null;
         }
@@ -199,9 +198,6 @@ public final class CmsStringUtil {
                 default:
                     result.append(ch);
             }
-        }
-        if (DEBUG > 0) {
-            System.err.println("[CmsStringSubstitution]: escaped String to: " + result.toString());
         }
         return new String(result);
     }
@@ -688,9 +684,7 @@ public final class CmsStringUtil {
         try {
             return perlUtil.substitute(translationRule, content);
         } catch (MalformedPerl5PatternException e) {
-            if (DEBUG > 0) {
-                System.err.println("[CmsStringSubstitution]: " + e.toString());
-            }
+            LOG.debug(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
         }
         return content;
     }

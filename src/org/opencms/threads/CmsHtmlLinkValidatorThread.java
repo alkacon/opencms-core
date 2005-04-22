@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,24 @@
 package org.opencms.threads;
 
 import org.opencms.db.CmsPublishList;
-import org.opencms.main.OpenCms;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import org.apache.commons.logging.Log;
 
 /**
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.11 $ $Date: 2005/04/22 08:45:59 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlLinkValidatorThread.class); 
     
     /** A Cms resource to be published directly.<p> */
     private CmsResource m_directPublishResource;
@@ -151,9 +155,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
             }
             
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error validating HTML links", e);
-            }
+            LOG.error(Messages.get().key(Messages.ERR_LINK_VALIDATION_0), e);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.threads;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
@@ -41,18 +42,25 @@ import org.opencms.report.I_CmsReport;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Deletes a module.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1.10
  */
 public class CmsModuleDeleteThread extends A_CmsReportThread {
 
     private static final boolean DEBUG = false;
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleDeleteThread.class);  
+    
     private String m_moduleName;
+    
     private boolean m_replaceMode;
 
     /**
@@ -112,9 +120,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
                     getCms().copyResourceToProject((String)projectFiles.get(i));
                 } catch (CmsException e) {
                     // may happen if the resource has already been deleted
-                    OpenCms.getLog(this).error(
-                        "Exception moving module resource '" + (String)projectFiles.get(i) + "' to delete project",
-                        e);
+                    LOG.error(Messages.get().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)), e);
                     getReport().println(e);
                 }
             }
@@ -134,9 +140,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             }
         } catch (Exception e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error deleting module " + m_moduleName, e);
-            }
+            LOG.error(Messages.get().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleName), e);
             if (DEBUG) {
                 System.err.println("CmsAdminModuleDeleteThread() Exception:" + e.getMessage());
             }

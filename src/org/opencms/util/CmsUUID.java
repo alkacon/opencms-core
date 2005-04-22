@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
  
 package org.opencms.util;
 
-import org.opencms.main.CmsException;
+import org.opencms.main.CmsInitException;
+import org.opencms.main.CmsRuntimeException;
 
 import java.io.Serializable;
 
@@ -56,7 +57,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0.0
  */
@@ -83,7 +84,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     public CmsUUID() {
         synchronized (this) {
             if (m_isNotInitialized) {
-                throw new RuntimeException("CmsUUID not initilized with a valid ethernet address");
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_0));
             }
             m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
         }
@@ -96,13 +97,13 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * (e.g. '00:C0:F0:3D:5B:7C').
      * 
      * @param ethernetAddress the ethernet address of the server machine
-     * @throws CmsException in case the ethernetAddress String is not a valid ethernet address
+     * @throws CmsInitException in case the ethernetAddress String is not a valid ethernet address
      */
-    public static void init(String ethernetAddress) throws CmsException {
+    public static void init(String ethernetAddress) throws CmsInitException {
         try {
             m_ethernetAddress = new EthernetAddress(ethernetAddress);
         } catch (Exception e) {
-            throw new CmsException("CmsUUID not initilized with a valid ethernet address", CmsException.C_BAD_NAME, e);
+            throw new CmsInitException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_1, ethernetAddress));
         }
         m_isNotInitialized = false;
     }

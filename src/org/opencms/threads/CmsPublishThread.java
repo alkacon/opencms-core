@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/03/06 11:28:39 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,11 @@ package org.opencms.threads;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
+import org.opencms.main.CmsSessionManager;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.main.CmsSessionManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -45,15 +46,20 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Publishes a resource or the users current project.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishThread.class); 
     
     /** The list of resources to publish. */
     private CmsPublishList m_publishList;
@@ -114,9 +120,7 @@ public class CmsPublishThread extends A_CmsReportThread {
             getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (Exception e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error publishing project", e);
-            }
+            LOG.error(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
         }
     }
         

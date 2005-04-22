@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
@@ -48,6 +50,8 @@ import java.util.Map;
 
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Resolves macros in the form of <code>${key}</code> in an input String.<p>
  * 
@@ -57,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -135,6 +139,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specifiy the validation value as macro value. */
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
+
     /** A map of additional values provided by the calling class. */
     protected Map m_additionalMacros;
 
@@ -185,10 +192,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         if (CmsStringUtil.isEmpty(input) || (input.length() < 3)) {
             return false;
         }
-        
-        return ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER)  
-                && (input.charAt(1) == I_CmsMacroResolver.MACRO_START)
-                && (input.charAt(input.length()-1) == I_CmsMacroResolver.MACRO_END));
+
+        return ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER)
+            && (input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END));
     }
 
     /**
@@ -316,11 +322,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if (m_messages != null) {
             if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
-                String keyName = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());                
+                String keyName = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());
                 return m_messages.keyWithParams(keyName);
             }
         }
-        
+
         if (m_jspPageContext != null) {
 
             if (macro.startsWith(CmsMacroResolver.C_KEY_REQUEST_PARAM)) {
@@ -353,14 +359,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         return property.getValue();
                     }
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(
-                            "Error reading property "
-                                + macro
-                                + " of resource "
-                                + controller.getCurrentRequest().getElementUri(),
-                            e);
-                    }
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.LOG_PROPERTY_READING_FAILED_2,
+                        macro,
+                        controller.getCurrentRequest().getElementUri());
+                    LOG.warn(message.key(), e);
                 }
             }
         }
@@ -376,11 +379,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         return property.getValue();
                     }
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(
-                            "Error reading property " + macro + " of resource " + m_cms.getRequestContext().getUri(),
-                            e);
-                    }
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.LOG_PROPERTY_READING_FAILED_2,
+                        macro,
+                        m_cms.getRequestContext().getUri());
+                    LOG.warn(message.key(), e);
                 }
 
             }
@@ -601,7 +604,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         m_messages = messages;
         return this;
     }
-    
+
     /**
      * Provides a resource name to this macro resolver, required to resolve certain macros.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,13 +51,15 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+
 import org.w3c.tidy.Tidy;
 
 /**
  * Html cleaner, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
  *  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsHtmlConverter {
 
@@ -102,10 +104,13 @@ public class CmsHtmlConverter {
         "<\\?xml:.*(\\r\\n).*(\\r\\n).*/>",
         "<\\?xml:(.*(\\r\\n)).*/\\?>",
         "<o:SmartTagType.*(\\r\\n)*.*/>",
-        "<o:smarttagtype.*(\\r\\n)*.*/>" };
+        "<o:smarttagtype.*(\\r\\n)*.*/>"};
 
     /** the tidy to use. */
     Tidy m_tidy;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlConverter.class);
 
     /**
      * Constructor, creates a new CmsHtmlConverter.<p>
@@ -232,10 +237,7 @@ public class CmsHtmlConverter {
                     count++;
                 }
             }
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this)
-                    .info("[" + this.getClass().getName() + "] " + " needed " + count + " parsing runs");
-            }
+            LOG.error(Messages.get().key(Messages.LOG_PARSING_RUNS_2, this.getClass().getName(), new Integer(count)));
 
             return regExp(new String(parsedRun, m_encoding)).getBytes(m_encoding);
 
@@ -269,11 +271,7 @@ public class CmsHtmlConverter {
         try {
             return convertToByte(htmlInput);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "[" + this.getClass().getName() + "] " + " convertToByteSilent, error converting HTML, ",
-                    e);
-            }
+            LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_1, this.getClass().getName()), e);
             return htmlInput;
         }
     }
@@ -289,19 +287,11 @@ public class CmsHtmlConverter {
         try {
             return convertToByte(htmlInput.getBytes(m_encoding));
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "[" + this.getClass().getName() + "] " + " convertToByteSilent, error converting HTML, ",
-                    e);
-            }
+            LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_1, this.getClass().getName()), e);
             try {
                 return htmlInput.getBytes(m_encoding);
             } catch (UnsupportedEncodingException e1) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(
-                        "[" + this.getClass().getName() + "] " + " convertToByteSilent error converting HTML, ",
-                        e1);
-                }
+                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_1, this.getClass().getName()), e1);
                 return htmlInput.getBytes();
             }
         }
@@ -345,19 +335,11 @@ public class CmsHtmlConverter {
         try {
             return convertToString(htmlInput);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "[" + this.getClass().getName() + "] " + " convertToStringSilent error converting HTML, ",
-                    e);
-            }
+            LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_STRING_FAILED_1, this.getClass().getName()), e);
             try {
                 return new String(htmlInput, m_encoding);
             } catch (UnsupportedEncodingException e1) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(
-                        "[" + this.getClass().getName() + "] " + " convertToStringSilent error converting HTML, ",
-                        e1);
-                }
+                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_STRING_FAILED_1, this.getClass().getName()), e1);
                 return new String(htmlInput);
             }
         }
@@ -375,11 +357,7 @@ public class CmsHtmlConverter {
         try {
             return convertToString(htmlInput);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "[" + this.getClass().getName() + "] " + " convertToStringSilent error converting HTML, ",
-                    e);
-            }
+            LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_STRING_FAILED_1, this.getClass().getName()), e);
             return htmlInput;
         }
     }
@@ -482,7 +460,7 @@ public class CmsHtmlConverter {
         m_tidy.setShowWarnings(false);
         // allow comments in the output
         m_tidy.setHideComments(false);
-        
+
         // extract all operation mode
         m_mode = extractModes(mode);
 

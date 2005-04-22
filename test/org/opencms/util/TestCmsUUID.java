@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsUUID.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/22 08:45:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
  
 package org.opencms.util;
 
-import org.opencms.main.CmsException;
+import org.opencms.main.CmsInitException;
 
 import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -61,7 +61,7 @@ public class TestCmsUUID extends TestCase {
     public void testUUID() {
         try {
             CmsUUID.init(CmsUUID.getDummyEthernetAddress());
-        } catch (CmsException e) {
+        } catch (CmsInitException e) {
             // will not happen as the dummy address is always valid
         }        
         CmsUUID id1 = new CmsUUID();
