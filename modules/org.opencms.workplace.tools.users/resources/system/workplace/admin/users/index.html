@@ -7,29 +7,6 @@
          buffer="none" %>
 <% 
 
-    CmsDialog dwp = new CmsDialog(pageContext, request, response);
-    try {
-        //dwp.getCms().createGroup("Testgroup", "A test group", 0, null);
-    } catch(Exception e) {
-         //e.printStackTrace();
-    }
-    //CmsGroup testGroup = dwp.getCms().readGroup("Testgroup");
-    try {
-        for (int i = 0; i < 3000; i++) {
-            String name = "";
-            int len = (int)(10*Math.random())+1;
-            for (int j=0; j < len; j++) {
-                name += (char)(25*Math.random()+97);
-            }
-            name += "" + i;
-            if (i==0) break;
-            dwp.getCms().addUser(name, "pwd"+i, testGroup.getName(), "test user "+i, null);
-        }             
-    } catch (CmsException e) {
-        System.out.println(e);
-        //e.printStackTrace();
-    }
-
     CmsUsersAdminTool wp = new CmsUsersAdminTool(pageContext, request, response);
 
 //////////////////// start of switch statement 
