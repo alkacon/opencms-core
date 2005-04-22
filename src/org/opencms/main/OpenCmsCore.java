@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2005/04/22 08:48:31 $
+ * Version: $Revision: 1.176 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,7 +113,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.175 $
+ * @version $Revision: 1.176 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -771,7 +771,7 @@ public final class OpenCmsCore {
         }
         try {
             CmsUUID.init(ethernetAddress);
-        } catch (CmsException e) {
+        } catch (CmsInitException e) {
             throw new CmsInitException(
                 Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, e.getMessage()),
                 e);
