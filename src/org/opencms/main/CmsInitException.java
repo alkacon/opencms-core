@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2005/04/20 08:28:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/22 08:46:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.7.3
  */
-class CmsInitException extends CmsRuntimeException implements I_CmsThrowable {
+public class CmsInitException extends CmsRuntimeException implements I_CmsThrowable {
 
     /** Indicates that this exception describes a new error. */
     private boolean m_newError;
