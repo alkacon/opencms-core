@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/22 10:40:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.w3c.tidy.Tidy;
  * Html cleaner, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
  *  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsHtmlConverter {
 
@@ -89,6 +89,9 @@ public class CmsHtmlConverter {
     /** patterns for cleanup. */
     Pattern[] m_clearStyle;
 
+    /** patterns for replace. */
+    Pattern[] m_replaceStyle;
+    
     /** the input encoding. */
     String m_encoding;
 
@@ -96,7 +99,7 @@ public class CmsHtmlConverter {
     List m_mode;
 
     /** regular expression for cleanup. */
-    String[] m_patterns = {
+    String[] m_cleanupPatterns = {
         "<o:p>.*(\\r\\n)*.*</o:p>",
         "<o:p>.*(\\r\\n)*.*</O:p>",
         "<\\?xml:.*(\\r\\n).*/>",
@@ -106,6 +109,14 @@ public class CmsHtmlConverter {
         "<o:SmartTagType.*(\\r\\n)*.*/>",
         "<o:smarttagtype.*(\\r\\n)*.*/>"};
 
+    /** regular expression for replace. */
+    String[] m_replacePatterns = {
+        "&#160;"};
+    
+    /** values for replace. */
+    String[] m_replaceValues = {
+        "&nbsp;"};
+    
     /** the tidy to use. */
     Tidy m_tidy;
 
@@ -443,7 +454,7 @@ public class CmsHtmlConverter {
         m_tidy.getConfiguration().addProps(additionalTags);
 
         // set the default tidy configuration
-
+             
         // disable the tidy meta element in output
         m_tidy.setTidyMark(false);
         // disable clean mode
@@ -477,9 +488,15 @@ public class CmsHtmlConverter {
         }
 
         // create the regexp for cleanup
-        m_clearStyle = new Pattern[m_patterns.length];
-        for (int i = 0; i < m_patterns.length; i++) {
-            m_clearStyle[i] = Pattern.compile(m_patterns[i]);
+        m_clearStyle = new Pattern[m_cleanupPatterns.length];
+        for (int i = 0; i < m_cleanupPatterns.length; i++) {
+            m_clearStyle[i] = Pattern.compile(m_cleanupPatterns[i]);
+        }
+        
+        // create the regexp for replace
+        m_replaceStyle = new Pattern[m_replacePatterns.length];
+        for (int i = 0; i < m_replacePatterns.length; i++) {
+            m_replaceStyle[i] = Pattern.compile(m_replacePatterns[i]);
         }
 
     }
@@ -521,9 +538,14 @@ public class CmsHtmlConverter {
         String parsedHtml = new String();
         parsedHtml = htmlInput;
 
-        // process all regexp
-        for (int i = 0; i < m_patterns.length; i++) {
+        // process all cleanup regexp
+        for (int i = 0; i < m_cleanupPatterns.length; i++) {
             parsedHtml = m_clearStyle[i].matcher(parsedHtml).replaceAll("");
+        }
+        
+        // process all replace regexp
+        for (int i = 0; i < m_replacePatterns.length; i++) {
+            parsedHtml = m_replaceStyle[i].matcher(parsedHtml).replaceAll(m_replaceValues[i]);
         }
 
         return parsedHtml;
