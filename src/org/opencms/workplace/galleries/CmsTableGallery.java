@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/04/20 16:06:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/22 13:22:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTableGallery extends CmsHtmlGallery {
 
@@ -86,10 +86,11 @@ public class CmsTableGallery extends CmsHtmlGallery {
      */
     public String wizardButton() {
 
-        String jspPath = "/opencms/opencms/system/workplace/commons/newcsvfile_upload.jsp?redirecturl=/system/workplace/galleries/gallery_list.jsp&targetframe=gallery_list&currentfolder="
-            + getParamGalleryPath();
-
-        return button(jspPath, "gallery_fs", "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload")
+        StringBuffer uploadUrl = new StringBuffer(512);
+        uploadUrl.append(getJsp().link(C_PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()).replaceFirst("newresource", "newcsvfile"));
+        uploadUrl.append("?redirecturl=/system/workplace/galleries/gallery_list.jsp&targetframe=gallery_list&currentfolder=");
+        uploadUrl.append(getParamGalleryPath());
+        return button(uploadUrl.toString(), "gallery_fs", "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload")
             .getKey(), 0);
     }
 
