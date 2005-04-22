@@ -1,0 +1,60 @@
+<%@ page buffer="none" import="
+
+	org.opencms.workplace.*
+
+"%><%	
+
+	// initialize the workplace class
+	CmsDialog wp = new CmsDialog(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+
+	
+switch (wp.getAction()) {
+
+case CmsDialog.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
+//////////////////// ACTION: other actions handled outside of this JSP
+case CmsDialog.ACTION_CONFIRMED:
+
+	wp.actionCloseDialog();
+
+break;
+//////////////////// ACTION: show start dialog
+case CmsDialog.ACTION_DEFAULT:
+default:
+
+	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+
+%><%= wp.htmlStart() %>
+
+<%= wp.bodyStart("dialog", null) %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+
+do so as were you editing the selected user: <%=request.getParameter("usrId")%> <br>
+<!-- wp.getCms().readUser(request.getParameter("usrId")) -->
+
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonsOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>
