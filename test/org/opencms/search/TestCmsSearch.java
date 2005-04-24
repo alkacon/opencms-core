@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/03/24 17:38:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -181,7 +181,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setIndex(INDEX_OFFLINE);
         List results;
 
-        cms.addUser("test", "test", "Users", "", null);
+        cms.createUser("test", "test", "", null);
         cms.loginUser("test", "test");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 

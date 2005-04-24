@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.flex;
 
 /**
@@ -40,15 +40,13 @@ package org.opencms.flex;
  * @since 5.5.4
  */
 public class CmsFlexCacheConfiguration {
-    
-    private int m_avgCacheBytes;
-    
-    /** Indicates if offline resources should be cached or not. */
-    private boolean m_cacheOffline;
 
     /** Indicates if the cache is enabled or not. */
     private boolean m_cacheEnabled;
-    
+
+    /** Indicates if offline resources should be cached or not. */
+    private boolean m_cacheOffline;
+
     /** 
      * Sizing parameters for the cached "entries" (ie. pages) in the FlexCache.<p>
      *  
@@ -58,18 +56,21 @@ public class CmsFlexCacheConfiguration {
      * cached page variations in total. 
      */
     private int m_maxCacheBytes;
-    
+
     private int m_maxEntryBytes;
-    
+
     private int m_maxKeys;
-    
+
+    private int m_avgCacheBytes;
+
     /**
      * Empty public constructor for the digester.
      */
     public CmsFlexCacheConfiguration() {
+
         // empty public constructor for digester 
-    }        
-    
+    }
+
     /**
      * Returns the average cache bytes.<p>
      *
@@ -79,7 +80,7 @@ public class CmsFlexCacheConfiguration {
 
         return m_avgCacheBytes;
     }
-    
+
     /**
      * Returns the maxCacheBytes.<p>
      *
@@ -89,7 +90,7 @@ public class CmsFlexCacheConfiguration {
 
         return m_maxCacheBytes;
     }
-    
+
     /**
      * Returns the maxEntryBytes.<p>
      *
@@ -99,7 +100,7 @@ public class CmsFlexCacheConfiguration {
 
         return m_maxEntryBytes;
     }
-    
+
     /**
      * Returns the maxKeys.<p>
      *
@@ -109,7 +110,7 @@ public class CmsFlexCacheConfiguration {
 
         return m_maxKeys;
     }
-    
+
     /**
      * Initializes the flex cache configuration with required parameters.<p>
      * 
@@ -120,26 +121,22 @@ public class CmsFlexCacheConfiguration {
      * @param maxEntryBytes the max bytes for entry
      * @param maxKeys the max keys
      */
-    public void initialize(String enabled, String offline, String maxCacheBytes, String avgCacheBytes, String maxEntryBytes, String maxKeys) {
-        
+    public void initialize(
+        String enabled,
+        String offline,
+        String maxCacheBytes,
+        String avgCacheBytes,
+        String maxEntryBytes,
+        String maxKeys) {
+
         setCacheEnabled(Boolean.valueOf(enabled).booleanValue());
         setCacheOffline(Boolean.valueOf(offline).booleanValue());
-        setMaxCacheBytes(Integer.parseInt(maxCacheBytes));        
+        setMaxCacheBytes(Integer.parseInt(maxCacheBytes));
         setAvgCacheBytes(Integer.parseInt(avgCacheBytes));
         setMaxEntryBytes(Integer.parseInt(maxEntryBytes));
         setMaxKeys(Integer.parseInt(maxKeys));
     }
-    
-    /**
-     * Checks the cacheOffline.<p>
-     *
-     * @return true if cacheoffline is set to true; otherwise false
-     */
-    public boolean isCacheOffline() {
 
-        return m_cacheOffline;
-    }
-    
     /**
      * Checks if flexcache is enabled or not.<p>
      *
@@ -149,7 +146,17 @@ public class CmsFlexCacheConfiguration {
 
         return m_cacheEnabled;
     }
-    
+
+    /**
+     * Checks the cacheOffline.<p>
+     *
+     * @return true if cacheoffline is set to true; otherwise false
+     */
+    public boolean isCacheOffline() {
+
+        return m_cacheOffline;
+    }
+
     /**
      * Sets the avgCacheBytes.<p>
      *
@@ -159,17 +166,7 @@ public class CmsFlexCacheConfiguration {
 
         m_avgCacheBytes = avgCacheBytes;
     }
-    
-    /**
-     * Sets the cacheOffline.<p>
-     *
-     * @param cacheOffline the cacheOffline to set
-     */
-    public void setCacheOffline(boolean cacheOffline) {
 
-        m_cacheOffline = cacheOffline;
-    }
-    
     /**
      * Sets the enabled.<p>
      *
@@ -179,7 +176,17 @@ public class CmsFlexCacheConfiguration {
 
         m_cacheEnabled = enabled;
     }
-    
+
+    /**
+     * Sets the cacheOffline.<p>
+     *
+     * @param cacheOffline the cacheOffline to set
+     */
+    public void setCacheOffline(boolean cacheOffline) {
+
+        m_cacheOffline = cacheOffline;
+    }
+
     /**
      * Sets the maxCacheBytes.<p>
      *
@@ -189,7 +196,7 @@ public class CmsFlexCacheConfiguration {
 
         m_maxCacheBytes = maxCacheBytes;
     }
-    
+
     /**
      * Sets the maxEntryBytes.<p>
      *
@@ -199,7 +206,7 @@ public class CmsFlexCacheConfiguration {
 
         m_maxEntryBytes = maxEntryBytes;
     }
-    
+
     /**
      * Sets the maxKeys.<p>
      *

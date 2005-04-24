@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2005/04/24 11:20:31 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.52 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.53 $ $Date: 2005/04/24 11:20:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -300,8 +300,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
 
                                 // additionalInfo.put(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
                                 // additionalInfo.put(C_ADDITIONAL_INFO_TOWN, town);
-                                CmsUser newUser = cms.addUser(user, pwd, defaultGroup, desc,
-                                        additionalInfo);
+                                CmsUser newUser = cms.createUser(user, pwd, desc, additionalInfo);
                                 newUser.setEmail(email);
                                 newUser.setFirstname(firstname);
                                 newUser.setLastname(userLastname);

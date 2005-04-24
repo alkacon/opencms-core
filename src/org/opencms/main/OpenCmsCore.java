@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/22 08:48:31 $
- * Version: $Revision: 1.176 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.177 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPasswordHandler;
@@ -113,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.176 $
+ * @version $Revision: 1.177 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -219,7 +220,7 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-
+    
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -510,7 +511,7 @@ public final class OpenCmsCore {
 
         return m_resourceManager;
     }
-
+    
     /** 
      * Returns the runlevel of this OpenCmsCore object instance.<p>
      * 
@@ -695,7 +696,7 @@ public final class OpenCmsCore {
 
         String userName = contextInfo.getUserName();
 
-        if (adminCms == null || !adminCms.isAdmin()) {
+        if (adminCms == null || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
             if (!userName.equals(getDefaultUsers().getUserGuest())
                 && !userName.equals(getDefaultUsers().getUserExport())) {
                 
@@ -769,13 +770,7 @@ public final class OpenCmsCore {
         if (CmsLog.LOG.isInfoEnabled()) {
             CmsLog.LOG.info(Messages.get().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
         }
-        try {
-            CmsUUID.init(ethernetAddress);
-        } catch (CmsInitException e) {
-            throw new CmsInitException(
-                Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, e.getMessage()),
-                e);
-        }
+        CmsUUID.init(ethernetAddress);
 
         // set the server name
         String serverName = configuration.getString("server.name", "OpenCmsServer");
@@ -859,6 +854,16 @@ public final class OpenCmsCore {
         // read the default user configuration
         m_defaultUsers = systemConfiguration.getCmsDefaultUsers();
 
+        try {
+            // initialize the group names for the system roles 
+            CmsRole.initialize(m_defaultUsers);
+        } catch (CmsSecurityException e) {
+            // this should never happen
+            throw new CmsInitException(
+                Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, e.getMessage()),
+                e);
+        }
+        
         // get Site Manager
         m_siteManager = systemConfiguration.getSiteManager();
 
@@ -925,13 +930,9 @@ public final class OpenCmsCore {
         m_passwordHandler = systemConfiguration.getPasswordHandler();
 
         // init the OpenCms security manager
-        try {
-            m_securityManager = CmsSecurityManager.newInstance(
-                m_configurationManager,
-                systemConfiguration.getRuntimeInfoFactory());
-        } catch (CmsException e) {
-            throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_DATABASE_0), e);
-        }
+        m_securityManager = CmsSecurityManager.newInstance(
+            m_configurationManager,
+            systemConfiguration.getRuntimeInfoFactory());
 
         // initialize the Thread store
         m_threadStore = new CmsThreadStore();

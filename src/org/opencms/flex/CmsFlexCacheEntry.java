@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.flex;
 
 import org.opencms.cache.I_CmsLruCacheObject;
@@ -71,49 +71,49 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexCacheEntry.class);
-    
+
     /** Initial size for lists. */
     public static final int C_INITIAL_CAPACITY_LISTS = 10;
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexCacheEntry.class);
+
     /** The CacheEntry's size in bytes. */
     private int m_byteSize;
-    
+
     /** Indicates if this cache entry is completed. */
-    private boolean m_completed;      
-    
+    private boolean m_completed;
+
     /** The "expires" date for this Flex cache entry. */
     private long m_dateExpires;
-    
+
     /** The "last modified" date for this Flex cache entry. */
-    private long m_dateLastModified;   
-  
+    private long m_dateLastModified;
+
     /** The list of items for this resource. */
     private List m_elements;
-    
+
     /** A Map of cached headers for this resource. */
     private Map m_headers;
-    
+
     /** Pointer to the next cache entry in the LRU cache. */
     private I_CmsLruCacheObject m_next;
-    
+
     /** Pointer to the previous cache entry in the LRU cache. */
     private I_CmsLruCacheObject m_previous;
-  
+
     /** A redirection target (if redirection is set). */
     private String m_redirectTarget;
-    
+
     /** The key under which this cache entry is stored in the variation map. */
     private String m_variationKey;
-    
+
     /** The variation map where this cache entry is stored. */
     private Map m_variationMap;
-    
+
     /** 
      * Constructor for class CmsFlexCacheEntry.<p>
      * 
@@ -121,23 +121,25 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * and later add data with the various add methods.
      */
     public CmsFlexCacheEntry() {
+
         m_elements = new ArrayList(C_INITIAL_CAPACITY_LISTS);
         m_dateExpires = CmsResource.DATE_EXPIRED_DEFAULT;
         m_dateLastModified = -1;
         // base memory footprint of this object with all referenced objects
         m_byteSize = 1024;
-        
+
         setNextLruObject(null);
         setPreviousLruObject(null);
     }
-    
+
     /** 
      * Adds an array of bytes to this cache entry,
      * this will usually be the result of some kind of output - stream.<p>
      *
      * @param bytes the output to save in the cache
-     */    
+     */
     public void add(byte[] bytes) {
+
         if (m_completed) {
             return;
         }
@@ -148,14 +150,15 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         }
         bytes = null;
     }
-    
+
     /** 
      * Add an include - call target resource to this cache entry.<p>
      *
      * @param resource a name of a resource in the OpenCms VFS
      * @param parameters a map of parameters specific to this include call
-     */    
+     */
     public void add(String resource, Map parameters) {
+
         if (m_completed) {
             return;
         }
@@ -169,7 +172,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             m_byteSize += CmsMemoryMonitor.getMemorySize(resource);
         }
     }
-    
+
     /** 
      * Add a map of headers to this cache entry,
      * which are usually collected in the class CmsFlexResponse first.<p>
@@ -177,27 +180,29 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param headers the map of headers to add to the entry 
      */
     public void addHeaders(Map headers) {
+
         if (m_completed) {
             return;
         }
         m_headers = headers;
-        
+
         Iterator allHeaders = m_headers.keySet().iterator();
         while (allHeaders.hasNext()) {
             m_byteSize += CmsMemoryMonitor.getMemorySize(allHeaders.next());
         }
     }
-    
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#addToLruCache()
      */
     public void addToLruCache() {
+
         // do nothing here...
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_ADDED_ENTRY_1, this));
         }
     }
-    
+
     /**
      * Completes this cache entry.<p>
      * 
@@ -206,7 +211,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * This is to prevend the (unlikley) case that some user-written class 
      * tries to make changes to a cache entry.<p>
      */
-    public void complete() {        
+    public void complete() {
+
         m_completed = true;
         // Prevent changing of the cached lists
         if (m_headers != null) {
@@ -217,9 +223,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_ENTRY_COMPLETED_1, toString()));
-        }        
+        }
     }
-    
+
     /**
      * Returns the list of data entries of this cache entry.<p>
      * 
@@ -227,34 +233,38 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * or Strings representing include calls to other resources.
      *
      * @return the list of data elements of this cache entry
-     */    
+     */
     public List elements() {
+
         return m_elements;
     }
-    
+
     /** 
      * Returns the expiration date of this cache entry,
      * this is set to the time when the entry becomes invalid.<p>
      * 
      * @return the expiration date value for this resource
-     */ 
+     */
     public long getDateExpires() {
+
         return m_dateExpires;
     }
-    
+
     /**
      * Returns the "last modified" date for this Flex cache entry.<p>
      * 
      * @return the "last modified" date for this Flex cache entry
      */
     public long getDateLastModified() {
+
         return m_dateLastModified;
-    }    
-    
+    }
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#getLruCacheCosts()
      */
     public int getLruCacheCosts() {
+
         return m_byteSize;
     }
 
@@ -262,40 +272,45 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @see org.opencms.monitor.I_CmsMemoryMonitorable#getMemorySize()
      */
     public int getMemorySize() {
+
         return getLruCacheCosts();
     }
-        
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#getNextLruObject()
      */
     public I_CmsLruCacheObject getNextLruObject() {
+
         return m_next;
     }
-    
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#getPreviousLruObject()
      */
     public I_CmsLruCacheObject getPreviousLruObject() {
+
         return m_previous;
-    }  
+    }
 
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#getValue()
      */
     public Object getValue() {
+
         return m_elements;
-    }    
-    
+    }
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#removeFromLruCache()
      */
     public void removeFromLruCache() {
-        if ((m_variationMap != null) &&  (m_variationKey != null)) {
+
+        if ((m_variationMap != null) && (m_variationKey != null)) {
             m_variationMap.remove(m_variationKey);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_REMOVED_ENTRY_FOR_VARIATION_1, m_variationKey));
-        }              
+        }
         clear();
     }
 
@@ -312,8 +327,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @throws ServletException might be thrown from call to RequestDispatcher.include()
      * @throws IOException might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
      */
-    public void service(CmsFlexRequest req, CmsFlexResponse res) 
-    throws CmsException, ServletException, IOException {
+    public void service(CmsFlexRequest req, CmsFlexResponse res) throws CmsException, ServletException, IOException {
+
         if (!m_completed) {
             return;
         }
@@ -322,18 +337,18 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             res.setOnlyBuffering(false);
             // redirect the response, no further output required
             res.sendRedirect(m_redirectTarget);
-        } else {      
+        } else {
             // process cached headers first
             CmsFlexResponse.processHeaders(m_headers, res);
             // check if this cache entry is a "leaf" (i.e. no further includes)            
-            boolean hasNoSubElements = ((m_elements != null) && (m_elements.size() == 1));            
+            boolean hasNoSubElements = ((m_elements != null) && (m_elements.size() == 1));
             // write output to stream and process all included elements
-            for (int i=0; i<m_elements.size(); i++) {
+            for (int i = 0; i < m_elements.size(); i++) {
                 Object o = m_elements.get(i);
-                if (o instanceof String) {                    
+                if (o instanceof String) {
                     // handle cached parameters
                     i++;
-                    Map map = (Map)m_elements.get(i);                    
+                    Map map = (Map)m_elements.get(i);
                     Map oldMap = null;
                     if (map.size() > 0) {
                         oldMap = req.getParameterMap();
@@ -349,11 +364,11 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
                     } catch (IOException e) {
-                                                
+
                         String err = Messages.get().key(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, getClass().getName());
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(err);
-                        }                        
+                        }
 
                         throw new CmsException(err + "\n" + e, e);
                     }
@@ -361,7 +376,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             }
         }
     }
-    
+
     /**
      * Sets the expiration date of this Flex cache entry exactly to the 
      * given time.<p>
@@ -369,14 +384,18 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param dateExpires the time to expire this cache entry
      */
     public synchronized void setDateExpires(long dateExpires) {
-        
+
         m_dateExpires = dateExpires;
         if (LOG.isDebugEnabled()) {
             long now = System.currentTimeMillis();
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEENTRY_SET_EXPIRATION_DATE_3, new Long(m_dateExpires), new Long(now), new Long(m_dateExpires - now)));
+            LOG.debug(Messages.get().key(
+                Messages.LOG_FLEXCACHEENTRY_SET_EXPIRATION_DATE_3,
+                new Long(m_dateExpires),
+                new Long(now),
+                new Long(m_dateExpires - now)));
         }
-    }     
-    
+    }
+
     /**
      * Sets an expiration date for this cache entry to the next timeout,
      * which indicates the time this entry becomes invalid.<p>
@@ -390,26 +409,27 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param timeout the timeout value to be set
      */
     public synchronized void setDateExpiresToNextTimeout(long timeout) {
-        
-        if (timeout < 0 || ! m_completed) {
+
+        if (timeout < 0 || !m_completed) {
             return;
         }
-        
+
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
         long timeoutMinutes = timeout * 60000;
         setDateExpires(now - (daytime % timeoutMinutes) + timeoutMinutes);
-    } 
-    
+    }
+
     /**
      * Sets the "last modified" date for this Flex cache entry with the given value.<p>
      * 
      * @param dateLastModified the value to set for the "last modified" date
      */
     public void setDateLastModified(long dateLastModified) {
+
         m_dateLastModified = dateLastModified;
     }
-    
+
     /**
      * Sets the "last modified" date for this Flex cache entry by using the last passed timeout value.<p>
      * 
@@ -419,27 +439,29 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param timeout the timeout value to use to calculate the date last modified
      */
     public void setDateLastModifiedToPreviousTimeout(long timeout) {
-    
+
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
-        long timeoutMinutes = timeout * 60000;        
-        setDateLastModified(now - (daytime % timeoutMinutes));  
+        long timeoutMinutes = timeout * 60000;
+        setDateLastModified(now - (daytime % timeoutMinutes));
     }
-    
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#setNextLruObject(org.opencms.cache.I_CmsLruCacheObject)
      */
     public void setNextLruObject(I_CmsLruCacheObject theNextEntry) {
+
         m_next = theNextEntry;
     }
-    
+
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#setPreviousLruObject(org.opencms.cache.I_CmsLruCacheObject)
      */
     public void setPreviousLruObject(I_CmsLruCacheObject thePreviousEntry) {
+
         m_previous = thePreviousEntry;
     }
-    
+
     /** 
      * Set a redirect target for this cache entry.<p>
      *
@@ -450,8 +472,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * in the browser anyway, so there is no point in saving the data.<p>
      * 
      * @param target The redirect target (must be a valid URL).
-     */    
+     */
     public void setRedirect(String target) {
+
         if (m_completed) {
             return;
         }
@@ -461,7 +484,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         m_elements = null;
         m_headers = null;
     }
-    
+
     /**
      * Stores a backward reference to the map and key where this cache entry is stored.
      * 
@@ -471,16 +494,18 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param theVariationMap the variation map
      */
     public void setVariationData(String theVariationKey, Map theVariationMap) {
+
         m_variationKey = theVariationKey;
         m_variationMap = theVariationMap;
     }
-    
+
     /** 
      * @see java.lang.Object#toString()
      *
      * @return a basic String representation of this CmsFlexCache entry
      */
     public String toString() {
+
         String str = null;
         if (m_redirectTarget == null) {
             str = "CmsFlexCacheEntry [" + m_elements.size() + " Elements/" + getLruCacheCosts() + " bytes]\n";
@@ -499,31 +524,33 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             str = "CmsFlexCacheEntry [Redirect to target=" + m_redirectTarget + "]";
         }
         return str;
-    }   
-    
+    }
+
     /**
      * Finalize this instance.<p>
      *
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        try {      
+
+        try {
             clear();
         } catch (Throwable t) {
             // ignore
         }
-        super.finalize();      
+        super.finalize();
     }
-    
+
     /**
      * Clears the elements and headers HashMaps.<p>
      */
     private void clear() {
+
         // the maps have been made immutable, so we just can set them to null
         m_elements = null;
         m_headers = null;
         // also remove references to other objects
         m_variationKey = null;
-        m_variationMap = null;                        
+        m_variationMap = null;
     }
 }

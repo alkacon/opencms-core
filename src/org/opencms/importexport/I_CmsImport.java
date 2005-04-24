@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,6 +63,21 @@ import org.dom4j.Document;
 public interface I_CmsImport {
 
     /**
+     * Returns the version of the import implementation.<p>
+     *  
+     * <ul>
+     * <li>0 indicates an export file without a version number, that is before version 4.3.23 of OpenCms</li>
+     * <li>1 indicates an export file of OpenCms with a version before 5.0.0</li>
+     * <li>2 indicates an export file of OpenCms with a version before 5.1.2</li>
+     * <li>3 indicates an export file of OpenCms with a version before 5.1.6</li>
+     * <li>4 indicates an export file of OpenCms with a version after 5.1.6</li>
+     * </ul>
+     * 
+     * @return the version of the import implementation
+     */
+    int getVersion();
+
+    /**
      * Imports the resources.<p>
      * 
      * @param cms the current cms object
@@ -79,21 +94,18 @@ public interface I_CmsImport {
      * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-    void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException;
+    void importResources(
+        CmsObject cms,
+        String importPath,
+        I_CmsReport report,
+        MessageDigest digest,
+        File importResource,
+        ZipFile importZip,
+        Document docXml,
+        Vector excludeList,
+        Vector writtenFilenames,
+        Vector fileCodes,
+        String propertyName,
+        String propertyValue) throws CmsException;
 
-    /**
-     * Returns the version of the import implementation.<p>
-     *  
-     * <ul>
-     * <li>0 indicates an export file without a version number, that is before version 4.3.23 of OpenCms</li>
-     * <li>1 indicates an export file of OpenCms with a version before 5.0.0</li>
-     * <li>2 indicates an export file of OpenCms with a version before 5.1.2</li>
-     * <li>3 indicates an export file of OpenCms with a version before 5.1.6</li>
-     * <li>4 indicates an export file of OpenCms with a version after 5.1.6</li>
-     * </ul>
-     * 
-     * @return the version of the import implementation
-     */
-    int getVersion();
-    
 }

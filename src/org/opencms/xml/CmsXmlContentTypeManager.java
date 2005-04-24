@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
@@ -60,7 +62,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -127,7 +129,12 @@ public class CmsXmlContentTypeManager {
             "org.opencms.xml.types.CmsXmlStringValue",
             "org.opencms.workplace.xmlwidgets.CmsXmlStringWidget");
 
-        typeManager.initialize(null);
+        try {
+            typeManager.initialize(null);
+        } catch (CmsRoleViolationException e) {
+            // this should never happen
+            throw new RuntimeException(e);
+        }
         return typeManager;
     }
 
@@ -442,14 +449,16 @@ public class CmsXmlContentTypeManager {
     /**
      * Initializes XML content types managed in this XML content type manager.<p>
      * 
-     * @param adminCms an initialized CmsObject with "Admin" permissions
+     * @param cms an initialized OpenCms user context with "Administrator" role permissions
+     * 
+     * @throws CmsRoleViolationException in case the provided OpenCms user context doea not have "Administrator" role permissions
      */
-    public synchronized void initialize(CmsObject adminCms) {
+    public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
 
-        if (((adminCms == null) && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT))
-            || ((adminCms != null) && !adminCms.isAdmin())) {
-            // null admin cms only allowed during test cases
-            throw new RuntimeException("Admin permissions are required to initialize the XML content type manager");
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            
+            // simple test cases don't require this check
+            cms.checkRole(CmsRole.ADMINISTRATOR);
         }
 
         // create and cache the special system id for the XML content type entity resolver

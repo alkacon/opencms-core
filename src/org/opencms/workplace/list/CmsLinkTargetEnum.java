@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsLinkTargetEnum.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public final class CmsLinkTargetEnum {
@@ -59,30 +59,30 @@ public final class CmsLinkTargetEnum {
     /**
      * Constant for a named frame target.<p>
      */
-    public static final CmsLinkTargetEnum NamedTarget = new CmsLinkTargetEnum(4, "");
+    public static final CmsLinkTargetEnum TARGET_NAMED = new CmsLinkTargetEnum(4, "");
 
     /**
      * Constant for a new window target.<p>
      */
-    public static final CmsLinkTargetEnum NewTarget = new CmsLinkTargetEnum(1, "_blank");
+    public static final CmsLinkTargetEnum TARGET_NEW = new CmsLinkTargetEnum(1, "_blank");
 
     /**
      * Constant for the parent frame target.<p>
      */
-    public static final CmsLinkTargetEnum ParentTarget = new CmsLinkTargetEnum(2, "_parent");
+    public static final CmsLinkTargetEnum TARGET_PARENT = new CmsLinkTargetEnum(2, "_parent");
 
     /**
      * Constant for the same frame target.<p>
      */
-    public static final CmsLinkTargetEnum SameTarget = new CmsLinkTargetEnum(0, "_this");
+    public static final CmsLinkTargetEnum TARGET_SELF = new CmsLinkTargetEnum(0, "_this");
 
     /**
      * Constant for the top frame target.<p>
      */
-    public static final CmsLinkTargetEnum TopTarget = new CmsLinkTargetEnum(3, "_top");
+    public static final CmsLinkTargetEnum TARGET_TOP = new CmsLinkTargetEnum(3, "_top");
 
     /** Array constant holding all link targets. */
-    private static final CmsLinkTargetEnum[] C_VALUES = {SameTarget, NewTarget, ParentTarget, TopTarget, NamedTarget};
+    private static final CmsLinkTargetEnum[] C_VALUES = {TARGET_SELF, TARGET_NEW, TARGET_PARENT, TARGET_TOP, TARGET_NAMED};
 
     /**
      * List of mode constants.<p>
@@ -116,7 +116,7 @@ public final class CmsLinkTargetEnum {
      */
     public static CmsLinkTargetEnum newNamedTarget(String frameName) {
 
-        return new CmsLinkTargetEnum(NamedTarget.getType(), frameName);
+        return new CmsLinkTargetEnum(TARGET_NAMED.getType(), frameName);
     }
 
     /**

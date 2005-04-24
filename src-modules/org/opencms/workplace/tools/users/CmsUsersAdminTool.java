@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends CmsListDialog {
@@ -75,7 +75,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      * @since 5.7.3
      */
     private class ActivateUserAction extends CmsListDirectAction {
@@ -355,7 +355,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
                 LIST_COLUMN_ACTIONS,
                 new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_COLS_ACTIONS_0),
                 "", // no width
-                CmsListColumnAlignEnum.CenterAlign);
+                CmsListColumnAlignEnum.ALIGN_CENTER);
             actionsCol.setSorteable(false);
             I_CmsListDirectAction activateUser = new ActivateUserAction(LIST_ID);
             actionsCol.addDirectAction(activateUser);
@@ -365,7 +365,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
             CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN, new CmsMessageContainer(
                 Messages.get(),
                 Messages.GUI_USERS_LIST_COLS_LOGIN_0), "", // no width
-                CmsListColumnAlignEnum.LeftAlign);
+                CmsListColumnAlignEnum.ALIGN_LEFT);
             loginCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, new CmsMessageContainer(
                 Messages.get(),
                 Messages.GUI_USERS_LIST_ACTION_EDITUSER_NAME_0), null, // no icon
@@ -377,14 +377,14 @@ public class CmsUsersAdminTool extends CmsListDialog {
             CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, new CmsMessageContainer(
                 Messages.get(),
                 Messages.GUI_USERS_LIST_COLS_USERNAME_0), "", // no width
-                CmsListColumnAlignEnum.LeftAlign);
+                CmsListColumnAlignEnum.ALIGN_LEFT);
             metadata.addColumn(nameCol);
 
             // add column for email
             CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL, new CmsMessageContainer(
                 Messages.get(),
                 Messages.GUI_USERS_LIST_COLS_EMAIL_0), "", // no width
-                CmsListColumnAlignEnum.LeftAlign);
+                CmsListColumnAlignEnum.ALIGN_LEFT);
             metadata.addColumn(emailCol);
 
             // add column for last login date
@@ -392,7 +392,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
                 LIST_COLUMN_LASTLOGIN,
                 new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0),
                 "", // no width
-                CmsListColumnAlignEnum.LeftAlign);
+                CmsListColumnAlignEnum.ALIGN_LEFT);
             lastLoginCol.setFormatter(new CmsListMacroFormatter(new CmsMessageContainer(
                 Messages.get(),
                 Messages.GUI_USERS_LIST_LASTLOGIN_FORMAT_0)));

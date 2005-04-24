@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.82 $ $Date: 2005/04/19 17:20:51 $
+ * @version $Revision: 1.83 $ $Date: 2005/04/24 11:20:31 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -537,7 +537,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         
         try {
             if (!existsGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators(), null)) {
-                internalCreateDefaultUsersAndGroups(dbc);
+                fillDefaults(dbc);
             }
         } catch (CmsException e) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
@@ -1390,7 +1390,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * 
      * @throws CmsException if something goes wrong
      */
-    private void internalCreateDefaultUsersAndGroups(CmsDbContext dbc) throws CmsException {
+    private void fillDefaults(CmsDbContext dbc) throws CmsException {
         
         String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
         String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();

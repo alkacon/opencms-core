@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/03/30 13:50:48 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.41 $ $Date: 2005/03/30 13:50:48 $
+ * @version $Revision: 1.42 $ $Date: 2005/04/24 11:20:31 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -333,8 +333,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      */
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
         
-        // check/find a solution for Oracle 8/9/10
+        // TODO: check/find a solution for Oracle 8/9/10
         int todo = 0;
+        // TODO: perform blob check only once and store Oracle version in a static privae member 
+        // TODO: best do this during system startup / db init phase once
         
         Blob blob = res.getBlob(name);
         try {
@@ -346,11 +348,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             ((oracle.sql.BLOB)blob).trim(0);
             return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
         }
-        
-        // this is the most version independent code 
-        // -cw- this is nonsense, since it leaves the old content in the blob
-        // oracle.sql.BLOB blob = ((oracle.jdbc.OracleResultSet)res).getBLOB(name);
-        // return blob.getBinaryOutputStream();
 
         // this is the code for Oracle 10 (doesn't work with Oracle 9)                
         //((oracle.sql.BLOB)blob).truncate(0);

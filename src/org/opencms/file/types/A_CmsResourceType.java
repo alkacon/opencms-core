@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -453,7 +453,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         resource.setDateLastModified(resource.getDateLastModified());
         // ensure resource record is updated
         resource.setState(I_CmsConstants.C_STATE_NEW);
-        return securityManager.createResource(
+        return securityManager.importResource(
             cms.getRequestContext(),
             cms.getRequestContext().addSiteRoot(resourcename),
             resource,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -101,9 +102,6 @@ import org.apache.commons.logging.Log;
  */
 public class CmsFlexCache extends Object implements I_CmsEventListener {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexCache.class); 
-    
     /**
      * A simple data container class for the FlexCache variations.<p>
      * 
@@ -206,6 +204,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** Initial size for variation lists, should be a power of 2. */
     public static final int C_INITIAL_CAPACITY_VARIATIONS = 8;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexCache.class);
+
     /** The LRU cache to organize the cached entries. */
     protected CmsLruCache m_variationCache;
 
@@ -233,15 +234,14 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param configuration the flex cache configuration
      */
     public CmsFlexCache(CmsFlexCacheConfiguration configuration) {
-        
+
         m_enabled = configuration.isCacheEnabled();
         m_cacheOffline = configuration.isCacheOffline();
-        
+
         int maxCacheBytes = configuration.getMaxCacheBytes();
         int avgCacheBytes = configuration.getAvgCacheBytes();
         int maxEntryBytes = configuration.getMaxEntryBytes();
         int maxKeys = configuration.getMaxKeys();
-        
 
         this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
 
@@ -265,7 +265,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_FLEXCACHE_CREATED_2, new Boolean(m_enabled), new Boolean(m_cacheOffline)));
+            LOG.info(Messages.get().key(
+                Messages.INIT_FLEXCACHE_CREATED_2,
+                new Boolean(m_enabled),
+                new Boolean(m_cacheOffline)));
         }
     }
 
@@ -366,7 +369,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public CmsFlexCacheKey getCachedKey(String key, CmsObject cms) {
 
-        if (!isEnabled() || !cms.isAdmin()) {
+        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -389,7 +392,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public Set getCachedResources(CmsObject cms) {
 
-        if (!isEnabled() || !cms.isAdmin()) {
+        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         return m_keyCache.keySet();
@@ -411,7 +414,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public Set getCachedVariations(String key, CmsObject cms) {
 
-        if (!isEnabled() || !cms.isAdmin()) {
+        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -583,13 +586,16 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADD_ENTRY_1, key.getResource()));
-        }        
+        }
         if (variation != null) {
             // This is a cachable result
             key.setVariation(variation);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADD_ENTRY_WITH_VARIATION_2, key.getResource(), key.getVariation()));
-            }            
+                LOG.debug(Messages.get().key(
+                    Messages.LOG_FLEXCACHE_ADD_ENTRY_WITH_VARIATION_2,
+                    key.getResource(),
+                    key.getVariation()));
+            }
             put(key, entry);
             // Note that duplicates are NOT checked, it it assumed that this is done beforehand,
             // while checking if the entry is already in the cache or not.
@@ -598,7 +604,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             // Result is not cachable
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_RESOURCE_NOT_CACHEABLE_0));
-            }            
+            }
             return false;
         }
     }
@@ -620,7 +626,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             m_keyCache.put(key.getResource(), variationMap);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADD_KEY_1, key.getResource()));
-            }            
+            }
         }
         // If != null the key is already in the cache, so we just do nothing
     }
@@ -711,7 +717,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_HALF_2, suffix, new Boolean(entriesOnly)));
-        }        
+        }
     }
 
     /**
@@ -729,7 +735,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ALL_0));
-        }        
+        }
         // create new set to avoid ConcurrentModificationExceptions
         Set cacheKeys = new HashSet(m_keyCache.keySet());
         Iterator i = cacheKeys.iterator();
@@ -761,7 +767,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_KEYS_AND_ENTRIES_0));
-        }        
+        }
         clearAccordingToSuffix(C_CACHE_OFFLINESUFFIX, false);
     }
 
@@ -781,7 +787,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_OFFLINE_ENTRIES_0));
-        }        
+        }
         clearAccordingToSuffix(C_CACHE_OFFLINESUFFIX, true);
     }
 
@@ -800,7 +806,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_KEYS_AND_ENTRIES_0));
-        }        
+        }
         clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, false);
     }
 
@@ -820,7 +826,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_ENTRIES_0));
-        }        
+        }
         clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, true);
     }
 
@@ -850,7 +856,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         clear();
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
-        }        
+        }
     }
 
     /**
@@ -893,9 +899,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADDED_ENTRY_FOR_RESOURCE_WITH_VARIATION_3, new Integer(m_size), key.getResource(), key.getVariation()));
+            LOG.debug(Messages.get().key(
+                Messages.LOG_FLEXCACHE_ADDED_ENTRY_FOR_RESOURCE_WITH_VARIATION_3,
+                new Integer(m_size),
+                key.getResource(),
+                key.getVariation()));
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHE_ADDED_ENTRY_1, theCacheEntry.toString()));
         }
     }
 }
-

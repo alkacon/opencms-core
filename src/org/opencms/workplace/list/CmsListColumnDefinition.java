@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -272,15 +272,15 @@ public class CmsListColumnDefinition {
         html.append(">\n");
 
         boolean isSorted = getId().equals(sortedCol);
-        CmsListOrderEnum nextOrder = CmsListOrderEnum.AscendingOrder;
-        if (isSorted && order == CmsListOrderEnum.AscendingOrder) {
-            nextOrder = CmsListOrderEnum.DescendingOrder;
+        CmsListOrderEnum nextOrder = CmsListOrderEnum.ORDER_ASCENDING;
+        if (isSorted && order == CmsListOrderEnum.ORDER_ASCENDING) {
+            nextOrder = CmsListOrderEnum.ORDER_DESCENDING;
         }
         // button
         String id = listId + getId() + "Sort";
         String onClic = listId + "ListSort('" + getId() + "');";
         String helpText = "";
-        if (nextOrder.equals(CmsListOrderEnum.AscendingOrder)) {
+        if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
             helpText = Messages.get().key(
                 locale,
                 Messages.GUI_LIST_COLUMN_ASC_SORT_1,
@@ -300,7 +300,7 @@ public class CmsListColumnDefinition {
             onClic));
         // sort order marker
         if (isSorted) {
-            if (nextOrder == CmsListOrderEnum.AscendingOrder) {
+            if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
                 html.append("\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
                 html.append("list/arrow_up.gif");

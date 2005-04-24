@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnAlignEnum.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,22 +49,22 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public final class CmsListColumnAlignEnum {
 
     /** Constant for center alignment . */
-    public static final CmsListColumnAlignEnum CenterAlign = new CmsListColumnAlignEnum("center");
+    public static final CmsListColumnAlignEnum ALIGN_CENTER = new CmsListColumnAlignEnum("center");
 
     /** Constant for left alignment.  */
-    public static final CmsListColumnAlignEnum LeftAlign = new CmsListColumnAlignEnum("left");
+    public static final CmsListColumnAlignEnum ALIGN_LEFT = new CmsListColumnAlignEnum("left");
 
     /** Constant for right alignment.     */
-    public static final CmsListColumnAlignEnum RightAlign = new CmsListColumnAlignEnum("right");
+    public static final CmsListColumnAlignEnum ALIGN_RIGHT = new CmsListColumnAlignEnum("right");
 
     /** Array constant for all available align types. */
-    private static final CmsListColumnAlignEnum[] C_VALUES = {LeftAlign, CenterAlign, RightAlign};
+    private static final CmsListColumnAlignEnum[] C_VALUES = {ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT};
 
     /** List of mode constants. */
     public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));

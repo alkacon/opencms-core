@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.*;
@@ -52,52 +53,52 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexRequest.class);
-    
+
     /** Attribute name used for checking if _flex request parameters have already been processed. */
     public static final String C_ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
-    
+
     /** Request parameter for FlexCache commands. */
     public static final String C_PARAMETER_FLEX = "_flex";
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexRequest.class);
+
     /** Flag to decide if this request can be cached or not. */
     private boolean m_canCache;
-    
+
     /** The CmsFlexController for this request. */
     private CmsFlexController m_controller;
-    
+
     /** Flag to force a JSP recompile. */
-    private boolean m_doRecompile; 
-        
-    /** Set of all include calls (to prevent an endless inclusion loop). */
-    private Set m_includeCalls;    
-    
-    /** Flag to check if this request is in the online project or not. */
-    private boolean m_isOnline;
-    
-    /** The CmsFlexRequestKey for this request. */
-    private CmsFlexRequestKey m_key;
-    
-    /** Map of parameters from the original request. */
-    private Map m_parameters;
-    
-    /** Stores the request URI after it was once calculated. */
-    private String m_requestUri;
-    
-    /** Stores the request URL after it was once calculated. */
-    private StringBuffer m_requestUrl;
-           
-    /** The requested resources element URI in the OpenCms VFS. */    
+    private boolean m_doRecompile;
+
+    /** The requested resources element URI in the OpenCms VFS. */
     private String m_elementUri;
-    
+
     /** The site root of the requested resource. */
     private String m_elementUriSiteRoot;
-            
+
+    /** Set of all include calls (to prevent an endless inclusion loop). */
+    private Set m_includeCalls;
+
+    /** Flag to check if this request is in the online project or not. */
+    private boolean m_isOnline;
+
+    /** The CmsFlexRequestKey for this request. */
+    private CmsFlexRequestKey m_key;
+
+    /** Map of parameters from the original request. */
+    private Map m_parameters;
+
+    /** Stores the request URI after it was once calculated. */
+    private String m_requestUri;
+
+    /** Stores the request URL after it was once calculated. */
+    private StringBuffer m_requestUrl;
+
     /**
      * Creates a new CmsFlexRequest wrapper which is most likley the "Top"
      * request wrapper, i.e. the wrapper that is constructed around the
@@ -105,75 +106,93 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *
      * @param req the request to wrap
      * @param controller the controller to use
-     */    
+     */
     public CmsFlexRequest(HttpServletRequest req, CmsFlexController controller) {
+
         super(req);
         m_controller = controller;
         CmsObject cms = m_controller.getCmsObject();
-        m_elementUri =  cms.getSitePath(m_controller.getCmsResource());
+        m_elementUri = cms.getSitePath(m_controller.getCmsResource());
         m_elementUriSiteRoot = cms.getRequestContext().getSiteRoot();
         m_includeCalls = Collections.synchronizedSet(new HashSet(8));
         m_parameters = req.getParameterMap();
-        m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();      
+        m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
         String[] paras = req.getParameterValues(C_PARAMETER_FLEX);
         boolean nocachepara = false;
         boolean dorecompile = false;
         if (paras != null) {
-            if (cms.isAdmin()) {
+            if (cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
                 List l = Arrays.asList(paras);
                 String context = (String)req.getAttribute(C_ATTRIBUTE_PROCESSED);
                 boolean firstCall = (context == null);
                 if (firstCall) {
                     req.setAttribute(C_ATTRIBUTE_PROCESSED, "true");
                 }
-                nocachepara = l.contains("nocache");            
+                nocachepara = l.contains("nocache");
                 dorecompile = l.contains("recompile");
                 boolean p_on = l.contains("online");
-                boolean p_off = l.contains("offline");                
+                boolean p_off = l.contains("offline");
                 if (l.contains("purge") && firstCall) {
-                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new HashMap(0)));
-                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
+                    OpenCms.fireCmsEvent(new CmsEvent(
+                        I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+                        new HashMap(0)));
+                    OpenCms.fireCmsEvent(new CmsEvent(
+                        I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                        Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     dorecompile = false;
                 } else if ((l.contains("clearcache") || dorecompile) && firstCall) {
-                    if (! (p_on || p_off)) {
-                        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ALL))));
+                    if (!(p_on || p_off)) {
+                        OpenCms.fireCmsEvent(new CmsEvent(
+                            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                            Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ALL))));
                     } else {
                         if (p_on) {
-                            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
+                            OpenCms.fireCmsEvent(new CmsEvent(
+                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
                         }
                         if (p_off) {
-                            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
+                            OpenCms.fireCmsEvent(new CmsEvent(
+                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
                         }
-                    }                    
+                    }
                 } else if (l.contains("clearvariations") && firstCall) {
-                    if (! (p_on || p_off)) {
-                        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
+                    if (!(p_on || p_off)) {
+                        OpenCms.fireCmsEvent(new CmsEvent(
+                            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                            Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     } else {
                         if (p_on) {
-                            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
+                            OpenCms.fireCmsEvent(new CmsEvent(
+                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
                         }
                         if (p_off) {
-                            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));
+                            OpenCms.fireCmsEvent(new CmsEvent(
+                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));
                         }
                     }
                 }
             }
-        }  
-        m_canCache = (((m_isOnline || m_controller.getCmsCache().cacheOffline()) && ! nocachepara) || dorecompile);
+        }
+        m_canCache = (((m_isOnline || m_controller.getCmsCache().cacheOffline()) && !nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUEST_CREATED_NEW_REQUEST_1, m_elementUri));
-        }        
+        }
     }
-        
+
     /** 
      * Constructs a new wrapper layer around an (already wrapped) CmsFlexRequest.<p>
      *
      * @param req the request to be wrapped
      * @param controller the controller to use
      * @param resource the target resource that has been requested
-     */    
+     */
     CmsFlexRequest(HttpServletRequest req, CmsFlexController controller, String resource) {
+
         super(req);
         m_controller = controller;
         m_elementUri = CmsLinkManager.getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
@@ -181,13 +200,13 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_isOnline = m_controller.getCurrentRequest().isOnline();
         m_canCache = m_controller.getCurrentRequest().isCacheable();
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();
-        m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();        
+        m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();
         m_parameters = req.getParameterMap();
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUEST_REUSING_FLEX_REQUEST_1, m_elementUri));
-        }        
+        }
     }
-    
+
     /**
      * Adds the specified Map to the paramters of the request,
      * added parametes will not overwrite existing parameters in the 
@@ -203,6 +222,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the merged map of parameters
      */
     public Map addParameterMap(Map map) {
+
         if (map == null) {
             return m_parameters;
         }
@@ -236,7 +256,17 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
         return m_parameters;
     }
-    
+
+    /** 
+     * Returns the full element URI site root path to the resource currently processed.<p>
+     * 
+     * @return the name of the resource currently processed
+     */
+    public String getElementRootPath() {
+
+        return m_controller.getCmsObject().getRequestContext().addSiteRoot(m_elementUriSiteRoot, m_elementUri);
+    }
+
     /** 
      * Returns the element URI of the resource currently processed,
      * relative to the current site root.<p>
@@ -245,20 +275,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * not neccesarily the name the resource requested by the user.
      * 
      * @return the name of the resource currently processed
-     */    
+     */
     public String getElementUri() {
+
         return m_elementUri;
-    }    
-    
-    /** 
-     * Returns the full element URI site root path to the resource currently processed.<p>
-     * 
-     * @return the name of the resource currently processed
-     */    
-    public String getElementRootPath() {
-        return m_controller.getCmsObject().getRequestContext().addSiteRoot(m_elementUriSiteRoot, m_elementUri);
-    }      
-            
+    }
+
     /**
      * Return the value of the specified request parameter, if any; otherwise,
      * return <code>null</code>.<p>
@@ -271,8 +293,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     public String getParameter(String name) {
-        
-        String[] values = (String[]) m_parameters.get(name);
+
+        String[] values = (String[])m_parameters.get(name);
         if (values != null) {
             return (values[0]);
         } else {
@@ -292,7 +314,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
     public Map getParameterMap() {
-        
+
         return m_parameters;
     }
 
@@ -303,7 +325,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
     public Enumeration getParameterNames() {
-        
+
         Vector v = new Vector();
         v.addAll(m_parameters.keySet());
         return (v.elements());
@@ -320,7 +342,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      */
     public String[] getParameterValues(String name) {
 
-        return (String[]) m_parameters.get(name);
+        return (String[])m_parameters.get(name);
     }
 
     /** 
@@ -329,12 +351,16 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *
      * @param target the target for the request dispatcher
      * @return a special RequestDispatcher that allows access to VFS resources
-     */    
+     */
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
+
         String absolutUri = CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
-        return new CmsFlexRequestDispatcher (m_controller.getTopRequest().getRequestDispatcher(absolutUri), absolutUri, null);
+        return new CmsFlexRequestDispatcher(
+            m_controller.getTopRequest().getRequestDispatcher(absolutUri),
+            absolutUri,
+            null);
     }
-    
+
     /** 
      * Replacement for the standard servlet API getRequestDispatcher() method.<p>
      * 
@@ -345,9 +371,13 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @param vfs_target the OpenCms file that is a "mirror" version of the external file
      * @param ext_target the external file (outside the OpenCms VFS)
      * @return the constructed CmsFlexRequestDispatcher
-     */     
+     */
     public CmsFlexRequestDispatcher getRequestDispatcherToExternal(String vfs_target, String ext_target) {
-        return new CmsFlexRequestDispatcher(m_controller.getTopRequest().getRequestDispatcher(ext_target), CmsLinkManager.getAbsoluteUri(vfs_target, m_controller.getCmsObject().getRequestContext().getUri()), ext_target);
+
+        return new CmsFlexRequestDispatcher(
+            m_controller.getTopRequest().getRequestDispatcher(ext_target),
+            CmsLinkManager.getAbsoluteUri(vfs_target, m_controller.getCmsObject().getRequestContext().getUri()),
+            ext_target);
     }
 
     /** 
@@ -360,8 +390,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *
      * @return a faked URI that will point to the wrapped target in the VFS 
      * @see javax.servlet.http.HttpServletRequest#getRequestURI()
-     */      
+     */
     public String getRequestURI() {
+
         if (m_requestUri != null) {
             return m_requestUri;
         }
@@ -370,16 +401,17 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         buf.append(getElementUri());
         m_requestUri = buf.toString();
         return m_requestUri;
-    } 
-    
+    }
+
     /** 
      * Wraps the request URL, overloading the standard API,
      * the wrapped URL will always point to the currently included VFS resource.<p>
      *
      * @return a faked URL that will point to the included target in the VFS
      * @see javax.servlet.http.HttpServletRequest#getRequestURL()
-     */   
+     */
     public StringBuffer getRequestURL() {
+
         if (m_requestUrl != null) {
             return m_requestUrl;
         }
@@ -389,11 +421,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         buf.append(getServerName());
         buf.append(":");
         buf.append(getServerPort());
-        buf.append(getRequestURI());  
-        m_requestUrl = buf;      
+        buf.append(getRequestURI());
+        m_requestUrl = buf;
         return m_requestUrl;
     }
-    
+
     /** 
      * Checks if JSPs should always be recompiled.<p>
      * 
@@ -404,6 +436,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return true if JSPs should be recompiled, false otherwise
      */
     public boolean isDoRecompile() {
+
         return m_doRecompile;
     }
 
@@ -430,9 +463,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return true if an online resource was requested, false otherwise
      */
     public boolean isOnline() {
+
         return m_isOnline;
     }
-    
+
     /**
      * Sets the specified Map as paramter map of the request.<p>
      * 
@@ -444,11 +478,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * a specific operation.<p>
      * 
      * @param map the map to set
-     */    
+     */
     public void setParameterMap(Map map) {
+
         m_parameters = map;
     }
-        
+
     /**
      * Returns the Set of include calls which will be passed to the next wrapping layer.<p>
      * 
@@ -458,9 +493,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the Set of include calls
      */
     protected Set getCmsIncludeCalls() {
+
         return m_includeCalls;
-    }    
-    
+    }
+
     /**
      * Adds another include call to this wrapper.<p>
      * 
@@ -470,9 +506,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @param target the target name (absolute OpenCms URI) to add
      */
     void addInlucdeCall(String target) {
+
         m_includeCalls.add(target);
     }
-    
+
     /**
      * Checks if a given target is already included in a top-layer of this
      * wrapped request.<p>
@@ -484,9 +521,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return true if the target is already included, false otherwise
      */
     boolean containsIncludeCall(String target) {
+
         return m_includeCalls.contains(target);
     }
-    
+
     /** 
      * Returns the CmsFlexCacheKey for this request,
      * the key will be calculated if neccessary.<p>
@@ -494,13 +532,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the CmsFlexCacheKey for this request
      */
     CmsFlexRequestKey getCmsCacheKey() {
+
         // The key for this request is only calculated if actually requested
         if (m_key == null) {
             m_key = new CmsFlexRequestKey(this, m_elementUri, m_isOnline);
         }
         return m_key;
     }
-    
+
     /** 
      * This is needed to decide if this request can be cached or not.<p>
      * 
@@ -511,9 +550,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return true if the request is cacheable, false otherwise
      */
     boolean isCacheable() {
+
         return m_canCache;
     }
-    
+
     /**
      * Removes an include call from this wrapper.<p>
      * 
@@ -523,6 +563,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @param target the target name (absolute OpenCms URI) to remove
      */
     void removeIncludeCall(String target) {
+
         m_includeCalls.remove(target);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,35 +55,34 @@ import org.apache.commons.logging.Log;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexCacheKey {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexCacheKey.class);
+
+    /** The list of keywords of the Flex cache language. */
+    private static final List CACHE_COMMANDS = Arrays.asList(new String[] {"always", // 0
+        "never", // 1
+        "uri", // 2
+        "user", // 3
+        "params", // 4
+        "no-params", // 5
+        "timeout", // 6
+        "session", // 7
+        "schemes", // 8
+        "ports", // 9
+        "false", // 10
+        "parse-error", // 11
+        "true", // 12
+        "ip", // 13
+        "element", // 14
+        "locale", // 15
+        "encoding"}); // 16
 
     /** Marker to identify use of certain String key members (m_uri, m_ip). */
     private static final String IS_USED = "/ /";
 
-    /** The list of keywords of the Flex cache language. */
-    private static final List CACHE_COMMANDS = Arrays.asList(new String[] {
-            "always",       // 0
-            "never",        // 1
-            "uri",          // 2
-            "user",         // 3
-            "params",       // 4
-            "no-params",    // 5
-            "timeout",      // 6
-            "session",      // 7
-            "schemes",      // 8
-            "ports",        // 9
-            "false",        // 10
-            "parse-error",  // 11
-            "true",         // 12
-            "ip",           // 13
-            "element",      // 14
-            "locale",       // 15
-            "encoding"});   // 16
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexCacheKey.class);
 
     /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always. */
     private int m_always;
@@ -160,7 +159,7 @@ public class CmsFlexCacheKey {
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_GENERATED_1, toString()));
-        }        
+        }
     }
 
     /**
@@ -212,13 +211,13 @@ public class CmsFlexCacheKey {
         if (m_always < 0) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_NEVER_0));
-            }            
+            }
             return null;
         }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_PARAMS_0));
-        }        
+        }
         if ((m_noparams != null) && (key.getParams() != null)) {
             if ((m_noparams.size() == 0) && (key.getParams().size() > 0)) {
                 return null;
@@ -234,7 +233,7 @@ public class CmsFlexCacheKey {
         if (m_always > 0) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_ALWAYS_0));
-            }            
+            }
             str.append("always");
             return str.toString();
         }
@@ -367,7 +366,7 @@ public class CmsFlexCacheKey {
             str.append(m_timeout);
             str.append(");");
         }
-       
+
         if (str.length() > 0) {
             return str.toString();
         } else {
@@ -618,7 +617,7 @@ public class CmsFlexCacheKey {
                 m_always = 0;
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_FLEXKEY_3, t, k, v));
-                }                
+                }
                 switch (CACHE_COMMANDS.indexOf(k)) {
                     case 0: // always
                     case 12:
@@ -694,7 +693,7 @@ public class CmsFlexCacheKey {
             // Any Exception here indicates a parsing error
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
-            }            
+            }
             m_parseError = true;
         }
         if (m_parseError) {
@@ -724,7 +723,7 @@ public class CmsFlexCacheKey {
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_VALUES_1, value));
-        }        
+        }
         StringTokenizer toker = new StringTokenizer(value, ",");
         Set result = new HashSet();
         while (toker.hasMoreTokens()) {

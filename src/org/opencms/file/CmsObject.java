@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,8 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
@@ -67,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.114 $
+ * @version $Revision: 1.115 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -93,97 +95,6 @@ public class CmsObject {
     public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context) {
 
         init(securityManager, context);
-    }
-
-    /**
-     * Returns the current session info manager object.<p>
-     * 
-     * @return the current session info manager object
-     */
-    public CmsTaskService getTaskService() {
-
-        return new CmsTaskService(m_context, m_securityManager);
-    }
-
-    /**
-     * Checks if the user can access a given project.<p>
-     *
-     * @param projectId the id of the project
-     * 
-     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public boolean accessProject(int projectId) throws CmsException {
-
-        return (m_securityManager.accessProject(m_context, projectId));
-    }
-
-    /**
-     * Creates a new user by import.<p>
-     * 
-     * @param id the id of the user
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param description the description for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
-     * @param email the email of the user
-     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
-     *                      infos may be stored into the Usertables (depending on the implementation)
-     * @param address the address of the user
-     * @param type the type of the user
-     *
-     * @return a new <code>{@link CmsUser}</code> object representing the added user
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public CmsUser addImportUser(
-        String id,
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        int flags,
-        Map additionalInfos,
-        String address,
-        int type) throws CmsException {
-
-        return m_securityManager.addImportUser(
-            m_context,
-            id,
-            name,
-            password,
-            description,
-            firstname,
-            lastname,
-            email,
-            flags,
-            additionalInfos,
-            address,
-            type);
-    }
-
-    /**
-     * Creates a new user.<p>
-     * 
-     * @param name the name for the new user
-     * @param password the password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
-     * 
-     * @return the newly created user
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser addUser(String name, String password, String group, String description, Map additionalInfos)
-    throws CmsException {
-
-        return m_securityManager.addUser(m_context, name, password, group, description, additionalInfos);
     }
 
     /**
@@ -414,6 +325,19 @@ public class CmsObject {
     public void changeUserType(String username, int userType) throws CmsException {
 
         m_securityManager.changeUserType(m_context, username, userType);
+    }
+
+    /**
+     * Checks if the user of this OpenCms context 
+     * is a member of at last one of the roles in the given role set.<p>
+     *  
+     * @param roles the roles to check
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role permissions
+     */
+    public void checkRole(CmsRole roles) throws CmsRoleViolationException {
+
+        m_securityManager.checkRole(m_context, roles);
     }
 
     /**
@@ -707,6 +631,24 @@ public class CmsObject {
     public CmsProject createTempfileProject() throws CmsException {
 
         return m_securityManager.createTempfileProject(m_context);
+    }
+
+    /**
+     * Creates a new user.<p>
+     * 
+     * @param name the name for the new user
+     * @param password the password for the new user
+     * @param description the description for the new user
+     * @param additionalInfos the additional infos for the user
+     *
+     * @return the created user
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser createUser(String name, String password, String description, Map additionalInfos)
+    throws CmsException {
+
+        return m_securityManager.createUser(m_context, name, password, description, additionalInfos);
     }
 
     /**
@@ -1193,6 +1135,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(String resourcename) throws CmsException {
+
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return getLock(resource);
     }
@@ -1416,6 +1359,16 @@ public class CmsObject {
     }
 
     /**
+     * Returns the current session info manager object.<p>
+     * 
+     * @return the current session info manager object
+     */
+    public CmsTaskService getTaskService() {
+
+        return new CmsTaskService(m_context, m_securityManager);
+    }
+
+    /**
      * Returns all users.<p>
      *
      * @return a list of all <code>{@link CmsUser}</code> objects
@@ -1531,6 +1484,20 @@ public class CmsObject {
     }
 
     /**
+     * Checks if the user of the current OpenCms context 
+     * is a member of at last one of the roles in the given role set.<p>
+     *  
+     * @param roles the role to check
+     * 
+     * @return <code>true</code> if the user of the current OpenCms context is at a member of at last 
+     *      one of the roles in the given role set
+     */
+    public boolean hasRole(CmsRole roles) {
+
+        return m_securityManager.hasRole(m_context, roles);
+    }
+
+    /**
      * Writes a list of access control entries as new access control entries of a given resource.<p>
      * 
      * Already existing access control entries of this resource are removed before.<p>
@@ -1543,24 +1510,6 @@ public class CmsObject {
     public void importAccessControlEntries(CmsResource resource, List acEntries) throws CmsException {
 
         m_securityManager.importAccessControlEntries(m_context, resource, acEntries);
-    }
-
-    /**
-     * Imports an import-resource (folder or zipfile).<p>
-     *
-     * It is important that a <code>manifest.xml</code> is present in the 
-     * given folder or the root path inside the zip file, if not a 
-     * <code>{@link CmsException}</code> is thrown.<p>
-     *
-     * @param importFile the name (absolute Path) of the import resource (zipfile or folder)
-     * @param importPath the name (absolute Path) of the folder in which should be imported
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public void importFolder(String importFile, String importPath) throws CmsException {
-
-        // import the folder
-        m_securityManager.importFolder(this, m_context, importFile, importPath);
     }
 
     /**
@@ -1596,16 +1545,62 @@ public class CmsObject {
     }
 
     /**
-     * Checks if the current user has "Administrator" permissions.<p>
+     * Creates a new user by import.<p>
      * 
-     * Administrator permissions means that the user is a member of the 
-     * administrators group, which per default is called "Administrators".<p>
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param description the description for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param address the address of the user
+     * @param flags the flags for a user (for example <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
+     * @param type the type of the user
+     * @param additionalInfos the additional user infos
+     * 
+     * @return the imported user
      *
-     * @return <code>true</code>, if the current user has "Administrator" permissions
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser importUser(
+        String id,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        String address,
+        int flags,
+        int type,
+        Map additionalInfos) throws CmsException {
+
+        return m_securityManager.importUser(
+            m_context,
+            id,
+            name,
+            password,
+            description,
+            firstname,
+            lastname,
+            email,
+            address,
+            flags,
+            type,
+            additionalInfos);
+    }
+
+    /**
+     * Checks if the current user has role access to <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     *
+     * @return <code>true</code>, if the current user has role access to <code>{@link CmsRole#ADMINISTRATOR}</code>
+     * 
+     * @deprecated use <code>{@link #hasRole(CmsRole)}</code> or <code>{@link #checkRole(CmsRole)}</code> instead
      */
     public boolean isAdmin() {
 
-        return m_securityManager.isAdmin(m_context);
+        return hasRole(CmsRole.ADMINISTRATOR);
     }
 
     /**
@@ -1625,35 +1620,14 @@ public class CmsObject {
     }
 
     /**
-     * Checks if the current user has management access to the project.<p>
+     * Checks if the current user has management access to the current project.<p>
      *
-     * Please note: This is NOT the same as the <code>{@link CmsObject#isProjectManager()}</code> 
-     * check. If the user has management access to a project depends on the
-     * project settings.<p>
-     *
-     * @return <code>true</code>, if the user has management access to the project
-     * 
-     * @see #isProjectManager()
+     * @return <code>true</code>, if the user has management access to the current project
      */
+
     public boolean isManagerOfProject() {
 
         return m_securityManager.isManagerOfProject(m_context);
-    }
-
-    /**
-     * Checks if the current user is a member of the project manager group.<p>
-     *
-     * Please note: This is NOT the same as the <code>{@link CmsObject#isManagerOfProject()}</code>
-     * check. If the user is a member of the project manager group, 
-     * he can create new projects.<p>
-     *
-     * @return <code>true</code>, if the user is a member of the project manager group
-     * 
-     * @see #isManagerOfProject()
-     */
-    public boolean isProjectManager() {
-
-        return m_securityManager.isProjectManager(m_context);
     }
 
     /**
@@ -1993,7 +1967,7 @@ public class CmsObject {
 
         return m_securityManager.readAllPropertyDefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
     }
-    
+
     /**
      * Returns the first ancestor folder matching the filter criteria.<p>
      * 
@@ -2011,7 +1985,7 @@ public class CmsObject {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readAncestor(m_context, resource, filter);
     }
-    
+
     /**
      * Returns the first ancestor folder matching the resource type.<p>
      * 

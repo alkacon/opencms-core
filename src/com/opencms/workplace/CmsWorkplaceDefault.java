@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2005/04/24 11:20:31 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.79 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.80 $ $Date: 2005/04/24 11:20:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -452,7 +452,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if there were errors while accessing project data.
      */
     public Boolean isProjectManager(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        return new Boolean((cms.isAdmin() || cms.isManagerOfProject()));
+        return new Boolean(cms.isManagerOfProject());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
@@ -53,30 +53,14 @@ import org.dom4j.Document;
  * Use {@link org.opencms.main.OpenCms#getImportExportManager()} to get the Cms import/export manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.7 $ $Date: 2005/04/24 11:20:30 $
  * @since 5.3
  */
 public interface I_CmsImportExportHandler {
 
     /** The default description being used in all handler implementations.<p> */
     String C_DEFAULT_DESCRIPTION = "No description available for this handler";
-    
-    /**
-     * Sets the description of this import/export handler.<p>
-     * The description is useful to print some info about the purpose of this handler.<p>
-     * 
-     * @param description the description of this import/export handler
-     */
-    void setDescription(String description);
-    
-    /**
-     * Returns the description of this import/export handler.<p>
-     * The description is useful to print some info about the purpose of this handler.<p>
-     * 
-     * @return the description of this import/export handler
-     */
-    String getDescription();
-    
+
     /**
      * Exports the data from the Cms.<p>
      * 
@@ -85,7 +69,15 @@ public interface I_CmsImportExportHandler {
      * @throws CmsException if operation was not successful   
      */
     void exportData(CmsObject cms, I_CmsReport report) throws CmsException;
-    
+
+    /**
+     * Returns the description of this import/export handler.<p>
+     * The description is useful to print some info about the purpose of this handler.<p>
+     * 
+     * @return the description of this import/export handler
+     */
+    String getDescription();
+
     /**
      * Imports the data into the Cms.<p>
      * 
@@ -96,7 +88,7 @@ public interface I_CmsImportExportHandler {
      * @throws CmsException if operation was not successful 
      */
     void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException;
-    
+
     /**
      * Checks, if this import/export handler matches with a specified manifest document of an import,
      * so that it is able to import the data listed in the manifest document.<p>
@@ -105,5 +97,13 @@ public interface I_CmsImportExportHandler {
      * @return true, this handler is able to import the data listed in the manifest document
      */
     boolean matches(Document manifest);
-    
+
+    /**
+     * Sets the description of this import/export handler.<p>
+     * The description is useful to print some info about the purpose of this handler.<p>
+     * 
+     * @param description the description of this import/export handler
+     */
+    void setDescription(String description);
+
 }

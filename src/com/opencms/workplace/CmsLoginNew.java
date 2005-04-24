@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/03/06 09:26:11 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -260,8 +260,9 @@ public class CmsLoginNew extends CmsXmlTemplate {
 
         // try to set the current project
         try {
-            if (! cms.accessProject(currentProject)) {
-                // user has no access to the project
+            CmsProject project = cms.readProject(currentProject);
+            if (! cms.getAllAccessibleProjects().contains(project)) {
+                // user has no (more) access to the project
                 currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             }
         } catch (Exception e) {

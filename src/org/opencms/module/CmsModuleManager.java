@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class CmsModuleManager {
 
     /** The map of configured modules. */
     private Map m_modules;
-   
+
     /**
      * Basic constructor.<p>
      * 
@@ -108,19 +110,17 @@ public class CmsModuleManager {
     /**
      * Adds a new module to the module manager.<p>
      * 
-     * @param adminCms must be initialized with "Admin" permissions 
+     * @param cms must be initialized with "Admin" permissions 
      * @param module the module to add
      * 
      * @throws CmsSecurityException if the required permissions are not available (i.e. no "Admin" CmsObject has been provided)
      * @throws CmsConfigurationException if a module with this name is already configured 
      */
-    public synchronized void addModule(CmsObject adminCms, CmsModule module)
+    public synchronized void addModule(CmsObject cms, CmsModule module)
     throws CmsSecurityException, CmsConfigurationException {
 
-        // this operation requires admin permissions
-        if ((adminCms == null) || (!adminCms.isAdmin())) {
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
+        // check the role permissions
+        cms.checkRole(CmsRole.MODULE_MANAGER);
 
         if (m_modules.containsKey(module.getName())) {
             // module is currently configured, no create possible
@@ -132,20 +132,22 @@ public class CmsModuleManager {
         }
 
         m_modules.put(module.getName(), module);
-        
+
         try {
             I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(module.getName());
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);
-            }    
+            }
         } catch (Throwable t) {
-            OpenCms.getLog(this).error("Error during module action instance update for module '" + module.getName() + "'", t);
-        }        
+            OpenCms.getLog(this).error(
+                "Error during module action instance update for module '" + module.getName() + "'",
+                t);
+        }
 
         // initialize the export points
         initModuleExportPoints();
-        
+
         // update the configuration
         updateModuleConfiguration();
     }
@@ -201,25 +203,23 @@ public class CmsModuleManager {
 
         return result;
     }
-    
+
     /**
      * Deletes a module from the configuration.<p>
      * 
-     * @param adminCms must be initialized with "Admin" permissions 
+     * @param cms must be initialized with "Admin" permissions 
      * @param moduleName the name of the module to delete
      * @param replace indicates if the module is replaced (true) or finally deleted (false)
      * @param report the report to print progesss messages to
      * 
-     * @throws CmsSecurityException if the required permissions are not available (i.e. no "Admin" CmsObject has been provided)
+     * @throws CmsRoleViolationException if the required module manager role permissions are not available 
      * @throws CmsConfigurationException if a module with this name is not available for deleting
      */
-    public synchronized void deleteModule(CmsObject adminCms, String moduleName, boolean replace, I_CmsReport report)
-    throws CmsSecurityException, CmsConfigurationException {
+    public synchronized void deleteModule(CmsObject cms, String moduleName, boolean replace, I_CmsReport report)
+    throws CmsRoleViolationException, CmsConfigurationException {
 
-        // this operation requires admin permissions
-        if ((adminCms == null) || (!adminCms.isAdmin())) {
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
+        // check for module manager role permissions
+        cms.checkRole(CmsRole.MODULE_MANAGER);
 
         if (!m_modules.containsKey(moduleName)) {
             // module is not currently configured, no update possible
@@ -232,22 +232,22 @@ public class CmsModuleManager {
 
         CmsModule module;
         boolean removeResourceTypes = false;
-        
-        if (! replace) {
+
+        if (!replace) {
             // module is deleted, not replaced
-            module = (CmsModule)m_modules.get(moduleName);    
+            module = (CmsModule)m_modules.get(moduleName);
             // makr the resource manager to reinitialize if nescessary
             if (module.getResourceTypes() != Collections.EMPTY_LIST) {
-                removeResourceTypes = true;          
-            }   
+                removeResourceTypes = true;
+            }
             if (module.getExplorerTypes() != Collections.EMPTY_LIST) {
                 OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module.getExplorerTypes());
             }
-            
+
             // perform dependency check
             List dependencies = checkDependencies(module, C_DEPENDENCY_MODE_DELETE);
-            if (! dependencies.isEmpty()) {
-                throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);                
+            if (!dependencies.isEmpty()) {
+                throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);
             }
             try {
                 I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
@@ -256,17 +256,17 @@ public class CmsModuleManager {
                     moduleAction.moduleUninstall(module);
                     // remove instance from list of configured instances
                     m_moduleActionInstances.remove(moduleName);
-                }    
+                }
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error during module action instance uninstall for module '" + moduleName + "'", t);
+                OpenCms.getLog(this).error(
+                    "Error during module action instance uninstall for module '" + moduleName + "'",
+                    t);
             }
         }
 
-
-        
         // now remove the module
         module = (CmsModule)m_modules.remove(moduleName);
-        
+
         // move through all module resources and delete them
         for (int i = 0; i < module.getResources().size(); i++) {
             String currentResource = null;
@@ -276,14 +276,14 @@ public class CmsModuleManager {
                     OpenCms.getLog(this).debug("Deleting module resource '" + currentResource + "'");
                 }
                 // lock the resource
-                adminCms.lockResource(currentResource);
+                cms.lockResource(currentResource);
                 // delete the resource
-                adminCms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                 // update the report
                 report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                 report.println(currentResource);
                 // unlock the resource (so it gets deleted with next publish)
-                adminCms.unlockResource(currentResource);                
+                cms.unlockResource(currentResource);
             } catch (CmsException e) {
                 // ignore the exception and delete the next resource
                 OpenCms.getLog(this).error("Exception deleting module resource '" + currentResource + "'", e);
@@ -293,16 +293,16 @@ public class CmsModuleManager {
 
         // initialize the export points (removes export points from deleted module)
         initModuleExportPoints();
-        
+
         // update the configuration
-        updateModuleConfiguration();        
-        
+        updateModuleConfiguration();
+
         // reinit the manager is nescessary
         if (removeResourceTypes) {
-            OpenCms.getResourceManager().initialize(adminCms);
+            OpenCms.getResourceManager().initialize(cms);
         }
     }
-    
+
     /**
      * Returns the module aciton instance of the module with the given name, or <code>null</code>
      * if no module action instance with that name is configured.<p>
@@ -311,17 +311,17 @@ public class CmsModuleManager {
      * @return the module aciton instance of the module with the given name
      */
     public I_CmsModuleAction getActionInstance(String name) {
-        
+
         return (I_CmsModuleAction)m_moduleActionInstances.get(name);
     }
-    
+
     /**
      * Returns an iterator that iterates the initialized module action instances.<p>
      * 
      * @return  an iterator that iterates the initialized module action instances
      */
     public Iterator getActionInstances() {
-        
+
         return new ArrayList(m_moduleActionInstances.values()).iterator();
     }
 
@@ -372,18 +372,21 @@ public class CmsModuleManager {
     /**
      * Initializes all module instance classes managed in this module manager.<p>
      * 
-     * @param adminCms an initialized CmsObject with "Admin" permissions
+     * @param cms an initialized CmsObject with "manage modules" role permissions
      * @param configurationManager the initialized OpenCms configuration manager
+     * 
+     * @throws CmsRoleViolationException if the provided OpenCms context does not have "manage modules" role permissions
      */
-    public synchronized void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager) {
+    public synchronized void initialize(CmsObject cms, CmsConfigurationManager configurationManager)
+    throws CmsRoleViolationException {
 
-        if (((adminCms == null) && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT)) || ((adminCms != null) && !adminCms.isAdmin())) {
-            // null admin cms only allowed during test cases
-            throw new RuntimeException("Admin permissions are required to initialize the module manager");
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            // certain test cases won't have an OpenCms context
+            cms.checkRole(CmsRole.MODULE_MANAGER);
         }
-        
+
         Iterator it;
-        
+
         it = m_modules.keySet().iterator();
         while (it.hasNext()) {
             // get the module description
@@ -414,7 +417,7 @@ public class CmsModuleManager {
 
                 if (moduleAction != null) {
                     // store and initialize module action class    
-                    m_moduleActionInstances.put(module.getName(), moduleAction);                    
+                    m_moduleActionInstances.put(module.getName(), moduleAction);
                     if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                         OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                             ". Module configuration : initializing module class " + moduleAction.getClass().getName());
@@ -422,21 +425,24 @@ public class CmsModuleManager {
                     try {
                         // create a copy of the adminCms so that each module instance does have 
                         // it's own context, a shared context might introduce side - effects
-                        CmsContextInfo contextInfo = 
-                            new CmsContextInfo(
-                                adminCms.getRequestContext().currentUser(),
-                                adminCms.getRequestContext().currentProject(),
-                                adminCms.getRequestContext().getUri(),
-                                adminCms.getRequestContext().getSiteRoot(),
-                                adminCms.getRequestContext().getLocale(),
-                                adminCms.getRequestContext().getEncoding(),
-                                adminCms.getRequestContext().getRemoteAddress());
-                        CmsObject adminCmsCopy = OpenCms.initCmsObject(adminCms, contextInfo);
+                        CmsContextInfo contextInfo = new CmsContextInfo(
+                            cms.getRequestContext().currentUser(),
+                            cms.getRequestContext().currentProject(),
+                            cms.getRequestContext().getUri(),
+                            cms.getRequestContext().getSiteRoot(),
+                            cms.getRequestContext().getLocale(),
+                            cms.getRequestContext().getEncoding(),
+                            cms.getRequestContext().getRemoteAddress());
+                        CmsObject adminCmsCopy = OpenCms.initCmsObject(cms, contextInfo);
                         // initialize the module
                         moduleAction.initialize(adminCmsCopy, configurationManager, module);
                     } catch (Throwable t) {
-                        OpenCms.getLog(this).error("Error during module action instance initialize for class '" + moduleAction.getClass().getName() + "'", t);
-                    }                    
+                        OpenCms.getLog(this).error(
+                            "Error during module action instance initialize for class '"
+                                + moduleAction.getClass().getName()
+                                + "'",
+                            t);
+                    }
                 }
             }
         }
@@ -471,40 +477,42 @@ public class CmsModuleManager {
                 // shut down the module
                 moduleAction.shutDown(module);
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error during module action instance shutDown for class '" + moduleAction.getClass().getName() + "'", t);
-            }                  
+                OpenCms.getLog(this).error(
+                    "Error during module action instance shutDown for class '"
+                        + moduleAction.getClass().getName()
+                        + "'",
+                    t);
+            }
         }
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Module configuration : " + m_moduleActionInstances.size() + " module classes have been shut down");
         }
-        
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Shutting down        : " + this.getClass().getName() + " ... ok!");
-        }        
+        }
     }
 
     /**
      * Updates a already configured module with new values.<p>
      * 
-     * @param adminCms must be initialized with "Admin" permissions 
+     * @param cms must be initialized with "Admin" permissions 
      * @param module the module to update
      * 
-     * @throws CmsSecurityException if the required permissions are not available (i.e. no "Admin" CmsObject has been provided)
+     * @throws CmsRoleViolationException if the required module manager role permissions are not available 
      * @throws CmsConfigurationException if a module with this name is not available for updateing 
      */
-    public synchronized void updateModule(CmsObject adminCms, CmsModule module)
-    throws CmsSecurityException, CmsConfigurationException {
+    public synchronized void updateModule(CmsObject cms, CmsModule module)
+    throws CmsRoleViolationException, CmsConfigurationException {
 
-        // this operation requires admin permissions
-        if ((adminCms == null) || (!adminCms.isAdmin())) {
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
+        // check for module manager role permissions
+        cms.checkRole(CmsRole.MODULE_MANAGER);
 
         CmsModule oldModule = (CmsModule)m_modules.get(module.getName());
-        
+
         if (oldModule == null) {
             // module is not currently configured, no update possible
             throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
@@ -513,7 +521,7 @@ public class CmsModuleManager {
         if (OpenCms.getLog(this).isInfoEnabled()) {
             OpenCms.getLog(this).info("Updating module '" + module.getName() + "'");
         }
-        
+
         if (oldModule.getVersion().compareTo(module.getVersion()) == 0) {
             // module version has not changed - auto increment version number
             module.getVersion().increment();
@@ -529,16 +537,18 @@ public class CmsModuleManager {
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);
-            }    
+            }
         } catch (Throwable t) {
-            OpenCms.getLog(this).error("Error during module action instance update for module '" + module.getName() + "'", t);
-        }  
-        
+            OpenCms.getLog(this).error(
+                "Error during module action instance update for module '" + module.getName() + "'",
+                t);
+        }
+
         // initialize the export points
         initModuleExportPoints();
-        
+
         // update the configuration
-        updateModuleConfiguration();        
+        updateModuleConfiguration();
     }
 
     /**
@@ -574,8 +584,8 @@ public class CmsModuleManager {
      * Updates the module configuration.<p>
      */
     private void updateModuleConfiguration() {
-        
+
         OpenCms.writeConfiguration(CmsModuleConfiguration.class);
     }
-    
+
 }

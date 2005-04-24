@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -216,10 +216,14 @@ public class TestPermissions extends OpenCmsTestCase {
         String resourcename = "testDefaultPermissions.txt";
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
 
-        cms.addUser("testAdmin", "secret", "Administrators", "", null);
-        cms.addUser("testProjectmanager", "secret", "Projectmanagers", "", null);
-        cms.addUser("testUser", "secret", "Users", "", null);
-        cms.addUser("testGuest", "secret", "Guests", "", null);
+        cms.createUser("testAdmin", "secret", "", null);
+        cms.addUserToGroup("testAdmin", OpenCms.getDefaultUsers().getGroupAdministrators());
+        cms.createUser("testProjectmanager", "secret", "", null);
+        cms.addUserToGroup("testProjectmanager", OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        cms.createUser("testUser", "secret", "", null);
+        cms.addUserToGroup("testUser", OpenCms.getDefaultUsers().getGroupUsers());
+        cms.createUser("testGuest", "secret", "", null);
+        cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
 
         assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testAdmin").getPermissionString());
         assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
@@ -241,7 +245,7 @@ public class TestPermissions extends OpenCmsTestCase {
         // create a resource
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
         // create a user
-        cms.addUser(username, "deleteMe", "Users", "", null);
+        cms.createUser(username, "deleteMe", "", null);
         // add a permission for this user
         cms.chacc(resourcename, I_CmsPrincipal.C_PRINCIPAL_USER, username, "+r+w+v+c+d");
         // now delete the user again

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,13 +60,10 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
-    
-    /** The log object for this class. */
-    protected static final Log LOG = CmsLog.getLog(CmsFlexResponse.class);
-    
+
     /**
      * Wrapped implementation of the ServletOutputStream.<p>
      * 
@@ -191,6 +188,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /** Static string to indicate a header is "set" in the header maps. */
     public static final String C_SETHEADER = "[setHeader]";
+
+    /** The log object for this class. */
+    protected static final Log LOG = CmsLog.getLog(CmsFlexResponse.class);
 
     /** Map to save response headers belonging to a single include call in .*/
     private Map m_bufferHeaders;
@@ -419,14 +419,14 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             addHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2, name, value));
-            }            
+            }
         }
 
         if (m_writeOnlyToBuffer) {
             addHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2, name, value));
-            }            
+            }
         } else {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2, name, value));
@@ -607,28 +607,13 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
         }
+        int todo = 0;
         // TODO: Check setContentType() implementation
         // If this is not the "Top-Level" element ignore all settings of content type    
         // If this is not done an included JSP could reset the type with some unwanted defaults    
         if (!m_isTopElement) {
             return;
         }
-        /*       
-         if (type != null) {
-         // ensure that the encoding set by OpenCms is not overwritten by the default form the JSP            
-         type = type.toLowerCase();
-         int i = type.indexOf("charset");
-         if (type.startsWith("text") && (i > 0)) {
-         StringBuffer buf = new StringBuffer();
-         buf.append(type.substring(0, i));
-         buf.append("charset=");
-         buf.append(m_encoding);
-         type = new String(buf);
-         if (DEBUG) System.err.println("FlexResponse: setContentType() changed type to " +type);
-         }            
-         }
-         m_res.setContentType(type);
-         */
     }
 
     /**
@@ -799,7 +784,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                             m_out.clear();
                         } catch (Exception e) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ERROR_FLUSHING_OUTPUT_STREAM_1, e));
+                                LOG.debug(Messages.get().key(
+                                    Messages.LOG_FLEXRESPONSE_ERROR_FLUSHING_OUTPUT_STREAM_1,
+                                    e));
                             }
                         }
                     } else {

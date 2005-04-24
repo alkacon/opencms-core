@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOrderEnum.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,22 +49,22 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public final class CmsListOrderEnum {
 
-    /** Constant for ascending ordering.     */
-    public static final CmsListOrderEnum AscendingOrder = new CmsListOrderEnum("asc");
+    /** Constant for ascending ordering. */
+    public static final CmsListOrderEnum ORDER_ASCENDING = new CmsListOrderEnum("asc");
 
-    /** Constant for descending ordering.     */
-    public static final CmsListOrderEnum DescendingOrder = new CmsListOrderEnum("des");
+    /** Constant for descending ordering. */
+    public static final CmsListOrderEnum ORDER_DESCENDING = new CmsListOrderEnum("des");
 
     /** Constant for none ordering. */
-    public static final CmsListOrderEnum NoneOrder = new CmsListOrderEnum("none");
+    public static final CmsListOrderEnum ORDER_NONE = new CmsListOrderEnum("none");
 
     /** Array constant for column sorting. */
-    private static final CmsListOrderEnum[] C_VALUES = {AscendingOrder, DescendingOrder, NoneOrder};
+    private static final CmsListOrderEnum[] C_VALUES = {ORDER_ASCENDING, ORDER_DESCENDING, ORDER_NONE};
 
     /** List of ordering constants.     */
     public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));

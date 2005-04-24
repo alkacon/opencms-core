@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -91,45 +91,44 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Adds a user.<p>
-     *
-     * @param name the name of the new user
-     * @param password the password 
-     * @param group the default group name
-     * @param description the description
-     * @return the created user
+     * Creates a new user.<p>
+     * 
+     * @param name the name for the new user
+     * @param password the password for the new user
+     * @param description the description for the new user
+     * 
      * @throws Exception if something goes wrong
-     * @see CmsObject#addUser(String, String, String, String, Hashtable)
+     * @see CmsObject#createUser(String, String, String, Hashtable)
+     * @return the created user
      */
-    public CmsUser addUser(String name, String password, String group, String description) throws Exception {
+    public CmsUser createUser(String name, String password, String description) throws Exception {
 
-        return m_cms.addUser(name, password, group, description, new Hashtable());
+        return m_cms.createUser(name, password, description, new Hashtable());
     }
 
     /**
-     * Adds a user with some additional information.<p>
+     * Creates a user with some additional information.<p>
      *
      * @param name the name of the new user
      * @param password the password 
-     * @param group the default group name
      * @param description the description
      * @param firstname the users first name 
      * @param lastname the users he last name
      * @param email the users email address
      * @return the created user
+     * 
      * @throws Exception if something goes wrong
-     * @see CmsObject#addUser(String, String, String, String, Hashtable)
+     * @see CmsObject#createUser(String, String, String, Hashtable)
      */
-    public CmsUser addUser(
+    public CmsUser createUser(
         String name,
         String password,
-        String group,
         String description,
         String firstname,
         String lastname,
         String email) throws Exception {
 
-        CmsUser user = m_cms.addUser(name, password, group, description, new Hashtable());
+        CmsUser user = m_cms.createUser(name, password, description, new Hashtable());
         user.setEmail(email);
         user.setFirstname(firstname);
         user.setLastname(lastname);

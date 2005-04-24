@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -280,7 +280,8 @@ public class TestChacc extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         cms.createGroup("Testgroup", "A test group", 0, null);
         CmsGroup testGroup = cms.readGroup("Testgroup");
-        cms.addUser("testuser", "test", testGroup.getName(), "A test user", null);
+        cms.createUser("testuser", "test", "A test user", null);
+        cms.addUserToGroup("testuser", "Testgroup");
         CmsUser testUser = cms.readUser("testuser");
         
         CmsProject offline = cms.readProject("Offline");
@@ -288,8 +289,8 @@ public class TestChacc extends OpenCmsTestCase {
         String resName = "/folder2/";
         
         cms.lockResource(resName);
-        cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_USER, testUser.getName(), "+r+w+v+i");
+        cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.unlockResource(resName);
         cms.publishProject(); 
         

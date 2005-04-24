@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/03/21 17:22:54 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public final class OpenCms {
 
@@ -92,7 +93,6 @@ public final class OpenCms {
 
         // empty
     }
-        
 
     /**
      * Add a cms event listener that listens to all events.<p>
@@ -139,7 +139,7 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the configured list of default directory file names.<p>
+     * Returns the configured list of default directory file names (instances of <code>{@link String}</code>).<p>
      *  
      * Caution: This list can not be modified.<p>
      * 
@@ -383,6 +383,18 @@ public final class OpenCms {
     }
 
     /**
+     * Returns the list of system defined roles (instances of <code>{@link CmsRole}</code>).<p> 
+     * 
+     * Caution: This list can not be modified.<p>
+     * 
+     * @return the list of system defined roles
+     */
+    public static List getSystemRoles() {
+
+        return CmsRole.getSystemRoles();
+    }
+
+    /**
      * Returns the OpenCms Thread store.<p>
      * 
      * @return the OpenCms Thread store
@@ -462,7 +474,7 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().initCmsObject(user);
     }
-    
+
     /**
      * Reads the requested resource from the OpenCms VFS,
      * and in case a directory name is requested, the default files of the 

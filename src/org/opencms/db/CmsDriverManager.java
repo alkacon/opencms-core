@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.482 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.483 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,6 +62,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
+import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -95,7 +96,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.482 $ $Date: 2005/04/10 11:00:14 $
+ * @version $Revision: 1.483 $ $Date: 2005/04/24 11:20:32 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -494,161 +495,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Checks if the user can access a given project.<p>
-     *
-     * @param dbc the current database context
-     * @param projectId the id of the project
-     * 
-     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public boolean accessProject(CmsDbContext dbc, int projectId) throws CmsException {
-
-        CmsProject testProject = readProject(dbc, projectId);
-
-        if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            return true;
-        }
-
-        // is the project unlocked?
-        if (testProject.getFlags() != I_CmsConstants.C_PROJECT_STATE_UNLOCKED
-            && testProject.getFlags() != I_CmsConstants.C_PROJECT_STATE_INVISIBLE) {
-            return (false);
-        }
-
-        // is the current-user admin, or the owner of the project?
-        if ((dbc.currentProject().getOwnerId().equals(dbc.currentUser().getId())) || isAdmin(dbc)) {
-            return (true);
-        }
-
-        // get all groups of the user
-        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
-
-        // test, if the user is in the same groups like the project.
-        for (int i = 0; i < groups.size(); i++) {
-            CmsUUID groupId = ((CmsGroup)groups.get(i)).getId();
-            if ((groupId.equals(testProject.getGroupId())) || (groupId.equals(testProject.getManagerGroupId()))) {
-                return (true);
-            }
-        }
-        return (false);
-    }
-
-    /**
-     * Creates a new user by import.<p>
-     * 
-     * @param dbc the current database context
-     * @param id the id of the user
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param description the description for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
-     * @param email the email of the user
-     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
-     *                      infos may be stored into the Usertables (depending on the implementation).
-     * @param address the address of the user
-     * @param type the type of the user
-     *
-     * @return a new <code>{@link CmsUser}</code> object representing the added user
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public CmsUser addImportUser(
-        CmsDbContext dbc,
-        String id,
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        int flags,
-        Map additionalInfos,
-        String address,
-        int type) throws CmsException {
-
-        // no space before or after the name
-        name = name.trim();
-        // check the username
-        validFilename(name);
-
-        CmsUser newUser = m_userDriver.importUser(
-            dbc,
-            new CmsUUID(id),
-            name,
-            password,
-            description,
-            firstname,
-            lastname,
-            email,
-            0,
-            flags,
-            additionalInfos,
-            address,
-            type,
-            null);
-        return newUser;
-    }
-
-    /**
-     * Creates a new user.<p>
-     *
-     * @param dbc the current database context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user, these
-     *        Infos may be stored into the Usertables (depending on the implementation).
-     *
-     * @return the new user will be returned
-     * 
-     * @throws CmsException if operation was not succesfull
-     */
-    public CmsUser addUser(
-        CmsDbContext dbc,
-        String name,
-        String password,
-        String group,
-        String description,
-        Map additionalInfos) throws CmsException {
-
-        // no space before or after the name
-        name = name.trim();
-        // check the username
-        validFilename(name);
-        // check the password
-        validatePassword(password);
-
-        if (name.length() > 0) {
-
-            CmsGroup defaultGroup = readGroup(dbc, group);
-            CmsUser newUser = m_userDriver.createUser(
-                dbc,
-                name,
-                password,
-                description,
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsConstants.C_FLAG_ENABLED,
-                additionalInfos,
-                " ",
-                I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-
-            addUserToGroup(dbc, newUser.getName(), defaultGroup.getName());
-
-            return newUser;
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-        }
-    }
-
-    /**
      * Adds a user to a group.<p>
      *
      * @param dbc the current database context
@@ -657,47 +503,34 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @throws CmsException if operation was not succesfull
      */
-    public void addUserToGroup(
-        CmsDbContext dbc,
-        String username,
-        String groupname) throws CmsException {
+    public void addUserToGroup(CmsDbContext dbc, String username, String groupname) throws CmsException {
 
         if (!userInGroup(dbc, username, groupname)) {
-            // Check the security
-            if (isAdmin(dbc)) {
-                CmsUser user;
-                CmsGroup group;
-                try {
-                    user = readUser(dbc, username);
-                } catch (CmsException e) {
-                    if (e.getType() == CmsException.C_NO_USER) {
-                        user = readWebUser(dbc, username);
-                    } else {
-                        throw e;
-                    }
-                }
-                //check if the user exists
-                if (user != null) {
-                    group = readGroup(dbc, groupname);
-                    //check if group exists
-                    if (group != null) {
-                        //add this user to the group
-                        m_userDriver.createUserInGroup(dbc, user.getId(), group.getId(), null);
-                        // update the cache
-                        m_userGroupsCache.clear();
-                    } else {
-                        throw new CmsException("[" + getClass().getName() + "]" + groupname, CmsException.C_NO_GROUP);
-                    }
+            CmsUser user;
+            CmsGroup group;
+            try {
+                user = readUser(dbc, username);
+            } catch (CmsException e) {
+                if (e.getType() == CmsException.C_NO_USER) {
+                    user = readWebUser(dbc, username);
                 } else {
-                    throw new CmsException("[" + getClass().getName() + "]" + username, CmsException.C_NO_USER);
+                    throw e;
+                }
+            }
+            //check if the user exists
+            if (user != null) {
+                group = readGroup(dbc, groupname);
+                //check if group exists
+                if (group != null) {
+                    //add this user to the group
+                    m_userDriver.createUserInGroup(dbc, user.getId(), group.getId(), null);
+                    // update the cache
+                    m_userGroupsCache.clear();
+                } else {
+                    throw new CmsException("[" + getClass().getName() + "]" + groupname, CmsException.C_NO_GROUP);
                 }
             } else {
-                throw new CmsSecurityException("["
-                    + this.getClass().getName()
-                    + "] addUserToGroup() "
-                    + username
-                    + " "
-                    + groupname, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+                throw new CmsException("[" + getClass().getName() + "]" + username, CmsException.C_NO_USER);
             }
         }
     }
@@ -1331,43 +1164,40 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void copyResourceToProject(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // is the current project an "offline" project?
-        // and is the current user the manager of the project?
-        // and is the current project state UNLOCKED?
-        if ((!dbc.currentProject().isOnlineProject())
-            && (isManagerOfProject(dbc))
-            && (dbc.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
-
-            // copy the resource to the project only if the resource is not already in the project
-            if (!isInsideCurrentProject(dbc, resource.getRootPath())) {
-                // check if there are already any subfolders of this resource
-                if (resource.isFolder()) {
-                    List projectResources = m_projectDriver.readProjectResources(dbc, dbc.currentProject());
-                    for (int i = 0; i < projectResources.size(); i++) {
-                        String resname = (String)projectResources.get(i);
-                        if (resname.startsWith(resource.getRootPath())) {
-                            // delete the existing project resource first
-                            m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getId(), resname);
-                        }
-                    }
-                }
-                try {
-                    m_projectDriver.createProjectResource(
-                        dbc,
-                        dbc.currentProject().getId(),
-                        resource.getRootPath(),
-                        null);
-                } catch (CmsException exc) {
-                    // if the subfolder exists already - all is ok
-                } finally {
-                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections
-                        .singletonMap("project", dbc.currentProject())));
-                }
-            }
-        } else {
-            // no changes on the onlineproject!
+        if (dbc.currentProject().isOnlineProject()) {
             throw new CmsSecurityException(
                 "[" + this.getClass().getName() + "] " + dbc.currentProject().getName(),
-                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+                CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
+        }
+
+        if (dbc.currentProject().getFlags() != I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
+            throw new CmsLockException(
+                "[" + this.getClass().getName() + "] " + dbc.currentProject().getName(),
+                CmsLockException.C_RESOURCE_LOCKED);
+        }
+
+        // copy the resource to the project only if the resource is not already in the project
+        if (!isInsideCurrentProject(dbc, resource.getRootPath())) {
+            // check if there are already any subfolders of this resource
+            if (resource.isFolder()) {
+                List projectResources = m_projectDriver.readProjectResources(dbc, dbc.currentProject());
+                for (int i = 0; i < projectResources.size(); i++) {
+                    String resname = (String)projectResources.get(i);
+                    if (resname.startsWith(resource.getRootPath())) {
+                        // delete the existing project resource first
+                        m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getId(), resname);
+                    }
+                }
+            }
+            try {
+                m_projectDriver.createProjectResource(dbc, dbc.currentProject().getId(), resource.getRootPath(), null);
+            } catch (CmsException exc) {
+                // if the subfolder exists already - all is ok
+            } finally {
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
+                    "project",
+                    dbc.currentProject())));
+            }
         }
     }    
 
@@ -1375,30 +1205,22 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Counts the locked resources in this project.<p>
      *
      * @param dbc the current database context
-     * @param id the id of the project
+     * @param project the project to count the locked resources in
      * 
      * @return the amount of locked resources in this project
      * 
      * @throws CmsException if something goes wrong
      */
-    public int countLockedResources(CmsDbContext dbc, int id) throws CmsException {
+    public int countLockedResources(CmsDbContext dbc, CmsProject project) throws CmsException {
 
-        // read the project.
-        CmsProject project = readProject(dbc, id);
         // check the security
-        if (isAdmin(dbc)
-            || isManagerOfProject(dbc)
-            || (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
+        if (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
             // count locks
             return m_lockManager.countExclusiveLocksInProject(project);
-        } else if (!isAdmin(dbc) && !isManagerOfProject(dbc)) {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] countLockedResources()",
-                CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] countLockedResources()",
-                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLockException(
+                "[" + this.getClass().getName() + "] countLockedResources() project=" + dbc.currentProject().getName(),
+                CmsLockException.C_RESOURCE_LOCKED);
         }
     }
 
@@ -1415,19 +1237,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public int countLockedResources(CmsDbContext dbc, String foldername) throws CmsException {
 
         // check the security
-        if (isAdmin(dbc)
-            || isManagerOfProject(dbc)
-            || (dbc.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
+        if (dbc.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
             // count locks
             return m_lockManager.countExclusiveLocksInFolder(foldername);
-        } else if (!isAdmin(dbc) && !isManagerOfProject(dbc)) {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] countLockedResources()",
-                CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] countLockedResources()",
-                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLockException(
+                "[" + this.getClass().getName() + "] countLockedResources() project=" + dbc.currentProject().getName(),
+                CmsLockException.C_RESOURCE_LOCKED);
         }
     }
 
@@ -1465,25 +1281,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
 
-    }
-
-    /**
-     * Creates a new user group.<p>
-     *
-     * @param dbc the current database context
-     * @param name the name of the new group
-     * @param description the description for the new group
-     * @param flags the flags for the new group
-     * @param parent the name of the parent group (or <code>null</code>)
-     * 
-     * @return a <code>{@link CmsGroup}</code> object representing the newly created group
-     * 
-     * @throws CmsException if operation was not successfull
-     */
-    public CmsGroup createGroup(CmsDbContext dbc, String name, String description, int flags, String parent)
-    throws CmsException {
-
-        return createGroup(dbc, new CmsUUID(), name, description, flags, parent);
     }
 
     /**
@@ -1552,39 +1349,32 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String managergroupname,
         int projecttype) throws CmsException {
 
-        if (isAdmin(dbc) || isProjectManager(dbc)) {
-            if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-            }
-            // read the needed groups from the cms
-            CmsGroup group = readGroup(dbc, groupname);
-            CmsGroup managergroup = readGroup(dbc, managergroupname);
-
-            // create a new task for the project
-            CmsTask task = createProject(
-                dbc,
-                name,
-                group.getName(),
-                System.currentTimeMillis(),
-                I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-
-            return m_projectDriver.createProject(
-                dbc,
-                dbc.currentUser(),
-                group,
-                managergroup,
-                task,
-                name,
-                description,
-                I_CmsConstants.C_PROJECT_STATE_UNLOCKED,
-                projecttype,
-                null);
-            
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] createProject()",
-                CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
+        if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
+        // read the needed groups from the cms
+        CmsGroup group = readGroup(dbc, groupname);
+        CmsGroup managergroup = readGroup(dbc, managergroupname);
+
+        // create a new task for the project
+        CmsTask task = createProject(
+            dbc,
+            name,
+            group.getName(),
+            System.currentTimeMillis(),
+            I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+
+        return m_projectDriver.createProject(
+            dbc,
+            dbc.currentUser(),
+            group,
+            managergroup,
+            task,
+            name,
+            description,
+            I_CmsConstants.C_PROJECT_STATE_UNLOCKED,
+            projecttype,
+            null);
     }
 
     /**
@@ -2167,41 +1957,87 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsProject createTempfileProject(CmsDbContext dbc) throws CmsException {
 
-        if (isAdmin(dbc)) {
-            // read the needed groups from the cms
-            CmsGroup group = readGroup(dbc, OpenCms.getDefaultUsers().getGroupUsers());
-            CmsGroup managergroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators());
+        // read the needed groups from the cms
+        CmsGroup projectUserGroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupUsers());
+        CmsGroup projectManagerGroup = readGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators());
 
-            // create a new task for the project
-            CmsTask task = createProject(
-                dbc, 
-                CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME, 
-                group.getName(), 
-                System.currentTimeMillis(), 
-                I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-            
-            CmsProject tempProject = m_projectDriver.createProject(
+        // create a new task for the project
+        CmsTask task = createProject(
+            dbc,
+            CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME,
+            projectUserGroup.getName(),
+            System.currentTimeMillis(),
+            I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+
+        CmsProject tempProject = m_projectDriver.createProject(
+            dbc,
+            dbc.currentUser(),
+            projectUserGroup,
+            projectManagerGroup,
+            task,
+            CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME,
+            CmsWorkplaceManager.C_TEMP_FILE_PROJECT_DESCRIPTION,
+            I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
+            I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
+            null);
+        m_projectDriver.createProjectResource(dbc, tempProject.getId(), "/", null);
+
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
+            "project",
+            tempProject)));
+
+        return tempProject;
+    }
+
+    /**
+     * Creates a new user.<p>
+     *
+     * @param dbc the current database context
+     * @param name the name for the new user
+     * @param password the password for the new user
+     * @param description the description for the new user
+     * @param additionalInfos the additional infos for the user
+     *
+     * @return the created user
+     * 
+     * @see CmsObject#createUser(String, String, String, Map)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser createUser(
+        CmsDbContext dbc,
+        String name,
+        String password,
+        String description,
+        Map additionalInfos) throws CmsException {
+
+        // no space before or after the name
+        name = name.trim();
+        // check the username
+        validFilename(name);
+        // check the password
+        validatePassword(password);
+
+        if (name.length() > 0) {
+
+            CmsUser newUser = m_userDriver.createUser(
                 dbc,
-                dbc.currentUser(),
-                group,
-                managergroup,
-                task,
-                CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME,
-                CmsWorkplaceManager.C_TEMP_FILE_PROJECT_DESCRIPTION,
-                I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
-                I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
-                null);
-            m_projectDriver.createProjectResource(dbc, tempProject.getId(), "/", null);
-            
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-                "project",
-                tempProject)));
+                name,
+                password,
+                description,
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsConstants.C_FLAG_ENABLED,
+                additionalInfos,
+                " ",
+                I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
 
-            return tempProject;
+            return newUser;
+            
         } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] createTempfileProject() ",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
     }
     
@@ -2322,44 +2158,41 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @throws CmsException if operation was not succesful
      */
-    public void deleteBackups(CmsDbContext dbc, long timestamp, int versions, I_CmsReport report)
-    throws CmsException {
+    public void deleteBackups(CmsDbContext dbc, long timestamp, int versions, I_CmsReport report) throws CmsException {
 
-        if (isAdmin(dbc)) {
-            // get all resources from the backup table
-            // do only get one version per resource
-            List allBackupFiles = m_backupDriver.readBackupFileHeaders(dbc);
-            int counter = 1;
-            int size = allBackupFiles.size();
-            // get the tagId of the oldest Backupproject which will be kept in the database
-            int maxTag = m_backupDriver.readBackupProjectTag(dbc, timestamp);
-            Iterator i = allBackupFiles.iterator();
-            while (i.hasNext()) {
-                // now check get a single backup resource
-                CmsBackupResource res = (CmsBackupResource)i.next();
+        // get all resources from the backup table
+        // do only get one version per resource
+        List allBackupFiles = m_backupDriver.readBackupFileHeaders(dbc);
+        int counter = 1;
+        int size = allBackupFiles.size();
+        // get the tagId of the oldest Backupproject which will be kept in the database
+        int maxTag = m_backupDriver.readBackupProjectTag(dbc, timestamp);
+        Iterator i = allBackupFiles.iterator();
+        while (i.hasNext()) {
+            // now check get a single backup resource
+            CmsBackupResource res = (CmsBackupResource)i.next();
 
-                report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                report.print(report.key("report.history.checking"), I_CmsReport.C_FORMAT_NOTE);
-                report.print(res.getRootPath() + " ");
+            report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_NOTE);
+            report.print(report.key("report.history.checking"), I_CmsReport.C_FORMAT_NOTE);
+            report.print(res.getRootPath() + " ");
 
-                // now delete all versions of this resource that have more than the maximun number
-                // of allowed versions and which are older then the maximum backup date
-                int resVersions = m_backupDriver.readBackupMaxVersion(dbc, res.getResourceId());
-                int versionsToDelete = resVersions - versions;
+            // now delete all versions of this resource that have more than the maximun number
+            // of allowed versions and which are older then the maximum backup date
+            int resVersions = m_backupDriver.readBackupMaxVersion(dbc, res.getResourceId());
+            int versionsToDelete = resVersions - versions;
 
-                // now we know which backup versions must be deleted, so remove them now
-                if (versionsToDelete > 0) {
-                    report.print(report.key("report.history.deleting") + report.key("report.dots"));
-                    m_backupDriver.deleteBackup(dbc, res, maxTag, versionsToDelete);
-                } else {
-                    report.print(report.key("report.history.nothing") + report.key("report.dots"));
-                }
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                counter++;
-
-                // TODO: delete the old backup projects as well
-                m_projectDriver.deletePublishHistory(dbc, dbc.currentProject().getId(), maxTag);
+            // now we know which backup versions must be deleted, so remove them now
+            if (versionsToDelete > 0) {
+                report.print(report.key("report.history.deleting") + report.key("report.dots"));
+                m_backupDriver.deleteBackup(dbc, res, maxTag, versionsToDelete);
+            } else {
+                report.print(report.key("report.history.nothing") + report.key("report.dots"));
             }
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            counter++;
+
+            // TODO: delete the old backup projects as well
+            m_projectDriver.deletePublishHistory(dbc, dbc.currentProject().getId(), maxTag);
         }
     }
 
@@ -3017,72 +2850,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         
         return getAccessControlList(dbc, resource, inheritedOnly, resource.isFolder(), 0);
     }
-    
-    /**
-     * Returns the access control list of a given resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource
-     * @param depth the depth to include non-inherited access entries, also
-     * @param inheritedOnly flag indicates to collect inherited permissions only
-     * 
-     * @return the access control list of the resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private CmsAccessControlList getAccessControlList(
-        CmsDbContext dbc,
-        CmsResource resource,
-        boolean inheritedOnly, boolean forFolder, int depth) throws CmsException {
-
-        String cacheKey = getCacheKey(inheritedOnly + "_" + forFolder + "_" + depth + "_", dbc.currentProject(), resource.getStructureId().toString());
-        CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
-
-        // return the cached acl if already available
-        if (acl != null) {
-            return acl;
-        }
-
-        String parentPath = CmsResource.getParentFolder(resource.getRootPath());
-        // otherwise, get the acl of the parent or a new one
-        if (parentPath != null) {
-            CmsResource parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
-            // recurse
-            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, inheritedOnly, forFolder, depth+1).clone();
-        } else {
-            acl = new CmsAccessControlList();
-        }
-
-        if (!(depth == 0 && inheritedOnly)) {
-
-            ListIterator ace = m_userDriver.readAccessControlEntries(dbc,
-                dbc.currentProject(),
-                resource.getResourceId(),
-                depth > 1 || (depth > 0 && forFolder)).listIterator();
-               
-            while (ace.hasNext()) {
-                CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
-                if (depth > 0) {
-                    acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
-                }
-            
-                acl.add(acEntry);
-
-                // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry
-                // denied permissions are kept or extended
-                if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
-                    acl.setAllowedPermissions(acEntry);
-                }
-            }
-        }
-        
-        m_accessControlListCache.put(cacheKey, acl);
-        return acl;
-    }
 
     /**
      * Returns all projects which are owned by the current user or which are 
-     * accessible for the group of the user.<p>
+     * accessible by the current user.<p>
      *
      * @param dbc the current database context
      * 
@@ -3092,39 +2863,26 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List getAllAccessibleProjects(CmsDbContext dbc) throws CmsException {
 
-        CmsProject project = null;
-
+        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER)) {
+            // user is allowed to access all existing projects
+            int todo = 0;
+            // TODO: old logic may have also added the not locked projects (?)
+            return m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED);            
+        }
+        
         // get all groups of the user
         List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
 
-        // get all projects which are owned by the user.
-        List projects = m_projectDriver.readProjectsForUser(dbc, dbc.currentUser());
+        // add all projects which are owned by the user
+        Set projects = new HashSet(m_projectDriver.readProjectsForUser(dbc, dbc.currentUser()));
 
-        // get all projects, that the user can access with his groups.
+        // add all projects, that the user can access with his groups
         for (int i = 0, n = groups.size(); i < n; i++) {
-            List projectsByGroup = new ArrayList();
-
-            // is this the admin-group?
-            if (((CmsGroup)groups.get(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
-                // yes - all unlocked projects are accessible for him
-                projectsByGroup.addAll(m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
-            } else {
-                // no - get all projects, which can be accessed by the current group
-                projectsByGroup.addAll(m_projectDriver.readProjectsForGroup(dbc, (CmsGroup)groups.get(i)));
-            }
-
-            // merge the projects to the vector
-            for (int j = 0, m = projectsByGroup.size(); j < m; j++) {
-                project = (CmsProject)projectsByGroup.get(j);
-                // add only projects, which are new
-                if (!projects.contains(project)) {
-                    projects.add(project);
-                }
-            }
+            projects.addAll(m_projectDriver.readProjectsForGroup(dbc, (CmsGroup)groups.get(i)));
         }
 
-        // return the vector of projects
-        return projects;
+        // return the list of projects
+        return new ArrayList(projects);
     }
 
     /**
@@ -3154,42 +2912,34 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List getAllManageableProjects(CmsDbContext dbc) throws CmsException {
 
-        CmsProject project = null;
+        // the result set
+        Set projects = new HashSet();
 
-        // get all groups of the user
-        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
+        if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER)) {
+            
+            // user is allowed to access all existing projects
+            int todo = 0;
+            // TODO: old logic may have also added the not locked projects (?)
+            projects.addAll(m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED));            
+        } else {
 
-        // get all projects which are owned by the user.
-        List projects = m_projectDriver.readProjectsForUser(dbc, dbc.currentUser());
+            // add all projects which are owned by the user
+            projects.addAll(m_projectDriver.readProjectsForUser(dbc, dbc.currentUser()));
 
-        // get all projects, that the user can manage with his groups.
-        for (int i = 0, n = groups.size(); i < n; i++) {
-            // get all projects, which can be managed by the current group
-            List projectsByGroup = new ArrayList();
+            // get all groups of the user
+            List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
 
-            // is this the admin-group?
-            if (((CmsGroup)groups.get(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
-                // yes - all unlocked projects are accessible for him
-                projectsByGroup.addAll(m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
-            } else {
-                // no - get all projects, which can be accessed by the current group
-                projectsByGroup.addAll(m_projectDriver.readProjectsForManagerGroup(dbc, (CmsGroup)groups.get(i)));
-            }
-
-            // merge the projects to the vector
-            for (int j = 0, m = projectsByGroup.size(); j < m; j++) {
-                // add only projects, which are new
-                project = (CmsProject)projectsByGroup.get(j);
-                if (!projects.contains(project)) {
-                    projects.add(project);
-                }
+            // add all projects, that the user can access with his groups
+            for (int i = 0, n = groups.size(); i < n; i++) {
+                projects.addAll(m_projectDriver.readProjectsForManagerGroup(dbc, (CmsGroup)groups.get(i)));
             }
         }
 
         // remove the online-project, it is not manageable!
         projects.remove(readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID));
 
-        return projects;
+        // return the list of projects
+        return new ArrayList(projects);
     }
 
     /**
@@ -3367,28 +3117,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(remoteAddress, dbc, user);
 
         List allGroups = (List)m_userGroupsCache.get(cacheKey);
-        if ((allGroups == null) || (allGroups.size() == 0)) {
+        if (allGroups == null) {
 
-            CmsGroup subGroup;
-            CmsGroup group;
             // get all groups of the user
             List groups = m_userDriver.readGroupsOfUser(dbc, user.getId(), remoteAddress);
-            allGroups = new ArrayList();
-            // now get all childs of the groups
-            Iterator it = groups.iterator();
-            while (it.hasNext()) {
-                group = (CmsGroup)it.next();
+            allGroups = new ArrayList(groups);
+            // now get all parents of the groups
+            for (int i=0; i<groups.size(); i++) {
+                
+                CmsGroup parent = getParent(dbc, ((CmsGroup)groups.get(i)).getName());
+                while ((parent != null) && (!allGroups.contains(parent))) {
 
-                subGroup = getParent(dbc, group.getName());
-                while ((subGroup != null) && (!allGroups.contains(subGroup))) {
-
-                    allGroups.add(subGroup);
-                    // read next sub group
-                    subGroup = getParent(dbc, subGroup.getName());
-                }
-
-                if (!allGroups.contains(group)) {
-                    allGroups.add(group);
+                    allGroups.add(parent);
+                    // read next parent group
+                    parent = getParent(dbc, parent.getName());
                 }
             }
             m_userGroupsCache.put(cacheKey, allGroups);
@@ -3824,31 +3566,60 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Imports an import-resource (folder or zipfile).<p>
-     *
-     * It is important that a <code>manifest.xml</code> is present in the 
-     * given folder or the root path inside the zip file, if not a 
-     * <code>{@link CmsException}</code> is thrown.<p>
-     *
-     * @param cms the cms-object to use for the export
-     * @param dbc the current database context
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param importPath the name (absolute Path) of folder in which should be imported
+     * Creates a new user by import.<p>
      * 
+     * @param dbc the current database context
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param description the description for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param address the address of the user
+     * @param flags the flags for a user (for example <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
+     * @param type the type of the user
+     * @param additionalInfos the additional user infos
+     * 
+     * @return the imported user
+     *
      * @throws CmsException if something goes wrong
      */
-    public void importFolder(CmsObject cms, CmsDbContext dbc, String importFile, String importPath)
-    throws CmsException {
+    public CmsUser importUser(
+        CmsDbContext dbc,
+        String id,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        String address,
+        int flags,
+        int type,
+        Map additionalInfos) throws CmsException {
 
-        if (isAdmin(dbc)) {
-            clearcache();
-            new CmsImportFolder(importFile, importPath, cms);
-            clearcache();
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] importFolder()",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
+        // no space before or after the name
+        name = name.trim();
+        // check the username
+        validFilename(name);
+
+        CmsUser newUser = m_userDriver.importUser(
+            dbc,
+            new CmsUUID(id),
+            name,
+            password,
+            description,
+            firstname,
+            lastname,
+            email,
+            0,
+            flags,
+            additionalInfos,
+            address,
+            type,
+            null);
+        return newUser;
     }
 
     /**
@@ -3953,32 +3724,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Checks if the current user has "Administrator" permissions.<p>
-     * 
-     * Administrator permissions means that the user is a member of the 
-     * administrators group, which per default is called "Administrators".<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return <code>true</code>, if the current user has "Administrator" permissions
-     * 
-     * @see CmsObject#isAdmin()
-     */
-    public boolean isAdmin(CmsDbContext dbc) {
-
-        try {
-            return userInGroup(
-                dbc,                 
-                dbc.currentUser().getName(), 
-                OpenCms.getDefaultUsers().getGroupAdministrators());
-            
-        } catch (CmsException e) {
-            // any exception: result is false
-            return false;
-        }
-    }
-
-    /**
      * Checks if the specified resource is inside the current project.<p>
      * 
      * The project "view" is determined by a set of path prefixes. 
@@ -4021,80 +3766,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public boolean isLocked(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         return m_lockManager.isLocked(this, dbc, resource);
-    }
-
-    /**
-     * Checks if the current user has management access to the project.<p>
-     *
-     * Please note: This is NOT the same as the <code>{@link #isProjectManager(CmsDbContext)}</code> 
-     * check. If the user has management access to a project depends on the
-     * project settings.<p>
-     * 
-     * @param dbc the current database context
-     *
-     * @return <code>true</code>, if the user has management access to the project
-     * 
-     * @see CmsObject#isManagerOfProject()
-     * @see #isProjectManager(CmsDbContext)
-     */
-    public boolean isManagerOfProject(CmsDbContext dbc) {
-
-        if (isAdmin(dbc)) {
-            // user is Admin
-            return true;
-        }
-        if (dbc.currentUser().getId().equals(dbc.currentProject().getOwnerId())) {
-            // user is the owner of the current project
-            return true;
-        }
-
-        // get all groups of the user
-        List groups;
-        try {
-            groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
-        } catch (CmsException e) {
-            // any exception: result is false
-            return false;
-        }
-
-        for (int i = 0; i < groups.size(); i++) {
-            // check if the user is a member in the current projects manager group
-            if (((CmsGroup)groups.get(i)).getId().equals(dbc.currentProject().getManagerGroupId())) {
-                // this group is manager of the project
-                return true;
-            }
-        }
-
-        // the user is not manager of the current project
-        return false;
-    }
-
-    /**
-     * Checks if the current user is a member of the project manager group.<p>
-     *
-     * Please note: This is NOT the same as the <code>{@link #isManagerOfProject(CmsDbContext)}</code> 
-     * check. If the user is a member of the project manager group, 
-     * he can create new projects.<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return <code>true</code>, if the user is a member of the project manager group
-     * 
-     * @see CmsObject#isProjectManager()
-     * @see #isManagerOfProject(CmsDbContext)
-     */
-    public boolean isProjectManager(CmsDbContext dbc) {
-
-        try {
-            return userInGroup(
-                dbc,
-                dbc.currentUser().getName(), 
-                OpenCms.getDefaultUsers().getGroupProjectmanagers());
-            
-        } catch (CmsException e) {
-            // any exception: result is false
-            return false;
-        }
     }
 
     /**
@@ -6566,7 +6237,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Sets a new parent-group for an already existing group.<p>
+     * Sets a new parent group for an already existing group.<p>
      *
      * @param dbc the current database context
      * @param groupName the name of the group that should be written
@@ -6576,30 +6247,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @throws CmsException if operation was not succesfull
      */
-    public void setParentGroup(
-        CmsDbContext dbc,
-        String groupName,
-        String parentGroupName) throws CmsException {
+    public void setParentGroup(CmsDbContext dbc, String groupName, String parentGroupName) throws CmsException {
 
-        // Check the security
-        if (isAdmin(dbc)) {
-            CmsGroup group = readGroup(dbc, groupName);
-            CmsUUID parentGroupId = CmsUUID.getNullUUID();
+        CmsGroup group = readGroup(dbc, groupName);
+        CmsUUID parentGroupId = CmsUUID.getNullUUID();
 
-            // if the group exists, use its id, else set to unknown.
-            if (parentGroupName != null) {
-                parentGroupId = readGroup(dbc, parentGroupName).getId();
-            }
-
-            group.setParentId(parentGroupId);
-
-            // write the changes to the cms
-            writeGroup(dbc, group);
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] setParentGroup() " + groupName,
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        // if the group exists, use its id, else set to unknown.
+        if (parentGroupName != null) {
+            parentGroupId = readGroup(dbc, parentGroupName).getId();
         }
+
+        group.setParentId(parentGroupId);
+
+        // write the changes to the cms
+        writeGroup(dbc, group);
     }
 
     /**
@@ -6613,53 +6274,42 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public void setPassword(CmsDbContext dbc, String username, String newPassword) throws CmsException {
 
-        if (isAdmin(dbc)) {
+        CmsUser user = null;
 
-            CmsUser user = null;
+        validatePassword(newPassword);
 
-            validatePassword(newPassword);
-
-            // read the user as a system user to verify that the specified old password is correct
-            try {
-                user = m_userDriver.readUser(dbc, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-            } catch (CmsException e) {
-                if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsDataAccessException("["
-                        + getClass().getName()
-                        + "] Error resetting password for user '"
-                        + username
-                        + "'", e);
-                }
+        // read the user as a system user to verify that the specified old password is correct
+        try {
+            user = m_userDriver.readUser(dbc, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        } catch (CmsException e) {
+            if (e.getType() != CmsException.C_NO_USER) {
+                throw new CmsDataAccessException("["
+                    + getClass().getName()
+                    + "] Error resetting password for user '"
+                    + username
+                    + "'", e);
             }
-
-            // dito as a web user
-            try {
-                user = (user != null) ? user : m_userDriver.readUser(
-                    dbc,
-                    username,
-                    I_CmsConstants.C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) {
-                if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsDataAccessException("["
-                        + getClass().getName()
-                        + "] Error resetting password for user '"
-                        + username
-                        + "'", e);
-                }
-            }
-
-            if (user == null) {
-                // the specified username + old password don't match
-                throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);
-            }
-
-            m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword);
-
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] setPassword() " + username,
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
+
+        // dito as a web user
+        try {
+            user = (user != null) ? user : m_userDriver.readUser(dbc, username, I_CmsConstants.C_USER_TYPE_WEBUSER);
+        } catch (CmsException e) {
+            if (e.getType() != CmsException.C_NO_USER) {
+                throw new CmsDataAccessException("["
+                    + getClass().getName()
+                    + "] Error resetting password for user '"
+                    + username
+                    + "'", e);
+            }
+        }
+
+        if (user == null) {
+            // the specified username + old password don't match
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);
+        }
+
+        m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword);
     }
 
     /**
@@ -6949,35 +6599,26 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Unlocks all resources in the given project.<p>
+     * @param project the project to unlock the resources in
      *
-     * @param dbc the current database context
-     * @param projectId the id of the project to be published
-     * 
      * @throws CmsException if something goes wrong
      */
-    public void unlockProject(CmsDbContext dbc, int projectId) throws CmsException {
+    public void unlockProject(CmsProject project) throws CmsException {
 
-        // read the project
-        CmsProject project = readProject(dbc, projectId);
         // check the security
-        if ((isAdmin(dbc) || isManagerOfProject(dbc))
-            && (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
+        if (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
 
             // unlock all resources in the project
-            m_lockManager.removeResourcesInProject(projectId);
+            m_lockManager.removeResourcesInProject(project.getId());
             clearResourceCache();
             m_projectCache.clear();
             // we must also clear the permission cache
             m_securityManager.clearPermissionCache();
 
-        } else if (!isAdmin(dbc) && !isManagerOfProject(dbc)) {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] unlockProject() " + projectId,
-                CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] unlockProject() " + projectId,
-                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+        } else { 
+            throw new CmsLockException(
+                "[" + this.getClass().getName() + "] unlockProject() " + project.getName(),
+                CmsLockException.C_RESOURCE_LOCKED);
         }
     }
 
@@ -7120,15 +6761,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Tests if a user is member of the given group.<p>
+     * Returns <code>true</code> if a user is member of the given group.<p>
      * 
      * @param dbc the current database context
      * @param username the name of the user to check
      * @param groupname the name of the group to check
      *
-     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise
+     * @return <code>true</code>, if the user is in the group, <code>false</code> otherwise
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if something goes wrong
      */
     public boolean userInGroup(
         CmsDbContext dbc,
@@ -7136,10 +6777,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String groupname) throws CmsException {
 
         List groups = getGroupsOfUser(dbc, username);
-        CmsGroup group;
-        for (int z = 0; z < groups.size(); z++) {
-            group = (CmsGroup)groups.get(z);
-            if (groupname.equals(group.getName())) {
+        for (int i = 0; i < groups.size(); i++) {
+            if (groupname.equals(((CmsGroup)groups.get(i)).getName())) {
                 return true;
             }
         }
@@ -7776,30 +7415,21 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     protected boolean isWebgroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
-        try {
-            CmsUUID user = m_userDriver.readGroup(
-                dbc, 
-                OpenCms.getDefaultUsers().getGroupUsers()).getId();
-            CmsUUID admin = m_userDriver.readGroup(
-                dbc, 
-                OpenCms.getDefaultUsers().getGroupAdministrators()).getId();
-            CmsUUID manager = m_userDriver.readGroup(
-                dbc, 
-                OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId();
+        CmsUUID user = m_userDriver.readGroup(dbc, OpenCms.getDefaultUsers().getGroupUsers()).getId();
+        CmsUUID admin = m_userDriver.readGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators()).getId();
+        CmsUUID manager = m_userDriver.readGroup(dbc, OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId();
 
-            if ((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))) {
-                return false;
-            } else {
-                CmsUUID parentId = group.getParentId();
-                // check if the group belongs to Users, Administrators or Projectmanager
-                if (!parentId.isNullUUID()) {
-                    // check is the parentgroup is a webgroup
-                    return isWebgroup(dbc, m_userDriver.readGroup(dbc, parentId));
-                }
+        if ((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))) {
+            return false;
+        } else {
+            CmsUUID parentId = group.getParentId();
+            // check if the group belongs to Users, Administrators or Projectmanager
+            if (!parentId.isNullUUID()) {
+                // check is the parentgroup is a webgroup
+                return isWebgroup(dbc, m_userDriver.readGroup(dbc, parentId));
             }
-        } catch (CmsException e) {
-            throw e;
         }
+
         return true;
     }
 
@@ -8049,6 +7679,68 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
         }
         return result;
+    }
+    
+    /**
+     * Returns the access control list of a given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource
+     * @param depth the depth to include non-inherited access entries, also
+     * @param inheritedOnly flag indicates to collect inherited permissions only
+     * 
+     * @return the access control list of the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsAccessControlList getAccessControlList(
+        CmsDbContext dbc,
+        CmsResource resource,
+        boolean inheritedOnly, boolean forFolder, int depth) throws CmsException {
+
+        String cacheKey = getCacheKey(inheritedOnly + "_" + forFolder + "_" + depth + "_", dbc.currentProject(), resource.getStructureId().toString());
+        CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
+
+        // return the cached acl if already available
+        if (acl != null) {
+            return acl;
+        }
+
+        String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+        // otherwise, get the acl of the parent or a new one
+        if (parentPath != null) {
+            CmsResource parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
+            // recurse
+            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, inheritedOnly, forFolder, depth+1).clone();
+        } else {
+            acl = new CmsAccessControlList();
+        }
+
+        if (!(depth == 0 && inheritedOnly)) {
+
+            ListIterator ace = m_userDriver.readAccessControlEntries(dbc,
+                dbc.currentProject(),
+                resource.getResourceId(),
+                depth > 1 || (depth > 0 && forFolder)).listIterator();
+               
+            while (ace.hasNext()) {
+                CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
+                if (depth > 0) {
+                    acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+                }
+            
+                acl.add(acEntry);
+
+                // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry
+                // denied permissions are kept or extended
+                if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
+                    acl.setAllowedPermissions(acEntry);
+                }
+            }
+        }
+        
+        m_accessControlListCache.put(cacheKey, acl);
+        return acl;
     }
 
     /**

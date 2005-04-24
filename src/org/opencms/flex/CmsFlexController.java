@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
@@ -51,52 +52,52 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsFlexController {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexController.class);
-    
+
     /** Constant for the controller request attribute name. */
     public static final String ATTRIBUTE_NAME = "org.opencms.flex.CmsFlexController";
-    
-    /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */    
-    private CmsFlexCache m_cache;   
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexController.class);
+
+    /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */
+    private CmsFlexCache m_cache;
 
     /** The wrapped CmsObject provides JSP with access to the core system. */
     private CmsObject m_cmsObject;
-    
+
     /** List of wrapped RequestContext info object. */
     private List m_flexContextInfoList;
 
     /** List of wrapped CmsFlexRequests. */
     private List m_flexRequestList;
-    
+
     /** List of wrapped CmsFlexResponses. */
     private List m_flexResponseList;
-        
+
     /** Wrapped top request. */
     private HttpServletRequest m_req;
-    
-    /** Wrapped top response. */     
-    private HttpServletResponse m_res;    
 
-    /** The CmsResource that was initialized by the original request, required for URI actions. */    
-    private CmsResource m_resource;   
-    
+    /** Wrapped top response. */
+    private HttpServletResponse m_res;
+
+    /** The CmsResource that was initialized by the original request, required for URI actions. */
+    private CmsResource m_resource;
+
     /** Indicates if the respose should be streamed. */
     private boolean m_streaming;
-    
+
     /** Exception that was caught during inclusion of sub elements. */
     private Throwable m_throwable;
-    
+
     /** URI of a VFS resource that caused the exception. */
     private String m_throwableResourceUri;
-    
+
     /** Indicates if the request is the top request. */
     private boolean m_top;
-    
+
     /**
      * Default constructor.<p>
      * 
@@ -109,14 +110,14 @@ public class CmsFlexController {
      * @param top indicates if the response is the top response
      */
     public CmsFlexController(
-        CmsObject cms, 
-        CmsResource resource, 
-        CmsFlexCache cache, 
-        HttpServletRequest req, 
+        CmsObject cms,
+        CmsResource resource,
+        CmsFlexCache cache,
+        HttpServletRequest req,
         HttpServletResponse res,
         boolean streaming,
-        boolean top
-    ) {
+        boolean top) {
+
         m_cmsObject = cms;
         m_resource = resource;
         m_cache = cache;
@@ -128,15 +129,16 @@ public class CmsFlexController {
         m_flexResponseList = Collections.synchronizedList(new ArrayList());
         m_flexContextInfoList = Collections.synchronizedList(new ArrayList());
     }
-    
+
     /**
      * Returns the wrapped CmsObject form the provided request, or null if the 
      * request is not running inside OpenCms.<p>
      * 
      * @param req the current request
      * @return the wrapped CmsObject
-     */    
+     */
     public static CmsObject getCmsObject(ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
         if (controller != null) {
             return controller.getCmsObject();
@@ -144,7 +146,7 @@ public class CmsFlexController {
             return null;
         }
     }
-    
+
     /**
      * Provides access to a root cause Exception that might have occured in a complex inlucde scenario.<p>
      * 
@@ -153,6 +155,7 @@ public class CmsFlexController {
      * @see #getThrowable()
      */
     public static Throwable getThrowable(ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
         if (controller != null) {
             return controller.getThrowable();
@@ -160,7 +163,7 @@ public class CmsFlexController {
             return null;
         }
     }
-    
+
     /**
      * Provides access to URI of a VFS resource that caused an exception that might have occured in a complex inlucde scenario.<p>
      * 
@@ -169,14 +172,15 @@ public class CmsFlexController {
      * @see #getThrowableResourceUri()
      */
     public static String getThrowableResourceUri(ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
         if (controller != null) {
             return controller.getThrowableResourceUri();
         } else {
             return null;
-        }    
+        }
     }
-    
+
     /**
      * Checks if the provided request is running in OpenCms.<p>
      *
@@ -184,9 +188,10 @@ public class CmsFlexController {
      * @return true if the request is running in OpenCms, false otherwise
      */
     public static boolean isCmsRequest(ServletRequest req) {
+
         return ((req != null) && (req.getAttribute(ATTRIBUTE_NAME) != null));
     }
-    
+
     /**
      * Checks if the request has the "If-Modified-Since" header set, and if so,
      * if the header date value is equal to the provided last modification date.<p>
@@ -200,34 +205,36 @@ public class CmsFlexController {
      * @return <code>true</code> if the header is set and the header date is equal to the provided date
      */
     public static boolean isNotModifiedSince(HttpServletRequest req, long dateLastModified) {
+
         // check if the request contains a last modified header
-        long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);   
+        long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);
         // if last modified header is set (> -1), compare it to the requested resource                           
         return ((lastModifiedHeader > -1) && (((dateLastModified / 1000) * 1000) == lastModifiedHeader));
     }
-    
+
     /**
      * Removes the controller attribute from a request.<p>
      * 
      * @param req the request to remove the controller from
      */
     public static void removeController(ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
         if (controller != null) {
             controller.clear();
         }
     }
-    
+
     /**
      * Sets the "expires" date header for a given http request.<p>
      * 
      * @param res the reponse to set the "expires" date header for
      * @param dateExpires the date to set (if this is not in the future, it is ignored)
-     */    
+     */
     public static void setDateExpiresHeader(HttpServletResponse res, long dateExpires) {
+
         long now = System.currentTimeMillis();
-        if ((dateExpires > now)
-        && (dateExpires != CmsResource.DATE_EXPIRED_DEFAULT)) {
+        if ((dateExpires > now) && (dateExpires != CmsResource.DATE_EXPIRED_DEFAULT)) {
             // important: many caches (browsers or proxy) use the "Expires" header
             // to avoid re-loading of pages that are not expired
             // while this is right in general, no changes before the expiration date
@@ -238,9 +245,9 @@ public class CmsFlexController {
                 dateExpires = now + 86400000;
             }
             res.setDateHeader(I_CmsConstants.C_HEADER_EXPIRES, dateExpires);
-        }        
-    }    
-    
+        }
+    }
+
     /**
      * Sets the "last modified" date header for a given http request.<p>
      * 
@@ -248,19 +255,21 @@ public class CmsFlexController {
      * @param dateLastModified the date to set (if this is lower then 0, the current time is set)
      */
     public static void setDateLastModifiedHeader(HttpServletResponse res, long dateLastModified) {
+
         if (dateLastModified > -1) {
             // set date last modified header (precision is only second, not millisecond
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, (dateLastModified / 1000) * 1000);
         } else {
             // this resource can not be optimized for "last modified", use current time as header
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-        }        
+        }
     }
-    
+
     /**
      * Clears all data of this controller.<p>
      */
     public void clear() {
+
         if (m_flexRequestList != null) {
             m_flexRequestList.clear();
         }
@@ -279,7 +288,7 @@ public class CmsFlexController {
         m_cache = null;
         m_throwable = null;
     }
-    
+
     /**
      * Returns the CmsFlexCache instance where all results from this request will be cached in.<p>
      * 
@@ -287,20 +296,22 @@ public class CmsFlexController {
      * have a way to access the cache object.<p>
      *
      * @return the CmsFlexCache instance where all results from this request will be cached in
-     */    
+     */
     public CmsFlexCache getCmsCache() {
+
         return m_cache;
     }
-    
+
     /**
      * Returns the wrapped CmsObject.<p>
      * 
      * @return the wrapped CmsObject
      */
     public CmsObject getCmsObject() {
+
         return m_cmsObject;
     }
-    
+
     /** 
      * This method provides access to the top-level CmsResource of the request
      * which is of a type that supports the FlexCache,
@@ -308,66 +319,72 @@ public class CmsFlexController {
      * not he current included element.<p>
      * 
      * @return the requested top-level CmsFile
-     */    
+     */
     public CmsResource getCmsResource() {
+
         return m_resource;
-    }     
-    
+    }
+
     /**
      * Returns the current flex request.<p>
      * 
      * @return the current flex request
      */
     public CmsFlexRequest getCurrentRequest() {
-        return (CmsFlexRequest)m_flexRequestList.get(m_flexRequestList.size()-1);
-    }  
-    
+
+        return (CmsFlexRequest)m_flexRequestList.get(m_flexRequestList.size() - 1);
+    }
+
     /**
      * Returns the current flex response.<p>
      * 
      * @return the current flex response
      */
     public CmsFlexResponse getCurrentResponse() {
-        return (CmsFlexResponse)m_flexResponseList.get(m_flexResponseList.size()-1);
+
+        return (CmsFlexResponse)m_flexResponseList.get(m_flexResponseList.size() - 1);
     }
-    
+
     /**
      * Returns the combined "expires" date for all resources read during this request.<p>
      * 
      * @return the combined "expires" date for all resources read during this request
      */
     public long getDateExpires() {
-        int pos = m_flexContextInfoList.size()-1;
+
+        int pos = m_flexContextInfoList.size() - 1;
         if (pos < 0) {
             // ensure a valid position is used
             return CmsResource.DATE_EXPIRED_DEFAULT;
         }
         return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).getDateExpires();
-    }       
-    
+    }
+
     /**
      * Returns the combined "last modified" date for all resources read during this request.<p>
      * 
      * @return the combined "last modified" date for all resources read during this request
      */
     public long getDateLastModified() {
-        int pos = m_flexContextInfoList.size()-1;
+
+        int pos = m_flexContextInfoList.size() - 1;
         if (pos < 0) {
             // ensure a valid position is used
             return CmsResource.DATE_RELEASED_DEFAULT;
         }
         return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).getDateLastModified();
-    }   
-    
+    }
+
     /**
      * Returns the size of the response stack.<p>
      * 
      * @return the size of the response stack
      */
     public int getResponseStackSize() {
+
         return m_flexResponseList.size();
     }
-    
+
     /**
      * Returns an exception (Throwable) that was caught during inclusion of sub elements, 
      * or null if no exceptions where thrown in sub elements.<p>
@@ -375,9 +392,10 @@ public class CmsFlexController {
      * @return an exception (Throwable) that was caught during inclusion of sub elements
      */
     public Throwable getThrowable() {
+
         return m_throwable;
     }
-        
+
     /**
      * Returns the URI of a VFS resource that caused the exception that was caught during inclusion of sub elements,
      * might return null if no URI information was available for the exception.<p>
@@ -385,27 +403,30 @@ public class CmsFlexController {
      * @return the URI of a VFS resource that caused the exception that was caught during inclusion of sub elements
      */
     public String getThrowableResourceUri() {
+
         return m_throwableResourceUri;
     }
-    
+
     /**
      * Returns the current http request.<p>
      * 
      * @return the current http request
      */
     public HttpServletRequest getTopRequest() {
+
         return m_req;
     }
-    
+
     /**
      * Returns the current http response.<p>
      * 
      * @return the current http response
      */
     public HttpServletResponse getTopResponse() {
+
         return m_res;
     }
-    
+
     /**
      * Returns <code>true</code> if the generated output of the response should 
      * be written to the stream directly.<p>
@@ -413,9 +434,10 @@ public class CmsFlexController {
      * @return <code>true</code> if the generated output of the response should be written to the stream directly
      */
     public boolean isStreaming() {
+
         return m_streaming;
     }
-    
+
     /**
      * Returns <code>true</code> if this controller was generated as top level controller.<p>
      * 
@@ -427,29 +449,30 @@ public class CmsFlexController {
      * @see org.opencms.jsp.CmsJspActionElement#getContent(String)
      */
     public boolean isTop() {
+
         return m_top;
     }
-    
-    
+
     /**
      * Removes the topmost request/response pair from the stack.<p>
      */
     public void pop() {
+
         if (m_flexRequestList.size() > 0) {
-            m_flexRequestList.remove(m_flexRequestList.size()-1);            
+            m_flexRequestList.remove(m_flexRequestList.size() - 1);
         }
         if (m_flexResponseList.size() > 0) {
-            m_flexResponseList.remove(m_flexResponseList.size()-1);            
+            m_flexResponseList.remove(m_flexResponseList.size() - 1);
         }
         if (m_flexContextInfoList.size() > 0) {
-            CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)m_flexContextInfoList.remove(m_flexContextInfoList.size()-1);
+            CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)m_flexContextInfoList.remove(m_flexContextInfoList.size() - 1);
             if (m_flexContextInfoList.size() > 0) {
                 ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(0)).merge(info);
                 updateRequestContextInfo();
             }
         }
-    }    
-    
+    }
+
     /**
      * Adds another flex request/response pair to the stack.<p>
      * 
@@ -457,12 +480,13 @@ public class CmsFlexController {
      * @param res the response to add
      */
     public void push(CmsFlexRequest req, CmsFlexResponse res) {
+
         m_flexRequestList.add(req);
         m_flexResponseList.add(res);
-        m_flexContextInfoList.add(new CmsFlexRequestContextInfo());     
+        m_flexContextInfoList.add(new CmsFlexRequestContextInfo());
         updateRequestContextInfo();
     }
-    
+
     /**
      * Sets an exception (Throwable) that was caught during inclusion of sub elements.<p>
      * 
@@ -474,27 +498,31 @@ public class CmsFlexController {
      * @return the exception stored in the contoller
      */
     public Throwable setThrowable(Throwable throwable, String resource) {
+
         if (m_throwable == null) {
             m_throwable = throwable;
             m_throwableResourceUri = resource;
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1, ((resource!=null) ? "on resource " + resource : "")));
-            }            
+                LOG.debug(Messages.get().key(
+                    Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1,
+                    ((resource != null) ? "on resource " + resource : "")));
+            }
         }
         return m_throwable;
     }
-    
+
     /**
      * Puts the response in a suspended state.<p>  
      */
     public void suspendFlexResponse() {
-        for (int i=0; i<m_flexResponseList.size(); i++) {
+
+        for (int i = 0; i < m_flexResponseList.size(); i++) {
             CmsFlexResponse res = (CmsFlexResponse)m_flexResponseList.get(i);
             res.setSuspended(true);
         }
     }
-    
+
     /**
      * Updates the "last modified" date and the "expires" date 
      * for all resources read during this request with the given values.<p>
@@ -511,20 +539,24 @@ public class CmsFlexController {
      * @param dateExpires the value to update the "expires" date with
      */
     public void updateDates(long dateLastModified, long dateExpires) {
-        int pos = m_flexContextInfoList.size()-1;
+
+        int pos = m_flexContextInfoList.size() - 1;
         if (pos < 0) {
             // ensure a valid position is used
             return;
         }
-        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).updateDates(dateLastModified, dateExpires);         
+        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).updateDates(dateLastModified, dateExpires);
     }
 
     /**
      * Updates the context info of the request context.<p>
      */
     private void updateRequestContextInfo() {
+
         if (m_flexContextInfoList.size() > 0) {
-            m_cmsObject.getRequestContext().setAttribute(I_CmsConstants.C_HEADER_LAST_MODIFIED, m_flexContextInfoList.get(m_flexContextInfoList.size()-1));
+            m_cmsObject.getRequestContext().setAttribute(
+                I_CmsConstants.C_HEADER_LAST_MODIFIED,
+                m_flexContextInfoList.get(m_flexContextInfoList.size() - 1));
         }
     }
 }

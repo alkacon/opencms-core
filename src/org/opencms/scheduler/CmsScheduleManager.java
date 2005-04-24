@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -74,7 +75,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -206,11 +207,7 @@ public class CmsScheduleManager implements Job {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            if ((cms == null) || !cms.isAdmin()) {
-                throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_REQUIRED_ROLE_NOT_AVAILABLE_1,
-                    OpenCms.getDefaultUsers().getGroupAdministrators()));
-            }
+            cms.checkRole(CmsRole.SCHEDULER_MANAGER);
         }
 
         // the list of job entries
@@ -286,11 +283,7 @@ public class CmsScheduleManager implements Job {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            if ((cms == null) || !cms.isAdmin()) {
-                throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_REQUIRED_ROLE_NOT_AVAILABLE_1,
-                    OpenCms.getDefaultUsers().getGroupAdministrators()));
-            }
+            cms.checkRole(CmsRole.SCHEDULER_MANAGER);
         }
 
         if ((jobInfo == null) || (jobInfo.getClassName() == null)) {
@@ -439,11 +432,7 @@ public class CmsScheduleManager implements Job {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
-            if ((cms == null) || !cms.isAdmin()) {
-                throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_REQUIRED_ROLE_NOT_AVAILABLE_1,
-                    OpenCms.getDefaultUsers().getGroupAdministrators()));
-            }
+            cms.checkRole(CmsRole.SCHEDULER_MANAGER);
         }
 
         CmsScheduledJobInfo jobInfo = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,8 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
-import org.opencms.security.CmsSecurityException;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
@@ -84,7 +85,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.3.1
  */
@@ -450,9 +451,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         int maxFileSize = getFileMaxUploadSize();
         long maxFileSizeBytes = maxFileSize * 1024;
-        boolean isAdmin = cms.isAdmin();
         // check if current user belongs to Admin group, if so no file upload limit
-        if ((maxFileSize <= 0) || isAdmin) {
+        if ((maxFileSize <= 0) || cms.hasRole(CmsRole.VFS_MANAGER)) {
             maxFileSizeBytes = -1;
         }
         return maxFileSizeBytes;
@@ -665,16 +665,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * Initializes the workplace manager with the OpenCms system configuration.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * 
+     * @throws CmsRoleViolationException if the provided OpenCms user context does 
+     *      not have <code>{@link CmsRole#WORKPLACE_MANAGER}</code> role permissions
      * @throws CmsException if something goes wrong
      */
-    public synchronized void initialize(CmsObject cms) throws CmsException {
+    public synchronized void initialize(CmsObject cms) throws CmsException, CmsRoleViolationException {
 
-        if (!cms.isAdmin()) {
-            // current user has no administration rights, throw exception
-            throw new CmsSecurityException(
-                "Workplace manager initialization can only be done by an OpenCms Administrator",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
+        // ensure that the current user has permissions to initialize the workplace
+        cms.checkRole(CmsRole.WORKPLACE_MANAGER);
 
         // set the workplace encoding
         m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsListDialog.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class CmsListDialog extends CmsDialog {
@@ -195,7 +195,7 @@ public abstract class CmsListDialog extends CmsDialog {
         getList().addAllItems(getListItems());
         getList().setSearchFilter(sFilter, getLocale());
         getList().setSortedColumn(sCol, getLocale());
-        if (order == CmsListOrderEnum.DescendingOrder) {
+        if (order == CmsListOrderEnum.ORDER_DESCENDING) {
             getList().setSortedColumn(sCol, getLocale());
         }
         if (cPage>0 && cPage<=getList().getNumberOfPages()) {

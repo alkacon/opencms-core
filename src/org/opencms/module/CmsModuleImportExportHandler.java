@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlErrorHandler;
@@ -68,10 +69,10 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2005/02/17 12:44:35 $
+ * @version $Revision: 1.8 $ $Date: 2005/04/24 11:20:32 $
  * @since 5.3
  */
-public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
+public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /** The name of the module import project. */
     public static final String C_IMPORT_MODULE_PROJECT_NAME = "ImportModule";
@@ -172,18 +173,16 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
         
+        // check if the user has the required permissions
+        cms.checkRole(CmsRole.MODULE_MANAGER);
+        
         report.print(report.key("report.export_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         if (report instanceof CmsHtmlReport) {
             report.println(" <i>" + getModuleName() + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
         } else {
             report.println(" " + getModuleName(), I_CmsReport.C_FORMAT_HEADLINE);
         }
-                
-        // check if the user has the required permissions
-        if ((cms == null) || !cms.isAdmin()) {
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-        
+                        
         if (! OpenCms.getModuleManager().hasModule(getModuleName())) {
             // module not available
             throw new CmsConfigurationException("No module '" + getModuleName() + "' available for export", CmsConfigurationException.C_CONFIGURATION_ERROR);
@@ -409,9 +408,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     throws CmsSecurityException, CmsConfigurationException, CmsException {
         
         // check if the user has the required permissions
-        if ((cms == null) || !cms.isAdmin()) {
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
+        cms.checkRole(CmsRole.MODULE_MANAGER);
         
         // read the module from the import file
         CmsModule importedModule = readModuleFromImport(importResource);

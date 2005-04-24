@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,62 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
-    public static final String ERR_REQUIRED_ROLE_NOT_AVAILABLE_1 = "ERR_REQUIRED_ROLE_NOT_AVAILABLE_1";
+    public static final String ERR_NOT_IN_ROLE_2 = "ERR_NOT_IN_ROLE_2";
 
+    /** Name of the used resource bundle. */
+    public static final String ERR_NOT_MANAGER_OF_PROJECT_2 = "ERR_NOT_MANAGER_OF_PROJECT_2";
+
+    /** Name of the used resource bundle. */
+    public static final String ERR_ROLE_VIOLATION_1 = "ERR_ROLE_VIOLATION_1";
+
+    /** Name of the used resource bundle. */
+    public static final String ERR_STARTUP_FINISHED_0 = "ERR_STARTUP_FINISHED_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_ADMINISTRATOR_0 = "GUI_ROLENAME_ADMINISTRATOR_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_DEVELOPER_0 = "GUI_ROLENAME_DEVELOPER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_EXPORT_DATABASE_0 = "GUI_ROLENAME_EXPORT_DATABASE_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_HISTORY_MANAGER_0 = "GUI_ROLENAME_HISTORY_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_IMPORT_DATABASE_0 = "GUI_ROLENAME_IMPORT_DATABASE_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_MODULE_MANAGER_0 = "GUI_ROLENAME_MODULE_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_PROJECT_MANAGER_0 = "GUI_ROLENAME_PROJECT_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_PROPERTY_MANAGER_0 = "GUI_ROLENAME_PROPERTY_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_RESOURCE_TYPE_MANAGER_0 = "GUI_ROLENAME_RESOURCE_TYPE_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_SCHEDULER_MANAGER_0 = "GUI_ROLENAME_SCHEDULER_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_USER_MANAGER_0 = "GUI_ROLENAME_USER_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_VFS_MANAGER_0 = "GUI_ROLENAME_VFS_MANAGER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_WORKPLACE_USER_0 = "GUI_ROLENAME_WORKPLACE_USER_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_ROOT_FOLDER_ACCESS_0 = "GUI_ROLENAME_ROOT_FOLDER_ACCESS_0";
+    
+    /** Name of the used resource bundle. */
+    public static final String GUI_ROLENAME_WORKPLACE_MANAGER_0 = "GUI_ROLENAME_WORKPLACE_MANAGER_0";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.security.messages";
 

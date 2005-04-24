@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -149,7 +150,7 @@ public final class CmsSiteManager implements Cloneable {
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
-            if (workplaceMode && cms.isAdmin()) {
+            if (workplaceMode && cms.hasRole(CmsRole.ROOT_FOLDER_ACCESS)) {
                 if (!siteroots.contains("/")) {
                     siteroots.add("/");
                 }

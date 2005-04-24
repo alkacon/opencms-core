@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2005/04/22 14:38:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,12 @@ import org.apache.commons.logging.Log;
  * Describes the caching behaviour (or caching options) for a Flex request.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexRequestKey {
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexRequestKey.class); 
+    private static final Log LOG = CmsLog.getLog(CmsFlexRequestKey.class);
 
     /** The request context this request was made in. */
     private CmsRequestContext m_context;
@@ -186,7 +186,7 @@ public class CmsFlexRequestKey {
      * @return the current users session, or <code>null</code> if the current user has no session
      */
     public HttpSession getSession() {
-        
+
         return m_request.getSession(false);
     }
 

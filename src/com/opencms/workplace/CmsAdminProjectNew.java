@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.102 $
+* Date   : $Date: 2005/04/24 11:20:31 $
+* Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.102 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.103 $ $Date: 2005/04/24 11:20:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -204,7 +204,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         String errorTemplateAddOn = "";
         if (fileToGo != null){
             // this is from the explorer view
-            if((!cms.isManagerOfProject()) && (!cms.isAdmin())){
+            if(!cms.isManagerOfProject()){
                 // user has no rights to create a project
                 return startProcessing(cms, xmlTemplateDocument, elementName,parameters, "norigths");
             }

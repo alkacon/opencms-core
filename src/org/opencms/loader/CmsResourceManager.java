@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/24 11:20:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
@@ -68,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -633,26 +635,27 @@ public class CmsResourceManager {
     /**
      * Initializes all additional resource types stored in the modules.<p>
      * 
-     * @param adminCms an initialized CmsObject with "Admin" permissions
+     * @param cms an initialized OpenCms user context with "module manager" role permissions
+     * 
+     * @throws CmsRoleViolationException in case the provided OpenCms user context did not have "module manager" role permissions
      */
-    public synchronized void initialize(CmsObject adminCms) {
-        
-        if (((adminCms == null) && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT))
-            || ((adminCms != null) && !adminCms.isAdmin())) {
-            // null admin cms only allowed during test cases
-            throw new RuntimeException("Admin permissions are required to initialize the module manager");
+    public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
+
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            // some simple test cases don't require this check       
+            cms.checkRole(CmsRole.RESOURCE_TYPE_MANAGER);
         }
-        
+
         // initalize the resource types
         initResourceTypes();
-        
+
         // call initialize method on all resource types
         Iterator i = m_resourceTypeList.iterator();
         while (i.hasNext()) {
             I_CmsResourceType type = (I_CmsResourceType)i.next();
-            type.initialize(adminCms);
-        }        
-        
+            type.initialize(cms);
+        }
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }

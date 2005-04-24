@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2005/04/24 11:20:31 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.20 $ $Date: 2005/04/24 11:20:31 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -105,7 +105,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
             if (action != null) {
                 // copy the resource to the current project
                 try {
-                    if (isManager(cms)) {
+                    if (cms.isManagerOfProject()) {
                         cms.copyResourceToProject(cms.getSitePath(file));
                         session.removeValue(C_PARA_RESOURCE);
                         template = "done";
@@ -127,17 +127,6 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
         }
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
-    }
-
-    /**
-     * checks if the user has rights to manage the project
-     */
-    public boolean isManager(CmsObject cms) throws CmsException{
-        // is the current user an administrator?
-        if(cms.isAdmin() || cms.isManagerOfProject()){
-            return true;
-        }
-        return false;
     }
 
     /**

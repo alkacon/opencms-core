@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/03/06 09:26:11 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.collections.Buffer;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 5.1
  */
@@ -363,8 +363,7 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public boolean isPublishEnabled() {
         
-        return ((getCms().isAdmin() || getCms().isManagerOfProject())  
-            && (!getCms().getRequestContext().currentProject().isOnlineProject()));   
+        return getCms().isManagerOfProject();  
     }
     
     /**

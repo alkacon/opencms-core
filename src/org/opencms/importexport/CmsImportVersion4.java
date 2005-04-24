@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/04/24 11:20:30 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
@@ -37,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
@@ -68,24 +70,26 @@ import org.dom4j.Element;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public class CmsImportVersion4 extends A_CmsImport {
-    
+
     /** The version number of this import implementation.<p> */
     private static final int C_IMPORT_VERSION = 4;
-    
+
     /**
      * Creates a new CmsImportVerion4 object.<p>
      */
-    public CmsImportVersion4() {        
+    public CmsImportVersion4() {
+
         m_convertToXmlPage = true;
     }
-    
+
     /**
      * @see org.opencms.importexport.I_CmsImport#getVersion()
      * @return the version number of this import implementation
      */
     public int getVersion() {
+
         return CmsImportVersion4.C_IMPORT_VERSION;
-    }    
+    }
 
     /**
      * Imports the resources for a module.<p>
@@ -106,7 +110,20 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-    public synchronized void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
+    public synchronized void importResources(
+        CmsObject cms,
+        String importPath,
+        I_CmsReport report,
+        MessageDigest digest,
+        File importResource,
+        ZipFile importZip,
+        Document docXml,
+        Vector excludeList,
+        Vector writtenFilenames,
+        Vector fileCodes,
+        String propertyName,
+        String propertyValue) throws CmsException {
+
         // initialize the import       
         initialize();
         m_cms = cms;
@@ -119,7 +136,7 @@ public class CmsImportVersion4 extends A_CmsImport {
         m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
-        
+
         // these lines make Eclipse happy...
         if (writtenFilenames != null) {
             writtenFilenames.size();
@@ -127,10 +144,10 @@ public class CmsImportVersion4 extends A_CmsImport {
         if (fileCodes != null) {
             fileCodes.size();
         }
-        
+
         try {
             // first import the user information
-            if (m_cms.isAdmin()) {
+            if (cms.hasRole(CmsRole.USER_MANAGER)) {
                 importGroups();
                 importUsers();
             }
@@ -160,20 +177,42 @@ public class CmsImportVersion4 extends A_CmsImport {
      * 
      * @throws CmsException in case something goes wrong
      */
-    protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
-        
+    protected void importUser(
+        String name,
+        String description,
+        String flags,
+        String password,
+        String firstname,
+        String lastname,
+        String email,
+        String address,
+        String type,
+        Hashtable userInfo,
+        Vector userGroups) throws CmsException {
+
         boolean convert = false;
-        
+
         Map config = OpenCms.getPasswordHandler().getConfiguration();
         if (config != null && config.containsKey(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)) {
             convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)).booleanValue();
         }
-            
+
         if (convert) {
             password = convertDigestEncoding(password);
         }
-        
-        super.importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
+
+        super.importUser(
+            name,
+            description,
+            flags,
+            password,
+            firstname,
+            lastname,
+            email,
+            address,
+            type,
+            userInfo,
+            userGroups);
     }
 
     /**
@@ -186,13 +225,14 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @return long value of the timestamp
      */
     private long convertTimestamp(String timestamp) {
+
         long value = 0;
         // try to parse the timestamp string
         // if it successes, its an old style long value
         try {
             value = Long.parseLong(timestamp);
-            
-        } catch (NumberFormatException e) {           
+
+        } catch (NumberFormatException e) {
             // the timestamp was in in a user-readable string format, create the long value form it
             try {
                 value = CmsDateUtil.parseHeaderDate(timestamp);
@@ -203,7 +243,7 @@ public class CmsImportVersion4 extends A_CmsImport {
         return value;
     }
 
-   /**
+    /**
      * Imports a resource (file or folder) into the cms.<p>
      * 
      * @param source the path to the source-file
@@ -315,7 +355,7 @@ public class CmsImportVersion4 extends A_CmsImport {
         }
         return result;
     }
-  
+
     /**
      * Reads all file nodes plus their meta-information (properties, ACL) 
      * from manifest.xml and imports them as Cms resources to the VFS.<p>
@@ -341,21 +381,19 @@ public class CmsImportVersion4 extends A_CmsImport {
         }
 
         // build list of immutable resources
-        List immutableResources = new ArrayList(); 
+        List immutableResources = new ArrayList();
         if (OpenCms.getImportExportManager().getImmutableResources() != null) {
             immutableResources.addAll(OpenCms.getImportExportManager().getImmutableResources());
         }
         if (excludeList != null) {
             immutableResources.addAll(excludeList);
         }
-        
+
         // get list of ignored properties
         List ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (ignoredProperties == null) {
             ignoredProperties = Collections.EMPTY_LIST;
         }
-
-
 
         // get the desired page type for imported pages
         m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();
@@ -382,7 +420,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 String typeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
 
-                if (! type.isFolder()) {
+                if (!type.isFolder()) {
                     // <uuidresource>
                     uuidresource = CmsImport.getChildElementTextValue(
                         currentElement,
@@ -429,7 +467,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else {
                     datereleased = CmsResource.DATE_RELEASED_DEFAULT;
                 }
-                
+
                 // <dateexpired>
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
@@ -438,19 +476,19 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else {
                     dateexpired = CmsResource.DATE_EXPIRED_DEFAULT;
                 }
-                
+
                 // <flags>              
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
                 // apply name translation and import path         
-                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);                
+                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
                 if (type.isFolder()) {
                     // ensure folders end with a "/"
-                    if (! CmsResource.isFolder(translatedName)) {
+                    if (!CmsResource.isFolder(translatedName)) {
                         translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
                 }
-                
+
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
@@ -480,14 +518,14 @@ public class CmsImportVersion4 extends A_CmsImport {
                         usercreated,
                         datereleased,
                         dateexpired,
-                        flags, 
+                        flags,
                         properties);
 
                     // if the resource was imported add the access control entrys if available
                     if (res != null) {
-                        
+
                         List aceList = new ArrayList();
-                        
+
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/"
                             + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
@@ -520,15 +558,13 @@ public class CmsImportVersion4 extends A_CmsImport {
                                     "./"
                                         + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET
                                         + "/"
-                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0))
-                                    .getTextTrim();
+                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
 
                                 String denied = ((Element)currentEntry.selectNodes(
                                     "./"
                                         + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET
                                         + "/"
-                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).get(0))
-                                    .getTextTrim();
+                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
 
                                 // add the entry to the list
                                 aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));
@@ -538,44 +574,56 @@ public class CmsImportVersion4 extends A_CmsImport {
                                 m_report.println(e);
                             }
                         }
-                        
+
                         importAccessControlEntries(res, aceList);
-                        
+
                         if (OpenCms.getLog(this).isInfoEnabled()) {
                             OpenCms.getLog(this).info(
-                                "( " + (i + 1) + " / " + importSize + " ) "
-                                + m_report.key("report.importing")
-                                + translatedName
-                                + " ("
-                                + destination
-                                + ")"
-                                + m_report.key("report.dots")
-                                + m_report.key("report.ok"));
-                        }                          
+                                "( "
+                                    + (i + 1)
+                                    + " / "
+                                    + importSize
+                                    + " ) "
+                                    + m_report.key("report.importing")
+                                    + translatedName
+                                    + " ("
+                                    + destination
+                                    + ")"
+                                    + m_report.key("report.dots")
+                                    + m_report.key("report.ok"));
+                        }
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                         m_report.println(translatedName);
-                        
+
                         if (OpenCms.getLog(this).isInfoEnabled()) {
                             OpenCms.getLog(this).info(
-                                " ( " + (i + 1) + " / " + importSize + " ) "
-                                + m_report.key("report.skipping")
-                                + translatedName);
-                        }                        
+                                " ( "
+                                    + (i + 1)
+                                    + " / "
+                                    + importSize
+                                    + " ) "
+                                    + m_report.key("report.skipping")
+                                    + translatedName);
+                        }
                     }
 
                 } else {
                     // skip the file import, just print out the information to the report
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(translatedName);
-                    
+
                     if (OpenCms.getLog(this).isInfoEnabled()) {
                         OpenCms.getLog(this).info(
-                            " ( " + (i + 1) + " / " + importSize + " ) "
-                            + m_report.key("report.skipping")
-                            + translatedName);
-                    }                    
+                            " ( "
+                                + (i + 1)
+                                + " / "
+                                + importSize
+                                + " ) "
+                                + m_report.key("report.skipping")
+                                + translatedName);
+                    }
                 }
             }
         } catch (Exception exc) {
@@ -587,6 +635,4 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
         }
     }
-    
-    
 }

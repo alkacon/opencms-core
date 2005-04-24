@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/04/24 11:20:31 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -412,7 +412,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @see CmsSecurityManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, String, boolean)
      * @see CmsObject#importResource(String, CmsResource, byte[], List)
-     * @see CmsSecurityManager#createResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
+     * @see CmsSecurityManager#importResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
      */
     CmsResource importResource(
         CmsObject cms,
