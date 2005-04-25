@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsHtmlImport {
     
@@ -247,10 +247,10 @@ public class CmsHtmlImport {
             encoding = "";
         }
         if (startPattern == null) {
-            startPattern = "<!-- start main slot -->";
+            startPattern = "";
         }
         if (endPattern == null) {
-            endPattern = "<!-- end main slot -->";
+            endPattern = "";
         }
         if (overwrite == null) {
             overwrite = "checked";
