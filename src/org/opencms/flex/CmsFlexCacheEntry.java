@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/04/25 09:10:05 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.flex;
 
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
 
@@ -323,11 +323,11 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @param req the request from the client
      * @param res the server response
-     * @throws CmsException is thrown when problems writing to the response output-stream occur
+     * @throws CmsFlexCacheException is thrown when problems writing to the response output-stream occur
      * @throws ServletException might be thrown from call to RequestDispatcher.include()
      * @throws IOException might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
      */
-    public void service(CmsFlexRequest req, CmsFlexResponse res) throws CmsException, ServletException, IOException {
+    public void service(CmsFlexRequest req, CmsFlexResponse res) throws CmsFlexCacheException, ServletException, IOException {
 
         if (!m_completed) {
             return;
@@ -364,13 +364,13 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
                     } catch (IOException e) {
-
-                        String err = Messages.get().key(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, getClass().getName());
+                        
+                        CmsMessageContainer message = Messages.get().container(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, getClass().getName());
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(err);
+                            LOG.debug(message);
                         }
-
-                        throw new CmsException(err + "\n" + e, e);
+                        
+                        throw new CmsFlexCacheException(message, e);
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/04/25 09:10:05 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
@@ -155,8 +155,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             } catch (CmsException e) {
                 // if other OpenCms exception occured we are in trouble              
                 throw new ServletException(
-                    Messages.get().key(Messages.ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0),
-                    e);
+                    Messages.get().key(Messages.ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0), e);
             }
         }
 
@@ -250,25 +249,25 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                                 cms.getRequestContext().addSiteRoot(m_vfsTarget),
                                 cacheProperty,
                                 f_req.isOnline()));
-                        } catch (CmsException e) {
-                            if (e.getType() == CmsException.C_FLEX_CACHE) {
-                                // invalid key is ignored but logged, used key is cache=never
-                                if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().key(
-                                        Messages.LOG_FLEXREQUESTDISPATCHER_INVALID_CACHE_KEY_2,
-                                        m_vfsTarget,
-                                        cacheProperty));
-                                }
-                                // there will be a vaild key in the response ("cache=never") even after an exception
-                                cache.putKey(w_res.getCmsCacheKey());
-                            } else {
-                                // all other errors are not handled here
-                                controller.setThrowable(e, m_vfsTarget);
-                                throw new ServletException(Messages.get().key(
-                                    Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_2,
+                        } catch (CmsFlexCacheException e) {
+                            
+                            // invalid key is ignored but logged, used key is cache=never
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(Messages.get().key(
+                                    Messages.LOG_FLEXREQUESTDISPATCHER_INVALID_CACHE_KEY_2,
                                     m_vfsTarget,
-                                    e), e);
+                                    cacheProperty));
                             }
+                            // there will be a vaild key in the response ("cache=never") even after an exception
+                            cache.putKey(w_res.getCmsCacheKey());                            
+                        } catch (CmsException e) {
+
+                            // all other errors are not handled here
+                            controller.setThrowable(e, m_vfsTarget);
+                            throw new ServletException(Messages.get().key(
+                                Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_2,
+                                m_vfsTarget,
+                                e), e);
                         }
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(
