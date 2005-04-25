@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRequest.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/25 14:07:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.staticexport;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -42,11 +42,13 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Wrapper for static export requests, required for parameter based requests.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     
@@ -55,6 +57,9 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     
     /** Map of parameters from the original request. */
     private Map m_parameters;    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStaticExportRequest.class);  
     
     /**
      * Creates a new static export request wrapper.<p>
@@ -132,16 +137,14 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
             String param = tok.nextToken();
             int pos = param.indexOf('=');
             if (pos < 0) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Invalild parameter used for static export wrapper " + param);
-                }
+                LOG.error(Messages.get().key(Messages.LOG_INVALID_PARAM_1, param));
                 continue;
             }
             String key = param.substring(0, pos);
             String value = param.substring(pos + 1);
             
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Adding static export parameter key=" + key + " value=" + value);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_ADD_SE_PARAM_2, key, value));
             }
             
             // request parameter Map requires String[] not String values

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/04/07 08:39:03 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2005/04/25 14:07:15 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,6 +73,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides the functionaility to export resources from the OpenCms VFS
@@ -80,7 +81,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -113,6 +114,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Cache value to indicate a true 404 error. */
     private static final String C_CACHEVALUE_404 = "?404";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStaticExportManager.class);     
 
     /** Matcher for  selecting those resources which should be part of the staic export. */
     private static CmsExportFolderMatcher m_exportFolderMatcher;
@@ -256,20 +260,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "Static export manager catched event EVENT_PUBLISH_PROJECT for project ID " + publishHistoryId);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
-
                 I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 getHandler().performEventPublishProject(publishHistoryId, report);
 
                 clearCaches(event);
-
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "Static export manager finished publish event for project ID " + publishHistoryId);
+                
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1, publishHistoryId));                
                 }
+                
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 clearCaches(event);
@@ -291,9 +293,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @throws CmsException in case of errors accessing the VFS
      * @throws ServletException in case of errors accessing the servlet 
      * @throws IOException in case of erros writing to the export output stream
+     * @throws CmsStaticExportException if static export is disabled
      */
     public int export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data)
-    throws CmsException, IOException, ServletException {
+    throws CmsException, IOException, ServletException, CmsStaticExportException {
 
         int status = -1;
 
@@ -326,11 +329,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         } else {
             siteRoot = "/";
         }
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Static export site root " + siteRoot + " / vfsName " + vfsName);
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
         }
-
         cms.getRequestContext().setSiteRoot(siteRoot);
 
         String oldUri = null;
@@ -343,10 +345,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (res != null) {
             wrapRes = new CmsStaticExportResponseWrapper(res);
         }
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Static export starting for resource " + data);
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SE_RESOURCE_START_1, data));
+        }    
 
         // read vfs resource
         if (resource.isFile()) {
@@ -366,11 +367,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // check loader id for resource
         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(file);
         if ((loader == null) || (!loader.isStaticExportEnabled())) {
-            throw new CmsException("Unable to export VFS file "
-                + vfsName
-                + ", loader for type "
-                + file.getTypeId()
-                + " does not support static export");
+            Object[] arguments = new Object[]{vfsName, new Integer(file.getTypeId())};
+            throw new CmsStaticExportException(Messages.get().container(Messages.ERR_EXPORT_NOT_SUPPORTED_2, arguments));  
+            
         }
 
         FileOutputStream exportStream = null;
@@ -418,21 +417,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     exportStream.close();
 
                 } catch (Throwable t) {
-                    throw new CmsException("Creation of static export output stream failed for RFS file "
-                        + exportFileName);
+                    throw new CmsStaticExportException(Messages.get().container(Messages.ERR_OUTPUT_STREAM_1, exportFileName), t);  
                 }
                 // update the file with the modification date from the server
                 if (req != null) {
                     Long dateLastModified = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
                     if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
                         exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug(
-                                "Setting RFS file "
-                                    + exportFile.getName()
-                                    + " 'date last modified' to "
-                                    + (dateLastModified.longValue() / 1000)
-                                    * 1000);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(Messages.LOG_SET_LAST_MODIFIED_2, exportFile.getName(), new Long((dateLastModified.longValue() / 1000) * 1000)));
                         }
                     }
                 } else {
@@ -459,9 +452,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // log export success 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this)
-                .info("Static exported vfs file '" + vfsName + "' to rfs file '" + exportFileName + "'");
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
         }
 
         return status;
@@ -531,11 +523,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // loop through all resources
         Iterator i = publishedResources.iterator();
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "Starting export of non-template resources with "
-                    + publishedResources.size()
-                    + " possible candidates in list");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_EXPORTING_NON_TEMPLATE_1, new Integer(publishedResources.size())));
         }
 
         while (i.hasNext()) {
@@ -578,17 +567,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         i = resourcesToExport.iterator();
         int size = resourcesToExport.size();
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Found " + size + " resources to export");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_NUM_EXPORT_1, new Integer(size)));        
         }
-
         while (i.hasNext()) {
             CmsStaticExportData exportData = (CmsStaticExportData)i.next();
-
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(
-                    "Exporting " + exportData.getVfsName() + " -> " + exportData.getRfsName() + "...");
-            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_EXPORT_FILE_2, exportData.getVfsName(), exportData.getRfsName()));
+            }    
 
             report.print("(" + count++ + " / " + size + ") ", I_CmsReport.C_FORMAT_NOTE);
             report.print(report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
@@ -600,17 +586,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             } else {
                 report.println(report.key("report.ignored"), I_CmsReport.C_FORMAT_NOTE);
             }
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this)
-                    .info(
-                        "Export "
-                            + exportData.getVfsName()
-                            + " -> "
-                            + exportData.getRfsName()
-                            + " [STATUS "
-                            + status
-                            + "]");
-            }
+            
+            if (LOG.isInfoEnabled()) {
+                Object[] arguments = new Object[]{exportData.getVfsName(), exportData.getRfsName(), new Integer(status)};
+                LOG.info(Messages.get().key(Messages.LOG_EXPORT_FILE_STATUS_3, arguments));
+            }    
         }
 
         resourcesToExport = null;
@@ -632,11 +612,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         int size = publishedTemplateResources.size();
         int count = 1;
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "Starting export of template resources with " + size + " possible canditates in list");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_EXPORT_TEMPLATES_1, new Integer(size)));        
         }
-
         report.println(report.key("report.staticexport.templateresources_begin"), I_CmsReport.C_FORMAT_HEADLINE);
 
         // now loop through all of them and request them from the server
@@ -652,9 +630,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
             String exportUrlStr = getExportUrl() + getRfsPrefix() + rfsName;
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(
-                    "Sending request for RFS file " + rfsName + " with url (" + exportUrlStr + ")");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_SENDING_REQUEST_2, rfsName, exportUrlStr));
             }
 
             try {
@@ -684,14 +661,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (exportFile != null) {
                     long dateLastModified = exportFile.lastModified();
                     urlcon.setIfModifiedSince(dateLastModified);
-
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug(
-                            "Request for RFS file "
-                                + exportFile.getName()
-                                + "' If-Modified-Since' header set to "
-                                + (dateLastModified / 1000)
-                                * 1000);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_IF_MODIFIED_SINCE_SET_2, exportFile.getName(), new Long((dateLastModified / 1000)* 1000)));                    
                     }
                 }
 
@@ -699,16 +670,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 urlcon.connect();
                 int status = urlcon.getResponseCode();
                 urlcon.disconnect();
-
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(
-                        "Request result for RFS file "
-                            + rfsName
-                            + " with url ("
-                            + exportUrlStr
-                            + ") was STATUS="
-                            + status);
-                }
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_REQUEST_RESULT_3, rfsName, exportUrlStr, new Integer(status)));
+                }    
+                
 
                 // write the report
                 if (status == HttpServletResponse.SC_OK) {
@@ -1239,9 +1204,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 parameters,
                 System.currentTimeMillis());
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Failed to write RFS resource '" + translatedRfsName + "' to database ", e);
-            }
+            
+            LOG.error(Messages.get().key(Messages.LOG_WRITE_FAILED_1, translatedRfsName), e);
+            
         }
         return translatedRfsName;
     }
@@ -1310,10 +1275,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             m_vfsPrefix = m_vfsPrefix.substring(0, m_vfsPrefix.length() - 1);
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug(
-                "Created static export manager" + ((cms != null) ? (" with CmsObject " + cms) : ""));
+        if (CmsLog.LOG.isDebugEnabled()) {
+            if (cms != null) {
+                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0, cms));
+            } else {
+                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0));
+            }
         }
+       
 
         LRUMap lruMap1 = new LRUMap(2048);
         m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
@@ -1352,22 +1321,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // get the default accept-charset header value
         m_defaultAcceptCharsetHeader = OpenCms.getSystemInfo().getDefaultEncoding();
-
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Static export        : " + (isStaticExportEnabled() ? "enabled" : "disabled"));
+        
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_1, isStaticExportEnabled() ? "enabled" : "disabled"));
+            
             if (isStaticExportEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + getExportPropertyDefault());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + getExportPath());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + getRfsPrefix());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + getVfsPrefix());
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Export link style    : " + (relativLinksInExport() ? "relative" : "absolute"));
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Export handler       : " + (getHandler().getClass().getName()));
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export URL           : " + (getExportUrl()));
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export optimization  : " + (getPlainExportOptimization()));
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export testresource  : " + (getTestResource()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_DEFAULT_1, new Boolean(getExportPropertyDefault())));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_PATH_1, getExportPath()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_RFS_PREFIX_1, getRfsPrefix()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_LINK_STYLE_1, relativLinksInExport() ? "relative" : "absolute"));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_EXPORT_HANDLER_1, getHandler().getClass().getName()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
             }
         }
     }
@@ -1501,14 +1468,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public void setExportHeader(String exportHeader) {
 
         if (CmsStringUtil.splitAsArray(exportHeader, ':').length == 2) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + exportHeader);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
             }
             m_exportHeaders.add(exportHeader);
         } else {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                    ". Export headers       : " + "invalid header: " + exportHeader + ", using default headers");
+            if (CmsLog.LOG.isWarnEnabled()) {
+                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
             }
         }
     }
@@ -1647,11 +1613,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 count = C_HANDLER_FINISH_TIME;
             }
         }
-
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Shutting down        : " + this.getClass().getName() + " ... ok!");
-        }
+        
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        }    
+            
     }
 
     /**
@@ -1666,12 +1632,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_cacheExportUris.clear();
         m_cacheSecureLinks.clear();
         setExportnames();
-        if (OpenCms.getLog(this).isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             String eventType = "EVENT_CLEAR_CACHES";
             if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
                 eventType = "EVENT_PUBLISH_PROJECT";
-            }
-            OpenCms.getLog(this).debug("Static export manager flushed caches after recieving event " + eventType);
+            }            
+            LOG.debug(Messages.get().key(Messages.LOG_FLUSHED_CACHES_1, eventType));
         }
     }
 
@@ -1687,7 +1653,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdirs()) {
-                throw new CmsException("Creation of static export folder failed for RFS file " + rfsName);
+                throw new CmsStaticExportException(Messages.get().container(Messages.ERR_CREATE_FOLDER_1, rfsName));  
+                
             }
         }
     }
@@ -1708,9 +1675,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsPublishedResource resource;
         long starttime;
         long endtime;
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Get all resources from vfs");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_GET_ALL_RESOURCES_0));
         }
 
         try {
@@ -1730,17 +1696,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
             // loop through the list and create the list of CmsPublishedResources
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Got " + vfsResources.size() + " resources, building list now");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_NUM_RESOURCES_1, new Integer(vfsResources.size())));
             }
+            
 
             Iterator i = vfsResources.iterator();
             while (i.hasNext()) {
                 vfsResource = (CmsResource)i.next();
                 resource = new CmsPublishedResource(vfsResource);
 
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Processing " + resource.getRootPath());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_PROCESSING_1, resource.getRootPath()));                
                 }
 
                 resources.add(resource);
@@ -1848,7 +1815,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @throws CmsException in case of errors accessing the VFS
      */
     private CmsStaticExportData getStaticExportDataWithParameter(CmsObject cms, String rfsName, String parameters)
-    throws CmsException {
+    throws CmsVfsResourceNotFoundException, CmsException {
 
         String vfsName = null;
         CmsStaticExportData data = null;
@@ -1868,7 +1835,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             cacheExportUri(rfsName, vfsName);
 
         } else {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + "] " + vfsBaseName);
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(Messages.ERR_RESOURCE_NOT_FOUND_2, this.getClass().getName(), vfsBaseName));  
         }
 
         return data;
@@ -1978,15 +1945,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (exportFolder.exists() && exportFolder.canWrite()) {
                 CmsFileUtil.purgeDirectory(exportFolder);
                 // write log message
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Static export deleted main export folder '" + exportFolderName + "'");
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
                 }
+                
             }
         } catch (Throwable t) {
-            // ignore, nothing to do about this
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Error deleting static export folder rfsName='" + exportFolderName + "'", t);
+            // ignore, nothing to do about the
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
             }
+            
         }
     }
 
@@ -1994,12 +1963,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * Set the list of all resources that have the "exportname" property set.<p>
      */
     private synchronized void setExportnames() {
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "Static export manager starting update of list of resources with 'exportname' property");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
         }
-
+      
         List resources;
         CmsObject cms = null;
         try {
@@ -2030,10 +1997,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
         }
         m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "Static export manager finished update of list of resources with 'exportname' property");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
+        }    
     }
 }

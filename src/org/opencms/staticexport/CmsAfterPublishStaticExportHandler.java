@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/04/14 10:42:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/25 14:07:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsFileUtil;
@@ -52,18 +53,23 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Implementation for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
  * 
  * This handler exports all changes immediately after something is published.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */
 public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAfterPublishStaticExportHandler.class);  
+    
     /** Indicates if this content handler is busy. */
     protected boolean m_busy;
 
@@ -135,9 +141,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             m_busy = true;
             exportAfterPublish(publishHistoryId, report);
         } catch (Throwable t) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error during static export:", t);
-            }
+            LOG.error(Messages.get().key(Messages.LOG_STATIC_EXPORT_ERROR_0), t);
         } finally {
             m_busy = false;
         }
@@ -163,20 +167,19 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
         String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
             + OpenCms.getStaticExportManager().getTestResource());
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Static export, checking test resource " + rfsName);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_CHECKING_TEST_RESOURCE_1, rfsName));
         }
-
         File file = new File(rfsName);
         if (!file.exists()) {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Test resource does not exist -> do export 'full static render'");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_TEST_RESOURCE_NOT_EXISTANT_0));
             }
             // the file is not there, so export everything
             OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
         } else {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Test resource exists -> do static export 'after publish'");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_TEST_RESOURCE_EXISTS_0));
             }
 
             // delete all resources deleted during the publish process
@@ -199,10 +202,9 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
      * @param publishHistoryId id of the last published project
      */
     private void scrubExportFolders(CmsUUID publishHistoryId) {
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "Static export manager scrubbing export folders for project ID " + publishHistoryId);
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SCRUBBING_EXPORT_FOLDERS_1, publishHistoryId));
         }
 
         Set scrubedFolders = new HashSet();
@@ -213,19 +215,14 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
         } catch (CmsException e) {
             // this should never happen
-            OpenCms.getLog(this).error("Could not init CmsObject with default export user");
+            LOG.error(Messages.get().key(Messages.LOG_INIT_FAILED_0), e);
             return;
         }
         List publishedResources;
         try {
             publishedResources = cms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this)
-                    .error(
-                        "Static export manager could not read list of changes resources for project ID "
-                            + publishHistoryId);
-            }
+            LOG.error(Messages.get().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId), e);
             return;
         }
         Iterator it = publishedResources.iterator();
@@ -259,9 +256,8 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                 String vfsName = (String)siblings.get(i);
                 // get the link name for the published file 
                 String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_CHECKING_STATIC_EXPORT_2, vfsName, rfsName));
                 }
                 if (rfsName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix())
                     && (!scrubedFiles.contains(vfsName))
@@ -280,30 +276,23 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                                 if (exportFolder.exists() && exportFolder.canWrite()) {
                                     CmsFileUtil.purgeDirectory(exportFolder);
                                     // write log message
-                                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                                        OpenCms.getLog(this).info(
-                                            "Static export deleted export folder '" + exportFolderName + "'");
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.info(Messages.get().key(Messages.LOG_FOLDER_DELETED_1, exportFolderName));
                                     }
                                     scrubedFolders.add(vfsName);
                                     continue;
                                 }
                             } catch (Throwable t) {
                                 // ignore, nothing to do about this
-                                if (OpenCms.getLog(this).isWarnEnabled()) {
-                                    OpenCms.getLog(this).warn(
-                                        "Error deleting static export folder vfsName='"
-                                            + vfsName
-                                            + "' rfsName='"
-                                            + exportFolderName
-                                            + "'",
-                                        t);
+                                if (LOG.isWarnEnabled()) {
+                                    LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_2, vfsName, exportFolderName));
                                 }
                             }
                         }
                         // add index.html to folder name
                         rfsName += CmsStaticExportManager.C_EXPORT_DEFAULT_FILE;
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Static export folder index file rfsName='" + rfsName + "'");
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(Messages.LOG_FOLDER_1, rfsName));
                         }
                     }
                     exportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
@@ -314,20 +303,14 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                         if (exportFile.exists() && exportFile.canWrite()) {
                             exportFile.delete();
                             // write log message
-                            if (OpenCms.getLog(this).isInfoEnabled()) {
-                                OpenCms.getLog(this).info("Static export deleted exported rfs file '" + rfsName + "'");
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(Messages.get().key(Messages.LOG_FILE_DELETED_1, rfsName));
                             }
                         }
                     } catch (Throwable t) {
                         // ignore, nothing to do about this
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn(
-                                "Error deleting static export file vfsName='"
-                                    + vfsName
-                                    + "' rfsName='"
-                                    + exportFileName
-                                    + "'",
-                                t);
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().key(Messages.LOG_FILE_DELETION_FAILED_2, vfsName, exportFileName));
                         }
                     }
                 }

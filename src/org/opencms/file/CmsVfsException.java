@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/25 14:07:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,14 @@
 package org.opencms.file;
 
 import org.opencms.db.CmsDataAccessException;
+import org.opencms.i18n.CmsMessageContainer;
 
 /**
  * Used to signal VFS related issues, for example during file access.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1.4
  */
 public class CmsVfsException extends CmsDataAccessException {
@@ -111,6 +112,27 @@ public class CmsVfsException extends CmsDataAccessException {
     public CmsVfsException(String message, int type, Throwable rootCause) {
         super(message, type, rootCause);
     }
+    
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsVfsException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsVfsException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }     
     
     /**
      * Returns the description String for the provided CmsException type.<p>

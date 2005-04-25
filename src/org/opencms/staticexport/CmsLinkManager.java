@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/04/05 13:29:14 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/04/25 14:07:15 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
@@ -46,6 +47,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Does the link replacement for the &lg;link&gt; tags.<p> 
  *
@@ -54,13 +57,16 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsLinkManager {
 
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLinkManager.class); 
+    
     /**
      * Public constructor.<p>
      */
@@ -220,7 +226,9 @@ public class CmsLinkManager {
             }
 
         } catch (Exception e) {
-            OpenCms.getLog(CmsLinkManager.class).warn(e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
+            }
             return null;
         }
 
@@ -445,8 +453,8 @@ public class CmsLinkManager {
                         linkType = cms.readResource(link).getTypeId();
                     } catch (CmsException e) {
                         // there are no access rights on the resource
-                        if (OpenCms.getLog(this).isInfoEnabled()) {
-                            OpenCms.getLog(this).info(e);
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(Messages.get().key(Messages.LOG_NO_ACCESS_RIGHTS_1, link), e);
                         }
                     }
 

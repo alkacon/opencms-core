@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceNotFoundException.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportException.java,v $
  * Date   : $Date: 2005/04/25 14:07:15 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,47 +28,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.file;
+
+package org.opencms.staticexport;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsThrowable;
 
 /**
- * Signals that an attempt to read a resource in the VFS denoted by a specified 
- * pathname has failed.<p> 
+ * Describes errors that occur in the context of OpenCms scheduler.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2005/04/25 14:07:15 $
- * @since 5.1.2
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @since 5.7.3
  */
-public class CmsVfsResourceNotFoundException extends CmsVfsException {
+public class CmsStaticExportException extends CmsException implements I_CmsThrowable {
 
-    /**
-     * Constructs a CmsVfsResourceNotFoundException with the specified detail message.<p>
-     * 
-     * @param message the detail message
-     */
-    public CmsVfsResourceNotFoundException(String message) {
-        super(message, C_VFS_RESOURCE_NOT_FOUND);
-    }
-
-    /**
-     * Constructs a CmsVfsResourceNotFoundException with the specified detail message
-     * and adds the original exception as a delegated root cause.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the delegated exception
-     */
-    public CmsVfsResourceNotFoundException(String message, Throwable rootCause) {
-        super(message, C_VFS_RESOURCE_NOT_FOUND, rootCause);
-    }
-    
     /**
      * Creates a new localized Exception.<p>
      * 
      * @param container the localized message container to use
      */
-    public CmsVfsResourceNotFoundException(CmsMessageContainer container) {
+    public CmsStaticExportException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -79,8 +59,8 @@ public class CmsVfsResourceNotFoundException extends CmsVfsException {
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
-    public CmsVfsResourceNotFoundException(CmsMessageContainer container, Throwable cause) {
+    public CmsStaticExportException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }    
+    }
 }

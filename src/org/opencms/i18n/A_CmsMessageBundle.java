@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/25 14:07:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.main.Messages.get(),
             org.opencms.scheduler.Messages.get(),
             org.opencms.security.Messages.get(),
+            org.opencms.staticexport.Messages.get(),
             org.opencms.threads.Messages.get(),
             org.opencms.util.Messages.get(),
             org.opencms.validation.Messages.get(),
