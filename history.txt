@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.629 $
+ * Date   : $Date: 2005/04/25 11:44:07 $
+ * Version: $Revision: 1.630 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 ! It's now possible to activate and deactivate scheduled jobs
 ! It's now possible to update and remove a job from the scheduler
 - Improved implementation CmsException (and it's subclasses) to be better standard compliant
+* Fixed issue in OpenCms static export for binary resources
 * Applied PostgeSQL patches supplied by Antonio
 ! It's now possible to add the Workplace context menu configuration for a new resource type in a module
 - Shared parts of DTD's in the OpenCms configuration are now included as sub-DTD's, not copied
@@ -43,6 +44,8 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 ! System functions are not longer accessible by "Administrators" only, they now require a certain role instead
 - Final design of the "New Administration" view (almost) finished
 ! Added implementation of a list "widget" for display of managable objects in the "New Administration"
+! "templateone" can be configured to either display the "accessible" or "classical" (tables based) version by default
+- "templateone" demo data now is displayed in the "accessible" version 
 
 OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 * Fixed SQL statement compatibility issue with MySQL 3.2.x
