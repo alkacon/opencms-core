@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/25 15:20:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -389,10 +389,11 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         
         try {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
+            String template = jsp.getCmsObject().readPropertyObject(jsp.getCmsObject().getSitePath(res), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue("");
             if (! res.isFolder() && res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId() 
                     && res.getTypeId() != CmsResourceTypePlain.getStaticTypeId() && res.getTypeId() != CmsResourceTypeImage.getStaticTypeId()) {
                 // file is no plain text, binary or image type, check "template" property
-                if (C_TEMPLATE_ONE.equals(jsp.getCmsObject().readPropertyObject(jsp.getCmsObject().getSitePath(res), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue(""))) {
+                if (C_TEMPLATE_ONE.equals(template)) {
                     // display special property dialog for files with "template one" as template
                     return C_MODULE_PATH + "dialogs/property.jsp";
                 } else if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
@@ -400,7 +401,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                     return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
                 }
             }
-            if (res.isFolder() && ! res.getRootPath().startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM)) {
+            if (res.isFolder() && C_TEMPLATE_ONE.equals(template) && ! res.getRootPath().startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM)) {
                 // display special property dialog also for folders but exclude the system folders
                 return C_MODULE_PATH + "dialogs/property.jsp";
             }
