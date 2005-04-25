@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/04/18 09:39:16 $
- * Version: $Revision: 1.232 $
+ * Date   : $Date: 2005/04/25 14:47:34 $
+ * Version: $Revision: 1.233 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.232 $ $Date: 2005/04/18 09:39:16 $
+ * @version $Revision: 1.233 $ $Date: 2005/04/25 14:47:34 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1482,9 +1482,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, String)
      */
-    public List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDef) throws CmsDataAccessException {
+    public List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDef, String path) throws CmsDataAccessException {
         List resources = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1494,6 +1494,44 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(dbc, projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF");
             stmt.setString(1, propertyDef.toString());
+            stmt.setString(2, path + "%");
+            stmt.setString(3, propertyDef.toString());
+            stmt.setString(4, path + "%");
+            res = stmt.executeQuery();  
+
+            while (res.next()) {
+                CmsResource resource = createResource(res, projectId);
+                resources.add(resource);
+            }            
+        } catch (SQLException e) {
+            throw new CmsSqlException(this, stmt, e);
+        } catch (Exception exc) {
+            throw new CmsDataAccessException(exc);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return resources;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, String, String)
+     */
+    public List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDef, String path, String value) throws CmsDataAccessException {
+        List resources = new ArrayList();
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF_VALUE");
+            stmt.setString(1, propertyDef.toString());
+            stmt.setString(2, path + "%");
+            stmt.setString(3, "%" + value + "%");
+            stmt.setString(4, propertyDef.toString());
+            stmt.setString(5, "%" + path + "%");
+            stmt.setString(6, value + "%");
             res = stmt.executeQuery();  
 
             while (res.next()) {

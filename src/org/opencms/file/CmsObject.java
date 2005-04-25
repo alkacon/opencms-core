@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2005/04/25 14:47:34 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.115 $
+ * @version $Revision: 1.116 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2609,6 +2609,26 @@ public class CmsObject {
     public List readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
 
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition);
+    }
+
+    /**
+     * Reads all resources that have a value (containing the specified value) set 
+     * for the specified property in the given path.<p>
+     * 
+     * Both individual and shared properties of a resource are checked.<p>
+     *
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property to check for
+     * @param value the string to search in the value of the property
+     * 
+     * @return all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property in the given path.
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readResourcesWithProperty(String path, String propertyDefinition, String value) throws CmsException {
+
+        return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition, value);
     }
 
     /**

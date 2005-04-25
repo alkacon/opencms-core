@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/04/25 14:47:34 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -3569,6 +3569,37 @@ public final class CmsSecurityManager {
         List result = null;
         try {
             result = m_driverManager.readResourcesWithProperty(dbc, path, propertyDefinition);
+        } catch (Exception e) {
+            dbc.report(null, null, e);
+        } finally {
+            dbc.clear();
+        }        
+        return result;
+    }
+
+    /**
+     * Reads all resources that have a value (containing the specified value) set 
+     * for the specified property (definition) in the given path.<p>
+     * 
+     * Both individual and shared properties of a resource are checked.<p>
+     *
+     * @param context the current request context
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property (definition) to check for
+     * @param value the string to search in the value of the property
+     * 
+     * @return a list of all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property.
+     * 
+     * @throws CmsException if something goes wrong
+     */   
+    public List readResourcesWithProperty(CmsRequestContext context, String path, String propertyDefinition, String value)
+    throws CmsException {
+
+        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
+        List result = null;
+        try {
+            result = m_driverManager.readResourcesWithProperty(dbc, path, propertyDefinition, value);
         } catch (Exception e) {
             dbc.report(null, null, e);
         } finally {

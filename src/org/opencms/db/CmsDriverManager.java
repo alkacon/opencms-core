@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.483 $
+ * Date   : $Date: 2005/04/25 14:47:34 $
+ * Version: $Revision: 1.484 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.483 $ $Date: 2005/04/24 11:20:32 $
+ * @version $Revision: 1.484 $ $Date: 2005/04/25 14:47:34 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5600,23 +5600,48 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);            
             
             // now read the list of resources that have a value set for the property definition
-            List resources = m_vfsDriver.readResourcesWithProperty(dbc, dbc.currentProject().getId(), propDef.getId());
+            extractedResources = m_vfsDriver.readResourcesWithProperty(dbc, dbc.currentProject().getId(), propDef.getId(), path);
             
-            if ("/".equals(path)) {            
-                // root path - return all resources found 
-                extractedResources = resources;                            
-            } else {
-                // other path - sort out resources that are in the required folder
-                extractedResources = new ArrayList();
+            m_resourceListCache.put(cacheKey, extractedResources);
+        }
 
-                for (Iterator i = resources.iterator(); i.hasNext();) {
-                    CmsResource res = (CmsResource)i.next();
-                    if (res.getRootPath().startsWith(path, 0)) {
-                        extractedResources.add(res);
-                    }
-                }            
-            }
+        return extractedResources;
+    }
 
+    /**
+     * Reads all resources that have a value (containing the given value string) set 
+     * for the specified property (definition) in the given path.<p>
+     * 
+     * Both individual and shared properties of a resource are checked.<p>
+     *
+     * @param dbc the current database context
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property (definition) to check for
+     * @param value the string to search in the value of the property
+     * 
+     * @return a list of all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property.
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition, String value)
+    throws CmsException {
+
+        List extractedResources = null;
+        
+        String cacheKey = getCacheKey(
+            "_ResourcesWithProperty", 
+            dbc.currentProject(), 
+            path + "_" + propertyDefinition);
+        
+        if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
+            
+            // first read the property definition
+            CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);            
+            
+            // now read the list of resources that have a value set for the property definition
+            extractedResources = m_vfsDriver.readResourcesWithProperty(dbc, dbc.currentProject().getId(), propDef.getId(), path, value);
+            
             m_resourceListCache.put(cacheKey, extractedResources);
         }
 

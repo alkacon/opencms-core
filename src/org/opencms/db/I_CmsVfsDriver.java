@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2005/04/25 14:47:34 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.103 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.104 $ $Date: 2005/04/25 14:47:34 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -448,20 +448,40 @@ public interface I_CmsVfsDriver {
     List readResources(CmsDbContext dbc, int currentProject, long starttime, long endtime) throws CmsException;
 
     /**
-     * Reads all resources that have a value set for the specified property (definition).<p>
+     * Reads all resources that have a value set for the specified property (definition), in the given path.<p>
      * 
      * Both individual and shared properties of a resource are checked.<p>
      *
      * @param dbc the current database context
      * @param projectId the id of the project
      * @param propertyDefinition the id of the property definition
+     * @param path the folder to get the resources with the property from
      * 
      * @return a list of all <code>{@link CmsResource}</code> objects 
      *          that have a value set for the specified property.
      * 
      * @throws CmsException if something goes wrong
      */
-    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition) throws CmsException;
+    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition, String path) throws CmsException;
+
+    /**
+     * Reads all resources that have a value (containing the specified value) 
+     * set for the specified property (definition), in the given path.<p>
+     * 
+     * Both individual and shared properties of a resource are checked.<p>
+     *
+     * @param dbc the current database context
+     * @param projectId the id of the project
+     * @param propertyDefinition the id of the property definition
+     * @param path the folder to get the resources with the property from
+     * @param value the string to search in the value of the property
+     * 
+     * @return a list of all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property.
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition, String path, String value) throws CmsException;
 
     /**
      * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
