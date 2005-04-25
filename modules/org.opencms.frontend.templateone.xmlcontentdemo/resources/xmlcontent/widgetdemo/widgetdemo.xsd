@@ -20,10 +20,12 @@
 			<xsd:element name="Download" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Link" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="HtmlSnippet" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="TableSnippet" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Color" type="OpenCmsColor" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Boolean" type="OpenCmsBoolean" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Selector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Textarea" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -40,7 +42,9 @@
 				<layout element="Download" widget="DownloadGalleryWidget" />
 				<layout element="Link" widget="LinkGalleryWidget" />
 				<layout element="HtmlSnippet" widget="HtmlGalleryWidget" />
+				<layout element="TableSnippet" widget="TableGalleryWidget" />
 				<layout element="Selector" widget="SelectorWidget" />
+				<layout element="Textarea" widget="TextareaWidget" />
 			</layouts>	
 		</xsd:appinfo>
 	</xsd:annotation>  
