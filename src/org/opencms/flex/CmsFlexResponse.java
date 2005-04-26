@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/04/25 09:10:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/04/26 10:30:34 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
@@ -129,7 +129,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         public void flush() throws IOException {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_FLUSHED_1, m_servletStream.toString()));
+                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_FLUSHED_1, m_servletStream));
             }
             if (m_servletStream != null) {
                 m_servletStream.flush();
