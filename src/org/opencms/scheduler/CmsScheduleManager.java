@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/26 11:57:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -75,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -196,6 +197,25 @@ public class CmsScheduleManager implements Job {
         return Collections.unmodifiableList(m_jobs);
     }
 
+    /**
+     * Returns the currently scheduled job description identified by the given id.
+     * 
+     * @param id the job id
+     * 
+     * @return a job or <code>null</code> if not found
+     */
+    public CmsScheduledJobInfo getJob(String id) {
+        
+        Iterator it = m_jobs.iterator();
+        while (it.hasNext()) {
+            CmsScheduledJobInfo job = (CmsScheduledJobInfo)it.next();
+            if (job.getId().equals(id)) {
+                return job;
+            }
+        }
+        // not found
+        return null;
+    }
     /**
      * Initializes the OpenCms scheduler.<p> 
      * 

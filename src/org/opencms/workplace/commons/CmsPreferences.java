@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/26 11:57:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -1250,9 +1250,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setDialogCopyFileMode(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
     
@@ -1266,9 +1263,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setDialogCopyFolderMode(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
     
@@ -1282,9 +1276,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setDialogDeleteFileMode(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
     
@@ -1343,9 +1334,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setEditorButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
     
@@ -1359,9 +1347,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setDirectEditButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
     
@@ -1375,9 +1360,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setExplorerButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
 
@@ -1427,9 +1409,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setExplorerFileEntries(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
 
@@ -1572,9 +1551,6 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.setWorkplaceButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/26 11:57:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends CmsListDialog {
@@ -75,7 +75,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * @since 5.7.3
      */
     private class ActivateUserAction extends CmsListDirectAction {
@@ -278,6 +278,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
                     } else {
                         user.setDisabled();
                     }
+                    getCms().writeUser(user);
                 }
             } catch (CmsException e) {
                 throw new RuntimeException(e);
@@ -409,7 +410,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
             metadata.addDirectMultiAction(activateUser);
 
             // makes the list searchable by login
-            CmsSearchAction searchAction = new CmsSearchAction(LIST_ID, loginCol.getId(), loginCol.getName().getKey());
+            CmsSearchAction searchAction = new CmsSearchAction(LIST_ID, loginCol);
             searchAction.useDefaultShowAllAction();
             metadata.setSearchAction(searchAction);
         }

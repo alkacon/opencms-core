@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsSearchAction.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/26 11:57:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * Default implementation for a seach action in an html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsSearchAction extends CmsListIndependentAction {
@@ -61,10 +61,9 @@ public class CmsSearchAction extends CmsListIndependentAction {
      * Default Constructor.<p>
      * 
      * @param listId the id of the associated list
-     * @param columnId the column to search in
-     * @param colName the name of the column to search in
+     * @param column the column to search in
      */
-    public CmsSearchAction(String listId, String columnId, String colName) {
+    public CmsSearchAction(String listId, CmsListColumnDefinition column) {
 
         this(
             listId,
@@ -72,10 +71,10 @@ public class CmsSearchAction extends CmsListIndependentAction {
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_NAME_0),
             Messages.get().key(Messages.GUI_LIST_ACTION_SEARCH_ICON_0),
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_HELP_1, new Object[] {"${key."
-                + colName
+                + column.getName().getKey()
                 + "}"}),
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_CONF_0),
-            columnId);
+            column.getId());
     }
 
     /**
