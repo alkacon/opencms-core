@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
@@ -38,6 +39,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
@@ -269,6 +271,48 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the workplace-server node. */
     protected static final String N_WORKPLACE_SERVER = "workplace-server";
     
+    /** The node name for the http-authentication node. */
+    protected static final String N_HTTP_AUTHENTICATION = "http-authentication";
+    
+    /** The node name for the browser-based node. */
+    protected static final String N_BROWSER_BASED = "browser-based";
+    
+    /** The node name for the form-based node. */
+    protected static final String N_FORM_BASED = "form-based";  
+    
+    /** the result cache node. */
+    private static final String N_CACHE = "resultcache";
+    
+    /** The name of the class to generate cache keys. */
+    private static final String N_KEYGENERATOR = "keygenerator";
+    
+    /** The size of the driver manager's cache for users. */
+    private static final String N_SIZE_USERS = "size-users";
+    
+    /** The size of the driver manager's cache for groups. */
+    private static final String N_SIZE_GROUPS = "size-groups";
+    
+    /** The size of the driver manager's cache for user/group relations. */
+    private static final String N_SIZE_USERGROUPS = "size-usergroups";
+    
+    /** The size of the driver manager's cache for projects. */
+    private static final String N_SIZE_PROJECTS = "size-projects";
+    
+    /** The size of the driver manager's cache for resources. */
+    private static final String N_SIZE_RESOURCES = "size-resources";
+    
+    /** The size of the driver manager's cache for lists of resources. */
+    private static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
+    
+    /** The size of the driver manager's cache for properties. */
+    private static final String N_SIZE_PROPERTIES = "size-properties";
+    
+    /** The size of the driver manager's cache for ACLS. */
+    private static final String N_SIZE_ACLS = "size-accesscontrollists";
+    
+    /** The size of the security manager's cache for permission checks. */
+    private static final String N_SIZE_PERMISSIONS = "size-permissions";    
+    
     /** The configured OpenCms default users and groups. */
     private CmsDefaultUsers m_cmsDefaultUsers;
     
@@ -318,6 +362,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
+    
+    /** The HTTP basic authentication settings. */
+    private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
+    
+    /** The settings of the driver manager. */
+    private CmsCacheSettings m_cacheSettings;    
     
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -565,6 +615,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         
         // set the FlexCacheConfiguration initialized once before
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_FLEXCACHE, "setCmsFlexCacheConfiguration");
+        
+        // add http basic authentication rules
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_HTTP_AUTHENTICATION, CmsHttpAuthenticationSettings.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_HTTP_AUTHENTICATION + "/" + N_BROWSER_BASED, "setUseBrowserBasedHttpAuthentication", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_HTTP_AUTHENTICATION + "/" + N_FORM_BASED, "setFormBasedHttpAuthenticationUri", 0);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_HTTP_AUTHENTICATION, "setHttpAuthenticationSettings");
+        
+        // cache rules
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_CACHE, CmsCacheSettings.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_KEYGENERATOR, "setCacheKeyGenerator", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERS, "setUserCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_GROUPS, "setGroupCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERGROUPS, "setUserGroupsCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTS, "setProjectCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCES, "setResourceCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCELISTS, "setResourcelistCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTIES, "setPropertyCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PERMISSIONS, "setPermissionCacheSize", 0);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");        
     }
     
     /**
@@ -796,6 +866,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         flexcacheElement.addElement(N_AVGCACHEBYTES).addText(String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()).toString());
         flexcacheElement.addElement(N_MAXENTRYBYTES).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()).toString());
         flexcacheElement.addElement(N_MAXKEYS).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()).toString());
+        
+        // create <http-authentication> node
+        Element httpAuthenticationElement = systemElement.addElement(N_HTTP_AUTHENTICATION);
+        httpAuthenticationElement.addElement(N_BROWSER_BASED).setText(Boolean.toString(m_httpAuthenticationSettings.useBrowserBasedHttpAuthentication()));
+        if (m_httpAuthenticationSettings.getFormBasedHttpAuthenticationUri() != null) {
+            httpAuthenticationElement.addElement(N_FORM_BASED).setText(m_httpAuthenticationSettings.getFormBasedHttpAuthenticationUri());
+        }
+        
+        // cache settings
+        Element cacheElement = systemElement.addElement(N_CACHE);
+        cacheElement.addElement(N_KEYGENERATOR).setText(m_cacheSettings.getCacheKeyGenerator());
+        cacheElement.addElement(N_SIZE_USERS).setText(Integer.toString(m_cacheSettings.getUserCacheSize()));
+        cacheElement.addElement(N_SIZE_GROUPS).setText(Integer.toString(m_cacheSettings.getGroupCacheSize()));
+        cacheElement.addElement(N_SIZE_USERGROUPS).setText(Integer.toString(m_cacheSettings.getUserGroupsCacheSize()));
+        cacheElement.addElement(N_SIZE_PROJECTS).setText(Integer.toString(m_cacheSettings.getProjectCacheSize()));
+        cacheElement.addElement(N_SIZE_RESOURCES).setText(Integer.toString(m_cacheSettings.getResourceCacheSize()));
+        cacheElement.addElement(N_SIZE_RESOURCELISTS).setText(Integer.toString(m_cacheSettings.getResourcelistCacheSize()));
+        cacheElement.addElement(N_SIZE_PROPERTIES).setText(Integer.toString(m_cacheSettings.getPropertyCacheSize()));
+        cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
+        cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize())); 
         
         // return the vfs node
         return systemElement;
@@ -1136,5 +1226,46 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". History settings     : enabled=" + m_versionHistoryEnabled + " count=" + m_versionHistoryMaxCount);
         }             
-    }       
+    }     
+    
+    /**
+     * Returns the HTTP authentication settings.<p>
+     *
+     * @return the HTTP authentication settings
+     */
+    public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
+
+        return m_httpAuthenticationSettings;
+    }
+    
+    /**
+     * Sets the HTTP authentication settings.<p>
+     *
+     * @param httpAuthenticationSettings the HTTP authentication settings to set
+     */
+    public void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
+
+        m_httpAuthenticationSettings = httpAuthenticationSettings;
+    }
+    
+    /**
+     * Returns the settings of the driver manager.<p>
+     *
+     * @return the settings of the driver manager
+     */
+    public CmsCacheSettings getCacheSettings() {
+
+        return m_cacheSettings;
+    }
+    
+    /**
+     * Sets the settings of the driver manager.<p>
+     *
+     * @param settings the settings of the driver manager
+     */
+    public void setCacheSettings(CmsCacheSettings settings) {
+
+        m_cacheSettings = settings;
+    }    
+    
 }

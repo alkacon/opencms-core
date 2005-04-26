@@ -108,5 +108,20 @@
 			<maxentrybytes>400000</maxentrybytes>
 			<maxkeys>2000</maxkeys>
 		</flexcache>
+		<http-authentication>
+			<browser-based>true</browser-based>
+		</http-authentication>	
+		<resultcache>
+			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
+			<size-users>64</size-users>
+			<size-groups>64</size-groups>
+			<size-usergroups>256</size-usergroups>
+			<size-projects>32</size-projects>
+			<size-resources>8192</size-resources>
+			<size-resourcelists>256</size-resourcelists>
+			<size-properties>128</size-properties>
+			<size-accesscontrollists>1024</size-accesscontrollists>	
+			<size-permissions>1024</size-permissions>
+		</resultcache>						
 	</system>
 </opencms>    

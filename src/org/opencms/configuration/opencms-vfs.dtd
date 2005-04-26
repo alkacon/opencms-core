@@ -118,6 +118,7 @@
 
 <!ELEMENT name (#PCDATA)>
 
+
 <!--
 # Include the resource types DTD.
 -->

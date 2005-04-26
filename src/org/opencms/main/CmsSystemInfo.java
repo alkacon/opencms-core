@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsCacheSettings;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.synchronize.CmsSynchronizeSettings;
@@ -52,7 +53,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -122,6 +123,9 @@ public class CmsSystemInfo {
 
     /** The OpenCms web application "WEB-INF" path (in the "real" file system). */
     private String m_webInfRfsPath;
+    
+    /** The HTTP basic authentication settings. */
+    private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;   
 
     /**
      * Creates a new system info container.<p>
@@ -629,5 +633,25 @@ public class CmsSystemInfo {
         // set OpenCms version identifier with propery values
         m_version = "OpenCms/" + m_versionNumber;
     }
+    
+    /**
+     * Returns the HTTP authentication settings.<p>
+     *
+     * @return the HTTP authentication settings
+     */
+    public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
 
+        return m_httpAuthenticationSettings;
+    }
+    
+    /**
+     * Sets the HTTP authentication settings.<p>
+     *
+     * @param httpAuthenticationSettings the HTTP authentication settings to set
+     */
+    protected void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
+
+        m_httpAuthenticationSettings = httpAuthenticationSettings;
+    }   
+    
 }

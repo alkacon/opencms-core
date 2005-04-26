@@ -39,9 +39,6 @@
 			Bean.setReplacer(replacer);
 			
 			session.setAttribute("createDb", createDb);
-		} else {
-			// initialize the database name with the app name
-			Bean.setDb(Bean.getAppName());
 		}
 	}
 %>

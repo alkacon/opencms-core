@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/04/18 09:37:17 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -410,7 +410,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // XML content schema type add rules
         digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, "addSchemaType", 2);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 0, A_CLASS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 1, A_DEFAULTWIDGET);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 1, A_DEFAULTWIDGET); 
     }
     
     /**
@@ -518,7 +518,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             xmlSchemaTypesElement.addElement(N_SCHEMATYPE)
                 .addAttribute(A_CLASS, type.getClass().getName())
                 .addAttribute(A_DEFAULTWIDGET, widget.getClass().getName());
-        }
+        }       
 
         // return the vfs node
         return vfs;
@@ -652,4 +652,5 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         }
         m_xmlContentTypeManager = manager;
     }
+    
 }

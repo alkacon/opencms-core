@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/26 11:47:30 $
- * Version: $Revision: 1.178 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.179 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.178 $
+ * @version $Revision: 1.179 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -133,9 +133,6 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
-
-    /** URI of the authentication form (read from properties) in case of form based authentication. */
-    private String m_authenticationFormURI;
 
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
@@ -211,9 +208,6 @@ public final class OpenCmsCore {
 
     /** The thread store. */
     private CmsThreadStore m_threadStore;
-
-    /** Flag to indicate if basic or form based authentication is used. */
-    private boolean m_useBasicAuthentication;
 
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -820,6 +814,8 @@ public final class OpenCmsCore {
             systemConfiguration.getVersionHistoryMaxCount());
         // set mail configuration
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
+        // set HTTP authentication settings
+        getSystemInfo().setHttpAuthenticationSettings(systemConfiguration.getHttpAuthenticationSettings());
         // set synchronize configuration
         getSystemInfo().setSynchronizeSettings(new CmsSynchronizeSettings());
         // set the scheduler manager
@@ -1061,11 +1057,6 @@ public final class OpenCmsCore {
 
         // initialize the configuration
         initConfiguration(configuration);
-
-        // check if basic or form based authentication should be used      
-        m_useBasicAuthentication = configuration.getBoolean("auth.basic", true);
-        m_authenticationFormURI = configuration.getString("auth.form_uri", I_CmsWpConstants.C_VFS_PATH_WORKPLACE
-            + "action/authenticate.html");
     }
 
     /**
@@ -1573,7 +1564,7 @@ public final class OpenCmsCore {
     private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
 
         int todo = 0;
-        // this method needs to be fully rewritten using new Messaages and the MacroResolver
+        // this method needs to be fully rewritten using new Messages and the MacroResolver
         
         // load the property file that contains the html fragments for the dialog
         Properties htmlProps = new Properties();
@@ -2041,7 +2032,8 @@ public final class OpenCmsCore {
                     path), t);
             }
         }
-
+        
+        CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();        
         if (propertyLoginForm != null
             && propertyLoginForm != CmsProperty.getNullProperty()
             && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
@@ -2050,10 +2042,11 @@ public final class OpenCmsCore {
             // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
             // if the template should display a login formular or not                       
             redirectURL = propertyLoginForm.getValue() + "?__loginform=true&requestedResource=" + path;
-        } else if (!m_useBasicAuthentication && CmsStringUtil.isNotEmpty(m_authenticationFormURI)) {
+        } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
+            && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
             // login form property value not set, but form login set in configuration
             // build a redirect URL to the default login form URI configured in opencms.properties
-            redirectURL = m_authenticationFormURI + "?requestedResource=" + path;
+            redirectURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri() + "?requestedResource=" + path;
         }
 
         if (redirectURL == null) {

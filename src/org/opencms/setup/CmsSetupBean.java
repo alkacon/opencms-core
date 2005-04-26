@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -205,15 +205,6 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             m_errors.addElement("Could not copy " + source + " to " + target + " \n");
             m_errors.addElement(e.toString() + "\n");
         }
-    }
-
-    /** 
-     * Returns the webapp name.<p>
-     * 
-     * @return the webapp name
-     */
-    public String getAppName() {
-        return getExtProperty("app.name");
     }
 
     /**
@@ -791,11 +782,6 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             if (appName != null) {
                 // workaround for JUnit test cases that have no context
                 m_extProperties = loadProperties(m_configRfsPath + "opencms.properties");
-                
-                if (appName != null && appName.length() > 0) {
-                    setAppName(appName);
-                }            
-    
                 readDatabaseConfig();       
             }
             
@@ -1028,15 +1014,6 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         } else {
             return null;
         }
-    }
-
-    /**
-     * Sets the webapp name.<p>
-     * 
-     * @param value the new webapp name
-     */
-    public void setAppName(String value) {
-        setExtProperty("app.name", value);
     }
     
     /**

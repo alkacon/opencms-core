@@ -22,7 +22,9 @@
 	defaultusers,
 	defaultcontentencoding,
 	memorymonitor?,
-	flexcache )>
+	flexcache,
+	http-authentication,
+	resultcache)>
 
 <!--
 # Version history settings.
@@ -277,3 +279,89 @@ Each job can have an optional list of parameters.
 <!ELEMENT maxentrybytes (#PCDATA)>
 <!ELEMENT maxkeys (#PCDATA)>
 
+<!--
+#
+# HTTP basic authentication settings.
+-->
+<!ELEMENT http-authentication (browser-based, form-based?)>
+
+<!--
+# Enable or disable browser-based HTTP basic authentication.
+-->
+<!ELEMENT browser-based (#PCDATA)>
+
+<!--
+# If bowser-based HTTP basic authentication is disabled, the user gets
+# redirected to the OpenCms URI specified in this node for a form-based 
+# HTTP basic authentication.
+# Since this is a system wide setting, users are able to specify different
+# authentication forms by setting the property "login-form" on resources.
+-->
+<!ELEMENT form-based (#PCDATA)>
+
+
+<!--
+#
+# Driver manager cache settings.
+-->
+<!ELEMENT resultcache (
+	keygenerator,
+	size-users,
+	size-groups,
+	size-usergroups,
+	size-projects,
+	size-resources,
+	size-resourcelists,
+	size-properties,
+	size-accesscontrollists,
+	size-permissions)>
+
+<!--
+# The name of the class to generate cache keys.
+-->
+<!ELEMENT keygenerator (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for users.
+-->
+<!ELEMENT size-users (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for groups.
+-->
+<!ELEMENT size-groups (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for user/group relations.
+-->
+<!ELEMENT size-usergroups (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for projects.
+-->
+<!ELEMENT size-projects (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for resources.
+-->
+<!ELEMENT size-resources (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for lists of resources.
+-->
+<!ELEMENT size-resourcelists (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for properties.
+-->
+<!ELEMENT size-properties (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for ACLS.
+-->
+<!ELEMENT size-accesscontrollists (#PCDATA)>
+
+<!--
+# The the size of the security manager's cache for permission checks.
+-->
+<!ELEMENT size-permissions (#PCDATA)>

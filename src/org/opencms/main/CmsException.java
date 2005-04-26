@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -120,9 +120,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
     /** Error code filesystem error. */
     public static final int C_FILESYSTEM_ERROR = 14;
-
-    /** Error code for Flex cache. */
-    public static final int C_FLEX_CACHE = 39;
 
     /** Error code for Flex loader. */
     public static final int C_FLEX_LOADER = 40;

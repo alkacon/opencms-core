@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/04/25 14:47:34 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/04/26 13:20:51 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.lock.CmsLock;
@@ -74,7 +76,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2349,18 +2351,11 @@ public final class CmsSecurityManager {
         }
 
         m_dbContextFactory = dbContextFactory;
+        
+        CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
+        CmsCacheSettings settings = systemConfiguation.getCacheSettings();
 
-        Map configuration = configurationManager.getConfiguration();
-
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
-        } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
-        }
-
-        String className = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".keygenerator");
+        String className = settings.getCacheKeyGenerator();
         try {
             // initialize the key generator
             m_keyGenerator = (I_CmsCacheKey)Class.forName(className).newInstance();
@@ -2370,7 +2365,7 @@ public final class CmsSecurityManager {
                 className));
         }
 
-        LRUMap hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".permissions", 1000));
+        LRUMap hashMap = new LRUMap(settings.getPermissionCacheSize());
         m_permissionCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_permissionCache", hashMap);

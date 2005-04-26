@@ -119,6 +119,6 @@
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
 			</schematypes>
-		</xmlcontent>
+		</xmlcontent>			
 	</vfs>
 </opencms>
