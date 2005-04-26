@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/26 14:59:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsTool implements I_CmsNamedObject {
@@ -169,17 +169,17 @@ public class CmsTool implements I_CmsNamedObject {
         html.append("\t<span>\n\t\t");
         html.append(getName());
         html.append("\t</span>\n");
-        html.append("\t<div class='tip' id='");
+        html.append(isEnabled() ? "div" : "span");
+        html.append(">\n");
+        html.append("<div class='tip' id='");
         html.append(getId());
-        html.append("'>\n\t\t");
+        html.append("'>\n\t");
         if (!isEnabled()) {
             html.append(wp.key("widget.button.disabled.helptext"));
             html.append(" ");
         }
         html.append(getHelpText());
-        html.append("\n\t</div>\n</");
-        html.append(isEnabled() ? "div" : "span");
-        html.append(">\n");
+        html.append("\n</div>\n</");
 
         return wp.resolveMacros(html.toString());  
     }

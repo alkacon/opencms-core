@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/26 14:59:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
 import java.util.Map;
 
@@ -48,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -135,27 +136,8 @@ public class CmsToolDialog extends CmsWorkplace {
         // uplevel button only if needed
         if (getParentPath() != toolPath) {
             html.append("\t\t\t<td class='uplevel'>\n");
-            html.append("\t\t\t\t<div class='commonButton' id='id-up-level' title='");
-            html.append(key("admin.view.uplevel"));
-            html.append("' onMouseOver=\"mouseHelpEvent('");
-            html.append("uplevel-tip");
-            html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
-            html.append("uplevel-tip");
-            html.append("', false);\" onClick=\"openPage('");
-            html.append(upLevelLink);
-            html.append("'); \">\n");
-            html.append("\t\t\t\t\t<button name='name_up_level'>");
-            html.append(key("admin.view.uplevel"));
-            html.append("\t\t\t\t\t</button><span style=\'background-image: url(");
-            html.append(getSkinUri());
-            html.append("buttons/up.gif");
-            html.append(")\' >");
-            html.append(key("admin.view.uplevel"));
-            html.append("\t\t\t\t\t</span>\n");
-            html.append("\t\t\t\t\t<div class='tip' id='uplevel-tip'>\n");
-            html.append(parentName);
-            html.append("\t\t\t\t\t</div>\n");
-            html.append("\t\t\t\t</div>\n");
+            String onClic = "openPage('" + upLevelLink + "');";
+            A_CmsHtmlIconButton.defaultButtonHtml("id-up-level", key("admin.view.uplevel"), parentName, true, "admin/images/up.gif", onClic);
             html.append("\t\t\t</td>\n");
         }
         html.append("\t\t</tr>\n");
@@ -372,13 +354,6 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append(getSkinUri());
         html.append("admin/javascript/general.js'></script>\n");
         html.append("\t</head>\n");
-        html.append("\t<style type='text/css'>\n");
-        html.append("\t\t#loaderContainer td {\n");
-        html.append("\t\t\tbackground-image: url(\n");
-        html.append(getSkinUri());
-        html.append("admin/images/semi-transparent.gif);\n");
-        html.append("\t\t}\n");
-        html.append("\t</style>\n");
         html.append("\t<script language='javascript' type='text/javascript'><!--\n");
         html.append("\t\tfunction bodyLoad() {\n");
         html.append("\t\t\tsetContext(\"");

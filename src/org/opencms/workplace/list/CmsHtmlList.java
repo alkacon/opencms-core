@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/26 14:59:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -851,7 +851,7 @@ public class CmsHtmlList {
         html.append("\t<tr>\n");
         html.append("\t\t<td>\n");
         html.append("\t\t\t");
-        if (m_filteredItems == null) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
             html.append(Messages.get().key(
                 wp.getLocale(),
                 Messages.GUI_LIST_TITLE_TEXT_4,

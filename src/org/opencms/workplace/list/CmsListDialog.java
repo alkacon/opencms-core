@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsListDialog.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/26 14:59:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class CmsListDialog extends CmsDialog {
@@ -124,13 +124,14 @@ public abstract class CmsListDialog extends CmsDialog {
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
+     * @param listId the id of the displayed list
      * @param sortedColId the a priory sorted column
      */
-    protected CmsListDialog(CmsJspActionElement jsp, String sortedColId) {
+    protected CmsListDialog(CmsJspActionElement jsp, String listId, String sortedColId) {
 
         super(jsp);
         // try to read the list from the session
-        listRecovery();
+        listRecovery(listId);
         // initialization 
         if (getList() == null) {
             // create the list
@@ -165,11 +166,16 @@ public abstract class CmsListDialog extends CmsDialog {
      * Recover the last list instance that is read from the request attributes.<p>
      * 
      * This is required for keep the whole list in memory while you browse a page.<p>
+     * 
+     * @param listId the id of the expected list
      */
-    public void listRecovery() {
+    protected void listRecovery(String listId) {
 
         CmsHtmlList list = null;
         list = getSettings().getList();
+        if (list!=null && !list.getId().equals(listId)) {
+            list=null;
+        }
         setList(list);
     }
 

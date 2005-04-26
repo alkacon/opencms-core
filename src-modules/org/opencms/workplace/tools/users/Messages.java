@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/26 14:59:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -160,8 +160,11 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_LIST_COLS_USERNAME_0 = "GUI_USERS_LIST_COLS_USERNAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_LASTLOGIN_FORMAT_0 = "GUI_USERS_LIST_LASTLOGIN_FORMAT_0";
+    public static final String GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0";
 
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0";
+    
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_NAME_0 = "GUI_USERS_LIST_NAME_0";
 

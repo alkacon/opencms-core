@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/04/26 11:57:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/26 14:59:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,12 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDialog;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListMacroFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsSearchAction;
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends CmsListDialog {
@@ -75,7 +75,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      * @since 5.7.3
      */
     private class ActivateUserAction extends CmsListDirectAction {
@@ -87,13 +87,14 @@ public class CmsUsersAdminTool extends CmsListDialog {
          */
         public ActivateUserAction(String listId) {
 
-            super(listId, LIST_ACTION_ACTIVATE, new CmsMessageContainer(
-                Messages.get(),
-                Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0), "buttons/user_sm.gif", new CmsMessageContainer(
-                Messages.get(),
-                Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0), true, new CmsMessageContainer(
-                Messages.get(),
-                Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
+            super(
+                listId,
+                LIST_ACTION_ACTIVATE,
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0),
+                "buttons/user_sm.gif",
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0),
+                true,
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
         }
 
         /**
@@ -106,11 +107,9 @@ public class CmsUsersAdminTool extends CmsListDialog {
                     String usrName = getItem().get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = getCms().readUser(usrName);
                     if (user.getDisabled()) {
-                        return new CmsMessageContainer(
-                            Messages.get(),
-                            Messages.GUI_USERS_LIST_ACTION_ACTIVATE_ACTCONF_0);
+                        return Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_ACTCONF_0);
                     }
-                    return new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_ACTIVATE_DESCONF_0);
+                    return Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_DESCONF_0);
                 } catch (CmsException e) {
                     throw new RuntimeException(e);
                 }
@@ -128,11 +127,9 @@ public class CmsUsersAdminTool extends CmsListDialog {
                     String usrName = getItem().get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = getCms().readUser(usrName);
                     if (user.getDisabled()) {
-                        return new CmsMessageContainer(
-                            Messages.get(),
-                            Messages.GUI_USERS_LIST_ACTION_ACTIVATE_ACTHELP_0);
+                        return Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_ACTHELP_0);
                     }
-                    return new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_ACTIVATE_DESHELP_0);
+                    return Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_DESHELP_0);
                 } catch (CmsException e) {
                     throw new RuntimeException(e);
                 }
@@ -217,7 +214,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      */
     public CmsUsersAdminTool(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_COLUMN_LOGIN);
+        super(jsp, LIST_ID, LIST_COLUMN_LOGIN);
     }
 
     /**
@@ -345,16 +342,16 @@ public class CmsUsersAdminTool extends CmsListDialog {
             metadata.addIndependentAction(new CmsListIndependentAction(
                 LIST_ID,
                 LIST_ACTION_REFRESH,
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_REFRESH_NAME_0),
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_REFRESH_NAME_0),
                 "list/reload.gif",
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_REFRESH_HELP_0),
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_REFRESH_HELP_0),
                 true, // enabled
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_REFRESH_CONF_0)));
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_REFRESH_CONF_0)));
 
             // add column for direct actions
             CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(
                 LIST_COLUMN_ACTIONS,
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_COLS_ACTIONS_0),
+                Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIONS_0),
                 "", // no width
                 CmsListColumnAlignEnum.ALIGN_CENTER);
             actionsCol.setSorteable(false);
@@ -363,27 +360,23 @@ public class CmsUsersAdminTool extends CmsListDialog {
             metadata.addColumn(actionsCol);
 
             // add column for login and default action
-            CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN, new CmsMessageContainer(
-                Messages.get(),
+            CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN, Messages.get().container(
                 Messages.GUI_USERS_LIST_COLS_LOGIN_0), "", // no width
                 CmsListColumnAlignEnum.ALIGN_LEFT);
-            loginCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, new CmsMessageContainer(
-                Messages.get(),
+            loginCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
                 Messages.GUI_USERS_LIST_ACTION_EDITUSER_NAME_0), null, // no icon
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_EDITUSER_HELP_0), true, // enabled
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_ACTION_EDITUSER_CONF_0)));
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDITUSER_HELP_0), true, // enabled
+                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDITUSER_CONF_0)));
             metadata.addColumn(loginCol);
 
             // add column for name
-            CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, new CmsMessageContainer(
-                Messages.get(),
+            CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
                 Messages.GUI_USERS_LIST_COLS_USERNAME_0), "", // no width
                 CmsListColumnAlignEnum.ALIGN_LEFT);
             metadata.addColumn(nameCol);
 
             // add column for email
-            CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL, new CmsMessageContainer(
-                Messages.get(),
+            CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL, Messages.get().container(
                 Messages.GUI_USERS_LIST_COLS_EMAIL_0), "", // no width
                 CmsListColumnAlignEnum.ALIGN_LEFT);
             metadata.addColumn(emailCol);
@@ -391,20 +384,18 @@ public class CmsUsersAdminTool extends CmsListDialog {
             // add column for last login date
             CmsListColumnDefinition lastLoginCol = new CmsListColumnDefinition(
                 LIST_COLUMN_LASTLOGIN,
-                new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0),
+                Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0),
                 "", // no width
                 CmsListColumnAlignEnum.ALIGN_LEFT);
-            lastLoginCol.setFormatter(new CmsListMacroFormatter(new CmsMessageContainer(
-                Messages.get(),
-                Messages.GUI_USERS_LIST_LASTLOGIN_FORMAT_0)));
+            lastLoginCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+                Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0), Messages.get().container(
+                Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));
             metadata.addColumn(lastLoginCol);
 
             // add multi actions
-            metadata.addMultiAction(new CmsListMultiAction(LIST_ID, LIST_ACTION_DELETE, new CmsMessageContainer(
-                Messages.get(),
-                Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0), "list/delete.gif", new CmsMessageContainer(Messages
-                .get(), Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0), true, new CmsMessageContainer(
-                Messages.get(),
+            metadata.addMultiAction(new CmsListMultiAction(LIST_ID, LIST_ACTION_DELETE, Messages.get().container(
+                Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0), "list/delete.gif", Messages.get().container(
+                Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0), true, Messages.get().container(
                 Messages.GUI_USERS_LIST_ACTION_DELETE_CONF_0)));
             // reuse the activate user action as a multi action
             metadata.addDirectMultiAction(activateUser);
@@ -414,10 +405,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
             searchAction.useDefaultShowAllAction();
             metadata.setSearchAction(searchAction);
         }
-        return new CmsHtmlList(
-            LIST_ID,
-            new CmsMessageContainer(Messages.get(), Messages.GUI_USERS_LIST_NAME_0),
-            metadata);
+        return new CmsHtmlList(LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0), metadata);
     }
 
     /**
