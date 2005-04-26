@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/26 13:01:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -359,11 +359,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         return property.getValue();
                     }
                 } catch (CmsException e) {
-                    CmsMessageContainer message = Messages.get().container(
-                        Messages.LOG_PROPERTY_READING_FAILED_2,
-                        macro,
-                        controller.getCurrentRequest().getElementUri());
-                    LOG.warn(message.key(), e);
+                    if (LOG.isWarnEnabled()) {
+                        CmsMessageContainer message = Messages.get().container(Messages.LOG_PROPERTY_READING_FAILED_2, macro, controller.getCurrentRequest().getElementUri());
+                        LOG.warn(message.key(), e);
+                    }
                 }
             }
         }
@@ -379,11 +378,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         return property.getValue();
                     }
                 } catch (CmsException e) {
-                    CmsMessageContainer message = Messages.get().container(
-                        Messages.LOG_PROPERTY_READING_FAILED_2,
-                        macro,
-                        m_cms.getRequestContext().getUri());
-                    LOG.warn(message.key(), e);
+                    if (LOG.isWarnEnabled()) {
+                        CmsMessageContainer message = Messages.get().container(Messages.LOG_PROPERTY_READING_FAILED_2, macro, m_cms.getRequestContext().getUri());
+                        LOG.warn(message.key(), e);
+                    }
                 }
 
             }

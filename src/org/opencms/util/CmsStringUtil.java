@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/04/26 13:01:37 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -684,7 +684,9 @@ public final class CmsStringUtil {
         try {
             return perlUtil.substitute(translationRule, content);
         } catch (MalformedPerl5PatternException e) {
-            LOG.debug(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
+            }    
         }
         return content;
     }

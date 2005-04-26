@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/04/26 13:01:37 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -123,7 +123,9 @@ public class CmsResourceTranslator {
         }
         // initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
-        LOG.info(Messages.get().key(Messages.LOG_NUM_TRANSLATION_RULES_INITIALIZED_1, new Integer(translations.length)));
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(Messages.LOG_NUM_TRANSLATION_RULES_INITIALIZED_1, new Integer(translations.length)));
+        }
     }
 
     /**
@@ -170,7 +172,9 @@ public class CmsResourceTranslator {
                         current = result.toString();                        
                     } else {                        
                         // first pattern matched, return the result
-                        LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_3, new Integer(i), resourceName, result));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_3, new Integer(i), resourceName, result));
+                        }
                         // Return first match result
                         return result.toString();
                     }
@@ -181,7 +185,9 @@ public class CmsResourceTranslator {
         }
         
         // the pattern matched, return the result
-        LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_2, resourceName, current));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_2, resourceName, current));
+        }
         // return last translation (or original if no matching translation found)
         return current;
     }
