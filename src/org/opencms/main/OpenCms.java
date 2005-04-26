@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/04/26 11:47:30 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 public final class OpenCms {
 
@@ -224,7 +224,7 @@ public final class OpenCms {
      */
     public static Log getLog(Object obj) {
 
-        return OpenCmsCore.getInstance().getLog(obj);
+        return CmsLog.getLog(obj);
     }
 
     /**

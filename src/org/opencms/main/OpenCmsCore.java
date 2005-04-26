@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.177 $
+ * Date   : $Date: 2005/04/26 11:47:30 $
+ * Version: $Revision: 1.178 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.177 $
+ * @version $Revision: 1.178 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -443,21 +443,6 @@ public final class OpenCmsCore {
     protected CmsLockManager getLockManager() {
 
         return m_lockManager;
-    }
-
-    /**
-     * Returns the log for the selected object.<p>
-     * 
-     * If the provided object is a String, this String will
-     * be used as channel name. Otherwise the objects 
-     * class name will be used as channel name.<p>
-     *  
-     * @param obj the object channel to use
-     * @return the log for the selected object channel
-     */
-    protected Log getLog(Object obj) {
-
-        return CmsLog.getLog(obj);
     }
 
     /**
@@ -1498,11 +1483,11 @@ public final class OpenCmsCore {
         try {
             m_configurationManager.writeConfiguration(clazz);
         } catch (IOException e) {
-            getLog(CmsConfigurationManager.class).error(
+            CmsLog.getLog(CmsConfigurationManager.class).error(
                 Messages.get().key(Messages.LOG_ERROR_WRITING_CONFIG_1, clazz.getName()),
                 e);
         } catch (CmsConfigurationException e) {
-            getLog(CmsConfigurationManager.class).error(
+            CmsLog.getLog(CmsConfigurationManager.class).error(
                 Messages.get().key(Messages.LOG_ERROR_WRITING_CONFIG_1, clazz.getName()),
                 e);
         }

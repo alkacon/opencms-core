@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/04/25 11:44:07 $
- * Version: $Revision: 1.630 $
+ * Date   : $Date: 2005/04/26 11:47:30 $
+ * Version: $Revision: 1.631 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,15 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 ! Added first implementation of "roles" to OpenCms
 ! System functions are not longer accessible by "Administrators" only, they now require a certain role instead
 - Final design of the "New Administration" view (almost) finished
+- Optimized SQL query statement for reading all resources with a certain property value
+- Changes in SQL query statements break compatibility with MySQL 3.2.x again (a separate driver could solve this)
 ! Added implementation of a list "widget" for display of managable objects in the "New Administration"
 ! "templateone" can be configured to either display the "accessible" or "classical" (tables based) version by default
-- "templateone" demo data now is displayed in the "accessible" version 
+! XML content based module for "news" added to "templateone" (with sample data)
+! XML content based module for "events" added to "templateone" (with sample data)
+! XML content based module for "faq" added to "templateone" (with sample data)
+! XML content based module for "jobs" added to "templateone" (with sample data)
+- "templateone" demo data now is displayed in the "accessible" version by default
 
 OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 * Fixed SQL statement compatibility issue with MySQL 3.2.x
