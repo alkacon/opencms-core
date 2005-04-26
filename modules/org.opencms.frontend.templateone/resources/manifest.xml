@@ -43,7 +43,7 @@
                 </properties>
 				<copy-resources>
 					<copy-resource source="/system/modules/org.opencms.frontend.templateone/copyresources/_configuration" target="${resource.folder.path}" type="new"/>
-					<copy-resource source="/system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules" target="${resource.folder.path}" type="new"/>
+					<copy-resource source="/system/modules/org.opencms.frontend.templateone.modules/copyresources/modules" target="${resource.folder.path}" type="new"/>
 				</copy-resources>
 			</type>
 		</resourcetypes>

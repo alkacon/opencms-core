@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 2 Corrin</opencms_version>
-		<createdate>4/14/05 11:24 AM</createdate>
+		<createdate>4/26/05 1:23 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -40,10 +40,10 @@
 			<resource uri="/system/shared/templateone/right/events_news"/>
 			<resource uri="/system/shared/templateone/right/news"/>
 			<resource uri="/system/workplace/resources/filetypes/article.gif"/>
-			<resource uri="xmlmodules/"/>
+			<resource uri="modules/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.modules/;/system/shared/templateone/center/events;/system/shared/templateone/center/faq;/system/shared/templateone/center/jobs;/system/shared/templateone/center/news;/system/shared/templateone/right/events;/system/shared/templateone/right/events_news;/system/shared/templateone/right/news;/system/workplace/resources/filetypes/article.gif;xmlmodules/</param>
+			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.modules/;/system/shared/templateone/center/events;/system/shared/templateone/center/faq;/system/shared/templateone/center/jobs;/system/shared/templateone/center/news;/system/shared/templateone/right/events;/system/shared/templateone/right/events_news;/system/shared/templateone/right/news;/system/workplace/resources/filetypes/article.gif;modules/</param>
 		</parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="news" id="30">
@@ -140,7 +140,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Apr 2005 07:32:42 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:46:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -253,7 +253,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 13 Apr 2005 13:24:30 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 14:31:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -266,7 +266,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>bf2685cf-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 13 Apr 2005 13:24:06 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 12:42:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:28:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -278,7 +278,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 13 Apr 2005 13:24:30 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 14:31:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -298,11 +298,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules</destination>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 31 Mar 2005 09:36:09 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 08:56:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 11 Apr 2005 13:22:42 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:54:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -312,7 +312,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[XML modules demo pages]]></value>
+					<value><![CDATA[Module contents]]></value>
 				</property>
 				<property>
 					<name>style_main_configpath</name>
@@ -322,11 +322,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/events</destination>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/events</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 11 Apr 2005 12:38:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 11 Apr 2005 13:22:42 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:54:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -346,8 +346,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/events/event_0001.html</source>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/events/event_0001.html</destination>
+			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/events/event_0001.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/events/event_0001.html</destination>
 			<type>event</type>
 			<uuidresource>c8c1fd86-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Thu, 14 Apr 2005 10:23:42 GMT</datelastmodified>
@@ -361,22 +361,22 @@
 					<value><![CDATA[1124879400000]]></value>
 				</property>
 				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[This is the title of event 0001]]></value>
+				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[3]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/faq</destination>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/faq</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 06 Apr 2005 15:45:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 11 Apr 2005 13:22:42 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:54:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -396,8 +396,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/faq/faq_0001.html</source>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/faq/faq_0001.html</destination>
+			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/faq/faq_0001.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/faq/faq_0001.html</destination>
 			<type>faq</type>
 			<uuidresource>c8ce3292-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Wed, 06 Apr 2005 10:28:15 GMT</datelastmodified>
@@ -407,12 +407,12 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-conversion</name>
-					<value><![CDATA[cleanup;xhtml]]></value>
-				</property>
-				<property>
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
+				</property>
+				<property>
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -422,11 +422,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/jobs</destination>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/jobs</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 29 Mar 2005 08:32:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 11 Apr 2005 13:22:42 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:54:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -446,8 +446,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/jobs/job_0001.html</source>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/jobs/job_0001.html</destination>
+			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/jobs/job_0001.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/jobs/job_0001.html</destination>
 			<type>job</type>
 			<uuidresource>c8da679f-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Tue, 29 Mar 2005 09:33:23 GMT</datelastmodified>
@@ -461,22 +461,22 @@
 					<value><![CDATA[1106661960000]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[This is the title of job 0001]]></value>
-				</property>
-				<property>
 					<name>collector.priority</name>
 					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is the title of job 0001]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/news</destination>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 29 Mar 2005 08:32:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 11 Apr 2005 13:22:42 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:54:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -500,8 +500,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/news/news_0001.html</source>
-			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/xmlmodules/news/news_0001.html</destination>
+			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news/news_0001.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news/news_0001.html</destination>
 			<type>news</type>
 			<uuidresource>c8eb3092-aa8c-11d9-bc9f-bd9a46e52910</uuidresource>
 			<datelastmodified>Wed, 06 Apr 2005 11:40:18 GMT</datelastmodified>
@@ -635,13 +635,13 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file> 
+		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_events_center.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>192353ad-a512-11d9-bbc8-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 13 Apr 2005 14:04:30 GMT</datelastmodified>
+			<datelastmodified>Tue, 26 Apr 2005 10:45:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Apr 2005 14:01:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -751,6 +751,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector,pageIndex)]]></value>
+				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
@@ -758,10 +762,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;params=(count,elementcount,folder,collector,pageIndex)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -805,7 +805,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_center.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ffe0a782-a5a5-11d9-b7ac-916a98ed6cbb</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:17:12 GMT</datelastmodified>
+			<datelastmodified>Tue, 26 Apr 2005 12:02:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 07:40:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -841,6 +841,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
+				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
@@ -848,10 +852,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -876,7 +876,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</destination>
 			<type>jsp</type>
 			<uuidresource>3c595376-5331-11d9-b7cd-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 14 Apr 2005 09:29:32 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 12:57:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Dec 2004 09:18:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -906,7 +906,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</destination>
 			<type>jsp</type>
 			<uuidresource>21f158be-5295-11d9-a418-5777c119166f</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:14:17 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 12:57:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Dec 2004 14:40:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -936,7 +936,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</destination>
 			<type>jsp</type>
 			<uuidresource>8447f744-5353-11d9-9d85-5777c119166f</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:14:38 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 12:57:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Dec 2004 13:23:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -962,7 +962,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</destination>
 			<type>jsp</type>
 			<uuidresource>ec483227-5020-11d9-b83c-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 11 Apr 2005 13:14:49 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 12:53:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 17 Dec 2004 11:43:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1259,7 +1259,7 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file> 
+		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</destination>
@@ -1279,11 +1279,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>xmlmodules</destination>
+			<destination>modules</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 31 Mar 2005 09:36:09 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 08:57:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 11:17:03 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:57:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1293,7 +1293,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[XML modules demo pages]]></value>
+					<value><![CDATA[Modules demo contents]]></value>
 				</property>
 				<property>
 					<name>style_main_configpath</name>
@@ -1303,35 +1303,31 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>xmlmodules/events</destination>
+			<destination>modules/events</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 11 Apr 2005 12:38:46 GMT</datelastmodified>
+			<datelastmodified>Tue, 26 Apr 2005 11:50:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 12:30:10 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:57:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
 				<property>
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Demo Events]]></value>
+					<name>Title</name>
+					<value><![CDATA[Events]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlmodules/events/event_0001.html</source>
-			<destination>xmlmodules/events/event_0001.html</destination>
+			<source>modules/events/event_0001.html</source>
+			<destination>modules/events/event_0001.html</destination>
 			<type>event</type>
 			<uuidresource>687cb2d5-5436-11d9-a9f0-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 14 Apr 2005 10:23:12 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 14:10:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 16:27:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1342,96 +1338,286 @@
 					<value><![CDATA[1124879400000]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[This is the title of event 0001]]></value>
-				</property>
-				<property>
 					<name>collector.priority</name>
 					<value><![CDATA[3]]></value>
 				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is the title of event 0001]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>xmlmodules/faq</destination>
+			<source>modules/events/event_0002.html</source>
+			<destination>modules/events/event_0002.html</destination>
+			<type>event</type>
+			<uuidresource>da6ced42-b590-11d9-86c5-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Tue, 26 Apr 2005 10:32:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 13:49:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1120719600000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Festival of San Fermin]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/events/event_0003.html</source>
+			<destination>modules/events/event_0003.html</destination>
+			<type>event</type>
+			<uuidresource>13027129-b592-11d9-86c5-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Tue, 26 Apr 2005 10:44:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 13:58:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1125644400000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Soccer for all]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modules/faq</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 06 Apr 2005 15:45:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 26 Apr 2005 11:50:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 12:30:28 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 08:57:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
 				<property>
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Demo FAQ]]></value>
+					<name>Title</name>
+					<value><![CDATA[FAQ]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlmodules/faq/faq_0001.html</source>
-			<destination>xmlmodules/faq/faq_0001.html</destination>
+			<source>modules/faq/faq_0001.html</source>
+			<destination>modules/faq/faq_0001.html</destination>
 			<type>faq</type>
-			<uuidresource>410b6474-946a-11d9-ace3-eb1fdbd690a5</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:28:15 GMT</datelastmodified>
+			<uuidresource>8782e9f9-b58d-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 13:26:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Mar 2005 09:20:06 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 13:25:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
 				</property>
-				<property>
+				<property type="shared">
 					<name>content-conversion</name>
 					<value><![CDATA[cleanup;xhtml]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[This is the title of FAQ entry 0001]]></value>
+					<value><![CDATA[How do I spell OpenCms correctly?]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>xmlmodules/jobs</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 29 Mar 2005 08:32:18 GMT</datelastmodified>
+			<source>modules/faq/faq_0002.html</source>
+			<destination>modules/faq/faq_0002.html</destination>
+			<type>faq</type>
+			<uuidresource>ee4d6ab2-b58c-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 13:23:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 12:30:16 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 13:21:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Is professional support available for OpenCms?]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/faq/faq_0003.html</source>
+			<destination>modules/faq/faq_0003.html</destination>
+			<type>faq</type>
+			<uuidresource>5e21d1c6-b64a-11d9-9727-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Tue, 26 Apr 2005 11:58:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Apr 2005 11:57:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[How stable and mature is OpenCms?]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modules/faq/license</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Apr 2005 11:49:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Apr 2005 11:49:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
+					<name>Title</name>
+					<value><![CDATA[License questions]]></value>
 				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/faq/license/faq_0001.html</source>
+			<destination>modules/faq/license/faq_0001.html</destination>
+			<type>faq</type>
+			<uuidresource>fa554b09-b58d-11d9-86c5-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 13:30:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 13:28:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Does using the LGPL mean that all additions to OpenCms must be Open Source as well?]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/faq/license/faq_0002.html</source>
+			<destination>modules/faq/license/faq_0002.html</destination>
+			<type>faq</type>
+			<uuidresource>6ac5202b-b58d-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 13:25:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 13:24:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[What does OpenCms cost?]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modules/faq/release</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Apr 2005 11:48:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Apr 2005 11:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Release of OpenCms 6]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/faq/release/faq_0001.html</source>
+			<destination>modules/faq/release/faq_0001.html</destination>
+			<type>faq</type>
+			<uuidresource>ac6545f6-b58b-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 13:17:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 13:12:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[When will the "final" release of OpenCms 6 be available?]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modules/jobs</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Apr 2005 11:50:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 08:57:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property>
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Demo Jobs]]></value>
+					<name>Title</name>
+					<value><![CDATA[Jobs]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlmodules/jobs/job_0001.html</source>
-			<destination>xmlmodules/jobs/job_0001.html</destination>
+			<source>modules/jobs/job_0001.html</source>
+			<destination>modules/jobs/job_0001.html</destination>
 			<type>job</type>
 			<uuidresource>c154b1da-5420-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Tue, 29 Mar 2005 09:33:23 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 14:09:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 13:52:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1442,50 +1628,106 @@
 					<value><![CDATA[1106661960000]]></value>
 				</property>
 				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[This is the title of job 0001]]></value>
+				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[2]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>xmlmodules/news</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 29 Mar 2005 08:32:33 GMT</datelastmodified>
+			<source>modules/jobs/job_0002.html</source>
+			<destination>modules/jobs/job_0002.html</destination>
+			<type>job</type>
+			<uuidresource>af2058ae-b594-11d9-86c5-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 14:22:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 12:30:22 GMT</datecreated>
+			<datecreated>Mon, 25 Apr 2005 14:16:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4.0]]></value>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
 				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1114442280000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Master of lightning and strike]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/jobs/job_0003.html</source>
+			<destination>modules/jobs/job_0003.html</destination>
+			<type>job</type>
+			<uuidresource>9d46fdc5-b595-11d9-86c5-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 14:25:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 14:23:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1114525380000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Engineer position]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modules/news</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Apr 2005 11:50:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 08:57:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property>
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Demo News]]></value>
-				</property>
-				<property>
 					<name>style_news_articles</name>
 					<value><![CDATA[/xmlmodules/news/]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[News]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlmodules/news/news_0001.html</source>
-			<destination>xmlmodules/news/news_0001.html</destination>
+			<source>modules/news/news_0001.html</source>
+			<destination>modules/news/news_0001.html</destination>
 			<type>news</type>
 			<uuidresource>f8257305-542f-11d9-94b2-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 11:40:18 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Apr 2005 14:09:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 15:41:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1493,11 +1735,131 @@
 			<properties>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1103730060000]]></value>
+					<value><![CDATA[1112024400000]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[This is the title of news article 0001]]></value>
+					<value><![CDATA[This is the title of the first wurst article]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/news/news_0002.html</source>
+			<destination>modules/news/news_0002.html</destination>
+			<type>news</type>
+			<uuidresource>96f4344b-b583-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 12:40:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 12:14:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1112616840000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[23 new brands of Wurst invented]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/news/news_0003.html</source>
+			<destination>modules/news/news_0003.html</destination>
+			<type>news</type>
+			<uuidresource>13afe5e3-b586-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 12:40:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 12:32:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1113222720000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Great news of Wurst]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/news/news_0004.html</source>
+			<destination>modules/news/news_0004.html</destination>
+			<type>news</type>
+			<uuidresource>460f67f3-b586-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 12:40:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 12:33:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1113827580000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sausage is fine Wurst!]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modules/news/news_0005.html</source>
+			<destination>modules/news/news_0005.html</destination>
+			<type>news</type>
+			<uuidresource>6b4fff33-b586-11d9-bf1f-5fde9e2f6a72</uuidresource>
+			<datelastmodified>Mon, 25 Apr 2005 12:39:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Apr 2005 12:34:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1114432440000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Leberwurst causes addiction]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

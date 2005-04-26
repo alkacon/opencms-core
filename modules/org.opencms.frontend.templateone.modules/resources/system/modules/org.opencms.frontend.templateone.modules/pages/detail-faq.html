@@ -7,8 +7,10 @@ CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
 String uri = request.getParameter("uri");
 String oldUri = cms.getRequestContext().getUri();
+boolean uriPresent = false;
 if (CmsStringUtil.isNotEmpty(uri)) {
 	cms.getRequestContext().setUri(uri);
+	uriPresent = true;
 }
 
 // get currently active locale to initialize message bundle
@@ -44,6 +46,10 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%-- begin images --%>
 <%@ include file="../elements/detail-element-faqparagraph.txt" %>
 <%-- end images --%>
+
+<% if (uriPresent) { %>
+<p><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></p>
+<% } %>
 
 </cms:contentload>
 

@@ -7,8 +7,10 @@ CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
 String uri = request.getParameter("uri");
 String oldUri = cms.getRequestContext().getUri();
+boolean uriPresent = false;
 if (CmsStringUtil.isNotEmpty(uri)) {
 	cms.getRequestContext().setUri(uri);
+	uriPresent = true;
 }
 
 // get currently active locale to initialize message bundle
@@ -74,35 +76,34 @@ try {
 <cms:contentshow element="Text" />
 </p>
 
+<table border="0">
 <%-- show contact --%>
 <cms:contentcheck ifexists="Contact">
-<table border="0">
 <tr>
-<td valign="top"><b><fmt:message key="newsarticle.contact" /></b></td><td valign="top">
+<td valign="top" class="nowrap"><b><fmt:message key="newsarticle.contact" /></b></td><td valign="top">
 <cms:contentshow element="Contact" />
-</td></tr></table>
+</td></tr>
 </cms:contentcheck>
 
 <%-- show attachments --%>
 <cms:contentcheck ifexists="Attachment">
-<table border="0">
 <tr>
-<td valign="top"><b><fmt:message key="newsarticle.attachments" /></b></td><td valign="top"><ul>
+<td valign="top" class="nowrap"><b><fmt:message key="newsarticle.attachments" /></b></td><td valign="top"><ul>
 <cms:contentloop element="Attachment">
 <li><a href="<cms:link><cms:contentshow element="File" /></cms:link>" target="_blank" title="<cms:contentshow element="Description" />"><cms:contentshow element="Description" /></a></li>
 </cms:contentloop>
 </ul></td>
 </tr>
-</table>
 </cms:contentcheck>
 
+<tr><td colspan="2">
 <c:out value="${nextimages}" escapeXml="false" />
+</td></tr>
 
 <%-- show links --%>
 <cms:contentcheck ifexistsone="ExternalLink,InternalLink">
-<table border="0">
 <tr>
-<td valign="top"><b><fmt:message key="newsarticle.links" /></b></td><td valign="top">
+<td valign="top" class="nowrap"><b><fmt:message key="newsarticle.links" /></b></td><td valign="top">
 
 <%@ include file="../elements/detail-element-internallink.txt" %>
 
@@ -110,11 +111,16 @@ try {
 
 </td>
 </tr>
-</table>
 </cms:contentcheck>
 
 </cms:contentload>
 
+<% if (uriPresent) { %>
+<tr>
+	<td colspan="2">&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
+</tr>
+<% } %>
+</table>
 </div>
 
 <cms:include property="template" element="foot" /><%--
