@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/04/24 11:20:31 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2005/04/26 14:24:31 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.53 $ $Date: 2005/04/24 11:20:31 $
+ * @version $Revision: 1.54 $ $Date: 2005/04/26 14:24:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -310,9 +310,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 newUser.setAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                 for(int z = 0;z < selectedGroups.size();z++) {
                                     String groupname = (String)selectedGroups.elementAt(z);
-                                    if(!groupname.equals(defaultGroup)) {
-                                        cms.addUserToGroup(user, groupname);
-                                    }
+                                    cms.addUserToGroup(user, groupname);
                                 }
                                 cms.writeUser(newUser); // update in the database
                                 session.removeValue("selectedGroups");
