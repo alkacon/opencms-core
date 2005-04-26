@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/04/26 16:37:54 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleDependency;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.CmsShellReport;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -54,7 +55,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.SortedMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
@@ -77,7 +88,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -157,16 +168,24 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * whether the setup wizard is executed the first time (the backup registry
      * doesnt exist) or not (the backup registry exists).
      * 
-     * @param filename something like e.g. "opencms.ori"
+     * @param filename something like e.g. "opencms-xml.ori"
      * @param originalFilename the configurations real file name, e.g. "opencms.xml"
      */
     public void backupConfiguration(String filename, String originalFilename) {
+        
+        // ensure backup folder exists
+        File backupFolder = new File(m_configRfsPath + File.separatorChar + "backup");
+        if (!backupFolder.exists()) {
+            backupFolder.mkdirs();
+        }
+        
+        // copy file to (or from) backup folder
+        originalFilename = "backup" + File.separatorChar + originalFilename;       
         File file = new File(m_configRfsPath + originalFilename);
-
         if (file.exists()) {
-            this.copyFile(originalFilename, filename);
+            copyFile(originalFilename, filename);
         } else {
-            this.copyFile(filename, originalFilename);
+            copyFile(filename, originalFilename);
         }
     }
     
@@ -175,7 +194,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public void checkEthernetAddress() {
         // check the ethernet address in order to generate a random address, if not available                   
-        if ("".equals(getEthernetAddress())) {
+        if (CmsStringUtil.isEmpty(getEthernetAddress())) {
             setEthernetAddress(CmsUUID.getDummyEthernetAddress());
         }
     }
@@ -188,19 +207,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public void copyFile(String source, String target) {
         try {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configRfsPath + source)));
-            FileWriter fw = new FileWriter(new File(m_configRfsPath + target));
-
-            while (true) {
-                String line = lnr.readLine();
-                if (line == null) {
-                    break;
-                }
-                fw.write(line + '\n');
-            }
-
-            lnr.close();
-            fw.close();
+            CmsFileUtil.copy(m_configRfsPath + source, m_configRfsPath + target);
         } catch (IOException e) {
             m_errors.addElement("Could not copy " + source + " to " + target + " \n");
             m_errors.addElement(e.toString() + "\n");
@@ -886,13 +893,18 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             if (param != null) {
                 importWorkplace = param.equals("true");
             }        
-            checkEthernetAddress();        
-            // save Properties to file "opencms.properties" 
-            saveProperties(getProperties(), "opencms.properties", true);        
-            // backup the registry
+            checkEthernetAddress();          
+            // backup the XML configuration
+            backupConfiguration("opencms-importexport.xml", "opencms-importexport.xml.ori");
+            backupConfiguration("opencms-modules.xml", "opencms-modules.xml.ori");
+            backupConfiguration("opencms-search.xml", "opencms-search.xml.ori");
+            backupConfiguration("opencms-system.xml", "opencms-system.xml.ori");
+            backupConfiguration("opencms-vfs.xml", "opencms-vfs.xml.ori");
+            backupConfiguration("opencms-workplace.xml", "opencms-workplace.xml.ori");
             backupConfiguration("opencms.xml", "opencms.xml.ori");
-            backupConfiguration("registry.xml", "registry.xml.ori");
-        }             
+            // save Properties to file "opencms.properties" 
+            saveProperties(getProperties(), "opencms.properties", true);      
+        }
         return importWorkplace;
     }
     
@@ -983,16 +995,16 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
             m_errors.clear();
 
-            // make a backup copy
             if (backup) {
-                this.copyFile(file, backupFile);
+                // make a backup copy
+                copyFile(file, "backup" + File.separatorChar + backupFile);            
             }
 
             //save to temporary file
-            this.copyFile(file, tempFile);
+            copyFile(file, tempFile);
 
             // save properties
-            this.save(properties, tempFile, file);
+            save(properties, tempFile, file);
 
             // delete temp file
             File temp = new File(m_configRfsPath + tempFile);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/04/26 16:37:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -501,7 +501,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
             long lastMod = file.lastModified();
-            if (lastMod < maxAge) {
+            if ((lastMod < maxAge) & (!file.getAbsolutePath().endsWith(".ori"))) {
                 file.delete();
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("Deleting old configuration " + file.getAbsolutePath());

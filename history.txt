@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/04/26 11:47:30 $
- * Version: $Revision: 1.631 $
+ * Date   : $Date: 2005/04/26 16:37:54 $
+ * Version: $Revision: 1.632 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 - Updated quartz.jar to latest version 1.4.5
 - Removed logging configuration from opencms.properties to default log4j.properties file
 - Improved logging configuration on system startup to allow static log members in all classes
+- Moved all remaining configuration keys not used by setup wizard from "opencms.properties" to XML config
+! Configured "galleries" are automatically displayed in the WYSIWYG editor if configured correctly
 ! New "Table gallery" allows convenient uploading of CSV (or copy&paste) tables into WYSIWYG editor
 ! New "Table gallery" also available as widget for XML content
 ! New "Textarea" Widget for XML content for simple multiline String input
@@ -52,6 +54,7 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 ! XML content based module for "faq" added to "templateone" (with sample data)
 ! XML content based module for "jobs" added to "templateone" (with sample data)
 - "templateone" demo data now is displayed in the "accessible" version by default
+- Setup wizard now creates backup files of XML configuration before setup starts
 
 OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 * Fixed SQL statement compatibility issue with MySQL 3.2.x
