@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/26 14:06:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
@@ -241,7 +241,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 if (unzipFile) {
                     // zip file upload
                     String currentFolder = getParamUploadFolder();
-                    if (currentFolder == null || !currentFolder.startsWith("/")) {
+                    if (CmsStringUtil.isEmpty(currentFolder)) {
+                        // no upload folder parameter found, get current folder
+                        currentFolder = getParamCurrentFolder();
+                    }
+                    if (CmsStringUtil.isEmpty(currentFolder) || !currentFolder.startsWith("/")) {
+                        // no folder information found, guess upload folder
                         currentFolder = computeCurrentFolder();
                     }
                     // import the zip contents
