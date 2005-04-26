@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/26 12:50:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,15 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LINK_VALIDATION_0 = "ERR_LINK_VALIDATION_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DELETE_THREAD_CONSTRUCTED_0 = "LOG_DELETE_THREAD_CONSTRUCTED_0";    
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DELETE_THREAD_FINISHED_0 = "LOG_DELETE_THREAD_FINISHED_0";    
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DELETE_THREAD_STARTED_0 = "LOG_DELETE_THREAD_STARTED_0";
     
     /** Message contant for key in the resource bundle. */
     public static final String LOG_MODULE_DELETE_FAILED_1 = "LOG_MODULE_DELETE_FAILED_1";
@@ -59,7 +68,19 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message contant for key in the resource bundle. */
     public static final String LOG_PUBLISH_PROJECT_FAILED_0 = "LOG_PUBLISH_PROJECT_FAILED_0";
-        
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_REPLACE_THREAD_CONSTRUCTED_0 = "LOG_REPLACE_THREAD_CONSTRUCTED_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_REPLACE_THREAD_FINISHED_0 = "LOG_REPLACE_THREAD_FINISHED_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_REPLACE_THREAD_START_DELETE_0 = "LOG_REPLACE_THREAD_START_DELETE_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_REPLACE_THREAD_START_IMPORT_0 = "LOG_REPLACE_THREAD_START_IMPORT_0";
+ 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.threads.messages";
 

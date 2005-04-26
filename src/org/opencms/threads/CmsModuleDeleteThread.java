@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/04/26 12:50:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,10 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1.10
  */
 public class CmsModuleDeleteThread extends A_CmsReportThread {
-
-    private static final boolean DEBUG = false;
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleDeleteThread.class);  
@@ -76,9 +74,10 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
         m_moduleName = moduleName;
         m_replaceMode = replaceMode;
         initOldHtmlReport(cms.getRequestContext().getLocale());
-        if (DEBUG) {
-            System.err.println("CmsAdminModuleDeleteThread() constructed");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_CONSTRUCTED_0));
+        }  
+        
     }
 
     /**
@@ -95,9 +94,9 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     public void run() {
 
         try {
-            if (DEBUG) {
-                System.err.println("CmsAdminModuleDeleteThread() started");
-            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_STARTED_0));
+            }    
             String moduleName = m_moduleName.replace('\\', '/');
             CmsProject project = null;
 
@@ -135,15 +134,12 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             getReport().println(getReport().key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
             getReport().println(getReport().key("report.delete_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
-            if (DEBUG) {
-                System.err.println("CmsAdminModuleDeleteThread() finished");
-            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_FINISHED_0));
+            }  
         } catch (Exception e) {
             getReport().println(e);
             LOG.error(Messages.get().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleName), e);
-            if (DEBUG) {
-                System.err.println("CmsAdminModuleDeleteThread() Exception:" + e.getMessage());
-            }
         }
     }
 }

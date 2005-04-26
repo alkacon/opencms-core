@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/04/26 12:50:49 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,13 @@
 package org.opencms.threads;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 
 import java.util.Vector;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Replaces a module.<p>
@@ -43,19 +46,21 @@ import java.util.Vector;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.10
  */
 public class CmsModuleReplaceThread extends A_CmsReportThread {
 
-    private static final boolean DEBUG = false;
     private A_CmsReportThread m_deleteThread;
     private A_CmsReportThread m_importThread;
     private String m_moduleName;
     private int m_phase;
     private String m_reportContent;
     private String m_zipName;
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleReplaceThread.class);    
 
     /**
      * Creates the module replace thread.<p>
@@ -71,9 +76,9 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
 
         m_deleteThread = new CmsModuleDeleteThread(getCms(), m_moduleName, true);
         m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName);
-        if (DEBUG) {
-            System.err.println("CmsAdminModuleReplaceThread() constructed");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_CONSTRUCTED_0));
+        }  
         m_phase = 0;
     }
 
@@ -118,22 +123,22 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
      */
     public void run() {
 
-        if (DEBUG) {
-            System.err.println("CmsAdminModuleReplaceThread() starting delete action ");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_START_DELETE_0));
+        }  
         // phase 1: delete the existing module  
         m_phase = 1;
         m_deleteThread.run();
         // get remaining report contents
         m_reportContent = m_deleteThread.getReportUpdate();
-        if (DEBUG) {
-            System.err.println("CmsAdminModuleReplaceThread() starting import action ");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_START_IMPORT_0));
+        }  
         // phase 2: import the new module 
         m_phase = 2;
         m_importThread.run();
-        if (DEBUG) {
-            System.err.println("CmsAdminModuleReplaceThread() finished ");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
+        }  
     }
 }
