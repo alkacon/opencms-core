@@ -54,7 +54,7 @@
 			session.setAttribute("createDb",createDb);
 		} else {
 			// initialize the work user with the app name
-			Bean.setDbWorkUser(Bean.getAppName());
+			Bean.setDbWorkUser(request.getContextPath().substring(1));
 		}
 	}
 %>
