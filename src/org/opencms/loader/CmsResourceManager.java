@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/04/27 13:07:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.loader;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -70,11 +71,11 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.1
  */
 public class CmsResourceManager {
-    
+
     /** The default mimetype. */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
 
@@ -86,7 +87,7 @@ public class CmsResourceManager {
 
     /** Filename translator, used only for the creation of new files. */
     private CmsResourceTranslator m_fileTranslator;
-    
+
     /** Folder translator, used to translate all accesses to resources. */
     private CmsResourceTranslator m_folderTranslator;
 
@@ -109,56 +110,17 @@ public class CmsResourceManager {
     private Map m_mimeTypes;
 
     /** A list that contains all initialized resource types. */
-    private List m_resourceTypeList;    
-    
-    /** A list that contains all resource types added from the XML configuration. */
-    private List m_resourceTypesFromXml;    
-    
+    private List m_resourceTypeList;
+
     /** A map that contains all initialized resource types mapped to their type name. */
     private Map m_resourceTypeMap;
-    
+
     /** Hashtable with resource types. */
     private I_CmsResourceType[] m_resourceTypes;
 
-    /**
-     * Initializes member variables required for storing the resource types.<p>
-     */
-    private void initResourceTypes() {
-        
-        m_resourceTypes = new I_CmsResourceType[100];
-        m_resourceTypeMap = new HashMap();
-        m_mappings = new HashMap();
-        m_resourceTypeList = new ArrayList();        
-        
-        // build a new resource type list from the resource types of the XML configuration
-        Iterator i;
-        i = m_resourceTypesFromXml.iterator();
-        while (i.hasNext()) {
-            I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
-            initResourceType(resourceType);
-        }
+    /** A list that contains all resource types added from the XML configuration. */
+    private List m_resourceTypesFromXml;
 
-        // add all resource types declared in the modules
-        CmsModuleManager moduleManager = OpenCms.getModuleManager();
-        if (moduleManager != null) {
-            i = moduleManager.getModuleNames().iterator();
-            while (i.hasNext()) {
-                CmsModule module = moduleManager.getModule((String)i.next());
-                Iterator j =  module.getResourceTypes().iterator();
-                while (j.hasNext()) {
-                    I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
-                    initResourceType(resourceType);
-                }
-            }
-        }
- 
-        // freeze the current configuration
-        m_frozen = true;
-        m_resourceTypeList = Collections.unmodifiableList(m_resourceTypeList);
-        m_resourceTypeMap = Collections.unmodifiableMap(m_resourceTypeMap);        
-        m_loaderList = Collections.unmodifiableList(m_loaderList);
-    }
-    
     /**
      * Creates a new instance for the resource manager, 
      * will be called by the vfs configuration manager.<p>
@@ -334,36 +296,6 @@ public class CmsResourceManager {
     }
 
     /**
-     * Adds a new resource type to the internal list of loaded resource types and initializes 
-     * options for the resource type.<p>
-     *
-     * @param resourceType the resource type to add
-     */
-    private void initResourceType(I_CmsResourceType resourceType) {
-
-        // add the loader to the internal list of loaders
-        int pos = resourceType.getTypeId();
-        if (pos > m_resourceTypes.length) {
-            I_CmsResourceType[] buffer = new I_CmsResourceType[pos * 2];
-            System.arraycopy(m_resourceTypes, 0, buffer, 0, m_resourceTypes.length);
-            m_resourceTypes = buffer;
-        }
-        m_resourceTypes[pos] = resourceType;
-        m_resourceTypeList.add(resourceType);
-        m_resourceTypeMap.put(resourceType.getTypeName(), resourceType);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Resource type init   : Adding "
-                    + resourceType.getClass().getName()
-                    + " with name="
-                    + resourceType.getTypeName()
-                    + " id="
-                    + resourceType.getTypeId());
-        }
-        addMapping(resourceType);
-    }
-    
-    /**
      * Adds a new resource type from the XML configuration to the internal list of loaded resource types.<p>
      * 
      * Resource types can also be added from a module.<p>
@@ -372,12 +304,12 @@ public class CmsResourceManager {
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
     public void addResourceType(I_CmsResourceType resourceType) throws CmsConfigurationException {
-        
+
         // check if new resource types can still be added
         if (m_frozen) {
             throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
         }
-        
+
         m_resourceTypesFromXml.add(resourceType);
     }
 
@@ -449,7 +381,7 @@ public class CmsResourceManager {
 
         return m_mappings;
     }
-    
+
     /**
      * Returns the file translator.<p>
      *
@@ -459,7 +391,7 @@ public class CmsResourceManager {
 
         return m_fileTranslator;
     }
-    
+
     /**
      * Returns the folder translator.<p>
      *
@@ -625,7 +557,7 @@ public class CmsResourceManager {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }
-        
+
         m_resourceTypesFromXml = Collections.unmodifiableList(m_resourceTypesFromXml);
 
         // initalize the resource types
@@ -660,7 +592,7 @@ public class CmsResourceManager {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }
     }
-    
+
     /**    
      * Loads the requested resource and writes the contents to the response stream.<p>
      * 
@@ -714,7 +646,7 @@ public class CmsResourceManager {
         }
         return result;
     }
-    
+
     /**
      * Sets the folder and the file translator.<p>
      * 
@@ -722,7 +654,7 @@ public class CmsResourceManager {
      * @param fileTranslator the file translator to set
      */
     public void setTranslators(CmsResourceTranslator folderTranslator, CmsResourceTranslator fileTranslator) {
-        
+
         m_folderTranslator = folderTranslator;
         m_fileTranslator = fileTranslator;
     }
@@ -743,12 +675,111 @@ public class CmsResourceManager {
             // only add this mapping if a mapping with this file extension does not
             // exist already
             if (!m_mappings.containsKey(mapping)) {
-               m_mappings.put(mapping, resourceType.getTypeName());
-               if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                   OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                       ". File mapping         : Map '" + mapping + "' to resource type " + resourceType.getTypeName());
+                m_mappings.put(mapping, resourceType.getTypeName());
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                        ". Resource type init   : maping extension '"
+                            + mapping
+                            + "' to resource type "
+                            + resourceType.getTypeName());
                 }
             }
+        }
+    }
+
+    /**
+     * Adds a new resource type to the internal list of loaded resource types and initializes 
+     * options for the resource type.<p>
+     *
+     * @param resourceType the resource type to add
+     */
+    private void initResourceType(I_CmsResourceType resourceType) {
+
+        // add the loader to the internal list of loaders
+        int pos = resourceType.getTypeId();
+        if (pos > m_resourceTypes.length) {
+            I_CmsResourceType[] buffer = new I_CmsResourceType[pos * 2];
+            System.arraycopy(m_resourceTypes, 0, buffer, 0, m_resourceTypes.length);
+            m_resourceTypes = buffer;
+        }
+        m_resourceTypes[pos] = resourceType;
+        m_resourceTypeList.add(resourceType);
+        m_resourceTypeMap.put(resourceType.getTypeName(), resourceType);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Resource type init   : added resource type '"
+                    + resourceType.getTypeName()
+                    + "' id="
+                    + resourceType.getTypeId()
+                    + " class="
+                    + resourceType.getClass().getName());
+        }
+        addMapping(resourceType);
+    }
+
+    /**
+     * Initializes member variables required for storing the resource types.<p>
+     */
+    private void initResourceTypes() {
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource type init   : starting");
+        }
+
+        m_resourceTypes = new I_CmsResourceType[100];
+        m_resourceTypeMap = new HashMap();
+        m_mappings = new HashMap();
+        m_resourceTypeList = new ArrayList();
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Resource type init   : adding "
+                    + m_resourceTypesFromXml.size()
+                    + " resource types from file " + CmsVfsConfiguration.C_DEFAULT_XML_FILE_NAME);
+        }
+
+        // build a new resource type list from the resource types of the XML configuration
+        Iterator i;
+        i = m_resourceTypesFromXml.iterator();
+        while (i.hasNext()) {
+            I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
+            initResourceType(resourceType);
+        }
+
+        // add all resource types declared in the modules
+        CmsModuleManager moduleManager = OpenCms.getModuleManager();
+        if (moduleManager != null) {
+            i = moduleManager.getModuleNames().iterator();
+            while (i.hasNext()) {
+                CmsModule module = moduleManager.getModule((String)i.next());
+                if (module.getResourceTypes().size() > 0) {
+                    // module contains resource types                
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                            ". Resource type init   : adding "
+                                + module.getResourceTypes().size()
+                                + " resource type(s) from module '"
+                                + module.getName()
+                                + "'");
+                    }
+
+                    Iterator j = module.getResourceTypes().iterator();
+                    while (j.hasNext()) {
+                        I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
+                        initResourceType(resourceType);
+                    }
+                }
+            }
+        }
+
+        // freeze the current configuration
+        m_frozen = true;
+        m_resourceTypeList = Collections.unmodifiableList(m_resourceTypeList);
+        m_resourceTypeMap = Collections.unmodifiableMap(m_resourceTypeMap);
+        m_loaderList = Collections.unmodifiableList(m_loaderList);
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource type init   : finished");
         }
     }
 }

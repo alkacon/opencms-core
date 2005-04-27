@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/04/27 13:07:54 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -146,7 +146,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
+    public static final String C_DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
     
     /** The copy-resource node name.*/
     private static final String N_COPY_RESOURCE = "copy-resource";

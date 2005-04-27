@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.179 $
+ * Date   : $Date: 2005/04/27 13:07:54 $
+ * Version: $Revision: 1.180 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.179 $
+ * @version $Revision: 1.180 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1339,6 +1339,11 @@ public final class OpenCmsCore {
                 // take the system offline
                 setRunLevel(OpenCms.RUNLEVEL_0_OFFLINE);
 
+                if (LOG.isDebugEnabled()) {
+                    // log exception to see which method did call the shutdown
+                    LOG.debug(Messages.get().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
+                }
+                
                 try {
                     if (m_staticExportManager != null) {
                         m_staticExportManager.shutDown();
