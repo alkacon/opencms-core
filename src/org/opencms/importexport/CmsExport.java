@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/04/27 14:31:40 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.57 $ $Date: 2005/04/24 11:20:30 $
+ * @version $Revision: 1.58 $ $Date: 2005/04/27 14:31:40 $
  */
 public class CmsExport implements Serializable {
 
@@ -819,14 +819,24 @@ public class CmsExport implements Serializable {
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(
             CmsDateUtil.getHeaderDate(resource.getDateLastModified()));
         // <userlastmodified>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(
-            getCms().readUser(resource.getUserLastModified()).getName());
+        String userNameLastModified = null;
+        try {
+            userNameLastModified = getCms().readUser(resource.getUserLastModified()).getName();
+        } catch (CmsException e) {
+            userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
+        }
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(userNameLastModified);
         // <datecreated>
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(
             CmsDateUtil.getHeaderDate(resource.getDateCreated()));
         // <usercreated>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(
-            getCms().readUser(resource.getUserCreated()).getName());
+        String userNameCreated = null;
+        try {
+            userNameCreated = getCms().readUser(resource.getUserCreated()).getName();
+        } catch (CmsException e) {
+            userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
+        }
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(userNameCreated);
         // <release>
         if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
             fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATERELEASED).addText(
