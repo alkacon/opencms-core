@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/04/27 14:29:11 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -204,7 +204,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 throw new ServletException(e.getMessage());
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(Messages.get().key(Messages.LOG_ERROR_STARTUP_0), e);
         }
     }
 

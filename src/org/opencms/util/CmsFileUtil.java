@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/04/15 22:56:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/04/27 14:29:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -185,7 +185,7 @@ public final class CmsFileUtil {
      */
     public static String normalizePath(String path, char separatorChar) {
 
-        if (path != null) {
+        if (CmsStringUtil.isNotEmpty(path)) {
             // ensure all File separators are '/'
             path = path.replace('\\', '/');
             String drive = null;
