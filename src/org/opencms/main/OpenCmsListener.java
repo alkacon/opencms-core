@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2005/04/20 10:37:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/27 14:47:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,13 @@ import org.apache.commons.logging.Log;
  * Used for the following purposes:<ul>
  * <li>Starting up OpenCms when the servlet container is started.</li>
  * <li>Shutting down OpenCms when the servlet container is shut down.</li>
- * <li>Informing the {@link org.opencms.main.CmsSessionManager} if a new session is created.</li>
- * <li>Informing the {@link org.opencms.main.CmsSessionManager} session is destroyed or invalidated.</li>
+ * <li>Informing the <code>{@link org.opencms.main.CmsSessionManager}</code> if a new session is created.</li>
+ * <li>Informing the <code>{@link org.opencms.main.CmsSessionManager}</code> session is destroyed or invalidated.</li>
  * </ul>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public class OpenCmsListener implements ServletContextListener, HttpSessionListener {
@@ -70,6 +70,9 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             if (e.isNewError()) {
                 LOG.error(e);
             }
+        } catch (Throwable t) {
+            // make sure all other errors are displayed in the OpenCms log
+            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 
@@ -83,8 +86,14 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
         } catch (CmsInitException e) {
             if (e.isNewError()) {
+                // only log new init errors
                 LOG.error(e);
             }
+        } catch (Throwable t) {
+            // make sure all other errors are displayed in the OpenCms log
+            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            // throw a new init Exception to make sure a "context destroyed" event is triggered
+            throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, t.getMessage()));
         }
     }
 
@@ -100,6 +109,9 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             if (e.isNewError()) {
                 LOG.error(e);
             }
+        } catch (Throwable t) {
+            // make sure all other errors are displayed in the OpenCms log
+            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 
@@ -115,6 +127,9 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             if (e.isNewError()) {
                 LOG.error(e);
             }
+        } catch (Throwable t) {
+            // make sure all other errors are displayed in the OpenCms log
+            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 }

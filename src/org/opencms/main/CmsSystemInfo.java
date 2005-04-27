@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/04/27 14:47:25 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.main;
 
-import org.opencms.db.CmsCacheSettings;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.synchronize.CmsSynchronizeSettings;
@@ -53,7 +52,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.3
  */
 public class CmsSystemInfo {
