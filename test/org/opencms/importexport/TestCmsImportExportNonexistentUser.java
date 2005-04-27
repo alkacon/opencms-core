@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2005/04/27 14:07:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/27 14:20:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.io.File;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -47,7 +49,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -97,6 +99,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
      */
     public void testImportExportNonexistentUser() throws Exception {
         
+        String zipExportFilename = null;
         CmsObject cms = getCmsObject();
         
         try {
@@ -104,6 +107,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             String password = "password";
             String filename = "/dummy1.txt";
             String contentStr = "This is a comment. I love comments.";
+            zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testImportExportNonexistentUser.zip");
             byte[] content = contentStr.getBytes();
             CmsProject offlineProject = cms.getRequestContext().currentProject();
             
@@ -130,7 +134,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             
             // export the dummy plain text file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName("testImportExportNonexistentUser.zip");
+            vfsExportHandler.setFileName(zipExportFilename);
             vfsExportHandler.setExportPaths(new String[] {filename});
             vfsExportHandler.setExcludeSystem(true);
             vfsExportHandler.setExcludeUnchanged(false);
@@ -139,6 +143,18 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
         } catch (Exception e) {
             
             fail(e.toString());
+        } finally {
+            
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
         }
     }
     
