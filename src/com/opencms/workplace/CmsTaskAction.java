@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/04/27 10:36:33 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2005/04/27 11:53:46 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.63 $ $Date: 2005/04/27 10:36:33 $
+ * @version $Revision: 1.64 $ $Date: 2005/04/27 11:53:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -484,7 +484,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             String sendToAll = taskService.getTaskPar(task.getId(), C_TASKPARA_ALL);
-            if(sendToAll != null && sendToAll.length() > 0) {
+            if(CmsStringUtil.isEmpty(sendToAll)) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
                     List users = cms.getUsersOfGroup(group.getName());
