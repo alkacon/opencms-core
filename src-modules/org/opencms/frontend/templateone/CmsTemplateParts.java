@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/04/20 15:41:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/27 15:52:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.collections.map.LRUMap;
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
     
@@ -173,6 +173,9 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                     m_parts.put(partKey, part);
                     // save modified class to runtime properties
                     OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
+                } else {
+                    // prevent displaying rubbish
+                    part = "";
                 }
                 if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
                     OpenCms.getLog(CmsTemplateParts.class).debug("Value for key \"" + partKey + "\" not found, including JSP");
