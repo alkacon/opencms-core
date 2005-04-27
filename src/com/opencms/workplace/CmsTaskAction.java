@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2005/04/27 10:36:33 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.62 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.63 $ $Date: 2005/04/27 10:36:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -424,7 +424,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
     /**
      * Forwards a task. The task is forwarded to a new editor in a new role.
      * @param cms The cms-object.
-     * @param int taskid The id of the task.
+     * @param taskid The id of the task.
      * @param newEditorName The name of the new editor for this task.
      * @param newRoleName The name of the new role for the user.
      * @throws CmsException Throws CmsExceptions, that are be
@@ -483,7 +483,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             String subject = lang.getLanguageValue("task.email.forward.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + newRoleName;
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
-            if(taskService.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
+            String sendToAll = taskService.getTaskPar(task.getId(), C_TASKPARA_ALL);
+            if(sendToAll != null && sendToAll.length() > 0) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
                     List users = cms.getUsersOfGroup(group.getName());
