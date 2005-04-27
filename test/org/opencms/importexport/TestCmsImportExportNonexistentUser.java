@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2005/04/27 14:20:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/27 14:25:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.importexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -127,8 +128,10 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             cms.unlockResource(filename);
             cms.publishResource(filename);
             
-            // switch back to the Admin user
-            cms.loginUser("Admin", "admin");            
+            // switch back to the Admin user, offline project and default site
+            cms.loginUser("Admin", "admin");  
+            cms.getRequestContext().setSiteRoot("/sites/default/");
+            cms.getRequestContext().setCurrentProject(offlineProject);            
             // delete the temporary user
             cms.deleteUser(username);
             
@@ -140,6 +143,16 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             vfsExportHandler.setExcludeUnchanged(false);
             vfsExportHandler.setExportUserdata(false);
             OpenCms.getImportExportManager().exportData(cms, vfsExportHandler, new CmsShellReport());
+            
+            // delete the dummy plain text file
+            cms.lockResource(filename);
+            cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+            // publish the deleted dummy plain text file
+            cms.unlockResource(filename);
+            cms.publishResource(filename);
+            
+            // re-import the exported dummy plain text file
+            OpenCms.getImportExportManager().importData(cms, zipExportFilename, "/", new CmsShellReport());
         } catch (Exception e) {
             
             fail(e.toString());
