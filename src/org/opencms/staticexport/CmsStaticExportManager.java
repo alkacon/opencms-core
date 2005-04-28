@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/04/25 14:07:15 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2005/04/28 08:32:52 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1277,7 +1277,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (CmsLog.LOG.isDebugEnabled()) {
             if (cms != null) {
-                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0, cms));
+                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
             } else {
                 CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0));
             }
