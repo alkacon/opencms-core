@@ -149,11 +149,22 @@ div.menu a.mI span.mIArrow {
   margin-right: -.75em;
 }
 
-/* head and foot row links */
+/* foot row links */
 a.linksheadfoot,a.linksheadfoot:link { font-family: <%= navFontFamily %>; font-size: 8pt; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; }
 a.linksheadfoot:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
 a.linksheadfoot:hover	{ color: <%= footLinksFontHover %>; text-decoration: none; }
 a.linksheadfoot:active	{ color: <%= footLinksFontActive %>; text-decoration: none; }
+
+/* head row links */
+a.linkshead,a.linkshead:link { font-family: <%= navFontFamily %>; font-size: 8pt; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; vertical-align: middle; }
+a.linkshead:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
+a.linkshead:hover	{ color: <%= footLinksFontHover %>; text-decoration: none; }
+a.linkshead:active	{ color: <%= footLinksFontActive %>; text-decoration: none; }
+.headnavspacer { 
+	color: <%= footLinksFont %>; 
+	font-size: 8pt;
+	vertical-align: middle;
+}
 
 /* bread crumb navigation */
 div.breadcrumb			{ margin: 4px 8px; }
@@ -281,7 +292,7 @@ td.oldelement {
 div.element {
 	margin: 8px;
 	margin-top: 5px; 
-	padding: 3px; 
+	padding: 4px; 
 	border: 1px solid <%= contentBorder %>; 
 	text-align: justify; 
 	clear: both;
@@ -289,7 +300,7 @@ div.element {
 
 div.element2 {
 	margin: 5px; 
-	padding: 3px; 
+	padding: 4px; 
 	border: 1px solid <%= contentBorder %>; 
 	text-align: left; 
 	clear: both;
@@ -378,10 +389,10 @@ div.popup { <%
 	
 	%>
 	margin-top: 10px;
-	width: 100%;  
+	width: 99.8%;  
 }
 
-h1.popup { font-size: 10pt; padding: 2px; width: 100%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
+h1.popup { font-size: 10pt; padding: 2px; width: 99.8%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
 .popupform { border: 1px solid <%= contentFont %>; width: 450px; }
 span.formerror { color: <%= headNavBg %>; font-weight: bold;}
 

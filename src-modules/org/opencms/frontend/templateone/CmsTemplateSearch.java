@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/03/08 11:28:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/28 13:46:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the search result JSP page.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsTemplateSearch extends CmsTemplateBean {
     
@@ -237,6 +237,16 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             String path = entry.getPath();
             // remove the site root from the path of the result
             path = getRequestContext().removeSiteRoot(path);
+            // get the file icon
+            String fileIcon = getFileIcon(path);
+            if (CmsStringUtil.isNotEmpty(fileIcon)) {
+                result.append("<a href=\"");
+                result.append(link(path));
+                result.append("\">");
+                result.append(fileIcon);
+                result.append("</a>&nbsp;");
+            }
+            
             result.append("<a href=\"");
             result.append(link(path));
             result.append("\">");
@@ -273,6 +283,38 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             result.append("</div>\n");
         }
         return result.toString();
+    }
+    
+    /**
+     * Returns the HTML of the file icon for the given resource name or an empty String if no icon can be found.<p>
+     * 
+     * @param fileName the filename to check
+     * @return the HTML of the file icon for the given resource name or an empty String
+     */
+    public String getFileIcon(String fileName) {
+    
+        int lastDot = fileName.lastIndexOf('.');
+        String extension = "";
+        // get the file extension 
+        if ((lastDot > 0) && (lastDot < (fileName.length() - 1))) {
+            extension = fileName.substring(lastDot + 1).toLowerCase();   
+            String iconPath = I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/resources/icons/ic_app_" + extension + ".gif";
+            // check if an icon exists
+            if (getCmsObject().existsResource(iconPath)) {
+                StringBuffer result = new StringBuffer(8);
+                String title = property(I_CmsConstants.C_PROPERTY_TITLE, iconPath, "");
+                result.append("<img src=\"");
+                result.append(link(iconPath));
+                result.append("\" border=\"0\" alt=\"");
+                result.append(title);
+                result.append("\" title=\"");
+                result.append(title);
+                result.append("\" align=\"left\" hspace=\"2\">");
+                return result.toString();
+            }          
+        }
+        return "";
+        
     }
     
     /**

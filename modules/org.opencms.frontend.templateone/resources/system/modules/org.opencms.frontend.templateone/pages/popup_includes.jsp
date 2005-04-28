@@ -29,8 +29,8 @@ if (cms.template("popuphead")) {
 	</script>
 	<% cms.editable(true); %>
 </head>
-<body style="font-size: 80%;">
-<p style="font-size: 80%; text-align: right; margin-top: 5px; line-height: 1px;">
+<body style="font-size: 80%; margin: 5px;">
+<p style="font-size: 80%; text-align: right; padding-top: 8px; line-height: 1px;">
 	<a href="javascript:window.close();"><%= messages.key("link.close") %></a>
 </p>
 <% 

@@ -19,8 +19,8 @@ cms.includeWithPageUri("head");
     	search.setDisplayPages(11); %><%--
 --%></jsp:useBean><%--
 
---%><div style="margin: 8px;">
-<h3><%= cms.buildSearchHeadline() %></h3>
+--%><div class="element">
+<h2><%= cms.buildSearchHeadline() %></h2>
 <p style="vertical-align: middle;">
 <form style="margin: 0;" name="searchform" method="post" action="<%= cms.link("/system/modules/org.opencms.frontend.templateone/pages/search.html") %>" onsubmit="return parseSearchQuery(document.forms['searchform'], '<%= cms.key("search.error.wordlength") %>');">
 <input type="hidden" name="action" value="search" />

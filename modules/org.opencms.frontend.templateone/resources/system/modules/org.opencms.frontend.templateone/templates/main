@@ -194,6 +194,10 @@ if (cms.template("content")) {
 }
 
 if (cms.template("foot")) {
+	if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_PRINT)) { %>
+		</td></tr></table>
+	<%
+	}
 	cms.buildHtmlBodyEnd(); 
 }
 %>

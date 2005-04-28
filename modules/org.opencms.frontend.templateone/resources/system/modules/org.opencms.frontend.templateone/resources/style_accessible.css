@@ -100,8 +100,40 @@ a:hover		{	color: <%= contentLinkHover %>; <%= cms.getFontUnderline("content.lin
 a:active	{	color: <%= contentLinkActive %>; <%= cms.getFontUnderline("content.link.underline", "false") %> }
 
 /* Head navigation */
-a.navtop,a.navtop:visited,a.navtop:hover { color: <%= headNavFont %>; font-family: <%= navFontFamily %>; font-size: 0.7em; height: 0.7em; vertical-align: middle; white-space: nowrap; padding: 2px; font-weight: normal; text-decoration: none; }
-.navspacer { color: <%= headNavFont %>; font-size: 0.7em; vertical-align: middle; }
+a.navtop,a.navtop:visited,a.navtop:hover { 
+	color: <%= headNavFont %>; 
+	font-family: <%= navFontFamily %>; 
+	font-size: 0.8em; 
+	white-space: nowrap; 
+	padding: 0px 2px 3px 2px; 
+	font-weight: normal; 
+	text-decoration: none;
+	vertical-align: top;
+	
+}
+.navspacer { 
+	color: <%= headNavFont %>; 
+	font-size: 0.8em; 
+	vertical-align: top;
+}
+
+/* top navigation row */
+div.navtop {
+	width: 100%;
+	margin: 0;
+	padding: 3px 0px 0px 0px;
+	background-color: <%= headNavBg %>;
+	font-size: 0.8em;
+	text-align: left;
+	text-indent: 5px;	
+	<%
+	if (showMainBorder) {
+		out.print("border-top: 1px solid " + mainBorder + ";");
+		out.print("border-left: 1px solid " + mainBorder + ";");
+		out.print("border-right: 1px solid " + mainBorder + ";");
+	}
+	%>	
+}
 
 /* Head navigation submenu */
 div.menu, div.menu a.mI, div.menu a.mI span.mIText, div.menu a.mI span.mIArrow {
@@ -151,11 +183,22 @@ div.menu a.mI span.mIArrow {
   margin-right: -.75em;
 }
 
-/* head and foot row links */
-a.linksheadfoot,a.linksheadfoot:link { font-family: <%= navFontFamily %>; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; }
+/* foot row links */
+a.linksheadfoot,a.linksheadfoot:link { font-family: <%= navFontFamily %>; font-size: 0.85em; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; }
 a.linksheadfoot:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
 a.linksheadfoot:hover	{ color: <%= footLinksFontHover %>; text-decoration: none; }
 a.linksheadfoot:active	{ color: <%= footLinksFontActive %>; text-decoration: none; }
+
+/* head row links */
+a.linkshead,a.linkshead:link { font-family: <%= navFontFamily %>; font-size: 0.85em; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; padding: 0px 0px 0px 0px; vertical-align: middle;  }
+a.linkshead:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
+a.linkshead:hover	{ color: <%= footLinksFontHover %>; text-decoration: none; }
+a.linkshead:active	{ color: <%= footLinksFontActive %>; text-decoration: none; }
+.headnavspacer { 
+	color: <%= footLinksFont %>; 
+	font-size: 0.85em;
+	vertical-align: middle;
+}
 
 /* bread crumb navigation */
 div.breadcrumb			{ margin: 4px 8px; text-align: left; }
@@ -174,12 +217,10 @@ div.linkshead {
 	border-top: 1px solid <%= headLinksBorder %>;
 	border-right: 1px solid <%= headLinksBorder %>;
 	background-color: <%= headLinksBg %>;
-	vertical-align: middle;
 	text-align: right;
 	margin: 0 auto;
-	padding-bottom: 1px;
-	padding-top: 1px;
-	font-size: 0.8em;
+	padding: 1px 0px;
+	font-size: 0.80em;
 }
 
 /* head image row */
@@ -207,22 +248,6 @@ span.imagelink {
 	cursor: pointer;
 }
 
-/* top navigation row */
-div.navtop {
-	width: 100%;
-	margin: 0 auto;
-	background-color: <%= headNavBg %>;
-	text-align: left;
-	text-indent: 5px;
-	<%
-	if (showMainBorder) {
-		out.print("border-top: 1px solid " + mainBorder + ";");
-		out.print("border-left: 1px solid " + mainBorder + ";");
-		out.print("border-right: 1px solid " + mainBorder + ";");
-	}
-	%>	
-}
-
 /* border of the foot navigation row */
 div.linksfoot {
 	width: 100%;
@@ -231,6 +256,8 @@ div.linksfoot {
 	border-bottom: 1px solid <%= footLinksBorder %>;
 	background-color: <%= footLinksBg %>;
 	margin: 0 auto;
+	padding-top: 1px;
+	padding-bottom: 1px;
 	font-size: 0.8em;
 	text-align: right;
 	clear: both;
@@ -268,8 +295,8 @@ div.content {
 
 /* a content element */
 div.element {
-	margin: 5px; 
-	padding: 3px; 
+	margin: 5px 5px 5px 5px; 
+	padding: 5px; 
 	text-align: justify; 
 	clear: both;
 	background-color: <%= contentBg %>;
@@ -278,8 +305,8 @@ div.element {
 
 div.element2 {
 	font-size: 0.8em;
-	margin: 5px; 
-	padding: 3px; 
+	margin: 5px 5px 5px 0px; 
+	padding: 5px; 
 	text-align: left; 
 	clear: both;
 	background-color: <%= sideBg %>;
@@ -290,7 +317,7 @@ div.element2 {
 div.infobox {
 	text-align: left;
 	float: right;
-	width: 18%;
+	width: 18.6%;
 	vertical-align: top;
 	height: 100%;
 }
@@ -370,10 +397,10 @@ div.popup { <%
 	
 	%>
 	margin-top: 10px;
-	width: 100%;  
+	width: 99.9%;
 }
 
-h1.popup { font-size: 1.0em; padding: 2px; width: 100%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
+h1.popup { font-size: 1.0em; padding: 2px; width: 99.9%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
 .popupform { border: 1px solid <%= contentFont %>; width: 450px; }
 span.formerror { color: <%= headNavBg %>; font-weight: bold;}
 
