@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/04/28 13:24:30 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2005/04/28 14:13:52 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 5.3.5
  */
@@ -230,6 +230,219 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Generates a sub tree of folders with files.<p>
+     * 
+     * @param cms the cms context
+     * @param vfsFolder where to create the subtree
+     * @param maxWidth an upper bound for the number of subfolder a folder should have
+     * @param maxDepth an upper bound for depth of the genearted subtree
+     * @param maxProps upper bound for number of properties to create for each resource
+     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
+     * @param maxNumberOfFiles upper bound for the number of files in each folder
+     * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
+     * 
+     * @return the number of really written files
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static int generateContent(
+        CmsObject cms,
+        String vfsFolder,
+        int maxWidth,
+        int maxDepth,
+        int maxProps,
+        double propertyDistribution,
+        int maxNumberOfFiles,
+        double fileTypeDistribution) throws Exception {
+
+        int fileNameLength = 10;
+        int propValueLength = 10;
+
+        // end recursion
+        if (maxDepth < 1) {
+            return 0;
+        }
+        if (!vfsFolder.endsWith("/")) {
+            vfsFolder += "/";
+        }
+
+        int writtenFiles = 0;
+
+        int width = (int)(maxWidth * Math.random()) + 1;
+        int depth = maxDepth - (int)(2 * Math.random());
+        for (int i = 0; i < width; i++) {
+            // generate folder
+            String vfsName = vfsFolder + generateName(fileNameLength) + i;
+            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
+            cms.createResource(vfsName, CmsResourceTypeFolder.getStaticTypeId(), new byte[0], props);
+            cms.unlockResource(vfsName);
+
+            int numberOfFiles = (int)(maxNumberOfFiles * Math.random()) + 1;
+            // generate binary files
+            int numberOfBinaryFiles = (int)(numberOfFiles * fileTypeDistribution);
+            writtenFiles += generateResources(
+                cms,
+                "org/opencms/search/pdf-test-112.pdf",
+                vfsName,
+                numberOfBinaryFiles,
+                CmsResourceTypeBinary.getStaticTypeId(),
+                maxProps,
+                propertyDistribution);
+
+            // generate text files
+            writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsName, numberOfFiles
+                - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
+
+            // in depth recursion
+            writtenFiles += generateContent(
+                cms,
+                vfsName,
+                maxWidth,
+                depth - 1,
+                maxProps,
+                propertyDistribution,
+                maxNumberOfFiles,
+                fileTypeDistribution);
+
+            System.out.println("" + writtenFiles + " files written in Folder " + vfsName);
+        }
+        return writtenFiles;
+    }
+
+    /**
+     * Generate a new random name.<p>
+     * 
+     * @param maxLen upper bound for the length of the name
+     * 
+     * @return a random name
+     */
+    public static String generateName(int maxLen) {
+
+        String name = "";
+        int len = (int)(maxLen * Math.random()) + 1;
+        for (int j = 0; j < len; j++) {
+            name += (char)(25 * Math.random() + 97);
+        }
+        return name;
+    }
+
+    /**
+     * Generates random properties.<p>
+     * 
+     * @param cms the cms context
+     * @param maxProps upper bound for number of properties to create for each resource
+     * @param propValueLength upper bound for the number of char for the values
+     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
+     * 
+     * @return a list of <code>{@link CmsProperty}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static List generateProperties(CmsObject cms, int maxProps, int propValueLength, double propertyDistribution)
+    throws CmsException {
+
+        List propList = cms.readAllPropertyDefinitions();
+
+        List props = new ArrayList();
+        if (maxProps > propList.size()) {
+            maxProps = propList.size();
+        }
+        int propN = (int)(Math.random() * maxProps) + 1;
+        for (int j = 0; j < propN; j++) {
+            CmsPropertyDefinition propDef = (CmsPropertyDefinition)propList.get((int)(Math.random() * propList.size()));
+            propList.remove(propDef);
+            if (Math.random() < propertyDistribution) {
+                // only resource prop
+                props.add(new CmsProperty(propDef.getName(), null, generateName(propValueLength)));
+            } else {
+                // resource and structure props
+                props.add(new CmsProperty(
+                    propDef.getName(),
+                    generateName(propValueLength),
+                    generateName(propValueLength)));
+            }
+        }
+
+        return props;
+    }
+
+    /**
+     * Generates n new resources in a given folder.<p>
+     * 
+     * @param cms the cms context
+     * @param rfsName the rfs file for the content
+     * @param vfsFolder the folder to create the resources in
+     * @param n number of resources to generate
+     * @param type the type of the resource
+     * @param maxProps upper bound for number of properties to create for each resource
+     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
+     * 
+     * @return the number of really written files
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static int generateResources(
+        CmsObject cms,
+        String rfsName,
+        String vfsFolder,
+        int n,
+        int type,
+        int maxProps,
+        double propertyDistribution) throws Exception {
+
+        int fileNameLength = 10;
+        int propValueLength = 10;
+
+        if (!vfsFolder.endsWith("/")) {
+            vfsFolder += "/";
+        }
+        int writtenFiles = 0;
+        for (int i = 0; i < n; i++) {
+            String vfsName = vfsFolder + generateName(fileNameLength) + i;
+            if (rfsName.lastIndexOf('.') > 0) {
+                vfsName += rfsName.substring(rfsName.lastIndexOf('.'));
+            }
+            System.out.print("(" + (i + 1) + "/" + n + ") Importing " + vfsName + " ... ");
+            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
+            try {
+                OpenCmsTestCase.importTestResource(cms, rfsName, vfsName, type, props);
+                System.out.println("o.k.");
+                writtenFiles++;
+            } catch (Exception e) {
+                System.out.println("error!");
+            }
+        }
+        return writtenFiles;
+    }
+
+    /**
+     * Generates n new users for a given group.<p>
+     * 
+     * @param cms the cms context
+     * @param groupName the group name, group will be creating if group does not exists
+     * @param n number of users to generate
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static void generateUsers(CmsObject cms, String groupName, int n) throws CmsException {
+
+        CmsGroup group = null;
+        try {
+            group = cms.readGroup(groupName);
+        } catch (Exception e) {
+            // ignore
+        }
+        if (group == null) {
+            group = cms.createGroup(groupName, groupName, 0, null);
+        }
+        for (int i = 0; i < n; i++) {
+            String name = generateName(10) + i;
+            cms.createUser(name, "pwd" + i, "test user " + i, null);
+            cms.addUserToGroup(name, groupName);
+        }
+    }
+
+    /**
      * Returns the currently used database/configuration.<p>
      * 
      * @return he currently used database/configuration
@@ -248,15 +461,14 @@ public class OpenCmsTestCase extends TestCase {
         if (m_testDataPath == null) {
             m_testDataPath = new ArrayList(4);
 
-            // Test wether we are instantiated within the 
+            // test wether we are instantiated within the 
             // AllTest suite and therefore the OpenCmsTestProperties are 
             // already set up:
-            try{
+            try {
                 OpenCmsTestProperties.getInstance();
-            }catch(RuntimeException rte){
+            } catch (RuntimeException rte) {
                 OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
             }
-            
             // set data path 
             addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
         }
@@ -2753,219 +2965,6 @@ public class OpenCmsTestCase extends TestCase {
                 + ") "
                 + "-----");
         }
-    }
-
-    /**
-     * Generates n new resources in a given folder.<p>
-     * 
-     * @param cms the cms context
-     * @param rfsName the rfs file for the content
-     * @param vfsFolder the folder to create the resources in
-     * @param n number of resources to generate
-     * @param type the type of the resource
-     * @param maxProps upper bound for number of properties to create for each resource
-     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
-     * 
-     * @return the number of really written files
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public static int generateResources(
-        CmsObject cms,
-        String rfsName,
-        String vfsFolder,
-        int n,
-        int type,
-        int maxProps,
-        double propertyDistribution) throws Exception {
-
-        int fileNameLength = 10;
-        int propValueLength = 10;
-
-        if (!vfsFolder.endsWith("/")) {
-            vfsFolder += "/";
-        }
-        int writtenFiles = 0;
-        for (int i = 0; i < n; i++) {
-            String vfsName = vfsFolder + generateName(fileNameLength) + i;
-            if (rfsName.lastIndexOf('.') > 0) {
-                vfsName += rfsName.substring(rfsName.lastIndexOf('.'));
-            }
-            System.out.print("(" + (i + 1) + "/" + n + ") Importing " + vfsName + " ... ");
-            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
-            try {
-                OpenCmsTestCase.importTestResource(cms, rfsName, vfsName, type, props);
-                System.out.println("o.k.");
-                writtenFiles++;
-            } catch (Exception e) {
-                System.out.println("error!");
-            }
-        }
-        return writtenFiles;
-    }
-
-    /**
-     * Generates a sub tree of folders with files.<p>
-     * 
-     * @param cms the cms context
-     * @param vfsFolder where to create the subtree
-     * @param maxWidth an upper bound for the number of subfolder a folder should have
-     * @param maxDepth an upper bound for depth of the genearted subtree
-     * @param maxProps upper bound for number of properties to create for each resource
-     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
-     * @param maxNumberOfFiles upper bound for the number of files in each folder
-     * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
-     * 
-     * @return the number of really written files
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public static int generateContent(
-        CmsObject cms,
-        String vfsFolder,
-        int maxWidth,
-        int maxDepth,
-        int maxProps,
-        double propertyDistribution,
-        int maxNumberOfFiles,
-        double fileTypeDistribution) throws Exception {
-
-        int fileNameLength = 10;
-        int propValueLength = 10;
-
-        // end recursion
-        if (maxDepth < 1) {
-            return 0;
-        }
-        if (!vfsFolder.endsWith("/")) {
-            vfsFolder += "/";
-        }
-
-        int writtenFiles = 0;
-
-        int width = (int)(maxWidth * Math.random()) + 1;
-        int depth = maxDepth - (int)(2 * Math.random());
-        for (int i = 0; i < width; i++) {
-            // generate folder
-            String vfsName = vfsFolder + generateName(fileNameLength) + i;
-            List props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
-            cms.createResource(vfsName, CmsResourceTypeFolder.getStaticTypeId(), new byte[0], props);
-            cms.unlockResource(vfsName);
-
-            int numberOfFiles = (int)(maxNumberOfFiles * Math.random()) + 1;
-            // generate binary files
-            int numberOfBinaryFiles = (int)(numberOfFiles * fileTypeDistribution);
-            writtenFiles += generateResources(
-                cms,
-                "org/opencms/search/pdf-test-112.pdf",
-                vfsName,
-                numberOfBinaryFiles,
-                CmsResourceTypeBinary.getStaticTypeId(),
-                maxProps,
-                propertyDistribution);
-
-            // generate text files
-            writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsName, numberOfFiles
-                - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
-
-            // in depth recursion
-            writtenFiles += generateContent(
-                cms,
-                vfsName,
-                maxWidth,
-                depth - 1,
-                maxProps,
-                propertyDistribution,
-                maxNumberOfFiles,
-                fileTypeDistribution);
-
-            System.out.println("" + writtenFiles + " files written in Folder " + vfsName);
-        }
-        return writtenFiles;
-    }
-
-    /**
-     * Generates n new users for a given group.<p>
-     * 
-     * @param cms the cms context
-     * @param groupName the group name, group will be creating if group does not exists
-     * @param n number of users to generate
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public static void generateUsers(CmsObject cms, String groupName, int n) throws CmsException {
-
-        CmsGroup group = null;
-        try {
-            group = cms.readGroup(groupName);
-        } catch (Exception e) {
-            // ignore
-        }
-        if (group == null) {
-            group = cms.createGroup(groupName, groupName, 0, null);
-        }
-        for (int i = 0; i < n; i++) {
-            String name = generateName(10) + i;
-            cms.createUser(name, "pwd" + i, "test user " + i, null);
-            cms.addUserToGroup(name, groupName);
-        }
-    }
-
-    /**
-     * Generates random properties.<p>
-     * 
-     * @param cms the cms context
-     * @param maxProps upper bound for number of properties to create for each resource
-     * @param propValueLength upper bound for the number of char for the values
-     * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
-     * 
-     * @return a list of <code>{@link CmsProperty}</code> objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public static List generateProperties(CmsObject cms, int maxProps, int propValueLength, double propertyDistribution)
-    throws CmsException {
-
-        List propList = cms.readAllPropertyDefinitions();
-
-        List props = new ArrayList();
-        if (maxProps > propList.size()) {
-            maxProps = propList.size();
-        }
-        int propN = (int)(Math.random() * maxProps) + 1;
-        for (int j = 0; j < propN; j++) {
-            CmsPropertyDefinition propDef = (CmsPropertyDefinition)propList.get((int)(Math.random() * propList.size()));
-            propList.remove(propDef);
-            if (Math.random() < propertyDistribution) {
-                // only resource prop
-                props.add(new CmsProperty(propDef.getName(), null, generateName(propValueLength)));
-            } else {
-                // resource and structure props
-                props.add(new CmsProperty(
-                    propDef.getName(),
-                    generateName(propValueLength),
-                    generateName(propValueLength)));
-            }
-        }
-
-        return props;
-    }
-
-    /**
-     * Generate a new random name.<p>
-     * 
-     * @param maxLen upper bound for the length of the name
-     * 
-     * @return a random name
-     */
-    public static String generateName(int maxLen) {
-
-        String name = "";
-        int len = (int)(maxLen * Math.random()) + 1;
-        for (int j = 0; j < len; j++) {
-            name += (char)(25 * Math.random() + 97);
-        }
-        return name;
     }
 
 }
