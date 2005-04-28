@@ -4,8 +4,8 @@
   <page language="en">
     <element name="body">
       <links>
-        <link name="link3" type="A" internal="false">
-          <target><![CDATA[../../../release/mailinglist.html]]></target>
+        <link name="link3" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
         </link>
         <link name="link2" type="A" internal="false">
           <target><![CDATA[mailto:contributions@opencms.org]]></target>
@@ -16,162 +16,305 @@
         <link name="link4" type="A" internal="false">
           <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
         </link>
-        <link name="link1" type="A" internal="false">
-          <target><![CDATA[../../../release/mailinglist.html]]></target>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
         </link>
       </links>
-      <content><![CDATA[<h2>Release Notes for OpenCms 6.0 beta&nbsp;3
-</h2>
-<p>     04/28/2005: This is the 
-third public binary BETA release of OpenCms 6.0. OpenCms 6.0 is a major
-upgrade, and it vastly expands the features of OpenCms 5.0. The beta&nbsp;3
-features&nbsp;important enhancements as the improvement of SQL queries, the implementation of tablegalleries and
-many extensions of the "templateone" demo.&nbsp;It also contains numerous fixes applied since 6.0 beta 2. We are confident that this third
-beta release is pretty stable, since 6.0 is already used
-successfully in quite a lot of "live" installations.</p>
-<p><strong>Who should use this 6.0 beta&nbsp;3 version?</strong></p>
+      <content><![CDATA[<h2>Release Notes for OpenCms 6.0 beta&nbsp;3</h2>
+<p>04/28/2005: This is the third public binary BETA release of
+OpenCms 6.0. OpenCms 6.0 is a major upgrade, and it vastly expands
+the features of OpenCms 5.0. The beta&nbsp;3
+features&nbsp;important enhancements as the improvement of SQL
+queries, the implementation of tablegalleries and many extensions
+of the "templateone" module.&nbsp;It also contains numerous fixes
+applied since 6.0 beta 2. We are confident that this third beta
+release is pretty stable, since 6.0 is already used successfully in
+quite a lot of "live" installations.</p>
+<p><strong>Who should use this 6.0 beta&nbsp;3
+version?</strong></p>
 <p>This is a beta version. Please don't expect it to be perfectly
-stable.<br >
+stable.<br>
 </p>
-<P> Having said that, we believe that this 6.0 beta&nbsp;3 version is
-certainly stable enough to be used in a production system. It's
+<p>Having said that, we believe that this 6.0 beta&nbsp;3 version
+is certainly stable enough to be used in a production system. It's
 likely to be more stable than the current "stable" 5.0.1 release.
 The main reason for still being in "beta" status is that we want to
 fully re-write the Workplace "Administration" view before we
-announce 6.0 as finished.<br ></P>
-<P>If and how you should use this version depends on what your goals are:</P>
+announce 6.0 as finished.<br>
+</p>
+<p>If and how you should use this version depends on what your
+goals are:</p>
 <ul>
 <li>If you are starting a new OpenCms project, you should 
-  use this 6.0 beta&nbsp;3 and not 5.0.1.</li><li>If you are currently using any previous 6.0 
+  use this 6.0 beta&nbsp;3 and not 5.0.1. 
+  
+</li><li>If you are currently using any previous 6.0 
   development release (e.g. 6.0 alpha 1, 2, 3 or beta 1, 2), you should upgrade 
   to this new version in case you have encountered issues with the release you 
   are using. If this is not the case, you may as well wait until the 6.0 final 
-  release is out.</li><LI>If you are running a website based on OpenCms 5.0.1, and you
+  release is out. 
+  
+</li><li>If you are running a website based on OpenCms 5.0.1, and you
 want to upgrade, you should wait until the final 6.0 release is
-available.<br 
-  ></LI>
+available.<br>
+</li>
 </ul>
 <p><strong>When will the "final" release of OpenCms 6.0 be
 available?</strong></p>
-<p>End of Q2 2005. You can help speeding up the process of development by providing
-feedback for this release and the following releases, especially
-regarding bugs. In case you find any bug, please use the <a href="${link0}" target="_self">OpenCms
-bugzilla</a> to document it, or at least post a note to the <A href="${link1}" target=_self>opencms-dev</A> mailing list.
-The more feedback and code contributions are made, the faster we
-can fix the issues and finish the development.</p>
-<p><strong>The most important new features in
-this beta&nbsp;3 release compared to the&nbsp;beta&nbsp;2&nbsp;version:</strong></p>
-<P>     
-    <BR></P>
-<UL><LI>New Tablegalleries 
-  <UL>
-    <LI>Allow convenient uploading of CSV (or 
-    copy&amp;paste) tables into WYSIWYG editor</LI><LI>Configured "galleries" are automatically displayed 
-    in the WYSIWYG editor if configured correctly</LI><LI>"Table gallery" also available as widget for XML 
-    content<BR>        
-    &nbsp;        
-    </LI></UL></LI><LI>Improvements of SQL queries: 
-  <UL>
-    <LI>Optimized SQL query statement for reading all 
-    resources with a certain property value</LI><LI>     
-     Applied PostgreSQL patches supplied by Antoni      
-         
-<br ></LI></UL></LI><LI>Improvements and additions to the "templateone" demo:       
-
-  <UL>
-<li>"templateone" can be configured to either display 
-    the "accessible" or "classical" (tables based) version</li><LI>"templateone" demo data is displayed in the 
-    "accessible" version by default</LI><LI>"templateone" demo now allows individual header 
-    styles for each microsite</LI><LI>XML content based module for "news", "events", "faq" and "jobs"&nbsp;added to 
-    "templateone" (with sample data)<BR>        
-          </LI></UL></LI><LI>Introduction of a "roles"-concept in OpenCms&nbsp; 
-  <UL>
-    <LI>System functions are not longer accessible by "Administrators" only, 
-    they now require a certain role instead&nbsp;         
-    <BR></LI></UL></LI><LI>     
-   Improved Localization in OpenCms&nbsp; 
-  <UL>
-    <LI>CmsMessages can now handle localized keys with 
-    MessageFormat parameters</LI><LI>Improved implementation CmsException (and it's 
-    subclasses) to be better standard compliant</LI><LI>Improved logging configuration on system startup to 
-    allow static log members in all classes</LI><LI>Started to localize all internal OpenCms Exception 
-    and Log messages</LI><LI>Improved implementation for localized keys in the 
-    Workplace</LI><LI>Added utility classes to org.opencms.i18n for 
-    convenient dealing with localized core messages <BR>         
-       </LI></UL></LI><LI>Further improvements:  
-  <UL>
-    <LI>Final design of the "New Administration" view 
-    (almost) finished</LI><LI>It's now possible to activate and deactivate 
-    scheduled jobs and to update and remove a job from the scheduler&nbsp;</LI><LI>Added "search in search result" functionality</LI><LI>
-Added option for nested macros in CmsMacroResolver</LI><LI>
-It's now possible to add the Workplace context menu 
-    configuration for a new resource type in a module</LI><LI>
-    New "Textarea" Widget for XML content for simple 
-    multiline String input</LI><LI>
-    Added implementation of a list "widget" for display 
-    of manageable objects in the "New Administration"</LI><LI>
-Updated log4j.jar to latest version 1.2.9</LI><LI>Updated quartz.jar to latest version 1.4.5 
-  <BR>     </LI></UL></LI><LI>Resolved Issues: 
-  <UL>
-<li>     Fixed issue in OpenCms 
-    static export for binary resources</li></UL>  </LI></UL>
+<p>End of Q2 2005. You can help speeding up the process of
+development by providing feedback for this release and the
+following releases, especially regarding bugs. In case you find any
+bug, please use the <a href="${link0}"
+ target="_self">OpenCms bugzilla</a> to document it, or at least
+post a note to the <A href="${link1}"
+ target=_self >opencms-dev</A> mailing list. The more feedback and
+code contributions are made, the faster we can fix the issues and
+finish the development.</p>
+<p><strong>The most important new features in this beta&nbsp;3
+release compared to the&nbsp;beta&nbsp;2&nbsp;version:</strong><br></p>
+<ul>
+<li>Improvements and additions to the "templateone" demo: 
+<ul>
+<li>"templateone" can now&nbsp;be configured to either 
+    display the "accessible" or "classical" (HTML table based) version 
+    
+</li><li>"templateone" data is displayed in the "accessible" 
+    version by default 
+    
+</li><li>"templateone" now allows individual header styles 
+    for each microsite 
+    
+</li><li>Added read-to-use "news" module to "templateone" 
+    
+</li><li>Added read-to-use "jobs" module to "templateone" 
+    
+</li><li>Added read-to-use "events" module to "templateone" 
+    
+</li><li>Added read-to-use "faq" module to "templateone"New "Table
+gallery" feature&nbsp;</li>
+</ul>
+<ul>
+<li>Supports "copy &amp; past" from spreadsheets (e.g. 
+    Ecxel) into a HTML table format 
+    
+</li><li>HTML output format of the tables can be controlled 
+    with XSLT formatting 
+    
+</li><li>Also supports uploading of CSV data which is then 
+    transformed to a HTML table 
+    
+</li><li>All correctly configured "galleries" are now 
+    automatically displayed in all&nbsp;WYSIWYG editors 
+    
+</li><li>"Table gallery" also available as widget for XML
+content&nbsp;</li>
+</ul>
+</li><li>Improvements of SQL queries: 
+<ul>
+<li>Optimized SQL query statement for reading all 
+    resources with a certain property value 
+    
+</li><li>Applied PostgreSQL patches supplied by Antonio</li>
+</ul>
+</li><li>Introduction of a "roles"-concept in OpenCms&nbsp; 
+<ul>
+<li>System functions are not longer accessible by 
+    "Administrators" only, they now require a certain role instead 
+    
+</li><li>This feature will be fully implemented until 6.0 final
+release</li>
+</ul>
+</li><li>Improved Localization in OpenCms&nbsp; 
+<ul>
+<li>CmsMessages can now handle localized keys with 
+    MessageFormat parameters 
+    
+</li><li>Improved implementation of CmsException (and it's 
+    subclasses) to be more standard compliant 
+    
+</li><li>Improved logging configuration on system startup to 
+    allow static log members in all classes 
+    
+</li><li>Started to localize all internal OpenCms Exceptions 
+    and Log messages 
+    
+</li><li>Improved implementation for localized keys in the 
+    Workplace 
+    
+</li><li>Added utility classes to org.opencms.i18n for convenient
+dealing with localized core messages</li>
+</ul>
+</li><li>Further improvements: 
+<ul>
+<li>Final design of the "New Administration" view 
+    (almost) finished 
+    
+</li><li>It's now possible to activate and deactivate 
+    scheduled jobs and to update and remove a job from the scheduler&nbsp; 
+    
+</li><li>Added "search in search result" functionality 
+    
+</li><li>Added option for nested macros in CmsMacroResolver 
+    
+</li><li>It's now possible to add the Workplace context menu 
+    configuration for a new resource type in a module 
+    
+</li><li>New "Textarea" Widget for XML content for simple 
+    multiline String input 
+    
+</li><li>Added implementation of a list "widget" for display 
+    of manageable objects in the "New Administration" 
+    
+</li><li>Updated log4j.jar to latest version 1.2.9 
+    
+</li><li>Updated quartz.jar to latest version 1.4.5</li>
+</ul>
+</li><li>Resolved Issues: 
+<ul>
+<li>Fixed issue in static export for binary resources 
+    
+</li><li>Fixed issue in database export of resources where a deleted
+"created by" user caused an Exception</li>
+</ul>
+</li>
+</ul>
 <p><strong>The most important new features in this release compared
 to the 5.0.x version:</strong></p>
 <ul>
-<li>The&nbsp;possibility to configure a "secure" (e.g. 
-  https-) server for a site, to mark documents as secure so that they are 
-  transmitted via this secure server</li><LI>Optimizations of search queries for the full text 
-  search engine</LI><LI>Multiple websites can now be managed in one OpenCms 
-  installation</LI><li>The "Direct Edit" feature allows users to open the 
+<li>Multiple websites can now be managed in one OpenCms 
+  installation 
+  
+</li><li>The "Direct Edit" feature allows users to open the 
   editor directly from the websites front-end by pushing an "Edit" button that 
-  appears on elements on the page (if the user has the permissions to edit it)</li><li>Using the new resource type "XmlContent", building 
+  appears on elements on the page (if the user has the permissions to edit it) 
+  
+</li><li>Using the new resource type "XmlContent", building 
   structured content (e.g. news articles, product descriptions etc.) is really 
-  easy and requires little or no programming</li><li>OpenCms now comes with a highly configurable template 
-  with many advanced functions as additional default module</li><li>Multi-language versions of the same page and improved 
-  support for managing multi language websites is integrated</li><li>Build-in support for full text search in HTML, PDF, 
-  Word, Excel and Plaintext documents (based on Apache Lucene)</li><li>All contents in the VFS can now have a "publication 
+  easy and requires little or no programming 
+  
+</li><li>OpenCms now comes with a highly configurable template 
+  with many advanced functions as additional default module 
+  
+</li><li>Multi-language versions of the same page and improved 
+  support for managing multi language websites is integrated 
+  
+</li><li>Build-in support for full text search in HTML, PDF, 
+  Word, Excel and Plaintext documents (based on Apache Lucene) 
+  
+</li><li>All contents in the VFS can now have a "publication 
   date" and an "expiration date" so they can appear / disappear automatically 
-  from a website</li><li>Resource permissions in the VFS are now managed in 
-  ACLs instead of Unix - style</li><li>The OpenCms workplace has been rewritten in JSP, 
+  from a website 
+  
+</li><li>Resource permissions in the VFS are now managed in 
+  ACLs instead of Unix - style 
+  
+</li><li>The OpenCms workplace has been rewritten in JSP, 
   adding new features and much improved usability (this task is not fully 
-  finished)</li><li>All new, much more user friendly "Administration" 
-  pages (this task is not fully finished)</li><li>Full support for multibyte languages (e.g. UTF-8)</li><li>Files in the VFS can now have multiple "siblings", 
+  finished) 
+  
+</li><li>All new, much more user friendly "Administration" 
+  pages (this task is not fully finished) 
+  
+</li><li>Full support for multibyte languages (e.g. UTF-8) 
+  
+</li><li>Files in the VFS can now have multiple "siblings", 
   this is comparable to a "hard link" in a Unix file system and prevents broken 
-  "VFS links" automatically</li><li>Properties on files can be "individual" or "shared" 
-  among siblings</li><li>Implement "plugin" mechanism for editors and make 
+  "VFS links" automatically 
+  
+</li><li>Properties on files can be "individual" or "shared" 
+  among siblings 
+  
+</li><li>It's not poossible to configure a "secure" (e.g. 
+  https-) server for a site 
+  
+</li><li>Individual documents can be marked as secure,&nbsp;so 
+  that they are transmitted via this secure server 
+  
+</li><li>Optimizations of search queries for the full text 
+  search engine 
+  
+</li><li>Implement "plugin" mechanism for editors and make 
   editors more configurable, so that other editor implementations (e.g. WYSIWYG 
-  Java Applet) can be easily integrated in the workplace</li><li>Added optional WYSIWYG editor implementation of the 
-  popular HtmlArea editor, this editor also works with Mozilla browsers</li><li>The setup wizard has been improved, also many "known 
-  issues" (e.g. regarding encoding setting and Xerces version) have been fixed</li><li>The module API has been rewritten from the ground up, 
-  now providing a clean interface to implement</li><li>Optimized the use of http headers, including use of 
-  "304 - not modified" for resources that have not been modified</li><li>The resource type API has been enhanced, so that 
-  resource types can be easily added without workarounds</li><li>The Workplace is now fully usable with Mozilla based 
-  browsers (e.g. Firefox)</li><li>It's not longer required to "lock" a resource in the 
+  Java Applet) can be easily integrated in the workplace 
+  
+</li><li>Added optional WYSIWYG editor implementation of the 
+  popular HtmlArea editor, this editor also works with Mozilla browsers 
+  
+</li><li>The setup wizard has been improved, also many "known 
+  issues" (e.g. regarding encoding setting and Xerces version) have been fixed 
+  
+</li><li>The module API has been rewritten from the ground up, 
+  now providing a clean interface to implement 
+  
+</li><li>Optimized the use of http headers, including use of 
+  "304 - not modified" for resources that have not been modified 
+  
+</li><li>The resource type API has been enhanced, so that 
+  resource types can be easily added without workarounds 
+  
+</li><li>The Workplace is now fully usable with Mozilla based 
+  browsers (e.g. Firefox) 
+  
+</li><li>It's not longer required to "lock" a resource in the 
   Explorer with the context menu manually, this is done automatically if the 
-  "autolock" feature is enabled (this is also the default)</li><li>The static export has been fully rewritten, is also 
-  features a new "on demand" mode for export of resources</li><li>Implement new, cleaned up XmlPage API that replaces 
-  the old XmlTemplate for page data storage</li><li>The XmlPage structure is always validated by a W3C 
-  XML Schema, to prevent creation of invalid content</li><li>The edited pages are now stored directly in the 
+  "autolock" feature is enabled (this is also the default) 
+  
+</li><li>The static export has been fully rewritten, is also 
+  features a new "on demand" mode for export of resources 
+  
+</li><li>Implement new, cleaned up XmlPage API that replaces 
+  the old XmlTemplate for page data storage 
+  
+</li><li>The XmlPage structure is always validated by a W3C XML 
+  Schema, to prevent creation of invalid content 
+  
+</li><li>The edited pages are now stored directly in the 
   location where they have been edited, the /system/bodies/ folder is not longer 
-  required</li><li>The OpenCms VFS has been made much more scalable, 
-  bottlenecks like the slow Explorer tree have been removed</li><li>The OpenCms user management has been made independent 
+  required 
+  
+</li><li>The OpenCms VFS has been made much more scalable, 
+  bottlenecks like the slow Explorer tree have been removed 
+  
+</li><li>The OpenCms user management has been made independent 
   from the OpenCms VFS, so that other user directories can be "plugged" into the 
-  system as a separate module</li><li>Publishing has been rewritten and is now much faster 
-  especially with many resources</li><li>All resources in the OpenCms VFS now have a UUID</li><li>The database pooling has been replaced with DBCP from 
-  Apache Jakarta</li><li>All known issues with Oracle 9.x that were present in 
-  5.0.x have been solved</li><li>Logging now uses log4j from Apache Jakarta</li><li>Heavily modified the database model and completely 
-  rewrote the database access class layer</li><li>The configuration is now based on a new XML structure 
-  that is read by Apache Digester (this task is not fully finished)</li><li>UTF-8 is now the default encoding</li>
+  system as a separate module 
+  
+</li><li>Publishing has been rewritten and is now much faster 
+  especially with many resources 
+  
+</li><li>All resources in the OpenCms VFS now have a UUID 
+  
+</li><li>The database pooling has been replaced with DBCP from 
+  Apache Jakarta 
+  
+</li><li>All known issues with Oracle 9.x that were present in 
+  5.0.x have been solved 
+  
+</li><li>Logging now uses log4j from Apache Jakarta 
+  
+</li><li>Heavily modified the database model and completely 
+  rewrote the database access class layer 
+  
+</li><li>The configuration is now based on a new XML structure 
+  that is read by Apache Digester (this task is not fully finished) 
+  
+</li><li>UTF-8 is now the default encoding</li>
 </ul>
 <p><strong>TODO list to be finished before OpenCms 6.0 is
 released:</strong></p>
 <ul>
 <li>The rest of the "Administration" view is to be 
-  re-implemented in the new tool API</li><li>Write documentation how to update from 5.0 to 6.0</li><li>Testing and bug fixing - your feedback is required!</li>
+  re-implemented in the new tool API 
+  
+</li><li>Write documentation how to update from 5.0 to 6.0 
+  
+</li><li>Testing and bug fixing - your feedback is required!</li>
 </ul>
-<p><span style="FONT-STYLE: italic">Please note: </span>The development of JMX for OpenCms and the Content
-Relationship Engine (CRE), both features initially intended for
-the 6.0 release, will not make it in the 6.0 release. We hope to add these features in a later version.<br ></p>
+<p>Please note: The development of JMX for OpenCms and the Content
+Relationship Engine (CRE), both features initially intended for the
+6.0 release, will not make it in the 6.0 release. We hope to add
+these features in a later version.<br>
+</p>
 <p><strong>Regarding backward compatibility</strong></p>
 <p>OpenCms 6 will be as backward compatible as possible with the
 5.x releases. Existing content from 5.x will be easily importable,
@@ -204,25 +347,26 @@ table) have been moved to a separate module
 tables if required.</p>
 <p><strong>Regarding version numbers and CVS build
 tags</strong></p>
-<p> In case you want to check out OpenCms from the CVS, please
-keep the following in mind: The CVS tag numbers for all OpenCms
-6 beta releases are "build_5_7_x", e.g. 6.0 beta&nbsp;3 is "build_5_7_3".
+<p>In case you want to check out OpenCms from the CVS, please keep
+the following in mind: The CVS tag numbers for all OpenCms 6 beta
+releases are "build_5_7_x", e.g. 6.0 beta&nbsp;3 is "build_5_7_3".
 Until we finally publish OpenCms 6, we will continue to use 5.x as
 internal CVS build tag numbers. 6 alpha had CVS build tags 5.5.x,
 the 6 beta now uses 5.7.x, and 6 release candidates will use
 5.9.x.</p>
 <p><strong>Regarding compatibility with other JVMs / Servlet
 containers / Databases</strong></p>
-<p> OpenCms 6.0 beta&nbsp;2 requires Java 1.4.x. or Java 1.5.x. It won't
-work with Java 1.3.x. We have tested only with SUNs version of the
-JDK. However, we have removed the dependencies from all sun.*
-packages that were present in OpenCms 5.0.x so it should in theory
-run with all compliant JVMs.</p>
-<p>We have tested this release only on the Tomcat servlet
-engine. OpenCms 6.0 beta&nbsp;2 works "out of the box" with Tomcat 4.1.x, Tomcat
-5.0.x and Tomcat 5.5.x. No replacing of Xerces is required like in
-OpenCms 5.0.x. Others have reported deploying 6.0 development versions successfully on other servlet containers like BEA
-Weblogic, SunONE and JBoss.</p>
+<p>OpenCms 6.0 beta&nbsp;3&nbsp;requires Java 1.4.x. or Java 1.5.x.
+It won't work with Java 1.3.x. We have tested only with SUNs
+version of the JDK. However, we have removed the dependencies from
+all sun.* packages that were present in OpenCms 5.0.x so it should
+in theory run with all compliant JVMs.</p>
+<p>We have tested this release only on the Tomcat servlet engine.
+OpenCms 6.0 beta&nbsp;3 works "out of the box" with Tomcat 4.1.x,
+Tomcat 5.0.x and Tomcat 5.5.x. No replacing of Xerces is required
+like in OpenCms 5.0.x. Others have reported deploying 6.0
+development versions successfully on other servlet containers like
+BEA Weblogic, SunONE and JBoss.</p>
 <p>On the database side, we have tested with MySQL 4.0.x, MySQL
 4.1.x and Oracle 9.x. PostgresSQL support has been contributed as
 well thanks to Antonio Core, but we at Alkacon have not tested it.
@@ -239,11 +383,11 @@ so they can be included in the official release.</p>
 <p>Contributions to the OpenCms core development are most welcome.
 Please contact <A href="${link2}">contributions@opencms.org</A> in
 case you are interested in supporting the development of OpenCms 6,
-or give your feedback on the <A href="${link3}" target=_self>opencms-dev</A> mailing
-list.</p>
+or give your feedback on the <A href="${link3}" target=_self>opencms-dev</A>
+mailing list.</p>
 <p>Please use our Bugzilla to report bugs in this release: <a href="${link4}" target="_self">http://www.opencms.org/bugzilla/</a></p>
-<p>Thank you for using OpenCms and have fun with OpenCms 6.0 beta&nbsp;3
-:-)</p>]]></content>
+<p>Thank you for using OpenCms and have fun with OpenCms 6.0
+beta&nbsp;3 :-)</p>]]></content>
     </element>
   </page>
 </pages>
