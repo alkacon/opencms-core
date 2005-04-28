@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/28 08:27:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,10 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsSetupWorkplaceImportThread extends Thread {
-
+    
     /** Gets the System.err stream so it can be restored. */
     public static PrintStream m_tempErr;
     
@@ -145,7 +145,9 @@ public class CmsSetupWorkplaceImportThread extends Thread {
     
             try {
                 try {
+                    System.out.println(Messages.get().key(Messages.LOG_IMPORT_WORKPLACE_START_0));
                     m_shell.start(new FileInputStream(new File(m_setupBean.getWebAppRfsPath() + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt")));
+                    System.out.println(Messages.get().key(Messages.LOG_IMPORT_WORKPLACE_FINISHED_0));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

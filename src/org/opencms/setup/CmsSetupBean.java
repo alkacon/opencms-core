@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/04/26 16:37:54 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/04/28 08:27:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -1021,11 +1021,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @return the name of the setup log file
      */
     public String getSetupLogName() {
-        if (m_configRfsPath != null) {
-            return m_configRfsPath + "setup.log";
-        } else {
-            return null;
-        }
+        StringBuffer result = new StringBuffer(m_webAppRfsPath).append("WEB-INF");
+        result.append(File.separator).append("logs").append(File.separator).append("setup.log");
+        return result.toString();
     }
     
     /**
