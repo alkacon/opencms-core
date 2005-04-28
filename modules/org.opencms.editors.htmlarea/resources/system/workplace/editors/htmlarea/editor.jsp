@@ -541,7 +541,7 @@ if (options.showElement("option.images", displayOptions)) {
 }
 // determine if the image gallery button should be shown
 
-insertButtons.append(wp.buildGalleryButtons(options, 0, displayOptions));
+insertButtons.append(wp.buildGalleryButtons(options, buttonStyle, displayOptions));
 
 // determine if the insert special characters button should be shown
 if (options.showElement("option.specialchars", displayOptions)) {
