@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 2 Corrin</opencms_version>
-		<createdate>4/25/05 3:57 PM</createdate>
+		<createdate>4/28/05 9:14 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<class/>
 		<description><![CDATA[This module contains demo resources for OpenCms 6.0 XML content.
 (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>0.9.9</version>
+		<version>0.9.11</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Wed, 15 Dec 2004 16:50:42 GMT</datecreated>
@@ -80,7 +80,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Apr 2005 08:46:58 GMT</datecreated>
+			<datecreated>Wed, 27 Apr 2005 09:48:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -273,16 +273,12 @@
 		<file>
 			<destination>xmlcontent</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Apr 2005 11:51:02 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Apr 2005 08:14:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 28 Sep 2004 11:00:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.5]]></value>
-				</property>
 				<property>
 					<name>default-file</name>
 					<value><![CDATA[list.jsp]]></value>
@@ -292,32 +288,48 @@
 					<value><![CDATA[/xmlcontent/detail.jsp]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></value>
+				</property>
+				<property>
+					<name>style_show_head_img</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>style_head_img_link</name>
+					<value><![CDATA[/]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
 					<value><![CDATA[XML content Demo]]></value>
 				</property>
 				<property>
-					<name>xmlcontent-demo</name>
-					<value><![CDATA[/xmlcontent/]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XML content Demo Pages]]></value>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
 				</property>
 				<property>
 					<name>style_main_configpath</name>
 					<value><![CDATA[/demopages/_configuration/]]></value>
 				</property>
 				<property>
-					<name>properties_imprint</name>
-					<value><![CDATA[/demopages/_configuration/imprint]]></value>
-				</property>
-				<property>
 					<name>style_head_img_height</name>
 					<value><![CDATA[50]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.5]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content Demo Pages]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-demo</name>
+					<value><![CDATA[/xmlcontent/]]></value>
+				</property>
+				<property>
+					<name>properties_imprint</name>
+					<value><![CDATA[/demopages/_configuration/imprint]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
