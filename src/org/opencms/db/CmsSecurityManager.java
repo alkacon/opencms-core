@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/04/28 08:10:57 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,20 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.configuration.CmsVfsConfiguration;
-import org.opencms.file.*;
+import org.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -64,7 +76,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 
 /**
@@ -76,7 +87,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4701,7 +4712,10 @@ public final class CmsSecurityManager {
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        checkRole(dbc, CmsRole.USER_MANAGER);
+        if (!context.currentUser().equals(user)) {
+            // a user is allowed to write his own data (e.g. for "change preferences")
+            checkRole(dbc, CmsRole.USER_MANAGER);
+        }
         
         try {
             m_driverManager.writeUser(dbc, user);
