@@ -22,11 +22,11 @@
       </links>
       <content><![CDATA[<h2>Release Notes for OpenCms 6.0 beta&nbsp;3
 </h2>
-<p> 04/29/2005: This is the third public binary BETA 
-release of OpenCms 6.0. OpenCms 6.0 is a major upgrade, and it vastly
-expands the features of OpenCms 5.0. The beta&nbsp;3 features&nbsp;important enhancements in the
-integrated search engine, as well as for the static export and the use
-of OpenCms with "secure" https servers.&nbsp;It also contains numerous fixes applied since 6.0 beta 2. We are confident that this third
+<p>     04/28/2005: This is the 
+third public binary BETA release of OpenCms 6.0. OpenCms 6.0 is a major
+upgrade, and it vastly expands the features of OpenCms 5.0. The beta&nbsp;3
+features&nbsp;important enhancements as the improvement of SQL queries, the implementation of tablegalleries and
+many extensions of the "templateone" demo.&nbsp;It also contains numerous fixes applied since 6.0 beta 2. We are confident that this third
 beta release is pretty stable, since 6.0 is already used
 successfully in quite a lot of "live" installations.</p>
 <p><strong>Who should use this 6.0 beta&nbsp;3 version?</strong></p>
@@ -61,59 +61,68 @@ The more feedback and code contributions are made, the faster we
 can fix the issues and finish the development.</p>
 <p><strong>The most important new features in
 this beta&nbsp;3 release compared to the&nbsp;beta&nbsp;2&nbsp;version:</strong></p>
-<UL>
-  <LI>Improvements with the full text search engine: 
+<P>     
+    <BR></P>
+<UL><LI>New Tablegalleries 
   <UL>
-<li>Increased search performance by optimizing search 
-    queries</li><LI>MS PowerPoint, HTML (plain) and RTF added to 
-    searchable document types</LI><LI>Improved MS Word and MS Excel text extraction</LI><LI>Improved API for text extraction, added test cases 
-    for text extraction API</LI><LI>Added "search.priority" property to boost marked 
-    documents up in the search result list</LI><LI>Added sort options to search, default is by score, 
-    options are by title or date of last modification</LI><LI>Added search categories feature, for display of a 
-    category overview for a search result</LI><LI>Added multiple search root option</LI><LI>      Added
-search result highlighting for wildcard queries (e.g. opencm* will highlight
-"opencms")<br ></LI></UL></LI><LI>Improvements and additions to the "templateone" demo: 
+    <LI>Allow convenient uploading of CSV (or 
+    copy&amp;paste) tables into WYSIWYG editor</LI><LI>Configured "galleries" are automatically displayed 
+    in the WYSIWYG editor if configured correctly</LI><LI>"Table gallery" also available as widget for XML 
+    content<BR>        
+    &nbsp;        
+    </LI></UL></LI><LI>Improvements of SQL queries: 
   <UL>
-<li>"templateone" demo is now able to define 
-    "microsites" using custom folder type</li><LI>  "templateone" demo now allows individual header styles for each microsite<br ></LI></UL></LI><LI>XML content improvements and new features: 
+    <LI>Optimized SQL query statement for reading all 
+    resources with a certain property value</LI><LI>     
+     Applied PostgreSQL patches supplied by Antoni      
+         
+<br ></LI></UL></LI><LI>Improvements and additions to the "templateone" demo:       
+
   <UL>
-<li>XML content editor now jumps to the last scroll 
-    position after element adding/removal</li><li>Added implementation of a "priority resource 
-    collector"</li><LI>Resource collectors have been moved to a new package 
-    org.opencms.file.collectors<BR></LI></UL></LI><LI>Improved static export and new secure features: 
+<li>"templateone" can be configured to either display 
+    the "accessible" or "classical" (tables based) version</li><LI>"templateone" demo data is displayed in the 
+    "accessible" version by default</LI><LI>"templateone" demo now allows individual header 
+    styles for each microsite</LI><LI>XML content based module for "news", "events", "faq" and "jobs"&nbsp;added to 
+    "templateone" (with sample data)<BR>        
+          </LI></UL></LI><LI>Introduction of a "roles"-concept in OpenCms&nbsp; 
   <UL>
-    <LI>New "secure" feature allows easy re-directing to 
-    secure (https) pages "inside" a OpenCms site</LI><LI>New "Export/Secure" dialog for easy setting (and 
-    controlling) of export and secure properties</LI><LI>Secure server option added to OpenCms site 
-    configuration</LI><LI>OpenCms sites can now have multiple alias names in the 
-    configuration<BR></LI></UL></LI><LI>Resource type enhancements: 
+    <LI>System functions are not longer accessible by "Administrators" only, 
+    they now require a certain role instead&nbsp;         
+    <BR></LI></UL></LI><LI>     
+   Improved Localization in OpenCms&nbsp; 
   <UL>
-    <LI>Resource type id's are now fully configurable</LI><LI>Improved implementation of default properties for 
-    resource types</LI><LI>It's now possible to copy a list of configured 
-    resources after a new resource is created</LI><LI>Added configurable folder type 
-    org.opencms.file.types.CmsResourceTypeFolderExtended<BR></LI></UL></LI><LI>Further improvements: 
+    <LI>CmsMessages can now handle localized keys with 
+    MessageFormat parameters</LI><LI>Improved implementation CmsException (and it's 
+    subclasses) to be better standard compliant</LI><LI>Improved logging configuration on system startup to 
+    allow static log members in all classes</LI><LI>Started to localize all internal OpenCms Exception 
+    and Log messages</LI><LI>Improved implementation for localized keys in the 
+    Workplace</LI><LI>Added utility classes to org.opencms.i18n for 
+    convenient dealing with localized core messages <BR>         
+       </LI></UL></LI><LI>Further improvements:  
   <UL>
-<li>Improved implementation of SQL manager by adding 
-    additional methods for pool information</li><LI>Improved runlevel implementation for more 
-    fine-grained control during the init process</LI><LI>Added individual "broadcast message" queues for 
-    each user</LI><LI>Optimized the session info handling and the 
-    implementation of the OpenCmsListener</LI><LI>Removed the requirement for a separate 
-    OpenCmsSessionManager listener in the web.xml</LI><LI>Updated quartz component to latest release 1.4.4</LI><LI>         Updated HtmlParser
-component to latest release 1.5 (20050313)<br ></LI></UL></LI><LI>Resolved Issues: 
+    <LI>Final design of the "New Administration" view 
+    (almost) finished</LI><LI>It's now possible to activate and deactivate 
+    scheduled jobs and to update and remove a job from the scheduler&nbsp;</LI><LI>Added "search in search result" functionality</LI><LI>
+Added option for nested macros in CmsMacroResolver</LI><LI>
+It's now possible to add the Workplace context menu 
+    configuration for a new resource type in a module</LI><LI>
+    New "Textarea" Widget for XML content for simple 
+    multiline String input</LI><LI>
+    Added implementation of a list "widget" for display 
+    of manageable objects in the "New Administration"</LI><LI>
+Updated log4j.jar to latest version 1.2.9</LI><LI>Updated quartz.jar to latest version 1.4.5 
+  <BR>     </LI></UL></LI><LI>Resolved Issues: 
   <UL>
-<li>Fixed issue with cookies not getting set on OpenCms 
-    controlled JSP pages (bug #19)</li><LI>Fixed issue with editor link replacement and 
-    parameter links that contain "&amp;language"</LI><LI>Fixed issue with temporary projects causing errors 
-    after publishing</LI><LI>Fixed issue in "templateone" causing wrong caching 
-    of elements</LI><LI>Fixed issue with non-ascii chars in search terms 
-    being garbled on the second result page</LI><LI>Fixed SQL statement compatibility issue with MySQL 
-    3.2.x</LI><LI>Fixed issues with Oracle 8.1.7 (more testing on 8.1.7 still 
-    required)</LI></UL>  </LI></UL>
+<li>     Fixed issue in OpenCms 
+    static export for binary resources</li></UL>  </LI></UL>
 <p><strong>The most important new features in this release compared
 to the 5.0.x version:</strong></p>
 <ul>
-<li>Multiple websites can now be managed in one OpenCms 
-  installation</li><li>The "Direct Edit" feature allows users to open the 
+<li>The&nbsp;possibility to configure a "secure" (e.g. 
+  https-) server for a site, to mark documents as secure so that they are 
+  transmitted via this secure server</li><LI>Optimizations of search queries for the full text 
+  search engine</LI><LI>Multiple websites can now be managed in one OpenCms 
+  installation</LI><li>The "Direct Edit" feature allows users to open the 
   editor directly from the websites front-end by pushing an "Edit" button that 
   appears on elements on the page (if the user has the permissions to edit it)</li><li>Using the new resource type "XmlContent", building 
   structured content (e.g. news articles, product descriptions etc.) is really 
