@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/28 12:10:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -42,7 +43,7 @@ import java.util.Map;
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
@@ -201,9 +202,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         if (!m_visible) {
             return m_visible;
         }
-        if (m_onlyAdmin && !cms.isAdmin()) {
-            int todo;
-            // TODO: Check with new role permissions
+        if (m_onlyAdmin && !cms.hasRole(CmsRole.ADMINISTRATOR)) {
             return false;
         }
         return true;
