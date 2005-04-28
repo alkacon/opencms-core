@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2005/04/28 14:02:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/28 14:40:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.setup;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsShell;
-import org.opencms.main.Messages;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,19 +39,14 @@ import java.io.FileNotFoundException;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsSetupWorkplaceImportThread extends Thread {
-  
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSetupWorkplaceImportThread.class); 
-    
+     
     /** Gets the System.err stream so it can be restored. */
     public static PrintStream m_tempErr;
     
@@ -152,22 +146,27 @@ public class CmsSetupWorkplaceImportThread extends Thread {
     
             try {
                 try {
-                    if (LOG.isInfoEnabled()) {
+                    if (CmsLog.LOG.isInfoEnabled()) {
                         // log welcome message, the full package name is required because
                         // two different Message classes are used
-                        LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
-                        LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.LOG.info(org.opencms.setup.Messages.get().key(org.opencms.setup.Messages.INIT_WELCOME_SETUP_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
                         for (int i = 0; i < org.opencms.main.Messages.COPYRIGHT_BY_ALKACON.length; i++) {
-                            LOG.info(". " + org.opencms.main.Messages.COPYRIGHT_BY_ALKACON[i]);
+                            CmsLog.LOG.info(". " + org.opencms.main.Messages.COPYRIGHT_BY_ALKACON[i]);
                         }
-                        LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_LINE_0));                        
-                        LOG.info(org.opencms.setup.Messages.get().key(org.opencms.setup.Messages.LOG_IMPORT_WORKPLACE_START_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_LINE_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.LOG.info(org.opencms.setup.Messages.get().key(org.opencms.setup.Messages.INIT_IMPORT_WORKPLACE_START_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
                     }
                     m_shell.start(new FileInputStream(new File(m_setupBean.getWebAppRfsPath() + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt")));
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(org.opencms.setup.Messages.get().key(org.opencms.setup.Messages.LOG_IMPORT_WORKPLACE_FINISHED_0));
+                    if (CmsLog.LOG.isInfoEnabled()) {
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
+                        CmsLog.LOG.info(org.opencms.setup.Messages.get().key(org.opencms.setup.Messages.INIT_IMPORT_WORKPLACE_FINISHED_0));
+                        CmsLog.LOG.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_DOT_0));
                     }                 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
