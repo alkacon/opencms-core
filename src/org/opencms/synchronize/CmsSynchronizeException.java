@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeException.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/28 08:24:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.synchronize;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsThrowable;
 
 /**
  * Thrown by a class which implements org.opencms.file.I_CmsSyncModifications.<p>
@@ -40,36 +42,29 @@ import org.opencms.main.CmsException;
  * all other implementations of I_CmsSyncModifications will not be executed.<p>
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author  Jan Baudisch (j.baudisch@alkacon.com)
+ * @version $Revision: 1.6 $
  */
-public class CmsSynchronizeException extends CmsException {
-
+public class CmsSynchronizeException extends CmsException implements I_CmsThrowable {
+    
     /**
-     * Constructs a simple CmsSyncModificationException.<p>
-     */
-    public CmsSynchronizeException() {
-
-        super();
-    }
-
-    /**
-     * Constructs a CmsSyncModificationException with an additional error message.<p>
-     *
-     * @param message the exception message
-     */
-    public CmsSynchronizeException(String message) {
-
-        super(message);
-    }
-
-    /**
-     * Constructs a CmsSyncModificationException with the specified description message and root exception.<p>
+     * Creates a new localized Exception.<p>
      * 
-     * @param message the exception message
-     * @param rootCause root cause exception
+     * @param container the localized message container to use
      */
-    public CmsSynchronizeException(String message, Throwable rootCause) {
+    public CmsSynchronizeException(CmsMessageContainer container) {
 
-        super(message, rootCause);
+        super(container);
     }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsSynchronizeException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }    
 }

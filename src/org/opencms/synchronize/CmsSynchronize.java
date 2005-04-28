@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.42 $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/04/28 08:24:38 $
+ * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/04/28 08:24:38 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -57,15 +58,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+
 
 /**
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.43 $ $Date: 2005/04/28 08:24:38 $
  */
 public class CmsSynchronize {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSynchronize.class); 
+    
     /** Flag to export a resource from the VFS to the FS. */
     static final int C_EXPORT_VFS = 1;
 
@@ -96,9 +102,6 @@ public class CmsSynchronize {
     /** Hashmap for the new synchronisation list of the current sync process. */
     private HashMap m_newSyncList;
 
-    /** Hashmap for the error listcurrent sync process. */
-    private HashMap m_errorList;
-
     /** List to store all file modification interface implementations. */
     private static List m_synchronizeModifications;
     
@@ -112,8 +115,9 @@ public class CmsSynchronize {
      * @param cms the current CmsObject
      * @param report the report to write the output to
      * @throws CmsException if something goes wrong
+     * @throws CmsSynchronizeException if the synchronization process cannot be started
      */
-    public CmsSynchronize(CmsObject cms, I_CmsReport report) throws CmsException {
+    public CmsSynchronize(CmsObject cms, I_CmsReport report) throws CmsSynchronizeException, CmsException {
         m_cms = cms;
         m_report = report;
         m_count = 1;
@@ -135,26 +139,26 @@ public class CmsSynchronize {
         // and the FS are valid
         if ((m_sourcePathInVfs != null) && (m_destinationPathInRfs != null)) {
             // get the sync from the previous run list
-            m_syncList = readSyncList();
-            // create the sync list for this run
-            m_newSyncList = new HashMap();
-            // create the error sync list
-            m_errorList = new HashMap();
-            // synchronice the VFS and the FS
-            syncVfsFs(m_sourcePathInVfs);
-            // remove files from the FS
-            removeFromFs(m_destinationPathInRfs);
-            // add new files from the FS
-            copyFromFs(m_sourcePathInVfs);
-            // write the sync list
-            writeSyncList();
+            try {
+                m_syncList = readSyncList();
+                // create the sync list for this run
+                m_newSyncList = new HashMap();
+                // synchronice the VFS and the FS
+                syncVfsFs(m_sourcePathInVfs);
+                // remove files from the FS
+                removeFromFs(m_destinationPathInRfs);
+                // add new files from the FS
+                copyFromFs(m_sourcePathInVfs);
+                // write the sync list
+                writeSyncList();
+            } catch (CmsException e) {
+                throw e;
+            }
             // free mem
             m_syncList = null;
             m_newSyncList = null;
-
-            m_errorList = null;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + "Error during synchronization, cannot initialize sync process.");
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_INIT_SYNC_1, this.getClass().getName()));            
         }
     }
 
@@ -437,29 +441,31 @@ public class CmsSynchronize {
      * @throws CmsException if something goes wrong
      */
     private void importToVfs(File fsFile, String resName, String folder) throws CmsException {
+
         try {
             // get the content of the FS file
             byte[] content = getFileBytes(fsFile);
+
             // create the file
             String filename = translate(fsFile.getName());
-            
-            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
+
+            m_report.print("( " + m_count++ + " ) ", I_CmsReport.C_FORMAT_NOTE);
             if (fsFile.isFile()) {
                 m_report.print(m_report.key("report.sync_importing_file"), I_CmsReport.C_FORMAT_NOTE);
-            } else {     
+            } else {
                 m_report.print(m_report.key("report.sync_importing_folder"), I_CmsReport.C_FORMAT_NOTE);
-            }     
+            }
 
-            m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));               
-            m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
-            
+            m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));
+            m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);
+
             // get the file type of the FS file
             int resType = OpenCms.getResourceManager().getDefaultTypeForName(resName).getTypeId();
             CmsResource newFile = m_cms.createResource(translate(folder) + filename, resType, content, new ArrayList());
-            
+
             m_report.print(m_cms.getSitePath(newFile));
-            m_report.print(m_report.key("report.dots")); 
-     
+            m_report.print(m_report.key("report.dots"));
+
             // now check if there is some external method to be called which
             // should modify the imported resource in the VFS
             Iterator i = m_synchronizeModifications.iterator();
@@ -479,10 +485,10 @@ public class CmsSynchronize {
             // free mem  
             newFile = null;
             content = null;
-            
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
-        } catch (Exception e) {
-            throw new CmsSynchronizeException(e.getMessage(), e);
+
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        } catch (IOException e) {
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_READING_FILE_1, fsFile.getName()), e);
         }
     }
 
@@ -541,7 +547,11 @@ public class CmsSynchronize {
                     }
                     // write the file content to the FS
                     vfsFile = m_cms.readFile(m_cms.getSitePath(res), CmsResourceFilter.IGNORE_EXPIRATION);
-                    writeFileByte(vfsFile.getContents(), fsFile);
+                    try {
+                        writeFileByte(vfsFile.getContents(), fsFile);
+                    } catch (IOException e) {
+                        throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_WRITE_FILE_0));
+                    }
                     // now check if there is some external method to be called 
                     // which should modify the exported resource in the FS
                     Iterator i = m_synchronizeModifications.iterator();
@@ -549,8 +559,8 @@ public class CmsSynchronize {
                         try {
                             ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
-                            if (OpenCms.getLog(this).isWarnEnabled()) {
-                                OpenCms.getLog(this).warn(". CmsSyncModification class : exportTo FS " + res.getRootPath(), e);
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(Messages.get().key(Messages.LOG_SYNCHRONIZE_EXPORT_FAILED_1, res.getRootPath()), e);
                             }
                             break;
                         }
@@ -575,8 +585,8 @@ public class CmsSynchronize {
             // free mem
             vfsFile = null;
 
-        } catch (Exception e) {
-            throw new CmsException(e.getMessage());
+        } catch (CmsException e) {
+            throw new CmsSynchronizeException(e.getMessageContainer(), e);
         }
     }
 
@@ -587,7 +597,8 @@ public class CmsSynchronize {
      * @param res the resource to be exported
      * @throws CmsException if something goes wrong
      */
-    private void updateFromFs(CmsResource res) throws CmsException {
+    private void updateFromFs(CmsResource res) throws CmsSynchronizeException, CmsException {
+
         CmsFile vfsFile;
         // to get the name of the file in the FS, we must look it up in the
         // sync list. This is nescessary, since the VFS could use a tranlated
@@ -595,64 +606,49 @@ public class CmsSynchronize {
         String resourcename = m_cms.getSitePath(res);
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
         File fsFile = getFileInFs(sync.getResName());
+        m_report.print("( " + m_count++ + " ) ", I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(m_report.key("report.sync_updating_file"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(resourcename);
+        m_report.print(m_report.key("report.dots"));
+
+        // lock the file in the VFS, so that it can be updated
+        m_cms.lockResource(resourcename);
+        // read the file in the VFS
+        vfsFile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        // import the content from the FS
         try {
-            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(m_report.key("report.sync_updating_file"), I_CmsReport.C_FORMAT_NOTE);     
-            m_report.print(resourcename);               
-            m_report.print(m_report.key("report.dots"));    
-            
-            // lock the file in the VFS, so that it can be updated
-            m_cms.lockResource(resourcename);
-            // read the file in the VFS
-            vfsFile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-            // import the content from the FS
             vfsFile.setContents(getFileBytes(fsFile));
-            m_cms.writeFile(vfsFile);
-            // now check if there is some external method to be called which 
-            // should modify
-            // the updated resource in the VFS
-            Iterator i = m_synchronizeModifications.iterator();
-            while (i.hasNext()) {
-                try {
-                    ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
-                } catch (CmsSynchronizeException e) {
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(". CmsSyncModification class : updateFrom FS " + res.getRootPath() + ":" + e.toString());
-                    }
-                    break;
-                }
-            }
-            // everything is done now, so unlock the resource
-            //m_cms.unlockResource(resourcename, false);
-            //read the resource again, nescessary to get the actual timestamps
-            m_cms.touch(resourcename, fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);            
-            res = m_cms.readResource(resourcename);
-            
-            //add resource to synchronisation list
-            CmsSynchronizeList syncList = new CmsSynchronizeList(sync.getResName(), translate(resourcename), res.getDateLastModified(), fsFile.lastModified());
-            m_newSyncList.put(translate(resourcename), syncList);
-            // and remove it from the old one
-            m_syncList.remove(translate(resourcename));
-            vfsFile = null;
-            
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
-        } catch (CmsException ex) {
-            // if this resource could not be locked, it could not be 
-            // synchronized
-            // mark this in the error list and the new sync list
-            if (ex.getType() == 13) {
-                // add the file to the new sync list...
-                CmsSynchronizeList syncList = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
-                m_newSyncList.put(translate(resourcename), syncList);
-                m_errorList.put(translate(resourcename), syncList);
-                // and remove it from the old one
-                m_syncList.remove(translate(resourcename));
-            } else {
-                throw ex;
-            }
-        } catch (Exception e) {
-            throw new CmsException(e.getMessage());
+        } catch (IOException e) {
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_IMPORT_1, fsFile.getName()));
         }
+        m_cms.writeFile(vfsFile);
+        // now check if there is some external method to be called which 
+        // should modify
+        // the updated resource in the VFS
+        Iterator i = m_synchronizeModifications.iterator();
+        while (i.hasNext()) {
+            try {
+                ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
+            } catch (CmsSynchronizeException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_SYNCHRONIZE_UPDATE_FAILED_1, res.getRootPath()), e);
+                }
+                break;
+            }
+        }
+        // everything is done now, so unlock the resource
+        // read the resource again, nescessary to get the actual timestamps
+            m_cms.touch(resourcename, fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);            
+        res = m_cms.readResource(resourcename);
+
+        //add resource to synchronisation list
+            CmsSynchronizeList syncList = new CmsSynchronizeList(sync.getResName(), translate(resourcename), res.getDateLastModified(), fsFile.lastModified());
+        m_newSyncList.put(translate(resourcename), syncList);
+        // and remove it from the old one
+        m_syncList.remove(translate(resourcename));
+        vfsFile = null;
+
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -661,43 +657,26 @@ public class CmsSynchronize {
      * @param res The resource to be deleted
      * @throws CmsException if something goes wrong
      */
-    private void deleteFromVfs(CmsResource res) throws CmsException {
+    private void deleteFromVfs(CmsResource res) throws CmsSynchronizeException, CmsException {
 
         String resourcename = m_cms.getSitePath(res);
 
-        try {
-            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
-            if (res.isFile()) {
-                m_report.print(m_report.key("report.sync_deleting_file"), I_CmsReport.C_FORMAT_NOTE);
-            } else {     
-                m_report.print(m_report.key("report.sync_deleting_folder"), I_CmsReport.C_FORMAT_NOTE);
-            }     
-            m_report.print(resourcename);               
-            m_report.print(m_report.key("report.dots"));   
-            
-            // lock the file in the VFS, so that it can be updated
-            m_cms.lockResource(resourcename);
-            m_cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-            // Remove it from the sync list
-            m_syncList.remove(translate(resourcename));
-
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
-        } catch (CmsException ex) {
-            // if this resource could not be locked, it could not be 
-            // synchronized mark this in the error list and the new sync list
-            if (ex.getType() == 13) {
-                // add the file to the new sync list...
-                CmsSynchronizeList syncList = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
-                m_newSyncList.put(translate(resourcename), syncList);
-                m_errorList.put(translate(resourcename), syncList);
-                // and remove it from the old one
-                m_syncList.remove(translate(resourcename));
-            } else {
-                throw ex;
-            }
-        } catch (Exception e) {
-            throw new CmsException(e.getMessage());
+        m_report.print("( " + m_count++ + " ) ", I_CmsReport.C_FORMAT_NOTE);
+        if (res.isFile()) {
+            m_report.print(m_report.key("report.sync_deleting_file"), I_CmsReport.C_FORMAT_NOTE);
+        } else {
+            m_report.print(m_report.key("report.sync_deleting_folder"), I_CmsReport.C_FORMAT_NOTE);
         }
+        m_report.print(resourcename);
+        m_report.print(m_report.key("report.dots"));
+
+        // lock the file in the VFS, so that it can be updated
+        m_cms.lockResource(resourcename);
+        m_cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        // Remove it from the sync list
+        m_syncList.remove(translate(resourcename));
+
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -741,7 +720,7 @@ public class CmsSynchronize {
                     }
                 }
             } catch (IOException e) {
-                throw new CmsException(e.getMessage());
+                throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_READ_SYNC_LIST_0), e);
             } finally {
                 // close all streams that were used
                 try {
@@ -853,9 +832,9 @@ public class CmsSynchronize {
             try {
                 translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(". CmsSyncModification class : external translation " + name + ":" + e.toString());
-                }
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_EXTERNAL_TRANSLATION_1, name), e);
+                }    
                 break;
             }
         }
@@ -875,7 +854,7 @@ public class CmsSynchronize {
      */
     private void createNewLocalFile(File newFile) throws CmsException {
         if (newFile.exists()) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + newFile.getPath() + " already exists on filesystem");
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_EXISTANT_FILE_2, this.getClass().getName(), newFile.getPath()));            
         }
         FileOutputStream fOut = null;
         try {
@@ -884,10 +863,10 @@ public class CmsSynchronize {
             if (parentFolder.exists()) {
                 fOut = new FileOutputStream(newFile);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "]" + " Cannot create directories for " + newFile.getPath());
+                throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_CREATE_DIR_2, this.getClass().getName(), newFile.getPath()));
             }
         } catch (IOException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + " Cannot create file " + newFile.getPath() + " on filesystem", e);
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_CREATE_FILE_2, this.getClass().getName(), newFile.getPath()), e);
         } finally {
             if (fOut != null) {
                 try {
@@ -906,7 +885,7 @@ public class CmsSynchronize {
      * @return bytes[] the content of the file
      * @throws Exception if something goes wrong
      */
-    private byte[] getFileBytes(File file) throws Exception {
+    private byte[] getFileBytes(File file) throws IOException {
         byte[] buffer = null;
         FileInputStream fileStream = null;
         int charsRead;
@@ -941,7 +920,7 @@ public class CmsSynchronize {
      * @param file the file in SFS that has to be updated with content
      * @throws Exception if something goes wrong
      */
-    private void writeFileByte(byte[] content, File file) throws Exception {
+    private void writeFileByte(byte[] content, File file) throws IOException {
         FileOutputStream fOut = null;
         DataOutputStream dOut = null;
         try {
