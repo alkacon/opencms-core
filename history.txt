@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/04/26 16:37:54 $
- * Version: $Revision: 1.632 $
+ * Date   : $Date: 2005/04/28 12:53:39 $
+ * Version: $Revision: 1.633 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
+OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April 28, 2005
 ! Added "search in search result" functionality
 - Added option for nested macros in CmsMacroResolver
 ! CmsMessages can now handle localized keys with MessageFormat parameters
@@ -55,6 +55,7 @@ OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April xx, 2005
 ! XML content based module for "jobs" added to "templateone" (with sample data)
 - "templateone" demo data now is displayed in the "accessible" version by default
 - Setup wizard now creates backup files of XML configuration before setup starts
+* Fixed issue in export of resources where a deleted "created by" user caused an Exception
 
 OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 * Fixed SQL statement compatibility issue with MySQL 3.2.x
