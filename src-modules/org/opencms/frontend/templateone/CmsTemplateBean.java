@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/04/27 15:52:45 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/04/28 09:40:14 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -250,7 +250,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
             // problem getting properties, log error
             if (OpenCms.getLog(CmsTemplateBean.class).isInfoEnabled()) {
                 String message = "Configuration file " + fileName + " not found for requested resource " + cms.getRequestContext().getUri();
-                OpenCms.getLog(CmsTemplateBean.class).error(message);
+                OpenCms.getLog(CmsTemplateBean.class).info(message);
             }
         }
         return configuration;
