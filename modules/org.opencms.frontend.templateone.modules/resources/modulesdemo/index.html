@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="de">
+    <element name="text1">
+      <links/>
+      <content/>
+    </element>
+  </page>
+  <page language="en">
+    <element name="text1">
+      <links/>
+      <content><![CDATA[<H1>Modules Demo pages</H1>
+<P>Theses pages show the usage of XML Contents with the&nbsp;following content 
+types available for template one:</P>
+<UL>
+  <LI>Events</LI><LI>Frequently asked questions (FAQ)</LI><LI>Job offerings</LI><LI>News messages</LI></UL>
+<P>              
+    For these four types, variable lists of items can be 
+displayed either on the right side of the template or in the 
+content area below editable elements.</P>
+<P>Those lists are activated or deactivated&nbsp;by choosing a layout with the 
+"simplified" property editor that comes with the templateone module. Simply 
+click on "Properties" in the context menu of a page or a folder&nbsp;using 
+template one, the dialog allows to select a layout for the center and the right 
+area of the template.</P>]]></content>
+    </element>
+    <element name="text3">
+      <links>
+        <link name="link3" type="A" internal="true">
+          <target><![CDATA[/sites/default/modulesdemo/news.html]]></target>
+        </link>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/sites/default/modulesdemo/jobs.html]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/modulesdemo/events.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/sites/default/modulesdemo/faq.html]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<H1>List variations</H1>
+<P>Check out the demo pages to see how different lists of XML contents can be 
+displayed on pages:</P>
+<UL>
+  <LI><A href="${link0}" target=_self>List of 
+  latest events</A></LI>
+  <LI><A href="${link1}" target=_self>List of 
+  categorized FAQ</A></LI>
+  <LI><A href="${link2}" target=_self>List of job 
+  offerings</A></LI>
+  <LI><A href="${link3}" target=_self>List of 
+  latest news messages</A></LI></UL>]]></content>
+    </element>
+  </page>
+</pages>

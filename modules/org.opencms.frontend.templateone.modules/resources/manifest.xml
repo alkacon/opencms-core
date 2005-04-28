@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 2 Corrin</opencms_version>
-		<createdate>4/26/05 1:23 PM</createdate>
+		<createdate>4/28/05 9:08 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 
 
 (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>0.9.10</version>
+		<version>0.9.11</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Thu, 23 Dec 2004 11:07:27 GMT</datecreated>
@@ -41,9 +41,10 @@
 			<resource uri="/system/shared/templateone/right/news"/>
 			<resource uri="/system/workplace/resources/filetypes/article.gif"/>
 			<resource uri="modules/"/>
+			<resource uri="modulesdemo/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.modules/;/system/shared/templateone/center/events;/system/shared/templateone/center/faq;/system/shared/templateone/center/jobs;/system/shared/templateone/center/news;/system/shared/templateone/right/events;/system/shared/templateone/right/events_news;/system/shared/templateone/right/news;/system/workplace/resources/filetypes/article.gif;modules/</param>
+			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.modules/;/system/shared/templateone/center/events;/system/shared/templateone/center/faq;/system/shared/templateone/center/jobs;/system/shared/templateone/center/news;/system/shared/templateone/right/events;/system/shared/templateone/right/events_news;/system/shared/templateone/right/news;/system/workplace/resources/filetypes/article.gif;modules/;modulesdemo/</param>
 		</parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="news" id="30">
@@ -140,7 +141,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Apr 2005 08:46:58 GMT</datecreated>
+			<datecreated>Wed, 27 Apr 2005 09:48:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -841,10 +842,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
-				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
@@ -852,6 +849,10 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1727,7 +1728,7 @@
 			<destination>modules/news/news_0001.html</destination>
 			<type>news</type>
 			<uuidresource>f8257305-542f-11d9-94b2-5777c119166f</uuidresource>
-			<datelastmodified>Mon, 25 Apr 2005 14:09:41 GMT</datelastmodified>
+			<datelastmodified>Wed, 27 Apr 2005 16:20:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 15:41:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1860,6 +1861,411 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Leberwurst causes addiction]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modulesdemo</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 27 Apr 2005 10:03:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 10:00:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.5]]></value>
+				</property>
+				<property>
+					<name>style_show_head_img</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></value>
+				</property>
+				<property>
+					<name>style_head_img_link</name>
+					<value><![CDATA[/]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Modules Demo pages]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Modules demo pages]]></value>
+				</property>
+				<property>
+					<name>style_main_configpath</name>
+					<value><![CDATA[/demopages/_configuration/]]></value>
+				</property>
+				<property>
+					<name>style_head_img_height</name>
+					<value><![CDATA[50]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/events.html</source>
+			<destination>modulesdemo/events.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>13e9362d-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Thu, 28 Apr 2005 07:53:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:26:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>layout.center</name>
+					<value><![CDATA[/system/shared/templateone/center/events]]></value>
+				</property>
+				<property>
+					<name>layout.right</name>
+					<value><![CDATA[/system/shared/templateone/right/events_news]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Events Demo]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Events Demo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/faq.html</source>
+			<destination>modulesdemo/faq.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>27ee2e64-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Thu, 28 Apr 2005 07:57:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:26:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>layout.center</name>
+					<value><![CDATA[/system/shared/templateone/center/faq]]></value>
+				</property>
+				<property>
+					<name>layout.right</name>
+					<value><![CDATA[/system/shared/templateone/right/events]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[FAQ demo]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[FAQ demo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/index.html</source>
+			<destination>modulesdemo/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>4252d5d4-b703-11d9-9e31-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:37:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 10:01:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>layout.right</name>
+					<value><![CDATA[/system/shared/templateone/right/news]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Modules demo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/jobs.html</source>
+			<destination>modulesdemo/jobs.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>3940b0cb-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Thu, 28 Apr 2005 08:02:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:27:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>layout.center</name>
+					<value><![CDATA[/system/shared/templateone/center/jobs]]></value>
+				</property>
+				<property>
+					<name>layout.right</name>
+					<value><![CDATA[/system/shared/templateone/right/events]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Jobs demo]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jobs demo]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/modulesdemo/side-elements/side-jobs.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/news.html</source>
+			<destination>modulesdemo/news.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>46b97b72-b739-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Thu, 28 Apr 2005 08:03:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:27:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>layout.center</name>
+					<value><![CDATA[/system/shared/templateone/center/news]]></value>
+				</property>
+				<property>
+					<name>layout.right</name>
+					<value><![CDATA[/system/shared/templateone/right/news]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[News demo]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[News demo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modulesdemo/moduleimages</destination>
+			<type>imagegallery</type>
+			<datelastmodified>Wed, 27 Apr 2005 15:57:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 15:56:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example images for XML Contents]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/aufschnitt.gif</source>
+			<destination>modulesdemo/moduleimages/aufschnitt.gif</destination>
+			<type>image</type>
+			<uuidresource>07debee4-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:24:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:18:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Aufschnitt]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/bull.jpg</source>
+			<destination>modulesdemo/moduleimages/bull.jpg</destination>
+			<type>image</type>
+			<uuidresource>f714b019-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:25:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:25:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Bull]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/leberwurst.gif</source>
+			<destination>modulesdemo/moduleimages/leberwurst.gif</destination>
+			<type>image</type>
+			<uuidresource>07f2950d-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:24:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:18:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Leberwurst]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/salami.jpg</source>
+			<destination>modulesdemo/moduleimages/salami.jpg</destination>
+			<type>image</type>
+			<uuidresource>0724487e-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:24:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:18:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Salami]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/sausage.gif</source>
+			<destination>modulesdemo/moduleimages/sausage.gif</destination>
+			<type>image</type>
+			<uuidresource>07e1cc27-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:24:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:18:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sausage]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/soccer_small.jpg</source>
+			<destination>modulesdemo/moduleimages/soccer_small.jpg</destination>
+			<type>image</type>
+			<uuidresource>14c3dc43-b735-11d9-bfc9-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 15:57:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 15:57:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Soccer]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/moduleimages/weisswurst.gif</source>
+			<destination>modulesdemo/moduleimages/weisswurst.gif</destination>
+			<type>image</type>
+			<uuidresource>07e7e6aa-b738-11d9-8a2d-ddc62aad31dd</uuidresource>
+			<datelastmodified>Wed, 27 Apr 2005 16:24:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Apr 2005 16:18:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Weisswurst]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>modulesdemo/side-elements</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 28 Apr 2005 07:59:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Apr 2005 07:59:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/side-elements/side-jobs.html</source>
+			<destination>modulesdemo/side-elements/side-jobs.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>83837d13-b7bb-11d9-ba72-ddc62aad31dd</uuidresource>
+			<datelastmodified>Thu, 28 Apr 2005 08:01:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Apr 2005 07:59:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Side element for job list]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
