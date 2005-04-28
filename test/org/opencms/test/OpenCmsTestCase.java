@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/04/25 14:47:34 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/04/28 13:24:30 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * 
  * @since 5.3.5
  */
@@ -248,6 +248,15 @@ public class OpenCmsTestCase extends TestCase {
         if (m_testDataPath == null) {
             m_testDataPath = new ArrayList(4);
 
+            // Test wether we are instantiated within the 
+            // AllTest suite and therefore the OpenCmsTestProperties are 
+            // already set up:
+            try{
+                OpenCmsTestProperties.getInstance();
+            }catch(RuntimeException rte){
+                OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+            }
+            
             // set data path 
             addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
         }
