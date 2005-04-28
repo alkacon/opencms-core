@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/04/15 10:34:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/28 09:39:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -414,7 +414,7 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     content.append(getCms().readUser(res.getUserLastModified()).getName());
                 } catch (CmsException e) {
-                    content.append(e.getMessage());
+                    content.append(res.getUserLastModified().toString());
                 }
                 content.append("\",");
             } else {
@@ -437,7 +437,7 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     content.append(getCms().readUser(res.getUserCreated()).getName());
                 } catch (CmsException e) {
-                    content.append(e.getMessage());
+                    content.append(res.getUserCreated().toString());
                 }
                 content.append("\",");
             } else {
