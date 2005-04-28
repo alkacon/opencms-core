@@ -684,18 +684,8 @@ function doEditHTML(para) {
 			alert (LANG_NOSELECTION);
 		}
 		break;
-	case 58:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 59:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;	
 	case 60:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
@@ -703,12 +693,21 @@ function doEditHTML(para) {
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
-		break;
+		break;				
 	case 62:
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;	
+	case 63:
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		focusCount = 1;
+		openWindow.focus();
+		break;
+	case 64:
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
-		break;		
 	default:
 		alert("Sorry, the requested function " + para + " is not implemented.");
 	}
