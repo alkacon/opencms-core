@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.search;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,15 +39,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * A search index source is a description of a list of Cms resources
  * to be indexed.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3.6
  */
 public class CmsSearchIndexSource implements Serializable, Cloneable {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);  
 
     /** The logical key/name of this index. */
     private String m_name;
@@ -159,7 +164,8 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
         try {
             m_indexer = (I_CmsIndexer)Class.forName(m_indexerClassName).newInstance();
         } catch (Exception exc) {
-            OpenCms.getLog(this).error("Cannot create an instance of indexer " + m_indexerClassName, exc);   
+            LOG.error(Messages.get().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName), exc);
+            
         }
     }
 

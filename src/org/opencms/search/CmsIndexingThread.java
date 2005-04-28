@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,12 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
@@ -45,7 +47,7 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.<p>
  *  
- * @version $Revision: 1.13 $ $Date: 2005/03/23 19:08:23 $
+ * @version $Revision: 1.14 $ $Date: 2005/04/28 08:28:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -54,6 +56,9 @@ public class CmsIndexingThread extends Thread {
     /** Internal debug flag. */
     private static final boolean DEBUG = false;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsIndexingThread.class);  
+    
     /** The cms object. */
     CmsObject m_cms;
     
@@ -113,30 +118,28 @@ public class CmsIndexingThread extends Thread {
             documentFactory = null;
         }
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this)
-                .debug(
-                    "Indexing "
-                        + m_res.getRootPath()
-                        + ((documentFactory != null) ? (" using document factory '" + documentFactory.getName() + "'")
-                        : ""));
+        if (LOG.isDebugEnabled()) {
+            if (documentFactory != null) {
+                LOG.debug(Messages.get().key(Messages.LOG_INDEXING_DOC_ROOT_1, documentFactory.getName()));
+            } else {
+                LOG.debug(Messages.get().key(Messages.LOG_INDEXING_0));
+            }    
         }
 
         if (documentFactory != null) {
             try {
 
-                if (DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Creating lucene index document");
+                if (DEBUG && LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_CREATING_INDEX_DOC_0));
                 }
 
                 Document doc = documentFactory.newInstance(m_cms, m_res, m_index.getLocale());
                 if (doc == null) {
-                    throw new CmsIndexException("Creating index document failed");
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_CREATING_INDEX_DOC_0));
                 }
 
-                if (DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "Writing document to index, writer = " + ((m_writer != null) ? m_writer.toString() : "null"));
+                if (DEBUG && LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_WRITING_INDEX_TO_WRITER_1, ((m_writer != null) ? m_writer.toString() : "null")));
                 }
 
                 if (!isInterrupted()) {
@@ -145,13 +148,13 @@ public class CmsIndexingThread extends Thread {
 
                 if (m_report != null && !isInterrupted()) {
                     m_report.println(m_report.key("search.indexing_file_end"), I_CmsReport.C_FORMAT_OK);
-                    if (DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("Document successfully written to index");
+                    if (DEBUG && LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_WRITE_SUCCESS_0));
                     }
                 }
 
-                if (isInterrupted() && OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Abandoned thread for indexing " + m_res.getRootPath() + " finished");
+                if (isInterrupted() && LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_ABANDONED_THREAD_FINISHED_1, m_res.getRootPath()));
                 }
 
             } catch (Exception exc) {
@@ -162,8 +165,8 @@ public class CmsIndexingThread extends Thread {
                         m_report.key("search.indexing_file_failed") + " : " + exc.getMessage(),
                         I_CmsReport.C_FORMAT_WARNING);
                 }
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Failed to index " + m_res.getRootPath(), exc);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_INDEX_FAILED_1, m_res.getRootPath()), exc);
                 }
             }
         } else {
@@ -172,9 +175,10 @@ public class CmsIndexingThread extends Thread {
                 m_report.println(m_report.key("search.indexing_file_skipped"), I_CmsReport.C_FORMAT_NOTE);
             }
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Skipped " + m_res.getRootPath() + ", no matching documenttype");
-            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_SKIPPED_1, m_res.getRootPath()));
+            }    
+            
         }
 
         m_threadManager.finished();

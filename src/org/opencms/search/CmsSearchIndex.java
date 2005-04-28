@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/04/04 13:17:48 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightFinder;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -67,7 +68,7 @@ import org.apache.lucene.search.TermQuery;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
@@ -77,6 +78,9 @@ import org.apache.lucene.search.TermQuery;
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);  
+    
     /** Automatic rebuild. */
     public static final String C_AUTO_REBUILD = "auto";
 
@@ -240,18 +244,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
                 m_priority = Thread.MIN_PRIORITY;
-                OpenCms.getLog(this).error(
-                    "Value '"
-                        + value
-                        + "' given for search thread priority is to low, setting to "
-                        + Thread.MIN_PRIORITY);
+                LOG.error(Messages.get().key(Messages.LOG_SEARCH_PRIORITY_TOO_LOW_2, value, new Integer(Thread.MIN_PRIORITY)));
+                
             } else if (m_priority > Thread.MAX_PRIORITY) {
                 m_priority = Thread.MAX_PRIORITY;
-                OpenCms.getLog(this).error(
-                    "Value '"
-                        + value
-                        + "' given for search thread priority is to high, setting to "
-                        + Thread.MAX_PRIORITY);
+                LOG.debug(Messages.get().key(Messages.LOG_SEARCH_PRIORITY_TOO_HIGH_2, value, new Integer(Thread.MAX_PRIORITY)));
+                
             }
         }
     }
@@ -340,7 +338,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
         } catch (Exception exc) {
-            throw new CmsIndexException("Can't create IndexWriter for " + m_name, exc);
+            throw new CmsIndexException(Messages.get().container(Messages.LOG_INDEX_WRITER_CREATION_FAILED_1, m_name), exc);
         }
 
         return indexWriter;
@@ -407,9 +405,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Initializes the search index.<p>
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsSearchException if the index source association failed
      */
-    public void initialize() throws CmsException {
+    public void initialize() throws CmsSearchException {
 
         String sourceName = null;
         CmsSearchIndexSource indexSource = null;
@@ -434,7 +432,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
                 }
             } catch (Exception exc) {
-                throw new CmsException("Index source association for \"" + sourceName + "\" failed", exc);
+                throw new CmsSearchException(Messages.get().container(Messages.ERR_INDEX_SOURCE_ASSOCIATION_1, sourceName), exc);
             }
         }
     }
@@ -448,21 +446,22 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
      * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
      * @return the List of results found or an empty list
-     * @throws CmsException if something goes wrong
+     * @throws CmsSearchException if something goes wrong
      */
     public synchronized CmsSearchResultList search(
         CmsObject cms,
         CmsSearchParameters params,
         int page,
-        int matchesPerPage) throws CmsException {
+        int matchesPerPage) throws CmsSearchException {
 
         long timeTotal = -System.currentTimeMillis();
         long timeLucene;
         long timeResultProcessing;
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Searching for \"" + params + "\" in index " + m_name);
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SEARCH_PARAMS_2, params, m_name));
+        }  
+        
 
         CmsRequestContext context = cms.getRequestContext();
         CmsProject currentProject = context.currentProject();
@@ -563,15 +562,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             searcher = new IndexSearcher(m_path);
             Query finalQuery;
 
-            if (m_createExcerpt || OpenCms.getLog(this).isDebugEnabled()) {
+            if (m_createExcerpt || LOG.isDebugEnabled()) {
                 // we re-write the query because this enables highlighting of wildcard terms in excerpts 
                 finalQuery = searcher.rewrite(query);
             } else {
                 finalQuery = query;
             }
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Base query: " + query);
-                OpenCms.getLog(this).debug("Rewritten query: " + finalQuery);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_BASE_QUERY_1, query));
+                LOG.debug(Messages.get().key(Messages.LOG_REWRITTEN_QUERY_1, finalQuery));
+                
             }
 
             // collect the categories
@@ -633,8 +633,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                             cnt++;
                         }
                     } catch (Exception e) {
-                        // should not happen, but if it does we want to go on with the next result nevertheless
-                        OpenCms.getLog(this).warn("Error during search result iteration", e);
+                        // should not happen, but if it does we want to go on with the next result nevertheless                        
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
+                        } 
                     }
                 }
 
@@ -647,7 +649,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             timeResultProcessing += System.currentTimeMillis();
 
         } catch (Exception exc) {
-            throw new CmsException("Searching for \"" + params + "\" failed", exc);
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), exc);
         } finally {
 
             // re-set thread to previous priority
@@ -667,18 +669,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         timeTotal += System.currentTimeMillis();
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                hits.length()
-                    + " results found in "
-                    + timeTotal
-                    + " ms"
-                    + " (Lucene: "
-                    + timeLucene
-                    + " ms OpenCms: "
-                    + timeResultProcessing
-                    + " ms)");
-        }
+        Object[] logParams = new Object[] {new Integer(hits.length()), new Long(timeTotal), new Long(timeLucene), new Long(timeResultProcessing)};
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_STAT_RESULTS_TIME_4, logParams));
+        }    
+        
 
         return searchResults;
     }

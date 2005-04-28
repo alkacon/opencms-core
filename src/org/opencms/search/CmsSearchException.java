@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchException.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.search;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
@@ -40,7 +41,7 @@ import org.opencms.main.CmsException;
  * <code>org.opencms.search</code> package.
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.7 $ $Date: 2005/04/28 08:28:48 $
  * @since 5.3.1
  */
 public class CmsSearchException extends CmsException {
@@ -66,4 +67,26 @@ public class CmsSearchException extends CmsException {
 
         super(message, 0, rootCause);
     }
+    
+    
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsSearchException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsSearchException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }      
 }

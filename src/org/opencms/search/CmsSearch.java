@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/04/15 15:51:39 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 
@@ -64,13 +66,16 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.27 $ $Date: 2005/04/15 15:51:39 $
+ * @version $Revision: 1.28 $ $Date: 2005/04/28 08:28:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearch implements Serializable, Cloneable {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearch.class);  
+    
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
         new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, true),
@@ -466,9 +471,8 @@ public class CmsSearch implements Serializable, Cloneable {
 
             if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
 
-                m_lastException = new CmsSearchException("Search query too short, enter at least "
-                    + this.getQueryLength()
-                    + " characters!");
+                m_lastException = new CmsSearchException(Messages.get().container(Messages.LOG_QUERY_TOO_SHORT_1, 
+                    new Integer(this.getQueryLength())));
 
                 return m_result;
             }
@@ -507,9 +511,9 @@ public class CmsSearch implements Serializable, Cloneable {
                 }
             } catch (Exception exc) {
 
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("[" + this.getClass().getName() + "] " + "Searching failed", exc);
-                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_SEARCHING_FAILED_1, this.getClass().getName()), exc);
+                }                                    
 
                 m_result = null;
                 m_searchResultCount = 0;
@@ -691,14 +695,12 @@ public class CmsSearch implements Serializable, Cloneable {
             try {
                 m_index = OpenCms.getSearchManager().getIndex(indexName);
                 if (m_index == null) {
-                    throw new CmsException("Index " + indexName + " not found");
+                    throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
                 }
             } catch (Exception exc) {
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "[" + this.getClass().getName() + "] " + "Accessing index " + indexName + " failed",
-                        exc);
-                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_INDEX_ACCESS_FAILED_2, this.getClass().getName(), indexName), exc);
+                }  
                 m_lastException = exc;
             }
         }

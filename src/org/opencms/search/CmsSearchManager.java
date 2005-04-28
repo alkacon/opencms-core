@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
@@ -63,13 +64,16 @@ import org.apache.lucene.search.Similarity;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.35 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.36 $ $Date: 2005/04/28 08:28:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchManager.class);  
+    
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap m_analyzers;
 
@@ -117,9 +121,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_indexes = new ArrayList();
         m_indexSources = new HashMap();
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Search configuration : starting");
-        }
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_START_SEARCH_CONFIG_0));
+        }        
 
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
@@ -134,13 +138,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_analyzers.put(analyzer.getLocale(), analyzer);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Search analyzers     : adding '"
-                    + analyzer.getLocale()
-                    + "' using analyzer "
-                    + analyzer.getClassName());
-        }
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_ANALYZER_2, 
+                analyzer.getLocale(), analyzer.getClassName()));
+        }  
     }
 
     /**
@@ -152,13 +153,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_documentTypeConfigs.put(documentType.getName(), documentType);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Search document types: adding '"
-                    + documentType.getName()
-                    + "' using handler "
-                    + documentType.getClassName());
-        }
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_DOC_TYPES_2, 
+                documentType.getName(), documentType.getClassName()));
+        }          
     }
 
     /**
@@ -170,13 +168,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_indexes.add(searchIndex);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Search indexes       : adding '"
-                    + searchIndex.getName()
-                    + "' for project "
-                    + searchIndex.getProject());
-        }
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_SEARCH_INDEX_2, 
+                searchIndex.getName(), searchIndex.getProject()));
+        }        
+        
     }
 
     /**
@@ -188,13 +184,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_indexSources.put(searchIndexSource.getName(), searchIndexSource);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Search index source  : adding '"
-                    + searchIndexSource.getName()
-                    + "' using indexer "
-                    + searchIndexSource.getIndexerClassName());
-        }
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_INDEX_SOURCE_2, 
+                searchIndexSource.getName(), searchIndexSource.getIndexerClassName()));
+        }        
+        
     }
 
     /**
@@ -209,9 +203,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (m_resultCache != null) {
                     m_resultCache.clear();
                 }
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Lucene index manager catched event EVENT_CLEAR_CACHES");
-                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
+                }  
                 break;
 
             default:
@@ -426,10 +420,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         manager.updateIndex(report);
         long runTime = System.currentTimeMillis() - startTime;
 
-        String finishMessage = "Finished rebuilding all search indexes, time required "
-            + CmsStringUtil.formatRuntime(runTime);
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info(finishMessage);
+        String finishMessage = Messages.get().key(Messages.LOG_REBUILD_INDEXES_FINISHED_1, 
+            CmsStringUtil.formatRuntime(runTime));
+        if (LOG.isInfoEnabled()) {
+            LOG.info(finishMessage);
         }
         return finishMessage;
     }
@@ -470,9 +464,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         try {
             m_maxExcerptLength = Integer.parseInt(maxExcerptLength);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error parsing max. excerpt length " + maxExcerptLength, e);
-            }
+            LOG.error(Messages.get().key(Messages.LOG_PARSE_EXCERPT_LENGTH_FAILED_1, maxExcerptLength), e);
 
             m_maxExcerptLength = 1024;
         }
@@ -641,17 +633,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     report.println(report.key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
                 }
 
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Rebuilding of search index " + index.getName() + " failed!", e);
-                }
+                LOG.error(Messages.get().key(Messages.LOG_REBUILD_INDEX_FAILED_1, index.getName()), e);
+                
+                
             } finally {
                 if (writer != null) {
                     try {
                         writer.close();
                     } catch (IOException e) {
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Unable to close index writer", e);
-                        }
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(Messages.LOG_CLOSE_INDEX_WRITER_FAILED_0), e);
+                        }   
                     }
                 }
 
@@ -683,8 +675,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
         if (analyzerConf == null) {
-            throw new CmsIndexException("No analyzer found for language " + locale);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
         }
+        
 
         try {
             className = analyzerConf.getClassName();
@@ -700,7 +693,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
         } catch (Exception e) {
-            throw new CmsIndexException("Can't load analyzer " + className, e);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
         }
 
         return analyzer;
@@ -788,23 +781,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 mimeTypes = documenttype.getMimeTypes();
 
                 if (name == null) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "No name defined for documenttype");
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_NAME_1, this.getClass().getName()));
                 }
                 if (className == null) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "No class defined for documenttype");
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_CLASS_DEF_1, this.getClass().getName()));
                 }
 
                 if (resourceTypes.size() == 0) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "No resourcetype/moduletype defined for documenttype");
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_RESOURCETYPE_DEF_1, this.getClass().getName()));
                 }
 
                 try {
@@ -812,19 +796,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     documentFactory = (I_CmsDocumentFactory)c.getConstructor(new Class[] {String.class}).newInstance(
                         new Object[] {name});
                 } catch (ClassNotFoundException exc) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "Documentclass "
-                        + className
-                        + " not found", exc);
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_NOT_FOUND_2, 
+                        this.getClass().getName(), className), exc);
                 } catch (Exception exc) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "Instanciation of documentclass "
-                        + className
-                        + " failed", exc);
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_INIT_2, 
+                        this.getClass().getName(), className), exc);                    
                 }
 
                 for (Iterator key = documentFactory.getDocumentKeys(resourceTypes, mimeTypes).iterator(); key.hasNext();) {
@@ -832,9 +808,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
 
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Configuration of documenttype " + name + " failed", e);
-                }
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_DOCTYPE_CONFIG_FAILED_1, name), e);
+                }   
             }
         }
     }
@@ -854,9 +830,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             try {
                 index.initialize();
             } catch (CmsException exc) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Search index         : Initialization of index \"" + index.getName() + "\" failed",
-                    exc);
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_INIT_FAILED_1, index.getName()), exc);
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/28 08:30:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.security;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
 
 /**
  * Default implementation for OpenCms password validation,
@@ -52,11 +53,14 @@ import org.apache.commons.codec.binary.Base64;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultPasswordHandler.class);
+    
     /** The encoding the encoding used for translating the input string to bytes. */
     private String m_inputEncoding = "UTF-8";
     
@@ -142,8 +146,8 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     public void initConfiguration() throws CmsConfigurationException {
 
         // simple default configuration does not need to be initialized
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
             // supress compiler warning, this is never true
             if (this == null) {
                 throw new CmsConfigurationException();

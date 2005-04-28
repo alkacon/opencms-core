@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/27 20:37:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/28 08:29:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,13 +87,13 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
      */
-    public String getDocumentKey(String resourceType) throws CmsException {
+    public String getDocumentKey(String resourceType) throws CmsIndexException {
 
         try {
             return C_VFS_DOCUMENT_KEY_PREFIX
                 + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
         } catch (Exception exc) {
-            throw new CmsException("Instanciation of resource class " + resourceType + " failed", exc);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_RESOURCE_TYPE_INSTANTIATION_1, resourceType), exc);
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 }
             }
         } catch (Exception exc) {
-            throw new CmsException("Creation of document keys failed.", exc);
+            throw new CmsException(Messages.get().container(Messages.ERR_CREATE_DOC_KEY_0), exc);
         }
 
         return keys;
@@ -307,13 +307,14 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
      * 
      * @return the given resource upgraded to a {@link CmsFile} with content
      * 
-     * @throws CmsException if the resource could not be read or has no content
+     * @throws CmsException if the resource could not be read 
+     * @throws CmsIndexException if the resource has no content
      */
-    protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException {
+    protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException, CmsIndexException {
 
         CmsFile file = CmsFile.upgrade(resource, cms);
         if (file.getLength() <= 0) {
-            throw new CmsIndexException("Resource " + resource.getRootPath() + " has no content.");
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
         }
         return file;
     }

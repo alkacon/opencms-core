@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentGeneric.java,v $
- * Date   : $Date: 2005/03/31 10:47:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/28 08:29:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.search.documents;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.extractors.CmsExtractionResult;
@@ -68,10 +67,10 @@ public class CmsDocumentGeneric extends A_CmsVfsDocument {
      * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
-    throws CmsException {
+    throws CmsIndexException {
 
         if (resource == null) {
-            throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_RAW_CONTENT_1, language));
         }
         // just return an empty result set
         return new CmsExtractionResult("");

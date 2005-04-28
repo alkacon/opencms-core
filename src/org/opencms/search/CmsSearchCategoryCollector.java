@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.search;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 
@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
@@ -53,7 +54,7 @@ import org.apache.lucene.search.IndexSearcher;
  * Be especially careful if your search result list can become large (> 1000 documents), since in this case
  * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3.1
  */
@@ -104,10 +105,13 @@ public class CmsSearchCategoryCollector extends HitCollector {
             return new Integer(m_count);
         }
     }
-
+    
     /** Category used in case the document belongs to no category. */
     public static final String UNKNOWN_CATEGORY = "unknown";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchCategoryCollector.class);  
+    
     /** The internal map of the categories found. */
     private Map m_categories;
 
@@ -161,9 +165,10 @@ public class CmsSearchCategoryCollector extends HitCollector {
             category = doc.get(I_CmsDocumentFactory.DOC_CATEGORY);
         } catch (IOException e) {
             // category will be null
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Unable to read category for document with id " + id, e);
-            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_READ_CATEGORY_FAILED_1, new Integer(id)), e);
+            }  
+            
         }
         if (category == null) {
             category = UNKNOWN_CATEGORY;

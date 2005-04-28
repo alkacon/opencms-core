@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPdf.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/28 08:29:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.pdfbox.exceptions.InvalidPasswordException;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentPdf extends A_CmsVfsDocument {
@@ -68,7 +68,7 @@ public class CmsDocumentPdf extends A_CmsVfsDocument {
      * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
-    throws CmsException {
+    throws CmsIndexException, CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         CmsFile file = readFile(cms, resource);
@@ -77,16 +77,16 @@ public class CmsDocumentPdf extends A_CmsVfsDocument {
             return CmsExtractorPdf.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
             if (e instanceof CryptographyException) {
-                throw new CmsIndexException("Decrypting resource " + resource.getRootPath() + " failed.", e);
+                throw new CmsIndexException(Messages.get()
+                    .container(Messages.ERR_DECRYPTING_RESOURCE_1, resource.getRootPath()), e);                
             }
             if (e instanceof InvalidPasswordException) {
                 // default password "" was wrong.
-                throw new CmsIndexException("Resource " + resource.getRootPath() + " is password protected.", e);
+                throw new CmsIndexException(Messages.get()
+                    .container(Messages.ERR_PWD_PROTECTED_1, resource.getRootPath()), e);
             }
-            throw new CmsIndexException("Extracting text from resource "
-                + resource.getRootPath()
-                + " failed: "
-                + e.getMessage(), e);
+            throw new CmsIndexException(Messages.get()
+                .container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
         }
     }
 }

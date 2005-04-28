@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentHtml.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/28 08:29:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * containing plain html data.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsDocumentHtml extends A_CmsVfsDocument {
 
@@ -68,7 +68,7 @@ public class CmsDocumentHtml extends A_CmsVfsDocument {
      * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
-    throws CmsException {
+    throws CmsIndexException, CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         CmsFile file = readFile(cms, resource);
@@ -80,10 +80,7 @@ public class CmsDocumentHtml extends A_CmsVfsDocument {
 
             return CmsExtractorHtml.getExtractor().extractText(file.getContents(), encoding);
         } catch (Exception e) {
-            throw new CmsIndexException("Extracting text from resource "
-                + resource.getRootPath()
-                + " failed: "
-                + e.getMessage(), e);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);            
         }
     }
 }

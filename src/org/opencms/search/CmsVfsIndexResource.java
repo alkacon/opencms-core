@@ -1,7 +1,8 @@
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +41,7 @@ import org.opencms.search.documents.A_CmsVfsDocument;
  * Contains the data of a VFS Cms resource specified by a Lucene 
  * search result document.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.13 $ $Date: 2005/04/28 08:28:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1

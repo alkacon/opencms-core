@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentRtf.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/28 08:29:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * Lucene document factory class to extract index data from a cms resource 
  * containing RTF data.<p>
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
@@ -74,10 +74,8 @@ public class CmsDocumentRtf extends A_CmsVfsDocument {
         try {
             return CmsExtractorRtf.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
-            throw new CmsIndexException("Extracting text from resource "
-                + resource.getRootPath()
-                + " failed: "
-                + e.getMessage(), e);
+            throw new CmsIndexException(Messages.get()
+                .container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
         }
     }
 }

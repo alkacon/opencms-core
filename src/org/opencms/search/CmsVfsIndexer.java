@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
@@ -50,13 +51,16 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.19 $ $Date: 2005/04/28 08:28:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsVfsIndexer implements I_CmsIndexer {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsVfsIndexer.class);  
+    
     /** The index. */
     private CmsSearchIndex m_index;
 
@@ -157,9 +161,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     m_report.key("search.indexing_file_failed") + " : " + exc.getMessage(),
                     I_CmsReport.C_FORMAT_WARNING);
             }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + path, exc);
-            }
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
+            } 
 
         } catch (CmsException exc) {
 
@@ -170,20 +174,21 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     + " : "
                     + exc.getMessage(), I_CmsReport.C_FORMAT_WARNING);
             }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + path, exc);
-            }
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
+            } 
 
         } catch (Exception exc) {
 
             if (m_report != null) {
                 m_report.println(m_report.key("search.indexing_folder_failed"), I_CmsReport.C_FORMAT_WARNING);
             }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + path, exc);
-            }
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
+            } 
 
-            throw new CmsIndexException("Indexing contents of " + path + " failed.", exc);
+            throw new CmsIndexException(Messages.get().container(Messages.LOG_INDEXING_FAILED_1));
+            
         }
     }
 

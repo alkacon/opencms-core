@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/04/28 08:28:48 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,24 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.index.IndexWriter;
 
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2005/03/04 13:42:37 $
+ * @version $Revision: 1.14 $ $Date: 2005/04/28 08:28:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsIndexingThreadManager extends Thread {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsIndexingThreadManager.class);  
+    
     /** The report. */
     private I_CmsReport m_report;
 
@@ -104,10 +108,9 @@ public class CmsIndexingThreadManager extends Thread {
 
             if (thread.isAlive()) {
 
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(
-                        "Timeout while indexing file " + res.getRootPath() + ", abandoning thread");
-                }
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
+                }    
 
                 m_report.println();
                 m_report.println(m_report.key("search.indexing_file_failed")
@@ -145,8 +148,8 @@ public class CmsIndexingThreadManager extends Thread {
         stats.append(m_report.key("search.indexing_stats_duration"));
         stats.append(m_report.formatRuntime());
 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info(stats.toString());
+        if (LOG.isInfoEnabled()) {
+            LOG.info(stats.toString());
         }
 
         if (m_report != null) {
@@ -203,26 +206,23 @@ public class CmsIndexingThreadManager extends Thread {
 
                 Thread.sleep(30000);
                 // wait 30 seconds before we start checking for "dead" index threads
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(
-                        "Waiting for abandoned threads: "
-                            + m_abandonedCounter
-                            + " threads abandoned, "
-                            + (m_fileCounter - m_returnedCounter)
-                            + " threads not returned until now");
-                }
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_WAITING_ABANDONED_THREADS_2, 
+                        new Integer(m_abandonedCounter), new Integer((m_fileCounter - m_returnedCounter))));
+                }    
+                
             }
         } catch (Exception exc) {
             // noop
         }
 
         if (max > 0) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("All threads finished, terminating now.");
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_THREADS_FINISHED_0));
             }
         } else {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Abandoned threads left: " + (m_fileCounter - m_returnedCounter));
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_THREADS_FINISHED_0, new Integer(m_fileCounter - m_returnedCounter)));
             }
         }
     }

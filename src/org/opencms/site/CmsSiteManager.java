@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/04/28 08:26:03 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -107,7 +107,7 @@ public final class CmsSiteManager implements Cloneable {
         m_aliases = new ArrayList();
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Site configuration   : starting");
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_START_SITE_CONFIG_0));
         }
     }
 
@@ -181,9 +181,8 @@ public final class CmsSiteManager implements Cloneable {
                 }
             }
         } catch (Throwable t) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Error reading site properties", t);
-            }
+            LOG.error(Messages.get().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
+            
         } finally {
             // restore the user's current context 
             cms.getRequestContext().restoreSiteRoot();
@@ -306,7 +305,7 @@ public final class CmsSiteManager implements Cloneable {
         m_aliases = new ArrayList();
         m_siteRoots.add(site.getSiteRoot());
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Site root added      : " + site.toString());
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
         }
     }
 
@@ -380,7 +379,7 @@ public final class CmsSiteManager implements Cloneable {
     public void initialize(CmsObject cms) {
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Site roots configured: " + (m_sites.size() + ((m_defaultUri != null) ? 1 : 0)));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1, new Integer((m_sites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
 
         // check the presence of sites in VFS
@@ -392,7 +391,7 @@ public final class CmsSiteManager implements Cloneable {
                     cms.readResource(site.getSiteRoot());
                 } catch (Throwable t) {
                     if (CmsLog.LOG.isWarnEnabled()) {
-                        CmsLog.LOG.warn("Root folder for site " + site + " does not exist (ignoring this site entry)");
+                        CmsLog.LOG.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_1, site));
                     }
                 }
             }
@@ -407,9 +406,7 @@ public final class CmsSiteManager implements Cloneable {
                 cms.readResource(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
                 if (CmsLog.LOG.isWarnEnabled()) {
-                    CmsLog.LOG.warn("Root folder for default site "
-                        + m_defaultSite
-                        + " does not exist (setting default site root to '/')");
+                    CmsLog.LOG.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1, m_defaultSite));
                 }
             }
         }
@@ -417,13 +414,11 @@ public final class CmsSiteManager implements Cloneable {
             m_defaultSite = new CmsSite("/", CmsSiteMatcher.C_DEFAULT_MATCHER);
         }
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Site root default    : "
-                + (m_defaultSite != null ? "" + m_defaultSite : "(not configured)"));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_1, (m_defaultSite != null ? "" + m_defaultSite : "(not configured)")));
         }
         m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Site of workplace    : "
-                + (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)"));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_1, (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)")));
         }
 
         // set site lists to unmodifiable 
@@ -470,7 +465,7 @@ public final class CmsSiteManager implements Cloneable {
         CmsSite site = matchSite(matcher);
         if (LOG.isDebugEnabled()) {
             String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
-            LOG.debug("Matching request [" + requestServer + "] to site " + site.toString());
+            LOG.debug(Messages.get().key(Messages.LOG_MATCHING_REQUEST_TO_SITE_2, requestServer, site.toString()));
         }
         return site;
     }
