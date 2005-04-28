@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/04/26 13:01:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/04/28 09:45:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.w3c.tidy.Tidy;
  * Html cleaner, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
  *  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsHtmlConverter {
 
@@ -248,7 +248,9 @@ public class CmsHtmlConverter {
                     count++;
                 }
             }
-            LOG.error(Messages.get().key(Messages.LOG_PARSING_RUNS_2, this.getClass().getName(), new Integer(count)));
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().key(Messages.LOG_PARSING_RUNS_2, this.getClass().getName(), new Integer(count)));
+            }    
 
             return regExp(new String(parsedRun, m_encoding)).getBytes(m_encoding);
 
