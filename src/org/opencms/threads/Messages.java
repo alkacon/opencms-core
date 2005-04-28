@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/26 12:50:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/28 08:23:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,43 +42,43 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DB_EXPORT_0 = "ERR_DB_EXPORT_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_LINK_VALIDATION_0 = "ERR_LINK_VALIDATION_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DELETE_THREAD_CONSTRUCTED_0 = "LOG_DELETE_THREAD_CONSTRUCTED_0";    
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DELETE_THREAD_FINISHED_0 = "LOG_DELETE_THREAD_FINISHED_0";    
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DELETE_THREAD_STARTED_0 = "LOG_DELETE_THREAD_STARTED_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_MODULE_DELETE_FAILED_1 = "LOG_MODULE_DELETE_FAILED_1";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_MOVE_RESOURCE_FAILED_1 = "LOG_MOVE_RESOURCE_FAILED_1";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PROJECT_DELETE_FAILED_1 = "LOG_PROJECT_DELETE_FAILED_1";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_PROJECT_FAILED_0 = "LOG_PUBLISH_PROJECT_FAILED_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_REPLACE_THREAD_CONSTRUCTED_0 = "LOG_REPLACE_THREAD_CONSTRUCTED_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_REPLACE_THREAD_FINISHED_0 = "LOG_REPLACE_THREAD_FINISHED_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_REPLACE_THREAD_START_DELETE_0 = "LOG_REPLACE_THREAD_START_DELETE_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_REPLACE_THREAD_START_IMPORT_0 = "LOG_REPLACE_THREAD_START_IMPORT_0";
  
     /** Name of the used resource bundle. */
