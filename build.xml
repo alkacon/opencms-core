@@ -436,28 +436,7 @@ ${opencms.inputlib.textextraction}
     	<!-- read list of all available modules -->
     	<property file="${opencms.input}/modules/all-modules.properties" />
     	
-    	<!-- remove org.opencms.frontend.templateone.modules -->
-    	<var name="modules.common.selection" value="" />
-    	<for list="${modules.common.all}" param="module" trim="yes">
-    		<sequential>
-    	    	<if>
-    				<not>
-    		    		<equals arg1="@{module}" arg2="org.opencms.frontend.templateone.modules" />
-    				</not>
-    				<then>
-    					<if>
-    						<equals arg1="${modules.common.selection}" arg2="" />
-    						<then>
-		    			    	<var name="modules.common.selection" value="@{module}" />
-    						</then>
-    						<else>
-		    			    	<var name="modules.common.selection" value="${modules.common.selection},@{module}" />
-    						</else>
-    					</if>
-    				</then>
-    	    	</if>
-      	    </sequential>
-      	</for>
+    	<var name="modules.common.selection" value="${modules.common.all}" />
     	
     	<!-- build war with selected modules -->
 	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
