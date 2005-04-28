@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/04/26 14:59:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/28 09:52:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsNamedObjectContainer;
 import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +49,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsTool implements I_CmsNamedObject {
@@ -141,47 +142,17 @@ public class CmsTool implements I_CmsNamedObject {
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
-            return ""; 
+            return "";
         }
         String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkFromContext(wp.getJsp(), this);
-        StringBuffer html = new StringBuffer(1024);
-        html.append("<");
-        html.append(isEnabled() ? "div" : "span");
-        html.append(" class='commonButton' style='background-image: url(");
-        html.append(CmsWorkplace.getSkinUri());
-        html.append(getIconPath());
-        html.append(")' title='");
-        html.append(getName());
-        html.append("' onMouseOver=\"mouseHelpEvent('");
-        html.append(getId());
-        html.append("', true);\"  onMouseOut=\"mouseHelpEvent('");
-        html.append(getId());
-        html.append("', false);\"");
-        html.append(isEnabled() ? " onClick=\"openPage('" + link + "');\"" : "");
-        html.append(">\n");
-        html.append("\t<button name='");
-        html.append(getId());
-        html.append("'");
-        html.append(isEnabled() ? "" : " disabled");
-        html.append(">\n\t\t");
-        html.append(getName());
-        html.append("\n\t</button>\n");
-        html.append("\t<span>\n\t\t");
-        html.append(getName());
-        html.append("\t</span>\n");
-        html.append(isEnabled() ? "div" : "span");
-        html.append(">\n");
-        html.append("<div class='tip' id='");
-        html.append(getId());
-        html.append("'>\n\t");
-        if (!isEnabled()) {
-            html.append(wp.key("widget.button.disabled.helptext"));
-            html.append(" ");
-        }
-        html.append(getHelpText());
-        html.append("\n</div>\n</");
-
-        return wp.resolveMacros(html.toString());  
+        String onClic = "openPage('" + link + "');";
+        return A_CmsHtmlIconButton.defaultBigButtonHtml(
+            getId(),
+            getName(),
+            getHelpText(),
+            isEnabled(),
+            getIconPath(),
+            onClic);
     }
 
     /**
@@ -288,7 +259,7 @@ public class CmsTool implements I_CmsNamedObject {
             CmsToolGroup group = (CmsToolGroup)itHtml.next();
             html.append(group.groupHtml(wp));
         }
-        return html.toString();
+        return wp.resolveMacros(html.toString());
     }
 
     /**

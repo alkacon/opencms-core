@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/28 09:52:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.List;
  * i18n of group names. <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -71,7 +71,7 @@ public class CmsToolManager {
     public static final String C_HANDLERCLASS_PROPERTY = "admintoolhandler-class";
 
     /**  Navegation bar separator. */
-    public static final String C_NAVBAR_SEPARATOR = "&nbsp;&gt;&nbsp;";
+    public static final String C_NAVBAR_SEPARATOR = "\n&nbsp;&gt;&nbsp;\n";
 
     /**  Tool path separator. */
     public static final String C_TOOLPATH_SEPARATOR = "/";
@@ -203,11 +203,11 @@ public class CmsToolManager {
     public String generateNavBar(String toolPath, CmsWorkplace wp) {
 
         if (toolPath.equals(getRootToolPath(wp.getCms()))) {
-            return "<div class='pathbar'>&nbsp;</div>";
+            return "<div class='pathbar'>&nbsp;</div>\n";
         }
         CmsTool adminTool = resolveAdminTool(wp.getCms(), toolPath);
         String html = A_CmsHtmlIconButton.defaultButtonHtml(
-            adminTool.getId(),
+            "nav" + adminTool.getId(),
             adminTool.getName(),
             null,
             false,
@@ -219,7 +219,7 @@ public class CmsToolManager {
             adminTool = resolveAdminTool(wp.getCms(), parent);
 
             String id = "nav" + adminTool.getId();
-            String onClic = "loadingOn('');window.location.href='" + cmsLinkForPath(wp.getJsp(), parent) + "';";
+            String onClic = "openPage('" + cmsLinkForPath(wp.getJsp(), parent) + "');";
             String link = A_CmsHtmlIconButton.defaultButtonHtml(
                 id,
                 adminTool.getName(),
@@ -230,7 +230,7 @@ public class CmsToolManager {
             html = link + C_NAVBAR_SEPARATOR + html;
         }
 
-        return wp.resolveMacros("<div class='pathbar'>&nbsp;" + html + "&nbsp;</div>");
+        return wp.resolveMacros("<div class='pathbar'>&nbsp;\n" + html + "&nbsp;</div>\n");
     }
 
     /**

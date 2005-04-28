@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/28 09:52:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.util.I_CmsNamedObject;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public interface I_CmsToolHandler extends I_CmsNamedObject {
@@ -113,11 +113,11 @@ public interface I_CmsToolHandler extends I_CmsNamedObject {
      * @return <code>true</code> if visible
      */
     boolean isVisible(CmsObject cms);
-
+    
     /**
      * Main method that somehow setups the admin tool handler.<p>
      * 
-     * @param cms the admin context (at opencms' initialization time) 
+     * @param cms the admin context (at opencms-workplace (re-)initialization time) 
      * @param resourcePath the resource path of the file/folder to use as admin tool
      * 
      * @throws CmsException if something goes wrong

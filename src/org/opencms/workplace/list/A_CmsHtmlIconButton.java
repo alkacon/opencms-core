@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/28 09:52:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_CmsHtmlIconButton {
@@ -56,20 +56,88 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
      * @param enabled if enabled or not
      * @param iconPath the path to the icon
      */
-    public A_CmsHtmlIconButton(String id, CmsMessageContainer name, CmsMessageContainer helpText, boolean enabled, String iconPath) {
+    public A_CmsHtmlIconButton(
+        String id,
+        CmsMessageContainer name,
+        CmsMessageContainer helpText,
+        boolean enabled,
+        String iconPath) {
 
         super(id, name, helpText, enabled);
         m_iconPath = iconPath;
     }
 
     /**
-     * Returns the path to the icon.<p>
-     *
-     * @return the path to the icon
+     * Generates a default html code for big icon buttons.<p>
+     * 
+     * If the name is empty only the icon is displayed.<br>
+     * If the iconPath is empty only the name is displayed.<br>
+     * If the onClic is empty no link is generated.<br>
+     * If the helptext is empty no mouse events are generated.
+     * <p>
+     * 
+     * @param id the id
+     * @param name the name
+     * @param helpText the help text
+     * @param enabled if enabled or not
+     * @param iconPath the path to the icon
+     * @param onClic the js code to execute
+     * 
+     * @return html code
      */
-    public String getIconPath() {
+    public static String defaultBigButtonHtml(
+        String id,
+        String name,
+        String helpText,
+        boolean enabled,
+        String iconPath,
+        String onClic) {
 
-        return m_iconPath;
+        StringBuffer html = new StringBuffer(1024);
+        html.append("<div class='bigLink'>\n");
+        html.append("\t<a class='link");
+        if (enabled) {
+            html.append("' href='#'");
+        } else {
+            html.append(" disabled'");
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
+            html.append(" onMouseOver=\"mouseHelpEvent('");
+            html.append(id);
+            html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
+            html.append(id);
+            html.append("', false);\"");
+        }
+        if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClic)) {
+            html.append(" onClick=\"");
+            html.append(onClic);
+            html.append("\"");
+        }
+        html.append(">");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
+            html.append("<img src='");
+            html.append(CmsWorkplace.getSkinUri());
+            html.append(iconPath);
+            html.append("'><br>");
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            html.append(name);
+        }
+        html.append("</a>\n");
+        html.append("</div>\n");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
+            html.append("<div class='tip' id='");
+            html.append(id);
+            html.append("'>");
+            if (!enabled) {
+                html.append("${key.");
+                html.append(Messages.GUI_LIST_ACTION_DISABLED_0);
+                html.append("} ");
+            }
+            html.append(helpText);
+            html.append("</div>\n");
+        }
+        return html.toString();
     }
 
     /**
@@ -90,106 +158,66 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
      * 
      * @return html code
      */
-    public static String defaultButtonHtml(String id, String name, String helpText, boolean enabled, String iconPath, String onClic) {
-        
+    public static String defaultButtonHtml(
+        String id,
+        String name,
+        String helpText,
+        boolean enabled,
+        String iconPath,
+        String onClic) {
+
         StringBuffer html = new StringBuffer(1024);
+        html.append("<a class='link");
         if (enabled) {
-            html.append("<div class='commonButton' title='");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(name);
-            } else {
-                html.append(id);
-            }
-            html.append("'");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-                html.append(" onMouseOver=\"mouseHelpEvent('");
-                html.append(id);
-                html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
-                html.append(id);
-                html.append("', false);\"");
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClic)) {
-                html.append(" onClick=\"");
-                html.append(onClic);
-                html.append("\"");
-            }
-            html.append(">\n");
-            html.append("\t<button>\n\t\t");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(name);
-            } else {
-                html.append(id);
-            }
-            html.append("\n\t</button>\n");
-            html.append("\t<span");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
-                html.append(" style='background-image: url(");
-                html.append(CmsWorkplace.getSkinUri());
-                html.append(iconPath);
-                html.append(")'");
-            } else {
-                html.append(" style='padding-left: 0px;'");
-            }
-            html.append(">\n\t\t");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(name);
-            }
-            html.append("\n\t</span>\n");
-            html.append("</div>\n");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-                html.append("<div class='tip' id='");
-                html.append(id);
-                html.append("'>\n\t");
-                html.append(helpText);
-                html.append("\n</div>\n");
-            }
+            html.append("' href='#'");
         } else {
-            html.append("<span class='commonButton' title='");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(name);
-            } else {
-                html.append(id);
-            }
-            html.append("'");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-                html.append(" onMouseOver=\"mouseHelpEvent('");
-                html.append(id);
-                html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
-                html.append(id);
-                html.append("', false);\"");
-            }
-            html.append(" disabled>\n");
-            html.append("\t<button>\n\t\t");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(name);
-            } else {
-                html.append(id);
-            }
-            html.append("\n\t</button>\n");
-            html.append("\t<span style='cursor:default;");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
-                html.append(" background-image: url(");
-                html.append(CmsWorkplace.getSkinUri());
-                html.append(iconPath);
-                html.append(")");
-            }
-            html.append("'>\n\t\t");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(name);
-            }
-            html.append("\n\t</span>\n");
-            html.append("</span>\n");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-                html.append("<div class='tip' id='");
-                html.append(id);
-                html.append("'>\n\t");
+            html.append(" disabled'");
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
+            html.append(" onMouseOver=\"mouseHelpEvent('");
+            html.append(id);
+            html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
+            html.append(id);
+            html.append("', false);\"");
+        }
+        if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClic)) {
+            html.append(" onClick=\"");
+            html.append(onClic);
+            html.append("\"");
+        } 
+        html.append(">");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
+            html.append("<img src='");
+            html.append(CmsWorkplace.getSkinUri());
+            html.append(iconPath);
+            html.append("'>");
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            html.append(name);
+        }
+        html.append("</a>\n");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
+            html.append("<div class='tip' id='");
+            html.append(id);
+            html.append("'>");
+            if (!enabled) {
                 html.append("${key.");
                 html.append(Messages.GUI_LIST_ACTION_DISABLED_0);
-                html.append("}");
-                html.append(helpText);
-                html.append("\n</div>\n");
+                html.append("} ");
             }
-        }        
-        return html.toString();        
+            html.append(helpText);
+            html.append("</div>\n");
+        }
+        return html.toString();
+    }
+
+    /**
+     * Returns the path to the icon.<p>
+     *
+     * @return the path to the icon
+     */
+    public String getIconPath() {
+
+        return m_iconPath;
     }
 }

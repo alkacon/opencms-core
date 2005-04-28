@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/04/26 14:59:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/28 09:52:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -99,7 +99,7 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\ttheForm." + CmsDialog.PARAM_FRAMENAME + ".value = window.name;\n");
         html.append("\tif (actionValue == '" + CmsDialog.DIALOG_OK + "') {\n");
         if (!(this instanceof CmsReport)) {
-            html.append("\t\tloadingOn('');\n");
+            html.append("\t\tloadingOn();\n");
         }
         html.append("\t\treturn true;\n");
         html.append("\t}\n");
@@ -126,36 +126,32 @@ public class CmsToolDialog extends CmsWorkplace {
         String parentName = getToolManager().resolveAdminTool(getCms(), parentPath).getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
-        // build titel
+        // build title
         html.append("<div class='screenTitle'>\n");
         html.append("\t<table width='100%' cellspacing='0'>\n");
         html.append("\t\t<tr>\n");
-        html.append("\t\t\t<td>");
+        html.append("\t\t\t<td>\n");
         html.append(getAdminTool().getName());
-        html.append("\t\t\t</td>");
+        html.append("\n\t\t\t</td>");
         // uplevel button only if needed
         if (getParentPath() != toolPath) {
-            html.append("\t\t\t<td class='uplevel'>\n");
+            html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
             String onClic = "openPage('" + upLevelLink + "');";
-            A_CmsHtmlIconButton.defaultButtonHtml("id-up-level", key("admin.view.uplevel"), parentName, true, "admin/images/up.gif", onClic);
-            html.append("\t\t\t</td>\n");
+            html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+                "id-up-level",
+                key("admin.view.uplevel"),
+                parentName,
+                true,
+                "admin/images/up.gif",
+                onClic));
+            html.append("\n\t\t\t</td>\n");
         }
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
         html.append("</div>\n");
         return resolveMacros(html.toString());
     }
-
-    /**
-     * Returns the tool manager.<p>
-     * 
-     * @return the tool manager
-     */
-    public CmsToolManager getToolManager() {
-
-        return OpenCms.getWorkplaceManager().getToolManager();
-    }
-
+    
     /**
      * Returns the admin tool.<p>
      *
@@ -163,7 +159,11 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public CmsTool getAdminTool() {
 
-        return getToolManager().getCurrentTool(getCms());
+        CmsTool ret =  getToolManager().getCurrentTool(getCms());
+        if (ret == null) {
+            ret = getToolManager().getCurrentTool(getCms()); 
+        }
+        return ret;
     }
 
     /**
@@ -217,6 +217,16 @@ public class CmsToolDialog extends CmsWorkplace {
     }
 
     /**
+     * Returns the tool manager.<p>
+     * 
+     * @return the tool manager
+     */
+    public CmsToolManager getToolManager() {
+
+        return OpenCms.getWorkplaceManager().getToolManager();
+    }
+
+    /**
      * Builds an block area for icons.<p>
      * 
      * @param segment the HTML segment (START / END)
@@ -232,8 +242,7 @@ public class CmsToolDialog extends CmsWorkplace {
         if (segment == HTML_START) {
             retValue.append("<p>&nbsp;</p>\n");
             retValue.append("<!-- icons block area start -->\n");
-            retValue
-                .append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
+            retValue.append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
             retValue.append("\t<div class=\"dialogblock\" unselectable=\"on\">\n");
             retValue.append("\t\t<span class=\"dialogblockhead\" unselectable=\"on\">\n");
             retValue.append(headline);
@@ -299,9 +308,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 html.append(CmsStringUtil.isNotEmpty(className) ? " class='" + className + "'" : "");
                 html.append(CmsStringUtil.isNotEmpty(myPars) ? " " + myPars : "");
                 html.append(">\n");
-                html.append("\t<a href='#' name='top' id='top'></a>\n");
-                html
-                    .append("\t<table border='0' cellspacing='0' cellpadding='0' id='loaderContainer' onClick='return false;'>\n");
+                html.append("\t<table border='0' cellspacing='0' cellpadding='0' id='loaderContainer' onClick='return false;'>\n");
                 html.append("\t\t<tr><td id='loaderContainerH'><div id='loader'>\n");
                 html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td>\n");
                 html.append("\t\t\t\t<p><img src='");
@@ -335,8 +342,7 @@ public class CmsToolDialog extends CmsWorkplace {
         }
 
         StringBuffer html = new StringBuffer(512);
-        html
-            .append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
         html.append("<html>\n");
         html.append("\t<head>\n");
         if (title != null) {
@@ -363,8 +369,7 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append(getCurrentToolPath());
         html.append("\");\n");
         html.append("\t\t\tloadingOff('');\n");
-        html
-            .append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
+        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
         html.append("\t\t}\n");
         html.append("\t\tfunction bodyUnload() {\n");
         if (!(this instanceof CmsReport)) {

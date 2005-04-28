@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/04/26 14:59:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/28 09:52:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -477,8 +477,7 @@ public class CmsHtmlList {
         js.append("\t\t\tif ((form.elements[i].type == 'checkbox') && (form.elements[i].name == '");
         js.append(m_id);
         js.append("MultiAction')) {\n");
-        js
-            .append("\t\t\t\tif (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {\n");
+        js.append("\t\t\t\tif (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {\n");
         js.append("\t\t\t\t\tcount++;\n");
         js.append("\t\t\t\t\tif (listItems!='') {\n");
         js.append("\t\t\t\t\t\tlistItems = listItems + '");
@@ -635,10 +634,12 @@ public class CmsHtmlList {
         }
         String sCol = m_sortedColumn;
         m_sortedColumn = "";
-        CmsListOrderEnum order = getCurrentSortOrder();
-        setSortedColumn(sCol, locale);
-        if (order == CmsListOrderEnum.ORDER_DESCENDING) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sCol)) {
+            CmsListOrderEnum order = getCurrentSortOrder();
             setSortedColumn(sCol, locale);
+            if (order == CmsListOrderEnum.ORDER_DESCENDING) {
+                setSortedColumn(sCol, locale);
+            }
         }
         setCurrentPage(1);
     }
@@ -819,17 +820,12 @@ public class CmsHtmlList {
             html.append(Messages.get().key(
                 locale,
                 Messages.GUI_LIST_PAGING_TEXT_2,
-                new Object[] {
-                    m_name.key(locale),
-                    new Integer(getTotalSize())}));
+                new Object[] {m_name.key(locale), new Integer(getTotalSize())}));
         } else {
             html.append(Messages.get().key(
                 locale,
                 Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
-                new Object[] {
-                    m_name.key(locale),
-                    new Integer(getSize()),
-                    new Integer(getTotalSize())}));
+                new Object[] {m_name.key(locale), new Integer(getSize()), new Integer(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");

@@ -124,66 +124,65 @@ img {
 	text-align: left;
 }
 
-/* ---------- common buttons --------- */
-
-.commonButton {
+/* ---------- links ------------ */
+.link {
   display: inline;
-}
-
-.commonButton button,
-.commonButton {
+  background: none;
+  background-color: transparent;
+  vertical-align: middle;
   font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
-  color: WindowText;
-  background-color: transparent;
-}
-
-.commonButton button {
-  border: 0 solid Window;
-  background-repeat: no-repeat;
-}
-
-span.commonButton button,
-span.commonButton span {
-  color: GrayText;
-}  
-
-div.commonButton span {
+  cursor: hand;
+  cursor: pointer;
   text-decoration: none;
   color: WindowText;
+  padding-left: 2px;
 }
 
-div.commonButton:hover span {
+.disabled {
+  color: GrayText;
+  text-decoration: none;
+  cursor: default;
+}
+
+.link:hover { 
   text-decoration: underline;
   color: #000088;
+}
+
+.disabled:hover {
+  color: GrayText;
+  text-decoration: none;
+  cursor: default;
+}
+
+.link img {
+  width: 16px;
+  height: 16px;
+  display: inline;
+  vertical-align: middle;
+  padding: 1px 5px 1px 1px;
+}
+
+/* ---------- big icon buttons  --------- */
+.bigLink {
+  width: 112px;
+  height: 62px;
+  float: left;
+  text-align: center;
+}
+
+.bigLink .link img {
+  width: 32px;
+  height: 32px;
+  display: inline;
+  vertical-align: middle;
+  padding: 1px 1px 1px 1px;
 }
 
 <% } 
 
    if(style == MENU) { %>
-
-.commonButton {
-  padding-left: 0px;
-  vertical-align: middle;
-  background: none;
-}
-
-
-.commonButton button {
-  display: none;
-}
-
-.commonButton span {
-  background-position: 0 1px;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  padding-left: 20px;
-  text-decoration: none;
-  cursor: hand;
-  cursor: pointer;
-  padding-top: 1px;
-  padding-bottom: 4px;
-}
 
 /* navegation area */
 
@@ -301,17 +300,13 @@ div.tree {
 
 .node,
 .nodeActive {
-  margin-top: 4px;
-  padding: 2px 0px;
+  padding-top: 4px;
+  padding-left: 5px;
   vertical-align: middle;
 }
 
 #contexthelp {
-  font-size: 11px;
-  text-align: left;
-  padding-top: 5px;
-  margin: 0 15px 0 10px;
-  height: 100px;
+  height: 50px;
 }
 
 <% /* style definitions valid only for NEW_ADMIN style */ %>
@@ -393,11 +388,6 @@ hr {
   margin: 7px 0;
 }
 
-.buttons input,
-.buttons .commonButton {
-  vertical-align: middle;
-}
-
 .misc {
   text-align: right;
 }
@@ -406,109 +396,22 @@ hr {
 	margin-right: 7px;
 }
 
-.main .commonButton {
-  padding-right: 14px;
-  vertical-align: 2px;
-}
-
 .misc input {
   margin-left: 7px;
-}
-
-.misc .commonButton {
-  padding-left: 14px;
-  vertical-align: middle;
-}
-
-.uplevel .commonButton {
-  vertical-align: middle;
-  padding-top: 3px;
-}
-
-.pathbar .commonButton {
-  padding-left: 0px;
-  vertical-align: middle;
-}
-
-.list .commonButton {
-  padding-left: 4px;
-  vertical-align: middle;
 }
 
 .toolsArea {
   padding: 8px 0 0 0;
 }
 
-/* ---------- big icon buttons  --------- */
 .iconblock {
     margin: auto; 
     width: 95%;
 }
 
-.toolsArea .commonButton {
-  background-position: top center;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  padding: 32px 0 0 0;
-  width: 111px;
-  height: 27px;
-  margin: 0;
-  cursor: pointer;
-  text-align: center;
-  float: left;
-}
-
-.pathbar span.commonButton,
-.toolsArea span.commonButton {
-  cursor: default;
-  color: WindowText;
-  text-decoration: none;
-}
 
 .toolsArea button {
   display: none;
-}
-
-.toolsArea .screenButtons .commonButton span {
-  background: none;
-}
-
-.pathbar .commonButton,
-.list .commonButton,
-.buttons .commonButton,
-.uplevel .commonButton {
-  background: none;
-}
-
-.pathbar .commonButton button,
-.list .commonButton button,
-.listArea .buttons .commonButton button,
-.uplevel .commonButton button {
-	display: none;
-}
-
-.pathbar .commonButton span {
-  background-position: 0 1px;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  padding-top: 0px;
-  text-decoration: none;
-  cursor: hand;
-  cursor: pointer;
-}
-
-.list .commonButton span,
-.buttons .commonButton span,
-.uplevel .commonButton span {
-  background-position: 0 1px;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  padding-left: 20px;
-  text-decoration: none;
-  cursor: hand;
-  cursor: pointer;
-  padding-top: 1px;
-  padding-bottom: 4px;
 }
 
 <%
@@ -1138,7 +1041,7 @@ th a:link, th a:visited, th a:active {
 }
 
 .evenrowbg {
-	background-color: InfoBackground; 
+	background-color: ButtonFace; 
 }
 
 .oddrowbg {
