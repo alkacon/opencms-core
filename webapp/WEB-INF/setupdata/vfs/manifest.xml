@@ -10613,6 +10613,18 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/admin/images/up.gif</source>
+			<destination>system/workplace/resources/admin/images/up.gif</destination>
+			<type>image</type>
+			<datelastmodified>Fri, 11 Feb 2005 09:56:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Feb 2005 09:56:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/admin/images/deficon.png</source>
 			<destination>system/workplace/resources/admin/images/deficon.png</destination>
 			<type>image</type>
