@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.207 $
+ * Date   : $Date: 2005/04/29 16:02:25 $
+ * Version: $Revision: 1.208 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Set;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.207 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.208 $ $Date: 2005/04/29 16:02:25 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1845,7 +1845,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         ResultSet res = null;
         List returnValue = new ArrayList();
 
-        if (parameterResources == CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER) {
+        if (parameterResources == CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER) {
             timestamp = 0;
         }
         try {

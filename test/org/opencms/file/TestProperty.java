@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/03/19 13:59:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/29 16:02:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -79,6 +79,7 @@ public class TestProperty extends OpenCmsTestCase {
         suite.addTest(new TestProperty("testCreateProperties"));
         suite.addTest(new TestProperty("testWritePropertyOnFolder"));
         suite.addTest(new TestProperty("testDefaultPropertyCreation"));
+        suite.addTest(new TestProperty("testReadResourcesWithProperty"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -388,6 +389,29 @@ public class TestProperty extends OpenCmsTestCase {
         CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);  
         writeProperty(this, cms, "/folder2/", property10);
     }  
+
+    /**
+     * Tests the writePropertyObject method for writing of a property on a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadResourcesWithProperty() throws Throwable {  
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing reading resources with property");
+        
+        String typesUri = "/types";
+        CmsResource res = cms.readResource(typesUri);
+        // now set "exportname" property and try again
+        cms.lockResource(typesUri);
+        cms.writePropertyObject(typesUri, new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME, "myfolder", null));       
+        // publish the changes
+        cms.publishProject(); 
+        
+        List result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+        assertTrue(result.contains(res));
+    }  
+    
     
     /**
      * Test default property creation (from resource type configuration).<p>

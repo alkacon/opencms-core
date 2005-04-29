@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/04/25 14:07:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/29 16:02:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,15 +61,15 @@ import org.apache.commons.logging.Log;
  * This handler exports all changes immediately after something is published.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */
 public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHandler {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAfterPublishStaticExportHandler.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsAfterPublishStaticExportHandler.class);
+
     /** Indicates if this content handler is busy. */
     protected boolean m_busy;
 
@@ -92,8 +92,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
         CmsObject cmsExportObject = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
 
         // first export all non-template resources,
-        templatesFound = OpenCms.getStaticExportManager()
-            .exportNonTemplateResources(cmsExportObject, resources, report);
+        templatesFound = OpenCms.getStaticExportManager().exportNonTemplateResources(cmsExportObject, resources, report);
 
         // export template resourses (check "plainoptimization" setting)
         if ((templatesFound) || (!OpenCms.getStaticExportManager().getQuickPlainExport())) {
@@ -101,16 +100,16 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             long timestamp = 0;
             List publishedTemplateResources;
             boolean newTemplateLinksFound;
-            int linkMode = CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER;
+            int linkMode = CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER;
 
             do {
                 // get all template resources which are potential candidates for a static export
                 publishedTemplateResources = cmsExportObject.readStaticExportResources(linkMode, timestamp);
                 newTemplateLinksFound = publishedTemplateResources.size() > 0;
                 if (newTemplateLinksFound) {
-                    if (linkMode == CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER) {
+                    if (linkMode == CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER) {
                         // first loop, switch mode to parameter links, leave the timestamp unchanged
-                        linkMode = CmsStaticExportManager.C_EXPORT_LINK_WITH_PARAMETER;
+                        linkMode = CmsStaticExportManager.EXPORT_LINK_WITH_PARAMETER;
                     } else {
                         // second and subsequent loops, only look for links not already exported
                         // this can only be the case for a link with parameters 
@@ -202,7 +201,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
      * @param publishHistoryId id of the last published project
      */
     private void scrubExportFolders(CmsUUID publishHistoryId) {
-        
+
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_SCRUBBING_EXPORT_FOLDERS_1, publishHistoryId));
         }
@@ -267,8 +266,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                     String exportFileName;
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = 
-                                CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
                                 + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length()));
                             try {
                                 File exportFolder = new File(exportFolderName);
@@ -285,12 +283,15 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                             } catch (Throwable t) {
                                 // ignore, nothing to do about this
                                 if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_2, vfsName, exportFolderName));
+                                    LOG.warn(Messages.get().key(
+                                        Messages.LOG_FOLDER_DELETION_FAILED_2,
+                                        vfsName,
+                                        exportFolderName));
                                 }
                             }
                         }
                         // add index.html to folder name
-                        rfsName += CmsStaticExportManager.C_EXPORT_DEFAULT_FILE;
+                        rfsName += CmsStaticExportManager.EXPORT_DEFAULT_FILE;
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(Messages.LOG_FOLDER_1, rfsName));
                         }

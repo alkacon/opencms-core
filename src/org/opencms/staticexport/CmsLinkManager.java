@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/04/25 14:07:15 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/04/29 16:02:25 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,16 +57,16 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class CmsLinkManager {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLinkManager.class);
 
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLinkManager.class); 
-    
     /**
      * Public constructor.<p>
      */
@@ -286,7 +286,7 @@ public class CmsLinkManager {
 
         // URI with relative path is relative to the given relativePath if available and in a site, 
         // otherwise invalid
-        if (!"".equals(path) && !path.startsWith("/")) {
+        if (CmsStringUtil.isNotEmpty(path) && !path.startsWith("/")) {
             if (relativePath != null) {
                 String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
@@ -298,7 +298,7 @@ public class CmsLinkManager {
         }
 
         // relative uri (= vfs path relative to currently selected site root)
-        if (!"".equals(path)) {
+        if (CmsStringUtil.isNotEmpty(path)) {
             return cms.getRequestContext().addSiteRoot(path) + suffix;
         }
 
@@ -307,18 +307,17 @@ public class CmsLinkManager {
     }
 
     /**
-     * Returns a positive hash code value for the given string.<p>
+     * Substitutes the contents of a link by adding the context path and 
+     * servlet name, and in the case of the "online" project also according
+     * to the configured static export settings.<p>
      * 
-     * @param s the string to calculate the hashcode from
-     * @return a positive hash code value for this string
+     * @param cms the cms context
+     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
+     * @return the substituted link
      */
-    public int hashCode(String s) {
+    public String substituteLink(CmsObject cms, String link) {
 
-        int h = s.hashCode();
-        if (h < 0) {
-            h = -h;
-        }
-        return h;
+        return substituteLink(cms, link, null);
     }
 
     /**
@@ -389,8 +388,7 @@ public class CmsLinkManager {
                     // base not cached, check if we must export it
                     if (exportRequired(cms, cms.getRequestContext().getUri())) {
                         // base uri must also be exported
-                        uriBaseName = OpenCms.getStaticExportManager()
-                            .getRfsName(cms, cms.getRequestContext().getUri());
+                        uriBaseName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
                         // base uri dosn't need to be exported
                         uriBaseName = OpenCms.getStaticExportManager().getVfsPrefix()
@@ -416,7 +414,7 @@ public class CmsLinkManager {
                     // export required, get export name for target link
                     if (parameters != null) {
                         // external link with parameters, so get translated rfsName
-                        resultLink = OpenCms.getStaticExportManager().getTranslatedRfsName(cms, vfsName, parameters);
+                        resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, parameters);
                         // now set the parameters to null, we do not need them anymore
                         parameters = null;
                     } else {
@@ -491,20 +489,6 @@ public class CmsLinkManager {
 
         }
         return serverPrefix.concat(resultLink);
-    }
-
-    /**
-     * Substitutes the contents of a link by adding the context path and 
-     * servlet name, and in the case of the "online" project also according
-     * to the configured static export settings.<p>
-     * 
-     * @param cms the cms context
-     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
-     * @return the substituted link
-     */
-    public String substituteLink(CmsObject cms, String link) {
-
-        return substituteLink(cms, link, null);
     }
 
     /**
