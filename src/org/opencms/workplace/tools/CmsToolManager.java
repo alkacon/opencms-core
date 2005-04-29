@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/04/28 09:52:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,55 +38,50 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsNamedObject;
-import org.opencms.util.CmsNamedObjectContainer;
+import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Manages the configuration settings for the administration view.<p>
+ * Manages the registered tools, actualizing its state every time the workplace is reinitialize.<p>
  * 
- * It mantains a <code>{@link CmsToolUserData}</code> object for each logged-in user.
- * This information is updated everytime an admin tool is displayed, mainly, due to 
- * i18n of group names. <p>
- * 
+ * Manages also the configuration settings for the administration view, and provides
+ * several tool related methods.<p>
+ *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsToolManager {
 
+    /**  Root location for the tools. */
+    public static final String C_ADMINTOOLS_ROOT_LOCATION = CmsWorkplace.C_PATH_WORKPLACE + "admin";
+
     /**  Root location of the administration view. */
-    public static final String C_ADMIN_ROOT = CmsWorkplace.C_PATH_WORKPLACE + "views/admin";
+    public static final String C_ADMINVIEW_ROOT_LOCATION = CmsWorkplace.C_PATH_WORKPLACE + "views/admin";
 
     /**  Property definition name to look for. */
     public static final String C_HANDLERCLASS_PROPERTY = "admintoolhandler-class";
 
-    /**  Navegation bar separator. */
+    /**  Navegation bar separator (html code). */
     public static final String C_NAVBAR_SEPARATOR = "\n&nbsp;&gt;&nbsp;\n";
 
     /**  Tool path separator. */
     public static final String C_TOOLPATH_SEPARATOR = "/";
 
-    /**  Root location for the tools. */
-    public static final String C_TOOLS_ROOT = CmsWorkplace.C_PATH_WORKPLACE + "admin";
-
     /** Location of the admin view jsp page. */
-    public static final String C_VIEW_JSPPAGE_LOCATION = C_ADMIN_ROOT + "/admin-main.html";
+    public static final String C_VIEW_JSPPAGE_LOCATION = C_ADMINVIEW_ROOT_LOCATION + "/admin-main.html";
 
-    /** List of tool registered handlers. */
-    private List m_handlers = new ArrayList();
-
-    /** Container for user data. */
-    private final CmsNamedObjectContainer m_userDataContainer = new CmsNamedObjectContainer(true, false);
+    /** List of All available tools. */
+    private final CmsIdentifiableObjectContainer m_tools = new CmsIdentifiableObjectContainer(true, false);
 
     /**
      * Default Constructor, called by the <code>{@link org.opencms.workplace.CmsWorkplaceManager#initialize(CmsObject)}</code> method.<p>
@@ -96,21 +91,25 @@ public class CmsToolManager {
     public CmsToolManager(CmsObject cms) {
 
         if (!cms.existsResource(C_VIEW_JSPPAGE_LOCATION)) {
-            // log failure
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Tool Manager not initialized during setup");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_TOOLMANAGER_NOT_CREATED_0));
             }
             return;
         }
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_TOOLMANAGER_CREATED_0));
+        }
         try {
+            List handlers = new ArrayList();
+
             I_CmsToolHandler rootHandler = new CmsGenericToolHandler();
             rootHandler.setup(cms, C_VIEW_JSPPAGE_LOCATION);
-            m_handlers.add(rootHandler);
+            handlers.add(rootHandler);
 
-            // look in every file under C_ADMIN_ROOT for valid
+            // look in every file under C_ADMINTOOLS_ROOT_LOCATION for valid
             // admin tools and register them
             CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
-            List resources = cms.readResources(C_TOOLS_ROOT, filter, true);
+            List resources = cms.readResources(C_ADMINTOOLS_ROOT_LOCATION, filter, true);
             Iterator itRes = resources.iterator();
             while (itRes.hasNext()) {
                 CmsResource res = (CmsResource)itRes.next();
@@ -122,31 +121,29 @@ public class CmsToolManager {
                         I_CmsToolHandler handler = (I_CmsToolHandler)handlerClass.newInstance();
                         handler.setup(cms, res.getRootPath());
 
-                        // keep for later registration
-                        m_handlers.add(handler);
+                        // keep for later use
+                        handlers.add(handler);
                         // log success
-                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                                ". Administration init  : new tool "
-                                    + handler.getName()
-                                    + "("
-                                    + handler.getLink()
-                                    + ")");
+                        if (CmsLog.LOG.isDebugEnabled()) {
+                            CmsLog.LOG.debug(Messages.get().key(
+                                Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
+                                handler.getLink()));
                         }
                     } catch (Exception e) {
                         // log failure
-                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                                ". Administration init  : warning(" + res.getRootPath() + ")",
-                                e);
+                        if (CmsLog.LOG.isWarnEnabled()) {
+                            CmsLog.LOG.warn(Messages.get().key(
+                                Messages.INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1,
+                                res.getRootPath()), e);
                         }
                     }
                 }
             }
+            registerHandlerList(cms, 1, handlers);
         } catch (CmsException e) {
             // log failure
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).error(". Administration init  : ", e);
+            if (CmsLog.LOG.isErrorEnabled()) {
+                CmsLog.LOG.error(Messages.get().key(Messages.INIT_TOOLMANAGER_SETUP_ERROR_0), e);
             }
         }
 
@@ -157,39 +154,13 @@ public class CmsToolManager {
      * 
      * @param jsp the jsp action element
      * @param toolPath the tool path
+     * @param params a map of additional parameters
      * 
      * @return a valid OpenCms link
      */
-    public String cmsLinkForPath(CmsJspActionElement jsp, String toolPath) {
+    public String cmsLinkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
 
-        return jsp.link(linkForPath(toolPath));
-    }
-
-    /**
-     * Returns a valid OpenCms link for the given tool.<p>
-     * 
-     * @param jsp the jsp action element
-     * @param adminTool the tool 
-     * 
-     * @return a valid OpenCms link
-     */
-    public String cmsLinkFromContext(CmsJspActionElement jsp, CmsTool adminTool) {
-
-        return cmsLinkFromContext(jsp, getCurrentToolPath(jsp.getCmsObject()), adminTool);
-    }
-
-    /**
-     * Returns a valid OpenCms link for the given tool.<p>
-     * 
-     * @param jsp the jsp action element
-     * @param context the tool path context
-     * @param adminTool the tool 
-     * 
-     * @return a valid OpenCms link
-     */
-    public String cmsLinkFromContext(CmsJspActionElement jsp, String context, CmsTool adminTool) {
-
-        return cmsLinkForPath(jsp, pathFromContext(jsp, context, adminTool));
+        return jsp.link(linkForPath(toolPath, params));
     }
 
     /**
@@ -202,28 +173,28 @@ public class CmsToolManager {
      */
     public String generateNavBar(String toolPath, CmsWorkplace wp) {
 
-        if (toolPath.equals(getRootToolPath(wp.getCms()))) {
+        if (toolPath.equals(getRootToolPath(wp))) {
             return "<div class='pathbar'>&nbsp;</div>\n";
         }
-        CmsTool adminTool = resolveAdminTool(wp.getCms(), toolPath);
+        CmsTool adminTool = resolveAdminTool(toolPath);
         String html = A_CmsHtmlIconButton.defaultButtonHtml(
             "nav" + adminTool.getId(),
-            adminTool.getName(),
+            adminTool.getHandler().getName(),
             null,
             false,
             null,
             null);
         String parent = toolPath;
-        while (!parent.equals(getRootToolPath(wp.getCms()))) {
-            parent = getParent(wp.getCms(), parent);
-            adminTool = resolveAdminTool(wp.getCms(), parent);
+        while (!parent.equals(getRootToolPath(wp))) {
+            parent = getParent(wp, parent);
+            adminTool = resolveAdminTool(parent);
 
             String id = "nav" + adminTool.getId();
-            String onClic = "openPage('" + cmsLinkForPath(wp.getJsp(), parent) + "');";
+            String onClic = "openPage('" + cmsLinkForPath(wp.getJsp(), parent, null) + "');";
             String link = A_CmsHtmlIconButton.defaultButtonHtml(
                 id,
-                adminTool.getName(),
-                adminTool.getHelpText(),
+                adminTool.getHandler().getName(),
+                adminTool.getHandler().getHelpText(),
                 true,
                 null,
                 onClic);
@@ -236,26 +207,26 @@ public class CmsToolManager {
     /**
      * Returns the current tool.<p>
      * 
-     * @param cms the cms context
+     * @param wp the workplace object
      *
      * @return the current tool 
      */
-    public CmsTool getCurrentTool(CmsObject cms) {
+    public CmsTool getCurrentTool(CmsWorkplace wp) {
 
-        return resolveAdminTool(cms, getCurrentToolPath(cms));
+        return resolveAdminTool(getCurrentToolPath(wp));
     }
 
     /**
      * Returns the current tool path.<p>
      *
-     * @param cms the cms context
+     * @param wp the workplace object
      *
      * @return the current tool path
      */
-    public String getCurrentToolPath(CmsObject cms) {
+    public String getCurrentToolPath(CmsWorkplace wp) {
 
-        CmsToolUserData userData = getUserData(cms);
-        String path = getRootToolPath(cms);
+        CmsToolUserData userData = getUserData(wp);
+        String path = getRootToolPath(wp);
         if (userData != null) {
             path = userData.getCurrentToolPath();
         }
@@ -267,14 +238,14 @@ public class CmsToolManager {
      * 
      * The parent of the root is the same root.<p>
      * 
-     * @param cms the cms context
+     * @param wp the workplace object
      * @param toolPath the abstract tool path
      * 
      * @return his parent
      */
-    public String getParent(CmsObject cms, String toolPath) {
+    public String getParent(CmsWorkplace wp, String toolPath) {
 
-        if (toolPath.equals(getRootToolPath(cms))) {
+        if (toolPath.equals(getRootToolPath(wp))) {
             return toolPath;
         }
         int pos = toolPath.lastIndexOf(C_TOOLPATH_SEPARATOR);
@@ -285,38 +256,15 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns a list of paths for the given tool.<p>
-     * 
-     * @param jsp the jsp action
-     * @param tool the tool
-     * 
-     * @return a list of abstract tools paths
-     */
-    public List getPathsForTool(CmsJspActionElement jsp, CmsTool tool) {
-
-        List toolList = new ArrayList();
-
-        Iterator itTools = getUserData(jsp.getCmsObject()).getTools().elementList().iterator();
-        while (itTools.hasNext()) {
-            String aTool = ((I_CmsNamedObject)itTools.next()).getName();
-            // filter for path
-            if (resolveAdminTool(jsp.getCmsObject(), aTool).equals(tool)) {
-                toolList.add(aTool);
-            }
-        }
-        return toolList;
-    }
-
-    /**
      * Returns the root tool path for the active user.<p>
      * 
-     * @param cms the cms context
+     * @param wp the workplace object
      * 
      * @return the root tool path for the active user
      */
-    public String getRootToolPath(CmsObject cms) {
+    public String getRootToolPath(CmsWorkplace wp) {
 
-        CmsToolUserData userData = getUserData(cms);
+        CmsToolUserData userData = getUserData(wp);
         String path = C_TOOLPATH_SEPARATOR;
         if (userData != null) {
             path = userData.getRootTool();
@@ -325,21 +273,30 @@ public class CmsToolManager {
     }
 
     /**
+     * Returns a list with all registered tools.<p>
+     * 
+     * @return list if <code>{@link CmsTool}</code>
+     */
+    public List getToolHandlers() {
+
+        return m_tools.elementList();
+    }
+
+    /**
      * Returns a list of all tools in the given path.<p>
      * 
-     * @param cms the cms context
      * @param toolPath the path
      * @param includeSubtools if the tools in subfolders should be also returned
      * 
      * @return a list of abstract tools paths
      */
-    public List getToolsForPath(CmsObject cms, String toolPath, boolean includeSubtools) {
+    public List getToolsForPath(String toolPath, boolean includeSubtools) {
 
         List toolList = new ArrayList();
 
-        Iterator itTools = getUserData(cms).getTools().elementList().iterator();
+        Iterator itTools = m_tools.elementList().iterator();
         while (itTools.hasNext()) {
-            String tool = ((I_CmsNamedObject)itTools.next()).getName();
+            String tool = ((CmsTool)itTools.next()).getHandler().getPath();
             // filter for path
             if (tool.startsWith(toolPath) && !tool.equals(toolPath)) {
                 // filter sub tree
@@ -354,19 +311,18 @@ public class CmsToolManager {
     /**
      * Returns the <code>{@link CmsToolUserData}</code> object for a given user.<p>
      *
-     * @param cms the cms context, with the proper user
+     * @param wp the workplace object
      *
-     * @return the current tool path
+     * @return the current user data
      */
-    public CmsToolUserData getUserData(CmsObject cms) {
+    public CmsToolUserData getUserData(CmsWorkplace wp) {
 
-        CmsToolUserData userData = (CmsToolUserData)m_userDataContainer.getObject(cms.getRequestContext().currentUser()
-            .getId().toString());
+        CmsToolUserData userData = wp.getSettings().getToolUserData();
         if (userData == null) {
-            userData = new CmsToolUserData(cms.getRequestContext().currentUser());
-            m_userDataContainer.addNamedObject(userData);
+            userData = new CmsToolUserData();
             userData.setCurrentToolPath(C_TOOLPATH_SEPARATOR);
             userData.setRootTool(C_TOOLPATH_SEPARATOR);
+            wp.getSettings().setToolUserData(userData);
         }
         return userData;
     }
@@ -380,226 +336,175 @@ public class CmsToolManager {
      */
     public void initParams(CmsWorkplace wp, String toolPath, String rootToolPath) {
 
-        setCurrentToolPath(wp.getCms(), toolPath);
-        setRootToolPath(wp.getCms(), rootToolPath);
+        setCurrentToolPath(wp, toolPath);
+        setRootToolPath(wp, rootToolPath);
 
         // if the current tool path is not under the current root, set the current root as the current tool
-        if (!getCurrentToolPath(wp.getCms()).startsWith(getRootToolPath(wp.getCms()))) {
-            setCurrentToolPath(wp.getCms(), getRootToolPath(wp.getCms()));
+        if (!getCurrentToolPath(wp).startsWith(getRootToolPath(wp))) {
+            setCurrentToolPath(wp, getRootToolPath(wp));
         }
-        registerHandlerList(wp);
 
+    }
+
+    /**
+     * Includes the given tool with the given parameters in the response.<p>
+     * 
+     * @param jsp the jsp context
+     * @param toolPath the path to the tool to include
+     * @param params the parameters to send
+     * 
+     * @throws IOException if something goes wrong
+     */
+    public void jspRedirectTool(CmsJspActionElement jsp, String toolPath, Map params) throws IOException {
+
+        Map myParams = new HashMap(jsp.getRequest().getParameterMap());
+        if (params != null) {
+            Iterator it = params.keySet().iterator();
+            while (it.hasNext()) {
+                String key = (String)it.next();
+                if (myParams.containsKey(key)) {
+                    myParams.remove(key);
+                }
+                myParams.put(key, params.get(key));
+            }
+        } 
+        if (myParams.containsKey(CmsToolDialog.PARAM_PATH)) {
+            myParams.remove(CmsToolDialog.PARAM_PATH);
+        }
+        myParams.put(CmsToolDialog.PARAM_PATH, toolPath);
+        //resolveAdminTool(toolPath).getHandler().getLink()
+        jsp.getResponse().sendRedirect(cmsLinkForPath(jsp, toolPath, myParams));
     }
 
     /**
      * Returns a link for a given path.<p>
      * 
      * @param toolPath the path
+     * @param params a map of additional parameters
      * 
      * @return the link
      */
-    public String linkForPath(String toolPath) {
+    public String linkForPath(String toolPath, Map params) {
 
-        return C_VIEW_JSPPAGE_LOCATION + "?" + CmsToolDialog.PARAM_PATH + "=" + toolPath;
-    }
+        StringBuffer link = new StringBuffer(512);
+        link.append(C_VIEW_JSPPAGE_LOCATION);
+        link.append("?");
+        link.append(CmsToolDialog.PARAM_PATH);
+        link.append("=");
+        link.append(toolPath);
 
-    /**
-     * Returns a link for the given tool in the context.<p>
-     * 
-     * @param jsp the jsp action
-     * @param context the context path
-     * @param adminTool the tool 
-     * 
-     * @return a link
-     */
-    public String linkFromContext(CmsJspActionElement jsp, String context, CmsTool adminTool) {
-
-        return linkForPath(pathFromContext(jsp, context, adminTool));
-    }
-
-    /**
-     * Returns a link for the given tool.<p>
-     * 
-     * @param jsp the jsp action
-     * @param context the tool path context
-     * @param adminTool the tool 
-     * 
-     * @return a valid OpenCms link
-     */
-    public String pathFromContext(CmsJspActionElement jsp, String context, CmsTool adminTool) {
-
-        String toolPath = null;
-        List tools = getPathsForTool(jsp, adminTool);
-        Iterator itTools = tools.iterator();
-        while (itTools.hasNext()) {
-            String aTool = (String)itTools.next();
-            if (aTool.startsWith(context)) {
-                if (aTool.substring(context.length() + 1).indexOf(C_TOOLPATH_SEPARATOR) < 0) {
-                    toolPath = aTool;
-                }
-            }
+        if (params == null) {
+            return link.toString();
         }
-        if (toolPath == null) {
-            // log failure
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                    ". Administration link  : Error for Tool " + adminTool.getName() + ", context: " + context);
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String key = i.next().toString();
+            Object value = params.get(key).toString();
+            if (value instanceof Object[]) {
+                value = ((Object[])value)[0];
             }
+            link.append("&");
+            link.append(key);
+            link.append("=");
+            // TODO: encode? jsp-action!
+            link.append(value);
         }
-        return toolPath;
+
+        return link.toString();
     }
 
     /**
      * Returns the admin tool corresponding to the given abstract path.<p>
      * 
-     * @param cms the cms context
      * @param toolPath the path
      * 
      * @return the corresponding tool, or <code>null</code> if not found
      */
-    public CmsTool resolveAdminTool(CmsObject cms, String toolPath) {
+    public CmsTool resolveAdminTool(String toolPath) {
 
-        try {
-            return (CmsTool)((CmsNamedObject)getUserData(cms).getTools().getObject(toolPath)).getObject();
-        } catch (NullPointerException e) {
-            return null;
-        }
+        return (CmsTool)m_tools.getObject(toolPath);
     }
 
     /**
      * Sets the current tool path.<p>
      * 
-     * @param cms the cms context
+     * @param wp the workplace object
      * @param currentToolPath the current tool path to set
      */
-    public void setCurrentToolPath(CmsObject cms, String currentToolPath) {
+    public void setCurrentToolPath(CmsWorkplace wp, String currentToolPath) {
 
-        if (CmsStringUtil.isEmpty(currentToolPath) || currentToolPath.trim().equals("null")) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(currentToolPath) || currentToolPath.trim().equals("null")) {
             return;
         }
-        CmsToolUserData userData = getUserData(cms);
-        if (userData == null) {
-            userData = new CmsToolUserData(cms.getRequestContext().currentUser());
-            userData.setCurrentToolPath(currentToolPath);
-            userData.setRootTool(getRootToolPath(cms));
-            m_userDataContainer.addNamedObject(userData);
-        } else {
-            userData.setCurrentToolPath(currentToolPath);
-        }
+        CmsToolUserData userData = getUserData(wp);
+        userData.setCurrentToolPath(currentToolPath);
     }
 
     /**
      * Sets the root tool path.<p>
      * 
-     * @param cms the cms context
+     * @param wp the workplace object
      * @param rootToolPath the root tool path to set
      */
-    public void setRootToolPath(CmsObject cms, String rootToolPath) {
+    public void setRootToolPath(CmsWorkplace wp, String rootToolPath) {
 
         if (CmsStringUtil.isEmpty(rootToolPath) || rootToolPath.trim().equals("null")) {
             return;
         }
-        CmsToolUserData userData = getUserData(cms);
-        if (userData == null) {
-            userData = new CmsToolUserData(cms.getRequestContext().currentUser());
-            userData.setCurrentToolPath(getCurrentToolPath(cms));
-            userData.setRootTool(rootToolPath);
-            m_userDataContainer.addNamedObject(userData);
-        } else {
-            userData.setRootTool(rootToolPath);
-        }
+        CmsToolUserData userData = getUserData(wp);
+        userData.setRootTool(rootToolPath);
     }
 
     /**
      * Registers a new tool at a given install point.<p>
      * 
-     * @param wp the workplace object
+     * @param cms the cms context object
      * @param handler the handler to install
      */
-    private void registerAdminTool(CmsWorkplace wp, I_CmsToolHandler handler) {
+    private void registerAdminTool(CmsObject cms, I_CmsToolHandler handler) {
 
         // check visibility
-        if (!wp.getCms().existsResource(handler.getLink())) {
+        if (!cms.existsResource(handler.getLink())) {
             return;
         }
 
-        String id = "tool" + getUserData(wp.getCms()).getTools().elementList().size();
-        CmsTool adminTool = new CmsTool(id, handler.getName(), handler.getIconPath(), handler.getLink(), handler
-            .getHelpText(), handler.isEnabled(wp.getCms()), handler.isVisible(wp.getCms()));
-
         //validate path
-        if (!validatePath(wp.getCms(), handler.getPath())) {
+        if (!validatePath(handler.getPath())) {
             // log failure
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(
-                    ". Administration init  : tool " + adminTool.getName() + " could not be installed at " + handler);
+            if (CmsLog.LOG.isWarnEnabled()) {
+                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_1, handler.getLink()));
             }
             return;
         }
 
-        // root tool special case
-        if (handler.getPath().equals(C_TOOLPATH_SEPARATOR)) {
-            getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(handler.getPath(), adminTool));
-            return;
-        }
+        String id = "tool" + m_tools.elementList().size();
+        CmsTool tool = new CmsTool(id, handler);
 
-        // locate group
-        CmsToolGroup group = null;
-        String groupName = wp.resolveMacros(handler.getGroup());
-
-        // in the parent tool
-        CmsTool parentTool = resolveAdminTool(wp.getCms(), getParent(wp.getCms(), handler.getPath()));
-        group = parentTool.getToolGroup(groupName);
-        if (group == null) {
-            // if does not exist, create it
-            String gid = "group" + parentTool.getToolGroups().size();
-            group = new CmsToolGroup(gid, groupName);
-            parentTool.addToolGroup(group, handler.getPosition());
-        }
-        // add to group
-        group.addAdminTool(adminTool, handler.getPosition());
         // register
-        getUserData(wp.getCms()).getTools().addNamedObject(new CmsNamedObject(handler.getPath(), adminTool));
-    }
-
-    /**
-     * Registers the whole handler list for the current user.<p>
-     * 
-     * @param wp the workplace object
-     */
-    private void registerHandlerList(CmsWorkplace wp) {
-
-        CmsToolUserData userData = getUserData(wp.getCms());
-        synchronized (userData) {
-            userData.getTools().clear();
-            String tmpRoot = getRootToolPath(wp.getCms());
-            setRootToolPath(wp.getCms(), C_TOOLPATH_SEPARATOR);
-            registerHandlerList(wp, 1);
-            setRootToolPath(wp.getCms(), tmpRoot);
-        }
+        m_tools.addIdentifiableObject(handler.getPath(), tool);
     }
 
     /**
      * Registers all tool handlers recursively.<p> 
      * 
-     * @param wp the workplace object
+     * @param cms the cms context object
      * @param len the recursion level
      */
-    private void registerHandlerList(CmsWorkplace wp, int len) {
+    private void registerHandlerList(CmsObject cms, int len, List handlers) {
 
         boolean found = false;
-        Iterator it = m_handlers.iterator();
+        Iterator it = handlers.iterator();
         while (it.hasNext()) {
             I_CmsToolHandler handler = (I_CmsToolHandler)it.next();
             int myLen = CmsStringUtil.splitAsArray(handler.getPath(), C_TOOLPATH_SEPARATOR).length;
             if ((len == myLen && !handler.getPath().equals(C_TOOLPATH_SEPARATOR))
                 || (len == 1 && handler.getPath().equals(C_TOOLPATH_SEPARATOR))) {
                 found = true;
-                registerAdminTool(wp, handler);
+                registerAdminTool(cms, handler);
             }
         }
         if (found) {
-            registerHandlerList(wp, len + 1);
+            registerHandlerList(cms, len + 1, handlers);
         }
 
     }
@@ -607,12 +512,11 @@ public class CmsToolManager {
     /**
      * Tests if the full tool path is available.<p>
      * 
-     * @param cms the cms context
      * @param toolPath the path
      * 
      * @return if valid or not
      */
-    private boolean validatePath(CmsObject cms, String toolPath) {
+    private boolean validatePath(String toolPath) {
 
         if (toolPath.equals(C_TOOLPATH_SEPARATOR)) {
             return true;
@@ -630,23 +534,13 @@ public class CmsToolManager {
             if (itFolder.hasNext()) {
                 try {
                     // just check if the tool is available
-                    resolveAdminTool(cms, subpath).toString();
+                    resolveAdminTool(subpath).toString();
                 } catch (Exception e) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    /**
-     * Returns the list of registered tool handlers.<p>
-     * 
-     * @return a list of registered tool handlers
-     */
-    public List getToolHandlers() {
-
-        return Collections.unmodifiableList(m_handlers);
     }
 
 }

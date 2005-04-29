@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/I_CmsHtmlGroup.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersToolHandler.java,v $
+ * Date   : $Date: 2005/04/29 16:05:53 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,27 +28,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+package org.opencms.workplace.tools.users;
 
-package org.opencms.workplace.list;
-
-import org.opencms.util.I_CmsNamedObject;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
+import org.opencms.workplace.tools.CmsDefaultToolHandler;
 
 /**
- * Interface for html groups.<p>
+ * Users management tool handler that hides the tool if the current user
+ * has not the needed privileges.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @author Michael Moossen (m.moossen@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public interface I_CmsHtmlGroup extends I_CmsNamedObject {
+public class CmsUsersToolHandler extends CmsDefaultToolHandler {
 
+    
     /**
-     * Returns the necessary html code.<p>
-     * 
-     * @param wp the jsp page to write the code to
-     * 
-     * @return html code
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
-    String groupHtml(CmsWorkplace wp);
+    public boolean isVisible(CmsObject cms) {
+
+        return cms.hasRole(CmsRole.USER_MANAGER);
+    }
+    
 }

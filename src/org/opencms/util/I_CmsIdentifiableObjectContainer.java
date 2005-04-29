@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/I_CmsNamedObjectContainer.java,v $
- * Date   : $Date: 2005/04/14 11:47:43 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/I_CmsIdentifiableObjectContainer.java,v $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,22 +34,23 @@ package org.opencms.util;
 import java.util.List;
 
 /**
- * Container for named objects.<p>
+ * Container for identifiable objects.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public interface I_CmsNamedObjectContainer {
+public interface I_CmsIdentifiableObjectContainer {
 
     /**
      * Appends the specified object to the end of this container. <p>
      * 
-     * @param namedObject the object to add to the container
+     * @param id the object identifier
+     * @param object the object add to the container
      * 
      * @see java.util.List#add(Object)
      */
-    void addNamedObject(I_CmsNamedObject namedObject);
+    void addIdentifiableObject(String id, Object object);
 
     /**
      * Inserts the specified object at the specified position in this container.<p>
@@ -57,12 +58,13 @@ public interface I_CmsNamedObjectContainer {
      * Shifts the object currently at that position (if any) and any subsequent 
      * objects to the right (adds one to their indices).<p>
      * 
-     * @param namedObject the object add to the container
+     * @param id the object identifier
+     * @param object the object add to the container
      * @param position the insertion point
      * 
      * @see java.util.List#add(int, Object)
      */
-    void addNamedObject(I_CmsNamedObject namedObject, float position);
+    void addIdentifiableObject(String id, Object object, float position);
 
     /**
      * Resets the container.<p>
@@ -72,27 +74,18 @@ public interface I_CmsNamedObjectContainer {
     /**
      * Returns the list of objects.<p>
      *
-     * @return the a list of <code>{@link I_CmsNamedObject}</code>s.
+     * @return the a list of <code>{@link Object}</code>s.
      */
     List elementList();
 
     /**
-     * Returns a list of objects of a given class type.<p>
+     * Returns an object by id.<p>
      * 
-     * @param type the class type for filtering
-     *
-     * @return the a list of given class type objects.
-     */
-    List elementList(Class type);
-
-    /**
-     * Returns an object by name.<p>
-     * 
-     * @param name the name of the object
+     * @param id the id of the object
      * 
      * @return the object if found, or <code>null</code>
      * 
      * @see java.util.Map#get(Object)
      */
-    I_CmsNamedObject getObject(String name);
+    Object getObject(String id);
 }

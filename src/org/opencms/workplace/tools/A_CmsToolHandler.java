@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/28 12:10:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,33 +32,18 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
-import org.opencms.security.CmsRole;
-import org.opencms.util.CmsStringUtil;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Args separator in the property value.<p> */
     public static final String C_ARGS_SEPARATOR = "|";
-
-    /** Name of the only-admin parameter.<p> */
-    public static final String C_PARAM_ONLYADMIN = "onlyadmin";
-
-    /** Name of the only-offline parameter.<p> */
-    public static final String C_PARAM_ONLYOFFLINE = "onlyoffline";
-
-    /** Parameter name for the visibility flag. */
-    public static final String C_PARAM_VISIBLE = "visible";
 
     /** Property for the args.<p> */
     public static final String C_PROPERTY_DEFINITION = "admintoolhandler-args";
@@ -81,12 +66,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Display name. */
     private String m_name;
 
-    /** Only admin-user flag. */
-    private boolean m_onlyAdmin = false;
-
-    /** Only offline-project flag. */
-    private boolean m_onlyOffline = false;
-
     /** Tool path to install in. */
     private String m_path;
 
@@ -95,9 +74,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Small icon path (16x16). */
     private String m_smallIconPath;
-
-    /** visibility flag. */
-    private boolean m_visible = true;
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getGroup()
@@ -168,30 +144,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        if (m_onlyOffline && cms.getRequestContext().currentProject().isOnlineProject()) {
-            return false;
-        }
         return true;
-    }
-
-    /**
-     * Returns the only Admin user flag.<p>
-     *
-     * @return the only Admin user flag
-     */
-    public boolean isOnlyAdmin() {
-
-        return m_onlyAdmin;
-    }
-
-    /**
-     * Returns the only Offline project flag.<p>
-     *
-     * @return the only Offline project flag
-     */
-    public boolean isOnlyOffline() {
-
-        return m_onlyOffline;
     }
 
     /**
@@ -199,12 +152,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        if (!m_visible) {
-            return m_visible;
-        }
-        if (m_onlyAdmin && !cms.hasRole(CmsRole.ADMINISTRATOR)) {
-            return false;
-        }
         return true;
     }
 
@@ -259,26 +206,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * Sets the only Admin user flag.<p>
-     *
-     * @param onlyAdmin the only Admin user flag to set
-     */
-    public void setOnlyAdmin(boolean onlyAdmin) {
-
-        m_onlyAdmin = onlyAdmin;
-    }
-
-    /**
-     * Sets the only Offline project flag.<p>
-     *
-     * @param onlyOffline the only Offline project flag to set
-     */
-    public void setOnlyOffline(boolean onlyOffline) {
-
-        m_onlyOffline = onlyOffline;
-    }
-
-    /**
      * Sets the path.<p>
      *
      * @param path the path to set
@@ -309,48 +236,11 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * Sets the visible.<p>
-     *
-     * @param visible the visible to set
-     */
-    public void setVisible(boolean visible) {
-
-        m_visible = visible;
-    }
-
-    /**
-     * Parses the common parameters like OnlyOffline, OnlyAdmin and Visible.<p>
-     * 
-     * @param args the argument string
-     */
-    protected void readCommonParams(String args) {
-
-        if (args==null) {
-            return;
-        }
-        Map argsMap = new HashMap();
-        Iterator itArgs = CmsStringUtil.splitAsList(args, C_ARGS_SEPARATOR).iterator();
-        while (itArgs.hasNext()) {
-            String arg = (String)itArgs.next();
-            int pos = arg.indexOf(C_VALUE_SEPARATOR);
-            argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
-        }
-        if (argsMap.get(C_PARAM_ONLYOFFLINE) != null) {
-            setOnlyOffline(true);
-        }
-        if (argsMap.get(C_PARAM_ONLYADMIN) != null) {
-            setOnlyAdmin(true);
-        }
-        if (argsMap.get(C_PARAM_VISIBLE) != null) {
-            setVisible(false);
-        }        
-    }
-    
-    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
 
         return m_path + " - " + m_group + " - " + m_position;
     }
+    
 }

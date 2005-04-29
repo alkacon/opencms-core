@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,20 @@
 
 package org.opencms.workplace.administration;
 
-import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.I_CmsNamedObject;
+import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * Container for menu items that generates the necesary html code.<p>
+ * Container for menu items that generates the necesary html code for a group of items.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
-public class CmsAdminMenuGroup implements I_CmsNamedObject {
+public class CmsAdminMenuGroup {
 
     /** Dhtml id, from name. */
     private final String m_id;
@@ -54,7 +53,7 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
     private final String m_name;
 
     /** Item container. */
-    private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
+    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
 
     /**
      * Default Constructor.<p> 
@@ -69,9 +68,9 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
     }
 
     /**
-     * Returns the id.<p>
-     * 
-     * @return the id
+     * Returns the dhtml unique id.<p>
+     *
+     * @return the dhtml unique id
      */
     public String getId() {
 
@@ -93,11 +92,11 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
      * 
      * @param item the item
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(org.opencms.util.I_CmsNamedObject)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addMenuItem(CmsAdminMenuItem item) {
 
-        m_container.addNamedObject(item);
+        m_container.addIdentifiableObject(item.getId(), item);
     }
 
     /**
@@ -106,25 +105,11 @@ public class CmsAdminMenuGroup implements I_CmsNamedObject {
      * @param item the item
      * @param position the position
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(org.opencms.util.I_CmsNamedObject, float)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addMenuItem(CmsAdminMenuItem item, float position) {
 
-        m_container.addNamedObject(item, position);
-    }
-
-    /**
-     * Returns the requested menu item.<p>
-     * 
-     * @param name the name of the menu item
-     * 
-     * @return the menu item
-     * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#getObject(String)
-     */
-    public CmsAdminMenuItem getMenuItem(String name) {
-
-        return (CmsAdminMenuItem)m_container.getObject(name);
+        m_container.addIdentifiableObject(item.getId(), item, position);
     }
 
     /**

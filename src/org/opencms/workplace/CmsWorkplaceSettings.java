@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace;
 
 import org.opencms.db.CmsPublishList;
@@ -35,6 +36,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.list.CmsHtmlList;
+import org.opencms.workplace.tools.CmsToolUserData;
 
 import org.opencms.file.CmsUser;
 
@@ -46,11 +48,11 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
-    
+
     private String m_currentSite;
     private String m_explorerFlaturl;
     private String m_explorerMode;
@@ -59,25 +61,27 @@ public class CmsWorkplaceSettings {
     private int m_explorerProjectId;
     private Map m_explorerResource;
     private boolean m_explorerShowLinks;
-    private Map m_frameUris;    
+    private Map m_frameUris;
     private String m_galleryType;
     private Map m_lastUsedGalleries;
+    private CmsHtmlList m_list;
     private CmsWorkplaceMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
     private CmsPublishList m_publishList;
     private Map m_resourceTypes;
+    private CmsToolUserData m_toolUserData;
     private Map m_treeSite;
-    private Map m_treeType;    
+    private Map m_treeType;
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
     private String m_viewUri;
-    private CmsHtmlList m_list;
 
     /**
      * Constructor, only package visible.<p>
      */
     CmsWorkplaceSettings() {
+
         m_explorerPage = 1;
         m_explorerResource = new HashMap();
         m_treeType = new HashMap();
@@ -94,6 +98,7 @@ public class CmsWorkplaceSettings {
      * @return the explorer flat url
      */
     public String getExplorerFlaturl() {
+
         return m_explorerFlaturl;
     }
 
@@ -103,6 +108,7 @@ public class CmsWorkplaceSettings {
      * @return the current explorer mode
      */
     public String getExplorerMode() {
+
         return m_explorerMode;
     }
 
@@ -112,6 +118,7 @@ public class CmsWorkplaceSettings {
      * @return the currently selected page in the explorer view
      */
     public int getExplorerPage() {
+
         return m_explorerPage;
     }
 
@@ -124,6 +131,7 @@ public class CmsWorkplaceSettings {
      * @return the explorer project filter
      */
     public String getExplorerProjectFilter() {
+
         return m_explorerProjectFilter;
     }
 
@@ -136,6 +144,7 @@ public class CmsWorkplaceSettings {
      * @return the explorer project id
      */
     public int getExplorerProjectId() {
+
         return m_explorerProjectId;
     }
 
@@ -145,6 +154,7 @@ public class CmsWorkplaceSettings {
      * @return the current resource to be displayed in the explorer
      */
     public String getExplorerResource() {
+
         // get the current explorer mode
         String mode = getExplorerMode();
         if (mode == null) {
@@ -168,18 +178,20 @@ public class CmsWorkplaceSettings {
      * @return true, if VFS links should be shown, otherwise false
      */
     public boolean getExplorerShowLinks() {
+
         return m_explorerShowLinks;
     }
-    
+
     /**
      * Returns the frame URIs of the currently loaded frameset, with the frame names as keys.<p>
      * 
      * @return the frame URIs of the currently loaded frameset
      */
     public Map getFrameUris() {
+
         return m_frameUris;
     }
-        
+
     /**
      * Returns the current gallery type name.<p>
      *
@@ -188,7 +200,7 @@ public class CmsWorkplaceSettings {
     public String getGalleryType() {
 
         return m_galleryType;
-    }    
+    }
 
     /**
      * Returns the last saved gallery for the given gallery type id.<p>
@@ -202,11 +214,22 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Returns the last user used list state.<p>
+     *
+     * @return the list
+     */
+    public CmsHtmlList getList() {
+
+        return m_list;
+    }
+
+    /**
      * Returns the initialized workplace messages for the current user.<p>
      * 
      * @return the initialized workplace messages for the current user
      */
     public CmsWorkplaceMessages getMessages() {
+
         return m_messages;
     }
 
@@ -216,6 +239,7 @@ public class CmsWorkplaceSettings {
      * @return value of the details.
      */
     public String getPermissionDetailView() {
+
         return m_permissionDetailView;
     }
 
@@ -225,6 +249,7 @@ public class CmsWorkplaceSettings {
      * @return the currently selected project of the workplace user
      */
     public int getProject() {
+
         return m_project;
     }
 
@@ -234,6 +259,7 @@ public class CmsWorkplaceSettings {
      * @return the publishList
      */
     public CmsPublishList getPublishList() {
+
         return m_publishList;
     }
 
@@ -243,6 +269,7 @@ public class CmsWorkplaceSettings {
      * @return Map with all visible resource types
      */
     public Map getResourceTypes() {
+
         return m_resourceTypes;
     }
 
@@ -252,7 +279,18 @@ public class CmsWorkplaceSettings {
      * @return the current site for the user 
      */
     public String getSite() {
+
         return m_currentSite;
+    }
+
+    /**
+     * Returns the new admin view tool User Data.<p>
+     *
+     * @return the tool User Data
+     */
+    public CmsToolUserData getToolUserData() {
+
+        return m_toolUserData;
     }
 
     /**
@@ -262,7 +300,8 @@ public class CmsWorkplaceSettings {
      * @return the tree resource uri for the specified tree type
      */
     public String getTreeResource(String type) {
-        String result = (String) m_treeType.get(type);
+
+        String result = (String)m_treeType.get(type);
         if (result == null) {
             result = "/";
         }
@@ -276,7 +315,8 @@ public class CmsWorkplaceSettings {
      * @return the tree site uri for the specified tree type
      */
     public String getTreeSite(String type) {
-        String result = (String) m_treeSite.get(type);
+
+        String result = (String)m_treeSite.get(type);
         return result;
     }
 
@@ -286,15 +326,17 @@ public class CmsWorkplaceSettings {
      * @return the current workplace user
      */
     public CmsUser getUser() {
+
         return m_user;
     }
-    
+
     /**
      * Returns the current workplace user settings object.<p>
      * 
      * @return the current workplace user settings object
      */
     public CmsUserSettings getUserSettings() {
+
         return m_userSettings;
     }
 
@@ -304,6 +346,7 @@ public class CmsWorkplaceSettings {
      * @return the current view Uri selected in the workplace 
      */
     public String getViewUri() {
+
         return m_viewUri;
     }
 
@@ -313,7 +356,9 @@ public class CmsWorkplaceSettings {
      * @return true if the current view is the administration view, otherwise false 
      */
     public boolean isViewAdministration() {
-        return (getViewUri().endsWith("/system/workplace/action/administration.html") || getViewUri().endsWith("/system/workplace/action/tasks.html"));
+
+        return (getViewUri().endsWith("/system/workplace/action/administration.html") || getViewUri().endsWith(
+            "/system/workplace/action/tasks.html"));
     }
 
     /**
@@ -322,6 +367,7 @@ public class CmsWorkplaceSettings {
      * @return true if the current view is the explorer view, otherwise false 
      */
     public boolean isViewExplorer() {
+
         return getViewUri().endsWith(CmsWorkplace.C_FILE_EXPLORER_FILELIST);
     }
 
@@ -331,6 +377,7 @@ public class CmsWorkplaceSettings {
      * @param value the explorer flat url
      */
     public synchronized void setExplorerFlaturl(String value) {
+
         m_explorerFlaturl = value;
     }
 
@@ -340,6 +387,7 @@ public class CmsWorkplaceSettings {
      * @param value the current explorer mode
      */
     public synchronized void setExplorerMode(String value) {
+
         m_explorerMode = value;
     }
 
@@ -349,6 +397,7 @@ public class CmsWorkplaceSettings {
      * @param page the currently selected page in the explorer view
      */
     public synchronized void setExplorerPage(int page) {
+
         m_explorerPage = page;
     }
 
@@ -358,6 +407,7 @@ public class CmsWorkplaceSettings {
      * @param value the explorer project filter
      */
     public synchronized void setExplorerProjectFilter(String value) {
+
         m_explorerProjectFilter = value;
     }
 
@@ -367,6 +417,7 @@ public class CmsWorkplaceSettings {
      * @param value the explorer project id
      */
     public synchronized void setExplorerProjectId(int value) {
+
         m_explorerProjectId = value;
     }
 
@@ -376,6 +427,7 @@ public class CmsWorkplaceSettings {
      * @param value the current resource to be displayed in the explorer
      */
     public synchronized void setExplorerResource(String value) {
+
         if (value == null) {
             return;
         }
@@ -388,9 +440,11 @@ public class CmsWorkplaceSettings {
             // append the current site to the key when in explorer view mode
             mode += "_" + getSite() + "/";
         }
-       
+
         // set the resource for the given mode
-        if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (!value.startsWith(m_currentSite)) && (!"galleryview".equals(getExplorerMode()))) {
+        if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/")
+            && (!value.startsWith(m_currentSite))
+            && (!"galleryview".equals(getExplorerMode()))) {
             // restrict access to /system/ 
             m_explorerResource.put(mode, "/");
         } else {
@@ -404,18 +458,20 @@ public class CmsWorkplaceSettings {
      * @param b true, if VFS links should be shown, otherwise false
      */
     public synchronized void setExplorerShowLinks(boolean b) {
+
         m_explorerShowLinks = b;
     }
-    
+
     /**
      * Sets the frame URIs of the currently loaded frameset, with the frame names as keys.<p>
      * 
      * @param frameUris the frame URIs of the currently loaded frameset
      */
     public synchronized void setFrameUris(Map frameUris) {
+
         m_frameUris = frameUris;
     }
-    
+
     /**
      * Sets the current gallery type name.<p>
      *
@@ -425,7 +481,7 @@ public class CmsWorkplaceSettings {
 
         m_galleryType = currentGallery;
     }
-    
+
     /**
      * Saves the last gallery.<p>
      * 
@@ -438,11 +494,22 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Sets the list state.<p>
+     *
+     * @param list the list to set
+     */
+    public synchronized void setList(CmsHtmlList list) {
+
+        m_list = list;
+    }
+
+    /**
      * Sets the workplace messages for the current user.<p>
      * 
      * @param messages the workplace messages for the current user
      */
     public synchronized void setMessages(CmsWorkplaceMessages messages) {
+
         m_messages = messages;
     }
 
@@ -452,6 +519,7 @@ public class CmsWorkplaceSettings {
      * @param value the current details.
      */
     public synchronized void setPermissionDetailView(String value) {
+
         m_permissionDetailView = value;
     }
 
@@ -461,6 +529,7 @@ public class CmsWorkplaceSettings {
      * @param project the currently selected project of thw workplace user
      */
     public synchronized void setProject(int project) {
+
         m_project = project;
     }
 
@@ -470,6 +539,7 @@ public class CmsWorkplaceSettings {
      * @param publishList the publishList to set
      */
     public synchronized void setPublishList(CmsPublishList publishList) {
+
         m_publishList = publishList;
     }
 
@@ -479,6 +549,7 @@ public class CmsWorkplaceSettings {
      * @param value Map with all visible resource types
      */
     public synchronized void setResourceTypes(Map value) {
+
         m_resourceTypes = value;
     }
 
@@ -488,10 +559,21 @@ public class CmsWorkplaceSettings {
      * @param value the current site for the user
      */
     public synchronized void setSite(String value) {
+
         if ((value != null) && !value.equals(m_currentSite)) {
             m_currentSite = value;
             m_treeType = new HashMap();
         }
+    }
+
+    /**
+     * Sets the new admin view tool User Data.<p>
+     *
+     * @param toolUserData the tool User Data to set
+     */
+    public void setToolUserData(CmsToolUserData toolUserData) {
+
+        m_toolUserData = toolUserData;
     }
 
     /**
@@ -501,6 +583,7 @@ public class CmsWorkplaceSettings {
      * @param value the resource uri to set for the type
      */
     public synchronized void setTreeResource(String type, String value) {
+
         if (value == null) {
             return;
         }
@@ -518,6 +601,7 @@ public class CmsWorkplaceSettings {
      * @param value the resource uri to set for the type
      */
     public synchronized void setTreeSite(String type, String value) {
+
         if (value == null) {
             return;
         }
@@ -530,15 +614,17 @@ public class CmsWorkplaceSettings {
      * @param user the current workplace user
      */
     public synchronized void setUser(CmsUser user) {
+
         m_user = user;
     }
-    
+
     /**
      * Sets the current workplace user settings object.<p>
      * 
      * @param userSettings the current workplace user settings object
      */
     public synchronized void setUserSettings(CmsUserSettings userSettings) {
+
         m_userSettings = userSettings;
     }
 
@@ -548,26 +634,7 @@ public class CmsWorkplaceSettings {
      * @param string the view Uri for the workplace
      */
     public synchronized void setViewUri(String string) {
+
         m_viewUri = string;
-    }
-    
-    /**
-     * Returns the last user used list state.<p>
-     *
-     * @return the list
-     */
-    public CmsHtmlList getList() {
-
-        return m_list;
-    }
-    
-    /**
-     * Sets the list state.<p>
-     *
-     * @param list the list to set
-     */
-    public synchronized void setList(CmsHtmlList list) {
-
-        m_list = list;
     }
 }

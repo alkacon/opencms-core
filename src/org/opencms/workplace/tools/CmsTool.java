@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/04/28 09:52:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.I_CmsNamedObject;
+import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
@@ -49,62 +48,31 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
-public class CmsTool implements I_CmsNamedObject {
+public class CmsTool {
 
     /** Sub-tools container. */
-    private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
-
-    /** Enabled flag. */
-    private boolean m_enabled;
-
-    /** Help text or description. */
-    private final String m_helpText;
-
-    /** Icon path. */
-    private final String m_iconPath;
+    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
 
     /** Dhtml id, from name. */
     private final String m_id;
 
-    /** Link pointer. */
-    private final String m_link;
-
-    /** Display name. */
-    private final String m_name;
-
-    /** Visibility flag. */
-    private final boolean m_visible;
+    /** Handler that represents this tool. */
+    private I_CmsToolHandler m_handler;
 
     /**
      * Default Constructor.<p> 
      * 
      * @param id a unique id
-     * @param name the name of the item
-     * @param iconPath the icon to display
-     * @param link the link to open when selected
-     * @param helpText the help text to display
-     * @param enabled if enabled or not
-     * @param visible if visible or not
+     * @param handler the handler that represents this tool
      */
-    public CmsTool(
-        String id,
-        String name,
-        String iconPath,
-        String link,
-        String helpText,
-        boolean enabled,
-        boolean visible) {
+    public CmsTool(String id, I_CmsToolHandler handler) {
 
         m_id = id;
-        m_name = name;
-        m_iconPath = iconPath;
-        m_link = link;
-        m_helpText = helpText;
-        m_enabled = enabled;
-        m_visible = visible;
+        m_handler = handler;
+
     }
 
     /**
@@ -112,11 +80,11 @@ public class CmsTool implements I_CmsNamedObject {
      * 
      * @param group the group
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(org.opencms.util.I_CmsNamedObject)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addToolGroup(CmsToolGroup group) {
 
-        m_container.addNamedObject(group);
+        m_container.addIdentifiableObject(group.getName(), group);
     }
 
     /**
@@ -125,11 +93,11 @@ public class CmsTool implements I_CmsNamedObject {
      * @param group the group
      * @param position the position
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(org.opencms.util.I_CmsNamedObject, float)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addToolGroup(CmsToolGroup group, float position) {
 
-        m_container.addNamedObject(group, position);
+        m_container.addIdentifiableObject(group.getName(), group, position);
     }
 
     /**
@@ -141,17 +109,19 @@ public class CmsTool implements I_CmsNamedObject {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        if (!isVisible()) {
+        if (!m_handler.isVisible(wp.getCms())) {
             return "";
         }
-        String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkFromContext(wp.getJsp(), this);
+        String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkForPath(
+            wp.getJsp(),
+            this.getHandler().getPath(), null);
         String onClic = "openPage('" + link + "');";
         return A_CmsHtmlIconButton.defaultBigButtonHtml(
             getId(),
-            getName(),
-            getHelpText(),
-            isEnabled(),
-            getIconPath(),
+            m_handler.getName(),
+            m_handler.getHelpText(),
+            m_handler.isEnabled(wp.getCms()),
+            m_handler.getIconPath(),
             onClic);
     }
 
@@ -167,33 +137,13 @@ public class CmsTool implements I_CmsNamedObject {
         if (!this.getClass().isInstance(that)) {
             return false;
         }
-        return this.getName().equals(((CmsTool)that).getName());
+        return this.getId().equals(((CmsTool)that).getId());
     }
 
     /**
-     * Returns the help text.<p>
+     * Returns the dhtml unique id.<p>
      *
-     * @return the help text
-     */
-    public String getHelpText() {
-
-        return m_helpText;
-    }
-
-    /**
-     * Returns the icon.<p>
-     *
-     * @return the icon
-     */
-    public String getIconPath() {
-
-        return m_iconPath;
-    }
-
-    /**
-     * Returns the id.<p>
-     * 
-     * @return the id
+     * @return the dhtml unique id
      */
     public String getId() {
 
@@ -201,23 +151,13 @@ public class CmsTool implements I_CmsNamedObject {
     }
 
     /**
-     * Returns the link.<p>
+     * Returns the handler.<p>
      *
-     * @return the link
+     * @return the handler
      */
-    public String getLink() {
+    public I_CmsToolHandler getHandler() {
 
-        return m_link;
-    }
-
-    /**
-     * Returns the group name.<p>
-     *
-     * @return the group name
-     */
-    public String getName() {
-
-        return m_name;
+        return m_handler;
     }
 
     /**
@@ -227,7 +167,7 @@ public class CmsTool implements I_CmsNamedObject {
      * 
      * @return the group
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#getObject(String)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsToolGroup getToolGroup(String name) {
 
@@ -241,7 +181,7 @@ public class CmsTool implements I_CmsNamedObject {
      */
     public List getToolGroups() {
 
-        return m_container.elementList(CmsToolGroup.class);
+        return m_container.elementList();
     }
 
     /**
@@ -252,6 +192,30 @@ public class CmsTool implements I_CmsNamedObject {
      * @return html code
      */
     public String groupHtml(CmsWorkplace wp) {
+
+        List subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(getHandler().getPath(), false);
+        Iterator itSubTools = subTools.iterator();
+        m_container.clear();
+        while (itSubTools.hasNext()) {
+            String subToolPath = (String)itSubTools.next();
+            CmsTool subTool = OpenCms.getWorkplaceManager().getToolManager().resolveAdminTool(subToolPath);
+            // locate group
+            CmsToolGroup group = null;
+            String groupName = wp.resolveMacros(subTool.getHandler().getGroup());
+
+            // in the parent tool
+            group = getToolGroup(groupName);
+            if (group == null) {
+                // if does not exist, create it
+                String gid = "group" + getToolGroups().size();
+                group = new CmsToolGroup(gid, groupName);
+                addToolGroup(group, subTool.getHandler().getPosition());
+            }
+
+            // add to group
+            group.addAdminTool(subTool, subTool.getHandler().getPosition());
+
+        }
 
         StringBuffer html = new StringBuffer(512);
         Iterator itHtml = getToolGroups().iterator();
@@ -267,26 +231,7 @@ public class CmsTool implements I_CmsNamedObject {
      */
     public int hashCode() {
 
-        return getName().hashCode();
+        return m_handler.getName().hashCode();
     }
 
-    /**
-     * Returns if enabled or disabled.<p>
-     *
-     * @return if enabled or disabled
-     */
-    public boolean isEnabled() {
-
-        return m_enabled;
-    }
-
-    /**
-     * Returns visibility flag.<p>
-     *
-     * @return visibility flag
-     */
-    public boolean isVisible() {
-
-        return m_visible;
-    }
 }

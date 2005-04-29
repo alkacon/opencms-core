@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.administration;
 
-import org.opencms.util.I_CmsNamedObject;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
@@ -40,10 +39,10 @@ import org.opencms.workplace.list.A_CmsHtmlIconButton;
  * required html code for a menu item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
-public class CmsAdminMenuItem implements I_CmsNamedObject {
+public class CmsAdminMenuItem {
 
     /** Enabled flag. */
     private boolean m_enabled;
@@ -116,9 +115,9 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
     }
 
     /**
-     * Returns the id of the html component.<p>
-     * 
-     * @return the id
+     * Returns the dhtml unique id.<p>
+     *
+     * @return the dhtml unique id
      */
     public String getId() {
 
@@ -136,7 +135,9 @@ public class CmsAdminMenuItem implements I_CmsNamedObject {
     }
 
     /**
-     * @see org.opencms.util.I_CmsNamedObject#getName()
+     * Returns the display name.<p>
+     *
+     * @return the name
      */
     public String getName() {
 

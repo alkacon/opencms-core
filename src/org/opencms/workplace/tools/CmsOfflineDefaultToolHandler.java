@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObject.java,v $
- * Date   : $Date: 2005/04/15 13:02:43 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsOfflineDefaultToolHandler.java,v $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,52 +28,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+package org.opencms.workplace.tools;
 
-package org.opencms.util;
+import org.opencms.file.CmsObject;
 
 /**
- * Wrapper for objects to become named.<p>
+ * This tool handler disables the tool if in online project.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @author Michael Moossen (m.moossen@alkacon.com)
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsNamedObject implements I_CmsNamedObject {
-
-    /** Name of the object. */
-    private final String m_name;
-
-    /** Associated object. */
-    private final Object m_object;
+public abstract class CmsOfflineDefaultToolHandler extends A_CmsToolHandler {
 
     /**
-     * Default Constructor.<p>
-     * 
-     * @param name the name
-     * @param object the object
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
-    public CmsNamedObject(String name, Object object) {
+    public boolean isEnabled(CmsObject cms) {
 
-        m_name = name;
-        m_object = object;
-    }
-
-    /**
-     * @see org.opencms.util.I_CmsNamedObject#getName()
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
-     * Returns the original object.<p>
-     * 
-     * @return the original object
-     */
-    public Object getObject() {
-
-        return m_object;
+        return !cms.getRequestContext().currentProject().isOnlineProject();
     }
 
 }

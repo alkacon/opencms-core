@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlGroup.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsInvisibibleDefaultToolHandler.java,v $
+ * Date   : $Date: 2005/04/29 16:05:53 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,53 +28,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+package org.opencms.workplace.tools;
 
-package org.opencms.workplace.list;
+import org.opencms.file.CmsObject;
 
 /**
- * This class is the default skeleton for a html group.<p>
+ * This tool handler just hides the tool for the user, but the tool can still
+ * be invoked explicitly, usefull for tool that requires an argument, like
+ * edit tools.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @author Michael Moossen (m.moossen@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public abstract class A_CmsHtmlGroup implements I_CmsHtmlGroup {
+public class CmsInvisibibleDefaultToolHandler extends CmsDefaultToolHandler {
 
-    /** unique id. */
-    private final String m_id;
-
-    /** Display name. */
-    private final String m_name;
-
+    
     /**
-     * Default Constructor.<p> 
-     * 
-     * @param id the unique id
-     * @param name the name of the group
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
-    public A_CmsHtmlGroup(String id, String name) {
+    public boolean isVisible(CmsObject cms) {
 
-        m_name = name;
-        m_id = id;
-    }
-
-    /**
-     * Returns the id.<p>
-     * 
-     * @return the id
-     */
-    public String getId() {
-
-        return m_id;
-    }
-
-    /**
-     * Returns the group name.<p>
-     *
-     * @return the group name
-     */
-    public String getName() {
-
-        return m_name;
+        return false;
     }
 }

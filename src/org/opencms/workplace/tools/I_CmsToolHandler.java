@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/28 09:52:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.util.I_CmsNamedObject;
 
 /**
  * Interface for an admin tool handler.<p>
@@ -42,10 +41,17 @@ import org.opencms.util.I_CmsNamedObject;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
-public interface I_CmsToolHandler extends I_CmsNamedObject {
+public interface I_CmsToolHandler {
+
+    /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    String getName();
 
     /**
      * Returns the group.<p>

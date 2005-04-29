@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/04/19 12:04:28 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Set;
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -124,6 +124,8 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
         }
         // add additional core workplace packages, like administration, tools, etc
         msgs.add("org.opencms.workplace.list");
+        msgs.add("org.opencms.workplace.tools");
+        msgs.add("org.opencms.workplace.administration");
         // iterate all module names
         Iterator i = msgs.iterator();
         while (i.hasNext()) {

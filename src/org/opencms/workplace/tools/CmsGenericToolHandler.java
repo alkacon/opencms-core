@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsGenericToolHandler.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Map;
  * </ul>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsGenericToolHandler extends A_CmsToolHandler {
@@ -145,6 +145,5 @@ public class CmsGenericToolHandler extends A_CmsToolHandler {
             setGroup((String)argsMap.get(C_PARAM_GROUP));
             setPosition(Integer.parseInt((String)argsMap.get(C_PARAM_POSITION)));
         }
-        readCommonParams(args);
     }
 }

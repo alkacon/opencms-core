@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsNamedObjectContainer.java,v $
- * Date   : $Date: 2005/04/15 13:02:43 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,22 +44,22 @@ import java.util.Map;
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
+public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
 
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.1 $
      * @since 5.7.3
      */
-    private class CmsNamedObjectElement {
+    private class CmsIdObjectElement {
 
-        /** Named object. */
-        private final I_CmsNamedObject m_object;
+        /** Identifiable object. */
+        private final Object m_object;
 
         /** Relative position. */
         private final float m_position;
@@ -71,7 +71,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
          * @param position the relative position
          * 
          */
-        public CmsNamedObjectElement(I_CmsNamedObject object, float position) {
+        public CmsIdObjectElement(Object object, float position) {
 
             m_object = object;
             m_position = position;
@@ -82,7 +82,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
          *
          * @return the object
          */
-        public I_CmsNamedObject getObject() {
+        public Object getObject() {
 
             return m_object;
         }
@@ -102,107 +102,107 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
     /** List of objects. */
     private final List m_objectList = new ArrayList();
 
-    /** Map of objects onlz used if uniqueNames flag set. */
-    private final Map m_objectsByName = new HashMap();
+    /** Map of objects onlz used if uniqueIds flag set. */
+    private final Map m_objectsById = new HashMap();
 
     /** Flag for managing absolute and relative ordering. */
     private final boolean m_relativeOrdered;
 
     /** Flag for managing uniqueness check. */
-    private final boolean m_uniqueNames;
+    private final boolean m_uniqueIds;
 
     /**
      * Default Constructor.<p>
      * 
-     * @param uniqueNames if the list show check for unique names
+     * @param uniqueIds if the list show check for unique ids
      * @param relativeOrdered if the list show use relative ordering, instead of absolute ordering
      */
-    public CmsNamedObjectContainer(boolean uniqueNames, boolean relativeOrdered) {
+    public CmsIdentifiableObjectContainer(boolean uniqueIds, boolean relativeOrdered) {
 
-        m_uniqueNames = uniqueNames;
+        m_uniqueIds = uniqueIds;
         m_relativeOrdered = relativeOrdered;
     }
-
+   
     /**
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(I_CmsNamedObject)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(java.lang.String, java.lang.Object)
      */
-    public void addNamedObject(I_CmsNamedObject namedObject) {
+    public void addIdentifiableObject(String id, Object idObject) {
 
-        if (m_uniqueNames && m_objectsByName.get(namedObject.getName()) != null) {
-            throw new IllegalStateException("This container already contains an object called " + namedObject.getName());
+        if (m_uniqueIds && m_objectsById.get(id) != null) {
+            throw new IllegalStateException("This container already contains an object with id " + id);
         }
         if (m_relativeOrdered) {
             float pos = 1;
             if (!m_objectList.isEmpty()) {
-                pos = ((CmsNamedObjectElement)m_objectList.get(m_objectList.size() - 1)).getPosition() + 1;
+                pos = ((CmsIdObjectElement)m_objectList.get(m_objectList.size() - 1)).getPosition() + 1;
             }
-            m_objectList.add(new CmsNamedObjectElement(namedObject, pos));
+            m_objectList.add(new CmsIdObjectElement(idObject, pos));
         } else {
-            m_objectList.add(namedObject);
+            m_objectList.add(idObject);
         }
-        if (m_uniqueNames) {
-            m_objectsByName.put(namedObject.getName(), namedObject);
+        if (m_uniqueIds) {
+            m_objectsById.put(id, idObject);
         } else {
-            I_CmsNamedObject prevObj = (I_CmsNamedObject)m_objectsByName.get(namedObject.getName());
+            Object prevObj = m_objectsById.get(id);
             if (prevObj == null) {
                 List list = new ArrayList();
-                list.add(namedObject);
-                m_objectsByName.put(namedObject.getName(), new CmsNamedObject(namedObject.getName(), list));
+                list.add(idObject);
+                m_objectsById.put(id, list);
             } else {
-                ((List)((CmsNamedObject)prevObj).getObject()).add(namedObject);
+                ((List)prevObj).add(idObject);
             }
         }
 
     }
 
     /**
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(I_CmsNamedObject, float)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(java.lang.String, java.lang.Object, float)
      */
-    public void addNamedObject(I_CmsNamedObject namedObject, float position) {
+    public void addIdentifiableObject(String id, Object idObject, float position) {
 
-        if (m_uniqueNames && m_objectsByName.get(namedObject.getName()) != null) {
-            throw new IllegalStateException("This container already contains an object called " + namedObject.getName());
+        if (m_uniqueIds && m_objectsById.get(id) != null) {
+            throw new IllegalStateException("This container already contains an object called " + id);
         }
         if (m_relativeOrdered) {
             int pos = 0;
             Iterator itElems = m_objectList.iterator();
             while (itElems.hasNext()) {
-                CmsNamedObjectElement element = (CmsNamedObjectElement)itElems.next();
+                CmsIdObjectElement element = (CmsIdObjectElement)itElems.next();
                 if (element.getPosition() > position) {
                     break;
                 }
                 pos++;
             }
-            m_objectList.add(new CmsNamedObjectElement(namedObject, position));
+            m_objectList.add(new CmsIdObjectElement(idObject, position));
         } else {
-            m_objectList.add((int)position, namedObject);
+            m_objectList.add((int)position, idObject);
         }
-        if (m_uniqueNames) {
-            m_objectsByName.put(namedObject.getName(), namedObject);
+        if (m_uniqueIds) {
+            m_objectsById.put(id, idObject);
         } else {
-            I_CmsNamedObject prevObj = (I_CmsNamedObject)m_objectsByName.get(namedObject.getName());
+            Object prevObj = m_objectsById.get(id);
             if (prevObj == null) {
                 List list = new ArrayList();
-                list.add(namedObject);
-                m_objectsByName.put(namedObject.getName(), new CmsNamedObject(namedObject.getName(), list));
+                list.add(idObject);
+                m_objectsById.put(id, list);
             } else {
-                ((List)((CmsNamedObject)prevObj).getObject()).add(namedObject);
+                ((List)prevObj).add(idObject);
             }
         }
 
     }
 
     /**
-     * @see org.opencms.util.I_CmsNamedObjectContainer#clear()
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#clear()
      */
     public void clear() {
 
         m_objectList.clear();
-        m_objectsByName.clear();
+        m_objectsById.clear();
     }
 
     /**
-     * @see org.opencms.util.I_CmsNamedObjectContainer#elementList()
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#elementList()
      */
     public List elementList() {
 
@@ -210,7 +210,7 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
             List objectList = new ArrayList();
             Iterator itObjs = m_objectList.iterator();
             while (itObjs.hasNext()) {
-                CmsNamedObjectElement object = (CmsNamedObjectElement)itObjs.next();
+                CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
                 objectList.add(object.getObject());
             }
             return Collections.unmodifiableList(objectList);
@@ -221,31 +221,17 @@ public class CmsNamedObjectContainer implements I_CmsNamedObjectContainer {
     }
 
     /**
-     * @see org.opencms.util.I_CmsNamedObjectContainer#elementList(java.lang.Class)
-     */
-    public List elementList(Class type) {
-
-        List list = new ArrayList();
-        Iterator itElems = elementList().iterator();
-        while (itElems.hasNext()) {
-            Object element = itElems.next();
-            if (type.isInstance(element)) {
-                list.add(element);
-            }
-        }
-        return Collections.unmodifiableList(list);
-    }
-
-    /**
-     * Returns the object with the given name.<p>
+     * Returns the object with the given id.<p>
      * 
-     * if <code>uniqueNames</code> is set to <code>false</code> a <code>{@link CmsNamedObject}</code> 
-     * containing a <code>{@link List}</code> is returned.<p>
+     * If <code>uniqueIds</code> is set to <code>false</code> an <code>{@link Object}</code> 
+     * containing a <code>{@link List}</code> with all the objects with the given id is returned.<p>
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#getObject(String)
+     * If the container no contains any object with the given id, <code>null</code> is returned.<p>
+     * 
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#getObject(String)
      */
-    public I_CmsNamedObject getObject(String name) {
+    public Object getObject(String id) {
 
-        return (I_CmsNamedObject)m_objectsByName.get(name);
+        return m_objectsById.get(id);
     }
 }

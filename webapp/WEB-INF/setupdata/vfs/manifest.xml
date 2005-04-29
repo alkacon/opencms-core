@@ -15788,7 +15788,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[name:${key.admin.view.name}|iconpath:/system/workplace/resources/admin/images/deficon.png|helptext:${key.admin.view.helptext}|path:/|group:|position:1]]></value>
+					<value><![CDATA[name:${key.GUI_ADMIN_VIEW_ROOT_NAME_0}|iconpath:admin/images/deficon.png|helptext:${key.GUI_ADMIN_VIEW_ROOT_NAME_0}|path:/|group:|position:1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

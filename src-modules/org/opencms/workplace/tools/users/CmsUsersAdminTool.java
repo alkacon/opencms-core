@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/04/26 14:59:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,8 +54,10 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends CmsListDialog {
@@ -75,7 +77,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * @since 5.7.3
      */
     private class ActivateUserAction extends CmsListDirectAction {
@@ -298,13 +300,10 @@ public class CmsUsersAdminTool extends CmsListDialog {
             String usrName = getSelectedItem().get(LIST_COLUMN_LOGIN).toString();
             try {
                 // forward to the edit user screen
-                //http://localhost:9080/opencms/opencms/system/workplace/admin/users/edituser.html?usrId=c300ba5c-01e8-3727-b305-5dcc9ccae1ee&style=new&close_link=http://localhost:9080/opencms/opencms/system/workplace/admin/users/index.html
-                getJsp().getResponse().sendRedirect(
-                    getToolManager().cmsLinkForPath(getJsp(), "/users/edit")
-                        + "&usrName="
-                        + usrName
-                        + "&close_link="
-                        + getToolManager().cmsLinkForPath(getJsp(), getCurrentToolPath()));
+                Map params = new HashMap();
+                params.put("usrName", usrName);
+                getToolManager().jspRedirectTool(getJsp(), "/users/edit", params);
+
             } catch (IOException e) {
                 // should never happen
                 throw new RuntimeException(e);

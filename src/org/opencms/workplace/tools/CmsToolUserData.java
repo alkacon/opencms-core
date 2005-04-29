@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolUserData.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,15 @@
 
 package org.opencms.workplace.tools;
 
-import org.opencms.file.CmsUser;
-import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.I_CmsNamedObject;
-
 /**
  * Store for some administration view parameters,
  * for each user, used by the <code>{@link CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
-public class CmsToolUserData implements I_CmsNamedObject {
-
-    /** Associated user. */
-    private final CmsUser m_user;
+public class CmsToolUserData {
 
     /** Root tool for the user. */
     private String m_rootTool;
@@ -54,25 +47,12 @@ public class CmsToolUserData implements I_CmsNamedObject {
     /** Current used tool path. */
     private String m_currentToolPath;
 
-    /** List of All available tools. */
-    private final CmsNamedObjectContainer m_tools = new CmsNamedObjectContainer(true, false);
-
     /**
      * Default Constructor.<p>
-     * 
-     * @param user the cms user
      */
-    public CmsToolUserData(CmsUser user) {
+    public CmsToolUserData() {
 
-        m_user = user;
-    }
-
-    /**
-     * @see org.opencms.util.I_CmsNamedObject#getName()
-     */
-    public String getName() {
-
-        return m_user.getId().toString();
+        // no op
     }
 
     /**
@@ -115,23 +95,4 @@ public class CmsToolUserData implements I_CmsNamedObject {
         m_rootTool = rootTool;
     }
 
-    /**
-     * Returns the user.<p>
-     *
-     * @return the user
-     */
-    public CmsUser getUser() {
-
-        return m_user;
-    }
-
-    /**
-     * Returns the registered tools.<p>
-     * 
-     * @return the registered tools
-     */
-    public CmsNamedObjectContainer getTools() {
-
-        return m_tools;
-    }
 }

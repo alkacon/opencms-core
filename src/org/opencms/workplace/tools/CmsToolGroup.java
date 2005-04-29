@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,7 @@
 
 package org.opencms.workplace.tools;
 
-import org.opencms.util.CmsNamedObjectContainer;
-import org.opencms.util.I_CmsNamedObject;
+import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
@@ -43,13 +42,13 @@ import java.util.List;
  * the group structure.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
-public class CmsToolGroup implements I_CmsNamedObject {
+public class CmsToolGroup {
 
     /** Container for the items. */
-    private final CmsNamedObjectContainer m_container = new CmsNamedObjectContainer(true, true);
+    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
 
     /** Dhtml id. */
     private final String m_id;
@@ -74,11 +73,11 @@ public class CmsToolGroup implements I_CmsNamedObject {
      * 
      * @param adminTool the admin tool
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(org.opencms.util.I_CmsNamedObject)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addAdminTool(CmsTool adminTool) {
 
-        m_container.addNamedObject(adminTool);
+        m_container.addIdentifiableObject(adminTool.getId(), adminTool);
     }
 
     /**
@@ -87,25 +86,11 @@ public class CmsToolGroup implements I_CmsNamedObject {
      * @param adminTool the admin tool
      * @param position the position
      * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#addNamedObject(org.opencms.util.I_CmsNamedObject, float)
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addAdminTool(CmsTool adminTool, float position) {
 
-        m_container.addNamedObject(adminTool, position);
-    }
-
-    /**
-     * Returns the requested admin tool.<p>
-     * 
-     * @param name the name of the admin tool
-     * 
-     * @return the admin tool
-     * 
-     * @see org.opencms.util.I_CmsNamedObjectContainer#getObject(String)
-     */
-    public CmsTool getAdminTool(String name) {
-
-        return (CmsTool)m_container.getObject(name);
+        m_container.addIdentifiableObject(adminTool.getId(), adminTool, position);
     }
 
     /**

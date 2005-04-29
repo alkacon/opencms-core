@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/29 16:05:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,22 +61,10 @@ import org.opencms.util.CmsStringUtil;
  * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsDefaultToolHandler extends A_CmsToolHandler {
-
-    /** Default group name. */
-    private static final String C_DEFAULT_GROUP = "${key.admin.admintool.defaults.group}";
-
-    /** Default help text. */
-    private static final String C_DEFAULT_HELPTEXT = "${key.admin.admintool.defaults.helptext}";
-
-    /** Default icon path. */
-    private static final String C_DEFAULT_ICONPATH = "${key.admin.admintool.defaults.icon}";
-
-    /** Default display name. */
-    private static final String C_DEFAULT_NAME = "${key.admin.admintool.defaults.name}";
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
@@ -90,13 +78,13 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
             name = navElem.getTitle();
         }
         if (CmsStringUtil.isEmpty(name)) {
-            name = C_DEFAULT_NAME;
+            name = "${key." + Messages.GUI_TOOLS_DEFAULT_NAME_0 + "}";
         }
         setName(name);
 
         String iconPath = navElem.getNavImage();
         if (CmsStringUtil.isEmpty(iconPath)) {
-            iconPath = C_DEFAULT_ICONPATH;
+            iconPath = "${key." + Messages.GUI_TOOLS_DEFAULT_ICON_0 + "}";
         }
         String smallIconPath = null;
         if (iconPath.indexOf(C_VALUE_SEPARATOR) < 0) {
@@ -110,13 +98,13 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
 
         String helpText = navElem.getDescription();
         if (CmsStringUtil.isEmpty(helpText)) {
-            helpText = C_DEFAULT_HELPTEXT;
+            helpText = "${key." + Messages.GUI_TOOLS_DEFAULT_HELP_0 + "}";
         }
         setHelpText(helpText);
 
         String group = navElem.getInfo();
         if (CmsStringUtil.isEmpty(group)) {
-            group = C_DEFAULT_GROUP;
+            group = "${key." + Messages.GUI_TOOLS_DEFAULT_GROUP_0 + "}";
         }
 
         setLink(resourcePath);
@@ -153,19 +141,13 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
         } catch (CmsException e) {
             // noop
         }
-        path = resourcePath.substring(CmsToolManager.C_TOOLS_ROOT.length(), resourcePath
+        path = resourcePath.substring(CmsToolManager.C_ADMINTOOLS_ROOT_LOCATION.length(), resourcePath
             .lastIndexOf(CmsToolManager.C_TOOLPATH_SEPARATOR));
 
         // install point
         setPath(path);
         setGroup(group);
         setPosition(navElem.getNavPosition());
-
-        try {
-            readCommonParams(cms.readPropertyObject(resourcePath, C_PROPERTY_DEFINITION, false).getValue());
-        } catch (CmsException e1) {
-            // noop
-        }
     }
 
 }
