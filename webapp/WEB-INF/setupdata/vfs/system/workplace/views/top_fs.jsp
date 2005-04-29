@@ -57,6 +57,7 @@ this.langback="<%=    wp.key("button.back") %>";
 this.langsearch="<%=  wp.key("button.search") %>";
 this.langup="<%=      wp.key("button.parent") %>";
 this.langnew="<%=     wp.key("button.new") %>";
+this.langupload="<%=  wp.key("button.upload") %>";
 this.langadress="<%=  wp.key("input.adress") %>";
 this.langpage="<%=    wp.key("input.page") %>";
 this.langloading="<%= wp.key("label.loading") %>";
