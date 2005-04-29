@@ -57,10 +57,11 @@
 	<% 	
 		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
 	%>
-		top.window.opener.document.getElementById("<%= wp.getParamFieldId() %>").value  = uri;
+		var fieldId = top.gallery_fs.gallery_head.document.forms["main"].<%= wp.PARAM_FIELDID %>.value;
+		top.window.opener.document.getElementById(fieldId).value  = uri;
 		try {
 			// toggle preview icon if possible
-			top.window.opener.checkPreview("<%= wp.getParamFieldId() %>");
+			top.window.opener.checkPreview(fieldId);
 		} catch (e) {}
 	<%	
 		} else { 
@@ -88,10 +89,11 @@
 	<% 	
 		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
 	%>
-		top.window.opener.document.getElementById("<%= wp.getParamFieldId() %>").value  = uri;
+		var fieldId = top.gallery_fs.gallery_head.document.forms["main"].<%= wp.PARAM_FIELDID %>.value;
+		top.window.opener.document.getElementById(fieldId).value  = uri;
 		try {
 			// toggle preview icon if possible
-			top.window.opener.checkPreview("<%= wp.getParamFieldId() %>");
+			top.window.opener.checkPreview(fieldId);
 		} catch (e) {}
 	<%	
 		} else { 
@@ -117,15 +119,16 @@
 	<% 	
 		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
 	%>
-		top.window.opener.document.getElementById("<%= wp.getParamFieldId() %>").value  = newContent;
+		var fieldId = top.gallery_fs.gallery_head.document.forms["main"].<%= wp.PARAM_FIELDID %>.value;
+		top.window.opener.document.getElementById(fieldId).value  = newContent;
 	<% 	
                 if (wp instanceof CmsTableGallery) {
 	%>
-			top.window.opener.checkTableContent("<%= wp.getParamFieldId() %>");        
+			top.window.opener.checkTableContent(fieldId);        
 	<%
 		} else if (wp instanceof CmsHtmlGallery) {
 	%>
-			top.window.opener.checkHtmlContent("<%= wp.getParamFieldId() %>");
+			top.window.opener.checkHtmlContent(fieldId);
 	<%	
 		} } else { 
 	%>		
