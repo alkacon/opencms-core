@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.main.CmsException;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -55,6 +56,8 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -70,6 +73,9 @@ import org.dom4j.Element;
  * @see org.opencms.importexport.A_CmsImport
  */
 public class CmsImportVersion3 extends A_CmsImport {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportVersion3.class);
 
     /** The version number of this import implementation.<p> */
     private static final int C_IMPORT_VERSION = 3;
@@ -108,7 +114,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      *      (not used when null)
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
     public synchronized void importResources(
         CmsObject cms,
@@ -122,7 +128,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         Vector writtenFilenames,
         Vector fileCodes,
         String propertyName,
-        String propertyValue) throws CmsException {
+        String propertyValue) throws CmsImportExportException {
 
         // initialize the import
         initialize();
@@ -142,8 +148,6 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
             // now import the VFS resources
             importAllResources(excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
-        } catch (CmsException e) {
-            throw e;
         } finally {
             cleanUp();
         }
@@ -163,7 +167,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      * @param userInfo user info
      * @param userGroups user groups
      * 
-     * @throws CmsException in case something goes wrong
+     * @throws CmsImportExportException in case something goes wrong
      */
     protected void importUser(
         String name,
@@ -176,7 +180,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         String address,
         String type,
         Hashtable userInfo,
-        Vector userGroups) throws CmsException {
+        Vector userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -215,14 +219,14 @@ public class CmsImportVersion3 extends A_CmsImport {
      *      (not used when null)
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
     private void importAllResources(
         Vector excludeList,
         Vector writtenFilenames,
         Vector fileCodes,
         String propertyName,
-        String propertyValue) throws CmsException {
+        String propertyValue) throws CmsImportExportException {
 
         String source, destination, type, uuidstructure, uuidresource, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
@@ -384,9 +388,16 @@ public class CmsImportVersion3 extends A_CmsImport {
                 }
             }
 
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
+        } catch (Exception e) {
+
+            m_report.println(e);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);
         } finally {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().restoreSiteRoot();
@@ -539,6 +550,12 @@ public class CmsImportVersion3 extends A_CmsImport {
             // an error while importing the file
             success = false;
             m_report.println(exc);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1, destination);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, exc);
+            }
+            
             try {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);

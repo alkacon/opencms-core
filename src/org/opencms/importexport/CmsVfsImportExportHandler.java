@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,9 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRoleViolationException;
+import org.opencms.xml.CmsXmlException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,10 +46,10 @@ import org.dom4j.Element;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/04/24 11:20:30 $
+ * @version $Revision: 1.7 $ $Date: 2005/04/29 15:54:15 $
  * @since 5.3
  */
-public class CmsVfsImportExportHandler extends Object implements I_CmsImportExportHandler {
+public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
     /** Timestamp to limit the resources to be exported by date.<p> */
     private long m_contentAge;
@@ -96,7 +97,7 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
-    public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
+    public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException, CmsRoleViolationException {
 
         report.println(report.key("report.export_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         new CmsExport(
@@ -166,7 +167,7 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
     public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
-    throws CmsException {
+    throws CmsImportExportException, CmsXmlException, CmsRoleViolationException {
 
         report.println(report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);

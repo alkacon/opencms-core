@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosImportExportHandler.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,11 @@
 package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
+import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.I_CmsImportExportHandler;
-import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReport;
+import org.opencms.xml.CmsXmlException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for COS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.10 $ $Date: 2005/04/29 15:54:15 $
  * @since 5.3
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -98,7 +99,7 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
-    public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
+    public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException {
         report.println(report.key("report.export_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         new CmsExportModuledata(cms, getFileName(), getExportChannels(), getExportModules(), report);
         report.println(report.key("report.export_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
@@ -107,7 +108,7 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
-    public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+    public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsXmlException, CmsImportExportException {
         report.println(report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         CmsImportModuledata cosImport = new CmsImportModuledata(cms, importFile, importPath, report);
         cosImport.importResources();

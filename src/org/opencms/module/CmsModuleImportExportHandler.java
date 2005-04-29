@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImport;
+import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -45,9 +46,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlErrorHandler;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2005/04/29 15:00:35 $
+ * @version $Revision: 1.10 $ $Date: 2005/04/29 15:54:15 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -180,7 +183,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
-    public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
+    public void exportData(CmsObject cms, I_CmsReport report) throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException {
         
         // check if the user has the required permissions
         cms.checkRole(CmsRole.MODULE_MANAGER);
@@ -260,7 +263,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
     public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) 
-    throws CmsException {
+    throws CmsXmlException, CmsImportExportException, CmsRoleViolationException {
         
         CmsProject previousProject = cms.getRequestContext().currentProject();
         try {
@@ -317,6 +320,27 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
             report.println(report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
             report.println(report.key("report.import_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        } catch (CmsXmlException e) {
+            
+            throw e;
+        } catch (CmsImportExportException e) {
+            
+            throw e;
+        } catch (CmsRoleViolationException e) {
+            
+            throw e;
+        } catch (CmsException e) {
+            
+            int todo = 0;
+            // remove this catch clause (and the 3 Cms* clauses above) 
+            // once the package org.opencms.module is correct localized
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_MODULE_IMPORTING_MODULE_1, importFile);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);
         } finally {
             cms.getRequestContext().setCurrentProject(previousProject);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,14 @@ package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
   
@@ -362,7 +363,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         boolean caughtException = false;
         try {
             OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
-        } catch (CmsConfigurationException e) {
+        } catch (CmsException e) {
             // any other CmsException means test failure
             caughtException = true;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 
 import java.io.File;
@@ -92,7 +91,7 @@ public interface I_CmsImport {
      * @param fileCodes code of the written files (for the registry) (not used when null)
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
     void importResources(
         CmsObject cms,
@@ -106,6 +105,6 @@ public interface I_CmsImport {
         Vector writtenFilenames,
         Vector fileCodes,
         String propertyName,
-        String propertyValue) throws CmsException;
+        String propertyValue) throws CmsImportExportException;
 
 }

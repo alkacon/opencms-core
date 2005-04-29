@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -51,12 +54,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Stack;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -75,25 +87,28 @@ import org.dom4j.Element;
  */
 
 public abstract class A_CmsImport implements I_CmsImport {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsImport.class); 
 
     /** The algorithm for the message digest. */
     public static final String C_IMPORT_DIGEST = "MD5";
-
+    
     /** The name of the legacy resource type "page". */
     public static final String C_RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
-
+    
     /** The id of the legacy resource type "link". */
     protected static final int C_RESOURCE_TYPE_LINK_ID = 1024;
-
+    
     /** The name of the legacy resource type "link". */
     protected static final String C_RESOURCE_TYPE_LINK_NAME = "link";
-
+    
     /** The id of the legacy resource type "newpage". */
     protected static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
-
+    
     /** The name of the legacy resource type "newpage". */
     protected static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
-
+    
     /** Debug flag to show debug output. */
     protected static final int DEBUG = 0;
 
@@ -132,6 +147,9 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The object to report the log messages. */
     protected I_CmsReport m_report;
+    
+    /** Messages object with the locale of the current user. */
+    protected I_CmsMessageBundle m_userMessages;
 
     /**
      * Converts a given digest to base64 encoding.<p>
@@ -161,8 +179,8 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         boolean resourceNotImmutable = true;
         if (immutableResources.contains(translatedName)) {
-            if (DEBUG > 1) {
-                System.err.println("Import: Translated resource name is immutable");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1, translatedName));
             }
             // this resource must not be modified by an import if it already exists
             m_cms.getRequestContext().saveSiteRoot();
@@ -170,14 +188,14 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_cms.getRequestContext().setSiteRoot("/");
                 m_cms.readResource(translatedName);
                 resourceNotImmutable = false;
-                if (DEBUG > 0) {
-                    System.err.println("Import: Immutable flag set for resource");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1, translatedName));
                 }
             } catch (CmsException e) {
                 // resourceNotImmutable will be true 
-                if (DEBUG > 0) {
-                    System.err.println("Import: Immutable test caused exception " + e);
-                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1, translatedName), e);
+                }                             
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
@@ -206,56 +224,56 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Converts old style pointers to siblings if possible.<p>
      */
     protected void convertPointerToSiblings() {
-
+        
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
         int i = 0;
         CmsResource resource = null;
         String link = null;
         String key = null;
-
+        
         try {
             // loop through all links to convert
             while (keys.hasNext()) {
-
+                
                 try {
                     key = (String)keys.next();
                     link = (String)m_linkStorage.get(key);
                     List properties = (List)m_linkPropertyStorage.get(key);
                     CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
-
+                    
                     m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(key + " ");
                     m_report.print(m_report.key("report.dots"));
-
+        
                     // check if this is an internal pointer
                     if (link.startsWith("/")) {
                         // check if the pointer target is existing
                         CmsResource target = m_cms.readResource(link);
-
+    
                         // create a new sibling as CmsResource                         
                         resource = new CmsResource(
                             new CmsUUID(), // structure ID is always a new UUID
-                            target.getResourceId(),
+                            target.getResourceId(), 
                             key,
                             target.getTypeId(),
-                            target.isFolder(),
-                            0,
+                            target.isFolder(), 
+                            0, 
                             m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
-                            I_CmsConstants.C_STATE_NEW,
+                            I_CmsConstants.C_STATE_NEW, 
                             target.getDateCreated(),
-                            target.getUserCreated(),
-                            target.getDateLastModified(),
-                            target.getUserLastModified(),
-                            CmsResource.DATE_RELEASED_DEFAULT,
-                            CmsResource.DATE_EXPIRED_DEFAULT,
-                            1,
+                            target.getUserCreated(), 
+                            target.getDateLastModified(), 
+                            target.getUserLastModified(), 
+                            CmsResource.DATE_RELEASED_DEFAULT, 
+                            CmsResource.DATE_EXPIRED_DEFAULT, 
+                            1, 
                             0);
-
+                        
                         m_cms.importResource(key, resource, null, properties);
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-
+                        
                         if (OpenCms.getLog(this).isInfoEnabled()) {
                             OpenCms.getLog(this).info(
                                 "( "
@@ -263,18 +281,18 @@ public abstract class A_CmsImport implements I_CmsImport {
                                     + " / "
                                     + linksSize
                                     + " ) "
-                                    + m_report.key("report.convert_link")
-                                    + key
-                                    + " "
-                                    + m_report.key("report.dots")
-                                    + m_report.key("report.ok"));
-                        }
-
+                                + m_report.key("report.convert_link")
+                                + key
+                                + " "
+                                + m_report.key("report.dots")
+                                + m_report.key("report.ok"));
+                        }                              
+        
                     } else {
-
+                        
                         m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-
+                        
                         if (OpenCms.getLog(this).isInfoEnabled()) {
                             OpenCms.getLog(this).info(
                                 "( "
@@ -282,22 +300,22 @@ public abstract class A_CmsImport implements I_CmsImport {
                                     + " / "
                                     + linksSize
                                     + " ) "
-                                    + m_report.key("report.convert_link")
-                                    + key
-                                    + " "
-                                    + m_report.key("report.ok"));
-                        }
-
+                                + m_report.key("report.convert_link")
+                                + key
+                                + " "
+                                + m_report.key("report.ok"));
+                        }                          
+                        
                     }
                 } catch (CmsException e) {
                     m_report.println();
                     m_report.print(
                         m_report.key("report.convert_link_notfound") + " " + link,
                         I_CmsReport.C_FORMAT_WARNING);
-
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Link conversion of " + key + " -> " + link + " failed", e);
-                    }
+                    
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2, key, link), e);
+                    }                
                 }
             }
         } finally {
@@ -305,7 +323,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_linkStorage.clear();
             }
             m_linkStorage = null;
-
+            
             if (m_linkPropertyStorage != null) {
                 m_linkPropertyStorage.clear();
             }
@@ -320,20 +338,19 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @return a byte array containing the content of the file
      */
     protected byte[] getFileBytes(String filename) {
-
         try {
             // is this a zip-file?
             if (m_importZip != null) {
                 // yes
                 ZipEntry entry = m_importZip.getEntry(filename);
-
+                
                 // path to file might be relative, too
                 if (entry == null && filename.startsWith("/")) {
                     entry = m_importZip.getEntry(filename.substring(1));
                 } else if (entry == null) {
-                    throw new ZipException("File not found in zipfile: " + filename);
-                }
-
+                    throw new ZipException(Messages.get().key(Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1, filename)); 
+                }    
+                
                 InputStream stream = m_importZip.getInputStream(entry);
 
                 int charsRead = 0;
@@ -359,14 +376,14 @@ public abstract class A_CmsImport implements I_CmsImport {
                 return buffer;
             }
         } catch (FileNotFoundException fnfe) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("File not found: " + filename, fnfe);
-            }
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, filename), fnfe);
+            }              
             m_report.println(fnfe);
         } catch (IOException ioe) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading file " + filename, ioe);
-            }
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, filename), ioe);
+            }             
             m_report.println(ioe);
         }
         // this will only be returned in case there was an exception
@@ -407,19 +424,18 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 
      * @return the locale
      */
-    protected Locale getLocale(String destination, List properties) {
-
+    protected Locale getLocale(String destination, List properties) {        
         String localeName = CmsProperty.get(I_CmsConstants.C_PROPERTY_LOCALE, properties).getValue();
-
+                
         if (localeName != null) {
             // locale was already set on the files properties
             return (Locale)OpenCms.getLocaleManager().getAvailableLocales(localeName).get(0);
-        }
+        } 
         // locale not set in properties, read default locales
         return (Locale)OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(
             0);
     }
-
+    
     /**
      * Writes alread imported access control entries for a given resource.
      * 
@@ -427,11 +443,10 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param aceList the access control entries to create
      */
     protected void importAccessControlEntries(CmsResource resource, List aceList) {
-
         if (aceList.size() == 0) {
             // no ACE in the list
             return;
-        }
+        }        
         try {
             m_cms.importAccessControlEntries(resource, aceList);
         } catch (CmsException exc) {
@@ -447,10 +462,10 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param flags group flags
      * @param parentgroupName name of the parent group
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
     protected void importGroup(String name, String description, String flags, String parentgroupName)
-    throws CmsException {
+    throws CmsImportExportException {
 
         if (description == null) {
             description = "";
@@ -481,24 +496,29 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.print(m_report.key("report.dots"));
                     m_cms.createGroup(name, description, Integer.parseInt(flags), parentgroupName);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                } catch (CmsException exc) {
+                } catch (CmsException exc) {                     
                     m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
                 }
             }
 
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
+        } catch (Exception e) { 
+            
+            m_report.println(e);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_GROUP_1, name);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            throw new CmsImportExportException(message, e);
         }
     }
 
     /**
      * Imports the OpenCms groups.<p>
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
-    protected void importGroups() throws CmsException {
-
+    protected void importGroups() throws CmsImportExportException {
         List groupNodes;
         Element currentElement;
         String name, description, flags, parentgroup;
@@ -509,7 +529,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             for (int i = 0; i < groupNodes.size(); i++) {
                 currentElement = (Element)groupNodes.get(i);
                 name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-                name = OpenCms.getImportExportManager().translateGroup(name);
+                name = OpenCms.getImportExportManager().translateGroup(name);  
                 description = CmsImport.getChildElementTextValue(
                     currentElement,
                     I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
@@ -517,11 +537,11 @@ public abstract class A_CmsImport implements I_CmsImport {
                 parentgroup = CmsImport.getChildElementTextValue(
                     currentElement,
                     I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
-                if ((parentgroup != null) && (parentgroup.length() > 0)) {
+                if ((parentgroup!=null) && (parentgroup.length()>0)) {
                     parentgroup = OpenCms.getImportExportManager().translateGroup(parentgroup);
                 }
                 // import this group
-
+             
                 importGroup(name, description, flags, parentgroup);
             }
 
@@ -539,12 +559,22 @@ public abstract class A_CmsImport implements I_CmsImport {
                     importGroup(name, description, flags, parentgroup);
                 }
             }
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
+        } catch (CmsImportExportException e) {
+            
+            throw e;            
+        } catch (Exception e) {
+            
+            m_report.println(e);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_GROUPS_0);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);
         }
     }
-
+    
     /**
      * Imports a single user.<p>
      * @param name user name
@@ -559,7 +589,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param userInfo user info
      * @param userGroups user groups
      * 
-     * @throws CmsException in case something goes wrong
+     * @throws CmsImportExportException in case something goes wrong
      */
     protected void importUser(
         String name,
@@ -572,7 +602,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         String address,
         String type,
         Hashtable userInfo,
-        Vector userGroups) throws CmsException {
+        Vector userGroups) throws CmsImportExportException {
 
         // create a new user id
         String id = new CmsUUID().toString();
@@ -605,24 +635,30 @@ public abstract class A_CmsImport implements I_CmsImport {
             } catch (CmsException exc) {
                 m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
             }
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
+        } catch (Exception e) {
+            
+            m_report.println(e);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_USER_1, name);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            throw new CmsImportExportException(message, e);
         }
     }
 
     /**
      * Imports the OpenCms users.<p>
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
-    protected void importUsers() throws CmsException {
-
+    protected void importUsers() throws CmsImportExportException {
         List userNodes;
         List groupNodes;
         Element currentElement, currentGroup;
         Vector userGroups;
         Hashtable userInfo = new Hashtable();
-        String name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode, defaultGroup;
+        String  name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
         try {
@@ -632,7 +668,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             for (int i = 0; i < userNodes.size(); i++) {
                 currentElement = (Element)userNodes.get(i);
                 name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-                name = OpenCms.getImportExportManager().translateUser(name);
+                name = OpenCms.getImportExportManager().translateUser(name);              
                 // decode passwords using base 64 decoder
                 pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
                 password = new String(Base64.decodeBase64(pwd.trim().getBytes()));
@@ -669,14 +705,14 @@ public abstract class A_CmsImport implements I_CmsImport {
                     String userInGroup = CmsImport.getChildElementTextValue(
                         currentGroup,
                         I_CmsConstants.C_EXPORT_TAG_NAME);
-                    userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
+                    userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);  
                     userGroups.addElement(userInGroup);
                 }
-
+                
                 if (defaultGroup != null && !"".equalsIgnoreCase(defaultGroup)) {
                     userInfo.put(I_CmsConstants.C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                 }
-
+                
                 // import this user
                 importUser(
                     name,
@@ -691,9 +727,19 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo,
                     userGroups);
             }
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
+        } catch (CmsImportExportException e) {
+            
+            throw e;            
+        } catch (Exception e) {
+            
+            m_report.println(e);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_USERS_0);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);
         }
     }
 

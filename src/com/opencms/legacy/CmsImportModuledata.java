@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/03/30 08:50:31 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2005/04/29 15:54:15 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,15 +36,21 @@ package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImport;
+import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.I_CmsImport;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlException;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,6 +66,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -71,11 +79,14 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2005/03/30 08:50:31 $
+ * @version $Revision: 1.18 $ $Date: 2005/04/29 15:54:15 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportModuledata.class);
 
     /**
      * Constructs a new import object which imports the module data from an OpenCms 
@@ -99,9 +110,11 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     /**
      * Imports the moduledata and writes them to the cms even if there already exist 
      * conflicting files.<p>
-     * @throws CmsException in case something goes wrong
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      */
-    public synchronized void importResources() throws CmsException {
+    public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
         // initialize the import
         openImportFile();
         m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
@@ -129,9 +142,21 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             m_report.println(m_report.key("report.import_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             importModuleMasters();
             m_report.println(m_report.key("report.import_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        } catch (CmsXmlException e) { 
+            
+            throw e;
+        } catch (CmsImportExportException e) {
+            
+            throw e;
         } catch (CmsException e) {
             m_report.println(e);
-            throw e;
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);            
         } finally {
             // close the import file
             closeImportFile();

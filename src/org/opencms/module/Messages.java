@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/04/29 15:54:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODULE_IMPORTING_MODULE_1 = "ERR_MODULE_IMPORTING_MODULE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_MOD_ALREADY_INSTALLED_1 = "ERR_IMPORT_MOD_ALREADY_INSTALLED_1";

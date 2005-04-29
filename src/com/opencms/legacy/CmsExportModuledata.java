@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/03/29 16:05:34 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2005/04/29 15:54:15 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,15 +37,20 @@ package com.opencms.legacy;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
+import org.opencms.importexport.CmsImportExportException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -60,6 +65,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -73,11 +80,14 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2005/03/29 16:05:34 $
+ * @version $Revision: 1.14 $ $Date: 2005/04/29 15:54:15 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExportModuledata.class);
 
     /** Manifest tag: master. */   
     public static String C_EXPORT_TAG_MASTER = "master";
@@ -202,9 +212,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @param modulesToExport the modules to export
      * @param report to write the progress information to
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsImportExportException if something goes wrong
      */
-    public CmsExportModuledata(CmsObject cms, String exportFile, String[] resourcesToExport, String[] modulesToExport, I_CmsReport report) throws CmsException {
+    public CmsExportModuledata(CmsObject cms, String exportFile, String[] resourcesToExport, String[] modulesToExport, I_CmsReport report) throws CmsImportExportException {
         setCms(cms);
         setReport(report);
         setExportFileName(exportFile);
@@ -261,18 +271,33 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             // close the export file
             closeExportFile(exportNode);
 
+        } catch (CmsException e) {
+            getReport().println(e);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);
         } catch (SAXException se) {
             getReport().println(se);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error exporting to file " + getExportFileName(), se);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, se);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, se);
+            
+            throw new CmsImportExportException(message, se);
         } catch (IOException ioe) {
             getReport().println(ioe);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error exporting to file " + getExportFileName(), ioe);
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, ioe);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, ioe);
+            
+            throw new CmsImportExportException(message, ioe);
         } finally {
             // restore the site root
             getCms().getRequestContext().restoreSiteRoot();
@@ -282,16 +307,29 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
     /**
      * @see org.opencms.importexport.CmsExport#addChildResources(java.lang.String)
      */
-    protected void addChildResources(String folderName) throws CmsException, SAXException {
+    protected void addChildResources(String folderName) throws CmsImportExportException, IOException, SAXException {
         
-        // collect channel id information
-        String channelId = getCms().readFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION).getResourceId().toString();
-        if (channelId != null) {
-            getExportedChannelIds().add(channelId);
+        try {
+            // collect channel id information
+            String channelId = getCms().readFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION).getResourceId().toString();
+            if (channelId != null) {
+                getExportedChannelIds().add(channelId);
+            }
+            
+            // continue with super implementation
+            super.addChildResources(folderName);
+        } catch (CmsImportExportException e) {
+            
+            throw e;
+        } catch (CmsException e) {
+            
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_ADDING_CHILD_RESOURCES_1, folderName);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+            
+            throw new CmsImportExportException(message, e);
         }
-        
-        // continue with super implementation
-        super.addChildResources(folderName);
     }
 
     /**
