@@ -361,7 +361,7 @@ a.navleftactive:hover { color: <%= navLeftFont %>; text-decoration: underline; }
 
 /* Side element styles */
 div.sidelist {
-	margin: 5px; 
+	margin: 5px 5px 5px 0px;
 	border: 1px solid <%= contentBorder %>; 
 	text-align: left; 
 	clear: both;
