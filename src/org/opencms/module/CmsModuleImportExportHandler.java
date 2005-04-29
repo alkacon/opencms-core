@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,12 @@ package org.opencms.module;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImport;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
@@ -60,6 +62,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -69,11 +72,14 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2005/04/24 11:20:32 $
+ * @version $Revision: 1.9 $ $Date: 2005/04/29 15:00:35 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleImportExportHandler.class);
+    
     /** The name of the module import project. */
     public static final String C_IMPORT_MODULE_PROJECT_NAME = "ImportModule";
 
@@ -140,11 +146,13 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             digester.parse(stream);    
             
         } catch (IOException e) {
-            OpenCms.getLog(CmsModuleImportExportHandler.class).error("IO error reading module import", e);
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR, e);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_0);
+            LOG.error(message, e);
+            throw new CmsConfigurationException(message, e);            
         } catch (SAXException e) {
-            OpenCms.getLog(CmsModuleImportExportHandler.class).error("SAX error reading module import", e);
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR, e);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_SAX_MODULE_IMPORT_0);
+            LOG.error(message, e);
+            throw new CmsConfigurationException(message, e);
         } finally {
             try {
                 if (importZip != null) {
@@ -162,8 +170,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         
         // the digester must have set the module now
         if (importedModule == null) {
-            throw new CmsConfigurationException("Could not import module from source '" + importResource + "' is already installed", CmsConfigurationException.C_CONFIGURATION_ERROR);                    
-        }       
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_IMPORT_MOD_ALREADY_INSTALLED_1, importResource));
+        }     
+        
 
         return importedModule;
     }
@@ -185,7 +194,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                         
         if (! OpenCms.getModuleManager().hasModule(getModuleName())) {
             // module not available
-            throw new CmsConfigurationException("No module '" + getModuleName() + "' available for export", CmsConfigurationException.C_CONFIGURATION_ERROR);
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_MOD_FOR_EXPORT_1, getModuleName()));
         }
         
         // generate module XML
@@ -416,7 +425,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         
         // check if the module is already istalled
         if (OpenCms.getModuleManager().hasModule(importedModule.getName())) {
-            throw new CmsConfigurationException("The module '" + importedModule.getName() + "' is already installed", CmsConfigurationException.C_CONFIGURATION_ERROR);        
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MOD_ALREADY_INSTALLED_1, importedModule.getName()));
         }
 
         // check the module dependencies
@@ -427,9 +436,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             Iterator it = dependencies.iterator();
             while (it.hasNext()) {
                 CmsModuleDependency dependency = (CmsModuleDependency)it.next();
-                missingModules += "Module: " + dependency.getName() + " Version: " + dependency.getVersion() + "\n";                
+                missingModules += Messages.get().key(Messages.ERR_MOD_DEPENDENCY_INFO_2, dependency.getName(), dependency.getVersion());
             }
-            throw new CmsConfigurationException("The following dependencies for the module are not fulfilled:\n" + missingModules, CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);
+            throw new CmsConfigurationException(Messages.get().key(Messages.ERR_MOD_DEPENDENCY_INFO_2, missingModules));
         }
 
         //  add the imported module to the module manager

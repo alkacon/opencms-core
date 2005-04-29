@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchException.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,33 +41,11 @@ import org.opencms.main.CmsException;
  * <code>org.opencms.search</code> package.
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2005/04/28 08:28:48 $
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @version $Revision: 1.8 $ $Date: 2005/04/29 15:00:35 $
  * @since 5.3.1
  */
 public class CmsSearchException extends CmsException {
-
-    /**
-     * Constructs a CmsSearchException with the specified detail message.<p>
-     * 
-     * @param message the detail message
-     */
-    public CmsSearchException(String message) {
-
-        super(message, 0);
-    }
-
-    /**
-     * Constructs a CmsSearchException with the specified detail message
-     * and adds the original exception as a delegated root cause.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the delegated exception
-     */
-    public CmsSearchException(String message, Throwable rootCause) {
-
-        super(message, 0, rootCause);
-    }
-    
     
     /**
      * Creates a new localized Exception.<p>

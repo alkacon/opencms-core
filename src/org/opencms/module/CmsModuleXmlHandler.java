@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/04/28 14:48:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -65,6 +66,9 @@ import org.dom4j.Element;
  * @since 5.3.6
  */
 public class CmsModuleXmlHandler {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);  
 
     /** The "name" attribute. */
     protected static final String A_NAME = "name";
@@ -410,8 +414,9 @@ public class CmsModuleXmlHandler {
         CmsModuleDependency dependency = new CmsModuleDependency(name, moduleVersion);
         m_dependencies.add(dependency);
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Added module dependency to name: " + name + " version: " + version);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
         }
     }
 
@@ -443,9 +448,9 @@ public class CmsModuleXmlHandler {
         
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Adding export point  : " + point.getUri() + " --> " + point.getDestinationPath());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_ADD_EXPORT_POINT_2, point.getUri(), point.getDestinationPath()));
         }
     }
 
@@ -458,8 +463,9 @@ public class CmsModuleXmlHandler {
     public void addParameter(String key, String value) {
 
         m_parameters.put(key, value);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Added module parameter key: " + key + " value: " + value);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
         }
     }
 
@@ -470,8 +476,9 @@ public class CmsModuleXmlHandler {
      */
     public void addResource(String resource) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Added module resource: " + resource);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_ADD_MOD_RESOURCE_1, resource));
         }
         m_resources.add(resource);
     }
@@ -519,9 +526,11 @@ public class CmsModuleXmlHandler {
 
         if (!CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
-            OpenCms.getLog(this).error("Invalid module name imported: '" + name + "'");
+            LOG.error(Messages.get().key(
+                Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
             moduleName = makeValidJavaClassName(name);
-            OpenCms.getLog(this).error("Corrected module name is: '" + moduleName + "'");
+            LOG.error(Messages.get().key(
+                Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));            
         } else {
             moduleName = name;
         }
@@ -598,8 +607,8 @@ public class CmsModuleXmlHandler {
     public void setOldModule() {
 
         m_oldModule = true;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Imported module is an old (5.0.x) style module.");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_OLD_MODULE_IMPORTED_0));
         }
     }
 

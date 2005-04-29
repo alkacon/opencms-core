@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,11 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Simple base implementation of the {@link I_CmsModuleAction} interface,
@@ -47,13 +50,16 @@ import org.opencms.report.I_CmsReport;
  */
 public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsModuleAction.class);  
+
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(this.getClass().getName() + " caugth event: " + event.getType());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_EVENT_CAUGHT_2, this.getClass().getName(), new Integer(event.getType())));
         }
     }
 
@@ -62,9 +68,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
      */
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " initialized");
-        }      
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_MODULE_INITIALIZED_2, module.getName(), this.getClass().getName()));
+        }        
     }
     
     /**
@@ -72,9 +78,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
      */
     public void moduleUninstall(CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " uninstalled");
-        }        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_MODULE_UNINSTALLED_2, module.getName(), this.getClass().getName()));
+        } 
     }    
     
     /**
@@ -82,9 +88,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
      */
     public void moduleUpdate(CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " updated");
-        }         
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_MODULE_UPDATED_2, module.getName(), this.getClass().getName()));
+        } 
     }    
         
     /**
@@ -92,9 +98,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
      */
     public void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(this.getClass().getName() + " publishing");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_1, this.getClass().getName()));
+        }         
     }
 
     /**

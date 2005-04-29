@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailTransport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,11 @@
  
 package org.opencms.mail;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import javax.mail.MessagingException;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.mail.Email;
 
 /**
@@ -42,10 +43,13 @@ import org.apache.commons.mail.Email;
  * continue without waiting for the mail to be send.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsMailTransport extends Thread {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMailTransport.class);  
+    
     /** The email to be send. */
     private Email m_email;
     
@@ -67,8 +71,8 @@ public class CmsMailTransport extends Thread {
         try {
             m_email.send();
         } catch (MessagingException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error sending email", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_SEND_MAIL_ERR_0)  , e);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
@@ -94,19 +95,47 @@ public class CmsConfigurationException extends CmsException {
     }
     
     /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsConfigurationException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsConfigurationException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }     
+    
+    /**
      * Returns the description String for the provided CmsException type.<p>
      * 
      * @param type exception error code 
      * @return the description String for the provided CmsException type
-     */    
+     */
     protected String getErrorDescription(int type) {
-        switch (type) {
-            case C_CONFIGURATION_ERROR:
-                return "Error in the OpenCms configuration.";              
-            case C_CONFIGURATION_MODULE_DEPENDENCIES:
-                return "Module dependencies not fulfilled.";   
-            default:
-                return super.getErrorDescription(type);
+
+        if (m_message != null) {
+            // return the message of the CmsMessageContainer object, if it is set
+            return m_message.key();
+        } else {
+
+            switch (type) {
+                case C_CONFIGURATION_ERROR:
+                    return "Error in the OpenCms configuration.";
+                case C_CONFIGURATION_MODULE_DEPENDENCIES:
+                    return "Module dependencies not fulfilled.";
+                default:
+                    return super.getErrorDescription(type);
+            }
         }
-    }
+    }        
 }

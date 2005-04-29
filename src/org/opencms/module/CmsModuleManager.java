@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Manages the modules of an OpenCms installation.<p>
  * 
@@ -63,6 +65,9 @@ import java.util.Set;
  */
 public class CmsModuleManager {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleManager.class); 
+    
     /** Indicates dependency check for module deletion. */
     public static final int C_DEPENDENCY_MODE_DELETE = 0;
 
@@ -85,23 +90,22 @@ public class CmsModuleManager {
      */
     public CmsModuleManager(List configuredModules) {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Module configuration : created module manager");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_MOD_MANAGER_CREATED_0));
         }
 
         m_modules = new HashMap();
         for (int i = 0; i < configuredModules.size(); i++) {
             CmsModule module = (CmsModule)configuredModules.get(i);
             m_modules.put(module.getName(), module);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Module configuration : configured module " + module.getName());
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_MOD_CONFIGURED_1, module.getName()));
             }
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Module configuration : " + m_modules.size() + " modules configured");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
         }
         m_moduleActionInstances = new HashMap();
         m_moduleExportPoints = Collections.EMPTY_SET;
@@ -127,8 +131,9 @@ public class CmsModuleManager {
             throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
         }
 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Creating new module '" + module.getName() + "'");
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
+                Messages.LOG_CREATE_NEW_MOD_1, module.getName()));
         }
 
         m_modules.put(module.getName(), module);
@@ -140,9 +145,8 @@ public class CmsModuleManager {
                 moduleAction.moduleUpdate(module);
             }
         } catch (Throwable t) {
-            OpenCms.getLog(this).error(
-                "Error during module action instance update for module '" + module.getName() + "'",
-                t);
+            LOG.error(Messages.get().key(
+                Messages.LOG_MOD_UPDATE_ERR_1, module.getName()), t);
         }
 
         // initialize the export points
@@ -226,8 +230,9 @@ public class CmsModuleManager {
             throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
         }
 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Deleting module '" + moduleName + "'");
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
+                Messages.LOG_DEL_MOD_1, moduleName));
         }
 
         CmsModule module;
@@ -247,7 +252,8 @@ public class CmsModuleManager {
             // perform dependency check
             List dependencies = checkDependencies(module, C_DEPENDENCY_MODE_DELETE);
             if (!dependencies.isEmpty()) {
-                throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);
+                throw new CmsConfigurationException(Messages.get().container(
+                    Messages.ERR_MOD_DEPENDENCIES_0));                
             }
             try {
                 I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
@@ -258,9 +264,8 @@ public class CmsModuleManager {
                     m_moduleActionInstances.remove(moduleName);
                 }
             } catch (Throwable t) {
-                OpenCms.getLog(this).error(
-                    "Error during module action instance uninstall for module '" + moduleName + "'",
-                    t);
+                LOG.error(Messages.get().key(
+                    Messages.LOG_MOD_UNINSTALL_ERR_1, moduleName), t);
             }
         }
 
@@ -272,8 +277,9 @@ public class CmsModuleManager {
             String currentResource = null;
             try {
                 currentResource = (String)module.getResources().get(i);
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Deleting module resource '" + currentResource + "'");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                 }
                 // lock the resource
                 cms.lockResource(currentResource);
@@ -286,7 +292,8 @@ public class CmsModuleManager {
                 cms.unlockResource(currentResource);
             } catch (CmsException e) {
                 // ignore the exception and delete the next resource
-                OpenCms.getLog(this).error("Exception deleting module resource '" + currentResource + "'", e);
+                LOG.error(Messages.get().key(
+                    Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
                 report.println(e);
             }
         }
@@ -398,29 +405,25 @@ public class CmsModuleManager {
                 try {
                     moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
                 } catch (InstantiationException e) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". Module configuration : could not create instance for module " + module.getName(),
-                        e);
+                    CmsLog.LOG.info(Messages.get().key(
+                        Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 } catch (IllegalAccessException e) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". Module configuration : could not create instance for module " + module.getName(),
-                        e);
+                    CmsLog.LOG.info(Messages.get().key(
+                        Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 } catch (ClassNotFoundException e) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". Module configuration : could not create instance for module " + module.getName(),
-                        e);
+                    CmsLog.LOG.info(Messages.get().key(
+                        Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 } catch (ClassCastException e) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". Module configuration : could not create instance for module " + module.getName(),
-                        e);
+                    CmsLog.LOG.info(Messages.get().key(
+                        Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 }
 
                 if (moduleAction != null) {
                     // store and initialize module action class    
                     m_moduleActionInstances.put(module.getName(), moduleAction);
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                            ". Module configuration : initializing module class " + moduleAction.getClass().getName());
+                    if (CmsLog.LOG.isInfoEnabled()) {
+                        CmsLog.LOG.info(Messages.get().key(
+                            Messages.INIT_INITIALIZE_MOD_CLASS_1, moduleAction.getClass().getName()));
                     }
                     try {
                         // create a copy of the adminCms so that each module instance does have 
@@ -437,11 +440,8 @@ public class CmsModuleManager {
                         // initialize the module
                         moduleAction.initialize(adminCmsCopy, configurationManager, module);
                     } catch (Throwable t) {
-                        OpenCms.getLog(this).error(
-                            "Error during module action instance initialize for class '"
-                                + moduleAction.getClass().getName()
-                                + "'",
-                            t);
+                        LOG.error(Messages.get().key(
+                            Messages.LOG_INSTANCE_INIT_ERR_1, moduleAction.getClass().getName()), t);
                     }
                 }
             }
@@ -450,9 +450,9 @@ public class CmsModuleManager {
         // initialize the export points
         initModuleExportPoints();
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Module configuration : " + m_moduleActionInstances.size() + " module classes initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(m_moduleActionInstances.size())));
         }
     }
 
@@ -469,30 +469,25 @@ public class CmsModuleManager {
             // get the module action instance            
             I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
 
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Module configuration : shutting down module class " + moduleAction.getClass().getName());
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(
+                    Messages.INIT_SHUTDOWN_MOD_CLASS_1, moduleAction.getClass().getName()));
             }
             try {
                 // shut down the module
                 moduleAction.shutDown(module);
             } catch (Throwable t) {
-                OpenCms.getLog(this).error(
-                    "Error during module action instance shutDown for class '"
-                        + moduleAction.getClass().getName()
-                        + "'",
-                    t);
+                LOG.error(Messages.get().key(
+                    Messages.LOG_INSTANCE_SHUTDOWN_ERR_1, moduleAction.getClass().getName()), t);
             }
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Module configuration : " + m_moduleActionInstances.size() + " module classes have been shut down");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1, new Integer(m_moduleActionInstances.size())));
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
     }
 
@@ -515,11 +510,13 @@ public class CmsModuleManager {
 
         if (oldModule == null) {
             // module is not currently configured, no update possible
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_OLD_MOD_ERR_1, module.getName()));
         }
 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Updating module '" + module.getName() + "'");
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
+                Messages.LOG_MOD_UPDATE_1, module.getName()));
         }
 
         if (oldModule.getVersion().compareTo(module.getVersion()) == 0) {
@@ -539,9 +536,8 @@ public class CmsModuleManager {
                 moduleAction.moduleUpdate(module);
             }
         } catch (Throwable t) {
-            OpenCms.getLog(this).error(
-                "Error during module action instance update for module '" + module.getName() + "'",
-                t);
+            LOG.error(Messages.get().key(
+                Messages.LOG_INSTANCE_UPDATE_ERR_1, module.getName()), t);
         }
 
         // initialize the export points
@@ -564,15 +560,15 @@ public class CmsModuleManager {
             for (int j = 0; j < moduleExportPoints.size(); j++) {
                 CmsExportPoint point = (CmsExportPoint)moduleExportPoints.get(j);
                 if (exportPoints.contains(point)) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn(
-                            "Duplicate export point '" + point + "' in module '" + module.getName() + "'");
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().key(
+                            Messages.LOG_DUPLICATE_EXPORT_POINT_2, point, module.getName()));
                     }
                 } else {
                     exportPoints.add(point);
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug(
-                            "Adding export point '" + point + "' from module '" + module.getName() + "'");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(
+                            Messages.LOG_ADD_EXPORT_POINT_2, point, module.getName()));
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.module;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Describes an OpenCms module.<p>
@@ -55,6 +57,9 @@ import java.util.StringTokenizer;
  * @see org.opencms.module.A_CmsModuleAction
  */
 public class CmsModule implements Comparable {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModule.class);  
 
     /** The default date for module created / installed if not provided. */
     public static final long C_DEFAULT_DATE = 0L;
@@ -206,9 +211,9 @@ public class CmsModule implements Comparable {
         }
         // handle old style "additional resources" for backward compatiblity
         initOldAdditionalResources();
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Created module instance named '" + m_name + "'");
-        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
+        }  
         m_resourceTypes = Collections.EMPTY_LIST;
         m_explorerTypeSettings = Collections.EMPTY_LIST;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.47 $ $Date: 2005/04/19 17:20:51 $
+ * @version $Revision: 1.48 $ $Date: 2005/04/29 15:00:35 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -306,20 +306,21 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             m_maxUsagePercent = m_configuration.getMaxUsagePercent();
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_intervalLog / 1000) + " sec");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_intervalEmail / 1000) + " sec");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_intervalWarning / 1000) + " sec");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM max usage         : " + m_maxUsagePercent + "%");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            
+            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
+            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
+            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_WARNING_1, new Integer(m_intervalWarning / 1000)));
+            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, new Integer(m_intervalWarning / 1000)));
+
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email             : disabled");
+                CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_EMAIL_DISABLED_0));
             } else {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". MM email sender      : " + m_configuration.getEmailSender());
+                CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_EMAIL_SENDER_1, m_configuration.getEmailSender()));
                 Iterator i = m_configuration.getEmailReceiver().iterator();
                 int n = 0;
                 while (i.hasNext()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email receiver    : " + (n + 1) + " - " + i.next());
+                    CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n+1), i.next()));
                     n++;
                 }
             }
@@ -327,8 +328,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
-            LOG.debug(
-                " New instance of CmsMemoryMonitor created at " + (new Date(System.currentTimeMillis())));
+            
+            LOG.debug(Messages.get().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
         }
 
     }
@@ -422,8 +423,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
         m_lastClearCache = System.currentTimeMillis();
         if (LOG.isWarnEnabled()) {
-            LOG.warn("Clearing caches because memory consumption has reached a critical level");
-        }
+            LOG.warn(Messages.get().key(Messages.LOG_CLEAR_CACHE_MEM_CONS_0));
+        } 
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         System.gc();
     }
@@ -505,7 +506,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Caught throwable " + t.getMessage());
+                LOG.debug(Messages.get().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
             }
         }
 
@@ -588,7 +589,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Caught throwable " + t.getMessage());
+                LOG.debug(Messages.get().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
             }
         }
 
@@ -636,7 +637,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Caught throwable " + t.getMessage());
+                LOG.debug(Messages.get().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
             }
         }
 
@@ -799,7 +800,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 new CmsMailTransport(email).send();
             }
             if (LOG.isInfoEnabled()) {
-                LOG.info("Memory Monitor " + (warning ? "warning" : "status") + " email send");
+                if (warning) {
+                    LOG.info(Messages.get().key(Messages.LOG_MM_WARNING_EMAIL_SENT_0));
+                } else {
+                    LOG.info(Messages.get().key(Messages.LOG_MM_STATUS_EMAIL_SENT_0));
+                }    
             }
         } catch (Exception e) {
             e.printStackTrace();

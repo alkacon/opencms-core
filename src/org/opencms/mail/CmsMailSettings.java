@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailSettings.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/29 15:00:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,12 @@
 package org.opencms.mail;
 
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Contains the settings for the OpenCms mail service.<p>
@@ -45,7 +46,10 @@ import java.util.List;
  * @since 5.3
  */
 public class CmsMailSettings {
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMailSettings.class);  
+
     /** The default protocol for sending mail ("smtp"). */
     public static final String C_MAIL_DEFAULT_PROTOCOL = "smtp";
 
@@ -67,8 +71,8 @@ public class CmsMailSettings {
     public CmsMailSettings() {
         m_mailFromDefault = C_MAIL_DEFAULT_SENDER;
         m_mailHosts = new ArrayList();
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Empty constructor called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_EMPTY_CONSTRUCTOR_CALLED_1));
         }          
     }
     
@@ -94,8 +98,8 @@ public class CmsMailSettings {
         }
         CmsMailHost host = new CmsMailHost(hostname, theOrder, protocol, username, password);
         m_mailHosts.add(host);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Mail configuration   : added " + host);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.LOG_ADD_HOST_1, host));
         }           
         Collections.sort(m_mailHosts);
     }
@@ -135,8 +139,8 @@ public class CmsMailSettings {
      */
     public void setMailFromDefault(String sender) {
         m_mailFromDefault = sender;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Mail configuration   : default mail sender is '" + m_mailFromDefault + "'");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.LOG_DEFAULT_SENDER_1, m_mailFromDefault));
         }        
     }
 }
