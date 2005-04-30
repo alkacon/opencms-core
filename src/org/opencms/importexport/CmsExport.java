@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.59 $ $Date: 2005/04/29 15:54:15 $
+ * @version $Revision: 1.60 $ $Date: 2005/04/30 11:15:38 $
  */
 public class CmsExport implements Serializable {
     
@@ -956,10 +956,10 @@ public class CmsExport implements Serializable {
                 CmsUUID acePrincipal = ace.getPrincipal();
                 if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
                     // the principal is a group
-                    acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_GROUP + "." + getCms().readGroup(acePrincipal).getName();
+                    acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_GROUP + '.' + getCms().readGroup(acePrincipal).getName();
                 } else {
                     // the principal is a user
-                    acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_USER + "." + getCms().readUser(acePrincipal).getName();
+                    acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_USER + '.' + getCms().readUser(acePrincipal).getName();
                 }
     
                 a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);

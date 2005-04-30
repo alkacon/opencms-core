@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -246,7 +246,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
 
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_entryLruCache", m_variationCache);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_entryLruCache", m_variationCache);
         }
 
         if (m_enabled) {
@@ -254,7 +254,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             this.m_keyCache = Collections.synchronizedMap(hashMap);
 
             if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_resourceMap", hashMap);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceMap", hashMap);
             }
 
             OpenCms.addCmsEventListener(this, new int[] {

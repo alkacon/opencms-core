@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -209,12 +209,12 @@ public class CmsImportVersion2 extends A_CmsImport {
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(
-                    this.getClass().getName() + "." + "m_folderStorage",
+                    this.getClass().getName() + ".m_folderStorage",
                     m_folderStorage);
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_pageStorage", m_pageStorage);
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_linkStorage", m_linkStorage);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_pageStorage", m_pageStorage);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_linkStorage", m_linkStorage);
                 OpenCms.getMemoryMonitor().register(
-                    this.getClass().getName() + "." + "m_linkPropertyStorage",
+                    this.getClass().getName() + ".m_linkPropertyStorage",
                     m_linkPropertyStorage);
             }
         }
@@ -270,7 +270,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         + this.getClass().getName()
                         + ".convertContent()]: storing resource "
                         + source
-                        + ".");
+                        + '.');
                 }
                 // if the imported resource is a page, store its path inside the VFS for later
                 // integration with its body

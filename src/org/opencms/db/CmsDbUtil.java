@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -137,7 +137,7 @@ public final class CmsDbUtil extends Object {
      */
     public static synchronized int nextId(String dbPoolUrl, String tableName) throws CmsDataAccessException {
 
-        String cacheKey = dbPoolUrl + "." + tableName;
+        String cacheKey = dbPoolUrl + '.' + tableName;
 
         // generated primary keys are cached!
         if (c_currentId.containsKey(cacheKey)) {

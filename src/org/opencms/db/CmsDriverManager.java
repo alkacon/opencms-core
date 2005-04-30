@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.485 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.486 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.485 $ $Date: 2005/04/26 13:20:51 $
+ * @version $Revision: 1.486 $ $Date: 2005/04/30 11:15:38 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -471,7 +471,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             + dbc.currentUser().getFirstname()
             + " "
             + dbc.currentUser().getLastname()
-            + ".");
+            + '.');
     }
 
     /**
@@ -2696,7 +2696,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 + dbc.currentUser().getFirstname()
                 + " "
                 + dbc.currentUser().getLastname()
-                + ".");
+                + '.');
         }
     }
 
@@ -2743,7 +2743,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             + newUser.getFirstname()
             + " "
             + newUser.getLastname()
-            + ".");
+            + '.');
     }
 
     /**
@@ -3656,49 +3656,49 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         LRUMap hashMap = new LRUMap(settings.getUserCacheSize());
         m_userCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_userCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getGroupCacheSize());
         m_groupCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_groupCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_groupCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getUserGroupsCacheSize());
         m_userGroupsCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_userGroupsCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userGroupsCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getProjectCacheSize());
         m_projectCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_projectCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_projectCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getResourceCacheSize());
         m_resourceCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_resourceCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getResourcelistCacheSize());
         m_resourceListCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_resourceListCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceListCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getPropertyCacheSize());
         m_propertyCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_propertyCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_propertyCache", hashMap);
         }
 
         hashMap = new LRUMap(settings.getAclCacheSize());
         m_accessControlListCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_accessControlListCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_accessControlListCache", hashMap);
         }
 
         getProjectDriver().fillDefaults(new CmsDbContext());
@@ -4398,7 +4398,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             + dbc.currentUser().getFirstname()
             + " "
             + dbc.currentUser().getLastname()
-            + ".");
+            + '.');
     }
 
     /**
@@ -6242,7 +6242,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             + dbc.currentUser().getFirstname()
             + " "
             + dbc.currentUser().getLastname()
-            + ".");
+            + '.');
     }
 
     /**
@@ -6341,7 +6341,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             + dbc.currentUser().getFirstname()
             + " "
             + dbc.currentUser().getLastname()
-            + ".");
+            + '.');
     }
 
     /**
@@ -6380,7 +6380,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             + dbc.currentUser().getFirstname()
             + " "
             + dbc.currentUser().getLastname()
-            + ".");
+            + '.');
     }
 
     /**

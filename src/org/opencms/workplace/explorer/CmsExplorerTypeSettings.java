@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/04/18 09:39:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -175,7 +175,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     public void createContextMenu() {
         m_contextMenu.addEntries(getContextMenuEntries());        
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Creating context menu for " + getName() + ".");
+            OpenCms.getLog(this).debug("Creating context menu for " + getName() + '.');
         }     
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -123,9 +123,9 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
 
         StringBuffer result = new StringBuffer(128);
         result.append(value.getTypeName());
-        result.append(".");       
+        result.append('.');       
         result.append(value.getPath());
-        result.append(".");
+        result.append('.');
         result.append(value.getIndex());
         return result.toString();
     }
@@ -164,7 +164,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             contentDefinitionName = contentDefintion.getName();
         }
         // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value.getElementName() + "." + C_HELP_POSTFIX;
+        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value.getElementName() + '.' + C_HELP_POSTFIX;
         String locValue = widgetDialog.key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
@@ -203,7 +203,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             contentDefinitionName = contentDefintion.getName();
         }
         // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value.getElementName() + "." + C_HELP_POSTFIX;
+        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value.getElementName() + '.' + C_HELP_POSTFIX;
         String locValue = widgetDialog.key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
@@ -258,7 +258,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             contentDefinitionName = contentDefintion.getName();
         }
         // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value;
+        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value;
         return widgetDialog.key(locKey, value);
     }    
 }

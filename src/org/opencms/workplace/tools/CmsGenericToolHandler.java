@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsGenericToolHandler.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Map;
  * </ul>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsGenericToolHandler extends A_CmsToolHandler {
@@ -136,6 +136,7 @@ public class CmsGenericToolHandler extends A_CmsToolHandler {
         }
         setHelpText((String)argsMap.get(C_PARAM_HELPTEXT));
         if (getName().equals("${key.admin.view.name}")) {
+            int todo;
             // TODO: remove this admin-main case ASAP...
             setPath("/");
             setGroup(".");

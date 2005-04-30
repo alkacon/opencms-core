@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -198,7 +198,7 @@ public class CmsModuleVersion implements Comparable {
             number = number / 1000L;
             if (m_dots >= (4 - i)) {
                 if (m_dots > (4 - i)) {
-                    result = "." + result;
+                    result = '.' + result;
                 } 
                 result = "" + mod + result;
             }

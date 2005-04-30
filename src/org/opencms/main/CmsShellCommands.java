@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -88,52 +88,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     protected CmsShellCommands() {
 
         // noop
-    }
-
-    /**
-     * Creates a new user.<p>
-     * 
-     * @param name the name for the new user
-     * @param password the password for the new user
-     * @param description the description for the new user
-     * 
-     * @throws Exception if something goes wrong
-     * @see CmsObject#createUser(String, String, String, Hashtable)
-     * @return the created user
-     */
-    public CmsUser createUser(String name, String password, String description) throws Exception {
-
-        return m_cms.createUser(name, password, description, new Hashtable());
-    }
-
-    /**
-     * Creates a user with some additional information.<p>
-     *
-     * @param name the name of the new user
-     * @param password the password 
-     * @param description the description
-     * @param firstname the users first name 
-     * @param lastname the users he last name
-     * @param email the users email address
-     * @return the created user
-     * 
-     * @throws Exception if something goes wrong
-     * @see CmsObject#createUser(String, String, String, Hashtable)
-     */
-    public CmsUser createUser(
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email) throws Exception {
-
-        CmsUser user = m_cms.createUser(name, password, description, new Hashtable());
-        user.setEmail(email);
-        user.setFirstname(firstname);
-        user.setLastname(lastname);
-        m_cms.writeUser(user);
-        return user;
     }
 
     /**
@@ -277,6 +231,52 @@ class CmsShellCommands implements I_CmsShellCommands {
     public CmsPropertyDefinition createPropertydefinition(String name) throws Exception {
 
         return m_cms.createPropertyDefinition(name);
+    }
+
+    /**
+     * Creates a new user.<p>
+     * 
+     * @param name the name for the new user
+     * @param password the password for the new user
+     * @param description the description for the new user
+     * 
+     * @throws Exception if something goes wrong
+     * @see CmsObject#createUser(String, String, String, Hashtable)
+     * @return the created user
+     */
+    public CmsUser createUser(String name, String password, String description) throws Exception {
+
+        return m_cms.createUser(name, password, description, new Hashtable());
+    }
+
+    /**
+     * Creates a user with some additional information.<p>
+     *
+     * @param name the name of the new user
+     * @param password the password 
+     * @param description the description
+     * @param firstname the users first name 
+     * @param lastname the users he last name
+     * @param email the users email address
+     * @return the created user
+     * 
+     * @throws Exception if something goes wrong
+     * @see CmsObject#createUser(String, String, String, Hashtable)
+     */
+    public CmsUser createUser(
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email) throws Exception {
+
+        CmsUser user = m_cms.createUser(name, password, description, new Hashtable());
+        user.setEmail(email);
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        m_cms.writeUser(user);
+        return user;
     }
 
     /**
@@ -713,7 +713,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                     maxTime = time;
                 }
                 if ((i % 100) == 0) {
-                    System.out.print(".");
+                    System.out.print('.');
                 }
             }
             System.out.println("\nreadFileHeader:\t"
@@ -772,8 +772,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public String readFileContent(String filename) throws CmsException {
 
-        filename = CmsLinkManager.getAbsoluteUri(filename, CmsResource
-            .getFolderPath(m_cms.getRequestContext().getUri()));
+        filename = CmsLinkManager.getAbsoluteUri(
+            filename,
+            CmsResource.getFolderPath(m_cms.getRequestContext().getUri()));
         CmsFile file = m_cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         return new String(file.getContents());
     }

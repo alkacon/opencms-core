@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/04/28 08:10:57 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2379,7 +2379,7 @@ public final class CmsSecurityManager {
         LRUMap hashMap = new LRUMap(settings.getPermissionCacheSize());
         m_permissionCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_permissionCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_permissionCache", hashMap);
         }
 
         try {

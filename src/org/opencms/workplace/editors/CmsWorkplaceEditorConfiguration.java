@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.1
  */
@@ -145,7 +145,7 @@ public class CmsWorkplaceEditorConfiguration {
             try {
                 ranking = Float.parseFloat(currentType.elementText(C_NODE_RANKING));
             } catch (Throwable t) {
-                logConfigurationError("Invalid ranking for resource type " + name + ".", t);
+                logConfigurationError("Invalid ranking for resource type " + name + '.', t);
                 continue;
             }
             String mapTo = currentType.elementText(C_NODE_MAPTO);
@@ -165,14 +165,14 @@ public class CmsWorkplaceEditorConfiguration {
                 I_CmsEditorTypeMatcher matcher = (I_CmsEditorTypeMatcher)Class.forName(name).newInstance();
                 assignedTypes = matcher.getAdditionalResourceTypes();           
            } catch (Throwable t) {
-                logConfigurationError("Invalid class for resource type " + name + ".", t);
+                logConfigurationError("Invalid class for resource type " + name + '.', t);
                 continue;
            }
            float ranking;
            try {
                ranking = Float.parseFloat(currentClass.elementText(C_NODE_RANKING));
            } catch (Throwable t) {
-               logConfigurationError("Invalid ranking for resource type " + name + ".", t);
+               logConfigurationError("Invalid ranking for resource type " + name + '.', t);
                continue;
            }
            String mapTo = currentClass.elementText(C_NODE_MAPTO);
@@ -202,7 +202,7 @@ public class CmsWorkplaceEditorConfiguration {
                 try {
                     pattern.add(Pattern.compile(agentName));
                 } catch (PatternSyntaxException e) {
-                    logConfigurationError("Error in regular expression " + agentName + ".", e);
+                    logConfigurationError("Error in regular expression " + agentName + '.', e);
                 }
             } else {
                 logConfigurationError("Invalid user agent definition.", null);

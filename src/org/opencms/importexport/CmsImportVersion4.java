@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -543,7 +543,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                                 currentEntry,
                                 I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
                             String principalId = new CmsUUID().toString();
-                            String principal = id.substring(id.indexOf(".") + 1, id.length());
+                            String principal = id.substring(id.indexOf('.') + 1, id.length());
 
                             try {
                                 if (id.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {

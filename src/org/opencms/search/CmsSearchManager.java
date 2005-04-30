@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.lucene.search.Similarity;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.36 $ $Date: 2005/04/28 08:28:48 $
+ * @version $Revision: 1.37 $ $Date: 2005/04/30 11:15:38 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -385,7 +385,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_resultCache = Collections.synchronizedMap(hashMap);
 
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_resultCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resultCache", hashMap);
         }
 
         initAvailableDocumentTypes();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * Explorer type access object, encapsulates access control entires and lists of a explorer type.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsExplorerTypeAccess {
 
@@ -92,7 +92,7 @@ public class CmsExplorerTypeAccess {
             String value = (String)m_accessControl.get(key);
             CmsUUID principalId = new CmsUUID();
             // get the principal name from the principal String
-            String principal = key.substring(key.indexOf(".") + 1, key.length());
+            String principal = key.substring(key.indexOf('.') + 1, key.length());
     
             if (key.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
                 // read the group

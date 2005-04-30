@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/layout/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/04/19 08:59:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateContentListItem {
     
@@ -71,7 +71,7 @@ public class CmsTemplateContentListItem {
     public static final String LISTVARIATION_SHORT = "short";
     
     /** The possible list variations for a content type. */
-    public static final String[] LISTVARIATIONS = {"", "." + LISTVARIATION_LONG, "." + LISTVARIATION_SHORT};
+    public static final String[] LISTVARIATIONS = {"", '.' + LISTVARIATION_LONG, '.' + LISTVARIATION_SHORT};
     
     /** Macro used in property definition names to resolve the list index. */
     public static final String MACRO_LISTINDEX = "index";
@@ -132,7 +132,7 @@ public class CmsTemplateContentListItem {
                     String area = DISPLAYAREAS[k];
                     String typeName = type.getTypeName();
                     StringBuffer keyPrefix = new StringBuffer(8);
-                    keyPrefix.append("layout.").append(typeName).append(".").append(area).append(".");
+                    keyPrefix.append("layout.").append(typeName).append('.').append(area).append('.');
                     // get collector default
                     String key = keyPrefix + PARAM_COLLECTOR;
                     String value = messages.key(key);
@@ -189,7 +189,7 @@ public class CmsTemplateContentListItem {
             listItem.setType(type);
             // create workplace messages key prefix
             StringBuffer keyPrefix = new StringBuffer(8);
-            keyPrefix.append("layout.").append(type).append(".").append(displayArea).append(".");
+            keyPrefix.append("layout.").append(type).append('.').append(displayArea).append('.');
             // determine the collector name to use
             String collector = (String)properties.get(resolver.resolveMacros(PROPERTY_LAYOUT_COLLECTOR));
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(collector)) {
@@ -219,7 +219,7 @@ public class CmsTemplateContentListItem {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(variation)) {
                 variation = "";
             } else {
-                variation = "." + variation;
+                variation = '.' + variation;
             }
             // set the JSP element uri creating the list considering the list variation
             String listElement = (String)defaultValues.get(keyPrefix + PARAM_LISTELEMENT + variation);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/04/29 16:02:25 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -57,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsLinkManager {
 
@@ -377,77 +376,67 @@ public class CmsLinkManager {
 
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
 
+            CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
             // check if we need relative links in the exported pages
-            if (OpenCms.getStaticExportManager().relativLinksInExport()) {
+            if (exportManager.relativLinksInExport()) {
                 // try to get base uri from cache  
-                uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(
-                    OpenCms.getStaticExportManager().getCacheKey(
-                        cms.getRequestContext().getSiteRoot(),
-                        cms.getRequestContext().getUri()));
+                uriBaseName = exportManager.getCachedOnlineLink(exportManager.getCacheKey(
+                    cms.getRequestContext().getSiteRoot(),
+                    cms.getRequestContext().getUri()));
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
-                    if (exportRequired(cms, cms.getRequestContext().getUri())) {
+                    if (exportManager.isExportLink(cms, cms.getRequestContext().getUri())) {
                         // base uri must also be exported
-                        uriBaseName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getUri());
+                        uriBaseName = exportManager.getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
                         // base uri dosn't need to be exported
-                        uriBaseName = OpenCms.getStaticExportManager().getVfsPrefix()
-                            + cms.getRequestContext().getUri();
+                        uriBaseName = exportManager.getVfsPrefix() + cms.getRequestContext().getUri();
                     }
                     // cache export base uri
-                    OpenCms.getStaticExportManager().cacheOnlineLink(
-                        OpenCms.getStaticExportManager().getCacheKey(
-                            cms.getRequestContext().getSiteRoot(),
-                            cms.getRequestContext().getUri()),
-                        uriBaseName);
+                    exportManager.cacheOnlineLink(exportManager.getCacheKey(
+                        cms.getRequestContext().getSiteRoot(),
+                        cms.getRequestContext().getUri()), uriBaseName);
                 }
                 // use relative links only on pages that get exported 
                 useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix());
             }
 
             // check if we have the absolute vfs name for the link target cached
-            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(
-                cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
+            resultLink = exportManager.getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
             if (resultLink == null) {
                 // didn't find the link in the cache
-                if (exportRequired(cms, vfsName)) {
+                if (exportManager.isExportLink(cms, vfsName)) {
                     // export required, get export name for target link
                     if (parameters != null) {
                         // external link with parameters, so get translated rfsName
-                        resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, parameters);
+                        resultLink = exportManager.getRfsName(cms, vfsName, parameters);
                         // now set the parameters to null, we do not need them anymore
                         parameters = null;
                     } else {
-                        resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                        resultLink = exportManager.getRfsName(cms, vfsName);
                     }
                 } else {
                     // no export required for the target link
-                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+                    resultLink = exportManager.getVfsPrefix().concat(vfsName);
                     // add cut off parameters if required
                     if (parameters != null) {
                         resultLink = resultLink.concat(parameters);
                     }
                 }
                 // cache the result
-                OpenCms.getStaticExportManager().cacheOnlineLink(
-                    cms.getRequestContext().getSiteRoot() + ":" + absoluteLink,
-                    resultLink);
+                exportManager.cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);
             }
 
             // read only properties, if the current site and the target site both do have a secure server
             if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
                 if (!link.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
-                    boolean secureLink = false;
-                    boolean secureRequest = false;
 
                     int linkType = -1;
+                    // check the secure property of the link
+                    boolean secureLink = exportManager.isSecureLink(cms, link, siteRoot);
+                    boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                     try {
-                        // read the secure property of the link and the current document
-                        secureLink = OpenCms.getStaticExportManager().isSecureLink(cms, link, siteRoot);
-                        secureRequest = OpenCms.getStaticExportManager().isSecureLink(
-                            cms,
-                            cms.getRequestContext().getUri(),
-                            null);
+                        // read the linked resource 
                         linkType = cms.readResource(link).getTypeId();
                     } catch (CmsException e) {
                         // there are no access rights on the resource
@@ -490,43 +479,4 @@ public class CmsLinkManager {
         }
         return serverPrefix.concat(resultLink);
     }
-
-    /**
-     * Checks if the export is required for a given vfs resource.<p>
-     * 
-     * @param cmsParam the current cms context
-     * @param vfsName the vfs resource name to check
-     * @return true if export is required for the given vfsName
-     */
-    protected boolean exportRequired(CmsObject cmsParam, String vfsName) {
-
-        boolean result = false;
-        if (OpenCms.getStaticExportManager().isStaticExportEnabled()) {
-            try {
-                // static export must always be checked with the export users permissions,
-                // not the current users permissions
-                CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-                cms.getRequestContext().setSiteRoot(cmsParam.getRequestContext().getSiteRoot());
-                // let's look up export property in VFS
-                String exportValue = cms.readPropertyObject(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true).getValue();
-                if (exportValue == null) {
-                    // no setting found for "export" property
-                    if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {
-                        // if the default is "true" we always export
-                        result = true;
-                    } else {
-                        // check if the resource is exportable by suffix
-                        result = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
-                    }
-                } else {
-                    // "export" value found, if it was "true" we export
-                    result = Boolean.valueOf(exportValue).booleanValue();
-                }
-            } catch (Throwable t) {
-                // no export required (probably security issues, e.g. no access for export user)
-            }
-        }
-        return result;
-    }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/04/20 10:37:48 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,34 +74,35 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
  */
 public class CmsShell {
-    
+
     /**
      * Command object class.<p>
      */
     private class CmsCommandObject {
-        
+
         // The list of methods 
         private Map m_methods;
-        
+
         // The object to execute the methods on 
         private Object m_object;
-        
+
         /**
          * Creates a new command object.<p>
          * 
          * @param object the object to execute the methods on
          */
         protected CmsCommandObject(Object object) {
+
             m_object = object;
             initShellMethods();
         }
-        
+
         /**
          * Tries to execute a method for the provided parameters on this command object.<p>
          * 
@@ -113,30 +114,30 @@ public class CmsShell {
          * @return true if a method was executed, false otherwise
          */
         protected boolean executeMethod(String command, List parameters) {
-            
+
             // build the method lookup
-            String lookup = buildMethodLookup(command, parameters.size());  
-            
+            String lookup = buildMethodLookup(command, parameters.size());
+
             // try to look up the methods of this command object
             List possibleMethods = (List)m_methods.get(lookup);
             if (possibleMethods == null) {
                 return false;
             }
-            
+
             // a match for the mehod name was found, now try to figure out if the parameters are ok 
             Method onlyStringMethod = null;
             Method foundMethod = null;
             Object[] params = null;
             Iterator i;
-            
+
             // first check if there is one method with only has String parameters, make this the fallback
             i = possibleMethods.iterator();
             while (i.hasNext()) {
                 Method method = (Method)i.next();
                 Class[] clazz = method.getParameterTypes();
                 boolean onlyString = true;
-                for (int j=0; j<clazz.length; j++) {
-                    if (! (clazz[j].equals(String.class))) {
+                for (int j = 0; j < clazz.length; j++) {
+                    if (!(clazz[j].equals(String.class))) {
                         onlyString = false;
                         break;
                     }
@@ -146,7 +147,7 @@ public class CmsShell {
                     break;
                 }
             }
-            
+
             // now check a method matches the provided parameters
             // if so, use this method, else continue searching
             i = possibleMethods.iterator();
@@ -160,7 +161,7 @@ public class CmsShell {
                 Class[] clazz = method.getParameterTypes();
                 Object[] converted = new Object[clazz.length];
                 boolean match = true;
-                for (int j=0; j<clazz.length; j++) {
+                for (int j = 0; j < clazz.length; j++) {
                     String value = (String)parameters.get(j);
                     if (clazz[j].equals(String.class)) {
                         // no conversion required for String
@@ -192,23 +193,23 @@ public class CmsShell {
                             converted[j] = Long.valueOf(value);
                         } catch (NumberFormatException e) {
                             match = false;
-                        }                    
+                        }
                     } else if (clazz[j].equals(float.class)) {
                         // try to convert to float
                         try {
                             converted[j] = Float.valueOf(value);
                         } catch (NumberFormatException e) {
                             match = false;
-                        }                       
+                        }
                     } else if (clazz[j].equals(double.class)) {
                         // try to convert to double
                         try {
                             converted[j] = Double.valueOf(value);
                         } catch (NumberFormatException e) {
                             match = false;
-                        }                    
+                        }
                     }
-                    if (! match) {
+                    if (!match) {
                         break;
                     }
                 }
@@ -218,40 +219,40 @@ public class CmsShell {
                     foundMethod = method;
                     break;
                 }
-                
-            }        
-            
+
+            }
+
             if ((foundMethod == null) && (onlyStringMethod != null)) {
                 // no match found but String only signature available, use this
                 params = parameters.toArray();
                 foundMethod = onlyStringMethod;
             }
-            
+
             if (params == null) {
                 // no match found at all
                 return false;
             }
-            
+
             // now try to invoke the method
             try {
                 Object result = foundMethod.invoke(m_object, params);
                 if (result != null) {
                     if (result instanceof Collection) {
                         Collection c = (Collection)result;
-                        System.out.println(c.getClass().getName() + " (size: " + c.size() + ")");                                                    
+                        System.out.println(c.getClass().getName() + " (size: " + c.size() + ")");
                         int count = 0;
                         if (result instanceof Map) {
                             Map m = (Map)result;
                             Iterator j = m.keySet().iterator();
-                            while (j.hasNext()) {                    
+                            while (j.hasNext()) {
                                 Object key = j.next();
-                                System.out.println(count++ + ": " + key + "= " + m.get(key));                            
-                            }                       
+                                System.out.println(count++ + ": " + key + "= " + m.get(key));
+                            }
                         } else {
                             Iterator j = c.iterator();
                             while (j.hasNext()) {
-                                System.out.println(count++ + ": " + j.next());                            
-                            }                        
+                                System.out.println(count++ + ": " + j.next());
+                            }
                         }
                     } else {
                         System.out.println(result.toString());
@@ -262,12 +263,12 @@ public class CmsShell {
                 ite.getTargetException().printStackTrace(System.out);
             } catch (Throwable t) {
                 System.out.println("Exception while calling method '" + foundMethod.getName() + "'");
-                t.printStackTrace(System.out);            
+                t.printStackTrace(System.out);
             }
-            
+
             return true;
         }
-        
+
         /**
          * Returns a signature overview of all methods containing the given search String.<p>
          * 
@@ -277,6 +278,7 @@ public class CmsShell {
          * @return a signature overview of all methods containing the given search String
          */
         protected String getMethodHelp(String searchString) {
+
             StringBuffer buf = new StringBuffer(512);
             Iterator i = m_methods.keySet().iterator();
             while (i.hasNext()) {
@@ -284,14 +286,15 @@ public class CmsShell {
                 Iterator j = l.iterator();
                 while (j.hasNext()) {
                     Method method = (Method)j.next();
-                    if ((searchString == null) || (method.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
+                    if ((searchString == null)
+                        || (method.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
                         buf.append("* ");
                         buf.append(method.getName());
                         buf.append("(");
                         Class[] params = method.getParameterTypes();
                         for (int k = 0; k < params.length; k++) {
                             String par = params[k].getName();
-                            par = par.substring(par.lastIndexOf(".") + 1);
+                            par = par.substring(par.lastIndexOf('.') + 1);
                             if (k != 0) {
                                 buf.append(", ");
                             }
@@ -302,17 +305,18 @@ public class CmsShell {
                 }
             }
             return buf.toString();
-        }  
-        
+        }
+
         /**
          * Returns the object to execute the methods on.<p>
          * 
          * @return the object to execute the methods on
          */
         protected Object getObject() {
+
             return m_object;
         }
-        
+
         /**
          * Builds a method lookup String.<p>
          * 
@@ -321,64 +325,69 @@ public class CmsShell {
          * @return a method lookup String
          */
         private String buildMethodLookup(String methodName, int paramCount) {
+
             StringBuffer buf = new StringBuffer(32);
             buf.append(methodName.toLowerCase());
             buf.append(" [");
             buf.append(paramCount);
             buf.append("]");
             return buf.toString();
-        }        
-                
+        }
+
         /**
          * Initilizes the map of accessible methods.<p>
          */
         private void initShellMethods() {
-            Map result = new TreeMap();        
-            
+
+            Map result = new TreeMap();
+
             Method[] methods = m_object.getClass().getMethods();
             for (int i = 0; i < methods.length; i++) {
                 // only public methods directly declared in the base class can be used in the shell
-                if ((methods[i].getDeclaringClass() == m_object.getClass()) && (methods[i].getModifiers() == Modifier.PUBLIC)) {
-                    
+                if ((methods[i].getDeclaringClass() == m_object.getClass())
+                    && (methods[i].getModifiers() == Modifier.PUBLIC)) {
+
                     // check if the method signature only uses primitive data types
                     boolean onlyPrimitive = true;
                     Class[] clazz = methods[i].getParameterTypes();
-                    for (int j=0; j<clazz.length; j++) {
+                    for (int j = 0; j < clazz.length; j++) {
                         if (!((clazz[j].equals(String.class))
-                                || (clazz[j].equals(CmsUUID.class))
-                                || (clazz[j].equals(boolean.class))
-                                || (clazz[j].equals(int.class))
-                                || (clazz[j].equals(long.class))
-                                || (clazz[j].equals(double.class))
-                                || (clazz[j].equals(float.class)))) {
+                            || (clazz[j].equals(CmsUUID.class))
+                            || (clazz[j].equals(boolean.class))
+                            || (clazz[j].equals(int.class))
+                            || (clazz[j].equals(long.class))
+                            || (clazz[j].equals(double.class)) || (clazz[j].equals(float.class)))) {
                             // complex data type methods can not be called from the shell
                             onlyPrimitive = false;
                             break;
-                        }                
+                        }
                     }
-                    
-                    if (onlyPrimitive) {    
+
+                    if (onlyPrimitive) {
                         // add this method to the set of methods that can be called from the shell
                         String lookup = buildMethodLookup(methods[i].getName(), methods[i].getParameterTypes().length);
                         List l;
                         if (result.containsKey(lookup)) {
                             l = (List)result.get(lookup);
-                        } else {                   
+                        } else {
                             l = new ArrayList(1);
                         }
                         l.add(methods[i]);
                         result.put(lookup, l);
                     }
                 }
-            }    
+            }
             m_methods = result;
-        }        
+        }
     }
+
+    /** Additional shell commands object. */
+    private I_CmsShellCommands m_additionaShellCommands;
 
     /** The OpenCms context object. */
     private CmsObject m_cms;
 
-    /** All shell callable objects. */   
+    /** All shell callable objects. */
     private List m_commandObjects;
 
     /** If set to true, all commands are echoed. */
@@ -392,12 +401,9 @@ public class CmsShell {
 
     /** The shell prompt format. */
     private String m_prompt;
-    
+
     /** Internal shell command object. */
     private I_CmsShellCommands m_shellCommands;
-    
-    /** Additional shell commands object. */
-    private I_CmsShellCommands m_additionaShellCommands;
 
     /**
      * Creates a new CmsShell.<p>
@@ -406,20 +412,17 @@ public class CmsShell {
      * @param additionalShellCommands optional object for additional shell commands, or null
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
-    public CmsShell(
-        String webInfPath, 
-        String prompt, 
-        I_CmsShellCommands additionalShellCommands
-    ) {
-        setPrompt(prompt);       
-        
+    public CmsShell(String webInfPath, String prompt, I_CmsShellCommands additionalShellCommands) {
+
+        setPrompt(prompt);
+
         try {
             // first initialize runlevel 1 
             m_opencms = OpenCmsCore.getInstance();
             // search for the WEB-INF folder
             if (webInfPath == null || "".equals(webInfPath)) {
                 System.out.println("No OpenCms home folder given. Trying to guess...");
-                System.out.println();         
+                System.out.println();
                 webInfPath = m_opencms.searchWebInfFolder(System.getProperty("user.dir"));
                 if (webInfPath == null || "".equals(webInfPath)) {
                     System.err.println("-----------------------------------------------------------------------");
@@ -431,19 +434,19 @@ public class CmsShell {
                     return;
                 }
             }
-            System.out.println("OpenCms WEB-INF path:  " + webInfPath);            
+            System.out.println("OpenCms WEB-INF path:  " + webInfPath);
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
             m_opencms.getSystemInfo().init(webInfPath, "/opencms/*", null, "ROOT");
-            
+
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
             System.out.println("OpenCms property file: " + propertyPath);
-            System.out.println();            
-            ExtendedProperties configuration = CmsPropertyUtils.loadProperties(propertyPath); 
-            
+            System.out.println();
+            ExtendedProperties configuration = CmsPropertyUtils.loadProperties(propertyPath);
+
             // now upgrade to runlevel 2
-            m_opencms = m_opencms.upgradeRunlevel(configuration);  
-            
+            m_opencms = m_opencms.upgradeRunlevel(configuration);
+
             // create a context object with 'Guest' permissions
             m_cms = m_opencms.initCmsObject(m_opencms.getDefaultUsers().getUserGuest());
             // set the site root to the default site
@@ -452,7 +455,7 @@ public class CmsShell {
             // initialize shell command object
             m_shellCommands = new CmsShellCommands();
             m_shellCommands.initShellCmsObject(m_cms, this);
-            
+
             // initialize additional shell command object
             if (additionalShellCommands != null) {
                 m_additionaShellCommands = additionalShellCommands;
@@ -461,49 +464,34 @@ public class CmsShell {
             } else {
                 m_shellCommands.shellStart();
             }
-            
-            m_commandObjects = new ArrayList();            
+
+            m_commandObjects = new ArrayList();
             if (m_additionaShellCommands != null) {
                 // get all shell callable methods from the the additionsl shell command object
                 m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
             }
             // get all shell callable methods from the CmsShellCommands
-            m_commandObjects.add(new CmsCommandObject(m_shellCommands));          
+            m_commandObjects.add(new CmsCommandObject(m_shellCommands));
             // get all shell callable methods from the CmsRequestContext
-            m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext())); 
+            m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext()));
             // get all shell callable methods from the CmsObject
-            m_commandObjects.add(new CmsCommandObject(m_cms));                        
+            m_commandObjects.add(new CmsCommandObject(m_cms));
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
-    }   
-        
-    /**
-     * Starts this CmsShell.<p>
-     * 
-     * @param fileInputStream a (file) input stream from which commands are read
-     */    
-    public void start(
-        FileInputStream fileInputStream
-    ) { 
-        try {
-            // execute the commands from the input stream
-            executeCommands(fileInputStream);            
-        } catch (Throwable t) {
-            t.printStackTrace(System.err);
-        }
-    }   
-    
+    }
+
     /**
      * Main program entry point when started via the command line.<p>
      *
      * @param args parameters passed to the application via the command line
      */
     public static void main(String[] args) {
-        boolean wrongUsage = false;    
+
+        boolean wrongUsage = false;
         String webInfPath = null;
         String script = null;
-    
+
         if (args.length > 2) {
             wrongUsage = true;
         } else {
@@ -520,7 +508,9 @@ public class CmsShell {
             }
         }
         if (wrongUsage) {
-            System.out.println("Usage: java " + CmsShell.class.getName() + " [-base={path to WEB-INF}] [-script={scriptfile}]");
+            System.out.println("Usage: java "
+                + CmsShell.class.getName()
+                + " [-base={path to WEB-INF}] [-script={scriptfile}]");
         } else {
             FileInputStream stream = null;
             if (script != null) {
@@ -543,6 +533,7 @@ public class CmsShell {
      * Exits this shell and destroys the OpenCms instance.<p>
      */
     public void exit() {
+
         if (m_exitCalled) {
             return;
         }
@@ -555,23 +546,79 @@ public class CmsShell {
             }
         } catch (Throwable t) {
             t.printStackTrace();
-        }   
+        }
         try {
             m_opencms.shutDown();
         } catch (Throwable t) {
             t.printStackTrace();
-        }   
+        }
     }
-    
+
+    /**
+     * Prints the shell prompt.<p>
+     */
+    public void printPrompt() {
+
+        String prompt = m_prompt;
+        prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
+        prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
+        prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
+        prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
+        System.out.print(prompt);
+    }
+
+    /**
+     * Starts this CmsShell.<p>
+     * 
+     * @param fileInputStream a (file) input stream from which commands are read
+     */
+    public void start(FileInputStream fileInputStream) {
+
+        try {
+            // execute the commands from the input stream
+            executeCommands(fileInputStream);
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+        }
+    }
+
+    /**
+     * Shows the signature of all methods containing the given search String.<p>
+     *
+     * @param searchString the String to search for in the methods, if null all methods are shown
+     */
+    protected void help(String searchString) {
+
+        String commandList;
+        boolean foundSomething = false;
+        System.out.println();
+
+        Iterator i = m_commandObjects.iterator();
+        while (i.hasNext()) {
+            CmsCommandObject cmdObj = (CmsCommandObject)i.next();
+            commandList = cmdObj.getMethodHelp(searchString);
+            if (!"".equals(commandList)) {
+                System.out.println("Available methods in " + cmdObj.getObject().getClass().getName() + ":");
+                System.out.println(commandList);
+                foundSomething = true;
+            }
+        }
+
+        if (!foundSomething) {
+            System.out.println("No methods available matching: '*" + searchString + "*'");
+        }
+    }
+
     /**
      * Sets the echo status.<p>
      * 
      * @param echo the echo status to set
      */
     protected void setEcho(boolean echo) {
+
         m_echo = echo;
     }
-    
+
     /**
      * Sets the current shell prompt.<p>
      * 
@@ -584,34 +631,9 @@ public class CmsShell {
      * @param prompt the prompt to set
      */
     protected void setPrompt(String prompt) {
+
         m_prompt = prompt;
     }
-    
-    /**
-     * Shows the signature of all methods containing the given search String.<p>
-     *
-     * @param searchString the String to search for in the methods, if null all methods are shown
-     */
-    protected void help(String searchString) {
-        String commandList;
-        boolean foundSomething = false;
-        System.out.println();
-        
-        Iterator i = m_commandObjects.iterator();
-        while (i.hasNext()) {
-            CmsCommandObject cmdObj = (CmsCommandObject)i.next();
-            commandList = cmdObj.getMethodHelp(searchString);
-            if (! "".equals(commandList)) {
-                System.out.println("Available methods in " + cmdObj.getObject().getClass().getName() + ":");
-                System.out.println(commandList);
-                foundSomething = true;
-            }            
-        }
-        
-        if (! foundSomething) {
-            System.out.println("No methods available matching: '*" + searchString + "*'");
-        }        
-    }    
 
     /**
      * Executes a shell command with a list of parameters.<p>
@@ -620,6 +642,7 @@ public class CmsShell {
      * @param parameters the list of parameters for the command
      */
     private void executeCommand(String command, List parameters) {
+
         if (m_echo) {
             // echo the command to STDOUT
             System.out.print(command);
@@ -628,41 +651,41 @@ public class CmsShell {
             }
             System.out.println();
         }
-        
+
         // prepare to lookup a method in CmsObject or CmsShellCommands
-        boolean executed = false;        
+        boolean executed = false;
         Iterator i = m_commandObjects.iterator();
         while (!executed && i.hasNext()) {
             CmsCommandObject cmdObj = (CmsCommandObject)i.next();
             executed = cmdObj.executeMethod(command, parameters);
         }
-        
-        if (! executed) {
+
+        if (!executed) {
             // method not found
             System.out.println();
             System.out.print("Requested method not found: " + command + "(");
-            for (int j=0; j<parameters.size(); j++) {
+            for (int j = 0; j < parameters.size(); j++) {
                 System.out.print("value");
-                if (j<parameters.size()-1) {
+                if (j < parameters.size() - 1) {
                     System.out.print(", ");
                 }
             }
             System.out.println(")");
             System.out.println("-----------------------------------------------");
             ((CmsShellCommands)m_shellCommands).help();
-        }        
+        }
     }
-    
-    
+
     /**
      * Executes all commands read from the given input stream.<p>
      * 
      * @param fileInputStream a file input stream from which the commands are read
      */
     private void executeCommands(FileInputStream fileInputStream) {
+
         try {
             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fileInputStream));
-            while (! m_exitCalled) {
+            while (!m_exitCalled) {
                 printPrompt();
                 String line = lnr.readLine();
                 if (line == null) {
@@ -676,12 +699,12 @@ public class CmsShell {
                 }
                 if ((line != null) && line.trim().startsWith("#")) {
                     System.out.println(line);
-                    continue;                    
+                    continue;
                 }
                 StringReader reader = new StringReader(line);
                 StreamTokenizer st = new StreamTokenizer(reader);
-                st.eolIsSignificant(true);                
-                
+                st.eolIsSignificant(true);
+
                 // put all tokens into a List
                 List parameters = new ArrayList();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {
@@ -707,19 +730,7 @@ public class CmsShell {
                 executeCommand(command, parameters);
             }
         } catch (Throwable t) {
-            t.printStackTrace(System.err);            
+            t.printStackTrace(System.err);
         }
-    }
-
-    /**
-     * Prints the shell prompt.<p>
-     */
-    public void printPrompt() {
-        String prompt = m_prompt;
-        prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
-        prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
-        prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
-        prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
-        System.out.print(prompt);
     }
 }

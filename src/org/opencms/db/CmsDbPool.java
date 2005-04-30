@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2005/04/10 11:00:14 $
+ * @version $Revision: 1.30 $ $Date: 2005/04/30 11:15:38 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -220,7 +220,7 @@ public final class CmsDbPool extends Object {
      */
     public static String getDbPoolName(Map configuration, String key) {
     
-        String jdbcUrl = configuration.get(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL).toString();
+        String jdbcUrl = configuration.get(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_URL).toString();
         if (jdbcUrl.startsWith(C_OPENCMS_URL_PREFIX)) {
             return jdbcUrl.substring(jdbcUrl.indexOf(':'));
         } else {
@@ -257,19 +257,19 @@ public final class CmsDbPool extends Object {
         }
         
         // read the values of the pool configuration specified by the given key
-        String jdbcDriver = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_DRIVER);
-        String jdbcUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
-        String jdbcUrlParams = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL_PARAMS);
-        int maxActive = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_ACTIVE, 10);
-        int maxWait = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_WAIT, 2000);
-        int maxIdle = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_IDLE, 5);
-        String testQuery = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_TEST_QUERY);
-        String username = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_USERNAME);
-        String password = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_PASSWORD);
-        String poolUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_POOL_URL);
-        String whenExhaustedActionValue = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_WHEN_EXHAUSTED_ACTION).trim();
+        String jdbcDriver = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_DRIVER);
+        String jdbcUrl = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_URL);
+        String jdbcUrlParams = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_URL_PARAMS);
+        int maxActive = config.getInteger(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_MAX_ACTIVE, 10);
+        int maxWait = config.getInteger(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_MAX_WAIT, 2000);
+        int maxIdle = config.getInteger(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_MAX_IDLE, 5);
+        String testQuery = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_TEST_QUERY);
+        String username = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_USERNAME);
+        String password = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_PASSWORD);
+        String poolUrl = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_POOL_URL);
+        String whenExhaustedActionValue = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
-        boolean testOnBorrow = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_TEST_ON_BORROW).trim());
+        boolean testOnBorrow = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_TEST_ON_BORROW).trim());
 
         if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
             whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
@@ -294,11 +294,11 @@ public final class CmsDbPool extends Object {
         }
 
         // read the values of the statement pool configuration specified by the given key
-        boolean poolingStmts = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_POOLING, "true").trim());
-        int maxActiveStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_MAX_ACTIVE, 25);
-        int maxWaitStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_MAX_WAIT, 250);
-        int maxIdleStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_MAX_IDLE, 15);
-        String whenStmtsExhaustedActionValue = config.getString(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_WHEN_EXHAUSTED_ACTION);
+        boolean poolingStmts = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_STATEMENTS + '.' + key + '.' + C_KEY_POOLING, "true").trim());
+        int maxActiveStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + '.' + key + '.' + C_KEY_MAX_ACTIVE, 25);
+        int maxWaitStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + '.' + key + '.' + C_KEY_MAX_WAIT, 250);
+        int maxIdleStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + '.' + key + '.' + C_KEY_MAX_IDLE, 15);
+        String whenStmtsExhaustedActionValue = config.getString(C_KEY_DATABASE_STATEMENTS + '.' + key + '.' + C_KEY_WHEN_EXHAUSTED_ACTION);
         byte whenStmtsExhaustedAction = GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
         if (whenStmtsExhaustedActionValue != null) {
             whenStmtsExhaustedActionValue = whenStmtsExhaustedActionValue.trim();

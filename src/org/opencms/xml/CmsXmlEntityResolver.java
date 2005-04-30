@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -178,15 +178,15 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                     // map must be of type "LRUMap" so that memory monitor can acecss all information
                     OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + "." + "m_cacheTemporary",
+                        CmsXmlEntityResolver.class.getName() + ".m_cacheTemporary",
                         cacheTemporary);
                     // map must be of type "HashMap" so that memory monitor can acecss all information
                     OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + "." + "m_cachePermanent",
+                        CmsXmlEntityResolver.class.getName() + ".m_cachePermanent",
                         cachePermanent);
                     // map must be of type "LRUMap" so that memory monitor can acecss all information
                     OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + "." + "m_cacheContentDefinitions",
+                        CmsXmlEntityResolver.class.getName() + ".m_cacheContentDefinitions",
                         cacheContentDefinitions);
                 }
             }

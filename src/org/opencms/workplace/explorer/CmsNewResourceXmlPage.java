@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/30 11:15:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
@@ -162,13 +162,13 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             String fullResourceName = computeFullResourceName();
             
             // append ".html" suffix to new file if not present
-            if (fullResourceName.indexOf(".") == -1) {
+            if (fullResourceName.indexOf('.') < 0) {
                 fullResourceName += ".html";
             }
             
             // get the body file content
             byte[] bodyFileBytes = null;
-            if (getParamBodyFile() == null || "".equals(getParamBodyFile())) {
+            if (CmsStringUtil.isEmpty(getParamBodyFile())) {
                 // body file not specified, use empty body
                 bodyFileBytes = ("").getBytes();
             } else {

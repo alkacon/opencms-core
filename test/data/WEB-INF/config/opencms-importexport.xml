@@ -47,7 +47,7 @@
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
 		<exportpath>export</exportpath>
-		<defaultpropertyvalue>true</defaultpropertyvalue>
+		<defaultpropertyvalue>false</defaultpropertyvalue>
 		<defaultsuffixes>
 			<suffix key=".jpg"/>
 			<suffix key=".gif"/>
