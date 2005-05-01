@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/01 11:44:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -161,7 +161,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
         if (contentDefintion != null) {
-            contentDefinitionName = contentDefintion.getName();
+            contentDefinitionName = contentDefintion.getInnerName();
         }
         // calculate the key
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value.getElementName() + '.' + C_HELP_POSTFIX;
@@ -200,7 +200,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
         if (contentDefintion != null) {
-            contentDefinitionName = contentDefintion.getName();
+            contentDefinitionName = contentDefintion.getInnerName();
         }
         // calculate the key
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value.getElementName() + '.' + C_HELP_POSTFIX;
@@ -255,7 +255,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
         if (contentDefintion != null) {
-            contentDefinitionName = contentDefintion.getName();
+            contentDefinitionName = contentDefintion.getInnerName();
         }
         // calculate the key
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/01 11:44:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -51,7 +52,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 
@@ -113,9 +114,9 @@ public class TestCmsXmlContentDefinition extends TestCase {
     /** 
      * Tests creation of an XML content from a XML content definition.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public void testCreateXmlContent() throws Throwable {
+    public void testCreateXmlContent() throws Exception {
         
         String schemaUri = "http://www.opencms.org/test.xsd";
         CmsXmlContentDefinition cd1 = new CmsXmlContentDefinition("Article", schemaUri);         
@@ -147,5 +148,73 @@ public class TestCmsXmlContentDefinition extends TestCase {
         
         // output the schema XML
         System.out.println(content.toString());
+    }
+    
+    private static final String C_SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
+    
+    /** 
+     * Tests XML content definition with a different inner / outer sequence name.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testDifferentInnerOuterName() throws Exception {
+        
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);        
+        String content;       
+        
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1b.xsd", CmsEncoder.C_UTF8_ENCODING);
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_1B, resolver);
+        
+        Document schema;
+        StringWriter out;
+        
+        out = new StringWriter();        
+        schema = cd1.getSchema();                
+        
+        XMLWriter writer;
+        
+        // output the schema XML        
+        writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
+        writer.write(schema);
+        writer.flush();
+            
+        System.out.println(out.toString());
+        
+        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("Outer", "Inner", C_SCHEMA_SYSTEM_ID_1B);         
+        
+        cd2.addType(new CmsXmlStringValue("E1", "1", "1"));
+        cd2.addType(new CmsXmlStringValue("E2", "1", "1"));
+        
+        out = new StringWriter();
+        schema = cd2.getSchema();                
+        
+        // output the schema XML
+        writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
+        writer.write(schema);
+        writer.flush();
+        
+        System.out.println(out.toString());
+        
+        assertEquals(cd1, cd2);
+        
+        CmsXmlContentDefinition cd3 = CmsXmlContentDefinition.unmarshal(out.toString().getBytes(), null, null);
+        
+        out = new StringWriter();
+        schema = cd3.getSchema();                
+        
+        // output the schema XML
+        writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
+        writer.write(schema);
+        writer.flush();
+        
+        System.out.println(out.toString());
+        
+        assertEquals(cd1, cd3);
+        
+        cd2.addType(new CmsXmlStringValue("AddedLater", "1", "1"));
+        assertEquals(cd1, cd3);  
+        assertFalse(cd2.equals(cd1));
+        assertFalse(cd2.equals(cd3));
     }
 }

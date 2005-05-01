@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlException.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/01 11:44:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,38 @@
  
 package org.opencms.xml;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
  * Signals that an error occured while processing an xml resource.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.4
  */
 public class CmsXmlException extends CmsException {
+    
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsXmlException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsXmlException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }
     
     // the allowed type range for this exception is >=400 and <500    
     
@@ -53,26 +75,7 @@ public class CmsXmlException extends CmsException {
     public CmsXmlException() {
         super();
     }
-    
-    /**
-     * Constructs a CmsXmlPageException with the specified description message and type.<p>
-     * 
-     * @param type the type of the exception
-     */
-    public CmsXmlException(int type) {
-        super(type);
-    }
-        
-    /**
-     * Constructs a CmsXmlPageException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsXmlException(String message, int type) {
-        super(message, type);
-    }
-    
+
     /**
      * Constructs a CmsXmlPageException with the specified description message.<p>
      * 

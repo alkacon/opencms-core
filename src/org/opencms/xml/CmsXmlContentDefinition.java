@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/01 11:44:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,15 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlLocaleValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,17 +59,45 @@ import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Describes the structure definition of an XML content object.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
+
+    /**
+     * Simple data structure to describe a type seqnence in an XML schema.<p>
+     */
+    private final class CmsXmlComplexTypeSequence {
+
+        /** Indicates if this type sequence has a language attribute. */
+        protected boolean m_hasLanguageAttribute;
+
+        /** The name of the complex type seqnence. */
+        protected String m_name;
+
+        /** The type sequence elements. */
+        protected List m_sequence;
+
+        /**
+         * Creates a new complex type sequence data structure.<p>
+         * 
+         * @param name the name of the sequence
+         * @param sequence the type sequence element list
+         * @param hasLanguageAttribute indicates if a "language" attribute is present
+         */
+        protected CmsXmlComplexTypeSequence(String name, List sequence, boolean hasLanguageAttribute) {
+
+            m_name = name;
+            m_sequence = sequence;
+            m_hasLanguageAttribute = hasLanguageAttribute;
+        }
+    }
 
     /** Constant for the XML schema attribute "mapto". */
     public static final String XSD_ATTRIBUTE_DEFAULT = "default";
@@ -148,8 +177,11 @@ public class CmsXmlContentDefinition implements Cloneable {
     /** The set of included additional XML content definitions. */
     private Set m_includes;
 
-    /** The name of the content definition. */
-    private String m_name;
+    /** The inner element name of the content definition (type sequence). */
+    private String m_innerName;
+
+    /** The outer element name of the content definition (languange sequence). */
+    private String m_outerName;
 
     /** The location from which the XML schema was read (XML system id). */
     private String m_schemaLocation;
@@ -166,13 +198,26 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Creates a new XML content definition.<p> 
      * 
-     * @param name the name to use for the content type
+     * @param innerName the inner element name to use for the content definiton
      * @param schemaLocation the location from which the XML schema was read (system id)
      */
-    public CmsXmlContentDefinition(String name, String schemaLocation) {
+    public CmsXmlContentDefinition(String innerName, String schemaLocation) {
 
-        m_name = name;
-        m_typeName = createTypeName(name);
+        this(innerName + "s", innerName, schemaLocation);
+    }
+
+    /**
+     * Creates a new XML content definition.<p> 
+     * 
+     * @param outerName the outer element name to use for the content definiton
+     * @param innerName the inner element name to use for the content definiton
+     * @param schemaLocation the location from which the XML schema was read (system id)
+     */
+    public CmsXmlContentDefinition(String outerName, String innerName, String schemaLocation) {
+
+        m_outerName = outerName;
+        m_innerName = innerName;
+        setInnerName(innerName);
         m_typeSequence = new ArrayList();
         m_types = new HashMap();
         m_includes = new HashSet();
@@ -180,7 +225,10 @@ public class CmsXmlContentDefinition implements Cloneable {
         m_contentHandler = new CmsDefaultXmlContentHandler();
     }
 
-    private CmsXmlContentDefinition() {
+    /**
+     * Required empty constructor for clone operation.<p>
+     */
+    protected CmsXmlContentDefinition() {
 
         // noop, required for clone operation
     }
@@ -233,177 +281,105 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public static CmsXmlContentDefinition unmarshal(Document document, String schemaLocation) throws CmsXmlException {
 
-        // TODO: why not use a XML schmema for the validation?
-
-        // now analyze the document and generate the XML content type definition        
+        // analyze the document and generate the XML content type definition        
         Element root = document.getRootElement();
         if (!XSD_NODE_SCHEMA.equals(root.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: schema node expected");
+            // schema node is required
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_NO_SCHEMA_NODE_0));
         }
 
         List includes = root.elements(XSD_NODE_INCLUDE);
         if (includes.size() < 1) {
-            throw new CmsXmlException(
-                "Invalid OpenCms content definition XML schema structure: Requires at last one include");
+            // one include is required
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_ONE_INCLUDE_REQUIRED_0));
         }
+
         Element include = (Element)includes.get(0);
-        Attribute target = include.attribute(XSD_ATTRIBUTE_SCHEMA_LOCATION);
-        if (!XSD_INCLUDE_OPENCMS.equals(target.getValue())) {
-            throw new CmsXmlException(
-                "Invalid OpenCms content definition XML schema structure: First include must point to OpenCms master schema");
+        String target = validateAttribute(include, XSD_ATTRIBUTE_SCHEMA_LOCATION, null);
+        if (!XSD_INCLUDE_OPENCMS.equals(target)) {
+            // the first include must point to the default OpenCms standard schema include
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_CD_FIRST_INCLUDE_2,
+                XSD_INCLUDE_OPENCMS,
+                target));
         }
 
-        List elements = root.elements(XSD_NODE_ELEMENT);
-        Element main = (Element)elements.get(0);
-        Attribute nameAttr = main.attribute(XSD_ATTRIBUTE_NAME);
-        Attribute typeAttr = main.attribute(XSD_ATTRIBUTE_TYPE);
-        if ((nameAttr == null) || (typeAttr == null)) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: name and type attribute expected");
-        }
-
-        String name = nameAttr.getValue();
-        if (!name.endsWith("s")) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Name attribute value must end with \"s\"");
-        }
-        name = name.substring(0, name.length() - 1);
-        if (name.length() == 0) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Name missing");
-        }
-
-        String listName = createListName(name);
-        String typeName = createTypeName(name);
-
-        if (!listName.equals(typeAttr.getValue())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Invalid list name");
-        }
-
-        // OpenCms XML content definitions require exactly 2 complex types
-        List complexTypes = root.elements(XSD_NODE_COMPLEXTYPE);
-        if (complexTypes.size() != 2) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Requires two complex types");
-        }
-
-        Element complex1 = (Element)complexTypes.get(0);
-        Element complex2 = (Element)complexTypes.get(1);
-
-        String name1 = complex1.attributeValue(XSD_ATTRIBUTE_NAME);
-        String name2 = complex2.attributeValue(XSD_ATTRIBUTE_NAME);
-
-        if (!(listName.equals(name1) || listName.equals(name2))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: List name '" + listName + "' must be equal to one of the complex type names '" + name1 + "' or '" + name2 + "'");
-        }
-        if (!(typeName.equals(name1) || typeName.equals(name2))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Type name '" + typeName + "' must be equal to one of the complex type names '" + name1 + "' or '" + name2 + "'");
-        }
-
-        // determine which is the "list" and which is the "type" element
-        Element listElement;
-        Element typeElement;
-
-        if (listName.equals(name1)) {
-            listElement = complex1;
-            typeElement = complex2;
-        } else {
-            listElement = complex2;
-            typeElement = complex1;
-        }
-
-        // check if the list element is defined correctly
-        Element listSequence = (Element)listElement.elements().get(0);
-        if (!XSD_NODE_SEQUENCE.equals(listSequence.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'sequence' node expected");
-        }
-        Element listSequenceElement = (Element)listSequence.elements().get(0);
-        if (!XSD_NODE_ELEMENT.equals(listSequenceElement.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'element' node expected");
-        }
-        if (!name.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_NAME))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'sequence' name attribute value must be '" + name + "'");
-        }
-        if (!typeName.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_TYPE))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'sequence' type attribute value must be '" + typeName + "'");
-        }
-        if (!XSD_ATTRIBUTE_VALUE_ZERO.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_MIN_OCCURS))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: minOccurs of sequence node must be '0'");
-        }
-        if (!XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: maxOccurs of sequence node must be 'unbounded'");
-        }
-
-        // now check the type definition list
-        List typeElements = typeElement.elements();
-        if ((typeElements.size() != 2) && (typeElements.size() != 3)) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Expected two type elements");
-        }
-
-        Element type1 = (Element)typeElements.get(0);
-        Element type2 = (Element)typeElements.get(1);
-
-        Element typeSequence = null;
-        Element typeAttribute = null;
-
-        if (XSD_NODE_SEQUENCE.equals(type1.getQName())) {
-            typeSequence = type1;
-        }
-        if (XSD_NODE_ATTRIBUTE.equals(type2.getQName())) {
-            typeAttribute = type2;
-        }
-
-        // check the "language" attribute 
-        if ((typeSequence == null) || (typeAttribute == null)) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
-        }
-        if (!XSD_ATTRIBUTE_VALUE_LANGUAGE.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_NAME))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
-        }
-        if (!CmsXmlLocaleValue.TYPE_NAME.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_TYPE))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
-        }
-        if (!XSD_ATTRIBUTE_VALUE_REQUIRED.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_USE))
-            && !XSD_ATTRIBUTE_VALUE_OPTIONAL.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_USE))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
-        }
-
-        // check the type definition sequence
-        List typeSequenceElements = typeSequence.elements();
-        if (typeSequenceElements.size() < 1) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
-        }
-
-        // generate the XML content definition
-        CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, schemaLocation);
-
+        Set nestedDefinitions = new HashSet();
         if (includes.size() > 1) {
             // resolve additional, nested include calls
             for (int i = 1; i < includes.size(); i++) {
 
                 Element inc = (Element)includes.get(i);
-                String schemaLoc = inc.attribute(XSD_ATTRIBUTE_SCHEMA_LOCATION).getValue();
+                String schemaLoc = validateAttribute(inc, XSD_ATTRIBUTE_SCHEMA_LOCATION, null);
                 EntityResolver resolver = document.getEntityResolver();
                 InputSource source = null;
                 try {
                     source = resolver.resolveEntity(null, schemaLoc);
-                } catch (SAXException e) {
-                    throw new CmsXmlException(
-                        "Invalid OpenCms content definition XML schema structure: Unable to resolve included schema '"
-                            + schemaLoc
-                            + "'");
-                } catch (IOException e) {
-                    throw new CmsXmlException(
-                        "Invalid OpenCms content definition XML schema structure: Unable to resolve included schema '"
-                            + schemaLoc
-                            + "'");
+                } catch (Exception e) {
+                    throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_BAD_INCLUDE_1, schemaLoc));
                 }
                 CmsXmlContentDefinition xmlContentDefinition = unmarshal(source, schemaLoc, resolver);
-                result.addInclude(xmlContentDefinition);
+                nestedDefinitions.add(xmlContentDefinition);
             }
         }
 
-        // now add all type definitions from the schema
-        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
-        Iterator i = typeSequenceElements.iterator();
-        while (i.hasNext()) {
-            result.addType(typeManager.getContentType((Element)i.next(), result.getIncludes()));
+        List elements = root.elements(XSD_NODE_ELEMENT);
+        if (elements.size() != 1) {
+            // only one root element is allowed
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_CD_ROOT_ELEMENT_COUNT_1,
+                XSD_INCLUDE_OPENCMS,
+                new Integer(elements.size())));
+        }
+
+        // collect the data from the root element node
+        Element main = (Element)elements.get(0);
+        String name = validateAttribute(main, XSD_ATTRIBUTE_NAME, null);
+
+        // now process the complex types
+        List complexTypes = root.elements(XSD_NODE_COMPLEXTYPE);
+        if (complexTypes.size() != 2) {
+            // exactly two complex types are required
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_CD_COMPLEX_TYPE_COUNT_1,
+                new Integer(complexTypes.size())));
+        }
+
+        // generate the result XML content definition
+        CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, null, schemaLocation);
+
+        // set the nested definitions
+        result.m_includes = nestedDefinitions;
+
+        List complexTypeData = new ArrayList();
+        Iterator ct = complexTypes.iterator();
+        while (ct.hasNext()) {
+            Element e = (Element)ct.next();
+            CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions, result);
+            complexTypeData.add(sequence);
+        }
+
+        // get the outer element sequence, this must be the first element 
+        CmsXmlComplexTypeSequence outerSequence = (CmsXmlComplexTypeSequence)complexTypeData.get(0);
+        CmsXmlNestedContentDefinition outer = (CmsXmlNestedContentDefinition)outerSequence.m_sequence.get(0);
+
+        // make sure the inner and outer element names are as required
+        String outerTypeName = createTypeName(name);
+        String innerTypeName = createTypeName(outer.getElementName());
+        validateAttribute((Element)complexTypes.get(0), XSD_ATTRIBUTE_NAME, outerTypeName);
+        validateAttribute((Element)complexTypes.get(1), XSD_ATTRIBUTE_NAME, innerTypeName);
+        validateAttribute(main, XSD_ATTRIBUTE_TYPE, outerTypeName);
+
+        // the inner name is the element name set in the outer sequence
+        result.setInnerName(outer.getElementName());
+
+        // get the inner element sequence, this must be the second element 
+        CmsXmlComplexTypeSequence innerSequence = (CmsXmlComplexTypeSequence)complexTypeData.get(1);
+
+        // add the types from the main sequence node
+        Iterator it = innerSequence.m_sequence.iterator();
+        while (it.hasNext()) {
+            result.addType((I_CmsXmlSchemaType)it.next());
         }
 
         // resolve the XML content handler information
@@ -417,14 +393,13 @@ public class CmsXmlContentDefinition implements Cloneable {
             if (appinfos.size() > 0) {
                 // the first appinfo node contains the specific XML content data 
                 appInfoElement = (Element)appinfos.get(0);
-                
+
                 // check for a special content handler in the appinfo node
                 Element handlerElement = appInfoElement.element("handler");
                 if (handlerElement != null) {
                     String className = handlerElement.attributeValue("class");
                     if (className != null) {
-                        contentHandler = OpenCms.getXmlContentTypeManager()
-                            .getContentHandler(className, schemaLocation);
+                        contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(className, schemaLocation);
                     }
                 }
             }
@@ -477,26 +452,12 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Creates the name of the list attribute from the given content name.<p>
-     * 
-     * @param name the name to use
-     * @return the name of the list attribute
-     */
-    private static String createListName(String name) {
-
-        StringBuffer result = new StringBuffer(32);
-        result.append(createTypeName(name));
-        result.append("s");
-        return result.toString();
-    }
-
-    /**
      * Creates the name of the type attribute from the given content name.<p>
      * 
      * @param name the name to use
      * @return the name of the type attribute
      */
-    private static String createTypeName(String name) {
+    protected static String createTypeName(String name) {
 
         StringBuffer result = new StringBuffer(32);
         result.append("OpenCms");
@@ -505,6 +466,209 @@ public class CmsXmlContentDefinition implements Cloneable {
             result.append(name.substring(1));
         }
         return result.toString();
+    }
+
+    /**
+     * Validates if a given attribute exists at the given element with an (optional) specified value.<p>
+     * 
+     * If the required value is not <code>null</code>, the attribute must have excatly this 
+     * value set.<p> 
+     * 
+     * If no value is required, some simple validation is performed on the attribute value,
+     * like a check that the value does not have leading or trainling white spaces.<p>
+     * 
+     * @param element the element to validate
+     * @param attributeName the attribute to check for
+     * @param requiredValue the required value of the attribute, or <code>null</code> if any value is allowed
+     * 
+     * @return the value of the attribute
+     * 
+     * @throws CmsXmlException if the element does not have the required attribute set, or if the validation fails
+     */
+    protected static String validateAttribute(Element element, String attributeName, String requiredValue)
+    throws CmsXmlException {
+
+        Attribute attribute = element.attribute(attributeName);
+        if (attribute == null) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                element.getUniquePath(),
+                attributeName));
+        }
+        String value = attribute.getValue();
+
+        if (requiredValue == null) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || !value.equals(value.trim())) {
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_EL_BAD_ATTRIBUTE_WS_3,
+                    element.getUniquePath(),
+                    attributeName,
+                    value));
+            }
+        } else {
+            if (!requiredValue.equals(value)) {
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_EL_BAD_ATTRIBUTE_VALUE_4,
+                    new Object[] {element.getUniquePath(), attributeName, requiredValue, value}));
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Validates if a gicen element has exactly the required attributes set.<p>
+     * 
+     * @param element the element to validate
+     * @param requiredAttributes the list of required attributes
+     * @param optionalAttributes the list of optional attributes
+     * 
+     * @throws CmsXmlException if the validation fails 
+     */
+    protected static void validateAttributesExists(
+        Element element,
+        String[] requiredAttributes,
+        String[] optionalAttributes) throws CmsXmlException {
+
+        if (element.attributeCount() < requiredAttributes.length) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_EL_ATTRIBUTE_TOOFEW_3,
+                element.getUniquePath(),
+                new Integer(requiredAttributes.length),
+                new Integer(element.attributeCount())));
+        }
+
+        if (element.attributeCount() > (requiredAttributes.length + optionalAttributes.length)) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_EL_ATTRIBUTE_TOOMANY_3,
+                element.getUniquePath(),
+                new Integer(requiredAttributes.length + optionalAttributes.length),
+                new Integer(element.attributeCount())));
+        }
+
+        List attributes = element.attributes();
+
+        for (int i = 0; i < requiredAttributes.length; i++) {
+            String attributeName = requiredAttributes[i];
+            if (element.attribute(attributeName) == null) {
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                    element.getUniquePath(),
+                    attributeName));
+            }
+        }
+
+        List rA = Arrays.asList(requiredAttributes);
+        List oA = Arrays.asList(optionalAttributes);
+
+        for (int i = 0; i < attributes.size(); i++) {
+            String attributeName = element.attribute(i).getName();
+            if (!rA.contains(attributeName) && !oA.contains(attributeName)) {
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_EL_INVALID_ATTRIBUTE_2,
+                    element.getUniquePath(),
+                    attributeName));
+            }
+        }
+    }
+
+    /**
+     * Validates the given element as a complex type sequence.<p>
+     * 
+     * @param element the element to validate
+     * @param includes the XML schema includes
+     * @param definition the content definition the complex type seqnence belongs to 
+     * 
+     * @return a data structure containing the validated complex type seqnence data 
+     * 
+     * @throws CmsXmlException if the validation fails
+     */
+    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
+        Element element,
+        Set includes,
+        CmsXmlContentDefinition definition) throws CmsXmlException {
+
+        validateAttributesExists(element, new String[] {XSD_ATTRIBUTE_NAME}, new String[0]);
+
+        String name = validateAttribute(element, XSD_ATTRIBUTE_NAME, null);
+
+        // now check the type definition list
+        List mainElements = element.elements();
+        if ((mainElements.size() != 1) && (mainElements.size() != 2)) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_TS_SUBELEMENT_COUNT_2,
+                element.getUniquePath(),
+                new Integer(mainElements.size())));
+        }
+
+        boolean hasLanguageAttribute = false;
+        if (mainElements.size() == 2) {
+            // two elements in the master list: the second must be the "language" attribute definition
+
+            Element typeAttribute = (Element)mainElements.get(1);
+            if (!XSD_NODE_ATTRIBUTE.equals(typeAttribute.getQName())) {
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_CD_ELEMENT_NAME_3,
+                    typeAttribute.getUniquePath(),
+                    XSD_NODE_ATTRIBUTE.getQualifiedName(),
+                    typeAttribute.getQName().getQualifiedName()));
+            }
+            validateAttribute(typeAttribute, XSD_ATTRIBUTE_NAME, XSD_ATTRIBUTE_VALUE_LANGUAGE);
+            validateAttribute(typeAttribute, XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
+            try {
+                validateAttribute(typeAttribute, XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_REQUIRED);
+            } catch (CmsXmlException e) {
+                validateAttribute(typeAttribute, XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_OPTIONAL);
+            }
+            // no error: then the language attribute is valid
+            hasLanguageAttribute = true;
+        }
+
+        // check the main element type sequence
+        Element typeSequence = (Element)mainElements.get(0);
+        if (!XSD_NODE_SEQUENCE.equals(typeSequence.getQName())) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_CD_ELEMENT_NAME_3,
+                typeSequence.getUniquePath(),
+                XSD_NODE_SEQUENCE.getQualifiedName(),
+                typeSequence.getQName().getQualifiedName()));
+        }
+
+        // check the type definition sequence
+        List typeSequenceElements = typeSequence.elements();
+        if (typeSequenceElements.size() < 1) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_TS_SUBELEMENT_TOOFEW_3,
+                typeSequence.getUniquePath(),
+                new Integer(1),
+                new Integer(typeSequenceElements.size())));
+        }
+
+        // now add all type definitions from the schema
+        List sequence = new ArrayList();
+
+        if (hasLanguageAttribute) {
+            // only generate types for sequence node with language attribute
+
+            CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
+            Iterator i = typeSequenceElements.iterator();
+            while (i.hasNext()) {
+                sequence.add(typeManager.getContentType((Element)i.next(), includes));
+            }
+        } else {
+            // generate a nested content definition for the main type sequence
+
+            Element e = (Element)typeSequenceElements.get(0);
+            String typeName = validateAttribute(e, XSD_ATTRIBUTE_NAME, null);
+            String minOccurs = validateAttribute(e, XSD_ATTRIBUTE_MIN_OCCURS, XSD_ATTRIBUTE_VALUE_ZERO);
+            String maxOccurs = validateAttribute(e, XSD_ATTRIBUTE_MAX_OCCURS, XSD_ATTRIBUTE_VALUE_UNBOUNDED);
+            validateAttribute(e, XSD_ATTRIBUTE_TYPE, createTypeName(typeName));
+
+            CmsXmlNestedContentDefinition cd = new CmsXmlNestedContentDefinition(null, typeName, minOccurs, maxOccurs);
+            sequence.add(cd);
+        }
+
+        // return a data structure with the collected values
+        return definition.new CmsXmlComplexTypeSequence(name, sequence, hasLanguageAttribute);
     }
 
     /**
@@ -528,7 +692,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         // check if the type to add actually exists in the type manager
         CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         if (type.isSimpleType() && (typeManager.getContentType(type.getTypeName()) == null)) {
-            throw new CmsXmlException("Unregistered XML content type '" + type.getTypeName() + "' added");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_UNREGISTERED_TYPE_1, type.getTypeName()));
         }
 
         // add the type to the internal type sequence and lookup table
@@ -547,7 +711,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public Object clone() {
 
         CmsXmlContentDefinition result = new CmsXmlContentDefinition();
-        result.m_name = m_name;
+        result.m_innerName = m_innerName;
         result.m_schemaLocation = m_schemaLocation;
         result.m_typeSequence = m_typeSequence;
         result.m_types = m_types;
@@ -570,7 +734,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         Document doc = DocumentHelper.createDocument();
 
-        Element root = doc.addElement(getName() + "s");
+        Element root = doc.addElement(getInnerName() + "s");
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
 
@@ -589,18 +753,18 @@ public class CmsXmlContentDefinition implements Cloneable {
      * @return a valid XML element for the locale according to the XML schema of this content definition
      */
     public Element createLocale(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
-        
-        Element element = root.addElement(getName()); 
+
+        Element element = root.addElement(getInnerName());
         element.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
-        
+
         Iterator i = m_typeSequence.iterator();
         while (i.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
                 type.generateXml(cms, document, element, locale);
             }
-        }  
-        
+        }
+
         return element;
     }
 
@@ -616,7 +780,10 @@ public class CmsXmlContentDefinition implements Cloneable {
             return false;
         }
         CmsXmlContentDefinition other = (CmsXmlContentDefinition)o;
-        if (!getName().equals(other.getName())) {
+        if (!getInnerName().equals(other.getInnerName())) {
+            return false;
+        }
+        if (!getOuterName().equals(other.getOuterName())) {
             return false;
         }
         return m_typeSequence.equals(other.m_typeSequence);
@@ -658,13 +825,23 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Returns the name.<p>
+     * Returns the inner element name of this content definiton.<p>
      *
-     * @return the name
+     * @return the inner element name of this content definiton
      */
-    public String getName() {
+    public String getInnerName() {
 
-        return m_name;
+        return m_innerName;
+    }
+
+    /**
+     * Returns the outer element name of this content definiton.<p>
+     *
+     * @return the outer element name of this content definiton
+     */
+    public String getOuterName() {
+
+        return m_outerName;
     }
 
     /**
@@ -692,26 +869,25 @@ public class CmsXmlContentDefinition implements Cloneable {
             }
         }
 
-        String listName = createListName(getName());
-        String typeName = createTypeName(getName());
-        String contentName = getName() + "s";
+        String outerTypeName = createTypeName(getOuterName());
+        String innerTypeName = createTypeName(getInnerName());
 
         Element content = root.addElement(XSD_NODE_ELEMENT);
-        content.addAttribute(XSD_ATTRIBUTE_NAME, contentName);
-        content.addAttribute(XSD_ATTRIBUTE_TYPE, listName);
+        content.addAttribute(XSD_ATTRIBUTE_NAME, getOuterName());
+        content.addAttribute(XSD_ATTRIBUTE_TYPE, outerTypeName);
 
         Element list = root.addElement(XSD_NODE_COMPLEXTYPE);
-        list.addAttribute(XSD_ATTRIBUTE_NAME, listName);
+        list.addAttribute(XSD_ATTRIBUTE_NAME, outerTypeName);
 
         Element listSequence = list.addElement(XSD_NODE_SEQUENCE);
         Element listElement = listSequence.addElement(XSD_NODE_ELEMENT);
-        listElement.addAttribute(XSD_ATTRIBUTE_NAME, getName());
-        listElement.addAttribute(XSD_ATTRIBUTE_TYPE, typeName);
+        listElement.addAttribute(XSD_ATTRIBUTE_NAME, getInnerName());
+        listElement.addAttribute(XSD_ATTRIBUTE_TYPE, innerTypeName);
         listElement.addAttribute(XSD_ATTRIBUTE_MIN_OCCURS, XSD_ATTRIBUTE_VALUE_ZERO);
         listElement.addAttribute(XSD_ATTRIBUTE_MAX_OCCURS, XSD_ATTRIBUTE_VALUE_UNBOUNDED);
 
         Element main = root.addElement(XSD_NODE_COMPLEXTYPE);
-        main.addAttribute(XSD_ATTRIBUTE_NAME, typeName);
+        main.addAttribute(XSD_ATTRIBUTE_NAME, innerTypeName);
 
         Element mainSequence = main.addElement(XSD_NODE_SEQUENCE);
 
@@ -756,7 +932,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             // no node with the given path defined in schema
             return null;
         }
-        
+
         // check if recursion is required to get value from a nested schema
         if (type.isSimpleType() || !CmsXmlUtils.isDeepXpath(elementPath)) {
             // no recusion required
@@ -794,6 +970,29 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public int hashCode() {
 
-        return getName().hashCode();
+        return getInnerName().hashCode();
+    }
+
+    /**
+     * Sets the inner element name to use for the content definiton.<p>
+     *
+     * @param innerName the inner element name to set
+     */
+    protected void setInnerName(String innerName) {
+
+        m_innerName = innerName;
+        if (m_innerName != null) {
+            m_typeName = createTypeName(innerName);
+        }
+    }
+
+    /**
+     * Sets the outer element name to use for the content definiton.<p>
+     *
+     * @param outerName the outer element name to set
+     */
+    protected void setOuterName(String outerName) {
+
+        m_outerName = outerName;
     }
 }

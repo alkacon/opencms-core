@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/01 11:44:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file.collectors;
+
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
+import org.opencms.scheduler.CmsScheduleManager;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Data structure for the collector, parsed from the collector parameters.<p>
@@ -37,10 +46,13 @@ package org.opencms.file.collectors;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.2
  */
 public class CmsCollectorData {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsScheduleManager.class);
 
     /** The display count. */
     private int m_count;
@@ -77,7 +89,28 @@ public class CmsCollectorData {
         }
 
         m_fileName = data.substring(0, pos1);
-        m_type = Integer.valueOf(data.substring(pos1 + 1, pos2)).intValue();
+        String type = data.substring(pos1 + 1, pos2);
+        try {
+            // try to look up the resource type
+            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(type);
+            m_type = resourceType.getTypeId();
+        } catch (CmsLoaderException e) {
+            // maybe the int id is directly used?
+            int typeInt = Integer.valueOf(type).intValue();
+            try {
+                I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeInt);
+                m_type = resourceType.getTypeId();
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_RESTYPE_INTID_2,
+                        resourceType.getTypeName(),
+                        new Integer(m_type)));
+                }
+            } catch (CmsLoaderException e1) {
+                // this resource type does not exist
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_UNKNOWN_RESTYPE_1, type));
+            }
+        }
     }
 
     /**
