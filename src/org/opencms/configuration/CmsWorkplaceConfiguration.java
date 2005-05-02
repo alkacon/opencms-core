@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/04/18 09:39:43 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,12 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+    
+    /** The "autosetnavigation" attribute. */
+    public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
+    
+    /** The "autosettitle" attribute. */
+    public static final String A_AUTOSETTITLE = "autosettitle";
     
     /** The "isxml" attribute. */
     public static final String A_ISXML = "isxml";
@@ -358,7 +364,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourcePage", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_PAGE);        
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_PAGE);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setAutoSetNavigation", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETNAVIGATION);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setAutoSetTitle", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETTITLE);
         
         digester.addObjectCreate("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, "setAccess");        
@@ -419,6 +430,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 }
                 newResElement.addAttribute(A_URI, settings.getNewResourceUri());
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
+                if (settings.isAutoSetNavigation()) {
+                    newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
+                }
+                if (settings.isAutoSetTitle()) {
+                    newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
+                }
                 // create subnode <accesscontrol>            
                 List accessEntries = new ArrayList(); 
                 // sort accessEntries   

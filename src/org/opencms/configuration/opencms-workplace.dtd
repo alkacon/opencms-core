@@ -145,9 +145,11 @@
 
 <!--
 # The URI for the new resource dialog and the ranking is required.
+# Optionally, Title and navigation properties (last entry in current folder) can be attached automatically on resource creation
+# containing the file name as value..
 -->
 <!ELEMENT newresource EMPTY>
-<!ATTLIST newresource page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED>
+<!ATTLIST newresource page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED autosetnavigation (true|false) #IMPLIED autosettitle (true|false) #IMPLIED>
 
 <!--
 # Enter the permissions for OpenCms groups. The flags have the following meaning:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
@@ -171,10 +171,14 @@ public class CmsNewResourceFolder extends CmsNewResource {
      */
     public void actionCreateResource() throws JspException {
         try {
+            // calculate the new resource Title property value
+            String title = computeNewTitleProperty();
             // get the full resource name
             String fullResourceName = computeFullResourceName();
+            // create the Title and Navigation properties if configured
+            List properties = createResourceProperties(fullResourceName, CmsResourceTypeFolder.getStaticTypeName(),  title);
             // create the folder            
-            getCms().createResource(fullResourceName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);           
+            getCms().createResource(fullResourceName, CmsResourceTypeFolder.getStaticTypeId(), null, properties);           
             setParamResource(fullResourceName);   
             setResourceCreated(true);
         } catch (CmsException e) {

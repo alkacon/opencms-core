@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsResourceTranslator.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -54,7 +54,15 @@ public class TestCmsResourceTranslator extends TestCase {
         "s#/default/vfs/system/workplace/config/language/(.*)#/default/vfs/system/workplace/locales/$1#", 
         "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
         "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#",
-        "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",
+        "s#[\\s]+#_#g",
+        "s#[ä]#ae#g",
+        "s#[Ä]#Ae#g",
+        "s#[ö]#oe#g",
+        "s#[Ö]#Oe#g",
+        "s#[ü]#ue#g",
+        "s#[Ü]#Ue#g",
+        "s#[ß]#ss#g",
+        "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",       
         "s#!+#x#g"        
     };
      
@@ -79,7 +87,11 @@ public class TestCmsResourceTranslator extends TestCase {
         assertEquals(test, "/default/vfs/system/bodies/test/index.html");
         
         test = translator.translateResource("/default/vfs/system/workplace/templates/js/test.js");
-        assertEquals(test, "/default/vfs/system/workplace/scripts/test.js");   
+        assertEquals(test, "/default/vfs/system/workplace/scripts/test.js"); 
+        
+        translator = new CmsResourceTranslator(rules, true);
+        test = translator.translateResource("Schöne Übung mit Fuß.js");
+        assertEquals(test, "Schoene_Uebung_mit_Fuss.js");
     }
 
 }

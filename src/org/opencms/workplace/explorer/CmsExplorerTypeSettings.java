@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,16 +45,23 @@ import java.util.List;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerTypeSettings implements Comparable {
     
     private CmsExplorerTypeAccess m_access;
+    
+    /** Flag for showing that this is an additional resource type which defined in a module. */
+    private boolean m_addititionalModuleExplorerType;    
+    
+    private boolean m_autoSetNavigation;
+    private boolean m_autoSetTitle;
+    
     private CmsExplorerContextMenu m_contextMenu;
     
-    private List m_contextMenuEntries;  
+    private List m_contextMenuEntries;
     
     private boolean m_hasEditOptions;
     private String m_icon;
@@ -70,9 +77,6 @@ public class CmsExplorerTypeSettings implements Comparable {
     private String m_reference;
    
     private boolean m_showNavigation;
-    
-    /** Flag for showing that this is an additional resource type which defined in a module. */
-    private boolean m_addititionalModuleExplorerType;    
     
     /**
      * Default constructor.<p>
@@ -136,7 +140,6 @@ public class CmsExplorerTypeSettings implements Comparable {
             OpenCms.getLog(this).debug("Adding menu separator: " + order);
         }     
     }
-    
     
     /**
      * Adds a property definition name to the list of editable properties.<p>
@@ -312,6 +315,36 @@ public class CmsExplorerTypeSettings implements Comparable {
     public int hashCode() {
         return getName().hashCode();
     }
+    
+    /**
+     * Indicates that this is an additional explorer type which is defined in a module.<p>
+     * 
+     * @return true or false
+     */
+    public boolean isAddititionalModuleExplorerType() {
+
+        return m_addititionalModuleExplorerType;
+    }
+    
+    /**
+     * Returns true if navigation properties should automatically be added on resource creation.<p>
+     * 
+     * @return true if navigation properties should automatically be added on resource creation, otherwise false
+     */
+    public boolean isAutoSetNavigation() {
+
+        return m_autoSetNavigation;
+    }
+    
+    /**
+     * Returns true if the title property should automatically be added on resource creation.<p>
+     * 
+     * @return true if the title property should automatically be added on resource creation, otherwise false
+     */
+    public boolean isAutoSetTitle() {
+
+        return m_autoSetTitle;
+    }
 
     /**
      * Returns if this explorer type setting uses a special properties dialog.<p>
@@ -338,6 +371,44 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void setAccess (CmsExplorerTypeAccess access) {
         m_access = access;
+    }
+    
+    /**
+     * Sets the additional explorer type flag.<p>
+     * 
+     * @param addititionalModuleExplorerType true or false
+     */
+    public void setAddititionalModuleExplorerType(boolean addititionalModuleExplorerType) {
+
+        m_addititionalModuleExplorerType = addititionalModuleExplorerType;
+    }
+    
+    /**
+     * Sets if navigation properties should automatically be added on resource creation.<p>
+     *
+     * @param autoSetNavigation true if properties should be added, otherwise false
+     */
+    public void setAutoSetNavigation(String autoSetNavigation) {
+
+        m_autoSetNavigation = Boolean.valueOf(autoSetNavigation).booleanValue();
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                ". Auto set navigation  : " + (m_autoSetNavigation ? "true" : "false"));
+        }          
+    }
+    
+    /**
+     * Sets if the title property should automatically be added on resource creation.<p>
+     *
+     * @param autoSetTitle true if title should be added, otherwise false
+     */
+    public void setAutoSetTitle(String autoSetTitle) {
+
+        m_autoSetTitle = Boolean.valueOf(autoSetTitle).booleanValue();
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                ". Auto set title       : " + (m_autoSetTitle ? "true" : "false"));
+        }          
     }
 
     /**
@@ -455,7 +526,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
     
     /**
-     * Sets the dfault settings for the property display dialog.<p>
+     * Sets the default settings for the property display dialog.<p>
      * 
      * @param enabled true, if this explorer type setting uses a special properties dialog
      * @param showNavigation true, if this explorer type setting displays the navigation properties in the special properties dialog
@@ -515,26 +586,6 @@ public class CmsExplorerTypeSettings implements Comparable {
         setKey(key);
         setIcon(icon);        
         setReference(reference);
-    }
-    
-    /**
-     * Indicates that this is an additional explorer type which is defined in a module.<p>
-     * 
-     * @return true or false
-     */
-    public boolean isAddititionalModuleExplorerType() {
-
-        return m_addititionalModuleExplorerType;
-    }
-    
-    /**
-     * Sets the additional explorer type flag.<p>
-     * 
-     * @param addititionalModuleExplorerType true or false
-     */
-    public void setAddititionalModuleExplorerType(boolean addititionalModuleExplorerType) {
-
-        m_addititionalModuleExplorerType = addititionalModuleExplorerType;
     }
     
 }

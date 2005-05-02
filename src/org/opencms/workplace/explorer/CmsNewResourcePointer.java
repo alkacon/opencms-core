@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourcePointer.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -50,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -108,15 +110,19 @@ public class CmsNewResourcePointer extends CmsNewResource {
      */
     public void actionCreateResource() throws JspException {
         try {
+            // calculate the new resource Title property value
+            String title = computeNewTitleProperty();
             // create the full resource name
             String fullResourceName = computeFullResourceName();
+            // create the Title and Navigation properties if configured
+            List properties = createResourceProperties(fullResourceName, CmsResourceTypePointer.getStaticTypeName(), title);
             // the link target
             String linkTarget = getParamLinkTarget();
             if (linkTarget == null) {
                 linkTarget = "";
             }
             // create the pointer                   
-            getCms().createResource(fullResourceName, CmsResourceTypePointer.getStaticTypeId(), linkTarget.getBytes(), null);
+            getCms().createResource(fullResourceName, CmsResourceTypePointer.getStaticTypeId(), linkTarget.getBytes(), properties);
             setParamResource(fullResourceName);   
             setResourceCreated(true);
         } catch (CmsException e) {

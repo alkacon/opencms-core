@@ -26,7 +26,7 @@
 		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="newresource_folder.jsp" order="10"/>
+				<newresource uri="newresource_folder.jsp" order="10" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -160,7 +160,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="newresource_xmlpage.jsp" order="20"/>
+				<newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -205,7 +205,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource uri="newresource.jsp?newresourcetype=plain" order="30"/>
+				<newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -368,7 +368,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
-				<newresource uri="newresource_pointer.jsp" order="70"/>
+				<newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>

@@ -89,6 +89,13 @@
 			<filetranslations enabled="true">
 				<translation>s#[\s]+#_#g</translation>
 				<translation>s#\\#/#g</translation>
+				<translation>s#ä#ae#g</translation>
+				<translation>s#Ä#Ae#g</translation>
+				<translation>s#ö#oe#g</translation>
+				<translation>s#Ö#Oe#g</translation>
+				<translation>s#ü#ue#g</translation>
+				<translation>s#Ü#Ue#g</translation>
+				<translation>s#ß#ss#g</translation>
 				<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
 				<translation>s#!+#x#g</translation>
 			</filetranslations>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,14 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -45,7 +50,9 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -136,13 +143,19 @@ public class CmsNewResource extends CmsDialog {
      */
     public void actionCreateResource() throws JspException {
         try {
+            // calculate the new resource Title property value
+            String title = computeNewTitleProperty();
             // create the full resource name
             String fullResourceName = computeFullResourceName();
-            // create the folder            
+            // create the Title and Navigation properties if configured
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
+            List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
+            // create the resource            
             getCms().createResource(
                 fullResourceName, 
-                OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId());           
-            setParamResource(fullResourceName);    
+                resType.getTypeId(), null, properties);           
+            setParamResource(fullResourceName);   
+            
             setResourceCreated(true);
         } catch (CmsException e) {
             // error creating file, show error dialog
@@ -288,7 +301,7 @@ public class CmsNewResource extends CmsDialog {
      */
     public String dialogButtonsNextCancel(String nextAttrs, String cancelAttrs) {
         return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
-    }
+    }    
     
     /**
      * Returns the current folder set by the http request.<p>
@@ -450,6 +463,82 @@ public class CmsNewResource extends CmsDialog {
             currentFolder = computeCurrentFolder();
         }
         return currentFolder + getParamResource();
+    }
+    
+    /**
+     * Returns the value for the Title property from the given resource name.<p>
+     * 
+     * @return the value for the Title property from the given resource name
+     */
+    public String computeNewTitleProperty() {
+        
+        String title = getParamResource();
+        int lastDot = title.lastIndexOf('.');
+        // check the mime type for the file extension 
+        if ((lastDot > 0) && (lastDot < (title.length() - 1))) {
+            // remove suffix for Title and NavPos property
+            title = title.substring(0, lastDot);
+        }
+        // translate the resource name to a valid OpenCms VFS file name
+        String resName = CmsResource.getName(getParamResource().replace('\\', '/'));
+        setParamResource(getCms().getRequestContext().getFileTranslator().translateResource(resName));
+        return title;
+    }
+    
+    /**
+     * Creates a single property object and sets the value individual or shared depending on the OpenCms settings.<p>
+     * 
+     * @param name the name of the property
+     * @param value the value to set
+     * @return an initialized property object 
+     */
+    protected CmsProperty createPropertyObject(String name, String value) {
+
+        CmsProperty prop = new CmsProperty();
+        prop.setAutoCreatePropertyDefinition(true);
+        prop.setName(name);
+        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+            prop.setValue(value, CmsProperty.TYPE_INDIVIDUAL);
+        } else {
+            prop.setValue(value, CmsProperty.TYPE_SHARED);
+        }
+        return prop;
+    }
+    
+    /**
+     * Returns the properties to create automatically with the new VFS resource.<p>
+     * 
+     * If configured, the Title and Navigation properties are set on resource creation.<p>
+     * 
+     * @param resourceName the full resource name
+     * @param resTypeName the name of the resource type
+     * @param title the Title String to use for the property values
+     * @return the List of initialized property objects
+     */
+    protected List createResourceProperties(String resourceName, String resTypeName, String title) {
+        
+        // create property values
+        List properties = new ArrayList(3);
+        // get explorer type settings for the resource type
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+        if (settings.isAutoSetTitle()) {
+            // add the Title property
+            properties.add(createPropertyObject(I_CmsConstants.C_PROPERTY_TITLE, title));
+        }
+        if (settings.isAutoSetNavigation()) {
+            // add the NavText property
+            properties.add(createPropertyObject(I_CmsConstants.C_PROPERTY_NAVTEXT, title));
+            // calculate the new navigation position for the resource
+            List navList = CmsJspNavBuilder.getNavigationForFolder(getCms(), resourceName);
+            float navPos = 1;
+            if (navList.size() > 0) {
+                CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);
+                navPos = nav.getNavPosition() + 1;
+            }
+            // add the NavPos property
+            properties.add(createPropertyObject(I_CmsConstants.C_PROPERTY_NAVPOS, String.valueOf(navPos)));
+        }
+        return properties;
     }
     
     /**

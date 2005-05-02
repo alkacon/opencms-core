@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/02 13:47:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,13 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  */
 public class CmsNewResourceXmlContent extends CmsNewResource {
@@ -111,12 +112,17 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      */
     public void actionCreateResource() throws JspException {
         try {
+            // calculate the new resource Title property value
+            String title = computeNewTitleProperty();
             // create the full resource name
             String fullResourceName = computeFullResourceName();
+            // create the Title and Navigation properties if configured
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
+            List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
             // create the folder            
             getCms().createResource(
                 fullResourceName, 
-                OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId(), null, Collections.EMPTY_LIST);           
+                resType.getTypeId(), null, properties);           
             setParamResource(fullResourceName); 
             setResourceCreated(true);
         } catch (CmsException e) {
