@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/02 13:41:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,14 @@
  
 package org.opencms.loader;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
  * Signals exceptions occuring during the resource loading process.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3
  */
 public class CmsLoaderException extends CmsException {
@@ -106,7 +107,27 @@ public class CmsLoaderException extends CmsException {
     public CmsLoaderException(String message, Throwable rootCause) {
         super(message, rootCause);
     }
-    
+   
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsLoaderException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsLoaderException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }    
     /**
      * Returns the description String for the provided CmsLoaderException type.<p>
      * 

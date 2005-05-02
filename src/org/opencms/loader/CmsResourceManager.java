@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/04/28 14:48:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/02 13:41:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,13 +65,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Collects all available resource loaders, resource types and resource collectors at startup and provides
  * methods to access them during OpenCms runtime.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -146,6 +148,9 @@ public class CmsResourceManager {
         }
     }
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceManager.class);  
+    
     /** The default mimetype. */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
 
@@ -188,8 +193,8 @@ public class CmsResourceManager {
      */
     public CmsResourceManager() {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : starting");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
         }
 
         m_resourceTypesFromXml = new ArrayList();
@@ -207,9 +212,7 @@ public class CmsResourceManager {
                 mimeTypes.load(getClass().getClassLoader().getResourceAsStream(
                     "org/opencms/loader/mimetypes.properties"));
             } catch (Throwable t2) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Could not read mimetypes from class path", t);
-                }
+                    LOG.error(Messages.get().container(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
             }
         }
         // initalize the Map with all available mimetypes
@@ -222,8 +225,8 @@ public class CmsResourceManager {
             value = value.toLowerCase(Locale.ENGLISH);
             m_mimeTypes.put(key, value);
         }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Found mime types     : " + m_mimeTypes.size() + " entrys");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_NUM_MIMETYPES_1, new Integer(m_mimeTypes.size())));
         }
     }
 
@@ -245,7 +248,7 @@ public class CmsResourceManager {
         try {
             classClazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            OpenCms.getLog(this).error("Configured content collector class not found: " + className, e);
+            LOG.error(Messages.get().key(Messages.LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1, className), e);
             return null;
         }
 
@@ -253,11 +256,11 @@ public class CmsResourceManager {
         try {
             collector = (I_CmsResourceCollector)classClazz.newInstance();
         } catch (InstantiationException e) {
-            throw new CmsConfigurationException("Invalid content collector name '" + className + "' configured");
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_INVALID_COLLECTOR_NAME_1, className));
         } catch (IllegalAccessException e) {
-            throw new CmsConfigurationException("Invalid content collector name '" + className + "' configured");
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_INVALID_COLLECTOR_NAME_1, className));
         } catch (ClassCastException e) {
-            throw new CmsConfigurationException("Invalid content collector name '" + className + "' configured");
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_INVALID_COLLECTOR_NAME_1, className));
         }
 
         // set the configured order for the collector
@@ -265,13 +268,13 @@ public class CmsResourceManager {
         try {
             ord = Integer.valueOf(order).intValue();
         } catch (NumberFormatException e) {
-            OpenCms.getLog(this).error("Bad order number for collector '" + className + "'", e);
+            LOG.error(Messages.get().key(Messages.LOG_COLLECTOR_BAD_ORDER_NUMBER_1, className), e);
         }
         collector.setOrder(ord);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". VFS configuration    : added collector class '" + className + "' with order " + order);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_ADD_COLLECTOR_CLASS_2, className, order));
         }
 
         // extend or init the current list of configured collectors
@@ -296,21 +299,19 @@ public class CmsResourceManager {
                     if (collector.getOrder() > otherCollector.getOrder()) {
                         // new collector has a greater order than the old collector in the Map
                         m_collectorNameMappings.put(name, collector);
-                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                                ". VFS configuration    : replaced collector named '" + name + "'");
+                        if (CmsLog.LOG.isInfoEnabled()) {
+                            CmsLog.LOG.info(Messages.get().key(
+                                Messages.INIT_COLLECTOR_REPLACED_1, name));
                         }
                     } else {
-                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                                ". VFS configuration    : skipped duplicate collector named '" + name + "'");
+                        if (CmsLog.LOG.isInfoEnabled()) {
+                            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DUPLICATE_COLLECTOR_SKIPPED_1, name));
                         }
                     }
                 } else {
                     m_collectorNameMappings.put(name, collector);
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                            ". VFS configuration    : added new collector named '" + name + "'");
+                    if (CmsLog.LOG.isInfoEnabled()) {
+                        CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_COLLECTOR_1, name));
                     }
                 }
             }
@@ -335,7 +336,7 @@ public class CmsResourceManager {
 
         // check if new loaders can still be added
         if (m_frozen) {
-            throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
 
         // add the loader to the internal list of loaders
@@ -351,9 +352,9 @@ public class CmsResourceManager {
             m_includeExtensions.add(loader);
         }
         m_loaderList.add(loader);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Loader init          : Adding " + loader.getClass().getName() + " with id " + pos);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_ADD_LOADER_2, loader.getClass().getName(), new Integer(pos)));
         }
     }
 
@@ -369,7 +370,7 @@ public class CmsResourceManager {
 
         // check if new resource types can still be added
         if (m_frozen) {
-            throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
 
         m_resourceTypesFromXml.add(resourceType);
@@ -427,8 +428,8 @@ public class CmsResourceManager {
             typeName = CmsResourceTypePlain.getStaticTypeName();
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("getting resource type " + typeName + " for suffix " + suffix);
+        if (CmsLog.LOG.isDebugEnabled()) {
+            CmsLog.LOG.debug(Messages.get().key(Messages.INIT_GET_RESTYPE_2, typeName, suffix));
         }
         // look up and return the resource type
         return getResourceType(typeName);
@@ -550,9 +551,8 @@ public class CmsResourceManager {
             result = m_configuration.m_resourceTypes[typeId];
         }
         if (result == null) {
-            throw new CmsLoaderException(
-                "Unknown resource type id requested: " + typeId,
-                CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);
+            throw new CmsLoaderException(Messages.get().container(
+                Messages.ERR_UNKNOWN_RESTYPE_ID_REQ_1, new Integer(typeId)));            
         }
         return result;
     }
@@ -570,9 +570,8 @@ public class CmsResourceManager {
         if (result != null) {
             return result;
         }
-        throw new CmsLoaderException(
-            "Unknown resource type name requested: " + typeName,
-            CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);
+        throw new CmsLoaderException(Messages.get().container(
+            Messages.ERR_UNKNOWN_RESTYPE_NAME_REQ_1, typeName));          
     }
 
     /**
@@ -604,7 +603,7 @@ public class CmsResourceManager {
 
         if (templateProp == null) {
             // no template property defined, this is a must for facade loaders
-            throw new CmsLoaderException("Property '" + templateProperty + "' undefined for file " + absolutePath);
+            throw new CmsLoaderException(Messages.get().container(Messages.ERR_NONDEF_PROP_2, templateProperty, absolutePath));
         }
 
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -616,8 +615,8 @@ public class CmsResourceManager {
      */
     public void initConfiguration() {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
         }
 
         m_resourceTypesFromXml = Collections.unmodifiableList(m_resourceTypesFromXml);
@@ -651,8 +650,8 @@ public class CmsResourceManager {
             type.initialize(cms);
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
         }
     }
 
@@ -742,14 +741,9 @@ public class CmsResourceManager {
         configuration.m_resourceTypes[pos] = resourceType;
         configuration.getResourceTypeList().add(resourceType);
         configuration.getResourceTypeMap().put(resourceType.getTypeName(), resourceType);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Resource type init   : added resource type '"
-                    + resourceType.getTypeName()
-                    + "' id="
-                    + resourceType.getTypeId()
-                    + " class="
-                    + resourceType.getClass().getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_RESTYPE_3, 
+                resourceType.getTypeName(), new Integer(resourceType.getTypeId()), resourceType.getClass().getName()));
         }
 
         // add the mappings
@@ -761,12 +755,8 @@ public class CmsResourceManager {
             // exist already
             if (!configuration.getMappings().containsKey(mapping)) {
                 configuration.getMappings().put(mapping, resourceType.getTypeName());
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". Resource type init   : maping extension '"
-                            + mapping
-                            + "' to resource type "
-                            + resourceType.getTypeName());
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_MAP_RESTYPE_2, mapping, resourceType.getTypeName()));
                 }
             }
         }
@@ -777,18 +767,15 @@ public class CmsResourceManager {
      */
     private synchronized void initResourceTypes() {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource type init   : starting");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
         }
 
         CmsResourceManagerConfiguration newConfiguration = new CmsResourceManagerConfiguration();
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Resource type init   : adding "
-                    + m_resourceTypesFromXml.size()
-                    + " resource types from file "
-                    + CmsVfsConfiguration.C_DEFAULT_XML_FILE_NAME);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_RESTYPE_FROM_FILE_2, 
+                new Integer(m_resourceTypesFromXml.size()), CmsVfsConfiguration.C_DEFAULT_XML_FILE_NAME));
         }
 
         // build a new resource type list from the resource types of the XML configuration
@@ -807,13 +794,9 @@ public class CmsResourceManager {
                 CmsModule module = moduleManager.getModule((String)i.next());
                 if (module.getResourceTypes().size() > 0) {
                     // module contains resource types                
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                            ". Resource type init   : adding "
-                                + module.getResourceTypes().size()
-                                + " resource type(s) from module '"
-                                + module.getName()
-                                + "'");
+                    if (CmsLog.LOG.isInfoEnabled()) {
+                        CmsLog.LOG.info(Messages.get().key(
+                            Messages.INIT_ADD_NUM_RESTYPES_FROM_MOD_2, new Integer(module.getResourceTypes().size()), module.getName()));
                     }
 
                     Iterator j = module.getResourceTypes().iterator();
@@ -830,8 +813,8 @@ public class CmsResourceManager {
         m_configuration = newConfiguration;
         m_frozen = true;
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource type init   : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_RESOURCE_TYPE_INITIALIZED_1));
         }
     }
 }

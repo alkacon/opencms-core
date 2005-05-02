@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsTemplateLoaderFacade.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/02 13:41:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.file.CmsResource;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.3
  */
 public class CmsTemplateLoaderFacade {
@@ -74,7 +74,7 @@ public class CmsTemplateLoaderFacade {
      */
     public CmsTemplateLoaderFacade(I_CmsResourceLoader loader, CmsResource resource, CmsResource template) throws CmsLoaderException {
         if (! loader.isUsableForTemplates()) {
-            throw new CmsLoaderException(CmsLoaderException.C_LOADER_NOT_TEMPLATE_ENABLED);
+            throw new CmsLoaderException(Messages.get().container(Messages.ERR_LOADER_NOT_TEMPLATE_ENABLED_0));
         }
         m_loader = loader;
         m_resource = resource;

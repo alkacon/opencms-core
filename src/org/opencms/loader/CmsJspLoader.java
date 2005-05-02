@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2005/05/02 13:41:48 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -67,6 +68,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * The JSP loader which enables the execution of JSP in OpenCms.<p>
@@ -102,13 +104,16 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
  */
 public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspLoader.class);  
+    
     /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>). */
     public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
 
@@ -302,11 +307,15 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
 
         // output setup information
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (absolute path): " + m_jspRepository);        
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (web application path): " + m_jspWebAppRepository);              
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (error page committed): " + m_errorPagesAreNotCommited);              
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");   
+        if (CmsLog.LOG.isInfoEnabled()) { 
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1, new Boolean(m_errorPagesAreNotCommited)));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));               
         }
     }
 
@@ -421,9 +430,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         m_cache = cache;
         // output setup information
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : Flex cache added to JSP loader");        
-        }        
+        if (CmsLog.LOG.isInfoEnabled()) { 
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_FLEX_CACHE_0));        
+        }
     }
 
     /**
@@ -445,7 +454,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 .include(f_req, f_res);
         } catch (SocketException e) {
             // uncritical, might happen if client (browser) does not wait until end of page delivery
-            OpenCms.getLog(this).debug("Ignoring SocketException" + e);
+            LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
         }
 
         byte[] result = null;
@@ -508,10 +517,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
             } catch (IllegalStateException e) {
                 // uncritical, might happen if JSP error page was used
-                OpenCms.getLog(this).debug("Ignoring IllegalStateException" + e);
+                LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
             } catch (SocketException e) {
                 // uncritical, might happen if client (browser) does not wait until end of page delivery
-                OpenCms.getLog(this).debug("Ignoring SocketException", e);
+                LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
             }
         }
 
@@ -591,8 +600,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         try {
             content = new String(byteContent, encoding);
         } catch (UnsupportedEncodingException e) {
-            // encoding property is not set correctly
-            OpenCms.getLog(this).error("Encoding not set correctly for JSP '" + controller.getCurrentRequest().getElementUri() + "' (using default)", e);
+            // encoding property is not set correctly 
+            LOG.error(Messages.get().key(Messages.LOG_UNSUPPORTED_ENC_1, controller.getCurrentRequest().getElementUri()), e);
             try {
                 content = new String(byteContent, C_DEFAULT_JSP_ENCODING);
                 encoding = C_DEFAULT_JSP_ENCODING;                
@@ -645,8 +654,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 return content;
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_DETECTED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -655,8 +664,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
                 String argument = null;
                 if (directive.startsWith("cms", t1)) {
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Detected 'cms' directive!");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "cms"));
                     }
                     t2 = directive.indexOf("file", t1 + 3);
                     t5 = 4;
@@ -675,8 +684,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     if (t4 > t3) {
                         argument = sub.substring(t3, t4);
                     }
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Argument given in directive is '" + argument + "'");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
                     }
                 }
 
@@ -685,9 +694,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     String jspname = updateJsp(argument, controller, includes);
                     if (jspname != null) {
                         directive = jspname;
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug(
-                                "JspLoader: Changed directive to " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(
+                                Messages.LOG_DIRECTIVE_CHANGED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
                         }
                     }
                     // cms directive was found
@@ -743,8 +752,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 return content;
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_DETECTED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -753,8 +762,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
                 String argument = null;
                 if (directive.startsWith("page", t1)) {
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Detected 'page' directive!");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
                     }
                     t2 = directive.indexOf("pageEncoding", t1 + 4);
                     t5 = 12;
@@ -776,8 +785,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     if (t4 > t3) {
                         argument = sub.substring(t3, t4);
                     }
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Argument given in directive is '" + argument + "'");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
                     }
                 }
 
@@ -787,9 +796,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     String suf = directive.substring(t2 + t3 + t5 + argument.length());
                     // change the encoding
                     directive = pre + encoding + suf;
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug(
-                            "JspLoader: Changed directive to " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(
+                            Messages.LOG_DIRECTIVE_CHANGED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
                     }
                 }
 
@@ -850,8 +859,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 return content;
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_DETECTED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -860,14 +869,14 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
                 String argument = null;
                 if (directive.startsWith("include", t1)) {
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Detected 'include' directive!");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "include"));
                     }
                     t2 = directive.indexOf("file", t1 + 7);
                     t5 = 6;
                 } else if (directive.startsWith("page", t1)) {
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Detected 'page' directive!");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));                        
                     }
                     t2 = directive.indexOf("errorPage", t1 + 4);
                     t5 = 11;
@@ -886,8 +895,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     if (t4 > t3) {
                         argument = sub.substring(t3, t4);
                     }
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("JspLoader: Argument given in directive is '" + argument + "'");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
                     }
                 }
 
@@ -900,9 +909,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     if (jspname != null) {
                         // only change something in case no error had occured
                         directive = pre + jspname + suf;
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug(
-                                "JspLoader: Changed directive to " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(
+                                Messages.LOG_DIRECTIVE_CHANGED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
                         }
                     }
                 }
@@ -978,10 +987,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
             File d = new File(jspPath).getParentFile();
             if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Could not access directory for " + jspPath);
-                }
-                throw new ServletException("JspLoader: Could not access directory for " + jspPath);
+                CmsMessageContainer message = Messages.get().container(Messages.LOG_ACCESS_DENIED_1, jspPath);
+                LOG.error(message.key());
+                // can not continue
+                throw new ServletException(message.key());
             }
 
             if (!d.exists()) {
@@ -1004,8 +1013,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             }
 
             if (mustUpdate) {
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("JspLoader: Writing JSP file '" + jspTargetName + "'");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
                 }
                 byte[] contents;
                 String encoding;
@@ -1031,13 +1040,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     fs.close();
                     contents = null;
 
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(
-                            "Updated JSP file \""
-                                + jspTargetName
-                                + "\" for resource \""
-                                + cms.getSitePath(resource)
-                                + "\"");
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(Messages.get().key(
+                            Messages.LOG_UPDATED_JSP_2, jspTargetName, cms.getSitePath(resource)));
                     }
                 } catch (FileNotFoundException e) {
                     throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);
@@ -1068,21 +1073,21 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String jspVfsName = CmsLinkManager.getAbsoluteUri(
             vfsName, 
             controller.getCurrentRequest().getElementRootPath());
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("JspLoader: Trying to update JSP from VFS file '" + jspVfsName + "'");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
         }
         String jspRfsName = null;
         try {
             // make sure the jsp referenced file is generated
             CmsResource includeResource = controller.getCmsObject().readResource(jspVfsName);
             jspRfsName = updateJsp(includeResource, controller, includes);
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("JspLoader: Name of JSP in real FS is '" + jspRfsName + "'");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
             }            
         } catch (Exception e) {
             jspRfsName = null;
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("JspLoader: Error while udating included JSP file '" + jspVfsName + "'\n", e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_ERR_UPDATE_1, jspVfsName), e);
             }
         }
         return jspRfsName;
