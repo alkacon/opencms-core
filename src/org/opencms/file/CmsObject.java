@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/04/25 14:47:34 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2005/05/02 13:29:53 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.116 $
+ * @version $Revision: 1.117 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -593,8 +593,8 @@ public class CmsObject {
      * 
      * @param resourcename the name of the resource to create (full path)
      * @param type the type of the resource to create
-     * @param properties the properties for the new resource
      * @param content the contents for the new resource
+     * @param properties the properties for the new resource
      * 
      * @return the created resource
      * 
