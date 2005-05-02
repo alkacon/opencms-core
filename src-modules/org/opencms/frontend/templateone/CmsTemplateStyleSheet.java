@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/03/31 10:41:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/02 15:47:02 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
@@ -131,6 +132,10 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
         String value = null;
         try {
             value = m_configuration.getStringValue(getCmsObject(), key, getRequestContext().getLocale());
+            if (CmsStringUtil.isEmpty(value)) {
+                // value not found for current Locale, try to get it from first found Locale
+                value = m_configuration.getStringValue(getCmsObject(), key, (Locale)m_configuration.getLocales().get(0));
+            }
         } catch (Exception e) {
             // log error in debug mode
             if (OpenCms.getLog(this).isDebugEnabled()) {
@@ -138,6 +143,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
             }
         }
         if (CmsStringUtil.isEmpty(value)) {
+            // no configuration value found, use the default value
             value = defaultValue;    
         }
         return value;
