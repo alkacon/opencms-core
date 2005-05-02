@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/05/02 13:41:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/02 15:12:56 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -814,7 +814,7 @@ public class CmsResourceManager {
         m_frozen = true;
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_RESOURCE_TYPE_INITIALIZED_1));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_RESOURCE_TYPE_INITIALIZED_0));
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/05/02 13:41:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/02 15:12:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_NUM_MIMETYPES_1 = "INIT_NUM_MIMETYPES_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_RESOURCE_TYPE_INITIALIZED_1 = "INIT_RESOURCE_TYPE_INITIALIZED_1";
+    public static final String INIT_RESOURCE_TYPE_INITIALIZED_0 = "INIT_RESOURCE_TYPE_INITIALIZED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_STARTING_LOADER_CONFIG_0 = "INIT_STARTING_LOADER_CONFIG_0";
