@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/04/28 08:32:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/02 13:33:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_EXPORT_HEADERS_1 = "INIT_EXPORT_HEADERS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_EXPORT_LINK_STYLE_1 = "INIT_EXPORT_LINK_STYLE_1";
+    public static final String INIT_EXPORT_LINK_STYLE_ABSOLUTE_0 = "INIT_EXPORT_LINK_STYLE_ABSOLUTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_EXPORT_LINK_STYLE_RELATIVE_0 = "INIT_EXPORT_LINK_STYLE_RELATIVE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EXPORT_OPTIMIZATION_1 = "INIT_EXPORT_OPTIMIZATION_1";
@@ -100,8 +103,11 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_SHUTDOWN_1 = "INIT_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_STATIC_EXPORT_1 = "INIT_STATIC_EXPORT_1";
+    public static final String INIT_STATIC_EXPORT_DISABLED_0 = "INIT_STATIC_EXPORT_DISABLED_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_STATIC_EXPORT_ENABLED_0 = "INIT_STATIC_EXPORT_ENABLED_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_SE_PARAM_2 = "LOG_ADD_SE_PARAM_2";
 
@@ -197,6 +203,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SCRUBBING_FOLDER_FAILED_2 = "LOG_SCRUBBING_FOLDER_FAILED_2";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SE_RESOURCE_START_1 = "LOG_SE_RESOURCE_START_1";
 

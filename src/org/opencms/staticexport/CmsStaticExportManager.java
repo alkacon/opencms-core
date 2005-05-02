@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2005/05/02 13:33:48 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1361,30 +1361,21 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // get the default accept-charset header value
         m_defaultAcceptCharsetHeader = OpenCms.getSystemInfo().getDefaultEncoding();
 
-        int todo = 0;
-        // TODO: improve this "localization"
-
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
-                Messages.INIT_STATIC_EXPORT_1,
-                isStaticExportEnabled() ? "enabled" : "disabled"));
             if (isStaticExportEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(
-                    Messages.INIT_EXPORT_DEFAULT_1,
-                    new Boolean(getExportPropertyDefault())));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0 ));                
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_DEFAULT_1, new Boolean(getExportPropertyDefault())));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_PATH_1, getExportPath()));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_RFS_PREFIX_1, getRfsPrefix()));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.LOG.info(Messages.get().key(
-                    Messages.INIT_EXPORT_LINK_STYLE_1,
-                    relativLinksInExport() ? "relative" : "absolute"));
-                CmsLog.LOG.info(Messages.get().key(
-                    Messages.INIT_EXPORT_EXPORT_HANDLER_1,
-                    getHandler().getClass().getName()));
+                CmsLog.LOG.info(Messages.get().key(relativLinksInExport() ? Messages.INIT_EXPORT_LINK_STYLE_RELATIVE_0 : Messages.INIT_EXPORT_LINK_STYLE_ABSOLUTE_0));
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_EXPORT_HANDLER_1, getHandler().getClass().getName()));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
-            }
+            } else {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
+            }    
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/02 13:33:48 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1.4
  * 
@@ -104,15 +104,16 @@ public final class CmsLockManager extends Object {
      * @param projectId the ID of the project where the resource is locked
      * @param mode flag indicating the mode (temporary or common) of a lock
      * 
+     * @throws CmsLockException if the resource is locked
      * @throws CmsException if somethong goes wrong
      */
-    public void addResource(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource, CmsUUID userId, int projectId, int mode) throws CmsException {
+    public void addResource(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource, CmsUUID userId, int projectId, int mode) throws CmsLockException, CmsException {
         
         CmsLock lock = getLock(driverManager, dbc, resource);
         String resourceName = resource.getRootPath();
         
         if (!lock.isNullLock() && !lock.getUserId().equals(dbc.currentUser().getId())) {
-            throw new CmsLockException("Resource is already locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+            throw new CmsLockException(Messages.get().container(Messages.ERR_RESOURCE_LOCKED_0));
         }
 
         if (lock.isNullLock()) {
@@ -390,6 +391,7 @@ public final class CmsLockManager extends Object {
      * @param forceUnlock true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
      * 
      * @return the previous CmsLock object of the resource, or null if the resource was unlocked
+     * @throws CmsLockException if the resource is locked by another user or if the lock is inherided from a parent folder
      * @throws CmsException if something goes wrong
      */
     public CmsLock removeResource(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource, boolean forceUnlock) throws CmsException {
@@ -406,12 +408,12 @@ public final class CmsLockManager extends Object {
 
         if (!forceUnlock && (!lock.getUserId().equals(dbc.currentUser().getId()) || lock.getProjectId() != dbc.currentProject().getId())) {
             // the resource is locked by another user
-            throw new CmsLockException("Unable to unlock '" + dbc.removeSiteRoot(resourcename) + "', resource is locked by another user and/or in another project", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+            throw new CmsLockException(Messages.get().container(Messages.ERR_RESOURCE_UNLOCK_1, dbc.removeSiteRoot(resourcename)));
         }
 
         if (!forceUnlock && (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || (getParentFolderLock(resourcename) != null))) {
             // sub-resources of a locked folder can't be unlocked
-            throw new CmsLockException("Unable to unlock '" + dbc.removeSiteRoot(resourcename) + "', the lock is inherited from a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
+            throw new CmsLockException(Messages.get().container(Messages.ERR_UNLOCK_LOCK_INHERITED_1, dbc.removeSiteRoot(resourcename)));
         }
 
         // remove the lock and clean-up stuff

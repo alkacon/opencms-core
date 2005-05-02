@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/04/28 08:26:03 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/05/02 13:33:47 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -532,7 +532,7 @@ public final class CmsSiteManager implements Cloneable {
     private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
 
         if (m_sites.containsKey(server)) {
-            throw new CmsConfigurationException("Duplicate server name " + server.getUrl());
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, server.getUrl()));
         }
         m_sites.put(server, site);
     }

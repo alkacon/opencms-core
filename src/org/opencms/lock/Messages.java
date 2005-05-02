@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/Messages.java,v $
- * Date   : $Date: 2005/05/02 13:33:48 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Messages.java,v $
+ * Date   : $Date: 2005/05/02 13:33:49 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.site;
+package org.opencms.lock;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -38,44 +38,22 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @since 5.7.3
+ * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DEFAULT_SITE_ROOT_1 = "INIT_DEFAULT_SITE_ROOT_1";    
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_NO_ROOT_FOLDER_1 = "INIT_NO_ROOT_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1 = "INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1";
+    public static final String ERR_RESOURCE_LOCKED_0 = "ERR_RESOURCE_LOCKED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_NUM_SITE_ROOTS_CONFIGURED_1 = "INIT_NUM_SITE_ROOTS_CONFIGURED_1";
+    public static final String ERR_RESOURCE_UNLOCK_1 = "ERR_RESOURCE_UNLOCK_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_SITE_ROOT_ADDED_1 = "INIT_SITE_ROOT_ADDED_1";
+    public static final String ERR_UNLOCK_LOCK_INHERITED_1 = "ERR_UNLOCK_LOCK_INHERITED_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_START_SITE_CONFIG_0 = "INIT_START_SITE_CONFIG_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKPLACE_SITE_1 = "INIT_WORKPLACE_SITE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_MATCHING_REQUEST_TO_SITE_2 = "LOG_MATCHING_REQUEST_TO_SITE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_READ_SITE_PROP_FAILED_0 = "LOG_READ_SITE_PROP_FAILED_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DUPLICATE_SERVER_NAME_1 = "ERR_DUPLICATE_SERVER_NAME_1";
-    
-    
     
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.site.messages";
+    private static final String BUNDLE_NAME = "org.opencms.lock.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
