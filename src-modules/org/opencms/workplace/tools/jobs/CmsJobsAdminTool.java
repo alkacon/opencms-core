@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/04/28 09:52:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/02 07:25:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,10 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Main scheduler jobs management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends CmsListDialog {
@@ -72,7 +74,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.1 $
+     * @version $Revision: 1.2 $
      * @since 5.7.3
      */
     private class ActivateJobAction extends CmsListDirectAction {
@@ -290,12 +292,9 @@ public class CmsJobsAdminTool extends CmsListDialog {
             String jobId = getSelectedItem().getId();
             try {
                 // forward to the edit job screen
-                getJsp().getResponse().sendRedirect(
-                    getToolManager().cmsLinkForPath(getJsp(), "/jobs/edit")
-                        + "&jobId="
-                        + jobId
-                        + "&close_link="
-                        + getToolManager().cmsLinkForPath(getJsp(), getCurrentToolPath()));
+                Map params = new HashMap();
+                params.put("jobId", jobId);          
+                getToolManager().jspRedirectTool(getJsp(), "/jobs/edit", params);
             } catch (IOException e) {
                 // should never happen
                 throw new RuntimeException(e);
