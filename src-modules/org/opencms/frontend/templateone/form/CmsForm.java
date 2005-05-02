@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/04/19 08:14:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/02 14:49:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsForm {
     
@@ -181,7 +181,21 @@ public class CmsForm {
      */
     public CmsForm(CmsJspActionElement jsp, CmsMessages messages, boolean initial) throws Exception {    
         
-        init(jsp, messages, initial);
+        init(jsp, messages, initial, null);
+    }
+    
+    /**
+     * Constructor which parses the configuration file using a given configuration file URI.<p>
+     * 
+     * @param jsp the initialized CmsJspActionElement to access the OpenCms API
+     * @param messages the localized messages
+     * @param initial if true, field values are filled with values specified in the configuration file, otherwise from the request
+     * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
+     * @throws Exception if parsing the configuration fails
+     */
+    public CmsForm(CmsJspActionElement jsp, CmsMessages messages, boolean initial, String formConfigUri) throws Exception {    
+        
+        init(jsp, messages, initial, formConfigUri);
     }
     
     /**
@@ -430,12 +444,16 @@ public class CmsForm {
      * @param jsp the initialized CmsJspActionElement to access the OpenCms API
      * @param messages the localized messages
      * @param initial if true, field values are filled with values specified in the XML configuration
+     * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
      * @throws Exception if parsing the configuration fails
      */
-    public void init(CmsJspActionElement jsp, CmsMessages messages, boolean initial) throws Exception {
+    public void init(CmsJspActionElement jsp, CmsMessages messages, boolean initial, String formConfigUri) throws Exception {
         
         // read the form configuration file from VFS
-        CmsFile file = jsp.getCmsObject().readFile(jsp.getRequestContext().getUri());
+        if (CmsStringUtil.isEmpty(formConfigUri)) {
+            formConfigUri = jsp.getRequestContext().getUri();
+        }
+        CmsFile file = jsp.getCmsObject().readFile(formConfigUri);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(jsp.getCmsObject(), file);
         
         // get current Locale

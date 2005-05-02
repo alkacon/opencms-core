@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/04/19 08:14:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/02 14:49:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
     
@@ -110,13 +110,22 @@ public class CmsFormHandler extends CmsJspActionElement {
     public CmsFormHandler(PageContext context, HttpServletRequest req, HttpServletResponse res) throws Exception {
         
         super(context, req, res);
-        setErrors(new HashMap());
-        m_fieldValues = null;
-        setInitial(CmsStringUtil.isEmpty(req.getParameter(C_PARAM_FORMACTION)));
-        // get the localized messages
-        setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
-        // get the form configuration
-        setFormConfiguration(new CmsForm(this, getMessages(), isInitial()));
+        init(req, null);
+    }
+    
+    /**
+     * Constructor, creates the necessary form configuration objects using a given configuration file URI.<p>
+     * 
+     * @param context the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
+     * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
+     * @throws Exception if creating the form configuration objects fails
+     */
+    public CmsFormHandler(PageContext context, HttpServletRequest req, HttpServletResponse res, String formConfigUri) throws Exception {
+        
+        super(context, req, res);
+        init(req, formConfigUri);
     }
     
     /**
@@ -283,6 +292,24 @@ public class CmsFormHandler extends CmsJspActionElement {
     public boolean hasValidationErrors() {
         
         return (! isInitial() && getErrors().size() > 0);
+    }
+    
+    /**
+     * Initializes the form handler and creates the necessary configuration objects.<p>
+     * 
+     * @param req the JSP request 
+     * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
+     * @throws Exception if creating the form configuration objects fails
+     */
+    public void init(HttpServletRequest req, String formConfigUri) throws Exception {
+
+        setErrors(new HashMap());
+        m_fieldValues = null;
+        setInitial(CmsStringUtil.isEmpty(req.getParameter(C_PARAM_FORMACTION)));
+        // get the localized messages
+        setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
+        // get the form configuration
+        setFormConfiguration(new CmsForm(this, getMessages(), isInitial(), formConfigUri));
     }
     
     /**
