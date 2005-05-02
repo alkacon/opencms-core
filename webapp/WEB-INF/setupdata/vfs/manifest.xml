@@ -15834,6 +15834,48 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/views/admin/tool-fs.html</source>
+			<destination>system/workplace/views/admin/tool-fs.html</destination>
+			<type>jsp</type>
+			<datelastmodified>Mon, 02 May 2005 13:35:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 May 2005 12:09:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tool with Explorer View Frameset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/admin/tool-title.html</source>
+			<destination>system/workplace/views/admin/tool-title.html</destination>
+			<type>jsp</type>
+			<datelastmodified>Mon, 02 May 2005 12:22:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 May 2005 12:10:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Title Frame for Exlorer View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/views/administration</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 18 Aug 2004 16:13:47 CEST</datelastmodified>

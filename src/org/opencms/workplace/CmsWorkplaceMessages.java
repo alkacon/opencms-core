@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/05/02 14:39:59 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.workplace;
 
+import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
+import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ import java.util.Set;
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
@@ -88,8 +90,6 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
      */
     private static synchronized List collectModuleMessages(Locale locale) {
 
-//////////// collect the workplace.properties ////////////////
-        
         // create a new list and add the base bundle
         ArrayList result = new ArrayList();
         // try to load the default resource bundle
@@ -99,45 +99,41 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
             result.add(wpMsg);
         }
 
+    ////////////    iterate over all registered modules ////////////////        
         Set names = OpenCms.getModuleManager().getModuleNames();
         if (names != null) {
             // iterate all module names
             Iterator i = names.iterator();
             while (i.hasNext()) {
+                String modName = (String)i.next();
+    ////////////    collect the workplace.properties ////////////////
                 // this should result in a name like "my.module.name.workplace"
-                String bundleName = ((String)i.next()) + ".workplace";
+                String bundleName = modName + ".workplace";
                 // try to load a bundle with the module names
                 CmsMessages msg = new CmsMessages(bundleName, locale);
                 // bundle was loaded, add to list of bundles
                 if (msg.isInitialized()) {
                     result.add(msg);
                 }
+    ////////////    collect the messages.properties ////////////////
+                // this should result in a name like "my.module.name.messages"
+                bundleName = modName + ".messages";
+                // try to load a bundle with the module names
+                msg = new CmsMessages(bundleName, locale);
+                // bundle was loaded, add to list of bundles
+                if (msg.isInitialized()) {
+                    result.add(msg);
+                }
             }
         }
-        
-        
-////////////collect the messages.properties ////////////////
-        
-        List msgs = new ArrayList(names);
-        if (names!=null) {
-            msgs.addAll(names);
+                      
+    ////////////collect additional core packages ////////////////
+        I_CmsMessageBundle[] coreMsgs = A_CmsMessageBundle.getOpenCmsMessageBundles();
+        for (int i = 0; i < coreMsgs.length; i++) {
+            I_CmsMessageBundle bundle = coreMsgs[i];
+            result.add(bundle.getBundle(locale));
         }
-        // add additional core workplace packages, like administration, tools, etc
-        msgs.add("org.opencms.workplace.list");
-        msgs.add("org.opencms.workplace.tools");
-        msgs.add("org.opencms.workplace.administration");
-        // iterate all module names
-        Iterator i = msgs.iterator();
-        while (i.hasNext()) {
-            // this should result in a name like "org.opencms.workplace.xxx.messages"
-            String bundleName = ((String)i.next()) + ".messages";
-            // try to load a bundle with the module names
-            CmsMessages msg = new CmsMessages(bundleName, locale);
-            // bundle was loaded, add to list of bundles
-            if (msg.isInitialized()) {
-                result.add(msg);
-            }
-        }
+        
         return result;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/02 14:39:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.A_CmsHtmlIconButton;
@@ -50,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -99,9 +98,7 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t}\n");
         html.append("\ttheForm." + CmsDialog.PARAM_FRAMENAME + ".value = window.name;\n");
         html.append("\tif (actionValue == '" + CmsDialog.DIALOG_OK + "') {\n");
-        if (!(this instanceof CmsReport)) {
-            html.append("\t\tloadingOn();\n");
-        }
+        html.append("\t\tloadingOn();\n");
         html.append("\t\treturn true;\n");
         html.append("\t}\n");
         html.append("\ttheForm." + CmsDialog.PARAM_ACTION + ".value = actionValue;\n");
@@ -402,13 +399,15 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t\t\tsetActiveItemByName(\"");
         html.append(getCurrentToolPath());
         html.append("\");\n");
-        html.append("\t\t\tloadingOff('');\n");
-        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
+        html.append("\t\t\tloadingOff();\n");
+        html.append("\t\t\ttry {\n");
+        html.append("\t\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
+        html.append("\t\t\t} catch(e) {\n");
+        html.append("\t\t\t\t// ignore\n");
+        html.append("\t\t\t}\n");
         html.append("\t\t}\n");
         html.append("\t\tfunction bodyUnload() {\n");
-        if (!(this instanceof CmsReport)) {
-            html.append("\t\t\tloadingOn('');\n");
-        }
+        html.append("\t\tloadingOn();\n");
         html.append("\t\t}\n");
         html.append("\t// --></script>\n");
         return html.toString();

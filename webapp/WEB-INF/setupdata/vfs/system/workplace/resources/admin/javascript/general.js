@@ -6,7 +6,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2004-2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,11 @@ function getFormForId(id) {
  */
 function openPage(href) {
     target = isFramed() ? parent.admin_content : this;
+    if (!isFramed()) {
+       if (parent.parent.admin_content) {
+           target = parent.parent.admin_content;
+       }
+    }
     openPageIn(href, target);
 }
 
@@ -61,7 +66,11 @@ function openPageIn(href, target) {
 function setContextHelp(contextHelp) {
     try {
         parent.admin_menu.setInternalContextHelp(contextHelp);
-    } catch(e) {}
+    } catch(e) {
+        try {
+             parent.parent.admin_menu.setInternalContextHelp(contextHelp);
+        } catch (e1) { }
+    }
 }
 
 /*
@@ -91,7 +100,9 @@ function setActiveItemByName(name) {
     try {
         return parent.admin_menu.setActiveItem(name);
     } catch (e) {
-        return false;
+        try {
+             parent.parent.admin_menu.setActiveItem(name);
+        } catch (e1) { }
     }
 }
 
@@ -107,7 +118,7 @@ function setActiveItemByName(name) {
 function mouseHelpEvent(obj_id, open) {
      var writezone = document.getElementById(obj_id);
      try {
-         if (!isFramed()) {
+         if (!isFramed() && !parent.parent.admin_content) {
              if (open) {
                  writezone.style.display = "inline";
              } else {

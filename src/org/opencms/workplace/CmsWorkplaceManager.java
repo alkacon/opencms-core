@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/05/02 14:39:59 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.3.1
  */
@@ -600,7 +600,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             return result;
         }
 
-        // massages have not been read so far
+        // messages have not been read so far
         synchronized (this) {
             result = new CmsWorkplaceMessages(locale);
             m_messages.put(locale, result);

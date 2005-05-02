@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/02 14:39:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
@@ -57,7 +58,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -349,15 +350,15 @@ public class CmsToolManager {
     /**
      * Includes the given tool with the given parameters in the response.<p>
      * 
-     * @param jsp the jsp context
+     * @param wp the workplace object
      * @param toolPath the path to the tool to include
      * @param params the parameters to send
      * 
      * @throws IOException if something goes wrong
      */
-    public void jspRedirectTool(CmsJspActionElement jsp, String toolPath, Map params) throws IOException {
+    public void jspRedirectTool(CmsWorkplace wp, String toolPath, Map params) throws IOException {
 
-        Map myParams = new HashMap(jsp.getRequest().getParameterMap());
+        Map myParams = new HashMap(wp.getJsp().getRequest().getParameterMap());
         if (params != null) {
             Iterator it = params.keySet().iterator();
             while (it.hasNext()) {
@@ -372,8 +373,12 @@ public class CmsToolManager {
             myParams.remove(CmsToolDialog.PARAM_PATH);
         }
         myParams.put(CmsToolDialog.PARAM_PATH, toolPath);
+        if (myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            myParams.remove(CmsDialog.PARAM_CLOSELINK);
+        }
+        myParams.put(CmsDialog.PARAM_CLOSELINK, cmsLinkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
         //resolveAdminTool(toolPath).getHandler().getLink()
-        jsp.getResponse().sendRedirect(cmsLinkForPath(jsp, toolPath, myParams));
+        wp.getJsp().getResponse().sendRedirect(cmsLinkForPath(wp.getJsp(), toolPath, myParams));
     }
 
     /**
@@ -399,9 +404,9 @@ public class CmsToolManager {
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
             String key = i.next().toString();
-            Object value = params.get(key).toString();
-            if (value instanceof Object[]) {
-                value = ((Object[])value)[0];
+            Object value = params.get(key);
+            if (value instanceof String[]) {
+                value = ((String[])value)[0];
             }
             link.append("&");
             link.append(key);

@@ -51,8 +51,6 @@ var buttonType = 1;
 
 var link_newresource = "/system/workplace/commons/newresource.jsp";
 
-var link_uploadresource = "/system/workplace/commons/newresource_upload.jsp";
-
 var link_showresource = "/system/workplace/commons/displayresource.jsp";
 
 var last_id = -1;
@@ -232,11 +230,18 @@ function updateWindowStore() {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
 		theTree = window.body.explorer_body.explorer_tree;
 	}
+
 	if ((mode == "projectview") || (mode == "galleryview")) {
-                if (window.body.admin_head) {
- 			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, window.body.admin_content.document);
+                var theDoc = null;
+                if (window.body.admin_content.tool_content) {
+                   theDoc = window.body.admin_content.tool_content.document;
                 } else {
- 			win = new windowStore(window.body.document, null, theTree, window.body.admin_content.document);
+                   theDoc = window.body.admin_content.document;
+                }
+                if (window.body.admin_head) {
+ 			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
+                } else {
+ 			win = new windowStore(window.body.document, null, theTree, theDoc);
                 }
 	} else {
 		try {
@@ -835,7 +840,6 @@ function displayHead(doc, pages, actpage){
 
 	var btUp = "";
 	var btWizard = "";
-	var btUpload = "";
 	var pageSelect = "";
 
 	if(vr.actDirectory == getRootFolder()) {
@@ -846,10 +850,8 @@ function displayHead(doc, pages, actpage){
 
 	if((vr.actProject != vr.onlineProject) && (vi.newButtonActive == true)) {
 		btWizard = button(vr.servpath + link_newresource, "explorer_files", "wizard", vr.langnew, buttonType);
-		btUpload = button(vr.servpath + link_uploadresource, "explorer_files", "upload", vr.langupload, buttonType);
 	} else {
 		btWizard = button(null, null, "wizard_in", vr.langnew, buttonType);
-		btUpload = button(null, null, "upload_in", vr.langupload, buttonType);
 	}
 
 	if(pages > 1){
@@ -896,7 +898,6 @@ function displayHead(doc, pages, actpage){
 	+ button("javascript:top.histGoBack();", null, "back", vr.langback, buttonType)
 	+ btUp
 	// + button("javascript:top.dispSearchForm();", null, "search", vr.langsearch, buttonType)
-	+ btUpload
 	+ btWizard
 
 	+ buttonSep(5, 5, 1)

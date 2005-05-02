@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/02 07:25:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/02 14:39:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Main scheduler jobs management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends CmsListDialog {
@@ -74,7 +74,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.2 $
+     * @version $Revision: 1.3 $
      * @since 5.7.3
      */
     private class ActivateJobAction extends CmsListDirectAction {
@@ -294,7 +294,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
                 // forward to the edit job screen
                 Map params = new HashMap();
                 params.put("jobId", jobId);          
-                getToolManager().jspRedirectTool(getJsp(), "/jobs/edit", params);
+                getToolManager().jspRedirectTool(this, "/jobs/edit", params);
             } catch (IOException e) {
                 // should never happen
                 throw new RuntimeException(e);
