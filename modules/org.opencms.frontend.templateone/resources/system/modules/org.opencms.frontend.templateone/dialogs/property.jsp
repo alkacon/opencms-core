@@ -30,7 +30,8 @@
 
 	case CmsPropertyTemplateOne.ACTION_CANCEL:
 	//////////////////// ACTION: cancel button pressed, close dialog
-
+	
+	wp.actionDeleteResource();
 	wp.actionCloseDialog();
 	break;
 
