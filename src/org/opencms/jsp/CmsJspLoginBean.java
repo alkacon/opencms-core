@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/02 16:42:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 
@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides convenient wrappers usefull to create user login pages.<p>
@@ -54,11 +56,14 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3
  */
 public class CmsJspLoginBean extends CmsJspActionElement {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspLoginBean.class);
 
     /** Flag to indicate if a login was successful. */
     private CmsException m_loginException;
@@ -213,12 +218,11 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         }
         if (m_loginException == null) {
             // login was successful
-            if (OpenCms.getLog(CmsJspLoginBean.class).isInfoEnabled()) {
-                OpenCms.getLog(CmsJspLoginBean.class).info(
-                    "Login of user '"
-                        + username
-                        + "' on page "
-                        + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().key(
+                    Messages.LOG_LOGIN_SUCCESSFUL_2,
+                    username,
+                    getRequestContext().addSiteRoot(getRequestContext().getUri())));
             }
             if (login_redirect != null) {
                 getResponse().sendRedirect(link(login_redirect));
@@ -227,12 +231,11 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             }
         } else {
             // login was not successful
-            if (OpenCms.getLog(CmsJspLoginBean.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsJspLoginBean.class).warn(
-                    "Failed login attempt for user '"
-                        + username
-                        + "' on page "
-                        + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(
+                    Messages.LOG_LOGIN_FAILED_2,
+                    username,
+                    getRequestContext().addSiteRoot(getRequestContext().getUri())));
             }
         }
     }
@@ -250,13 +253,11 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         if (session != null) {
             session.invalidate();
         }
-        // login was successful
-        if (OpenCms.getLog(CmsJspLoginBean.class).isDebugEnabled()) {
-            OpenCms.getLog(CmsJspLoginBean.class).debug(
-                "Logout of user '"
-                    + getUserName()
-                    + "' on page "
-                    + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+        // logout was successful
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_LOGOUT_SUCCESFUL_2,
+                getRequestContext().addSiteRoot(getRequestContext().getUri())));
         }
         getResponse().sendRedirect(getFormLink());
     }

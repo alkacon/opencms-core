@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/02 16:42:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
@@ -44,12 +45,14 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Bean to provide a convenient way to build navigation structures based on 
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -104,6 +107,9 @@ public class CmsJspNavBuilder {
 
     }
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspNavBuilder.class);
+
     // Member variables
     private CmsObject m_cms;
     private String m_requestUri;
@@ -152,8 +158,11 @@ public class CmsJspNavBuilder {
         try {
             cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
             subChannels = cms.getSubFolders(channel);
-        } catch (Exception e) {
-            System.err.println("Exception: " + e);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                // will be localized if the CmsException was constructoed localized.
+                LOG.error(e.getLocalizedMessage());
+            }
         } finally {
             cms.getRequestContext().restoreSiteRoot();
         }

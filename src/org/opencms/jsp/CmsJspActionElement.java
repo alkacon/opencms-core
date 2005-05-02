@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/02 16:42:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.jsp;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
@@ -72,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.0 beta 2
  */
@@ -269,15 +270,10 @@ public class CmsJspActionElement extends CmsJspBean {
         if (isNotInitialized()) {
             return null;
         }
-        try {
-            if (m_navigation == null) {
-                m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
-            }
-            return m_navigation;
-        } catch (Throwable t) {
-            handleException(t);
+        if (m_navigation == null) {
+            m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
         }
-        return null;
+        return m_navigation;
     }
 
     /**
@@ -507,7 +503,11 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        return "+++ error reading info property '" + property + "' +++";
+        CmsMessageContainer msgContainer = new CmsMessageContainer(
+            Messages.get(),
+            Messages.LOG_ERR_INFO_PROP_READ_1,
+            new Object[] {property});
+        return this.getMessage(msgContainer);
     }
 
     /**
@@ -532,7 +532,11 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        return "+++ error reading workplace label '" + label + "' +++";
+        CmsMessageContainer msgContainer = new CmsMessageContainer(
+            Messages.get(),
+            Messages.LOG_ERR_WORKPL_LABEL_READ_1,
+            new Object[] {label});
+        return this.getMessage(msgContainer);
     }
 
     /**
@@ -557,7 +561,11 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        return "+++ error generating link to '" + link + "' +++";
+        CmsMessageContainer msgContainer = new CmsMessageContainer(
+            Messages.get(),
+            Messages.LOG_ERR_GEN_LINK_0,
+            new Object[] {link});
+        return this.getMessage(msgContainer);
     }
 
     /**
@@ -713,7 +721,11 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         if (defaultValue == null) {
-            return "+++ file property '" + name + "' on '" + file + "' not found +++";
+            CmsMessageContainer msgContainer = new CmsMessageContainer(
+                Messages.get(),
+                Messages.LOG_ERR_FILE_PROP_MISSING_2,
+                new Object[] {name, file});
+            return this.getMessage(msgContainer);
         } else {
             return defaultValue;
         }
@@ -807,6 +819,10 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        return "+++ error reading user property '" + property + "' +++";
+        CmsMessageContainer msgContainer = new CmsMessageContainer(
+            Messages.get(),
+            Messages.LOG_ERR_USER_PROP_READ_1,
+            new Object[] {property});
+        return this.getMessage(msgContainer);
     }
 }

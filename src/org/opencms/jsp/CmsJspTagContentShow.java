@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/03/20 23:44:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/02 16:42:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -50,15 +51,20 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(TagSupport.class);
 
     /** Name of the content node element to show. */
     private String m_element;
@@ -94,7 +100,7 @@ public class CmsJspTagContentShow extends TagSupport {
                 // read the element from the content
                 return content.getStringValue(cms, element, locale);
             } catch (CmsXmlException e) {
-                OpenCms.getLog(CmsJspTagContentShow.class).error("Error processing content element '" + element, e);
+                LOG.error(Messages.get().key(Messages.LOG_ERR_CONTENT_SHOW_1, element), e);
                 return null;
             }
         } else {
@@ -108,8 +114,8 @@ public class CmsJspTagContentShow extends TagSupport {
     public int doStartTag() throws JspException {
 
         // initialize a string mapper to resolve EL like strings in tag attributes
-        CmsFlexController controller = 
-            (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(
+            CmsFlexController.ATTRIBUTE_NAME);
         CmsObject cms = controller.getCmsObject();
 
         // get a reference to the parent "content container" class
@@ -135,11 +141,8 @@ public class CmsJspTagContentShow extends TagSupport {
         if (CmsMacroResolver.isMacro(element)) {
             // this is a macro, initialize a macro resolver
             String resourcename = CmsJspTagContentLoad.getResourceName(cms, contentContainer);
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance()
-                .setCmsObject(cms)
-                .setJspPageContext(pageContext)
-                .setResourceName(resourcename)            
-                .setKeepEmptyMacros(true);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(pageContext)
+                .setResourceName(resourcename).setKeepEmptyMacros(true);
             // resolve the macro
             content = resolver.resolveMacros(element);
         } else if (xmlContent == null) {
@@ -162,7 +165,7 @@ public class CmsJspTagContentShow extends TagSupport {
             }
         } catch (IOException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error in Jsp <contentshow> tag processing", e);
+                LOG.error(Messages.get().key(Messages.LOG_ERR_JSP_BEAN_0), e);
             }
             throw new JspException(e);
         }

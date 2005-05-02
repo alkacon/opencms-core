@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/02 16:42:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,15 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.main.OpenCms;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Superclass for OpenCms JSP beans that provides convient access 
@@ -55,11 +59,14 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3
  */
 public class CmsJspBean {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspBean.class);
 
     /** JSP page context. */
     private PageContext m_context;
@@ -102,12 +109,7 @@ public class CmsJspBean {
         if (m_isNotInitialized) {
             return null;
         }
-        try {
-            return m_controller.getCmsObject();
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return null;
+        return m_controller.getCmsObject();
     }
 
     /**
@@ -165,7 +167,9 @@ public class CmsJspBean {
         m_controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         if (m_controller == null) {
             // controller not found - this request was not initialized properly
-            throw new RuntimeException(this.getClass().getName() + " is usable only on a OpenCms controlled JSP page");
+            throw new CmsRuntimeException(Messages.get().container(
+                "ERR_MISSING_CMS_CONTROLLER",
+                CmsJspBean.class.getName()));
         }
         m_context = context;
         m_request = req;
@@ -219,6 +223,29 @@ public class CmsJspBean {
     }
 
     /**
+     * Internally localizes the given <code>CmsMessageContainer</code> to a String. <p>
+     * 
+     * If the user request context is at hand, the user's locale will be chosen. If 
+     * no user request context is available, the default locale is used. 
+     * <p>
+     * 
+     * @param container the message container that allows localization of the represented message.
+     * @return the message String of the container argument localized to the user's locale (if available) or 
+     *         to the default locale. 
+     */
+    protected String getMessage(CmsMessageContainer container) {
+
+        CmsObject cms = getCmsObject();
+        String result;
+        if ((cms == null) && (cms.getRequestContext().getLocale() != null)) {
+            result = container.key();
+        } else {
+            result = container.key(cms.getRequestContext().getLocale());
+        }
+        return result;
+    }
+
+    /**
      * Handles any exception that might occur in the context of this element to 
      * ensure that templates are not disturbed.<p>
      * 
@@ -226,12 +253,12 @@ public class CmsJspBean {
      */
     protected void handleException(Throwable t) {
 
-        if (OpenCms.getLog(this).isErrorEnabled()) {
-            OpenCms.getLog(this).error("Error in JSP bean", t);
+        if (LOG.isErrorEnabled()) {
+            LOG.error(Messages.get().key(Messages.LOG_ERR_JSP_BEAN_0), t);
         }
         if (!(m_isSupressingExceptions || getRequestContext().currentProject().isOnlineProject())) {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Interrupted Exception in " + this.getClass().getName(), t);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1, this.getClass().getName()), t);
             }
             String uri = null;
             Throwable u = getController().getThrowable();
@@ -240,7 +267,9 @@ public class CmsJspBean {
             } else {
                 u = t;
             }
-            throw new RuntimeException("Exception in " + ((uri != null) ? uri : this.getClass().getName()), u);
+            throw new CmsRuntimeException(Messages.get().container(
+                "ERR_RUNTIME",
+                (uri != null) ? uri : this.getClass().getName()), t);
         }
     }
 
