@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/05/02 13:47:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/03 09:46:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
@@ -467,6 +467,8 @@ public class CmsNewResource extends CmsDialog {
     
     /**
      * Returns the value for the Title property from the given resource name.<p>
+     * 
+     * Additionally translates the new resource name according to the file translation rules.<p>
      * 
      * @return the value for the Title property from the given resource name
      */
