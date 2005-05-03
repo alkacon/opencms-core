@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/03 16:28:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,17 +34,20 @@ package org.opencms.db;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsException;
 import org.opencms.flex.CmsFlexRequestContextInfo;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Warps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.4
  */
 public class CmsDbContext {
@@ -176,7 +179,7 @@ public class CmsDbContext {
      * @param message the message to write to the report / log
      * @param throwable the exception to write to the report / log
      * 
-     * @throws CmsException the throwable parameters masked as a CmsException
+     * @throws CmsException the throwable parameters masked as a CmsException 
      */
     public void report(I_CmsReport report, String message, Throwable throwable) throws CmsException {
 
@@ -193,11 +196,44 @@ public class CmsDbContext {
             if (throwable instanceof CmsException) {
                 throw (CmsException)throwable;
             }
-            if (message == null) {
+            if (CmsStringUtil.isEmpty(message)) {
                 throw new CmsException("Exception during database operation", throwable);
             } else {
                 throw new CmsException("Exception during database operation: " + message, throwable);
             }
         }
     }
+    
+    /**
+     * Reports an error to the given report (if available) and to the OpenCms log file.<p>
+     *  
+     * @param report the report to write the error to
+     * @param message the message to write to the report / log
+     * @param throwable the exception to write to the report / log
+     * 
+     * @throws CmsException the throwable parameters masked as a CmsException
+     * @throws CmsVfsException if the CmsMessageContainer is not null
+     */
+    public void report(I_CmsReport report, CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
+
+        if (report != null) {
+            if (message != null) {
+                report.println(message.key(), I_CmsReport.C_FORMAT_ERROR);
+            }
+            if (throwable != null) {
+                report.println(throwable);
+            }
+        }
+
+        if (throwable != null) {
+            if (throwable instanceof CmsException) {
+                throw (CmsException)throwable;
+            }
+            if (message == null) {
+                throw new CmsVfsException(Messages.get().container(Messages.ERR_DB_OPERATION_0), throwable);
+            } else {
+                throw new CmsVfsException(message, throwable);
+            }
+        }
+    }    
 }
