@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/04/27 13:07:54 $
- * Version: $Revision: 1.180 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.181 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,18 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -114,13 +125,16 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.180 $
+ * @version $Revision: 1.181 $
  * @since 5.1
  */
 public final class OpenCmsCore {
 
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
-    public static final String C_FILE_HTML_MESSAGES = "org/opencms/main/htmlmsg.properties";
+    public static final String HTML_MESSAGE_FILE = "org/opencms/main/htmlmsg.properties";
+    
+    /** Required as template for event list generation. */
+    private static final I_CmsEventListener[] EVENT_LIST = new I_CmsEventListener[0];
 
     /** Lock object for synchronization. */
     private static final Object LOCK = new Object();
@@ -514,20 +528,7 @@ public final class OpenCmsCore {
      */
     protected Object getRuntimeProperty(Object key) {
 
-        if (m_runtimeProperties == null) {
-            return null;
-        }
         return m_runtimeProperties.get(key);
-    }
-
-    /** 
-     * Returns the complete runtime property Map.<p>
-     *
-     * @return the Map of runtime properties
-     */
-    protected Map getRuntimePropertyMap() {
-
-        return m_runtimeProperties;
     }
 
     /**
@@ -921,9 +922,7 @@ public final class OpenCmsCore {
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
 
-        if (m_runtimeProperties == null) {
-            m_runtimeProperties = Collections.synchronizedMap(new HashMap());
-        }
+        // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
 
         // get an Admin cms context object with site root set to "/"
@@ -1073,6 +1072,7 @@ public final class OpenCmsCore {
             m_defaultUsers = new CmsDefaultUsers();
             m_localeManager = new CmsLocaleManager(Locale.ENGLISH);
             m_sessionManager = new CmsSessionManager();
+            m_runtimeProperties = new Hashtable();
         }
     }
 
@@ -1274,9 +1274,6 @@ public final class OpenCmsCore {
      */
     protected void setRuntimeProperty(Object key, Object value) {
 
-        if (m_runtimeProperties == null) {
-            m_runtimeProperties = Collections.synchronizedMap(new HashMap());
-        }
         m_runtimeProperties.put(key, value);
     }
 
@@ -1574,9 +1571,9 @@ public final class OpenCmsCore {
         // load the property file that contains the html fragments for the dialog
         Properties htmlProps = new Properties();
         try {
-            htmlProps.load(getClass().getClassLoader().getResourceAsStream(C_FILE_HTML_MESSAGES));
+            htmlProps.load(getClass().getClassLoader().getResourceAsStream(HTML_MESSAGE_FILE));
         } catch (Throwable th) {
-            CmsLog.LOG.error("Could not load " + C_FILE_HTML_MESSAGES, th);
+            CmsLog.LOG.error("Could not load " + HTML_MESSAGE_FILE, th);
         }
 
         // get localized message bundle
@@ -1744,7 +1741,7 @@ public final class OpenCmsCore {
             }
         }
     }
-
+    
     /**
      * Fires the specified event to a list of event listeners.<p>
      * 
@@ -1755,9 +1752,9 @@ public final class OpenCmsCore {
 
         if ((listeners != null) && (listeners.size() > 0)) {
             // handle all event listeners that listen only to this event type
-            I_CmsEventListener[] list = new I_CmsEventListener[0];
+            I_CmsEventListener[] list;
             synchronized (listeners) {
-                list = (I_CmsEventListener[])listeners.toArray(list);
+                list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
             }
             for (int i = 0; i < list.length; i++) {
                 list[i].cmsEvent(event);

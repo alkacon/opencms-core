@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -184,7 +183,7 @@ public class CmsModuleXmlHandler {
         digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 7);
         digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 8);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 9);
-
+        
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, 0, I_CmsXmlConfiguration.A_NAME);
@@ -441,14 +440,9 @@ public class CmsModuleXmlHandler {
      */
     public void addExportPoint(String uri, String destination) {
 
-        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_2_INITIALIZING) {
-            // this is also called from setup wizard, but we don't need to process the export points there
-            return;
-        }
-        
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.LOG.isInfoEnabled() && (point.getDestinationPath() != null)) {
             CmsLog.LOG.info(Messages.get().key(
                 Messages.INIT_ADD_EXPORT_POINT_2, point.getUri(), point.getDestinationPath()));
         }
@@ -565,7 +559,7 @@ public class CmsModuleXmlHandler {
         }
 
         // now create the module
-        CmsModule module = new CmsModule(
+        m_module = new CmsModule(
             moduleName,
             niceName,
             actionClass,
@@ -580,9 +574,6 @@ public class CmsModuleXmlHandler {
             m_exportPoints,
             m_resources,
             m_parameters);
-
-        // add the module to the list of configured modules
-        m_module = module;
 
         // set the additional resource types;
         m_module.setResourceTypes(m_resourceTypes);

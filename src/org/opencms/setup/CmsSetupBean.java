@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -883,7 +883,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         }
         try {
             m_htmlProps = new Properties();
-            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.C_FILE_HTML_MESSAGES));
+            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.HTML_MESSAGE_FILE));
         } catch (Exception e) {
             e.printStackTrace();
             m_errors.add(e.toString());

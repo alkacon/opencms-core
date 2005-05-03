@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/01 11:44:07 $
- * Version: $Revision: 1.635 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.636 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,9 @@ OpenCms 5.9.1 Corrin (aka 6.0 rc 1) - May 27, 2005
 ! XML content resource collectors can now get the name of the resource type to collect in the parameter
 ! Better error reporting during validation of the XML content definition
 ! XML content definition restrictions have been loosed (no more "Name" - "Names" requirement)
+! "Upload" button now available directly on the main "Explorer" view
+! When creating a new page the name entered is automatically corrected for invalid chars,
+  moreover the originally entered name can optional be set as Title and/or NavText
 
 OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April 28, 2005
 ! Added "search in search result" functionality

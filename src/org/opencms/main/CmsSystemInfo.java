@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/04/27 14:47:25 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -151,7 +151,7 @@ public class CmsSystemInfo {
      */
     public String getAbsoluteRfsPathRelativeToWebApplication(String path) {
 
-        if (path == null) {
+        if ((path == null) || (getWebApplicationRfsPath() == null)) {
             return null;
         }
         // check for absolute path is system depended, let's just use the standard check  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 5.3.1
  */
@@ -274,7 +274,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled() && (point.getDestinationPath() != null)) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Adding export point  : " + point.getUri() + " --> " + point.getDestinationPath());
         }

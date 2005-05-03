@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/05/02 15:12:56 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/03 15:44:14 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -542,7 +542,7 @@ public class CmsResourceManager {
      * 
      * @param typeId the id of the resource type to get
      * @return the initialized resource type instance for the given id
-     * @throws CmsLoaderException if no resource type is vaialble for the given id
+     * @throws CmsLoaderException if no resource type is available for the given id
      */
     public I_CmsResourceType getResourceType(int typeId) throws CmsLoaderException {
 
@@ -562,7 +562,7 @@ public class CmsResourceManager {
      * 
      * @param typeName the name of the resource type to get
      * @return the initialized resource type instance for the given name
-     * @throws CmsLoaderException if no resource type is vaialble for the given name
+     * @throws CmsLoaderException if no resource type is available for the given name
      */
     public I_CmsResourceType getResourceType(String typeName) throws CmsLoaderException {
 

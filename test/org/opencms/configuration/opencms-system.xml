@@ -110,6 +110,7 @@
 		</flexcache>
 		<http-authentication>
 			<browser-based>true</browser-based>
+			<form-based>/system/login/index.html</form-based>
 		</http-authentication>	
 		<resultcache>
 			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
