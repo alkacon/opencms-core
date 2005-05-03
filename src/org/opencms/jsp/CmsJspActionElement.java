@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/05/02 16:42:04 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/03 07:44:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,14 +73,19 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.0 beta 2
  */
 public class CmsJspActionElement extends CmsJspBean {
 
     /** Error message in case bean was not properly initialized. */
-    public static final String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
+    // cannot use a string: At class-loading time the 
+    // user request context for localization is not at hand. 
+    public static final CmsMessageContainer C_NOT_INITIALIZED = 
+        new CmsMessageContainer(
+        Messages.get(),
+        Messages.GUI_ERR_ACTIONELEM_NOT_INIT_0);
 
     /** JSP navigation builder. */
     private CmsJspNavBuilder m_navigation;
@@ -505,7 +510,7 @@ public class CmsJspActionElement extends CmsJspBean {
         }
         CmsMessageContainer msgContainer = new CmsMessageContainer(
             Messages.get(),
-            Messages.LOG_ERR_INFO_PROP_READ_1,
+            Messages.GUI_ERR_INFO_PROP_READ_1,
             new Object[] {property});
         return this.getMessage(msgContainer);
     }
@@ -525,7 +530,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String label(String label) {
 
         if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
+            return this.getMessage(C_NOT_INITIALIZED);
         }
         try {
             return CmsJspTagLabel.wpLabelTagAction(label, getRequest());
@@ -534,7 +539,7 @@ public class CmsJspActionElement extends CmsJspBean {
         }
         CmsMessageContainer msgContainer = new CmsMessageContainer(
             Messages.get(),
-            Messages.LOG_ERR_WORKPL_LABEL_READ_1,
+            Messages.GUI_ERR_WORKPL_LABEL_READ_1,
             new Object[] {label});
         return this.getMessage(msgContainer);
     }
@@ -554,7 +559,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String link(String link) {
 
         if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
+            return this.getMessage(C_NOT_INITIALIZED);
         }
         try {
             return CmsJspTagLink.linkTagAction(link, getRequest());
@@ -563,7 +568,7 @@ public class CmsJspActionElement extends CmsJspBean {
         }
         CmsMessageContainer msgContainer = new CmsMessageContainer(
             Messages.get(),
-            Messages.LOG_ERR_GEN_LINK_0,
+            Messages.GUI_ERR_GEN_LINK_1,
             new Object[] {link});
         return this.getMessage(msgContainer);
     }
@@ -706,7 +711,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
 
         if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
+            return this.getMessage(C_NOT_INITIALIZED);
         }
         try {
             if (file == null) {
@@ -723,7 +728,7 @@ public class CmsJspActionElement extends CmsJspBean {
         if (defaultValue == null) {
             CmsMessageContainer msgContainer = new CmsMessageContainer(
                 Messages.get(),
-                Messages.LOG_ERR_FILE_PROP_MISSING_2,
+                Messages.GUI_ERR_FILE_PROP_MISSING_2,
                 new Object[] {name, file});
             return this.getMessage(msgContainer);
         } else {
@@ -794,7 +799,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String toAbsolute(String target) {
 
         if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
+            return this.getMessage(C_NOT_INITIALIZED);
         }
         return CmsLinkManager.getAbsoluteUri(target, getController().getCurrentRequest().getElementUri());
     }
@@ -812,7 +817,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String user(String property) {
 
         if (isNotInitialized()) {
-            return C_NOT_INITIALIZED;
+            return this.getMessage(C_NOT_INITIALIZED);
         }
         try {
             return CmsJspTagUser.userTagAction(property, getRequest());
@@ -821,7 +826,7 @@ public class CmsJspActionElement extends CmsJspBean {
         }
         CmsMessageContainer msgContainer = new CmsMessageContainer(
             Messages.get(),
-            Messages.LOG_ERR_USER_PROP_READ_1,
+            Messages.GUI_ERR_USER_PROP_READ_1,
             new Object[] {property});
         return this.getMessage(msgContainer);
     }

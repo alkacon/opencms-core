@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/05/02 16:42:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/03 07:44:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,13 +55,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERR_CONTENT_SHOW_1 = "LOG_ERR_CONTENT_SHOW_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_FILE_PROP_MISSING_2 = "LOG_ERR_FILE_PROP_MISSING_2";
+    public static final String GUI_ERR_FILE_PROP_MISSING_2 = "GUI_ERR_FILE_PROP_MISSING_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_GEN_LINK_0 = "LOG_ERR_GEN_LINK_0";
+    public static final String GUI_ERR_GEN_LINK_1 = "GUI_ERR_GEN_LINK_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_INFO_PROP_READ_1 = "LOG_ERR_INFO_PROP_READ_1";
+    public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_INFO_PROP_READ_1 = "GUI_ERR_INFO_PROP_READ_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_JSP_BEAN_0 = "LOG_ERR_JSP_BEAN_0";
@@ -70,10 +73,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERR_JSP_WRITE_0 = "LOG_ERR_JSP_WRITE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_USER_PROP_READ_1 = "LOG_ERR_USER_PROP_READ_1";
+    public static final String GUI_ERR_USER_PROP_READ_1 = "GUI_ERR_USER_PROP_READ_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_WORKPL_LABEL_READ_1 = "LOG_ERR_WORKPL_LABEL_READ_1";
+    public static final String GUI_ERR_WORKPL_LABEL_READ_1 = "GUI_ERR_WORKPL_LABEL_READ_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_FAILED_2 = "LOG_LOGIN_FAILED_2";
