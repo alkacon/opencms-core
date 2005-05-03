@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/03 15:56:51 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsJspTagInfo extends TagSupport {
 
@@ -120,7 +120,7 @@ public class CmsJspTagInfo extends TagSupport {
 
         if (property == null) {
             CmsMessageContainer errMsgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_INFO_PROP_0);
-            return CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, req);
+            return Messages.getLocalizedMessage(errMsgContainer, req);
         }
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
@@ -162,7 +162,7 @@ public class CmsJspTagInfo extends TagSupport {
                     CmsMessageContainer errMsgContainer = Messages.get().container(
                         Messages.GUI_ERR_INVALID_INFO_PROP_1,
                         property);
-                    return CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, req);
+                    return Messages.getLocalizedMessage(errMsgContainer, req);
                 }
         }
 

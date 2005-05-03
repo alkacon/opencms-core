@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/03 15:56:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -123,7 +123,7 @@ public class CmsJspTagContentShow extends TagSupport {
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
             CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTSHOW_WRONG_PARENT_0);
-            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, pageContext);
+            String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
         I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;

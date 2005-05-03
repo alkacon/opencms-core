@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/03 15:56:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagUser extends TagSupport {
 
@@ -131,7 +131,7 @@ public class CmsJspTagUser extends TagSupport {
             case 11: // otherstuff
                 Iterator it = user.getAdditionalInfo().keySet().iterator();
                 CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_TAG_USER_ADDITIONALINFO_0);
-                result = CmsJspTagLocaleUtil.getLocalizedMessage(msgContainer, req);
+                result = Messages.getLocalizedMessage(msgContainer, req);
                 while (it.hasNext()) {
                     Object o = it.next();
                     result += " " + o + "=" + user.getAdditionalInfo((String)o);
@@ -139,7 +139,7 @@ public class CmsJspTagUser extends TagSupport {
                 break;
             default: {
                 msgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_USER_PROP_1, property);
-                result = CmsJspTagLocaleUtil.getLocalizedMessage(msgContainer, req);
+                result = Messages.getLocalizedMessage(msgContainer, req);
             }
         }
 

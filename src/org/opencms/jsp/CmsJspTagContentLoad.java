@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/03 15:56:51 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -272,7 +272,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         if (pageAttribCount > 0 && pageAttribCount < 2) {
             CmsMessageContainer errorMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_INDEX_SIZE_0);
-            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errorMsgContainer, pageContext);
+            String msg = Messages.getLocalizedMessage(errorMsgContainer, pageContext);
             throw new IllegalArgumentException(msg);
         }
 
@@ -280,7 +280,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         if (CmsStringUtil.isEmpty(m_collector)) {
             CmsMessageContainer errorMsgContainer = Messages.get().container(
                 Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0);
-            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errorMsgContainer, pageContext);
+            String msg = Messages.getLocalizedMessage(errorMsgContainer, pageContext);
             throw new IllegalArgumentException(msg);
         }
 
@@ -288,7 +288,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         if (CmsStringUtil.isEmpty(m_param)) {
             CmsMessageContainer errorMsgContainer = Messages.get().container(
                 Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0);
-            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errorMsgContainer, pageContext);
+            String msg = Messages.getLocalizedMessage(errorMsgContainer, pageContext);
             throw new IllegalArgumentException(msg);
         }
 

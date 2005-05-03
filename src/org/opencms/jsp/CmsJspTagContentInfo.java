@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/03 15:56:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
@@ -103,7 +103,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
             // build a container:
             String msg;
             CmsMessageContainer container = Messages.get().container(Messages.ERR_TAG_CONTENTINFO_WRONG_PARENT_0);
-            msg = CmsJspTagLocaleUtil.getLocalizedMessage(container, pageContext);
+            msg = Messages.getLocalizedMessage(container, pageContext);
             throw new JspTagException(msg);
         }
 
