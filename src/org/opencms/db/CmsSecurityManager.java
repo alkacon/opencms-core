@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/05/03 16:30:20 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
@@ -87,11 +88,11 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
-
+    
     /** Indicates allowed permissions. */
     public static final int PERM_ALLOWED = 0;
 
@@ -109,7 +110,7 @@ public final class CmsSecurityManager {
 
     /** Indicates denied permissions. */
     private static final Integer PERM_DENIED_INTEGER = new Integer(PERM_DENIED);
-
+   
     /** The factory to create runtime info objects. */
     protected I_CmsDbContextFactory m_dbContextFactory;
 
@@ -121,7 +122,7 @@ public final class CmsSecurityManager {
 
     /** Cache for permission checks. */
     private Map m_permissionCache;
-
+    
     /**
      * Default constructor.<p>
      */
@@ -166,11 +167,11 @@ public final class CmsSecurityManager {
      */
     public void acceptTask(CmsRequestContext context, int taskId) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);        
         try {
             m_driverManager.acceptTask(dbc, taskId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -187,13 +188,14 @@ public final class CmsSecurityManager {
      */
     public void addUserToGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);  
+        checkRole(dbc, CmsRole.USER_MANAGER);
+        
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.addUserToGroup(dbc, username, groupname);
         } catch (Exception e) {
-            dbc.report(null, "Error adding user " + username + " to group " + groupname, e);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_ADD_USER_GROUP_FAILED_2,username,groupname);
+            dbc.report(null, errMsgContainer, e);
         } finally {
             dbc.clear();
         }
@@ -219,20 +221,16 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if operation was not succesfull
      */
-    public CmsUser addWebUser(
-        CmsRequestContext context,
-        String name,
-        String password,
-        String group,
-        String description,
-        Map additionalInfos) throws CmsException {
+    public CmsUser addWebUser(CmsRequestContext context, String name, String password, String group, String description, Map additionalInfos)
+    throws CmsException {
 
         CmsUser result = null;
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);        
         try {
             result = m_driverManager.addWebUser(dbc, name, password, group, description, additionalInfos);
         } catch (Exception e) {
-            dbc.report(null, "Error adding web user " + name, e);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_ADD_USER_WEB_1,name);
+            dbc.report(null, errMsgContainer, e);
         } finally {
             dbc.clear();
         }
@@ -277,7 +275,9 @@ public final class CmsSecurityManager {
                 description,
                 additionalInfos);
         } catch (Exception e) {
-            dbc.report(null, "Error adding web user " + name, e);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_ADD_USER_WEB_1,name);
+            dbc.report(null, errMsgContainer, e);
+         dbc.report(null,errMsgContainer, e);
         } finally {
             dbc.clear();
         }
@@ -297,11 +297,12 @@ public final class CmsSecurityManager {
     public void backupProject(CmsRequestContext context, CmsProject backupProject, int tagId, long publishDate)
     throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);        
         try {
             m_driverManager.backupProject(dbc, backupProject, tagId, publishDate);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            int changetoNull;
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -317,14 +318,15 @@ public final class CmsSecurityManager {
      * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLastModifiedProjectId(CmsRequestContext context, CmsResource resource) throws CmsException {
-
+        
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.changeLastModifiedProjectId(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, "Error changing last-modified-in-project id of resource " + resource.getRootPath(), e);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1,resource.getRootPath());
+            dbc.report(null, errMsgContainer, e);
         } finally {
             dbc.clear();
         }
@@ -341,16 +343,17 @@ public final class CmsSecurityManager {
      */
     public void changeLock(CmsRequestContext context, CmsResource resource) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);           
         try {
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, "Error changing lock of resource " + resource.getRootPath(), e);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_CHANGE_LOCK_OF_RESOURCE_1,resource.getRootPath());
+            dbc.report(null, errMsgContainer, e);
         } finally {
             dbc.clear();
         }
     }
-
+    
     /**
      * Returns a list with all sub resources of a given folder that have set the given property, 
      * matching the current property's value with the given old value and replacing it by a given new value.<p>
@@ -366,14 +369,8 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List changeResourcesInFolderWithProperty(
-        CmsRequestContext context,
-        CmsResource resource,
-        String propertyDefinition,
-        String oldValue,
-        String newValue,
-        boolean recursive) throws CmsException {
-
+    public List changeResourcesInFolderWithProperty(CmsRequestContext context, CmsResource resource, String propertyDefinition, String oldValue, String newValue, boolean recursive) throws CmsException {
+        
         // collect the resources to look up
         List resources = new ArrayList();
         if (recursive) {
@@ -381,20 +378,20 @@ public final class CmsSecurityManager {
         } else {
             resources.add(resource);
         }
-
+        
         Pattern oldPattern;
         try {
             // compile regular expression pattern
             oldPattern = Pattern.compile(oldValue);
         } catch (PatternSyntaxException e) {
-            throw new CmsException(e.getMessage());
+            throw new CmsException(e.getLocalizedMessage());    
         }
-
+        
         List changedResources = new ArrayList(resources.size());
         // create permission set and filter to check each resource
         CmsPermissionSet perm = CmsPermissionSet.ACCESS_WRITE;
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        for (int i = 0; i < resources.size(); i++) {
+        for (int i=0; i<resources.size(); i++) {
             // loop through found resources and check property values
             CmsResource res = (CmsResource)resources.get(i);
             // check resource state and permissions
@@ -422,7 +419,7 @@ public final class CmsSecurityManager {
                 // write property object if something has changed
                 writePropertyObject(context, res, property);
                 changedResources.add(res);
-            }
+            }           
         }
         return changedResources;
     }
@@ -438,13 +435,14 @@ public final class CmsSecurityManager {
      */
     public void changeUserType(CmsRequestContext context, CmsUUID userId, int userType) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
+        
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+           checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.changeUserType(dbc, userId, userType);
         } catch (Exception e) {
-            dbc.report(null, "Error changing type of user ID " + userId.toString(), e);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_CHANGE_TYPE_OF_USER_1,userId.toString());
+            dbc.report(null, errMsgContainer, e);
         } finally {
             dbc.clear();
         }
@@ -463,17 +461,17 @@ public final class CmsSecurityManager {
     public void changeUserType(CmsRequestContext context, String username, int userType) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
+        
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
-            m_driverManager.changeUserType(dbc, username, userType);
+          checkRole(dbc, CmsRole.USER_MANAGER);
+             m_driverManager.changeUserType(dbc, username, userType);
         } catch (Exception e) {
             dbc.report(null, "Error changing type of user " + username, e);
         } finally {
             dbc.clear();
         }
     }
-
+    
     /**
      * Checks if the current user has management access to the given project.<p>
      * 
@@ -516,15 +514,15 @@ public final class CmsSecurityManager {
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException, CmsSecurityException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
         try {
             // check the access permissions
             checkPermissions(dbc, resource, requiredPermissions, checkLock, filter);
         } finally {
             dbc.clear();
-        }
+        }        
     }
-
+    
     /**
      * Checks if the given resource or the current project can be published by the current user 
      * using his current OpenCms context.<p>
@@ -537,9 +535,8 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if the user does not have the required permissions
      */
-    public void checkPublishPermissions(CmsRequestContext context, CmsResource directPublishResource)
-    throws CmsException {
-
+    public void checkPublishPermissions(CmsRequestContext context, CmsResource directPublishResource) throws CmsException {
+        
         // is the current project an "offline" project?
         if (context.currentProject().isOnlineProject()) {
             throw new CmsSecurityException(
@@ -552,7 +549,7 @@ public final class CmsSecurityManager {
                 "[" + this.getClass().getName() + "] " + context.currentProject().getName(),
                 CmsLockException.C_RESOURCE_LOCKED);
         }
-
+        
         // check if this is a "direct publish" attempt        
         if (directPublishResource != null) {
             // the parent folder must not be new or deleted
@@ -562,13 +559,12 @@ public final class CmsSecurityManager {
                 if ((parent.getState() == I_CmsConstants.C_STATE_DELETED)
                     || (parent.getState() == I_CmsConstants.C_STATE_NEW)) {
                     // parent folder is deleted or new - direct publish not allowed
-                    throw new CmsSecurityException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + context.currentProject().getName(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+                    throw new CmsSecurityException(
+                        "[" + this.getClass().getName() + "] " + context.currentProject().getName(),
+                        CmsSecurityException.C_SECURITY_NO_PERMISSIONS);                    
                 }
             }
-
+            
             // check if the user has the explicit permission to direct publish the selected resource
             if (PERM_ALLOWED == hasPermissions(
                 context,
@@ -580,7 +576,7 @@ public final class CmsSecurityManager {
                 return;
             }
         }
-
+        
         // check if the user is a manager of the current project, in this case he has publish permissions
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -590,7 +586,7 @@ public final class CmsSecurityManager {
         }
     }
 
-    /**
+  /**
      * Checks if the user of the current database context 
      * has permissions to impersonate the given role.<p>
      *  
@@ -770,7 +766,7 @@ public final class CmsSecurityManager {
             checkManagerOfProjectRole(dbc, context.currentProject());
             m_driverManager.copyResourceToProject(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -796,7 +792,7 @@ public final class CmsSecurityManager {
             checkManagerOfProjectRole(dbc, project);
             result = m_driverManager.countLockedResources(dbc, project);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -823,7 +819,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.countLockedResources(dbc, foldername);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -889,7 +885,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.PROJECT_MANAGER);
             result = m_driverManager.createProject(dbc, name, description, groupname, managergroupname, projecttype);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1031,7 +1027,7 @@ public final class CmsSecurityManager {
                 timeout,
                 priority);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1074,7 +1070,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.createTask(dbc, agentName, roleName, taskname, timeout, priority);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1099,7 +1095,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.PROJECT_MANAGER);
             result = m_driverManager.createTempfileProject(dbc);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1156,7 +1152,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.deleteAllStaticExportPublishedResources(dbc, linkType);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1187,7 +1183,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.HISTORY_MANAGER);
             m_driverManager.deleteBackups(dbc, timestamp, versions, report);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1337,7 +1333,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.deleteStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1414,7 +1410,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.endTask(dbc, taskid);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1478,7 +1474,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.forwardTask(dbc, taskid, newRoleName, newUserName);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1503,7 +1499,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAccessControlEntries(dbc, resource, getInherited);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1533,7 +1529,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAccessControlList(dbc, resource, inheritedOnly);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1557,7 +1553,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAllAccessibleProjects(dbc);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1581,7 +1577,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAllBackupProjects(dbc);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1605,7 +1601,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAllManageableProjects(dbc);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1648,7 +1644,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getChild(dbc, groupname);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1674,7 +1670,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getChilds(dbc, groupname);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1708,7 +1704,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getDirectGroupsOfUser(dbc, username);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1731,7 +1727,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getGroups(dbc);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1755,7 +1751,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getGroupsOfUser(dbc, username);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1780,7 +1776,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getGroupsOfUser(dbc, username, remoteAddress);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1802,7 +1798,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getLock(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1826,7 +1822,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getParent(dbc, groupname);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1852,7 +1848,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getPermissions(dbc, resource, user);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1901,7 +1897,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getPublishList(dbc, directPublishResource, publishSiblings);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1932,7 +1928,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getResourcesInTimeRange(dbc, folder, starttime, endtime);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1967,7 +1963,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getTaskPar(dbc, taskId, parName);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -1991,7 +1987,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getTaskType(dbc, taskName);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2014,7 +2010,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getUsers(dbc);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2038,7 +2034,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getUsers(dbc, type);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2062,7 +2058,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getUsersOfGroup(dbc, groupname);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2253,7 +2249,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.importAccessControlEntries(dbc, resource, acEntries);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2649,7 +2645,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.reactivateTask(dbc, taskId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2672,7 +2668,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAgent(dbc, task);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2701,7 +2697,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAllBackupFileHeaders(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2725,7 +2721,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAllProjectResources(dbc, projectId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2749,7 +2745,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAllPropertyDefinitions(dbc, mappingtype);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2812,7 +2808,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readBackupFile(dbc, tagId, resource);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2836,7 +2832,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readBackupProject(dbc, tagId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2877,7 +2873,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             result = m_driverManager.readChildResources(dbc, resource, filter, getFolders, getFiles);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2913,7 +2909,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readFile(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2946,7 +2942,7 @@ public final class CmsSecurityManager {
         try {
             result = readFolder(dbc, resourcename, filter);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -2989,7 +2985,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readGivenTasks(dbc, projectId, ownerName, taskType, orderBy, sort);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3033,7 +3029,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readGroup(dbc, task);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3057,7 +3053,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readGroup(dbc, groupId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3081,7 +3077,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readGroup(dbc, groupname);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3125,7 +3121,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readOriginalAgent(dbc, task);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3149,7 +3145,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readOwner(dbc, project);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3173,7 +3169,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readOwner(dbc, task);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3197,7 +3193,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readOwner(dbc, log);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3224,7 +3220,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPath(dbc, projectId, path, filter);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3248,7 +3244,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProject(dbc, task);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3271,7 +3267,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProject(dbc, id);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3299,7 +3295,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProject(dbc, name);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3323,7 +3319,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProjectLogs(dbc, projectId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3348,7 +3344,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProjectResources(dbc, project);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3383,7 +3379,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProjectView(dbc, projectId, state);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3411,7 +3407,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPropertyDefinition(dbc, name);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3441,7 +3437,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPropertyObject(dbc, resource, key, search);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3477,7 +3473,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPropertyObjects(dbc, resource, search);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3501,7 +3497,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPublishedResources(dbc, publishHistoryId);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3546,7 +3542,7 @@ public final class CmsSecurityManager {
         try {
             result = readResource(dbc, resourcePath, filter);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3577,7 +3573,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             result = m_driverManager.readResources(dbc, parent, filter, readTree);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3606,7 +3602,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readResourcesWithProperty(dbc, path, propertyDefinition);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3640,7 +3636,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readResourcesWithProperty(dbc, path, propertyDefinition, value);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3669,7 +3665,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readSiblings(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3694,7 +3690,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readStaticExportPublishedResourceParameters(dbc, rfsName);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3720,7 +3716,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readStaticExportResources(dbc, parameterResources, timestamp);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3744,7 +3740,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTask(dbc, id);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3768,7 +3764,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTaskLogs(dbc, taskid);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3805,7 +3801,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTasksForProject(dbc, projectId, tasktype, orderBy, sort);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3848,7 +3844,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTasksForRole(dbc, projectId, roleName, tasktype, orderBy, sort);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3891,7 +3887,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTasksForUser(dbc, projectId, userName, taskType, orderBy, sort);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3915,7 +3911,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readUser(dbc, id);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3940,7 +3936,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readUser(dbc, username, type);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3967,7 +3963,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readUser(dbc, username, password);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -3990,7 +3986,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readUser(dbc, username);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4014,7 +4010,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readWebUser(dbc, username);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4041,7 +4037,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readWebUser(dbc, username, password);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4146,7 +4142,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.resetPassword(dbc, username, oldPassword, newPassword);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4193,7 +4189,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.setName(dbc, taskId, name);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4241,7 +4237,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.setPassword(dbc, username, newPassword);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4262,7 +4258,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.setPriority(dbc, taskId, priority);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4284,7 +4280,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.setTaskPar(dbc, taskId, parName, parValue);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4305,7 +4301,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.setTimeout(dbc, taskId, timeout);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4393,7 +4389,7 @@ public final class CmsSecurityManager {
             checkManagerOfProjectRole(dbc, project);
             m_driverManager.unlockProject(project);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4442,7 +4438,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.userInGroup(dbc, username, groupname);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4691,7 +4687,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4712,7 +4708,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeTaskLog(dbc, taskid, comment);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
@@ -4734,7 +4730,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeTaskLog(dbc, taskId, comment, type);
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            dbc.report(null, "", e);
         } finally {
             dbc.clear();
         }
