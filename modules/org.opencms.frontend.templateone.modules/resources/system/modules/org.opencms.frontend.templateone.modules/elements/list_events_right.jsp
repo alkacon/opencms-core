@@ -17,7 +17,7 @@ String folderTitle = cms.property("Title", folder, "");
 
 --%><div class="sidelist">
 <p class="sidelisthead"><% if (!"".equals(folderTitle)) { out.print(folderTitle); } else { %><fmt:message key="events.headline" /><% } %></p>
-<cms:contentload collector="${param.collector}" param="${param.folder}event_${number}.html|40|${param.count}" editable="true">
+<cms:contentload collector="${param.collector}" param="${param.folder}event_${number}.html|event|${param.count}" editable="true">
 
 <p class="sidelistitem"><a class="sidelistitemhead" href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><cms:contentshow element="Title" /></a><br>
 <cms:contentcheck ifexists="EventDates/EventDate"><c:set var="dateString">

@@ -44,7 +44,7 @@ if (cms.hasCategoryFolders()) {
 <c:choose>
 <c:when test="${(rescount != '0') && (rescount != '-1')}">
 
-<cms:contentload collector="${param.collector}" param="${pageContext.catfolder}faq_${number}.html|35|${param.elementcount}" editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
+<cms:contentload collector="${param.collector}" param="${pageContext.catfolder}faq_${number}.html|faq|${param.elementcount}" editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
 --%><cms:contentinfo var="contentInfo" scope="request" /><%--
 
 --%><c:if test="${(contentInfo.resultIndex % contentInfo.pageSize) == 1}"><%--
