@@ -26,7 +26,7 @@
 		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="newresource_folder.jsp" order="5" autosetnavigation="true" autosettitle="true"/>
+				<newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -116,7 +116,7 @@
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50"/>
 			</explorertype>			
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
-				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500"/>
+				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -160,7 +160,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="true" autosettitle="true"/>
+				<newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -205,7 +205,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="true" autosettitle="true"/>
+				<newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -286,7 +286,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-				<newresource uri="newresource.jsp?newresourcetype=jsp" order="50"/>
+				<newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
@@ -368,7 +368,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
-				<newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="true" autosettitle="true"/>
+				<newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
