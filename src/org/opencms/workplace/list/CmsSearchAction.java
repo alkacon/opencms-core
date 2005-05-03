@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsSearchAction.java,v $
- * Date   : $Date: 2005/04/26 11:57:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * Default implementation for a seach action in an html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsSearchAction extends CmsListIndependentAction {
@@ -69,7 +69,7 @@ public class CmsSearchAction extends CmsListIndependentAction {
             listId,
             SEARCH_ACTION_ID,
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_NAME_0),
-            Messages.get().key(Messages.GUI_LIST_ACTION_SEARCH_ICON_0),
+            "list/search.gif",
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_HELP_1, new Object[] {"${key."
                 + column.getName().getKey()
                 + "}"}),
@@ -103,7 +103,7 @@ public class CmsSearchAction extends CmsListIndependentAction {
             listId,
             SHOWALL_ACTION_ID,
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_NAME_0),
-            Messages.get().key(Messages.GUI_LIST_ACTION_SHOWALL_ICON_0),
+            "list/showall.gif",
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_HELP_0),
             true,
             new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_CONF_0));

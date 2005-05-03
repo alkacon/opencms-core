@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Main scheduler jobs management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends CmsListDialog {
@@ -74,7 +74,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * @since 5.7.3
      */
     private class ActivateJobAction extends CmsListDirectAction {
@@ -177,9 +177,6 @@ public class CmsJobsAdminTool extends CmsListDialog {
     /** list action id constant. */
     public static final String LIST_ACTION_EDIT = "edit";
 
-    /** list action id constant. */
-    public static final String LIST_ACTION_REFRESH = "refresh";
-
     /** list column id constant. */
     public static final String LIST_COLUMN_ACTIONS = "actions";
 
@@ -230,7 +227,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
      */
     public void executeListIndepActions() {
 
-        if (getParamListAction().equals(LIST_ACTION_REFRESH)) {
+        if (getParamListAction().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
             refreshList();
         } else {
             throwListUnsupportedActionException();
@@ -328,14 +325,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
         if (metadata == null) {
             metadata = new CmsListMetadata();
 
-            metadata.addIndependentAction(new CmsListIndependentAction(
-                LIST_ID,
-                LIST_ACTION_REFRESH,
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_REFRESH_NAME_0),
-                "list/reload.gif",
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_REFRESH_HELP_0),
-                true, // enabled
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_REFRESH_CONF_0)));
+            metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
 
             // add column for direct actions
             CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(

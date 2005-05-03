@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
@@ -70,6 +70,9 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
 
         super(id, name, helpText, enabled, iconPath);
         m_listId = listId;
+        if (confirmationMessage==null) {
+            confirmationMessage = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
         m_confirmationMsg = confirmationMessage;
 
     }

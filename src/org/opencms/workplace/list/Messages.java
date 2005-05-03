@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,19 +41,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_COLUMN_EXISTS_1 = "ERR_LIST_COLUMN_EXISTS_1";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_ENUM_PARSE_2 = "ERR_LIST_ENUM_PARSE_2";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_INVALID_COLUMN_1 = "ERR_LIST_INVALID_COLUMN_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_INVALID_PAGE_1 = "ERR_LIST_INVALID_PAGE_1";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_UNSUPPORTED_ACTION_2 = "ERR_LIST_UNSUPPORTED_ACTION_2";
 
@@ -64,13 +64,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_ACTION_NO_SELECTION_0 = "GUI_LIST_ACTION_NO_SELECTION_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_REFRESH_CONF_0 = "GUI_LIST_ACTION_REFRESH_CONF_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_REFRESH_HELP_0 = "GUI_LIST_ACTION_REFRESH_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_REFRESH_NAME_0 = "GUI_LIST_ACTION_REFRESH_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SEARCH_CONF_0 = "GUI_LIST_ACTION_SEARCH_CONF_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SEARCH_HELP_1 = "GUI_LIST_ACTION_SEARCH_HELP_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_ACTION_SEARCH_ICON_0 = "GUI_LIST_ACTION_SEARCH_ICON_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SEARCH_NAME_0 = "GUI_LIST_ACTION_SEARCH_NAME_0";
@@ -80,9 +86,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SHOWALL_HELP_0 = "GUI_LIST_ACTION_SHOWALL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_ACTION_SHOWALL_ICON_0 = "GUI_LIST_ACTION_SHOWALL_ICON_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SHOWALL_NAME_0 = "GUI_LIST_ACTION_SHOWALL_NAME_0";
@@ -97,22 +100,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_EMPTY_0 = "GUI_LIST_EMPTY_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_EMPTY_MESSAGE_0 = "GUI_LIST_EMPTY_MESSAGE_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_FILTER_TEXT_3 = "GUI_LIST_PAGING_FILTER_TEXT_3";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_NEXT_HELP_0 = "GUI_LIST_PAGING_NEXT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_PAGING_NEXT_ICON_0 = "GUI_LIST_PAGING_NEXT_ICON_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_NEXT_NAME_0 = "GUI_LIST_PAGING_NEXT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_PREVIOUS_HELP_0 = "GUI_LIST_PAGING_PREVIOUS_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_PAGING_PREVIOUS_ICON_0 = "GUI_LIST_PAGING_PREVIOUS_ICON_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_PREVIOUS_NAME_0 = "GUI_LIST_PAGING_PREVIOUS_NAME_0";

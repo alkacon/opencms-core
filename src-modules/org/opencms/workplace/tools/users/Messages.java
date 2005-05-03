@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/26 14:59:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,6 +97,36 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_ADMIN_TOOL_NAME_0 = "GUI_USERS_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_ADDRESS_FORMAT_0 = "GUI_USERS_DETAIL_ADDRESS_FORMAT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_GROUPS_FORMAT_0 = "GUI_USERS_DETAIL_GROUPS_FORMAT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0 = "GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_HIDE_ADDRESS_NAME_0 = "GUI_USERS_DETAIL_HIDE_ADDRESS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_HIDE_GROUPS_HELP_0 = "GUI_USERS_DETAIL_HIDE_GROUPS_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0 = "GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0 = "GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0 = "GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_SHOW_GROUPS_HELP_0 = "GUI_USERS_DETAIL_SHOW_GROUPS_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0 = "GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_ACTCONF_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_ACTCONF_0";
 
     /** Message contant for key in the resource bundle. */
@@ -136,15 +166,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_LIST_ACTION_EDITUSER_NAME_0 = "GUI_USERS_LIST_ACTION_EDITUSER_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_REFRESH_CONF_0 = "GUI_USERS_LIST_ACTION_REFRESH_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_REFRESH_HELP_0 = "GUI_USERS_LIST_ACTION_REFRESH_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_REFRESH_NAME_0 = "GUI_USERS_LIST_ACTION_REFRESH_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_ACTIONS_0 = "GUI_USERS_LIST_COLS_ACTIONS_0";
 
     /** Message contant for key in the resource bundle. */
@@ -154,17 +175,17 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_LIST_COLS_LASTLOGIN_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_LOGIN_0 = "GUI_USERS_LIST_COLS_LOGIN_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_USERNAME_0 = "GUI_USERS_LIST_COLS_USERNAME_0";
 
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0 = "GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0";
-    
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_NAME_0 = "GUI_USERS_LIST_NAME_0";
 

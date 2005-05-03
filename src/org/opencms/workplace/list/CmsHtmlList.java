@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/04/28 09:52:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -776,7 +776,7 @@ public class CmsHtmlList {
         // prev button
         String id = m_id + "PrevHelp";
         String name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
-        String iconPath = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_ICON_0, null);
+        String iconPath = "list/1leftarrow.png";
         String helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
         String onClic = m_id + "ListSetPage(" + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, getCurrentPage() > 1, iconPath, onClic));
@@ -784,7 +784,7 @@ public class CmsHtmlList {
         // next button
         id = m_id + "NextHelp";
         name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
-        iconPath = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_ICON_0, null);
+        iconPath = "list/1rightarrow.png";
         helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
         onClic = m_id + "ListSetPage(" + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(

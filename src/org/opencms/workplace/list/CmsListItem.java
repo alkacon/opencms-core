@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Map;
  * Generic list item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListItem {
@@ -73,7 +73,8 @@ public class CmsListItem {
      */
     public Object get(String columnId) {
 
-        if (getMetadata().getColumnDefinition(columnId) == null) {
+        if (getMetadata().getColumnDefinition(columnId) == null
+            && getMetadata().getItemDetailDefinition(columnId) == null) {
             throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }
         return m_values.get(columnId);
@@ -104,16 +105,17 @@ public class CmsListItem {
     /**
      * Sets the object to display at the given column.<p>
      * 
-     * @param columnName the column name
+     * @param columnId the column id
      * @param value the value to display
      * 
      * @return the previous value, or <code>null</code> if unset
      */
-    public Object set(String columnName, Object value) {
+    public Object set(String columnId, Object value) {
 
-        if (getMetadata().getColumnDefinition(columnName) == null) {
-            throw new IllegalArgumentException("unknown column id");
+        if (getMetadata().getColumnDefinition(columnId) == null
+            && getMetadata().getItemDetailDefinition(columnId) == null) {
+            throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }
-        return m_values.put(columnName, value);
+        return m_values.put(columnId, value);
     }
 }

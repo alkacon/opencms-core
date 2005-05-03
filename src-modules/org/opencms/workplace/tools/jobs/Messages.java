@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/28 09:52:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,15 +107,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_EDIT_NAME_0 = "GUI_JOBS_LIST_ACTION_EDIT_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_ACTION_REFRESH_CONF_0 = "GUI_JOBS_LIST_ACTION_REFRESH_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_ACTION_REFRESH_HELP_0 = "GUI_JOBS_LIST_ACTION_REFRESH_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_ACTION_REFRESH_NAME_0 = "GUI_JOBS_LIST_ACTION_REFRESH_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COLS_ACTIONS_0 = "GUI_JOBS_LIST_COLS_ACTIONS_0";

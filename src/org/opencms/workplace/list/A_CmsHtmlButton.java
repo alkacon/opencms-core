@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlButton.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * Default skeleton for an html button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
@@ -65,7 +65,13 @@ public abstract class A_CmsHtmlButton implements I_CmsHtmlButton {
     public A_CmsHtmlButton(String id, CmsMessageContainer name, CmsMessageContainer helpText, boolean enabled) {
 
         m_id = id;
+        if (name==null) {
+            name = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
         m_name = name;
+        if (helpText==null) {
+            helpText = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
         m_helpText = helpText;
         m_enabled = enabled;
     }

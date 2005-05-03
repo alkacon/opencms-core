@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,33 +31,32 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.util.CmsIdentifiableObjectContainer;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
 
+    /** Container for column definitions. */
+    private CmsIdentifiableObjectContainer m_columns = new CmsIdentifiableObjectContainer(true, false);
+
     /** List of independent actions. */
     private List m_indepActions = new ArrayList();
 
-    /** List of column definitions. */
-    private List m_columnList = new ArrayList();
-
-    /** Map for column definitions. */
-    private Map m_columnMap = new HashMap();
+    /** Container for item detail definitions. */
+    private CmsIdentifiableObjectContainer m_itemDetails = new CmsIdentifiableObjectContainer(true, false);
 
     /** List of multi actions. */
     private List m_multiActions = new ArrayList();
@@ -70,16 +69,11 @@ public class CmsListMetadata {
      * 
      * @param listColumn the column definition
      * 
-     * @see List#add(Object)
+     * @see CmsIdentifiableObjectContainer
      */
-    //throws IllegalArgumentException if the column name is already present
     public void addColumn(CmsListColumnDefinition listColumn) {
 
-        if (m_columnMap.containsKey(listColumn.getId())) {
-            throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_COLUMN_EXISTS_1, listColumn));
-        }
-        m_columnList.add(listColumn);
-        m_columnMap.put(listColumn.getId(), listColumn);
+        m_columns.addIdentifiableObject(listColumn.getId(), listColumn);
     }
 
     /**
@@ -88,16 +82,11 @@ public class CmsListMetadata {
      * @param listColumn the column definition
      * @param position the position
      * 
-     * @see List#add(int, Object)
+     * @see CmsIdentifiableObjectContainer
      */
-    //throws IllegalArgumentException if the column name is already present
     public void addColumn(CmsListColumnDefinition listColumn, int position) {
 
-        if (m_columnMap.containsKey(listColumn.getId())) {
-            throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_COLUMN_EXISTS_1, listColumn));
-        }
-        m_columnList.add(position, listColumn);
-        m_columnMap.put(listColumn.getId(), listColumn);
+        m_columns.addIdentifiableObject(listColumn.getId(), listColumn, position);
     }
 
     /**
@@ -123,6 +112,31 @@ public class CmsListMetadata {
     }
 
     /**
+     * Adds a new item detail definition at the end.<p>
+     * 
+     * @param itemDetail the item detail definition
+     * 
+     * @see CmsIdentifiableObjectContainer
+     */
+    public void addItemDetails(CmsListItemDetails itemDetail) {
+
+        m_itemDetails.addIdentifiableObject(itemDetail.getId(), itemDetail);
+    }
+
+    /**
+     * Adds a new item detail definition at the given position.<p>
+     * 
+     * @param itemDetail the item detail definition
+     * @param position the position
+     * 
+     * @see CmsIdentifiableObjectContainer
+     */
+    public void addItemDetails(CmsListItemDetails itemDetail, int position) {
+
+        m_itemDetails.addIdentifiableObject(itemDetail.getId(), itemDetail, position);
+    }
+
+    /**
      * Adds an action applicable to more than one list item at once.<p>
      * 
      * It will be executed with a list of <code>{@link CmsListItem}</code>s.<p> 
@@ -135,15 +149,27 @@ public class CmsListMetadata {
     }
 
     /**
-     * Returns a column definition object for a given column name.<p>
+     * Returns a column definition object for a given column id.<p>
      * 
-     * @param columnName the column name
+     * @param columnId the column id
      * 
      * @return the column definition, or <code>null</code> if not present
      */
-    public CmsListColumnDefinition getColumnDefinition(String columnName) {
+    public CmsListColumnDefinition getColumnDefinition(String columnId) {
 
-        return (CmsListColumnDefinition)m_columnMap.get(columnName);
+        return (CmsListColumnDefinition)m_columns.getObject(columnId);
+    }
+
+    /**
+     * Returns a list item details definition object for a given id.<p>
+     * 
+     * @param itemDetailId the id
+     * 
+     * @return the list item details definition, or <code>null</code> if not present
+     */
+    public CmsListItemDetails getItemDetailDefinition(String itemDetailId) {
+
+        return (CmsListItemDetails)m_itemDetails.getObject(itemDetailId);
     }
 
     /**
@@ -153,7 +179,7 @@ public class CmsListMetadata {
      */
     public List getListColumns() {
 
-        return Collections.unmodifiableList(m_columnList);
+        return m_columns.elementList();
     }
 
     /**
@@ -164,6 +190,16 @@ public class CmsListMetadata {
     public CmsSearchAction getSearchAction() {
 
         return m_searchAction;
+    }
+
+    /**
+     * Returns the total number of displayed columns.<p>
+     * 
+     * @return the total number of displayed columns
+     */
+    public int getWidth() {
+
+        return m_columns.elementList().size() + (m_multiActions.isEmpty() ? 0 : 1);
     }
 
     /**
@@ -193,7 +229,7 @@ public class CmsListMetadata {
      */
     public boolean hasSingleActions() {
 
-        Iterator itCols = m_columnList.iterator();
+        Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
             if (col.getDefaultAction() != null || !col.getDirectActions().isEmpty()) {
@@ -215,6 +251,13 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='misc'>\n");
         html.append("\t<div>\n");
+        Iterator itDetails = m_itemDetails.elementList().iterator();
+        while (itDetails.hasNext()) {
+            I_CmsListAction detailAction = ((CmsListItemDetails)itDetails.next()).getAction();
+            html.append("\t\t");
+            html.append(detailAction.buttonHtml(wp));
+            html.append("\n");
+        }
         Iterator itActions = m_indepActions.iterator();
         while (itActions.hasNext()) {
             I_CmsListAction indepAction = (I_CmsListAction)itActions.next();
@@ -239,7 +282,7 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(512);
         html.append("<tr class='oddrowbg'>\n");
         html.append("\t<td align='center' colspan='");
-        html.append(m_columnList.size() + (m_multiActions.isEmpty() ? 0 : 1));
+        html.append(getWidth());
         html.append("'>\n");
         html.append(Messages.get().key(locale, Messages.GUI_LIST_EMPTY_0, null));
         html.append("\t</td>\n");
@@ -259,7 +302,7 @@ public class CmsListMetadata {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr>\n");
-        Iterator itCols = m_columnList.iterator();
+        Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
             html.append(col.htmlHeader(list, locale));
@@ -293,11 +336,18 @@ public class CmsListMetadata {
         html.append("<tr class='");
         html.append(odd ? "oddrowbg" : "evenrowbg");
         html.append("'>\n");
-        Iterator itCols = m_columnList.iterator();
+        Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            html.append("<td");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(col.getAlign().toString())) {
+                html.append(" align='");
+                html.append(col.getAlign());
+                html.append("'");
+            }
+            html.append(">\n");
             html.append(col.htmlCell(item, wp));
-            html.append("\n");
+            html.append("</td>\n");
         }
         if (!m_multiActions.isEmpty()) {
             html.append("\t<td class='select' align='center' >\n");
@@ -309,6 +359,39 @@ public class CmsListMetadata {
             html.append("\t</td>\n");
         }
         html.append("</tr>\n");
+
+        Iterator itDet = m_itemDetails.elementList().iterator();
+        while (itDet.hasNext()) {
+            CmsListItemDetails lid = (CmsListItemDetails)itDet.next();
+            if (lid.isVisible() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
+                int padCols = 0;
+                itCols = m_columns.elementList().iterator();
+                while (itCols.hasNext()) {
+                    CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                    if (col.getId().equals(lid.getAtColumn())) {
+                        break;
+                    }
+                    padCols++;
+                }
+                int spanCols = getWidth() - padCols;
+
+                html.append("<tr class='");
+                html.append(odd ? "oddrowbg" : "evenrowbg");
+                html.append("'>\n");
+                if (padCols>0) {
+                    html.append("<td colspan='");
+                    html.append(padCols);
+                    html.append("'>&nbsp;</td>\n");
+                }
+                html.append("<td colspan='");
+                html.append(spanCols);
+                html.append("' style='padding-left: 20px;'>\n");
+                html.append(lid.htmlCell(item, wp));
+                html.append("\n</td>\n");
+                html.append("\n");
+                html.append("</tr>\n");
+            }
+        }
         return html.toString();
     }
 
@@ -384,7 +467,7 @@ public class CmsListMetadata {
      */
     public boolean isSorteable() {
 
-        Iterator itCols = m_columnList.iterator();
+        Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
             if (col.isSorteable()) {
@@ -402,6 +485,18 @@ public class CmsListMetadata {
     public void setSearchAction(CmsSearchAction searchAction) {
 
         m_searchAction = searchAction;
+    }
+
+    /**
+     * Toggles the given item detail state from visible to hidden or
+     * from hidden to visible.<p>
+     * 
+     * @param itemDetailId the item detail id
+     */
+    public void toogleDetailState(String itemDetailId) {
+
+        CmsListItemDetails lid = (CmsListItemDetails)m_itemDetails.getObject(itemDetailId);
+        lid.setVisible(!lid.isVisible());
     }
 
 }

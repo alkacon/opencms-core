@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/03 11:09:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -212,13 +212,6 @@ public class CmsListColumnDefinition {
     public String htmlCell(CmsListItem item, CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<td");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_align.toString())) {
-            html.append(" align='");
-            html.append(m_align);
-            html.append("'");
-        }
-        html.append(">\n");
         Iterator itActions = m_actionList.iterator();
         while (itActions.hasNext()) {
             I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
@@ -240,7 +233,7 @@ public class CmsListColumnDefinition {
                 html.append(m_formatter.format(item.get(m_id), wp.getLocale()));
             }
         }
-        html.append("\n</td>\n");
+        html.append("\n");
         return html.toString();
     }
 
