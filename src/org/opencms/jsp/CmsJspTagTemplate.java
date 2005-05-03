@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -45,14 +46,19 @@ import java.util.Locale;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Used to select various template elements form a JSP template that
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagTemplate.class);
 
     /** Condition for element check. */
     private boolean m_checkall;
@@ -93,7 +99,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             try {
                 content = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), filename, req);
             } catch (CmsException e) {
-                OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML document '" + filename + "'", e);
+                LOG.error(Messages.get().key(Messages.ERR_XML_DOCUMENT_UNMARSHAL_1, filename), e);
             }
 
             if (content != null) {

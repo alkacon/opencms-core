@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent {
 
@@ -176,6 +176,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 req,
                 res);
         } catch (CmsException e) {
+            // localization: we should catch a localized exception!
             controller.setThrowable(e, target);
             throw new JspException(e);
         }

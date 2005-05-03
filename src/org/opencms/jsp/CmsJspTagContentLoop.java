@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -46,7 +47,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -56,7 +57,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
     /** Name of the current element (including the index). */
     private String m_currentElement;
-    
+
     /** Name of the content node element to show. */
     private String m_element;
 
@@ -93,13 +94,15 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag <contentloop> without required parent tag found!");
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTLOOP_WRONG_PARENT_0);
+            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, pageContext);
+            throw new JspTagException(msg);
         }
         m_parentTag = (I_CmsJspTagContentContainer)ancestor;
 
         // append to parent element name (required for nested schemas)
-        m_element =  CmsXmlUtils.concatXpath(m_parentTag.getXmlDocumentElement(), m_element);
-        
+        m_element = CmsXmlUtils.concatXpath(m_parentTag.getXmlDocumentElement(), m_element);
+
         // get loaded content from parent <contentload> tag
         m_content = m_parentTag.getXmlDocument();
         m_locale = m_parentTag.getXmlDocumentLocale();

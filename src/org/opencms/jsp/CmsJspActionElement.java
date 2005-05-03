@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/05/03 07:47:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.0 beta 2
  */
@@ -82,8 +82,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /** Error message in case bean was not properly initialized. */
     // cannot use a string: At class-loading time the 
     // user request context for localization is not at hand. 
-    public static final CmsMessageContainer C_NOT_INITIALIZED = new CmsMessageContainer(
-        Messages.get(),
+    public static final CmsMessageContainer C_NOT_INITIALIZED = Messages.get().container(
         Messages.GUI_ERR_ACTIONELEM_NOT_INIT_0);
 
     /** JSP navigation builder. */
@@ -507,10 +506,7 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        CmsMessageContainer msgContainer = new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_ERR_INFO_PROP_READ_1,
-            new Object[] {property});
+        CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_INFO_PROP_READ_1, property);
         return this.getMessage(msgContainer);
     }
 
@@ -536,10 +532,7 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        CmsMessageContainer msgContainer = new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_ERR_WORKPL_LABEL_READ_1,
-            new Object[] {label});
+        CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_WORKPL_LABEL_READ_1, label);
         return this.getMessage(msgContainer);
     }
 
@@ -565,10 +558,7 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        CmsMessageContainer msgContainer = new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_ERR_GEN_LINK_1,
-            new Object[] {link});
+        CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_GEN_LINK_1, link);
         return this.getMessage(msgContainer);
     }
 
@@ -725,10 +715,10 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         if (defaultValue == null) {
-            CmsMessageContainer msgContainer = new CmsMessageContainer(
-                Messages.get(),
+            CmsMessageContainer msgContainer = Messages.get().container(
                 Messages.GUI_ERR_FILE_PROP_MISSING_2,
-                new Object[] {name, file});
+                name,
+                file);
             return this.getMessage(msgContainer);
         } else {
             return defaultValue;
@@ -823,10 +813,7 @@ public class CmsJspActionElement extends CmsJspBean {
         } catch (Throwable t) {
             handleException(t);
         }
-        CmsMessageContainer msgContainer = new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_ERR_USER_PROP_READ_1,
-            new Object[] {property});
+        CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_USER_PROP_READ_1, property);
         return this.getMessage(msgContainer);
     }
 }

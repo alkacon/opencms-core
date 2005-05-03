@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.util.Arrays;
@@ -42,6 +44,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides access to OpenCms and System related information.<p>
@@ -78,9 +82,12 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsJspTagInfo extends TagSupport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagInfo.class);
 
     /** Static array with allowed info property values. */
     private static final String[] SYSTEM_PROPERTIES = {"opencms.version", // 0
@@ -112,7 +119,8 @@ public class CmsJspTagInfo extends TagSupport {
     public static String infoTagAction(String property, HttpServletRequest req) {
 
         if (property == null) {
-            return "+++ Invalid info property selected: null +++";
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_INFO_PROP_0);
+            return CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, req);
         }
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
@@ -151,7 +159,10 @@ public class CmsJspTagInfo extends TagSupport {
             default:
                 result = System.getProperty(property);
                 if (result == null) {
-                    result = "+++ Invalid info property selected: " + property + " +++";
+                    CmsMessageContainer errMsgContainer = Messages.get().container(
+                        Messages.GUI_ERR_INVALID_INFO_PROP_1,
+                        property);
+                    return CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, req);
                 }
         }
 
@@ -173,8 +184,8 @@ public class CmsJspTagInfo extends TagSupport {
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'info' tag processing", ex);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.ERR_TAG_INFO_0), ex);
                 }
                 throw new JspException(ex);
             }

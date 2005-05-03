@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,12 +26,13 @@
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111R-1307  USA
  */
 
 package org.opencms.jsp;
 
-import org.opencms.main.OpenCms;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsMacroResolver;
@@ -47,11 +48,13 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
@@ -69,6 +72,9 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
 
     /** The keys of the supported content info values as a list. */
     private static final List KEYS_LIST = Collections.unmodifiableList(Arrays.asList(KEYS));
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagContentInfo.class);
 
     /** The scopes supported by the page context. */
     private static final String[] SCOPES = {"application", "session", "request", "page"};
@@ -93,7 +99,12 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag <contentinfo> without required parent tag found!");
+            // localize error message:
+            // build a container:
+            String msg;
+            CmsMessageContainer container = Messages.get().container(Messages.ERR_TAG_CONTENTINFO_WRONG_PARENT_0);
+            msg = CmsJspTagLocaleUtil.getLocalizedMessage(container, pageContext);
+            throw new JspTagException(msg);
         }
 
         I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
@@ -113,8 +124,8 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         try {
             pageContext.getOut().print(tagContent);
         } catch (IOException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error in Jsp <contentinfo> tag processing", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_ERR_PROCESS_CONTENTINFO_0, new Object[] {}), e);
             }
             throw new JspException(e);
         }
@@ -127,7 +138,6 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
      */
     public String getMacroValue(String macro) {
 
-        
         int dotIndex = macro.indexOf('.');
         String beanName = null;
 
@@ -136,26 +146,26 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         } else {
             return null;
         }
-        
+
         String variableName = macro.substring(dotIndex + 1, macro.length());
-        
+
         if (CmsStringUtil.isEmpty(beanName) || CmsStringUtil.isEmpty(variableName)) {
             return null;
         }
-        
+
         // extract bean from page context
         CmsContentInfoBean bean;
-        int scope = pageContext.getAttributesScope(beanName);        
-        try { 
+        int scope = pageContext.getAttributesScope(beanName);
+        try {
             bean = (CmsContentInfoBean)pageContext.getAttribute(beanName, scope);
         } catch (ClassCastException e) {
             // attribute exists but is not of required class
             return null;
         }
-        
+
         if (bean == null) {
             return null;
-        }        
+        }
 
         switch (KEYS_LIST.indexOf(variableName)) {
             case 0:
@@ -297,7 +307,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         return scopeValue;
 
     }
-    
+
     /**
      * Stores the container's content info bean under the specified scope in the page context.<p>
      * 

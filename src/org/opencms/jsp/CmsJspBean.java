@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2005/05/03 08:10:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3
  */
@@ -168,7 +168,7 @@ public class CmsJspBean {
         if (m_controller == null) {
             // controller not found - this request was not initialized properly
             throw new CmsRuntimeException(Messages.get().container(
-                "ERR_MISSING_CMS_CONTROLLER",
+                Messages.ERR_MISSING_CMS_CONTROLLER_1,
                 CmsJspBean.class.getName()));
         }
         m_context = context;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,15 @@
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Implements the <code>&lt;cms:link&gt;[filename]&lt;/cms:link&gt;</code> 
@@ -46,9 +49,12 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagLink extends BodyTagSupport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagLink.class);
 
     /**
      * Internal action method.<p>
@@ -95,8 +101,8 @@ public class CmsJspTagLink extends BodyTagSupport {
                 this.getBodyContent().writeOut(pageContext.getOut());
 
             } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'link' tag processing", ex);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.ERR_TAG_LINK_0), ex);
                 }
                 throw new JspException(ex);
             }

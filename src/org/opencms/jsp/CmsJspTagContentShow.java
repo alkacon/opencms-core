@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/05/02 16:42:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -121,7 +122,9 @@ public class CmsJspTagContentShow extends TagSupport {
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag <contentshow> without required parent tag found!");
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTSHOW_WRONG_PARENT_0);
+            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, pageContext);
+            throw new JspTagException(msg);
         }
         I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
 

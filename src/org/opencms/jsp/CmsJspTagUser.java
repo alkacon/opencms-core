@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.jsp;
 
-import org.opencms.flex.CmsFlexController;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -45,13 +45,18 @@ import java.util.List;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagUser extends TagSupport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagUser.class);
 
     /** Static array of the possible user properties. */
     private static final String[] USER_PROPERTIES = {
@@ -125,14 +130,17 @@ public class CmsJspTagUser extends TagSupport {
                 break;
             case 11: // otherstuff
                 Iterator it = user.getAdditionalInfo().keySet().iterator();
-                result = "AdditionalInfo:";
+                CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_TAG_USER_ADDITIONALINFO_0);
+                result = CmsJspTagLocaleUtil.getLocalizedMessage(msgContainer, req);
                 while (it.hasNext()) {
                     Object o = it.next();
                     result += " " + o + "=" + user.getAdditionalInfo((String)o);
                 }
                 break;
-            default:
-                result = "+++ Invalid user property selected: " + property + " +++";
+            default: {
+                msgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_USER_PROP_1, property);
+                result = CmsJspTagLocaleUtil.getLocalizedMessage(msgContainer, req);
+            }
         }
 
         return result;
@@ -153,8 +161,8 @@ public class CmsJspTagUser extends TagSupport {
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'user' tag processing", ex);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.ERR_TAG_USER_0), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

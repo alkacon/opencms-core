@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsJspTagContentCheck extends TagSupport {
@@ -84,10 +85,10 @@ public class CmsJspTagContentCheck extends TagSupport {
         boolean found = false;
         String[] elements = CmsStringUtil.splitAsArray(elementList, ',');
         for (int i = (elements.length - 1); i >= 0; i--) {
-            
-            String element = CmsXmlUtils.concatXpath(prefix, elements[i].trim());            
+
+            String element = CmsXmlUtils.concatXpath(prefix, elements[i].trim());
             found = found || content.hasValue(element, locale);
-            
+
             if (found && checknone) {
                 // found an item that must not exist
                 return false;
@@ -97,7 +98,7 @@ public class CmsJspTagContentCheck extends TagSupport {
                 return true;
             }
         }
-        
+
         if (!found && checknone) {
             // no item found as expected
             return true;
@@ -114,16 +115,18 @@ public class CmsJspTagContentCheck extends TagSupport {
         // get a reference to the parent "content load" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag <contentcheck> without required parent tag <contentload> found!");
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTCECK_WRONG_PARENT_0);
+            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errMsgContainer, pageContext);
+            throw new JspTagException(msg);
         }
         I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
         String prefix = contentContainer.getXmlDocumentElement();
-        
+
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
         Locale locale = contentContainer.getXmlDocumentLocale();
 
-        if (contentCheckTagAction(m_elementList, prefix,  m_checkall, m_checknone, xmlContent, locale)) {
+        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, locale)) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceMessages;
 
@@ -39,6 +40,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the labels stored in the
@@ -49,9 +52,12 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagLabel.class);
 
     /**
      * Internal action method.<p>
@@ -89,8 +95,8 @@ public class CmsJspTagLabel extends BodyTagSupport {
                 this.getPreviousOut().print(result);
 
             } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'label' tag processing", ex);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.ERR_TAG_LABEL_0), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

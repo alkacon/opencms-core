@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/05/03 07:47:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,45 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RUNTIME_1 = "ERR_RUNTIME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTCECK_WRONG_PARENT_0 = "ERR_TAG_CONTENTCECK_WRONG_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTINFO_WRONG_PARENT_0 = "ERR_TAG_CONTENTINFO_WRONG_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTLOAD_INDEX_SIZE_0 = "ERR_TAG_CONTENTLOAD_INDEX_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0 = "ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTLOAD_MISSING_PARAM_0 = "ERR_TAG_CONTENTLOAD_MISSING_PARAM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTLOOP_WRONG_PARENT_0 = "ERR_TAG_CONTENTLOOP_WRONG_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_CONTENTSHOW_WRONG_PARENT_0 = "ERR_TAG_CONTENTSHOW_WRONG_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_LABEL_0 = "ERR_TAG_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_LINK_0 = "ERR_TAG_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_PARAM_ORPHAN_0 = "ERR_TAG_PARAM_ORPHAN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_PROPERTY_0 = "ERR_TAG_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_USER_0 = "ERR_TAG_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XML_DOCUMENT_UNMARSHAL_1 = "ERR_XML_DOCUMENT_UNMARSHAL_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -61,10 +100,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERR_INFO_PROP_READ_1 = "GUI_ERR_INFO_PROP_READ_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_INVALID_INFO_PROP_0 = "GUI_ERR_INVALID_INFO_PROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_INVALID_INFO_PROP_1 = "GUI_ERR_INVALID_INFO_PROP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_INVALID_USER_PROP_1 = "GUI_ERR_INVALID_USER_PROP_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_USER_PROP_READ_1 = "GUI_ERR_USER_PROP_READ_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_WORKPL_LABEL_READ_1 = "GUI_ERR_WORKPL_LABEL_READ_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAG_USER_ADDITIONALINFO_0 = "GUI_TAG_USER_ADDITIONALINFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_INTERRUPTED_EXCEPTION_1 = "LOG_DEBUG_INTERRUPTED_EXCEPTION_1";
@@ -76,7 +127,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERR_JSP_BEAN_0 = "LOG_ERR_JSP_BEAN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_INFO_0  = "ERR_TAG_INFO_0 ";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String  ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_JSP_WRITE_0 = "LOG_ERR_JSP_WRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_PROCESS_CONTENTINFO_0 = "LOG_ERR_PROCESS_CONTENTINFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_FAILED_2 = "LOG_LOGIN_FAILED_2";

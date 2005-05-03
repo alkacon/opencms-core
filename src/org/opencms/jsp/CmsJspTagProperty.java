@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.jsp;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.Arrays;
@@ -43,6 +43,8 @@ import java.util.List;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
@@ -90,7 +92,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagProperty extends TagSupport {
 
@@ -120,8 +122,9 @@ public class CmsJspTagProperty extends TagSupport {
 
     /** Accessor constant: Use uri. */
     public static final String USE_URI = "uri";
-    
+
     /** Static array of the possible "file" properties. */
+    // automatic member sorting will cause compilation error (static order) due to the naming convention.
     public static final String[] ACTION_VALUES = {
         USE_URI,
         USE_PARENT,
@@ -133,11 +136,15 @@ public class CmsJspTagProperty extends TagSupport {
         USE_SEARCH_ELEMENT_URI,
         USE_SEARCH_THIS};
 
-    /** Array list for fast lookup. */
-    public static final List ACTION_VALUES_LIST = Arrays.asList(ACTION_VALUES);
 
+    /** Array list for fast lookup. */
+    // automatic member sorting will cause compilation error. 
+    public static final List ACTION_VALUES_LIST = Arrays.asList(ACTION_VALUES);
     // DEBUG flag
     private static final int DEBUG = 0;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagProperty.class);
     private String m_defaultValue;
     private boolean m_escapeHtml;
     private String m_propertyFile;
@@ -255,8 +262,8 @@ public class CmsJspTagProperty extends TagSupport {
                 pageContext.getOut().print(prop);
 
             } catch (Exception ex) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'property' tag processing", ex);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.ERR_TAG_PROPERTY_0), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

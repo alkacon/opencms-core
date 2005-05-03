@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/03 12:17:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -73,7 +74,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
     /** Reference to the last loaded content element. */
     private A_CmsXmlDocument m_content;
-    
+
     /** The bean to store information required to make the result list browsable. */
     private CmsContentInfoBean m_contentInfoBean;
 
@@ -94,13 +95,13 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
     /** Refenence to the currently selected locale. */
     private Locale m_locale;
-    
+
     /** The index of the current page that gets displayed. */
     private String m_pageIndex;
-    
+
     /** The number of page links in the Google-like page navigation. */
     private String m_pageNavLength;
-    
+
     /** The size of a page to be displayed. */
     private String m_pageSize;
 
@@ -112,8 +113,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
     /** The file name to load the current content value from. */
     private String m_resourceName;
-    
-    
+
     /**
      * Returns the resource name currently processed.<p> 
      * 
@@ -132,7 +132,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             return null;
         }
     }
-    
+
     /**
      * Limits the collector's result list to the size of a page to be displayed in a JSP.<p>
      * 
@@ -143,9 +143,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         List result = null;
         int pageCount = -1;
-        
+
         if (contentInfoBean.getPageSize() > 0) {
-            
+
             pageCount = collectorResult.size() / contentInfoBean.getPageSize();
             if ((collectorResult.size() % contentInfoBean.getPageSize()) != 0) {
                 pageCount++;
@@ -161,16 +161,16 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
             result = collectorResult.subList(startIndex, endIndex);
         } else {
-            
+
             result = collectorResult;
-            if (collectorResult.size() > 0) {            
+            if (collectorResult.size() > 0) {
                 contentInfoBean.setPageCount(1);
             }
         }
-        
+
         return result;
     }
-    
+
     /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
      */
@@ -224,7 +224,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     /**
      * Load the next file name fomr the initialized list of file names.<p>
      * 
-     * @throws CmsException if something goes wring
+     * @throws CmsException if something goes wrong
      */
     public void doLoadNextFile() throws CmsException {
 
@@ -235,7 +235,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_content = null;
             return;
         }
-        
+
         // set the resource name
         m_resourceName = m_cms.getSitePath(resource);
 
@@ -252,7 +252,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         }
         if (file == null) {
             // use ALL filter since the list itself should have filtered out all unwanted resources already 
-            file = m_cms.readFile(m_resourceName, CmsResourceFilter.ALL);     
+            file = m_cms.readFile(m_resourceName, CmsResourceFilter.ALL);
         }
 
         // unmarshal the XML content from the resource        
@@ -263,76 +263,81 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
-        
+
         // check if the tag contains a pageSize, pageIndex and pageNavLength attribute, or none of them
         int pageAttribCount = 0;
         pageAttribCount += CmsStringUtil.isNotEmpty(m_pageSize) ? 1 : 0;
         pageAttribCount += CmsStringUtil.isNotEmpty(m_pageIndex) ? 1 : 0;
         //pageAttribCount += CmsStringUtil.isNotEmpty(m_pageNavLength) ? 1 : 0;
-        
-        if (pageAttribCount > 0 && pageAttribCount < 2) {            
-            throw new IllegalArgumentException("The 'cms:contentload' tag requires a 'pageIndex' and 'pageSize' attribute, or none of them!");
+
+        if (pageAttribCount > 0 && pageAttribCount < 2) {
+            CmsMessageContainer errorMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_INDEX_SIZE_0);
+            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errorMsgContainer, pageContext);
+            throw new IllegalArgumentException(msg);
         }
-        
+
         // check if the tag contains a collector attribute
         if (CmsStringUtil.isEmpty(m_collector)) {
-            throw new IllegalArgumentException("The 'cms:contentload' tag requires a 'collector' attribute!");
+            CmsMessageContainer errorMsgContainer = Messages.get().container(
+                Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0);
+            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errorMsgContainer, pageContext);
+            throw new IllegalArgumentException(msg);
         }
-        
+
         // check if the tag contains a param attribute
         if (CmsStringUtil.isEmpty(m_param)) {
-            throw new IllegalArgumentException("The 'cms:contentload' tag requires a 'param' attribute!");
-        }        
-        
+            CmsMessageContainer errorMsgContainer = Messages.get().container(
+                Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0);
+            String msg = CmsJspTagLocaleUtil.getLocalizedMessage(errorMsgContainer, pageContext);
+            throw new IllegalArgumentException(msg);
+        }
+
         // initialize OpenCms access objects
         m_controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         m_cms = m_controller.getCmsObject();
-        
+
         // initialize a string mapper to resolve EL like strings in tag attributes
         String resourcename = getResourceName(m_cms, this);
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance()
-                            .setCmsObject(m_cms)
-                            .setJspPageContext(pageContext)
-                            .setResourceName(resourcename)
-                            .setKeepEmptyMacros(true);
-        
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext)
+            .setResourceName(resourcename).setKeepEmptyMacros(true);
+
         // resolve the collector name
-        String collectorName = resolver.resolveMacros(getCollector());        
+        String collectorName = resolver.resolveMacros(getCollector());
 
         // store the current locale    
         m_locale = m_cms.getRequestContext().getLocale();
 
         // resolve the parameter
         String param = resolver.resolveMacros(getParam());
-        
+
         // now collect the resources
         I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
 
         try {
             if (collector == null) {
-                throw new CmsException("Collector \"" + collectorName + "\" not found");
+                throw new CmsException(Messages.get().container(Messages.ERR_COLLECTOR_NOT_FOUND_1, collectorName));
             }
-            
+
             // execute the collector
-            m_collectorResult = collector.getResults(m_cms, collectorName, param); 
-            
+            m_collectorResult = collector.getResults(m_cms, collectorName, param);
+
             m_contentInfoBean = new CmsContentInfoBean();
             m_contentInfoBean.setPageSizeAsString(resolver.resolveMacros(m_pageSize));
-            m_contentInfoBean.setPageIndexAsString(resolver.resolveMacros(m_pageIndex));     
-            m_contentInfoBean.setPageNavLengthAsString(resolver.resolveMacros(m_pageNavLength));          
+            m_contentInfoBean.setPageIndexAsString(resolver.resolveMacros(m_pageIndex));
+            m_contentInfoBean.setPageNavLengthAsString(resolver.resolveMacros(m_pageNavLength));
             m_contentInfoBean.setResultSize(m_collectorResult.size());
             m_contentInfoBean.initResultIndex();
-        
-            m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);            
+
+            m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
             m_contentInfoBean.initPageNavIndexes();
-            
+
             String createParam = collector.getCreateParam(m_cms, collectorName, param);
             if (createParam != null) {
                 // use "create link" only if collector supports it
                 m_directEditCreateLink = CmsEncoder.encode(collectorName + "|" + createParam);
             }
-            
-            if (m_collectorResult != null && m_collectorResult.size() > 0) {  
+
+            if (m_collectorResult != null && m_collectorResult.size() > 0) {
                 doLoadNextFile();
             }
         } catch (CmsException e) {
@@ -399,14 +404,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return m_pageIndex;
     }
-    
+
     /**
      * Returns the number of page links in the Google-like page navigation.<p>
      * 
      * @return the number of page links in the Google-like page navigation
      */
     public String getPageNavLength() {
-        
+
         return m_pageNavLength;
     }
 
@@ -429,7 +434,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return m_param;
     }
-    
+
     /**
      * Returns the property.<p>
      *
@@ -521,14 +526,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         m_pageIndex = pageIndex;
     }
-    
+
     /**
      * Sets the number of page links in the Google-like page navigation.<p>
      * 
      * @param pageNavLength the number of page links in the Google-like page navigation
      */
     public void setPageNavLength(String pageNavLength) {
-        
+
         m_pageNavLength = pageNavLength;
     }
 
@@ -551,7 +556,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         m_param = param;
     }
-    
+
     /**
      * Sets the property.<p>
      *
@@ -561,14 +566,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         m_property = property;
     }
-    
+
     /**
      * Returns the content info bean.<p>
      * 
      * @return the content info bean
      */
     CmsContentInfoBean getContentInfoBean() {
-        
+
         return m_contentInfoBean;
     }
 
@@ -580,12 +585,12 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     private CmsResource getNextResource() {
 
         if ((m_collectorResult != null) && (m_collectorResult.size() > 0)) {
-            
-            m_contentInfoBean.incResultIndex();            
+
+            m_contentInfoBean.incResultIndex();
             return (CmsResource)m_collectorResult.remove(0);
         }
-        
+
         return null;
     }
-    
+
 }
