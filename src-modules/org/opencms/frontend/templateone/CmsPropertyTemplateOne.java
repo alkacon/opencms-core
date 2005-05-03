@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/04/25 15:20:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/03 11:24:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -652,6 +652,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
                 propValue = "";
             }
+            inheritedValue = propValue;
         }  
         
         List resources = getConfigurationFiles(listType);
