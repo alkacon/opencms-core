@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagLocaleUtil.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/03 12:49:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,8 @@ import javax.servlet.jsp.PageContext;
  * This class factors out the localization of exception messages and returned Strings 
  * for the <code>org.opencms.jsp</code> pacakge. 
  * 
- * @author westermann a.westermann@alkacon.com
+ * @author Achim Westermann (a.westermann@alkacon.com)
+ * @since 5.7.3
  * 
  */
 public final class CmsJspTagLocaleUtil {
