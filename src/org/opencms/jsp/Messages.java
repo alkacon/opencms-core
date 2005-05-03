@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/03 12:49:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RUNTIME_1 = "ERR_RUNTIME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_TAG_CONTENTCECK_WRONG_PARENT_0 = "ERR_TAG_CONTENTCECK_WRONG_PARENT_0";
+    public static final String ERR_TAG_CONTENTCHECK_WRONG_PARENT_0 = "ERR_TAG_CONTENTCHECK_WRONG_PARENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TAG_CONTENTINFO_WRONG_PARENT_0 = "ERR_TAG_CONTENTINFO_WRONG_PARENT_0";
