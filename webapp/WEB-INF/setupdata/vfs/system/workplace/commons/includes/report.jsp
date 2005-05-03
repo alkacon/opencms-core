@@ -231,10 +231,8 @@ function switchOutputFormat() {
 
 var cssStyle =
     "<style type='text/css'>\n" +
-    "body       { padding: 0; margin: 0; color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
-    "div.main   { color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
-    ".dialoginnerboxborder { width: 100%; height: 100%; border-left: 1px solid ThreeDShadow; border-top: 1px solid ThreeDShadow; border-right: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDHighlight; padding: 0; }\n" +
-	".dialoginnerbox { width: 100%; height: 100%; background-color: Window; border-left: 1px solid ThreedDarkShadow; border-top: 1px solid ThreedDarkShadow; border-right: 1px solid ThreeDLightShadow; border-bottom: 1px solid ThreeDLightShadow; padding: 2px; }\n" +
+    "body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
+    "div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
     "span.head  { color: #000099; font-weight: bold; }\n" +
     "span.note  { color: #666666; }\n" +
     "span.ok    { color: #009900; }\n" +
@@ -243,7 +241,7 @@ var cssStyle =
     "span.throw { color: #990000; font-weight: bold; }\n" +
     "span.link1 { color: #666666; }\n" +
     "span.link2 { color: #666666; padding-left: 40px; }\n" +    
-    "span.link2 { color: #990000; }\n" +          
+    "span.link2 { color: #990000; }\n" +    
     "</style>\n";
 
 var pageStartSimple =
@@ -268,11 +266,11 @@ var pageStartExtended =
     "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=<%= wp.getEncoding() %>'>\n"+ 
 	cssStyle +
     "</head>\n" +
-    "<body style='padding: 0; margin: 0; overflow: scroll;'>\n" +  
-    "<div class='dialoginnerboxborder'><div class='dialoginnerbox'><div class='main'>\n";
+    "<body style='overflow: auto;'>\n" +  
+    "<div class='main'>\n";
     
 var pageEndExtended = 
-	"</div></div></div>\n" +
+	"</div>\n" +
 	"</body>\n" +
 	"</html>\n";                                
 
@@ -358,9 +356,11 @@ function updateReport() {
 	    		pageStartSimple + 
 	    		"<span class='head'>" + lastHeadline + "</span><br>\n" +
 	    		pageEndSimple;
-    	}	
+    	}
+    	document.getElementById("report").style.border = "2px solid ThreeDFace";
     } else {
     	pageBody = pageStartExtended + htmlText + pageEndExtended;
+    	document.getElementById("report").style.border = "2px inset ThreeDHighlight";
     }
 
     report.document.open();    
@@ -375,7 +375,7 @@ function getContentExtended() {
 	var htmlStr = "";
 	var i = 0;
 	
-	for (i=0;i<reportOutputFormats.length && i<reportOutputMessages.length;i++) {		
+	for (i=0;i<reportOutputFormats.length && i<reportOutputMessages.length;i++) {
 		switch (reportOutputFormats[i]) {
 			case FORMAT_WARNING :
 				htmlStr += "<span class='warn'>";
@@ -513,8 +513,8 @@ function submitActionRefresh(para1, para2, para3) {
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%= wp.paramsAsHidden() %>
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
-<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px; padding: 0; margin: 0;" frameborder="<%=(wp.useNewStyle()?1:0)%>"></iframe>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="400"><tr><td>
+<iframe name="report" id="report" src="about:blank" style="width:99.8%; height:400px; padding: 0; margin: 0; border: 2px inset ThreeDHighlight;" frameborder="<%=(wp.useNewStyle()?1:0)%>"></iframe>
 </td></tr></table>
 
     <%= wp.dialogContentEnd() %>
