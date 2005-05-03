@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/03 12:37:35 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.0 beta 2
  */
@@ -525,7 +525,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String label(String label) {
 
         if (isNotInitialized()) {
-            return this.getMessage(C_NOT_INITIALIZED);
+            return getMessage(C_NOT_INITIALIZED);
         }
         try {
             return CmsJspTagLabel.wpLabelTagAction(label, getRequest());
@@ -551,7 +551,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String link(String link) {
 
         if (isNotInitialized()) {
-            return this.getMessage(C_NOT_INITIALIZED);
+            return getMessage(C_NOT_INITIALIZED);
         }
         try {
             return CmsJspTagLink.linkTagAction(link, getRequest());
@@ -700,7 +700,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
 
         if (isNotInitialized()) {
-            return this.getMessage(C_NOT_INITIALIZED);
+            return getMessage(C_NOT_INITIALIZED);
         }
         try {
             if (file == null) {
@@ -788,7 +788,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String toAbsolute(String target) {
 
         if (isNotInitialized()) {
-            return this.getMessage(C_NOT_INITIALIZED);
+            return getMessage(C_NOT_INITIALIZED);
         }
         return CmsLinkManager.getAbsoluteUri(target, getController().getCurrentRequest().getElementUri());
     }
@@ -806,7 +806,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String user(String property) {
 
         if (isNotInitialized()) {
-            return this.getMessage(C_NOT_INITIALIZED);
+            return getMessage(C_NOT_INITIALIZED);
         }
         try {
             return CmsJspTagUser.userTagAction(property, getRequest());
