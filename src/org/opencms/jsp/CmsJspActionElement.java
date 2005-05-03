@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/05/03 07:44:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/03 07:47:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.0 beta 2
  */
@@ -82,8 +82,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /** Error message in case bean was not properly initialized. */
     // cannot use a string: At class-loading time the 
     // user request context for localization is not at hand. 
-    public static final CmsMessageContainer C_NOT_INITIALIZED = 
-        new CmsMessageContainer(
+    public static final CmsMessageContainer C_NOT_INITIALIZED = new CmsMessageContainer(
         Messages.get(),
         Messages.GUI_ERR_ACTIONELEM_NOT_INIT_0);
 
