@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/04 09:30:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/04 09:32:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,16 +58,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CHANGE_TYPE_OF_USER_1 = "ERR_CHANGE_TYPE_OF_USER";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DB_OPERATION_0 = "ERR_DB_OPERATION_0";
-        
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1 = "ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_2 = "ERR_COPY_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DB_OPERATION_0 = "ERR_DB_OPERATION_0";
+        
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1 = "ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1";
 
     
     /** Name of the used resource bundle. */
