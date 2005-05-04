@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/04 12:35:43 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/05/04 13:38:26 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -787,12 +787,13 @@ public final class CmsSecurityManager {
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsRequestContext rc = dbc.getRequestContext();
         try {
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_COPY_RESOURCE_2, source.getRootPath(), destination),
+                Messages.get().container(Messages.ERR_COPY_RESOURCE_2, rc.removeSiteRoot(source.getRootPath()), rc.removeSiteRoot(destination)),
                 e);
         } finally {
             dbc.clear();
