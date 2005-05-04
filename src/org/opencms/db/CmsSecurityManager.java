@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/04 10:58:21 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/05/04 12:35:43 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -778,18 +778,22 @@ public final class CmsSecurityManager {
      * @param siblingMode indicates how to handle siblings during copy
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if resource could not be copied 
      * 
      * @see CmsObject#copyResource(String, String, int)
      * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
      */
     public void copyResource(CmsRequestContext context, CmsResource source, String destination, int siblingMode)
-    throws CmsException {
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
-            dbc.report(null, "Error copying resource " + source.getRootPath() + " to " + destination, e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_COPY_RESOURCE_2, source.getRootPath(), destination),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5117,9 +5121,7 @@ public final class CmsSecurityManager {
                     + requiredPermissions.getPermissionString(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
 
             case PERM_NOTLOCKED:
-                throw new CmsLockException("Resource '"
-                    + context.getSitePath(resource)
-                    + "' not locked to current user!", CmsLockException.C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER);
+                throw new CmsLockException(Messages.get().container(Messages.ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1, context.getSitePath(resource)));
 
             case PERM_ALLOWED:
             default:
