@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/04 11:11:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -219,7 +219,7 @@ public final class Messages extends A_CmsMessageBundle {
      * @return the String for the given CmsMessageContainer localized to the 
      *         current user's locale if available or to the default locale else. <p>
      */
-    public final static String getLocalizedMessage(CmsMessageContainer container, PageContext context) {
+    public static String getLocalizedMessage(CmsMessageContainer container, PageContext context) {
     
         return Messages.getLocalizedMessage(container, context.getRequest());
     }
@@ -237,7 +237,7 @@ public final class Messages extends A_CmsMessageBundle {
      * @return the String for the given CmsMessageContainer localized to the 
      *         current user's locale if available or to the default locale else. <p>
      */
-    public final static String getLocalizedMessage(CmsMessageContainer container, ServletRequest request) {
+    public static String getLocalizedMessage(CmsMessageContainer container, ServletRequest request) {
     
         String msg;
         CmsRequestContext requestContext;
