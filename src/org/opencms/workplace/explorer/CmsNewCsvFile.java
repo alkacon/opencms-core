@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/04/22 14:55:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/04 12:52:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.7.3
  */
@@ -258,7 +258,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 getCms().replaceResource(getParamResource(), resTypeId, content, null);
             }
             // copy xslt stylesheet-property to the new resource
-            getCms().writePropertyObject(getParamResource(), styleProp);
+            if (!styleProp.isNullProperty()) { 
+                getCms().writePropertyObject(getParamResource(), styleProp);
+            }
         } catch (Exception e) {
             // error uploading file, show error dialog
             setAction(ACTION_SHOWERROR);
