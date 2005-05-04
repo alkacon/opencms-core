@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/04/28 08:30:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/04 10:58:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODIFY_ONLINE_1 = "ERR_MODIFY_ONLINE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PERMISSION_1 = "ERR_NO_PERMISSION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_IN_ROLE_2 = "ERR_NOT_IN_ROLE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_MANAGER_OF_PROJECT_2 = "ERR_NOT_MANAGER_OF_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_LOCKED_1 = "ERR_RESOURCE_LOCKED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ROLE_VIOLATION_1 = "ERR_ROLE_VIOLATION_1";
@@ -82,6 +91,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_RESOURCE_TYPE_MANAGER_0 = "GUI_ROLENAME_RESOURCE_TYPE_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_ROOT_FOLDER_ACCESS_0 = "GUI_ROLENAME_ROOT_FOLDER_ACCESS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_SCHEDULER_MANAGER_0 = "GUI_ROLENAME_SCHEDULER_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -91,17 +103,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_VFS_MANAGER_0 = "GUI_ROLENAME_VFS_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_WORKPLACE_USER_0 = "GUI_ROLENAME_WORKPLACE_USER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_ROOT_FOLDER_ACCESS_0 = "GUI_ROLENAME_ROOT_FOLDER_ACCESS_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_WORKPLACE_MANAGER_0 = "GUI_ROLENAME_WORKPLACE_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";    
-    
+    public static final String GUI_ROLENAME_WORKPLACE_USER_0 = "GUI_ROLENAME_WORKPLACE_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.security.messages";
 
