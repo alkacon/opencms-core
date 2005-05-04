@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsException;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public interface I_CmsToolHandler {
@@ -66,6 +66,13 @@ public interface I_CmsToolHandler {
      * @return the help text
      */
     String getHelpText();
+
+    /**
+     * Returns the help text if disabled.<p>
+     * 
+     * @return the help text if disabled
+     */
+    String getDisabledHelpText();
 
     /**
      * Returns the path to the icon.<p>

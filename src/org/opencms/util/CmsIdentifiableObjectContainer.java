@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
@@ -53,7 +53,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.1 $
+     * @version $Revision: 1.2 $
      * @since 5.7.3
      */
     private class CmsIdObjectElement {
@@ -122,14 +122,14 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
         m_uniqueIds = uniqueIds;
         m_relativeOrdered = relativeOrdered;
     }
-   
+
     /**
      * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(java.lang.String, java.lang.Object)
      */
     public void addIdentifiableObject(String id, Object idObject) {
 
         if (m_uniqueIds && m_objectsById.get(id) != null) {
-            throw new IllegalStateException("This container already contains an object with id " + id);
+            removeObject(id);
         }
         if (m_relativeOrdered) {
             float pos = 1;
@@ -161,7 +161,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     public void addIdentifiableObject(String id, Object idObject, float position) {
 
         if (m_uniqueIds && m_objectsById.get(id) != null) {
-            throw new IllegalStateException("This container already contains an object called " + id);
+            removeObject(id);
         }
         if (m_relativeOrdered) {
             int pos = 0;
@@ -173,7 +173,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
                 }
                 pos++;
             }
-            m_objectList.add(new CmsIdObjectElement(idObject, position));
+            m_objectList.add(pos, new CmsIdObjectElement(idObject, position));
         } else {
             m_objectList.add((int)position, idObject);
         }
@@ -218,6 +218,33 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
             return Collections.unmodifiableList(m_objectList);
         }
 
+    }
+
+    /**
+     * Removes an object with the given id.<p>
+     * 
+     * Only works if the <code>{@link #m_uniqueIds}</code> is set.<p>
+     * 
+     * @param id the id of the object to remove
+     */
+    private void removeObject(String id) {
+
+        if (m_relativeOrdered) {
+            Object o = getObject(id);
+            Iterator itObjs = m_objectList.iterator();
+            while (itObjs.hasNext()) {
+                CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
+                if (object.getObject() == o) {
+                    itObjs.remove();
+                    break;
+                }
+            }
+            m_objectsById.remove(id);
+        } else {
+            Object o = getObject(id);
+            m_objectList.remove(o);
+            m_objectsById.remove(id);
+        }
     }
 
     /**

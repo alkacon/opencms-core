@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -88,6 +88,9 @@ public class CmsHtmlList {
 
     /** Items currently displayed. */
     private List m_visibleItems;
+
+    /** printable flag. */
+    private boolean m_printable;
 
     /**
      * Default Constructor.<p>
@@ -142,7 +145,7 @@ public class CmsHtmlList {
     }
 
     // TODO: think about wenn and/or how to refresh
-    // TODO: new CmsListInfo class with less data for CmsWorkplaceSettings
+    // TODO: new CmsListInfo class with less data for storing in CmsWorkplaceSettings
 
     /**
      * This method resets the content of the list (no the metadata).<p>
@@ -332,11 +335,13 @@ public class CmsHtmlList {
     /**
      * Generates the html code for the list.<p>
      * 
+     * Synchronized to not collide with <code>{@link #printableHtml(CmsWorkplace)}</code>.<p> 
+     * 
      * @param wp the workplace object
      * 
      * @return html code
      */
-    public String listHtml(CmsWorkplace wp) {
+    public synchronized String listHtml(CmsWorkplace wp) {
 
         if (displayedFrom() == 0) {
             // empty list
@@ -693,7 +698,11 @@ public class CmsHtmlList {
     private int displayedFrom() {
 
         if (getSize() != 0) {
-            return (getCurrentPage() - 1) * getMaxItemsPerPage() + 1;
+            if (isPrintable()) {
+                return 1;
+            } else {
+                return (getCurrentPage() - 1) * getMaxItemsPerPage() + 1;
+            }
         }
         return 0;
     }
@@ -706,8 +715,10 @@ public class CmsHtmlList {
     private int displayedTo() {
 
         if (getSize() != 0) {
-            if (getCurrentPage() * getMaxItemsPerPage() < getSize()) {
-                return getCurrentPage() * getMaxItemsPerPage();
+            if (!isPrintable()) {
+                if (getCurrentPage() * getMaxItemsPerPage() < getSize()) {
+                    return getCurrentPage() * getMaxItemsPerPage();
+                }
             }
         }
         return getSize();
@@ -777,23 +788,25 @@ public class CmsHtmlList {
         String id = m_id + "PrevHelp";
         String name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
         String iconPath = "list/1leftarrow.png";
+        boolean enabled = getCurrentPage() > 1;
         String helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
+        if (!enabled) {
+            helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
+        }
         String onClic = m_id + "ListSetPage(" + (getCurrentPage() - 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, getCurrentPage() > 1, iconPath, onClic));
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, enabled, iconPath, onClic));
         html.append("\n");
         // next button
         id = m_id + "NextHelp";
         name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
         iconPath = "list/1rightarrow.png";
+        enabled = getCurrentPage() < getNumberOfPages();
         helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
+        if (!enabled) {
+            helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
+        }
         onClic = m_id + "ListSetPage(" + (getCurrentPage() + 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            id,
-            name,
-            helpText,
-            getCurrentPage() < getNumberOfPages(),
-            iconPath,
-            onClic));
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, enabled, iconPath, onClic));
         html.append("\n");
         // page selection list
         html.append("\t\t\t<select name='");
@@ -869,7 +882,9 @@ public class CmsHtmlList {
         }
         html.append("\n");
         html.append("\t\t</td>\n\t\t");
-        html.append(getMetadata().htmlActionBar(wp));
+        if (!isPrintable()) {
+            html.append(getMetadata().htmlActionBar(wp));
+        }
         html.append("\n\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
@@ -894,4 +909,30 @@ public class CmsHtmlList {
         return html.toString();
     }
 
+    /**
+     * Returns the printable flag.<p>
+     *
+     * @return the printable flag
+     */
+    public boolean isPrintable() {
+
+        return m_printable;
+    }
+
+    /**
+     * Returns html code for printing the list.<p>
+     * 
+     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p>
+     *  
+     * @param wp the workplace object
+     * 
+     * @return html code
+     */
+    public synchronized String printableHtml(CmsWorkplace wp) {
+
+        m_printable = true;
+        String html = listHtml(wp);
+        m_printable = false;
+        return html;
+    }
 }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsInvisibibleDefaultToolHandler.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsInvisibleDefaultToolHandler.java,v $
+ * Date   : $Date: 2005/05/04 15:16:17 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -42,7 +42,7 @@ import org.opencms.file.CmsObject;
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsInvisibibleDefaultToolHandler extends CmsDefaultToolHandler {
+public class CmsInvisibleDefaultToolHandler extends CmsDefaultToolHandler {
 
     
     /**

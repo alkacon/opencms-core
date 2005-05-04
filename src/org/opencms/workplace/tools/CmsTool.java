@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsTool {
@@ -119,7 +119,7 @@ public class CmsTool {
         return A_CmsHtmlIconButton.defaultBigButtonHtml(
             getId(),
             m_handler.getName(),
-            m_handler.getHelpText(),
+            m_handler.isEnabled(wp.getCms())?m_handler.getHelpText():m_handler.getDisabledHelpText(),
             m_handler.isEnabled(wp.getCms()),
             m_handler.getIconPath(),
             onClic);

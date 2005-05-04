@@ -116,10 +116,6 @@
 					<name>Title</name>
 					<value><![CDATA[Flex Cache]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[onlyadmin:true]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>

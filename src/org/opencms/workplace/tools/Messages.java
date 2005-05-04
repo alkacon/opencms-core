@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,50 +41,54 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_LOADING_0 = "GUI_ADMIN_VIEW_LOADING_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_UPLEVEL_0 = "GUI_ADMIN_VIEW_UPLEVEL_0";
-
-    /** Static instance member. */
-    public static final String GUI_TOOLS_DEFAULT_NAME_0 = "GUI_TOOLS_DEFAULT_NAME_0";
-
-    /** Static instance member. */
-    public static final String GUI_TOOLS_DEFAULT_ICON_0 = "GUI_TOOLS_DEFAULT_ICON_0";
-
-    /** Static instance member. */
-    public static final String GUI_TOOLS_DEFAULT_HELP_0 = "GUI_TOOLS_DEFAULT_HELP_0";
 
     /** Static instance member. */
     public static final String GUI_TOOLS_DEFAULT_GROUP_0 = "GUI_TOOLS_DEFAULT_GROUP_0";
 
     /** Static instance member. */
+    public static final String GUI_TOOLS_DEFAULT_HELP_0 = "GUI_TOOLS_DEFAULT_HELP_0";
+
+    /** Static instance member. */
+    public static final String GUI_TOOLS_DEFAULT_ICON_0 = "GUI_TOOLS_DEFAULT_ICON_0";
+
+    /** Static instance member. */
+    public static final String GUI_TOOLS_DEFAULT_NAME_0 = "GUI_TOOLS_DEFAULT_NAME_0";
+
+    /** Static instance member. */
+    public static final String GUI_TOOLS_DISABLED_HELP_0 = "GUI_TOOLS_DISABLED_HELP_0";
+
+    /** Static instance member. */
+    public static final String GUI_TOOLS_DISABLED_ONLINE_HELP_0 = "GUI_TOOLS_DISABLED_ONLINE_HELP_0";
+
+    /** Static instance member. */
     public static final String INIT_TOOLMANAGER_CREATED_0 = "INIT_TOOLMANAGER_CREATED_0";
 
     /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_NOT_CREATED_0 = "INIT_TOOLMANAGER_NOT_CREATED_0";
-    
+    public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_1 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_1";
+
     /** Static instance member. */
     public static final String INIT_TOOLMANAGER_NEWTOOL_FOUND_1 = "INIT_TOOLMANAGER_NEWTOOL_FOUND_1";
 
     /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1 = "INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1";
+    public static final String INIT_TOOLMANAGER_NOT_CREATED_0 = "INIT_TOOLMANAGER_NOT_CREATED_0";
 
     /** Static instance member. */
     public static final String INIT_TOOLMANAGER_SETUP_ERROR_0 = "INIT_TOOLMANAGER_SETUP_ERROR_0";
 
     /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_1 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_1";
-
+    public static final String INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1 = "INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
 
     /**
      * Hides the public constructor for this utility class.<p>

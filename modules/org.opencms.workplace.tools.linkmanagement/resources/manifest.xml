@@ -115,10 +115,6 @@
 			<flags>0</flags>
 			<properties/>
 				<!--property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[onlyoffline:true]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
@@ -176,10 +172,6 @@
 			<flags>0</flags>
 			<properties/>
 				<!--property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[onlyoffline:true]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>

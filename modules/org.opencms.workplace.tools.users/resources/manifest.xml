@@ -80,7 +80,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.users.CmsUsersToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -109,10 +109,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[User Management]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[onlyadmin:true]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -146,7 +142,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleDefaultToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>

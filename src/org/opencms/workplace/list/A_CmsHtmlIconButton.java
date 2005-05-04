@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/05/02 15:52:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_CmsHtmlIconButton {
@@ -73,7 +73,8 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
      * If the name is empty only the icon is displayed.<br>
      * If the iconPath is empty only the name is displayed.<br>
      * If the onClic is empty no link is generated.<br>
-     * If the helptext is empty no mouse events are generated.
+     * If the helptext is empty no mouse events are generated.<br>
+     * If not enabled be sure to take an according helptext.
      * <p>
      * 
      * @param id the id
@@ -95,11 +96,11 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<div class='bigLink'>\n");
-        html.append("\t<a class='link");
+        html.append("\t<span class='link");
         if (enabled) {
-            html.append("' href='#'");
+            html.append("'");
         } else {
-            html.append(" disabled'");
+            html.append(" linkdisabled'");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
             html.append(" onMouseOver=\"mouseHelpEvent('");
@@ -118,22 +119,32 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
             html.append("<img src='");
             html.append(CmsWorkplace.getSkinUri());
             html.append(iconPath);
-            html.append("'><br>");
+            html.append("'");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+                html.append(" alt='");
+                html.append(name);
+                html.append("'");
+                html.append(" title='");
+                html.append(name);
+                html.append("'");
+            }
+            html.append("><br>");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            if (enabled) {
+                html.append("<a href='#'>");
+            }            
             html.append(name);
+            if (enabled) {
+                html.append("</a>");
+            }            
         }
-        html.append("</a>\n");
+        html.append("</span>\n");
         html.append("</div>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
             html.append("<div class='tip' id='");
             html.append(id);
             html.append("'>");
-            if (!enabled) {
-                html.append("${key.");
-                html.append(Messages.GUI_LIST_ACTION_DISABLED_0);
-                html.append("} ");
-            }
             html.append(helpText);
             html.append("</div>\n");
         }
@@ -146,7 +157,8 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
      * If the name is empty only the icon is displayed.<br>
      * If the iconPath is empty only the name is displayed.<br>
      * If the onClic is empty no link is generated.<br>
-     * If the helptext is empty no mouse events are generated.
+     * If the helptext is empty no mouse events are generated.<br>
+     * If not enabled be sure to take an according helptext.
      * <p>
      * 
      * @param id the id
@@ -167,11 +179,11 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
         String onClic) {
 
         StringBuffer html = new StringBuffer(1024);
-        html.append("<a class='link");
+        html.append("<span class='link");
         if (enabled) {
-            html.append("' href='#'");
+            html.append("'");
         } else {
-            html.append(" disabled'");
+            html.append(" linkdisabled'");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
             html.append(" onMouseOver=\"mouseHelpEvent('");
@@ -190,21 +202,31 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
             html.append("<img src='");
             html.append(CmsWorkplace.getSkinUri());
             html.append(iconPath);
-            html.append("'>");
+            html.append("'");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+                html.append(" alt='");
+                html.append(name);
+                html.append("'");
+                html.append(" title='");
+                html.append(name);
+                html.append("'");
+            }
+            html.append(">");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            if (enabled) {
+                html.append("<a href='#'>");
+            }            
             html.append(name);
+            if (enabled) {
+                html.append("</a>");
+            }            
         }
-        html.append("</a>\n");
+        html.append("</span>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
             html.append("<div class='tip' id='");
             html.append(id);
             html.append("'>");
-            if (!enabled) {
-                html.append("${key.");
-                html.append(Messages.GUI_LIST_ACTION_DISABLED_0);
-                html.append("} ");
-            }
             html.append(helpText);
             html.append("</div>\n");
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Implementation of the administration view leftside's menu.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsAdminMenu extends CmsToolDialog {
@@ -109,6 +109,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * @param link the link to open when selected
      * @param helpText the help text to display
      * @param enabled if enabled or not
+     * @param position the relative position to install the item
      * @param target the target frame to open the link into
      * 
      * @return the new item
@@ -120,6 +121,7 @@ public class CmsAdminMenu extends CmsToolDialog {
         String link,
         String helpText,
         boolean enabled,
+        float position,
         String target) {
 
         groupName = resolveMacros(groupName);
@@ -127,11 +129,11 @@ public class CmsAdminMenu extends CmsToolDialog {
         if (group == null) {
             String gid = "group" + m_groupContainer.elementList().size();
             group = new CmsAdminMenuGroup(gid, groupName);
-            addGroup(group);
+            addGroup(group, position);
         }
         String id = "item" + group.getMenuItems().size();
         CmsAdminMenuItem item = new CmsAdminMenuItem(id, name, icon, link, helpText, enabled, target);
-        group.addMenuItem(item);
+        group.addMenuItem(item, position);
         return item;
     }
 
@@ -188,7 +190,8 @@ public class CmsAdminMenu extends CmsToolDialog {
         // creates the context help menu
         CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", Messages.get().key(
             getLocale(),
-            Messages.GUI_ADMIN_MENU_HELP_GROUP_0, null));
+            Messages.GUI_ADMIN_MENU_HELP_GROUP_0,
+            null));
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 
@@ -214,23 +217,16 @@ public class CmsAdminMenu extends CmsToolDialog {
             int pos = tool.getHandler().getPath().indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR);
             // only install if at first level
             if (path.indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR, pos + 1) < 0) {
-                String groupName = resolveMacros(tool.getHandler().getGroup());
-                CmsAdminMenuGroup group = getGroup(groupName);
-                if (group == null) {
-                    String gid = "group" + m_groupContainer.elementList().size();
-                    group = new CmsAdminMenuGroup(gid, groupName);
-                    addGroup(group, tool.getHandler().getPosition());
-                }
-                String id = "item" + group.getMenuItems().size();
-                CmsAdminMenuItem item = new CmsAdminMenuItem(
-                    id,
+
+                addItem(
+                    tool.getHandler().getGroup(),
                     tool.getHandler().getName(),
                     tool.getHandler().getSmallIconPath(),
                     getToolManager().linkForPath(tool.getHandler().getPath(), null),
-                    tool.getHandler().getHelpText(),
+                    tool.getHandler().isEnabled(getCms()) ? tool.getHandler().getHelpText(): tool.getHandler().getDisabledHelpText(),
                     tool.getHandler().isEnabled(getCms()),
+                    tool.getHandler().getPosition(),
                     CmsAdminMenu.DEFAULT_TARGET);
-                group.addMenuItem(item, tool.getHandler().getPosition());
             }
         }
     }

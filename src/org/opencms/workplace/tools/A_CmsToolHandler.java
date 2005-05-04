@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.file.CmsObject;
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
@@ -51,11 +51,17 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Arg-name and arg-value separator.<p> */
     public static final String C_VALUE_SEPARATOR = ":";
 
+    /** Default disabled help text constant.<p> */
+    public static final String C_DEFAULT_DISABLED_HELPTEXT = "${key." + Messages.GUI_TOOLS_DISABLED_HELP_0 + "}";
+    
     /** Group to be included in. */
     private String m_group;
 
     /** Help text or description. */
     private String m_helpText;
+
+    /** Help text or description if disabled. */
+    private String m_disabledHelpText;
 
     /** Icon path (32x32). */
     private String m_iconPath;
@@ -89,6 +95,14 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getHelpText() {
 
         return m_helpText;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getDisabledHelpText()
+     */
+    public String getDisabledHelpText() {
+
+        return m_disabledHelpText;
     }
 
     /**
@@ -173,6 +187,16 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public void setHelpText(String helpText) {
 
         m_helpText = helpText;
+    }
+
+    /**
+     * Sets the help text if disabled.<p>
+     *
+     * @param disabledHelpText the help text to set
+     */
+    public void setDisabledHelpText(String disabledHelpText) {
+
+        m_disabledHelpText = disabledHelpText;
     }
 
     /**

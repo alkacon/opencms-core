@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsGenericToolHandler.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,11 +49,10 @@ import java.util.Map;
  * known parameters are:<br>
  * <ul>
  *  <li><code>name</code>: the name of the admin tool.</li>
- *  <li><code>iconpath</code>: the path to the icon of the admin tool.</li>
+ *  <li><code>iconpath</code>: the path to the icon of the admin tool (paths are relative to the resource folder).</li>
  *  <li><code>smalliconpath</code>: the path to the icon to be used in the menu (optional, default: iconpath).</li>
  *  <li><code>helptext</code>: the help text of the admin tool.</li>
- *  <li><code>onlyadmin</code>: the admin tool can only be used as administrator (optional, default:false).</li>
- *  <li><code>onlyoffline</code>: the admin tool can only be used in the offline project (optional, default:false).</li>
+ *  <li><code>disabledhelptext</code>: the help text of the admin tool if disabled (optional. default: (disabled) helptext).</li>
  *  <li><code>path</code>: the abstract path to install the tool.</li>
  *  <li><code>group</code>: the group in that path.</li>
  *  <li><code>position</code>: the relative position in that group.</li>
@@ -62,23 +61,26 @@ import java.util.Map;
  * Almost any parameter can use be described by macros, ie. for i18n.
  * 
  * An example for a full argument is:<p>
- * <code>name:Users|iconpath:/resources/icons/users.gif|helptext:This tool manages user accounts|path:/|group:Principal Management|position:2|onlyadmin:true</code><p>
+ * <code>name:Users|iconpath:icons/users.gif|helptext:This tool manages user accounts|path:/|group:Principal Management|position:2</code><p>
  * 
  * This means that the given resource will be named "Users", the display icon is located under the 
- * path "/resources/icons/users.gif", the displayed help text will be "This tool manages user accounts", 
+ * path "icons/users.gif" in the resources folder, the displayed help text will be "This tool manages user accounts", 
  * and the tool will be installed at the following installation point:<p>
  * <ul>
  *  <li>in the root tool "/", in group "Principal Management", at second position (if there is something at first position)</li>
  * </ul>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsGenericToolHandler extends A_CmsToolHandler {
 
     /** Parameter name for the help text. */
     private static final String C_PARAM_HELPTEXT = "helptext";
+
+    /** Parameter name for the help text if disabled. */
+    private static final String C_PARAM_DISABLEDHELPTEXT = "disabledhelptext";
 
     /** Parameter name for the icon path. */
     private static final String C_PARAM_ICONPATH = "iconpath";
@@ -135,6 +137,11 @@ public class CmsGenericToolHandler extends A_CmsToolHandler {
             setSmallIconPath((String)argsMap.get(C_PARAM_SMALLICONPATH));
         }
         setHelpText((String)argsMap.get(C_PARAM_HELPTEXT));
+        if (argsMap.get(C_PARAM_DISABLEDHELPTEXT) == null) {
+            setDisabledHelpText(C_DEFAULT_DISABLED_HELPTEXT);
+        } else {
+            setDisabledHelpText((String)argsMap.get(C_PARAM_DISABLEDHELPTEXT));
+        }
         
         if (link.equals(CmsToolManager.C_VIEW_JSPPAGE_LOCATION)) {
             // root special case

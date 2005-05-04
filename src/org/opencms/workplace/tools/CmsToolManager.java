@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -202,7 +202,7 @@ public class CmsToolManager {
             html = link + C_NAVBAR_SEPARATOR + html;
         }
 
-        return wp.resolveMacros("<div class='pathbar'>&nbsp;\n" + html + "&nbsp;</div>\n");
+        return wp.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n");
     }
 
     /**
@@ -298,8 +298,11 @@ public class CmsToolManager {
         Iterator itTools = m_tools.elementList().iterator();
         while (itTools.hasNext()) {
             String tool = ((CmsTool)itTools.next()).getHandler().getPath();
+            if (tool.equals(C_TOOLPATH_SEPARATOR)) {
+                continue;
+            }
             // filter for path
-            if (tool.startsWith(toolPath) && !tool.equals(toolPath)) {
+            if (toolPath.equals(C_TOOLPATH_SEPARATOR) || tool.startsWith(toolPath + C_TOOLPATH_SEPARATOR)) {
                 // filter sub tree
                 if (includeSubtools || tool.indexOf(C_TOOLPATH_SEPARATOR, toolPath.length() + 1) < 0) {
                     toolList.add(tool);
@@ -368,7 +371,7 @@ public class CmsToolManager {
                 }
                 myParams.put(key, params.get(key));
             }
-        } 
+        }
         if (myParams.containsKey(CmsToolDialog.PARAM_PATH)) {
             myParams.remove(CmsToolDialog.PARAM_PATH);
         }
@@ -486,7 +489,11 @@ public class CmsToolManager {
         CmsTool tool = new CmsTool(id, handler);
 
         // register
-        m_tools.addIdentifiableObject(handler.getPath(), tool);
+        try {
+            m_tools.addIdentifiableObject(handler.getPath(), tool);
+        } catch (RuntimeException ex) {
+            // noop
+        }
     }
 
     /**

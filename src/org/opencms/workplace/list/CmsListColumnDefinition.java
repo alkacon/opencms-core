@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -272,16 +272,23 @@ public class CmsListColumnDefinition {
         // button
         String id = listId + getId() + "Sort";
         String onClic = listId + "ListSort('" + getId() + "');";
-        String helpText = "";
-        if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
-            helpText = Messages.get().key(
-                locale,
-                Messages.GUI_LIST_COLUMN_ASC_SORT_1,
-                new Object[] {getName().key(locale)});
+        String helpText = null;
+        if (isSorteable()) {
+            if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
+                helpText = Messages.get().key(
+                    locale,
+                    Messages.GUI_LIST_COLUMN_ASC_SORT_1,
+                    new Object[] {getName().key(locale)});
+            } else {
+                helpText = Messages.get().key(
+                    locale,
+                    Messages.GUI_LIST_COLUMN_DESC_SORT_1,
+                    new Object[] {getName().key(locale)});
+            }
         } else {
             helpText = Messages.get().key(
                 locale,
-                Messages.GUI_LIST_COLUMN_DESC_SORT_1,
+                Messages.GUI_LIST_COLUMN_NO_SORT_1,
                 new Object[] {getName().key(locale)});
         }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(

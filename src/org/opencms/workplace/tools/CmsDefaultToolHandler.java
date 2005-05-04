@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/04 15:16:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
-
 /**
  * Default admin tool handler.<p>
  * 
@@ -50,7 +49,8 @@ import org.opencms.util.CmsStringUtil;
  * or uses the <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_TITLE}</code> property if undefined, 
  * or an default text, if still undefined. The help text is taken from the 
  * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_DESCRIPTION}</code> property or a
- * default text if undefined.<p> 
+ * default text if undefined, if you want to custumize a help text while disabled, use a 
+ * <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
  * 
  * The group is taken from the 
  * <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVINFO}</code> property,
@@ -61,7 +61,7 @@ import org.opencms.util.CmsStringUtil;
  * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsDefaultToolHandler extends A_CmsToolHandler {
@@ -77,13 +77,13 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
         if (CmsMessages.isUnknownKey(name)) {
             name = navElem.getTitle();
         }
-        if (CmsStringUtil.isEmpty(name)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
             name = "${key." + Messages.GUI_TOOLS_DEFAULT_NAME_0 + "}";
         }
         setName(name);
 
         String iconPath = navElem.getNavImage();
-        if (CmsStringUtil.isEmpty(iconPath)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(iconPath)) {
             iconPath = "${key." + Messages.GUI_TOOLS_DEFAULT_ICON_0 + "}";
         }
         String smallIconPath = null;
@@ -97,22 +97,32 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
         setSmallIconPath(smallIconPath);
 
         String helpText = navElem.getDescription();
-        if (CmsStringUtil.isEmpty(helpText)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(helpText)) {
             helpText = "${key." + Messages.GUI_TOOLS_DEFAULT_HELP_0 + "}";
         }
+        String disabledHelpText = null;
+        if (helpText.indexOf(C_VALUE_SEPARATOR) < 0) {
+            disabledHelpText = C_DEFAULT_DISABLED_HELPTEXT;
+        } else {
+            disabledHelpText = helpText.substring(helpText.indexOf(C_VALUE_SEPARATOR) + 1);
+            helpText = helpText.substring(0, helpText.indexOf(C_VALUE_SEPARATOR));
+        }
         setHelpText(helpText);
+        setDisabledHelpText(disabledHelpText);
 
         String group = navElem.getInfo();
-        if (CmsStringUtil.isEmpty(group)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(group)) {
             group = "${key." + Messages.GUI_TOOLS_DEFAULT_GROUP_0 + "}";
         }
 
-        setLink(resourcePath);
+        String link = resourcePath;
 
         String path = resourcePath;
+        boolean isFolder = false;
         try {
             // make sure the res is a folder 
             cms.readFolder(resourcePath);
+            isFolder = true;
 
             // adjust the path
             if (path.endsWith(CmsToolManager.C_TOOLPATH_SEPARATOR)) {
@@ -120,30 +130,36 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
             }
 
             // set admin page as link
-            setLink(CmsToolManager.C_VIEW_JSPPAGE_LOCATION);
+            link = CmsToolManager.C_VIEW_JSPPAGE_LOCATION;
 
             // try to use the folder def file as link
             CmsProperty prop = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, true);
+            String defFile = "index.html";
             if (!prop.isNullProperty()) {
-                String defFile = prop.getValue();
-                if (defFile.startsWith(CmsToolManager.C_TOOLPATH_SEPARATOR)) {
-                    // try to use this absolute link
-                    cms.readResource(defFile);
-                    setLink(defFile);
-                } else {
-                    // try to use this relative link
-                    defFile = path + CmsToolManager.C_TOOLPATH_SEPARATOR + defFile;
-                    cms.readResource(defFile);
-                    setLink(defFile);
-                }
+                defFile = prop.getValue();
             }
+            if (!defFile.startsWith(CmsToolManager.C_TOOLPATH_SEPARATOR)) {
+                // try to use this relative link
+                defFile = path + CmsToolManager.C_TOOLPATH_SEPARATOR + defFile;
+            }
+            cms.readResource(defFile);
+            link = defFile;
 
         } catch (CmsException e) {
             // noop
         }
-        path = resourcePath.substring(CmsToolManager.C_ADMINTOOLS_ROOT_LOCATION.length(), resourcePath
-            .lastIndexOf(CmsToolManager.C_TOOLPATH_SEPARATOR));
-
+        
+        setLink(link);
+        if (isFolder) {
+            path = resourcePath.substring(
+                CmsToolManager.C_ADMINTOOLS_ROOT_LOCATION.length(),
+                resourcePath.lastIndexOf(CmsToolManager.C_TOOLPATH_SEPARATOR));
+        } else {
+            path = resourcePath.substring(
+                CmsToolManager.C_ADMINTOOLS_ROOT_LOCATION.length(),
+                resourcePath.lastIndexOf('.'));
+        }
+        
         // install point
         setPath(path);
         setGroup(group);

@@ -157,10 +157,6 @@
 					<name>NavText</name>
 					<value><![CDATA[${key.label.admin.history.clear}]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[onlyadmin:true]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
