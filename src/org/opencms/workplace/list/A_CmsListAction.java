@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,19 +37,32 @@ import org.opencms.i18n.CmsMessageContainer;
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
 
     /** Confirmation Message. */
-    private final CmsMessageContainer m_confirmationMsg;
+    private CmsMessageContainer m_confirmationMsg;
 
     /** The id of the associated list. */
     private final String m_listId;
 
     /**
      * Default Constructor.<p>
+     * 
+     * @param listId the id of the list
+     * @param id unique id
+     */
+    public A_CmsListAction(String listId, String id) {
+        
+        super(id);
+        m_listId = listId;
+    }
+    
+    
+    /**
+     * Full Constructor.<p>
      * 
      * @param listId the id of the list
      * @param id unique id
@@ -68,12 +81,12 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         boolean enabled,
         CmsMessageContainer confirmationMessage) {
 
-        super(id, name, helpText, enabled, iconPath);
-        m_listId = listId;
-        if (confirmationMessage==null) {
-            confirmationMessage = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
-        }
-        m_confirmationMsg = confirmationMessage;
+        this(listId, id);
+        setName(name);
+        setHelpText(helpText);
+        setEnabled(enabled);
+        setIconPath(iconPath);
+        setConfirmationMessage(confirmationMessage);
 
     }
 
@@ -93,4 +106,16 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         return m_listId;
     }
 
+    /**
+     * Sets the confirmation message .<p>
+     *
+     * @param confirmationMsg the confirmation message to set
+     */
+    public void setConfirmationMessage(CmsMessageContainer confirmationMsg) {
+
+        if (confirmationMsg == null) {
+            confirmationMsg = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
+        m_confirmationMsg = confirmationMsg;
+    }
 }

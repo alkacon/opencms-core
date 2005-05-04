@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/I_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,33 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.workplace.CmsWorkplace;
+
 /**
  * Interface for html buttons with icon.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
-public interface I_CmsHtmlIconButton extends I_CmsHtmlButton {
+public interface I_CmsHtmlIconButton {
+
+    /**
+     * Returns the necessary html code.<p>
+     * 
+     * @param wp the jsp page to write the code to
+     * 
+     * @return html code
+     */
+    String buttonHtml(CmsWorkplace wp);
+
+    /**
+     * Returns the help text.<p>
+     *
+     * @return the help text
+     */
+    CmsMessageContainer getHelpText();
 
     /**
      * Returns the path to the icon.<p>
@@ -46,5 +65,33 @@ public interface I_CmsHtmlIconButton extends I_CmsHtmlButton {
      * @return the path to the icon
      */
     String getIconPath();
+
+    /**
+     * Returns the id of the html component.<p>
+     * 
+     * @return the id
+     */
+    String getId();
+
+    /**
+     * Returns the display name.<p>
+     *
+     * @return the display name
+     */
+    CmsMessageContainer getName();
+
+    /**
+     * Returns if enabled or disabled.<p>
+     *
+     * @return if enabled or disabled
+     */
+    boolean isEnabled();
+
+    /**
+     * Sets if enabled or disabled.<p>
+     *
+     * @param enabled if enabled or disabled
+     */
+    void setEnabled(boolean enabled);
 
 }

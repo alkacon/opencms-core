@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetails.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ package org.opencms.workplace.list;
  * For detail contents you may use HTML code.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListItemDetails extends CmsListColumnDefinition {
@@ -77,9 +77,36 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     }
 
     /**
-     * Returns the action.<p>
+     * Sets the id of the first column to include.<p>
      *
-     * @return the action
+     * @param atColumn the id of the first column to set
+     */
+    public void setAtColumn(String atColumn) {
+
+        m_atColumn = atColumn;
+    }
+    /**
+     * Sets the hide details Action.<p>
+     *
+     * @param hideAction the hide details Action to set
+     */
+    public void setHideAction(I_CmsListAction hideAction) {
+
+        m_hideAction = hideAction;
+    }
+    /**
+     * Sets the show details Action.<p>
+     *
+     * @param showAction the showdetails Action to set
+     */
+    public void setShowAction(I_CmsListAction showAction) {
+
+        m_showAction = showAction;
+    }
+    /**
+     * Returns the current active action.<p>
+     *
+     * @return the current active action
      */
     public I_CmsListAction getAction() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Main scheduler jobs management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends CmsListDialog {
@@ -74,7 +74,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      * @since 5.7.3
      */
     private class ActivateJobAction extends CmsListDirectAction {
@@ -114,7 +114,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
         }
 
         /**
-         * @see org.opencms.workplace.list.I_CmsHtmlButton#getHelpText()
+         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
          */
         public CmsMessageContainer getHelpText() {
 
@@ -148,7 +148,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
         }
 
         /**
-         * @see org.opencms.workplace.list.I_CmsHtmlButton#isEnabled()
+         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#isEnabled()
          */
         public boolean isEnabled() {
 

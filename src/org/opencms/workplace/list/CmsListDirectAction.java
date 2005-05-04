@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,24 @@ import org.opencms.workplace.CmsWorkplace;
  * Default implementation of a direct action for a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {
 
     /** List item. */
     private CmsListItem m_listItem;
+
+    /**
+     * Default Constructor.<p>
+     * 
+     * @param listId the id of the associated list
+     * @param id unique id
+     */
+    public CmsListDirectAction(String listId, String id) {
+        
+        super(listId, id);
+    }
 
     /**
      * Default Constructor.<p>
@@ -67,11 +78,16 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         boolean enabled,
         CmsMessageContainer confirmationMessage) {
 
-        super(listId, id, name, iconPath, helpText, enabled, confirmationMessage);
+        this(listId, id);
+        setName(name);
+        setIconPath(iconPath);
+        setHelpText(helpText);
+        setEnabled(enabled);
+        setConfirmationMessage(confirmationMessage);
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlButton#buttonHtml(CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
     public String buttonHtml(CmsWorkplace wp) {
 

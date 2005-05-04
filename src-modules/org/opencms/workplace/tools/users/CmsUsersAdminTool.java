@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends CmsListDialog {
@@ -82,7 +82,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * @since 5.7.3
      */
     private class ActivateUserAction extends CmsListDirectAction {
@@ -125,7 +125,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
         }
 
         /**
-         * @see org.opencms.workplace.list.I_CmsHtmlButton#getHelpText()
+         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
          */
         public CmsMessageContainer getHelpText() {
 
@@ -165,7 +165,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
         }
 
         /**
-         * @see org.opencms.workplace.list.I_CmsHtmlButton#isEnabled()
+         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#isEnabled()
          */
         public boolean isEnabled() {
 

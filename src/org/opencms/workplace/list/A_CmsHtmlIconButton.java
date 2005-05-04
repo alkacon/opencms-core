@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/04 16:08:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,16 +39,38 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
-public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_CmsHtmlIconButton {
+public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
+
+    /** Enabled flag. */
+    private boolean m_enabled;
+
+    /** Help text or description. */
+    private CmsMessageContainer m_helpText;
 
     /** Path to the icon. */
-    private final String m_iconPath;
+    private String m_iconPath;
+
+    /** unique id. */
+    private String m_id;
+
+    /** Display name. */
+    private CmsMessageContainer m_name;
 
     /**
      * Default Constructor.<p>
+     * 
+     * @param id the id
+     */
+    public A_CmsHtmlIconButton(String id) {
+
+        m_id = id;
+    }
+
+    /**
+     * Full Constructor.<p>
      * 
      * @param id the id
      * @param name the name
@@ -63,8 +85,11 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
         boolean enabled,
         String iconPath) {
 
-        super(id, name, helpText, enabled);
-        m_iconPath = iconPath;
+        this(id);
+        setName(name);
+        setHelpText(helpText);
+        setEnabled(enabled);
+        setIconPath(iconPath);
     }
 
     /**
@@ -133,11 +158,11 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
             if (enabled) {
                 html.append("<a href='#'>");
-            }            
+            }
             html.append(name);
             if (enabled) {
                 html.append("</a>");
-            }            
+            }
         }
         html.append("</span>\n");
         html.append("</div>\n");
@@ -196,7 +221,7 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
             html.append(" onClick=\"");
             html.append(onClic);
             html.append("\"");
-        } 
+        }
         html.append(">");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
             html.append("<img src='");
@@ -216,11 +241,11 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
             if (enabled) {
                 html.append("<a href='#'>");
-            }            
+            }
             html.append(name);
             if (enabled) {
                 html.append("</a>");
-            }            
+            }
         }
         html.append("</span>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
@@ -234,6 +259,14 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
     }
 
     /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
+     */
+    public CmsMessageContainer getHelpText() {
+
+        return m_helpText;
+    }
+
+    /**
      * Returns the path to the icon.<p>
      *
      * @return the path to the icon
@@ -241,5 +274,73 @@ public abstract class A_CmsHtmlIconButton extends A_CmsHtmlButton implements I_C
     public String getIconPath() {
 
         return m_iconPath;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getId()
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getName()
+     */
+    public CmsMessageContainer getName() {
+
+        return m_name;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        return m_enabled;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_enabled = enabled;
+    }
+
+    /**
+     * Sets the help Text.<p>
+     *
+     * @param helpText the help Text to set
+     */
+    public void setHelpText(CmsMessageContainer helpText) {
+
+        if (helpText == null) {
+            helpText = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
+        m_helpText = helpText;
+    }
+
+    /**
+     * Sets the icon Path.<p>
+     *
+     * @param iconPath the icon Path to set
+     */
+    public void setIconPath(String iconPath) {
+
+        m_iconPath = iconPath;
+    }
+
+    /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(CmsMessageContainer name) {
+
+        if (name == null) {
+            name = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
+        m_name = name;
     }
 }
