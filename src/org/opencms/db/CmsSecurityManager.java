@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/04 13:38:26 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/05/04 13:59:17 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -172,8 +172,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.acceptTask(dbc, taskId);
         } catch (Exception e) {
-            CmsMessageContainer errMsg = Messages.get().container(Messages.ERR_ACCEPT_TASK_1, new Integer(taskId));
-            dbc.report(null, errMsg, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_ACCEPT_TASK_1, new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -196,11 +195,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.addUserToGroup(dbc, username, groupname);
         } catch (Exception e) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(
-                Messages.ERR_ADD_USER_GROUP_FAILED_2,
-                username,
-                groupname);
-            dbc.report(null, errMsgContainer, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_GROUP_FAILED_2, username, groupname), e);
         } finally {
             dbc.clear();
         }
@@ -239,8 +234,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.addWebUser(dbc, name, password, group, description, additionalInfos);
         } catch (Exception e) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_ADD_USER_WEB_1, name);
-            dbc.report(null, errMsgContainer, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_WEB_1, name), e);
         } finally {
             dbc.clear();
         }
@@ -285,8 +279,7 @@ public final class CmsSecurityManager {
                 description,
                 additionalInfos);
         } catch (Exception e) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_ADD_USER_WEB_1, name);
-            dbc.report(null, errMsgContainer, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_WEB_1, name), e);
         } finally {
             dbc.clear();
         }
@@ -340,10 +333,9 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.changeLastModifiedProjectId(dbc, resource);
         } catch (Exception e) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(
+            dbc.report(null, Messages.get().container(
                 Messages.ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1,
-                resource.getRootPath());
-            dbc.report(null, errMsgContainer, e);
+                resource.getRootPath()), e);
         } finally {
             dbc.clear();
         }
@@ -364,10 +356,10 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(
-                Messages.ERR_CHANGE_LOCK_OF_RESOURCE_1,
-                resource.getRootPath());
-            dbc.report(null, errMsgContainer, e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_CHANGE_LOCK_OF_RESOURCE_1, resource.getRootPath()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -412,7 +404,7 @@ public final class CmsSecurityManager {
         } catch (PatternSyntaxException e) {
             throw new CmsVfsException(Messages.get().container(
                 Messages.ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4,
-                new Object[] {propertyDefinition, oldValue, newValue, resource.getName()}), e);
+                new Object[] {propertyDefinition, oldValue, newValue, resource.getRootPath()}), e);
         }
 
         List changedResources = new ArrayList(resources.size());
@@ -469,10 +461,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.changeUserType(dbc, userId, userType);
         } catch (Exception e) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(
-                Messages.ERR_CHANGE_USER_TYPE_WITH_ID_1,
-                userId.toString());
-            dbc.report(null, errMsgContainer, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_ID_1, userId.toString()), e);
         } finally {
             dbc.clear();
         }
@@ -496,8 +485,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.changeUserType(dbc, username, userType);
         } catch (Exception e) {
-            CmsMessageContainer errMsg = Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_NAME_1, username);
-            dbc.report(null, errMsg, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_NAME_1, username), e);
         } finally {
             dbc.clear();
         }
@@ -565,9 +553,11 @@ public final class CmsSecurityManager {
      * @param directPublishResource the direct publish resource (optional, if null only the current project is checked)
      * 
      * @throws CmsException if the user does not have the required permissions
+     * @throws CmsSecurityException if a direct publish is attempted on a resource 
+     *         whose parent folder is new or deleted in the offline project.
      */
     public void checkPublishPermissions(CmsRequestContext context, CmsResource directPublishResource)
-    throws CmsException {
+    throws CmsException, CmsSecurityException {
 
         // is the current project an "offline" project?
         if (context.currentProject().isOnlineProject()) {
@@ -595,7 +585,7 @@ public final class CmsSecurityManager {
                     // parent folder is deleted - direct publish not allowed
                     CmsMessageContainer errMsg = Messages.get().container(
                         Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
-                        directPublishResource.getName(),
+                        directPublishResource.getRootPath(),
                         parentFolder);
                     throw new CmsSecurityException(errMsg);
                 }
@@ -603,7 +593,7 @@ public final class CmsSecurityManager {
                     // parent folder is new - direct publish not allowed
                     CmsMessageContainer errMsg = Messages.get().container(
                         Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
-                        directPublishResource.getName(),
+                        directPublishResource.getRootPath(),
                         parentFolder);
                     throw new CmsSecurityException(errMsg);
                 }
@@ -677,9 +667,11 @@ public final class CmsSecurityManager {
      * @param resource the resource to change the flags for
      * @param flags the new resource flags for this resource
      * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write is required).
      * @see org.opencms.file.types.I_CmsResourceType#chflags(CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void chflags(CmsRequestContext context, CmsResource resource, int flags) throws CmsException {
+    public void chflags(CmsRequestContext context, CmsResource resource, int flags)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -687,7 +679,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.chflags(dbc, resource, flags);
         } catch (Exception e) {
-            dbc.report(null, "Error changing flags of " + resource.getRootPath(), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_RESOURCE_FLAGS_1, resource.getRootPath()), e);
         } finally {
             dbc.clear();
         }
@@ -707,11 +699,13 @@ public final class CmsSecurityManager {
      * @param type the new resource type for this resource
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write is required).
      * 
      * @see org.opencms.file.types.I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      * @see CmsObject#chtype(String, int)
      */
-    public void chtype(CmsRequestContext context, CmsResource resource, int type) throws CmsException {
+    public void chtype(CmsRequestContext context, CmsResource resource, int type)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -719,7 +713,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.chtype(dbc, resource, type);
         } catch (Exception e) {
-            dbc.report(null, "Error changing resource type of " + resource.getRootPath(), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_RESOURCE_TYPE_1, resource.getRootPath()), e);
         } finally {
             dbc.clear();
         }
@@ -735,9 +729,10 @@ public final class CmsSecurityManager {
      * @param destination the resource to which the access control entries are copied
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (access control required).
      */
     public void copyAccessControlEntries(CmsRequestContext context, CmsResource source, CmsResource destination)
-    throws CmsException {
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -745,7 +740,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, destination, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.copyAccessControlEntries(dbc, source, destination);
         } catch (Exception e) {
-            dbc.report(null, "Error copying ACEs from " + source.getRootPath() + " to " + destination.getRootPath(), e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COPY_ACE_2,
+                source.getRootPath(),
+                destination.getRootPath()), e);
         } finally {
             dbc.clear();
         }
@@ -806,17 +804,21 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to apply this operation to
      * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the current user does not have management access to the project.
      * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
      */
-    public void copyResourceToProject(CmsRequestContext context, CmsResource resource) throws CmsException {
+    public void copyResourceToProject(CmsRequestContext context, CmsResource resource)
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
         try {
             checkManagerOfProjectRole(dbc, context.currentProject());
             m_driverManager.copyResourceToProject(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, "", e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
+                resource.getRootPath(),
+                context.currentProject().getName()), e);
         } finally {
             dbc.clear();
         }
@@ -831,18 +833,22 @@ public final class CmsSecurityManager {
      * @return the amount of locked resources in this project
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the current user does not have management access to the project.
      */
-    public int countLockedResources(CmsRequestContext context, int id) throws CmsException {
+    public int countLockedResources(CmsRequestContext context, int id) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
+        CmsProject project = null;
         int result = 0;
         try {
-            CmsProject project = m_driverManager.readProject(dbc, id);
+            project = m_driverManager.readProject(dbc, id);
             checkManagerOfProjectRole(dbc, project);
             result = m_driverManager.countLockedResources(dbc, project);
         } catch (Exception e) {
-            dbc.report(null, "", e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
+                (project == null) ? "<failed to read>" : project.getName(),
+                new Integer(id)), e);
         } finally {
             dbc.clear();
         }
@@ -864,12 +870,11 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         // perform a test for read permissions on the folder
         readResource(dbc, foldername, CmsResourceFilter.ALL);
-
         int result = 0;
         try {
             result = m_driverManager.countLockedResources(dbc, foldername);
         } catch (Exception e) {
-            dbc.report(null, "", e);
+            dbc.report(null, Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, foldername), e);
         } finally {
             dbc.clear();
         }
@@ -887,10 +892,12 @@ public final class CmsSecurityManager {
      * 
      * @return a <code>{@link CmsGroup}</code> object representing the newly created group
      * 
-     * @throws CmsException if operation was not successfull
+     * @throws CmsException if operation was not successful.
+     * @throws CmsRoleViolationException if the  role {@link CmsRole#USER_MANAGER} is not owned by the current user.
+     * 
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent)
-    throws CmsException {
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
@@ -899,7 +906,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.USER_MANAGER);
             result = m_driverManager.createGroup(dbc, new CmsUUID(), name, description, flags, parent);
         } catch (Exception e) {
-            dbc.report(null, "Error creating group " + name, e);
+            dbc.report(null, Messages.get().container(Messages.ERR_CREATE_GROUP_1, name), e);
         } finally {
             dbc.clear();
         }
@@ -919,6 +926,7 @@ public final class CmsSecurityManager {
      * @return the created project
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER}.
      */
     public CmsProject createProject(
         CmsRequestContext context,
@@ -926,7 +934,7 @@ public final class CmsSecurityManager {
         String description,
         String groupname,
         String managergroupname,
-        int projecttype) throws CmsException {
+        int projecttype) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
@@ -935,7 +943,8 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.PROJECT_MANAGER);
             result = m_driverManager.createProject(dbc, name, description, groupname, managergroupname, projecttype);
         } catch (Exception e) {
-            dbc.report(null, "", e);
+
+            dbc.report(null, Messages.get().container(Messages.ERR_CREATE_PROJECT_1, name), e);
         } finally {
             dbc.clear();
         }
@@ -953,23 +962,29 @@ public final class CmsSecurityManager {
      * @return the created property definition
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the current project is online.
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROPERTY_MANAGER}.
      */
-    public CmsPropertyDefinition createPropertyDefinition(CmsRequestContext context, String name) throws CmsException {
-
-        if (CmsProject.isOnlineProject(context.currentProject().getId())) {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] createPropertyDefinition() " + name,
-                CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
-        }
+    public CmsPropertyDefinition createPropertyDefinition(CmsRequestContext context, String name)
+    throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         CmsPropertyDefinition result = null;
         try {
+            if (CmsProject.isOnlineProject(context.currentProject().getId())) {
+                // the general security exception is caught here as a cause 
+                // for: "Error creating property definition" like the other caught 
+                // exceptions here.
+                throw new CmsSecurityException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_MODIFY_ONLINE_1,
+                    context.currentProject().getName()));
+            }
             checkRole(dbc, CmsRole.PROPERTY_MANAGER);
             result = m_driverManager.createPropertyDefinition(dbc, name);
         } catch (Exception e) {
-            dbc.report(null, "Error creating property definition " + name, e);
+
+            dbc.report(null, Messages.get().container(Messages.ERR_CREATE_PROPDEF_1, name), e);
         } finally {
             dbc.clear();
         }
@@ -5122,7 +5137,9 @@ public final class CmsSecurityManager {
                     + requiredPermissions.getPermissionString(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
 
             case PERM_NOTLOCKED:
-                throw new CmsLockException(Messages.get().container(Messages.ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1, context.getSitePath(resource)));
+                throw new CmsLockException(Messages.get().container(
+                    Messages.ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1,
+                    context.getSitePath(resource)));
 
             case PERM_ALLOWED:
             default:

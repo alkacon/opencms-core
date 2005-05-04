@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/04 10:58:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/04 13:59:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CHANGE_LOCK_OF_RESOURCE_1 = "ERR_CHANGE_LOCK_OF_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CHANGE_RESOURCE_FLAGS_1 = "ERR_CHANGE_RESOURCE_FLAGS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CHANGE_RESOURCE_TYPE_1 = "ERR_CHANGE_RESOURCE_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4 = "ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4";
 
     /** Message constant for key in the resource bundle. */
@@ -70,16 +76,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CHANGE_USER_TYPE_WITH_NAME_1 = "ERR_CHANGE_USER_TYPE_WITH_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_ACE_2 = "ERR_COPY_ACE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_2 = "ERR_COPY_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_RESOURCE_TO_PROJECT_2 = "ERR_COPY_RESOURCE_TO_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COUNT_LOCKED_RESOURCES_FOLDER_1 = "ERR_COUNT_LOCKED_RESOURCES_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COUNT_LOCKED_RESOURCES_PROJECT_2 = "ERR_COUNT_LOCKED_RESOURCES_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_GROUP_1 = "ERR_CREATE_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_PROJECT_1 = "ERR_CREATE_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_PROPDEF_1 = "ERR_CREATE_PROPDEF_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DB_OPERATION_0 = "ERR_DB_OPERATION_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String ERR_DIRECT_PUBLISH_PARENT_NEW_2 = "ERR_DIRECT_PUBLISH_PARENT_NEW_2";
+    public static final String ERR_DIRECT_PUBLISH_PARENT_DELETED_2 = "ERR_DIRECT_PUBLISH_PARENT_DELETED_2";
 
     /** Message contant for key in the resource bundle. */
-    public static final String ERR_DIRECT_PUBLISH_PARENT_DELETED_2 = "ERR_DIRECT_PUBLISH_PARENT_DELETED_2";
+    public static final String ERR_DIRECT_PUBLISH_PARENT_NEW_2 = "ERR_DIRECT_PUBLISH_PARENT_NEW_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1 = "ERR_RESOURCE_NOT_LOCKED_BY_CURRENT_USER_1";
