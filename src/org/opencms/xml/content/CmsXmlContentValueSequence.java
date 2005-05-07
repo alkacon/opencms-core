@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {
@@ -121,11 +121,11 @@ public class CmsXmlContentValueSequence {
      *
      * @return the XML node name of this sequence element in the current schema
      * 
-     * @see I_CmsXmlSchemaType#getElementName()
+     * @see I_CmsXmlSchemaType#getName()
      */
     public String getElementName() {
 
-        return m_schemaType.getElementName();
+        return m_schemaType.getName();
     }
 
     /**

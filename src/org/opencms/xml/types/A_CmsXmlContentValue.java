@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -50,10 +51,10 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.0
  */
-public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
+public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
 
     /** The default value for nodes of this value. */
     protected String m_defaultValue;
@@ -148,7 +149,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public void appendXmlSchema(Element root) {
 
         Element element = root.addElement(CmsXmlContentDefinition.XSD_NODE_ELEMENT);
-        element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME, getElementName());
+        element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME, getName());
         element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE, getTypeName());
         if ((getMinOccurs() > 1) || (getMinOccurs() == 0)) {
             element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_MIN_OCCURS, String.valueOf(getMinOccurs()));
@@ -187,7 +188,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
             return false;
         }
         I_CmsXmlSchemaType other = (I_CmsXmlSchemaType)o;
-        return (getElementName().equals(other.getElementName())
+        return (getName().equals(other.getName())
             && getTypeName().equals(other.getTypeName())
             && (getMinOccurs() == other.getMinOccurs()) && (getMaxOccurs() == other.getMaxOccurs()));
     }
@@ -197,7 +198,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
      */
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
-        Element element = root.addElement(getElementName());
+        Element element = root.addElement(getName());
         // get the default value from the content handler
         String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, this, locale);
         if (defaultValue != null) {
@@ -219,6 +220,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public CmsXmlContentDefinition getContentDefinition() {
 
         return m_contentDefinition;
+    }
+
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getDefault(org.opencms.file.CmsObject)
+     */
+    public String getDefault(CmsObject cms) {
+
+        return m_contentDefinition.getContentHandler().getDefault(cms, this, this.getLocale());
     }
 
     /**
@@ -246,13 +255,17 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * Returns the name.<p>
-     *
-     * @return the name
+     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getId()
      */
-    public String getElementName() {
+    public String getId() {
 
-        return m_name;
+        StringBuffer result = new StringBuffer(128);
+        result.append(getTypeName());
+        result.append('.');
+        result.append(getPath());
+        result.append('.');
+        result.append(getIndex());
+        return result.toString();
     }
 
     /**
@@ -264,13 +277,25 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getKey()
+     */
+    public String getKey() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append(m_contentDefinition.getInnerName());
+        result.append('.');
+        result.append(getName());
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getLocale()
      */
     public Locale getLocale() {
 
         return m_locale;
     }
-    
+
     /**
      * Returns the maximum occurences of this type.<p>
      *
@@ -289,6 +314,16 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public int getMinOccurs() {
 
         return m_minOccurs;
+    }
+
+    /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**

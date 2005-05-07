@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -45,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
@@ -105,7 +106,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
      * @return the boolean value of the given XML content value
      * @throws CmsXmlException if something goes wrong
      */
-    public static boolean getBooleanValue(CmsObject cms, I_CmsXmlContentValue value) throws CmsXmlException {
+    public static boolean getBooleanValue(CmsObject cms, I_CmsWidgetParameter value) throws CmsXmlException {
 
         boolean result;
         if (value instanceof CmsXmlBooleanValue) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -79,6 +79,7 @@ public class TestProjects extends OpenCmsTestCase {
         suite.addTest(new TestProjects("testCreateDeleteProject"));
         suite.addTest(new TestProjects("testCopyResourceToProject"));
         suite.addTest(new TestProjects("testDeleteProjectWithResources"));        
+        suite.addTest(new TestProjects("testReadProjectResources"));  
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -97,9 +98,9 @@ public class TestProjects extends OpenCmsTestCase {
     /**
      * Test the "createProject" and "deleteProject" methods.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testCreateDeleteProject() throws Throwable {
+    public void testCreateDeleteProject() throws Exception {
         
         CmsObject cms = getCmsObject(); 
         
@@ -159,9 +160,9 @@ public class TestProjects extends OpenCmsTestCase {
     /**
      * Test the "delete project with resources" function.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */    
-    public void testDeleteProjectWithResources() throws Throwable {
+    public void testDeleteProjectWithResources() throws Exception {
         
         CmsObject cms = getCmsObject(); 
         
@@ -221,9 +222,9 @@ public class TestProjects extends OpenCmsTestCase {
     /**
      * Test the "copy resource to project" function.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testCopyResourceToProject() throws Throwable {
+    public void testCopyResourceToProject() throws Exception {
         
         CmsObject cms = getCmsObject();     
         echo("Testing copying a resource to a project");
@@ -262,5 +263,51 @@ public class TestProjects extends OpenCmsTestCase {
         assertFalse(CmsProject.isInsideProject(currentResources, "/sites/default/"));
         assertFalse(CmsProject.isInsideProject(currentResources, "/"));
         assertFalse(CmsProject.isInsideProject(currentResources, "/sites/default/folder2/index.html"));                
-    }  
+    }
+    
+    /**
+     * Test the "readProjectResources" method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testReadProjectResources() throws Exception {
+        
+        CmsObject cms = getCmsObject(); 
+        
+        echo("Testing to read all project resources");
+                
+        String projectName = "UnitTest4";
+        
+        cms.getRequestContext().saveSiteRoot();
+        cms.getRequestContext().setSiteRoot("/");
+        try {
+            CmsProject project = cms.createProject(
+                projectName, 
+                "Unit test project 4", 
+                OpenCms.getDefaultUsers().getGroupUsers(), 
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+                I_CmsConstants.C_PROJECT_TYPE_NORMAL
+            );
+            cms.getRequestContext().setCurrentProject(project);
+            cms.copyResourceToProject("/sites/default/index.html");
+            cms.copyResourceToProject("/sites/default/folder1/");
+        } finally {
+            cms.getRequestContext().restoreSiteRoot();
+        }
+        
+        CmsProject current = cms.readProject(projectName);        
+        cms.getRequestContext().setCurrentProject(current);
+        
+        // some basic project tests
+        assertEquals(projectName, current.getName());
+        assertFalse(current.isOnlineProject());
+        
+        // check the project resources
+        List projectResources = cms.readProjectResources(current);
+        
+        // check the project resource list
+        assertEquals(2, projectResources.size());
+        assertTrue(projectResources.contains("/sites/default/index.html"));
+        assertTrue(projectResources.contains("/sites/default/folder1/"));        
+    }    
 }

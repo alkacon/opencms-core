@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,8 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -47,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -59,73 +57,72 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
 
         // empty constructor is required for class registration
     }
-    
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
      */
-    public String getDialogIncludes(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition) {
-  
+    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+
         return widgetDialog.calendarIncludes();
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) {
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
-        CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)value;
+        CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)param;
 
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
         result.append("<input class=\"xmlInputSmall\" value=\"");
         String dateTimeValue = "";
         if (castValue.getDateTimeValue() > 0) {
             dateTimeValue = widgetDialog.getCalendarLocalizedTime(castValue.getDateTimeValue());
         }
 
-        String id = getParameterName(value);
+        String id = param.getId();
 
         result.append(dateTimeValue);
         result.append("\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\"></td><td>");     
-        
+        result.append("\"></td><td>");
+
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"");
         result.append(id);
         result.append(".calendar\"><tr>");
         result.append(widgetDialog.buttonBarSpacer(1));
-        result.append(widgetDialog.button("#", null, "calendar", "calendar.input.choosedate", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
+        result.append(widgetDialog.button(
+            "#",
+            null,
+            "calendar",
+            "calendar.input.choosedate",
+            widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr></table>");
-        
+
         result.append(widgetDialog.calendarInit(id, id + ".calendar", "cR", false, false, true, null, true));
 
         result.append("</td>");
-        
+
         return result.toString();
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException {
+        I_CmsWidgetParameter param) throws CmsXmlException {
 
-        String[] values = (String[])formParameters.get(getParameterName(value));
+        String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)value;
+            CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)param;
             long dateTime = castValue.getDateTimeValue();
             String dateTimeValue = values[0].trim();
             if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
@@ -140,7 +137,7 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
             } else {
                 dateTime = 0;
             }
-            value.setStringValue(cms, String.valueOf(dateTime));
+            param.setStringValue(cms, String.valueOf(dateTime));
         }
     }
 }

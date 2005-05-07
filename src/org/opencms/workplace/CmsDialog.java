@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 5.1
  */
@@ -85,6 +85,8 @@ public class CmsDialog extends CmsToolDialog {
     public static final int ACTION_SET = 5;
     /** Value for the action: wait (show please wait screen). */
     public static final int ACTION_WAIT = 2;
+    
+    
     /** Constant for the "Advanced" button in the build button methods. */
     public static final int BUTTON_ADVANCED = 3;
     /** Constant for the "Cancel" button in the build button methods. */
@@ -97,22 +99,25 @@ public class CmsDialog extends CmsToolDialog {
     public static final int BUTTON_DISCARD = 8;
     /** Constant for the "Edit" button in the build button methods (same function as "Ok" button but different text on button. */
     public static final int BUTTON_EDIT = 7;
-
     /** Constant for the "OK" button in the build button methods. */
     public static final int BUTTON_OK = 0;
     /** Constant for the "OK" button in the build button methods (without form submission). */
     public static final int BUTTON_OK_NO_SUBMIT = 6;
     /** Constant for the "Set" button in the build button methods. */
     public static final int BUTTON_SET = 4;
+    /** Constant for the "Back" button in the build button methods. */
+    public static final int BUTTON_BACK = 9;
+    
     /** Request parameter value for the action: cancel. */
     public static final String DIALOG_CANCEL = "cancel";
-
     /** Request parameter value for the action: dialog confirmed. */
     public static final String DIALOG_CONFIRMED = "confirmed";
     /** Request parameter value for the action: ok. */
     public static final String DIALOG_OK = "ok";
     /** Request parameter value for the action: set. */
     public static final String DIALOG_SET = "set";
+    /** Request parameter value for the action: back. */
+    public static final String DIALOG_BACK = "back";
     /** Request parameter value for the action: show please wait screen. */
     public static final String DIALOG_WAIT = "wait";
 
@@ -652,12 +657,16 @@ public class CmsDialog extends CmsToolDialog {
         result.append("\ttheForm." + PARAM_FRAMENAME + ".value = window.name;\n");
         result.append("\tif (actionValue == \"" + DIALOG_OK + "\") {\n");
         result.append("\t\treturn true;\n");
-        result.append("\t} else {\n");
-        result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_CANCEL + "\";\n");
-        result.append("\t\ttheForm.submit();\n");
-        result.append("\t\treturn false;\n");
         result.append("\t}\n");
+        
+        int todo = 0;
+        // TODO: Check back logic change here...
+        
+        result.append("\ttheForm." + PARAM_ACTION + ".value = actionValue;\n");
+        result.append("\ttheForm.submit();\n");
+        result.append("\treturn false;\n");
         result.append("}\n");
+        
         return result.toString();
     }
 
@@ -1318,6 +1327,16 @@ public class CmsDialog extends CmsToolDialog {
                 result.append(attribute);
                 result.append(">\n");
                 break;
+            case BUTTON_BACK:
+                result.append("<input name=\"set\" type=\"button\" value=\"");
+                result.append(key("button.back") + "\"");
+                if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                    result.append(" onclick=\"submitAction('" + DIALOG_BACK + "', form);\"");
+                }
+                result.append(" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;                
             case BUTTON_DETAILS:
                 result.append("<input name=\"details\" type=\"button\" value=\"");
                 result.append(key("button.detail") + "\"");

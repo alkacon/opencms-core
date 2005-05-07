@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/04/10 21:00:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.workplace.xmlwidgets;
 
-import org.opencms.workplace.CmsWorkplaceSettings;
-
 import java.text.ParseException;
 import java.util.Locale;
 
@@ -42,13 +40,13 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {
 
     /**
-     * Generates a button for the OpenCms workplace.<p>
+     * Generates a button for the widget dialog.<p>
      * 
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
@@ -57,6 +55,8 @@ public interface I_CmsWidgetDialog {
      * @param type 0: image only (default), 1: image and text, 2: text only
      * 
      * @return a button for the OpenCms workplace
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#button(String, String, String, String, int)
      */
     String button(String href, String target, String image, String label, int type);
 
@@ -65,8 +65,13 @@ public interface I_CmsWidgetDialog {
      * 
      * @param width the width of the invisible spacer
      * @return the html for the invisible spacer
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#buttonBarSpacer(int)
      */
     String buttonBarSpacer(int width);
+
+    // TODO: Remove all calendar methods from this interface, make them static
+    // TODO: Alternative: Put all this in one class (CmsWorkplaceCalendar) and return such an Object
 
     /**
      * Displays a javascript calendar element with the standard "opencms" style.<p>
@@ -103,6 +108,15 @@ public interface I_CmsWidgetDialog {
         boolean showTime);
 
     /**
+     * Returns the style setting to use when generating buttons for this widget dialog.<p>
+     * 
+     * @return the style setting to use when generating buttons for this widget dialog
+     * 
+     * @see org.opencms.db.CmsUserSettings#getEditorButtonStyle()
+     */
+    int getButtonStyle();
+
+    /**
      * Creates the time in milliseconds from the given parameter.<p>
      * 
      * @param dateString the String representation of the date
@@ -121,43 +135,13 @@ public interface I_CmsWidgetDialog {
     String getCalendarLocalizedTime(long timestamp);
 
     /**
-     * Returns the current element locale.<p>
-     * 
-     * @return the current element locale
-     */
-    Locale getElementLocale();
-
-    /**
      * Returns the current users locale setting.<p>
      * 
-     * This is a convenience method that just 
-     * executes the following code: 
-     * <code>getCms().getRequestContext().getLocale()</code>.<p>
-     * 
      * @return the current users locale setting
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#getLocale()
      */
     Locale getLocale();
-
-    /**
-     * Returns the current users workplace settings.<p>
-     * 
-     * @return the current users workplace settings
-     */
-    CmsWorkplaceSettings getSettings();
-
-    /**
-     * Returns the localized resource string for a given message key,
-     * checking the workplace default resources and all module bundles.<p>
-     * 
-     * If the key was not found, the return value is
-     * <code>"??? " + keyName + " ???"</code>.<p>
-     * 
-     * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
-     * 
-     * @see org.opencms.workplace.CmsWorkplaceMessages#key(String)
-     */
-    String key(String keyName);
 
     /**
      * Returns the localized resource string for the given message key, 

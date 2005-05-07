@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2005/04/24 11:20:31 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2005/05/07 16:08:28 $
+* Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.103 $ $Date: 2005/04/24 11:20:31 $
+ * @version $Revision: 1.104 $ $Date: 2005/05/07 16:08:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -357,7 +357,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                 } catch(CmsException e) {
                     cms.getRequestContext().restoreSiteRoot();
                     // if there are no projectresources in the project delete the project
-                    List projectResources = cms.readAllProjectResources(project.getId());
+                    List projectResources = cms.readProjectResources(project);
                     if(projectResources == null || projectResources == Collections.EMPTY_LIST || projectResources.size() == 0){
                         cms.deleteProject(project.getId());
                         reqCont.setCurrentProject(cms.readProject(C_PROJECT_ONLINE_ID));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,7 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Map;
 
@@ -44,133 +41,109 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
-    
-    /**
-     * Generates the html to include at the end of the dialog form, if needed.<p>
-     * 
-     * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
-     * @param value the XML content value to generate the widget for
-     * 
-     * @return the html to include at the end of the editor form
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    String getDialogHtmlEnd(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException;
-    
-    /**
-     * Generates the necessary javascript inclusion code for an individual widget.<p>
-     * 
-     * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefinition the content definition object
-     * 
-     * @return the javascript inclusion code
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    String getDialogIncludes(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
-    
-    /**
-     * Generates the initialisation call method for an individual widget.<p>
-     * 
-     * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
-     * 
-     * @return the initialisation call method
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    String getDialogInitCall(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
-    
-    /**
-     * Generates the initialization code for this XML content widget.<p>
-     * 
-     * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
-     * @param document the XML content document instance to generate to widget for
-     * 
-     * @return the initialization code
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    String getDialogInitMethod(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlDocument document) throws CmsXmlException;
-    
-    /**
-     * Generates the editor widget for the provided XML content value.<p>
-     * 
-     * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
-     * @param value the XML content value to generate the widget for
-     * 
-     * @return the HTML form for this content node
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    String getDialogWidget(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
-     * Creates a help bubble.<p>
+     * Generates the html to include at the end of the dialog for this widget.<p>
      * 
-     * @param cms the CmsObject
+     * The "help bubble" text div's are added using this method.<p>
+     * 
+     * @param cms the current users OpenCms context
      * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefintion the ContentDefinition or null
-     * @param value the value to create the help bubble for
-     * @return HTML code for adding a help bubble
-     */
-    String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value);
-    
-    /**
-     * Creates a &lt;div&gt; containing a help text.<p>
+     * @param param the widget parameter to generate the widget for
      * 
-     * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefintion the ContentDefinition or null
-     * @param value the value to create the help bubble for
-     * @return HTML code for adding a help text
-     */
-    String getHelpText(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value);
-    
-    /**
-     * Returns the name of the form parameter for the provided XML content value as a String.<p>
+     * @return the html to include at the end of the dialog for this widget
      * 
-     * @param value the XML content value to generate the parameter name for
-     * 
-     * @return the name of the form parameter for the provided XML content value as a String
+     * @throws CmsXmlException if something goes wrong
      */
-    String getParameterName(I_CmsXmlContentValue value);
+    String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsXmlException;
 
     /**
-     * Sets the value of in the given XML content by reading the "right" 
+     * Generates the necessary JavaScript inclusion code for this widget.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param widgetDialog the dialog where the widget is used on
+     * 
+     * @return the JavaScript inclusion code
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
+
+    /**
+     * Generates the initialisation method JavaScript code for this widget.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param widgetDialog the dialog where the widget is used on
+     * 
+     * @return the initialisation method JavaScript code
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
+
+    /**
+     * Generates the initialization method JavaScript code for this widget.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param widgetDialog the dialog where the widget is used on
+     * 
+     * @return the initialization method JavaScript code
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
+
+    /**
+     * Generates the widget HTML for the provided widget parameter.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param widgetDialog the dialog where the widget is used on
+     * @param param the widget parameter to generate the widget for
+     * 
+     * @return the widget HTML for the provided widget parameter
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsXmlException;
+
+    /**
+     * Creates the HTML code for the help bubble for this widget.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param widgetDialog the dialog where the widget is used on
+     * @param param the widget parameter to generate the widget for
+     * 
+     * @return the HTML code for the help bubble for this widget
+     */
+    String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
+
+    /**
+     * Creates a HTML &lt;div&gt; containing the help text for this widget.<p>
+     * 
+     * @param widgetDialog the dialog where the widget is used on
+     * @param value the value to create the help bubble for
+     * 
+     * @return a HTML &lt;div&gt; containing the help text for this widget
+     */
+    String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter value);
+
+    /**
+     * Sets the value of in the given widget parameter by reading the "right" 
      * value from the offered map of parameters.<p>
      * 
-     * @param cms an initialized instance of a CmsObject
+     * @param cms the current users OpenCms context
      * @param formParameters the map of parameters to get the value from
      * @param widgetDialog the dialog where the widget is used on
-     * @param value the XML content value to set the editor value in
+     * @param param the widget parameter to generate the widget for
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    void setEditorValue(
-        CmsObject cms,
-        Map formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException;
+    void setEditorValue(CmsObject cms, Map formParameters, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsXmlException;
 }

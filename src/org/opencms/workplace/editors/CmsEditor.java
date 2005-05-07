@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -707,7 +707,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @param paramValue the unencoded value of the parameter
      * @return the encoded value of the parameter
      */
-    protected String fillParamValuesDecode(String paramName, String paramValue) {
+    protected String decodeParamValue(String paramName, String paramValue) {
         if ((paramName != null) && (paramValue != null)) {
             if (PARAM_CONTENT.equals(paramName)) {
                 // content will be always encoded in UTF-8 unicode by the editor client

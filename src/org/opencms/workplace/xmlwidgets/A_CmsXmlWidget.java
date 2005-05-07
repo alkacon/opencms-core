@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/05/01 11:44:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,7 @@ package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Map;
 
@@ -45,140 +42,121 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
-  
+
     /** Postfix for melp message locale. */
-    static final String C_HELP_POSTFIX = "help";
+    static final String HELP_POSTFIX = "help";
 
     /** Prefix for message locales. */
-    static final String C_MESSAGE_PREFIX = "editor.label.";
-    
+    static final String LABEL_PREFIX = "editor.label.";
+
+    /**
+     * Returns the localized help key for the provided widget parameter.<p>
+     * @param param the widget parameter to return the localized help key for
+     * 
+     * @return the localized help key for the provided widget parameter
+     */
+    public static String getHelpKey(I_CmsWidgetParameter param) {
+
+        // calculate the key
+        StringBuffer result = new StringBuffer(64);
+        result.append(LABEL_PREFIX);
+        result.append(param.getKey());
+        result.append('.');
+        result.append(HELP_POSTFIX);
+
+        return result.toString();
+    }
+
+    /**
+     * Returns the localized label key for the provided widget parameter.<p>
+     * @param param the widget parameter to return the localized label key for
+     * 
+     * @return the localized label key for the provided widget parameter
+     */
+    public static String getLabelKey(I_CmsWidgetParameter param) {
+
+        // calculate the key
+        StringBuffer result = new StringBuffer(64);
+        result.append(LABEL_PREFIX);
+        result.append(param.getKey());
+
+        return result.toString();
+    }
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
 
-        if (! (obj instanceof A_CmsXmlWidget)) {
+        if (!(obj instanceof A_CmsXmlWidget)) {
             return false;
         }
-        
+
         // widgets are equal if they use the same class
         return getClass().getName().equals(obj.getClass().getName());
     }
-    
-    
-    /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
-     */
-    public String getDialogHtmlEnd(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) {
 
-        return getHelpText(widgetDialog, value.getContentDefinition(), value);
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     */
+    public String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter value) {
+
+        return getHelpText(widgetDialog, value);
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, I_CmsWidgetDialog)
      */
-    public String getDialogIncludes(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition) {
+    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "";
-    }    
-    
+    }
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, I_CmsWidgetDialog)
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "";
     }
-    
-    
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, I_CmsXmlDocument)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, I_CmsWidgetDialog)
      */
-    public String getDialogInitMethod(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlDocument document) throws CmsXmlException {
-        
-        if (document == null) {
+    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException {
+
+        if (widgetDialog == null) {
             throw new CmsXmlException();
         }
-        
+
         return "";
     }
-    
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getParameterName(org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getParameterName(I_CmsXmlContentValue value) {
+    public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         StringBuffer result = new StringBuffer(128);
-        result.append(value.getTypeName());
-        result.append('.');       
-        result.append(value.getPath());
-        result.append('.');
-        result.append(value.getIndex());
-        return result.toString();
-    }
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-
-        return getClass().getName().hashCode();
-    }
-
-    /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
-     */
-    public void setEditorValue(
-        CmsObject cms,
-        Map formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException {
-        
-        String[] values = (String[])formParameters.get(getParameterName(value));        
-        if ((values != null) && (values.length > 0)) {
-            value.setStringValue(cms, values[0]);
-        }
-    }
-    
-    /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
-     */
-    public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value) {
-        StringBuffer result = new StringBuffer(128);
-        String contentDefinitionName = new String();
-        // get the name of the content defintion if there is one
-        if (contentDefintion != null) {
-            contentDefinitionName = contentDefintion.getInnerName();
-        }
-        // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value.getElementName() + '.' + C_HELP_POSTFIX;
+        String locKey = getHelpKey(param);
         String locValue = widgetDialog.key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.buttonBarSpacer(16);
         } else {
-            String id = getParameterName(value); 
+            String id = param.getId();
             result.append("<td>");
-            result.append("<img id=\"img");
+            result.append("<img name=\"img");
             result.append(locKey);
-            result.append("\" name=\"img");
-            result.append(value);
+            result.append("\" id=\"img");
+            result.append(locKey);
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
-            result.append("\" border=\"0\" onmouseout=\"hideHelp('");                
+            result.append("\" border=\"0\" onmouseout=\"hideHelp('");
             result.append(locKey);
             result.append("', '");
             result.append(id);
@@ -186,30 +164,26 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             result.append(locKey);
             result.append("', '");
             result.append(id);
-            result.append("');\">");       
-            result.append("</td>");  
+            result.append("');\">");
+            result.append("</td>");
             return result.toString();
         }
     }
-    
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getHelpText(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, I_CmsXmlContentValue value) {
+    public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
         StringBuffer result = new StringBuffer(128);
-        String contentDefinitionName = new String();
-        // get the name of the content defintion if there is one
-        if (contentDefintion != null) {
-            contentDefinitionName = contentDefintion.getInnerName();
-        }
         // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value.getElementName() + '.' + C_HELP_POSTFIX;
+        String locKey = getHelpKey(param);
         String locValue = widgetDialog.key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
-            String id = getParameterName(value); 
+            String id = param.getId();
             result.append("<div class=\"help\" name=\"help");
             result.append(locKey);
             result.append("\" id=\"help");
@@ -224,11 +198,34 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             result.append(id);
             result.append("');\">");
             result.append(locValue);
-            result.append("</div>"); 
+            result.append("</div>");
             return result.toString();
         }
     }
-    
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return getClass().getName().hashCode();
+    }
+
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     */
+    public void setEditorValue(
+        CmsObject cms,
+        Map formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) throws CmsXmlException {
+
+        String[] values = (String[])formParameters.get(param.getId());
+        if ((values != null) && (values.length > 0)) {
+            param.setStringValue(cms, values[0]);
+        }
+    }
+
     /**
      * Creates the tags to include external javascript files.<p>
      *  
@@ -236,29 +233,11 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
      * @return the tags to include external javascript files
      */
     protected String getJSIncludeFile(String fileName) {
+
         StringBuffer result = new StringBuffer(8);
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(fileName);
         result.append("\"></script>");
         return result.toString();
     }
-    
-    /**
-     * Creates a value for message locale with the correct prefix.<p>
-     * 
-     * @param widgetDialog the dialog where the widget is used on
-     * @param contentDefintion the ContentDefinition or null
-     * @param value the value to create the message for
-     * @return message key for message locales with the correct prefix
-     */
-    public static String getMessage(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
-        String contentDefinitionName = new String();
-        // get the name of the content defintion if there is one
-        if (contentDefintion != null) {
-            contentDefinitionName = contentDefintion.getInnerName();
-        }
-        // calculate the key
-        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + '.' + value;
-        return widgetDialog.key(locKey, value);
-    }    
 }

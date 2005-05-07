@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {
@@ -109,7 +109,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
         // clear the attributes (e.g. language)
         element.attributes().clear();
         // set the name of the main element node (otherwise it would be the default according to the nested schema) 
-        element.setName(getElementName());
+        element.setName(getName());
         // retrun the generated element
         return element;
     }

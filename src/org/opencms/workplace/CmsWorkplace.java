@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,7 +85,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.111 $
  * 
  * @since 5.1
  */
@@ -1127,7 +1128,7 @@ public abstract class CmsWorkplace {
             if (CmsStringUtil.isEmpty(value)) {
                 value = null;
             }
-            value = fillParamValuesDecode(name, value);
+            value = decodeParamValue(name, value);
             try {
                 if (DEBUG && (value != null)) {
                     System.err.println("setting " + m.getName() + " with value '" + value + "'");
@@ -1460,7 +1461,7 @@ public abstract class CmsWorkplace {
                 result.append(className);
                 result.append("\"");
             }
-            if (parameters != null && !"".equals(parameters)) {
+            if (CmsStringUtil.isNotEmpty(parameters)) {
                 result.append(" ");
                 result.append(parameters);
             }
@@ -1526,18 +1527,34 @@ public abstract class CmsWorkplace {
      */
     public String paramsAsHidden() {
 
+        return paramsAsHidden(null);
+    }
+    
+    /**
+     * Returns all initialized parameters of the current workplace class 
+     * that are not in the given exclusion list as hidden field tags that can be inserted in a form.<p>
+     * 
+     * @param excludes the parameters to exclude 
+     * 
+     * @return all initialized parameters of the current workplace class
+     * that are not in the given exclusion list as hidden field tags that can be inserted in a form
+     */    
+    public String paramsAsHidden(Collection excludes) {
+
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
             String param = (String)i.next();
-            Object value = params.get(param);
-            result.append("<input type=\"hidden\" name=\"");
-            result.append(param);
-            result.append("\" value=\"");
-            String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
-            result.append(encoded);
-            result.append("\">\n");
+            if ((excludes == null) || (!excludes.contains(param))) {
+                Object value = params.get(param);
+                result.append("<input type=\"hidden\" name=\"");
+                result.append(param);
+                result.append("\" value=\"");
+                String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
+                result.append(encoded);
+                result.append("\">\n");
+            }
         }
         return result.toString();
     }
@@ -1726,9 +1743,10 @@ public abstract class CmsWorkplace {
      * 
      * @param paramName the name of the parameter 
      * @param paramValue the unencoded value of the parameter
+     * 
      * @return the encoded value of the parameter
      */
-    protected String fillParamValuesDecode(String paramName, String paramValue) {
+    protected String decodeParamValue(String paramName, String paramValue) {
 
         if ((paramName != null) && (paramValue != null)) {
             return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());

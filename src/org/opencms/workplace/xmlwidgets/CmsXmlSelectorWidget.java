@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlSelectorWidget.java,v $
- * Date   : $Date: 2005/04/15 09:12:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.StringTokenizer;
 
@@ -49,15 +48,17 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.3
  */
 public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
-    
+
     /** The delimiter that separates the value attribute from the displayed option text. */
     public static final char C_DELIM_ATTRS = ':';
+
     /** The delimiter that separates the option entries of the select box to create. */
     public static final String C_DELIM_OPTIONS = "|";
+
     /** The character that marks the preselected option of the select box. */
     public static final char C_PRESELECTED = '*';
 
@@ -70,27 +71,26 @@ public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException {
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsXmlException {
 
-        String id = getParameterName(value);       
+        String id = param.getId();
         StringBuffer result = new StringBuffer(16);
-                
+
         result.append("<td class=\"xmlTd\"><select class=\"xmlInput\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\">"); 
-        
+        result.append("\">");
+
         // get select box options from default value String
-        String defaultValue = value.getContentDefinition().getContentHandler().getDefault(cms, value, value.getLocale());
+        String defaultValue = param.getDefault(cms);
         if (CmsStringUtil.isEmpty(defaultValue)) {
             defaultValue = "";
         }
+
         // tokenize the found String
         StringTokenizer T = new StringTokenizer(defaultValue, C_DELIM_OPTIONS);
         boolean isPreselected;
@@ -114,20 +114,21 @@ public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
                 val = part;
                 label = val;
             }
-            
+
             if (isPreselected) {
                 // remove eventual preselected flag markers from Strings
                 String preSelected = "" + C_PRESELECTED;
                 val = CmsStringUtil.substitute(val, preSelected, "");
                 label = CmsStringUtil.substitute(label, preSelected, "");
             }
-            
+
             // check if current option is selected
-            String fieldValue = value.getStringValue(cms);
-            if (((CmsStringUtil.isEmpty(fieldValue) || defaultValue.equals(fieldValue)) && isPreselected) || val.equals(fieldValue)) {
+            String fieldValue = param.getStringValue(cms);
+            if (((CmsStringUtil.isEmpty(fieldValue) || defaultValue.equals(fieldValue)) && isPreselected)
+                || val.equals(fieldValue)) {
                 selected = " selected=\"selected\"";
             }
-            
+
             // create the option
             result.append("<option value=\"");
             result.append(val);
@@ -137,11 +138,11 @@ public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
             result.append(label);
             result.append("</option>");
         }
-        
-        result.append("</select>");        
+
+        result.append("</select>");
         result.append("</td>");
 
         return result.toString();
     }
-   
+
 }

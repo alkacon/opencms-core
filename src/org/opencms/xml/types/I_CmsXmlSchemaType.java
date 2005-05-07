@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -137,18 +137,6 @@ public interface I_CmsXmlSchemaType extends Comparable {
     String getDefault(Locale locale);
 
     /**
-     * Returns the XML element node name of this type in the current schema.<p>
-     *
-     * The XML element node name can be configured in the schema.
-     * For example, the node name could be <code>"Title"</code>,
-     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls 
-     * what node names are allowed.<p> 
-     *
-     * @return the XML node name of this type in the current schema
-     */
-    String getElementName();
-
-    /**
      * Returns the maximum occurences of this type in the current schema.<p>
      *
      * @return the maximum occurences of this type in the current schema
@@ -161,6 +149,18 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @return the minimum occurences of this type in the current schema
      */
     int getMinOccurs();
+
+    /**
+     * Returns the XML element node name of this type in the current schema.<p>
+     *
+     * The XML element node name can be configured in the schema.
+     * For example, the node name could be <code>"Title"</code>,
+     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls 
+     * what node names are allowed.<p> 
+     *
+     * @return the XML node name of this type in the current schema
+     */
+    String getName();
 
     /**
      * Returns a String representation of the XML definition for this schema type.<p>  

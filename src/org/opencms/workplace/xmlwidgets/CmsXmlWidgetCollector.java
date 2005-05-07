@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlWidgetCollector.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,25 +52,25 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.4
  */
 public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsXmlWidgetCollector.class);
-    
+
     /** The locale to get the values from. */
     private Locale m_locale;
 
-    /** The widgets found in the xml content. */
-    private Map m_widgets;
-    
-    /** The values corresponding to the found widgets. */
-    private Map m_values;
-    
     /** The unique widgets found in the xml content.  */
     private List m_uniqueWidgets;
+
+    /** The values corresponding to the found widgets. */
+    private Map m_values;
+
+    /** The widgets found in the xml content. */
+    private Map m_widgets;
 
     /**
      * Creates a new widget collector node visitor.<p> 
@@ -79,24 +79,24 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
 
         initialize(null);
     }
-    
+
     /**
      * Creates a new widget collector node visitor.<p> 
      * 
      * @param locale the Locale to get the widgets from
      */
     public CmsXmlWidgetCollector(Locale locale) {
-        
+
         initialize(locale);
     }
-    
+
     /**
      * Returns the locale to get the widgets from.<p>
      * 
      * @return the locale to get the widgets from
      */
     public Locale getLocale() {
-        
+
         return m_locale;
     }
 
@@ -109,7 +109,7 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
 
         return m_uniqueWidgets;
     }
-    
+
     /**
      * Returns all simple values that were found in the content.<p>
      * 
@@ -118,10 +118,10 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
      * @return all simple values that were found in the content
      */
     public Map getValues() {
-        
+
         return m_values;
     }
-    
+
     /**
      * Returns all widgets that were found in the content.<p>
      * 
@@ -146,11 +146,11 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
         if (value.isSimpleType()) {
             // only visit simple values
             boolean useLocale = m_locale != null;
-            if ((useLocale && value.getLocale() == getLocale()) || (! useLocale)) {
+            if ((useLocale && value.getLocale() == getLocale()) || (!useLocale)) {
                 try {
                     // get widget for value
                     I_CmsXmlWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
-                    if (! m_uniqueWidgets.contains(widget)) {
+                    if (!m_uniqueWidgets.contains(widget)) {
                         m_uniqueWidgets.add(widget);
                     }
                     m_widgets.put(value.getPath(), widget);
@@ -167,14 +167,14 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
             }
         }
     }
-    
+
     /**
      * Initializes the necessary members of the collector.<p> 
      * 
      * @param locale the Locale to get the widgets from
      */
     private void initialize(Locale locale) {
-        
+
         // start with a new instance of the widgets and unique widgets
         m_widgets = new HashMap(25);
         m_uniqueWidgets = new ArrayList(12);

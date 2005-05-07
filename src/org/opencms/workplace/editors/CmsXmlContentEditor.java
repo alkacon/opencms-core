@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/04/14 15:10:47 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlWidgetCollector;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -75,7 +76,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -581,7 +582,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 String key = (String)i.next();
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)getWidgetCollector().getValues().get(key);
                 I_CmsXmlWidget widget = (I_CmsXmlWidget)getWidgetCollector().getWidgets().get(key);
-                result.append(widget.getDialogHtmlEnd(getCms(), this, value));    
+                result.append(widget.getDialogHtmlEnd(getCms(), this, (I_CmsWidgetParameter)value));    
                 
             }
             return result.toString();
@@ -592,9 +593,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
-     * Generates the javascript includes for the used xml schema types in the editor form.<p>
+     * Generates the javascript includes for the used widgets in the editor form.<p>
      * 
-     * @return the javascript includes for the used xml schema types
+     * @return the javascript includes for the used widgets
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorIncludes() throws JspException {
@@ -605,7 +606,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             Iterator i = getWidgetCollector().getUniqueWidgets().iterator();
             while (i.hasNext()) {
                 I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
-                result.append(widget.getDialogIncludes(getCms(), this, m_content.getContentDefinition()));
+                result.append(widget.getDialogIncludes(getCms(), this));
                 result.append("\n");
             }
         } catch (CmsXmlException e) {
@@ -615,9 +616,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
-     * Generates the javascript initialization calls for the used xml schema types in the editor form.<p>
+     * Generates the javascript initialization calls for the used widgets in the editor form.<p>
      * 
-     * @return the javascript initialization calls for the used xml schema types
+     * @return the javascript initialization calls for the used widgets
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorInitCalls() throws JspException {
@@ -637,10 +638,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
-     * Generates the javascript initialization methods for the used xml contents.<p>
+     * Generates the JavaScript initialization methods for the used widgets.<p>
      * 
-     * @return the javascript initialization methods for the used xml contents
-     * @throws JspException if including the error page fails
+     * @return the JavaScript initialization methods for the used widgets
+     * 
+     * @throws JspException if an error occurs during JavaScript generation
      */
     public String getXmlEditorInitMethods() throws JspException {
         
@@ -650,7 +652,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             Iterator i = getWidgetCollector().getUniqueWidgets().iterator();
             while (i.hasNext()) {
                 I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
-                result.append(widget.getDialogInitMethod(getCms(), this, m_content));
+                result.append(widget.getDialogInitMethod(getCms(), this));
                 result.append("\n");
             }
         } catch (CmsXmlException e) {
@@ -707,7 +709,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             String valueName = (String)i.next();
             I_CmsXmlContentValue value = m_content.getValue(valueName, locale);
             I_CmsXmlWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
-            widget.setEditorValue(getCms(), getJsp().getRequest().getParameterMap(), this, value);
+            widget.setEditorValue(getCms(), getJsp().getRequest().getParameterMap(), this, (I_CmsWidgetParameter)value);
         }
     }
     
@@ -969,7 +971,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             
-            String name = pathPrefix + type.getElementName();
+            String name = pathPrefix + type.getName();
             
             // get the element sequence of the type
             CmsXmlContentValueSequence elementSequence = m_content.getValueSequence(name, locale);
@@ -980,7 +982,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 
                 StringBuffer xPath = new StringBuffer(pathPrefix.length() + 16);
                 xPath.append(pathPrefix);
-                xPath.append(CmsXmlUtils.createXpathElement(type.getElementName(), value.getIndex() + 1));
+                xPath.append(CmsXmlUtils.createXpathElement(type.getName(), value.getIndex() + 1));
   
                 if (! type.isSimpleType()) {
                     // recurse into nested type sequence
@@ -1022,7 +1024,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     private StringBuffer getXmlEditorForm(CmsXmlContentDefinition contentDefinition, String pathPrefix, boolean showHelpBubble) {
         
-        StringBuffer result = new StringBuffer(64);
+        StringBuffer result = new StringBuffer(1024);
 
         try {
             // check if we are in a nested content definition
@@ -1058,7 +1060,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     nestedContentDefinition = nestedSchema.getNestedContentDefinition();
                 }
                 // create xpath to the current element
-                String name = pathPrefix + type.getElementName();
+                String name = pathPrefix + type.getName();
                 
                 // get the element sequence of the current type
                 CmsXmlContentValueSequence elementSequence = m_content.getValueSequence(name, getElementLocale());
@@ -1098,15 +1100,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("Disabled");
                     }                    
                     result.append("\">");
-                    result.append(A_CmsXmlWidget.getMessage(this, nestedContentDefinition, value.getElementName()));
+                    result.append(key(A_CmsXmlWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
                     if (elementCount > 1) {
                         result.append(" [").append(value.getIndex() + 1).append("]"); 
                     }
                     result.append(": </td>");                    
                     if (showHelpBubble && type.isSimpleType() && value.getIndex() == 0) {                       
                         // show help bubble only on first element of each content definition 
-                      
-                        result.append(widget.getHelpBubble(getCms(), this, nestedContentDefinition, value));
+                        result.append(widget.getHelpBubble(getCms(), this, (I_CmsWidgetParameter)value));
                     } else {
                         // create empty cell for all following elements 
                         result.append(buttonBarSpacer(16));    
@@ -1116,14 +1117,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     if (! disabledElement) {
                         if (! type.isSimpleType()) {
                             // recurse into nested type sequence
-                            String newPath = CmsXmlUtils.createXpathElement(value.getElementName(), value.getIndex() + 1);
+                            String newPath = CmsXmlUtils.createXpathElement(value.getName(), value.getIndex() + 1);
                             result.append("<td class=\"maxwidth\">");
                             boolean showHelp = (j == 0);
                             result.append(getXmlEditorForm(nestedContentDefinition, pathPrefix + newPath + "/", showHelp));
                             result.append("</td>");
                         } else {
                             // this is a simple type, display widget
-                            result.append(widget.getDialogWidget(getCms(), this, value));
+                            result.append(widget.getDialogWidget(getCms(), this, (I_CmsWidgetParameter)value));
                         }
                     } else {
                         // disabled element, show message for optional element
@@ -1205,5 +1206,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         // the file content might have been modified during the write operation    
         m_file = getCms().writeFile(m_file);
         m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog#getButtonStyle()
+     */
+    public int getButtonStyle() {
+
+        return getSettings().getUserSettings().getEditorButtonStyle();
     }
 }

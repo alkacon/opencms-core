@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/03/13 10:02:55 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -238,7 +238,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 List previousTypeNames = new ArrayList();
                 for (int i = 0; i < typeIndex; i++) {
                     I_CmsXmlSchemaType t = (I_CmsXmlSchemaType)contentDefinition.getTypeSequence().get(i);
-                    previousTypeNames.add(t.getElementName());
+                    previousTypeNames.add(t.getName());
                 }
 
                 // iterate all elements of the parent node

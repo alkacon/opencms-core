@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.636 $
+ * Date   : $Date: 2005/05/07 16:11:48 $
+ * Version: $Revision: 1.637 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,7 @@ OpenCms 5.9.1 Corrin (aka 6.0 rc 1) - May 27, 2005
 ! "Upload" button now available directly on the main "Explorer" view
 ! When creating a new page the name entered is automatically corrected for invalid chars,
   moreover the originally entered name can optional be set as Title and/or NavText
+- Refactored the HTML widgets so that they can be used on "normal" dialogs (i.e. without XML content)
 
 OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April 28, 2005
 ! Added "search in search result" functionality

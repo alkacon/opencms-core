@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlTextareaWidget.java,v $
- * Date   : $Date: 2005/04/14 15:10:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
  * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue}.<p>
@@ -42,7 +41,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.2
  */
 public class CmsXmlTextareaWidget extends A_CmsXmlWidget {
@@ -56,24 +55,22 @@ public class CmsXmlTextareaWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException {
-        
-        String id = getParameterName(value);        
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsXmlException {
+
+        String id = param.getId();
         StringBuffer result = new StringBuffer(16);
-        
-        result.append("<td class=\"xmlTd\">");               
+
+        result.append("<td class=\"xmlTd\">");
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"");
         result.append(id);
-        result.append("\" rows=\"4\" wrap=\"virtual\" style=\"overflow:auto;\">");      
-        result.append(value.getStringValue(cms));
+        result.append("\" rows=\"4\" wrap=\"virtual\" style=\"overflow:auto;\">");
+        result.append(param.getStringValue(cms));
         result.append("</textarea>");
         result.append("</td>");
-        
+
         return result.toString();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.486 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.487 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.486 $ $Date: 2005/04/30 11:15:38 $
+ * @version $Revision: 1.487 $ $Date: 2005/05/07 16:08:28 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4461,23 +4461,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         return backupFileHeaders;
-    }
-
-    /**
-     * Returns a list with all project resources for a given project.<p>
-     *
-     * @param dbc the current database context
-     * @param projectId the ID of the project
-     * 
-     * @return a list of all project <code>{@link CmsResource}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List readAllProjectResources(CmsDbContext dbc, int projectId) throws CmsException {
-
-        CmsProject project = m_projectDriver.readProject(dbc, projectId);
-        List result = updateContextDates(dbc, m_projectDriver.readProjectResources(dbc, project));
-        return result;
     }
 
     /**

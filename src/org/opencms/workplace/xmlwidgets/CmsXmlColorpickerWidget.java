@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlColorpickerWidget.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,11 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.CmsXmlColorValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Map;
 
@@ -47,7 +45,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.2
  */
 public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
@@ -59,67 +57,58 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
 
         // empty constructor is required for class registration
     }
-    
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
      */
-    public String getDialogIncludes(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        CmsXmlContentDefinition contentDefinition) {
-            
+    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+
         return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/colorpicker.js");
     }
-    
+
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-    
+
         return "\tinitColorPicker();\n";
     }
-    
+
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, I_CmsXmlDocument)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
      */
-    public String getDialogInitMethod(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlDocument document) {
-        
+    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+
         StringBuffer result = new StringBuffer(128);
         result.append("function initColorPicker() {\n");
         result.append("\tcolorPicker.title = \"");
-        result.append(widgetDialog.key("dialog.color.title"));
+        result.append(widgetDialog.key("dialog.color.title", CmsMessages.formatUnknownKey("dialog.color.title")));
         result.append("\";\n");
         result.append("\tcolorPicker.url=\"");
         result.append(CmsWorkplace.getSkinUri());
         result.append("components/js_colorpicker/index.html\";\n");
-        result.append("}\n");        
+        result.append("}\n");
         return result.toString();
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) {
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
-        CmsXmlColorValue castValue = (CmsXmlColorValue)value;
+        CmsXmlColorValue castValue = (CmsXmlColorValue)param;
 
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
         String colorValue = castValue.getStringValue(cms);
-        String id = getParameterName(value);
-        
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");       
+        String id = param.getId();
+
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
         result.append("<input type=\"text\"");
         result.append(" class=\"xmlInputSmall\" name=\"");
         result.append(id);
         result.append("\" value=\"");
-        result.append(colorValue);        
+        result.append(colorValue);
         result.append("\" maxlength=\"7\" onkeyup=\"previewColor('");
         result.append(id);
         result.append("');\"");
@@ -128,41 +117,41 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
         result.append("; color: ");
         result.append(getInputFontColor(colorValue));
         result.append(";\"></td>");
-             
+
         result.append(widgetDialog.buttonBarSpacer(1));
         result.append(widgetDialog.button(
             "javascript:showColorPicker('" + id + "');",
             null,
             "color_fill",
             "button.color",
-            widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
+            widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
-        
+
         result.append("</td>");
         return result.toString();
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsXmlContentValue value) throws CmsXmlException {
+        I_CmsWidgetParameter param) throws CmsXmlException {
 
-        String[] values = (String[])formParameters.get(getParameterName(value));
+        String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            CmsXmlColorValue castValue = (CmsXmlColorValue)value;
+            CmsXmlColorValue castValue = (CmsXmlColorValue)param;
             String castColorValue = castValue.getStringValue(cms);
             String colorValue = values[0].trim();
             if (CmsStringUtil.isNotEmpty(colorValue)) {
                 castColorValue = colorValue;
             }
-            value.setStringValue(cms, String.valueOf(castColorValue));
+            param.setStringValue(cms, String.valueOf(castColorValue));
         }
     }
-    
+
     /**
      * Check the stored color value to prevent display issues in the generated HTML ouput.<p>
      * 
@@ -170,6 +159,7 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
      * @return the checked color value
      */
     private String checkColor(String color) {
+
         if (color != null) {
             if (color.indexOf("#") == -1) {
                 // add the "#" to the color string
@@ -177,12 +167,12 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
             }
             int colLength = color.length();
             if (colLength == 4 || colLength == 7) {
-                return color;    
+                return color;
             }
         }
         return "#FFFFFF";
     }
-    
+
     /**
      * Returns the font color of the input field depending on the selected color value.<p>
      * 
@@ -190,6 +180,7 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
      * @return the font color to use
      */
     private String getInputFontColor(String backgroundColor) {
+
         if (backgroundColor != null && backgroundColor.indexOf("#") == 0) {
             // remove the "#" from the color string
             backgroundColor = backgroundColor.substring(1);
@@ -210,5 +201,5 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
         }
         return "#000000";
     }
-    
+
 }

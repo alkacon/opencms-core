@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/04 13:59:17 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2760,30 +2760,6 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readAllBackupFileHeaders(dbc, resource);
-        } catch (Exception e) {
-            dbc.report(null, "", e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns a list with all project resources for a given project.<p>
-     *
-     * @param context the current request context
-     * @param projectId the ID of the project
-     * 
-     * @return a list of all project <code>{@link CmsResource}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
-        try {
-            result = m_driverManager.readAllProjectResources(dbc, projectId);
         } catch (Exception e) {
             dbc.report(null, "", e);
         } finally {

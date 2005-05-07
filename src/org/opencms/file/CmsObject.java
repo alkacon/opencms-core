@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/05/02 13:29:53 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.117 $
+ * @version $Revision: 1.118 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1940,20 +1940,6 @@ public class CmsObject {
 
         CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
         return (m_securityManager.readAllBackupFileHeaders(m_context, resource));
-    }
-
-    /**
-     * Returns a list with all project resources for a given project.<p>
-     * 
-     * @param projectId the ID of the project
-     * 
-     * @return a list of all project <code>{@link CmsResource}</code> objects
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List readAllProjectResources(int projectId) throws CmsException {
-
-        return m_securityManager.readAllProjectResources(m_context, projectId);
     }
 
     /**

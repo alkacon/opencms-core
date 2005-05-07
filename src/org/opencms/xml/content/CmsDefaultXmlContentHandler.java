@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -175,7 +175,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale) {
         
-        String elementName = type.getElementName();
+        String elementName = type.getName();
         String defaultValue = (String)m_defaultValues.get(elementName);
         if (defaultValue == null) {
             // use the "getDefault" method of the given value, will use value from standard XML schema
@@ -230,7 +230,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public I_CmsXmlWidget getWidget(I_CmsXmlContentValue value) {
 
         // try the specific widget settings first
-        I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getElementName());
+        I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getName());
         if (result != null) {
             return result;
         }
@@ -325,7 +325,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String filename = cms.getSitePath(content.getFile());
 
         // get the mapping for the element name
-        String mapping = getMapping(value.getElementName());
+        String mapping = getMapping(value.getName());
 
         if (CmsStringUtil.isNotEmpty(mapping)) {
 
@@ -518,9 +518,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         String message = null;
         if (isWarning) {
-            message = (String)m_validationWarningMessages.get(value.getElementName());
+            message = (String)m_validationWarningMessages.get(value.getName());
         } else {
-            message = (String)m_validationErrorMessages.get(value.getElementName());
+            message = (String)m_validationErrorMessages.get(value.getName());
         }
 
         if (message == null) {
@@ -763,7 +763,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             return errorHandler;
         }
 
-        String regex = (String)rules.get(value.getElementName());
+        String regex = (String)rules.get(value.getName());
         if (regex == null) {
             // no customized rule, check default XML schema validation rules
             return validateValue(cms, value, valueStr, errorHandler, isWarning);

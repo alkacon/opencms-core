@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/07 16:08:27 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -131,9 +131,9 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
-        Element element = root.addElement(getElementName());
+        Element element = root.addElement(getName());
         int index = element.getParent().elements(element.getQName()).indexOf(element);
-        element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getElementName() + index);
+        element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getName() + index);
         element.addElement(CmsXmlPage.NODE_LINKS);
         element.addElement(CmsXmlPage.NODE_CONTENT);
 
@@ -177,11 +177,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
                 CmsLink link = new CmsLink(
                     lelem,
-                    lname.getValue(), 
-                    type.getValue(), 
-                    (target != null) ? target.getText(): null, 
-                    (anchor != null) ? anchor.getText() : null, 
-                    (query != null) ? query.getText() : null, 
+                    lname.getValue(),
+                    type.getValue(),
+                    (target != null) ? target.getText() : null,
+                    (anchor != null) ? anchor.getText() : null,
+                    (query != null) ? query.getText() : null,
                     Boolean.valueOf(internal.getValue()).booleanValue());
 
                 linkTable.addLink(link);
@@ -286,12 +286,13 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 CmsLinkTable linkTable = linkProcessor.getLinkTable();
                 for (Iterator i = linkTable.iterator(); i.hasNext();) {
                     CmsLink link = (CmsLink)i.next();
-    
-                    Element linkElement = links.addElement(CmsXmlPage.NODE_LINK)
-                        .addAttribute(CmsXmlPage.ATTRIBUTE_NAME, link.getName())
-                        .addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType())
-                        .addAttribute(CmsXmlPage.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
-    
+
+                    Element linkElement = links.addElement(CmsXmlPage.NODE_LINK).addAttribute(
+                        CmsXmlPage.ATTRIBUTE_NAME,
+                        link.getName()).addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType()).addAttribute(
+                        CmsXmlPage.ATTRIBUTE_INTERNAL,
+                        Boolean.toString(link.isInternal()));
+
                     linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
 
                     if (link.getAnchor() != null) {

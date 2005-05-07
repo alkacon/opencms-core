@@ -118,11 +118,15 @@ function opensmallwin(url, name, w, h) {
 
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter) {
-	if (browser.isIE) {
-		top.edit.buttonbar.lastPosY = document.body.scrollTop;	
-	} else {
-		top.edit.buttonbar.lastPosY = window.pageYOffset;
-	}	
+	try {
+		if (browser.isIE) {
+			top.edit.buttonbar.lastPosY = document.body.scrollTop;	
+		} else {
+			top.edit.buttonbar.lastPosY = window.pageYOffset;
+		}	
+	} catch (e) {
+		// ignore
+	}
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = insertAfter;
@@ -131,10 +135,14 @@ function addElement(elemName, insertAfter) {
 
 // remove an optional element from currently edited content
 function removeElement(elemName, index) {
-	if (browser.isIE) {
-		top.edit.buttonbar.lastPosY = document.body.scrollTop;	
-	} else {
-		top.edit.buttonbar.lastPosY = window.pageYOffset;
+	try {
+		if (browser.isIE) {
+			top.edit.buttonbar.lastPosY = document.body.scrollTop;	
+		} else {
+			top.edit.buttonbar.lastPosY = window.pageYOffset;
+		}
+	} catch (e) {
+		// ignore
 	}	
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/05/01 11:44:07 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/07 16:08:28 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -365,13 +365,13 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // make sure the inner and outer element names are as required
         String outerTypeName = createTypeName(name);
-        String innerTypeName = createTypeName(outer.getElementName());
+        String innerTypeName = createTypeName(outer.getName());
         validateAttribute((Element)complexTypes.get(0), XSD_ATTRIBUTE_NAME, outerTypeName);
         validateAttribute((Element)complexTypes.get(1), XSD_ATTRIBUTE_NAME, innerTypeName);
         validateAttribute(main, XSD_ATTRIBUTE_TYPE, outerTypeName);
 
         // the inner name is the element name set in the outer sequence
-        result.setInnerName(outer.getElementName());
+        result.setInnerName(outer.getName());
 
         // get the inner element sequence, this must be the second element 
         CmsXmlComplexTypeSequence innerSequence = (CmsXmlComplexTypeSequence)complexTypeData.get(1);
@@ -697,7 +697,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // add the type to the internal type sequence and lookup table
         m_typeSequence.add(type);
-        m_types.put(type.getElementName(), type);
+        m_types.put(type.getName(), type);
 
         // store reference to the content definition in the type
         type.setContentDefinition(this);
