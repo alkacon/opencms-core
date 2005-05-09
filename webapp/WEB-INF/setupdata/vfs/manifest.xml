@@ -4664,6 +4664,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/includes/errorpage.jsp</source>
+			<destination>system/workplace/commons/includes/errorpage.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>68b8ddfb-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 09 May 2005 09:20:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 13:36:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New error screen]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<source>system/workplace/commons/includes/report.jsp</source>
 			<destination>system/workplace/commons/includes/report.jsp</destination>
 			<type>jsp</type>
