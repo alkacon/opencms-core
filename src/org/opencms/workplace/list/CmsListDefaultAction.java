@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/04/22 14:44:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/09 10:49:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Implementation of a default action in a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
@@ -49,6 +49,17 @@ public class CmsListDefaultAction extends CmsListDirectAction {
 
     /**
      * Default Constructor.<p>
+     * 
+     * @param listId the id of the associated list
+     * @param id unique id
+     */
+    public CmsListDefaultAction(String listId, String id) {
+
+        super(listId, id);
+    }
+
+    /**
+     * Full Constructor.<p>
      * 
      * @param listId the id of the associated list
      * @param id unique id
@@ -67,7 +78,12 @@ public class CmsListDefaultAction extends CmsListDirectAction {
         boolean enabled,
         CmsMessageContainer confirmationMessage) {
 
-        super(listId, id, name, iconPath, helpText, enabled, confirmationMessage);
+        this(listId, id);
+        setName(name);
+        setIconPath(iconPath);
+        setHelpText(helpText);
+        setEnabled(enabled);
+        setConfirmationMessage(confirmationMessage);
     }
 
     /**
