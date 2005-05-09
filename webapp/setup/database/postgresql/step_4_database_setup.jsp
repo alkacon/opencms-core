@@ -49,8 +49,11 @@
 			session.setAttribute("createTables",createTables);
 			session.setAttribute("createDb",createDb);
 		} else {
-			// initialize the work user with the app name
-			Bean.setDbWorkUser(request.getContextPath().substring(1));
+			if (org.opencms.util.CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
+				Bean.setDb(request.getContextPath().substring(1));
+			} else {
+				Bean.setDb("opencms");
+			}
 		}
 	}
 %>
