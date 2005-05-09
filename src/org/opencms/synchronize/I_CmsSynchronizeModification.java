@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/Attic/I_CmsSynchonizeModification.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/I_CmsSynchronizeModification.java,v $
+ * Date   : $Date: 2005/05/09 12:38:29 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,9 @@ import java.io.File;
  * 
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
-public interface I_CmsSynchonizeModification {
+public interface I_CmsSynchronizeModification {
 
     /**
      * Possibility to modify a resource after it has been imported or updated 

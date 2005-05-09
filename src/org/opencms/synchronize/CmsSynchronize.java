@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/04/28 08:24:38 $
- * Version: $Revision: 1.43 $
- * Date   : $Date: 2005/04/28 08:24:38 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/05/09 12:38:29 $
+ * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/05/09 12:38:29 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2005/04/28 08:24:38 $
+ * @version $Revision: 1.44 $ $Date: 2005/05/09 12:38:29 $
  */
 public class CmsSynchronize {
 
@@ -314,7 +314,7 @@ public class CmsSynchronize {
             Iterator i = m_synchronizeModifications.iterator();
             while (i.hasNext()) {
                 try {
-                    ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, newFolder, fsFile);
+                    ((I_CmsSynchronizeModification)i.next()).modifyVfs(m_cms, newFolder, fsFile);
                 } catch (CmsSynchronizeException e1) {
                     break;
                 }
@@ -471,7 +471,7 @@ public class CmsSynchronize {
             Iterator i = m_synchronizeModifications.iterator();
             while (i.hasNext()) {
                 try {
-                    ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, newFile, fsFile);
+                    ((I_CmsSynchronizeModification)i.next()).modifyVfs(m_cms, newFile, fsFile);
                 } catch (CmsSynchronizeException e) {
                     break;
                 }
@@ -557,7 +557,7 @@ public class CmsSynchronize {
                     Iterator i = m_synchronizeModifications.iterator();
                     while (i.hasNext()) {
                         try {
-                            ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
+                            ((I_CmsSynchronizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
                             if (LOG.isWarnEnabled()) {
                                 LOG.warn(Messages.get().key(Messages.LOG_SYNCHRONIZE_EXPORT_FAILED_1, res.getRootPath()), e);
@@ -628,7 +628,7 @@ public class CmsSynchronize {
         Iterator i = m_synchronizeModifications.iterator();
         while (i.hasNext()) {
             try {
-                ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
+                ((I_CmsSynchronizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
             } catch (CmsSynchronizeException e) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().key(Messages.LOG_SYNCHRONIZE_UPDATE_FAILED_1, res.getRootPath()), e);
@@ -830,7 +830,7 @@ public class CmsSynchronize {
         Iterator i = m_synchronizeModifications.iterator();
         while (i.hasNext()) {
             try {
-                translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
+                translation = ((I_CmsSynchronizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().key(Messages.LOG_EXTERNAL_TRANSLATION_1, name), e);
