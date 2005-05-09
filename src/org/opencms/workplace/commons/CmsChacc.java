@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/09 12:39:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -1101,7 +1101,8 @@ public class CmsChacc extends CmsDialog {
         StringBuffer result = new StringBuffer(8);
         
         // get name and type of the current entry
-        String name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
+        I_CmsPrincipal principal = getCms().lookupPrincipal(entry.getPrincipal());
+        String name = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
         String type = getEntryType(entry.getFlags());
         
         if (name == null) {
