@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetails.java,v $
- * Date   : $Date: 2005/05/04 16:08:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/09 10:20:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ package org.opencms.workplace.list;
  * For detail contents you may use HTML code.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListItemDetails extends CmsListColumnDefinition {
@@ -57,6 +57,16 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
      * Default constructor.<p>
      * 
      * @param id an unique column id
+     */
+    public CmsListItemDetails(String id) {
+
+        super(id, null, null, CmsListColumnAlignEnum.ALIGN_LEFT);
+    }
+
+    /**
+     * Full constructor.<p>
+     * 
+     * @param id an unique column id
      * @param atColumn the id of the first column to include
      * @param visible initial visibility state
      * @param showAction action for showing the details
@@ -69,11 +79,11 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
         I_CmsListAction showAction,
         I_CmsListAction hideAction) {
 
-        super(id, null, null, CmsListColumnAlignEnum.ALIGN_LEFT);
+        this(id);
         setVisible(visible);
-        m_atColumn = atColumn;
-        m_showAction = showAction;
-        m_hideAction = hideAction;
+        setAtColumn(atColumn);
+        setShowAction(showAction);
+        setHideAction(hideAction);
     }
 
     /**

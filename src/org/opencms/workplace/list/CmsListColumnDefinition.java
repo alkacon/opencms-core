@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/09 10:18:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -85,16 +85,26 @@ public class CmsListColumnDefinition {
      * Default Constructor.<p>
      *  
      * @param id the id
+     */
+    public CmsListColumnDefinition(String id) {
+
+        m_id = id;
+    }
+
+    /**
+     * Full Constructor.<p>
+     *  
+     * @param id the id
      * @param name the name
      * @param width the width
      * @param align the alignment
      */
     public CmsListColumnDefinition(String id, CmsMessageContainer name, String width, CmsListColumnAlignEnum align) {
 
-        m_id = id;
-        m_name = name;
-        m_width = width;
-        m_align = align;
+        this(id);
+        setName(name);
+        setWidth(width);
+        setAlign(align);
     }
 
     /**
