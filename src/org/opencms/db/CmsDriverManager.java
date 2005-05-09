@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.487 $
+ * Date   : $Date: 2005/05/09 12:37:01 $
+ * Version: $Revision: 1.488 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.487 $ $Date: 2005/05/07 16:08:28 $
+ * @version $Revision: 1.488 $ $Date: 2005/05/09 12:37:01 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1994,7 +1994,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // no space before or after the name
         name = name.trim();
         // check the username
-        validFilename(name);
+        validUsername(name);
         // check the password
         validatePassword(password);
 
@@ -3645,7 +3645,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             config = new ExtendedProperties();
             config.putAll(configuration);            
         }
-        
+
         CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
         CmsCacheSettings settings = systemConfiguation.getCacheSettings();
 
@@ -5573,7 +5573,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         return extractedResources;
-    }
+                    }
 
     /**
      * Reads all resources that have a value (containing the given value string) set 
@@ -6848,6 +6848,41 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
     }
 
+    /**
+     * Checks if the provided name is a valid user name, that is contains only
+     * valid characters.<p>
+     *
+     * @param filename the name to check
+     * @throws CmsException C_BAD_NAME if the check fails
+     */
+    public void validUsername(String filename) throws CmsException {
+
+        if (filename == null) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
+        }
+
+        int l = filename.length();
+
+        if (l == 0) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
+        }
+
+        for (int i = 0; i < l; i++) {
+            char c = filename.charAt(i);
+            if (((c < 'a') || (c > 'z'))
+                && ((c < '0') || (c > '9'))
+                && ((c < 'A') || (c > 'Z'))
+                && (c != '-')
+                && (c != '.')
+                && (c != '_')
+                && (c != '~')
+                && (c != '$')
+                && (c != '@')) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
+            }
+        }
+    }
+    
     /**
      * Writes an access control entries to a given resource.<p>
      * 
