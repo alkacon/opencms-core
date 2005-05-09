@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*,java.net.*,org.opencms.workplace.*" %>
+<%@ page import="org.opencms.jsp.*,java.net.*" %>
 
 <%
 
@@ -46,7 +46,7 @@ body {
 	padding: 0 12px;
 	margin: 0;
 	background-color: ThreeDFace; 
-	background-image: url(<%=CmsWorkplace.getSkinUri()%>admin/images/border.gif);
+	background-image: url(http://localhost:9080/opencms/resources/admin/images/border.gif);
 	background-position: right;
 	background-repeat: repeat-y;
 	background-attachment: fixed;
@@ -116,7 +116,7 @@ img {
 	padding-top: 150px;
 	vertical-align: top;
 	text-align: center;
-	background-image: url(<%=CmsWorkplace.getSkinUri()%>admin/images/semi-transparent.gif);
+	background-image: url(http://localhost:9080/opencms/resources/admin/images/semi-transparent.gif);
 }
 
 #loaderContainer td td {
@@ -125,8 +125,7 @@ img {
 }
 
 /* ---------- links ------------ */
-.link,
-.link a {
+.link {
   display: inline;
   background: none;
   background-color: transparent;
@@ -135,23 +134,23 @@ img {
   font-size: 11px;
   cursor: hand;
   cursor: pointer;
+  text-decoration: none;
   color: WindowText;
   padding-left: 2px;
-  text-decoration: none;
 }
 
-.link:hover a,
-.link a:hover {
+.disabled {
+  color: GrayText;
+  text-decoration: none;
+  cursor: default;
+}
+
+.link:hover { 
   text-decoration: underline;
   color: #000088;
 }
 
-.link:hover img,
-.link img:hover { 
-  text-decoration: none;
-}
-
-.linkdisabled {
+.disabled:hover {
   color: GrayText;
   text-decoration: none;
   cursor: default;
@@ -163,7 +162,6 @@ img {
   display: inline;
   vertical-align: middle;
   padding: 1px 5px 1px 1px;
-  text-decoration: none;
 }
 
 /* ---------- big icon buttons  --------- */
@@ -180,7 +178,6 @@ img {
   display: inline;
   vertical-align: middle;
   padding: 1px 1px 1px 1px;
-  text-decoration: none;
 }
 
 <% } 
@@ -332,7 +329,7 @@ th {
 
 .pathbar {
    padding-top: 10px;
-   padding-left: 10px;
+   padding-left: 4px;
    background-color: ThreeDFace;
 }
 
@@ -1001,7 +998,10 @@ body.dialogadmin {
 }
 
 .xmlInput { 
-	border: 1px solid WindowFrame; 
+	border: 1px solid WindowFrame;<%
+	if (style == NEW_ADMIN) { %>
+	margin: 0;
+	padding: 0;<% } %>
 }
 
 .xmlInputSmall { 
