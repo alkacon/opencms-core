@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/09 12:26:14 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
+import org.opencms.file.Messages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -60,7 +62,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -590,6 +592,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String destination
     ) throws CmsException {
         
+        String dest = cms.getRequestContext().addSiteRoot(destination);
+        if (resource.getRootPath().equalsIgnoreCase(dest)) {
+            // move to target with same name is not allowed
+            throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_SAME_NAME_1, destination));
+        }        
+        
         // check if the user has write access and if resource is locked
         // done here since copy is ok without lock, but delete is not
         securityManager.checkPermissions(
@@ -618,8 +626,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // make sure lock is switched
         CmsResource destinationResource = securityManager.readResource(
             cms.getRequestContext(),
-            cms.getRequestContext().addSiteRoot(destination), 
+            dest, 
             CmsResourceFilter.ALL);  
+        
         if (isNew) {
             // if the source was new, destination must get a new lock
             securityManager.lockResource(cms.getRequestContext(), destinationResource, CmsLock.C_MODE_COMMON);

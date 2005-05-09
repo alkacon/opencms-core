@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/09 12:26:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
+import org.opencms.file.Messages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -51,7 +53,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -245,29 +247,31 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String)
      */
-    public void moveResource(
-        CmsObject cms, 
-        CmsSecurityManager securityManager, 
-        CmsResource resource, 
-        String destination
-    ) throws CmsException {
+    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
+    throws CmsException {
         
+        String dest = cms.getRequestContext().addSiteRoot(destination);
+        if (!CmsResource.isFolder(dest)) {
+            // ensure folder name end's with a / (required for the following comparison)
+            dest = dest.concat("/");
+        }
+        if (resource.getRootPath().equalsIgnoreCase(dest)) {
+            // move to target with same name is not allowed
+            throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_SAME_NAME_1, destination));
+        }   
+
         // check if the user has write access and if resource is locked
         // done here since copy is ok without lock, but delete is not
-        securityManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
-        
-        copyResource(
-            cms, 
-            securityManager, 
-            resource, 
-            destination, 
-            I_CmsConstants.C_COPY_AS_SIBLING);
-        
-        deleteResource(
-            cms, 
-            securityManager, 
-            resource, 
-            I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        securityManager.checkPermissions(
+            cms.getRequestContext(),
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            true,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+
+        copyResource(cms, securityManager, resource, destination, I_CmsConstants.C_COPY_AS_SIBLING);
+
+        deleteResource(cms, securityManager, resource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
     }    
 
     /**
