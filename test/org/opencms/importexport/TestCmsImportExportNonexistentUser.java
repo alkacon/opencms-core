@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2005/04/27 14:25:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/09 15:47:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -119,6 +119,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             
             // switch to the temporary user, offline project and default site
             cms.loginUser(username, password);
+            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
             cms.getRequestContext().setCurrentProject(offlineProject);
             
@@ -157,6 +158,8 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             
             fail(e.toString());
         } finally {
+            
+            cms.getRequestContext().restoreSiteRoot();
             
             try {
                 if (zipExportFilename != null) {

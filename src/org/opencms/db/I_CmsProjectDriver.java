@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/05/09 15:47:06 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.63 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.64 $ $Date: 2005/05/09 15:47:06 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -399,9 +399,9 @@ public interface I_CmsProjectDriver {
      * 
      * @return a list of all project resource paths
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException;
+    List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
      * Returns all projects with the given state.<p>

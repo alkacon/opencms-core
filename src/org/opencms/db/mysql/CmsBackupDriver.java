@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/09 15:47:07 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.db.mysql;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
-import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.sql.Connection;
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.22 $ $Date: 2005/02/17 12:43:50 $
+ * @version $Revision: 1.23 $ $Date: 2005/05/09 15:47:07 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -68,7 +68,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
-    public List readBackupProjects(CmsDbContext dbc) throws CmsException {
+    public List readBackupProjects(CmsDbContext dbc) throws CmsDataAccessException {
         List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;

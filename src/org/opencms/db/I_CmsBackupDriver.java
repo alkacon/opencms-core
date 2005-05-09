@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/05/09 15:47:07 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
@@ -55,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.42 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.43 $ $Date: 2005/05/09 15:47:07 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -70,9 +69,9 @@ public interface I_CmsBackupDriver {
      * @param name the name of the propertydefinitions to overwrite
      * 
      * @return the new propertydefinition
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException;
+    CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsDataAccessException;
 
     /**
      * Creates a valid CmsBackupResource instance from a JDBC ResultSet.<p>
@@ -94,9 +93,9 @@ public interface I_CmsBackupDriver {
      * @param tag the project tag date
      * @param versions the deletion version
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteBackup(CmsDbContext dbc, CmsBackupResource res, int tag, int versions) throws CmsException;
+    void deleteBackup(CmsDbContext dbc, CmsBackupResource res, int tag, int versions) throws CmsDataAccessException;
 
     /**
      * Deletes a property defintion.<p>
@@ -104,9 +103,9 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param metadef the propertydefinitions to be deleted
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsException;
+    void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsDataAccessException;
 
     /**
      * Deletes backup versions of a resource.<p>
@@ -118,9 +117,9 @@ public interface I_CmsBackupDriver {
      * @param existingBackups a list of backup resources ordered by their ascending creation date
      * @param maxVersions maximum number of versions per resource
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteBackups(CmsDbContext context, List existingBackups, int maxVersions) throws CmsException;
+    void deleteBackups(CmsDbContext context, List existingBackups, int maxVersions) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -149,14 +148,12 @@ public interface I_CmsBackupDriver {
      * Reads a backup file including the file content.<p>
      *
      * @param dbc the current database context
-     * @param tagId the tagId of the file
+     * @param tagId the desired tag ID of the file
      * @param resourcePath the path of the file to read
-     * 
      * @return the backup file
-     * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsException;
+    CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException;
 
     /**
      * Reads a backup file header excluding the file content.<p>
@@ -166,9 +163,9 @@ public interface I_CmsBackupDriver {
      * @param resourcePath the path of the file to read
      * 
      * @return CmsBackupResource the backup file
-     * @throws CmsException is something goes wrong
+     * @throws CmsDataAccessException is something goes wrong
      */
-    CmsBackupResource readBackupFileHeader(CmsDbContext dbc, int tagId, String resourcePath) throws CmsException;
+    CmsBackupResource readBackupFileHeader(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException;
 
     /**
      * Reads all backup file headers  excluding the file content.<p>.
@@ -176,9 +173,9 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * 
      * @return List with all backup file headers
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readBackupFileHeaders(CmsDbContext dbc) throws CmsException;
+    List readBackupFileHeaders(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Reads all file headers of a file.<br>
@@ -193,9 +190,9 @@ public interface I_CmsBackupDriver {
      *
      * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readBackupFileHeaders(CmsDbContext dbc, String resourcePath) throws CmsException;
+    List readBackupFileHeaders(CmsDbContext dbc, String resourcePath) throws CmsDataAccessException;
 
     /**
      * Returns the max. current backup version of a resource.<p>
@@ -204,9 +201,9 @@ public interface I_CmsBackupDriver {
      * @param resourceId the resource ID of the resource
      * 
      * @return Returns the max. current backup version of a resource
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    int readBackupMaxVersion(CmsDbContext dbc, CmsUUID resourceId) throws CmsException;
+    int readBackupMaxVersion(CmsDbContext dbc, CmsUUID resourceId) throws CmsDataAccessException;
 
     /**
      * Reads a backup project.<p>
@@ -216,9 +213,9 @@ public interface I_CmsBackupDriver {
      * 
      * @return the requested backup project
      * 
-     * @throws CmsException is something goes wrong
+     * @throws CmsDataAccessException is something goes wrong
      */
-    CmsBackupProject readBackupProject(CmsDbContext dbc, int tagId) throws CmsException;
+    CmsBackupProject readBackupProject(CmsDbContext dbc, int tagId) throws CmsDataAccessException;
 
     /**
      * Reads all resources that belong to a given backup version ID.<p>
@@ -227,9 +224,9 @@ public interface I_CmsBackupDriver {
      * @param tagId the version ID of the backup
      * 
      * @return all resources that belong to the given backup version ID
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsException;
+    List readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsDataAccessException;
 
     /**
      * Returns all projects from the history.<p>
@@ -239,9 +236,9 @@ public interface I_CmsBackupDriver {
      * @return list of <code>{@link CmsBackupProject}</code> objects 
      *           with all projects from history.
      * 
-     * @throws CmsException if an error occurs
+     * @throws CmsDataAccessException if an error occurs
      */
-    List readBackupProjects(CmsDbContext dbc) throws CmsException;
+    List readBackupProjects(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Gets the TagId of the first backup project after a given date.<p>
@@ -252,9 +249,9 @@ public interface I_CmsBackupDriver {
      * @param maxdate the date to compare the backup projects with
      * 
      * @return tag id of the first backup project after maxdate 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    int readBackupProjectTag(CmsDbContext dbc, long maxdate) throws CmsException;
+    int readBackupProjectTag(CmsDbContext dbc, long maxdate) throws CmsDataAccessException;
 
     /**
      * Returns a list of all properties of a backup file or folder.<p>
@@ -263,9 +260,9 @@ public interface I_CmsBackupDriver {
      * @param resource the resource to read the properties from
      * 
      * @return a Map of Strings representing the properties of the resource
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readBackupProperties(CmsDbContext dbc, CmsBackupResource resource) throws CmsException;
+    List readBackupProperties(CmsDbContext dbc, CmsBackupResource resource) throws CmsDataAccessException;
 
     /**
      * Reads a property definition for the specified mapping type.<p>
@@ -274,9 +271,9 @@ public interface I_CmsBackupDriver {
      * @param name the name of the propertydefinition to read
      * 
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException;
+    CmsPropertyDefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsDataAccessException;
 
     /**
      * Reads the max. backup tag ID for a specified resource.<p>
@@ -285,9 +282,9 @@ public interface I_CmsBackupDriver {
      * @param resource the Cms resource
      * @return the max. backup tag ID
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    int readMaxTagId(CmsDbContext dbc, CmsResource resource) throws CmsException;
+    int readMaxTagId(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException;
 
     /**
      * Returns the next available backup version ID for a resource.<p>
@@ -307,14 +304,14 @@ public interface I_CmsBackupDriver {
      * @param publishDate long timestamp when the current project was published. 
      * @param currentUser the current user
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeBackupProject(
         CmsDbContext dbc,
         CmsProject currentProject,
         int tagId,
         long publishDate,
-        CmsUser currentUser) throws CmsException;
+        CmsUser currentUser) throws CmsDataAccessException;
 
     /**
      * Writes the properties of a resource to the backup.<p>
@@ -327,7 +324,7 @@ public interface I_CmsBackupDriver {
      * @param tagId the tag ID of the backup
      * @param versionId the version ID of the backup
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeBackupProperties(
         CmsDbContext dbc,
@@ -336,7 +333,7 @@ public interface I_CmsBackupDriver {
         List properties,
         CmsUUID backupId,
         int tagId,
-        int versionId) throws CmsException;
+        int versionId) throws CmsDataAccessException;
 
     /**
      * Writes a resource to the backup.<p>
@@ -350,7 +347,7 @@ public interface I_CmsBackupDriver {
      * @param publishDate long timestamp when the resource was published
      * @param maxVersions maximum number of backup versions
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeBackupResource(
         CmsDbContext dbc,
@@ -360,7 +357,7 @@ public interface I_CmsBackupDriver {
         List properties,
         int tagId,
         long publishDate,
-        int maxVersions) throws CmsException;
+        int maxVersions) throws CmsDataAccessException;
 
     /**
      * Writes a resource content to the backup.<p>
@@ -370,12 +367,12 @@ public interface I_CmsBackupDriver {
      * @param resource the resource (file header) to read the content from
      * @param backupResource the backup resource to write the backup content to
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeBackupResourceContent(
         CmsDbContext context,
         int projectId,
         CmsResource resource,
-        CmsBackupResource backupResource) throws CmsException;
+        CmsBackupResource backupResource) throws CmsDataAccessException;
 
 }

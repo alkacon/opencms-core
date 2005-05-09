@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/09 15:47:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.1
  */
@@ -131,7 +131,7 @@ public class CmsHistory extends CmsDialog {
             result.append(key("input.type"));
             result.append("</td>\n");   
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
-            // Publised at
+            // Published at
             result.append(key("label.publishedat"));
             result.append("</td>\n");  
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
@@ -157,7 +157,7 @@ public class CmsHistory extends CmsDialog {
             Iterator i = backupFileHeaders.iterator();
             while (i.hasNext()) {
                 CmsBackupResource file = (CmsBackupResource)i.next();                
-                // the tagId for get the Backup project 
+                // the tag ID for get the backup project 
                 int tagId = file.getTagId();
                 int version = file.getVersionId();
                 CmsBackupProject project = getCms().readBackupProject(tagId);
@@ -259,9 +259,9 @@ public class CmsHistory extends CmsDialog {
         try {
             CmsResource res = getCms().readResource(getParamResource());
             String resourcename = getCms().getSitePath(res);
-            int versionid = Integer.parseInt(getParamVersionid());
+            int tagId = Integer.parseInt(getParamVersionid());
             checkLock(getParamResource());            
-            getCms().restoreResourceBackup(resourcename, versionid);
+            getCms().restoreResourceBackup(resourcename, tagId);
         } catch (CmsException e) {
             // Cms error defining property, show error dialog
             setParamErrorstack(CmsException.getStackTraceAsString(e));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2005/05/09 15:47:06 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.123 $ $Date: 2005/03/19 13:58:18 $
+ * @version $Revision: 1.124 $ $Date: 2005/05/09 15:47:06 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -370,7 +370,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(org.opencms.db.CmsDbContext, int, java.lang.String)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(CmsDbContext, int, String)
      */
     public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException {
         CmsBackupResource file = null;
@@ -582,6 +582,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
+        } catch (CmsDataAccessException e) {
+            throw e;
         } catch (Exception e) {
             throw new CmsDataAccessException(e);
         } finally {
@@ -621,7 +623,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
-    public List readBackupProjects(CmsDbContext dbc) throws CmsException {
+    public List readBackupProjects(CmsDbContext dbc) throws CmsDataAccessException {
         List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -862,14 +864,14 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupProject(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int, long, org.opencms.file.CmsUser)
      */
-    public void writeBackupProject(CmsDbContext dbc, CmsProject currentProject, int tagId, long publishDate, CmsUser currentUser) throws CmsException {
+    public void writeBackupProject(CmsDbContext dbc, CmsProject currentProject, int tagId, long publishDate, CmsUser currentUser) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         String ownerName = new String();
         String group = new String();
         String managerGroup = new String();
         
-        CmsUser owner = m_driverManager.readUser(dbc, currentProject.getOwnerId());
+        CmsUser owner = m_driverManager.getUserDriver().readUser(dbc, currentProject.getOwnerId());
         ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
 
         try {
@@ -1227,8 +1229,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // get the max version id
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXVER");
-            //stmt.setString(1, resource.getStructureId().toString());
-            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setString(1, resource.getRootPath());
             res = stmt.executeQuery();
             if (res.next()) {
                 versionId = res.getInt(1) + 1;

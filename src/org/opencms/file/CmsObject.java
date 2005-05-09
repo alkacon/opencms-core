@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2005/05/09 15:47:07 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.118 $
+ * @version $Revision: 1.119 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2812,14 +2812,14 @@ public class CmsObject {
      * Restores a file in the current project with a version from the backup archive.<p>
      * 
      * @param resourcename the name of the resource to restore from the archive (full path)
-     * @param tag the tag (version) id to resource form the archive
+     * @param tagId the desired tag ID of the resource
      *
      * @throws CmsException if something goes wrong
      */
-    public void restoreResourceBackup(String resourcename, int tag) throws CmsException {
+    public void restoreResourceBackup(String resourcename, int tagId) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).restoreResourceBackup(this, m_securityManager, resource, tag);
+        getResourceType(resource.getTypeId()).restoreResourceBackup(this, m_securityManager, resource, tagId);
     }
 
     /**

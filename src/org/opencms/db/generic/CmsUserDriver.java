@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2005/05/09 15:47:06 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -69,18 +70,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.83 $ $Date: 2005/04/24 11:20:31 $
+ * @version $Revision: 1.84 $ $Date: 2005/05/09 15:47:06 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @since 5.1
  */
 public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDriver {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
 
     /**
      * A digest to encrypt the passwords.
@@ -754,7 +759,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readGroup(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsException {
+    public CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsDataAccessException {
 
         CmsGroup group = null;
         ResultSet res = null;
@@ -773,7 +778,11 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             if (res.next()) {
                 group = internalCreateGroup(res);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + groupName, CmsException.C_NO_GROUP);
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_NAME_1, groupName);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(message);
+                }
+                throw new CmsObjectNotFoundException(message);
             }
 
         } catch (SQLException e) {
@@ -847,7 +856,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException {
+    public CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
@@ -864,9 +873,11 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             if (res.next()) {
                 user = internalCreateUser(res);
             } else {
-                res.close();
-                res = null;
-                throw new CmsException("[" + this.getClass().getName() + "]" + id, CmsException.C_NO_USER);
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_ID_1, id.toString());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(message);
+                }
+                throw new CmsObjectNotFoundException(message);
             }
 
             return user;

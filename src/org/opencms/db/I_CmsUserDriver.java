@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/05/09 15:47:06 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.47 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.48 $ $Date: 2005/05/09 15:47:06 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -367,9 +367,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return the group that was read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsException;
+    CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsDataAccessException;
 
     /**
      * Reads all existing groups.<p>
@@ -403,9 +403,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @return the user that was read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException;
+    CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException;
 
     /**
      * Reads a user based in the user name and user type.<p>
