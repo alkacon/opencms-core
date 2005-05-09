@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/05/03 16:28:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/09 15:12:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 public class CmsDbContext {
@@ -211,8 +211,8 @@ public class CmsDbContext {
      * @param message the message to write to the report / log
      * @param throwable the exception to write to the report / log
      * 
-     * @throws CmsException the throwable parameters masked as a CmsException
-     * @throws CmsVfsException if the CmsMessageContainer is not null
+     * @throws CmsException if the throwable parameter is not null and a CmsException
+     * @throws CmsVfsException if the throwable parameter is not null and no CmsException
      */
     public void report(I_CmsReport report, CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
 
