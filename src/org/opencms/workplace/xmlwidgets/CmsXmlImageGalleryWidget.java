@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlImageGalleryWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/09 11:50:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.3
  */
 public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
@@ -126,7 +126,7 @@ public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
         result.append("\" id=\"preview");
         result.append(id);
         result.append("\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\0\"><tr>");
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
             "javascript:previewImage('" + id + "');",
             null,
