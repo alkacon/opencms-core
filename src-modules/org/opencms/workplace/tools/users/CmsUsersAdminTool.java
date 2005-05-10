@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/10 12:51:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/10 13:13:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -313,7 +313,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         userActAction.setIconPath("buttons/apply_in.gif");
         userActAction.setEnabled(true);
         userActAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0));
-        userAction.setActivationAction(userActAction);
+        userAction.setFirstAction(userActAction);
         CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
         userDeactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
         userDeactAction.setConfirmationMessage(Messages.get().container(
@@ -321,7 +321,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         userDeactAction.setIconPath("buttons/apply.gif");
         userDeactAction.setEnabled(true);
         userDeactAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0));
-        userAction.setDeactivationAction(userDeactAction);
+        userAction.setSecondAction(userDeactAction);
         actionsCol.addDirectAction(userAction);
 
         metadata.addColumn(actionsCol);
