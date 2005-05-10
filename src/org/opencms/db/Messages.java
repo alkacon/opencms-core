@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/10 13:57:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/10 14:36:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,6 +83,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_2 = "ERR_COPY_RESOURCE_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DRIVER_MANAGER_NEW_INSTANCE_DB_0 = "INIT_DRIVER_MANAGER_NEW_INSTANCE_DB_0";
+    
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_TO_PROJECT_2 = "ERR_COPY_RESOURCE_TO_PROJECT_2";
@@ -445,7 +449,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WRITE_WEB_USER_1 = "ERR_WRITE_WEB_USER_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_WRITE_WEB_USER_CONSTRAINT_1 = "ERR_WRITE_WEB_USER_CONSTRAINT_1";
+    public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SECURITY_MANAGER_INIT_0 = "INIT_SECURITY_MANAGER_INIT_0";

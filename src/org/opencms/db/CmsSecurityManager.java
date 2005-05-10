@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/10 13:57:33 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/05/10 14:36:03 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -5069,7 +5069,7 @@ public final class CmsSecurityManager {
     public void writeWebUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
         if (!user.isWebUser()) {
-            throw new CmsSecurityException(Messages.get().container(Messages.ERR_WRITE_WEB_USER_CONSTRAINT_1));
+            throw new CmsSecurityException(Messages.get().container(Messages.ERR_WRITE_WEB_USER_CONSTRAINT_0));
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
