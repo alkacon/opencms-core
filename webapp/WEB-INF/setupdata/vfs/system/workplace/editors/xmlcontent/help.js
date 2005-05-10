@@ -66,7 +66,7 @@ function findPosY(obj) {
     return curtop;
 }
 
-function showHelp(id, fieldId) { 
+function showHelp(id) { 
 
     var text = document.getElementById("help" + id);
     
@@ -133,7 +133,7 @@ function showHelp(id, fieldId) {
     }
 }
 
-function hideHelp(id, fieldId) {
+function hideHelp(id) {
     var text = document.getElementById("help" + id);
     text.style.visibility = "hidden";
     text.style.left = "0px";

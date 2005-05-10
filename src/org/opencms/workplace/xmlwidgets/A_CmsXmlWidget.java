@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/10 13:58:55 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -148,7 +148,6 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.dialogHorizontalSpacer(16);
         } else {
-            String id = param.getId();
             result.append("<td>");
             result.append("<img name=\"img");
             result.append(locKey);
@@ -158,12 +157,8 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
             result.append("\" border=\"0\" onmouseout=\"hideHelp('");
             result.append(locKey);
-            result.append("', '");
-            result.append(id);
             result.append("');\" onmouseover=\"showHelp('");
             result.append(locKey);
-            result.append("', '");
-            result.append(id);
             result.append("');\">");
             result.append("</td>");
             return result.toString();
@@ -183,19 +178,14 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
-            String id = param.getId();
             result.append("<div class=\"help\" name=\"help");
             result.append(locKey);
             result.append("\" id=\"help");
             result.append(locKey);
             result.append("\" onmouseout=\"hideHelp('");
             result.append(locKey);
-            result.append("', '");
-            result.append(id);
             result.append("');\" onmouseover=\"showHelp('");
             result.append(locKey);
-            result.append("', '");
-            result.append(id);
             result.append("');\">");
             result.append(locValue);
             result.append("</div>");
