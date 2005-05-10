@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToogleAction.java,v $
- * Date   : $Date: 2005/05/10 11:26:53 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToggleAction.java,v $
+ * Date   : $Date: 2005/05/10 12:04:58 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -36,7 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
- * Abstract implementation of a toogle action for a html list.<p>
+ * Abstract implementation of a toggle action for a html list.<p>
  * 
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
@@ -44,7 +44,7 @@ import org.opencms.workplace.CmsWorkplace;
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public abstract class A_CmsListToogleAction extends CmsListDefaultAction {
+public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
 
     /**
      * Default Constructor.<p>
@@ -52,7 +52,7 @@ public abstract class A_CmsListToogleAction extends CmsListDefaultAction {
      * @param listId the id of the associated list
      * @param id unique id
      */
-    protected A_CmsListToogleAction(String listId, String id) {
+    protected A_CmsListToggleAction(String listId, String id) {
 
         super(listId, id);
 

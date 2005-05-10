@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateDeactivateAction.java,v $
- * Date   : $Date: 2005/05/10 11:26:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/10 12:04:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,17 +36,17 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.list.A_CmsListToogleAction;
+import org.opencms.workplace.list.A_CmsListToggleAction;
 import org.opencms.workplace.list.I_CmsListDirectAction;
 
 /**
  * Activate/deactivate action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
-public class CmsUserActivateDeactivateAction extends A_CmsListToogleAction {
+public class CmsUserActivateDeactivateAction extends A_CmsListToggleAction {
 
     /** The activation action. */
     private I_CmsListDirectAction m_actAction;
@@ -90,7 +90,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListToogleAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListToogleAction#selectAction()
+     * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
      */
     public I_CmsListDirectAction selectAction() {
 
@@ -126,7 +126,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListToogleAction {
     
     
     /**
-     * @see org.opencms.workplace.list.A_CmsListToogleAction#getHelpText()
+     * @see org.opencms.workplace.list.A_CmsListToggleAction#getHelpText()
      */
     public CmsMessageContainer getHelpText() {
 
@@ -138,7 +138,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListToogleAction {
     
     
     /**
-     * @see org.opencms.workplace.list.A_CmsListToogleAction#getIconPath()
+     * @see org.opencms.workplace.list.A_CmsListToggleAction#getIconPath()
      */
     public String getIconPath() {
 
