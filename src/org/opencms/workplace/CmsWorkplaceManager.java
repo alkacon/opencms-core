@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,6 +78,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Manages the global OpenCms workplace settings for all users.<p>
  * 
@@ -85,12 +87,15 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);  
+    
     /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
     public static final String C_DEFAULT_WORKPLACE_ENCODING = "UTF-8";
@@ -181,8 +186,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public CmsWorkplaceManager() {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : starting");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_INITIALIZE_START_0));
         }
         m_locales = new ArrayList();
         m_labelSiteFolders = new ArrayList();
@@ -212,9 +217,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addDialogHandler(I_CmsDialogHandler clazz) {
 
         m_dialogHandler.put(clazz.getDialogHandler(), clazz);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Adding dialog handler: " + clazz.getDialogHandler() + " - " + clazz.getClass().getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_DIALOG_HANDLER_2, clazz.getDialogHandler(), clazz.getClass().getName()));
         }
     }
 
@@ -230,8 +234,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_explorerTypeSettings.add(settings);
         m_explorerTypeSettingsMap.put(settings.getName(), settings);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
         }
     }
 
@@ -252,13 +256,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 m_explorerTypeSettings.add(settings);
                 m_explorerTypeSettingsMap.put(settings.getName(), settings);
                 settings.getAccess().createAccessControlList(cms);
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
                 }
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". could not add type setting  : " + settings.getName() + ":" + e);
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()), e);
                 }
             }
         }
@@ -274,9 +277,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled() && (point.getDestinationPath() != null)) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Adding export point  : " + point.getUri() + " --> " + point.getDestinationPath());
+        if (CmsLog.LOG.isInfoEnabled() && (point.getDestinationPath() != null)) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_EXPORT_POINT_2, point.getUri(), point.getDestinationPath()));
         }
     }
 
@@ -288,8 +290,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addLabeledFolder(String uri) {
 
         m_labelSiteFolders.add(uri);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Label links in folder: " + uri);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LABEL_LINKS_IN_FOLDER_1, uri));
         }
     }
 
@@ -301,8 +303,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addLocalizedFolder(String uri) {
 
         m_localizedFolders.add(uri);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace localized  : " + uri);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_LOCALIZED_1, uri));
         }
     }
 
@@ -505,7 +507,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 req.setCharacterEncoding(m_encoding);
             } catch (UnsupportedEncodingException e) {
                 // should not ever really happen
-                OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_encoding + "'", e);
+                LOG.error(Messages.get().key(Messages.LOG_UNSUPPORTED_ENCODING_SET_1, m_encoding), e);
             }
             // read workplace settings
             HttpSession session = req.getSession(false);
@@ -705,17 +707,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             settings.getAccess().createAccessControlList(cms);
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : vfs access initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_VFS_ACCESS_INITIALIZED_0));
         }
         try {
             // read the temporary file project
             m_tempFileProject = cms.readProject(C_TEMP_FILE_PROJECT_NAME);
         } catch (CmsException e) {
             // during initial setup of OpenCms the temp file project does not yet exist...
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Workplace temporary file project does not yet exist!");
-            }
+            LOG.error(Messages.get().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
         }
         // create an instance of editor display options
         m_editorDisplayOptions = new CmsEditorDisplayOptions();
@@ -736,9 +736,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                             m_galleries.put(galleryType.getTypeName(), galleryType);
                         }
                     } catch (ClassNotFoundException e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error(e);
-                        }
+                        LOG.error(e.getLocalizedMessage());
                     }
                 }
             }
@@ -782,8 +780,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
             if (m_explorerTypeSettings.contains(settings)) {
                 m_explorerTypeSettings.remove(settings);
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Remove type setting  : " + settings.getName());
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_REMOVE_EXPLORER_TYPE_SETTING_1, settings.getName()));
                 }
             }
             if (m_explorerTypeSettingsMap.containsKey(settings.getName())) {
@@ -800,9 +798,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setAutoLock(String value) {
 
         m_autoLockResources = Boolean.valueOf(value).booleanValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Auto lock feature    : " + (m_autoLockResources ? "enabled" : "disabled"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(m_autoLockResources 
+                ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
         }
     }
 
@@ -826,13 +824,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         try {
             m_defaultLocale = CmsLocaleManager.getLocale(locale);
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Workplace init       : non-critical error " + e.toString());
+            if (CmsLog.LOG.isWarnEnabled()) {
+                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_NONCRIT_ERROR_0), e);
             }
         }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Workplace init       : Default locale is '" + m_defaultLocale + "'");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_LOCALE_1, m_defaultLocale));
         }
     }
 
@@ -844,9 +841,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setDefaultPropertiesOnStructure(String defaultPropertiesOnStructure) {
 
         m_defaultPropertiesOnStructure = Boolean.valueOf(defaultPropertiesOnStructure).booleanValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Properties on struct : " + (m_defaultPropertiesOnStructure ? "true" : "false"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(m_defaultPropertiesOnStructure  
+                ? Messages.INIT_PROP_ON_STRUCT_TRUE_0 : Messages.INIT_PROP_ON_STRUCT_FALSE_0));
         }
     }
 
@@ -859,9 +856,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_defaultUserSettings = defaultUserSettings;
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Workplace init       : Default user settings are " + m_defaultUserSettings);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_USER_SETTINGS_1, m_defaultUserSettings));
         }
     }
 
@@ -873,8 +869,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEditorAction(I_CmsEditorActionHandler clazz) {
 
         m_editorAction = clazz;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : " + m_editorAction.getClass().getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_EDITOR_ACTION_CLASS_1, m_editorAction.getClass().getName()));
         }
     }
 
@@ -886,8 +882,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEditorDisplayOptions(CmsEditorDisplayOptions clazz) {
 
         m_editorDisplayOptions = clazz;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor disp. options : " + m_editorAction.getClass().getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_EDITOR_DISPLAY_OPTS_1, m_editorAction.getClass().getName()));
         }
     }
 
@@ -899,9 +895,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEditorHandler(I_CmsEditorHandler clazz) {
 
         m_editorHandler = clazz;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT)
-                .info(". Editor handler class : " + m_editorHandler.getClass().getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_EDITOR_HANDLER_CLASS_1, m_editorHandler.getClass().getName()));
         }
     }
 
@@ -913,9 +909,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEnableAdvancedPropertyTabs(String enableAdvancedPropertyTabs) {
 
         m_enableAdvancedPropertyTabs = Boolean.valueOf(enableAdvancedPropertyTabs).booleanValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Adv. property dialog : " + (m_enableAdvancedPropertyTabs ? "Show tabs" : "Hide tabs"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                m_enableAdvancedPropertyTabs ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0 : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
         }
     }
 
@@ -930,14 +926,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             m_fileMaxUploadSize = Integer.valueOf(value).intValue();
         } catch (NumberFormatException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
             m_fileMaxUploadSize = -1;
         }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". File max. upload size: " + (m_fileMaxUploadSize > 0 ? (m_fileMaxUploadSize + " KB") : "unlimited"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            if (m_fileMaxUploadSize > 0) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_1, new Integer(m_fileMaxUploadSize)));
+            } else {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_UNLIMITED_0));
+            }    
+
         }
     }
 
@@ -949,9 +949,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setUserManagementEnabled(String value) {
 
         m_showUserGroupIcon = Boolean.valueOf(value).booleanValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". User management icon : " + (m_showUserGroupIcon ? "enabled" : "disabled"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            if (m_showUserGroupIcon) {   
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_ENABLED_0));
+            } else {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_DISABLED_0));
+            }
         }
     }
 
@@ -982,10 +985,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         try {
             localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
         } catch (CmsException e) {
-            OpenCms.getLog(this).error(
-                "Workplace init: Unable to read locales folder '"
-                    + I_CmsWpConstants.C_VFS_PATH_LOCALES
-                    + "', locales disabled!");
+            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, I_CmsWpConstants.C_VFS_PATH_LOCALES), e);
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             localeFolders = new ArrayList();
         }
@@ -1025,10 +1025,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_VIEWS);
         } catch (CmsException e) {
-            OpenCms.getLog(this).error(
-                "Workplace init: Unable to read views folder '"
-                    + I_CmsWpConstants.C_VFS_PATH_VIEWS
-                    + "', no views available!");
+            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS), e);
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList();
         }
@@ -1072,14 +1069,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 CmsWorkplaceView view = new CmsWorkplaceView(key, viewUri, orderValue);
                 m_views.add(view);
                 // log the view
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace view       : " + view.getUri());
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_VIEW_1, view.getUri()));
                 }
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error reading view folder: " + folderPath);
-                }
+                LOG.error(Messages.get().key(Messages.LOG_READING_VIEW_FOLDER_FAILED_1, folderPath), e);
             }
         }
         // sort the views by their order number

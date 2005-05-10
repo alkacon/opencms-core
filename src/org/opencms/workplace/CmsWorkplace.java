@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -79,18 +80,22 @@ import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.logging.Log;
 
 /**
  * Master class for the JSP based workplace which provides default methods and
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.113 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplace.class); 
+    
     /** Constant for the JSP explorer filelist file. */
     public static final String C_FILE_EXPLORER_FILELIST = I_CmsWpConstants.C_VFS_PATH_WORKPLACE
         + "views/explorer/explorer_files.jsp";
@@ -225,8 +230,8 @@ public abstract class CmsWorkplace {
                     value = (String)values.get(i);
                 } catch (Exception e) {
                     // can usually be ignored
-                    if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
-                        OpenCms.getLog(CmsWorkplace.class).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }
                     // lists are not properly initialized, just don't use the value                    
                     value = null;
@@ -315,9 +320,7 @@ public abstract class CmsWorkplace {
                     jsp.getCmsObject().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                 m_styleUri = jsp.link("/system/workplace/commons/style/");
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsWorkplace.class).isErrorEnabled()) {
-                    OpenCms.getLog(CmsWorkplace.class).error(e);
-                }
+                LOG.error(e.getLocalizedMessage());
             } finally {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(project);
             }
@@ -392,8 +395,8 @@ public abstract class CmsWorkplace {
                 user = cms.readUser(cms.getRequestContext().currentUser().getId());
             } catch (CmsException e) {
                 // can usually be ignored
-                if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
-                    OpenCms.getLog(CmsWorkplace.class).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
                 user = cms.getRequestContext().currentUser();
             }
@@ -433,8 +436,8 @@ public abstract class CmsWorkplace {
             access = cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW);
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
-            if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
-                OpenCms.getLog(CmsWorkplace.class).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
 
         }
@@ -499,9 +502,8 @@ public abstract class CmsWorkplace {
                 // error reading the groups of the current user
                 permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
                     cms.getRequestContext().currentUser());
-                if (OpenCms.getLog(CmsWorkplace.class).isWarnEnabled()) {
-                    OpenCms.getLog(CmsTree.class).warn(
-                        "Error reading groups of user " + cms.getRequestContext().currentUser().getName());
+                if (LOG.isWarnEnabled()) {
+                    CmsLog.getLog(CmsTree.class).warn(Messages.get().key(Messages.LOG_READING_GROUPS_OF_USER_FAILED_1, cms.getRequestContext().currentUser().getName()), e);
                 }
             }
             if (permissions.getPermissionString().indexOf("+w") != -1) {
@@ -1133,19 +1135,19 @@ public abstract class CmsWorkplace {
             }
             value = decodeParamValue(name, value);
             try {
-                if (DEBUG && (value != null)) {
-                    System.err.println("setting " + m.getName() + " with value '" + value + "'");
+                if (LOG.isDebugEnabled() && (value != null)) {
+                    LOG.debug(Messages.get().key(Messages.LOG_SET_PARAM_2, m.getName(), value));
                 }
                 m.invoke(this, new Object[] {value});
             } catch (InvocationTargetException ite) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(ite);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(ite.getLocalizedMessage());
                 }
             } catch (IllegalAccessException eae) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(eae);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(eae.getLocalizedMessage());
                 }
             }
         }
@@ -1679,13 +1681,13 @@ public abstract class CmsWorkplace {
                 o = m.invoke(this, new Object[0]);
             } catch (InvocationTargetException ite) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(ite);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(ite);
                 }
             } catch (IllegalAccessException eae) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(eae);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(eae);
                 }
             }
             if (o == null) {
@@ -1724,14 +1726,14 @@ public abstract class CmsWorkplace {
                     try {
                         value = item.getString(getCms().getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException e) {
-                        OpenCms.getLog(this).error("Encoding error parsing multipart request in workplace", e);
+                        LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
                         value = item.getString();
                     }
                     parameterMap.put(name, value);
                 }
             }
         } catch (FileUploadException e) {
-            OpenCms.getLog(this).error("Error parsing multipart request in workplace", e);
+            LOG.error(Messages.get().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
         }
         return parameterMap;
     }
@@ -1816,13 +1818,13 @@ public abstract class CmsWorkplace {
                 o = m.invoke(this, new Object[0]);
             } catch (InvocationTargetException ite) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(ite);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(ite.getLocalizedMessage());
                 }
             } catch (IllegalAccessException eae) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(eae);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(eae.getLocalizedMessage());
                 }
             }
             if (o != null) {
@@ -1878,8 +1880,8 @@ public abstract class CmsWorkplace {
             try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
         }

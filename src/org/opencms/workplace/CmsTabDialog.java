@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +41,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for tab styled dialogs.<p> 
@@ -55,12 +57,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsTabDialog extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTabDialog.class);  
+    
     /** Name of the request parameter for the set button pressed flag. */
     public static final String PARAM_SETPRESSED = "setpressed";
     /** Name of the request parameter for the current tab. */
@@ -174,8 +179,8 @@ public abstract class CmsTabDialog extends CmsDialog {
                     tab = Integer.parseInt(paramTab);
                 } catch (NumberFormatException e) {
                     // do nothing, the first tab is returned
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }                    
                 }
             }
@@ -201,8 +206,8 @@ public abstract class CmsTabDialog extends CmsDialog {
             return (String)tabNames.get(m_activeTab -1);
         } catch (IndexOutOfBoundsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
             return null;
         }

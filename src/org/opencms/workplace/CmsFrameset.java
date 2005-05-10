@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -53,6 +54,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.Buffer;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
@@ -65,11 +67,14 @@ import org.apache.commons.collections.Buffer;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.1
  */
 public class CmsFrameset extends CmsWorkplace {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFrameset.class);  
     
     /**
      * Public constructor.<p>
@@ -220,8 +225,8 @@ public class CmsFrameset extends CmsWorkplace {
             allProjects = getCms().getAllAccessibleProjects();
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }            
             allProjects = Collections.EMPTY_LIST;
         }
@@ -284,8 +289,8 @@ public class CmsFrameset extends CmsWorkplace {
                 getCms().readResource(viewUri);
             } catch (CmsException e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }                
                 visible = false;
             }
@@ -318,8 +323,8 @@ public class CmsFrameset extends CmsWorkplace {
             allGroups = getCms().getGroupsOfUser(getSettings().getUser().getName());
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
 

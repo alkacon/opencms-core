@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/04/15 22:48:36 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.util.CmsUUID;
@@ -40,16 +41,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.10
  */
 public class CmsReport extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsReport.class);  
+    
     /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_TYPE = "reporttype";
 
@@ -384,8 +390,8 @@ public class CmsReport extends CmsDialog {
                 m_paramThread = new CmsUUID(value);
             } catch (Exception e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Unable to create a report Thread with ID " + value, e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_THREAD_CREATION_FAILED_1, new Integer(value)), e);
                 }
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/10 12:55:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
@@ -51,16 +52,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Base class for dialogs that use the OpenCms widgets without XML content.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);  
+    
     /** Action for optional element creation. */
     public static final int ACTION_ELEMENT_ADD = 152;
 
@@ -286,8 +292,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         } catch (CmsXmlException e) {
 
-            // TODO: Exception handling!
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
         return result.toString();
     }
@@ -316,8 +323,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         } catch (CmsXmlException e) {
 
-            // TODO: Exception handling!            
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
         return result.toString();
     }
@@ -345,8 +353,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         } catch (CmsXmlException e) {
 
-            // TODO: Exception handling!            
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
         return result.toString();
     }
@@ -374,8 +383,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         } catch (CmsXmlException e) {
 
-            // TODO: Exception handling!            
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
         return result.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/10 15:45:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,10 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Selects the dialog which should be displayed by OpenCms depending on the registry value.<p>
@@ -51,7 +54,7 @@ import org.opencms.main.OpenCms;
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -62,6 +65,9 @@ public class CmsDialogSelector {
     private String m_paramResource;
     private String m_handler;
     
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDialogSelector.class);  
+    
     // Constants for the dialog handler key names used for the runtime properties.
     // For each handler, a constant has to be added here. 
     /** Constant for the delete dialog handler key name. */
@@ -69,10 +75,7 @@ public class CmsDialogSelector {
     /** Constant for the lock dialog handler key name. */
     public static final String DIALOG_LOCK = "class_dialog_lock";
     /** Constant for the property dialog handler key name. */
-    public static final String DIALOG_PROPERTY = "class_dialog_property";
-    
-    /** Constant for the debug flag. */
-    public static final boolean C_DEBUG = false;      
+    public static final String DIALOG_PROPERTY = "class_dialog_property";    
     
     /**
      * Public constructor with JSP action element.<p>
@@ -94,9 +97,9 @@ public class CmsDialogSelector {
      */
     public String getSelectedDialogUri() {          
         
-        if (C_DEBUG) {
-            System.err.println("[" + this.getClass().getName() + "].getSelectedDialogUri() - DialogHandler class: " + getHandler());
-            System.err.println("[" + this.getClass().getName() + "].getSelectedDialogUri() - Resource: " + getParamResource());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DIALOG_HANDLER_CLASS_2, getClass().getName(), getHandler()));
+            LOG.debug(Messages.get().key(Messages.LOG_PARAM_RESOURCE_2, getClass().getName(), getParamResource()));
         }
         // get the handler class from the OpenCms runtime property
         I_CmsDialogHandler dialogClass = (I_CmsDialogHandler)OpenCms.getWorkplaceManager().getDialogHandler(getHandler());
