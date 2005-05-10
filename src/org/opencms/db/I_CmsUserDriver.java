@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:06 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/05/10 09:14:52 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.48 $ $Date: 2005/05/09 15:47:06 $
+ * @version $Revision: 1.49 $ $Date: 2005/05/10 09:14:52 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -355,9 +355,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return the group that was read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException;
+    CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsDataAccessException;
 
     /**
      * Reads a group based on the group name.<p>

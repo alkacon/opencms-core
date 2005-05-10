@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:06 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2005/05/10 09:14:52 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -77,10 +76,10 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.124 $ $Date: 2005/05/09 15:47:06 $
+ * @version $Revision: 1.125 $ $Date: 2005/05/10 09:14:52 $
  * @since 5.1
  */
-public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
+public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
     /** The driver manager instance. */
     protected CmsDriverManager m_driverManager;
@@ -876,13 +875,13 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         try {
             group = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getGroupId()).getName();
-        } catch (/*DataAccess*/CmsException e) {
+        } catch (CmsObjectNotFoundException e) {
             // the group could not be read
             group = "";
         }
         try {
             managerGroup = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getManagerGroupId()).getName();
-        } catch (/*DataAccess*/CmsException e) {
+        } catch (CmsObjectNotFoundException e) {
             // the group could not be read
             managerGroup = "";
         }
@@ -1024,7 +1023,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             lastModifiedName = lastModified.getName();
             CmsUser created = m_driverManager.getUserDriver().readUser(dbc, resource.getUserCreated());
             createdName = created.getName();
-        } catch (/*DataAccess*/CmsException e) {
+        } catch (CmsDataAccessException e) {
             lastModifiedName = resource.getUserCreated().toString();
             createdName = resource.getUserLastModified().toString();
         }

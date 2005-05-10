@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:06 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2005/05/10 09:14:52 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,13 +76,13 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.84 $ $Date: 2005/05/09 15:47:06 $
+ * @version $Revision: 1.85 $ $Date: 2005/05/10 09:14:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @since 5.1
  */
-public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDriver {
+public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
@@ -727,7 +727,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readGroup(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException {
+    public CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsDataAccessException {
         CmsGroup group = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -744,7 +744,11 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             if (res.next()) {
                 group = internalCreateGroup(res);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + groupId, CmsException.C_NO_GROUP);
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_ID_1, groupId.toString());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(message);
+                }
+                throw new CmsObjectNotFoundException(message);
             }
 
         } catch (SQLException e) {

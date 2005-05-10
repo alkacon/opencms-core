@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/05/10 09:14:52 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,10 +66,10 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.43 $ $Date: 2005/05/10 09:14:52 $
  * @since 5.1
  */
-public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
+public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
     /** Table key for tasks. */
     protected static final String C_TABLE_TASK = "CMS_TASKS";

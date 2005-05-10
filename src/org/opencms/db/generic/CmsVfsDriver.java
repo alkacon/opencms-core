@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/04/25 14:47:34 $
- * Version: $Revision: 1.233 $
+ * Date   : $Date: 2005/05/10 09:14:52 $
+ * Version: $Revision: 1.234 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,10 +74,10 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.233 $ $Date: 2005/04/25 14:47:34 $
+ * @version $Revision: 1.234 $ $Date: 2005/05/10 09:14:52 $
  * @since 5.1
  */
-public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
+public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     
     /** Operator to concatenate exclude conditions. */
     static String C_BEGIN_EXCLUDE_CONDITION = " AND NOT (";
