@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/05/04 16:08:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
@@ -75,21 +75,21 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @param id the id
      * @param name the name
      * @param helpText the help text
-     * @param enabled if enabled or not
      * @param iconPath the path to the icon
+     * @param enabled if enabled or not
      */
     public A_CmsHtmlIconButton(
         String id,
         CmsMessageContainer name,
         CmsMessageContainer helpText,
-        boolean enabled,
-        String iconPath) {
+        String iconPath,
+        boolean enabled) {
 
         this(id);
         setName(name);
         setHelpText(helpText);
-        setEnabled(enabled);
         setIconPath(iconPath);
+        setEnabled(enabled);
     }
 
     /**
@@ -263,13 +263,14 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      */
     public CmsMessageContainer getHelpText() {
 
+        if (m_helpText == null) {
+            m_helpText = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+        }
         return m_helpText;
     }
 
     /**
-     * Returns the path to the icon.<p>
-     *
-     * @return the path to the icon
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getIconPath()
      */
     public String getIconPath() {
 
@@ -309,9 +310,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * Sets the help Text.<p>
-     *
-     * @param helpText the help Text to set
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setHelpText(org.opencms.i18n.CmsMessageContainer)
      */
     public void setHelpText(CmsMessageContainer helpText) {
 
@@ -322,9 +321,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * Sets the icon Path.<p>
-     *
-     * @param iconPath the icon Path to set
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setIconPath(java.lang.String)
      */
     public void setIconPath(String iconPath) {
 
@@ -332,9 +329,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * Sets the name.<p>
-     *
-     * @param name the name to set
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setName(org.opencms.i18n.CmsMessageContainer)
      */
     public void setName(CmsMessageContainer name) {
 

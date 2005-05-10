@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsSearchAction.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * Default implementation for a seach action in an html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsSearchAction extends CmsListIndependentAction {
@@ -97,16 +97,15 @@ public class CmsSearchAction extends CmsListIndependentAction {
         CmsMessageContainer confirmationMessage,
         String columnId) {
 
-        super(listId, id, name, icon, helpText, true, confirmationMessage);
+        super(listId, id, name, helpText, icon, true, confirmationMessage);
         m_columnId = columnId;
-        m_defaultShowAllAction = new CmsListIndependentAction(
-            listId,
-            SHOWALL_ACTION_ID,
-            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_NAME_0),
-            "list/showall.gif",
-            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_HELP_0),
-            true,
-            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_CONF_0));
+        m_defaultShowAllAction = new CmsListIndependentAction(listId, SHOWALL_ACTION_ID, new CmsMessageContainer(
+            Messages.get(),
+            Messages.GUI_LIST_ACTION_SHOWALL_NAME_0), new CmsMessageContainer(
+            Messages.get(),
+            Messages.GUI_LIST_ACTION_SHOWALL_HELP_0), "list/showall.gif", true, new CmsMessageContainer(
+            Messages.get(),
+            Messages.GUI_LIST_ACTION_SHOWALL_CONF_0));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,25 +127,25 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0 = "GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_ACTIVATE_ACTCONF_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_ACTCONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_ACTIVATE_ACTHELP_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_ACTHELP_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_ACTIVATE_DESCONF_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_DESCONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_ACTIVATE_DESHELP_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_DESHELP_0";
+    public static final String GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_HELP_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0 = "GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0 = "GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0 = "GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_DELETE_CONF_0 = "GUI_USERS_LIST_ACTION_DELETE_CONF_0";
@@ -164,6 +164,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_EDITUSER_NAME_0 = "GUI_USERS_LIST_ACTION_EDITUSER_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_ACTIONS_0 = "GUI_USERS_LIST_COLS_ACTIONS_0";

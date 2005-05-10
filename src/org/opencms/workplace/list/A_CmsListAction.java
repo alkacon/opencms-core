@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/05/04 16:08:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
@@ -67,8 +67,8 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
      * @param listId the id of the list
      * @param id unique id
      * @param name the name
-     * @param iconPath the link to the icon
      * @param helpText the help text
+     * @param iconPath the link to the icon
      * @param enabled <code>true</code> if enabled
      * @param confirmationMessage the confirmation message
      */
@@ -76,8 +76,8 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         String listId,
         String id,
         CmsMessageContainer name,
-        String iconPath,
         CmsMessageContainer helpText,
+        String iconPath,
         boolean enabled,
         CmsMessageContainer confirmationMessage) {
 
@@ -87,7 +87,6 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         setEnabled(enabled);
         setIconPath(iconPath);
         setConfirmationMessage(confirmationMessage);
-
     }
 
     /**
@@ -107,9 +106,7 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     }
 
     /**
-     * Sets the confirmation message .<p>
-     *
-     * @param confirmationMsg the confirmation message to set
+     * @see org.opencms.workplace.list.I_CmsListAction#setConfirmationMessage(org.opencms.i18n.CmsMessageContainer)
      */
     public void setConfirmationMessage(CmsMessageContainer confirmationMsg) {
 

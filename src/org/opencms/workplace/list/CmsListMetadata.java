@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -87,18 +87,6 @@ public class CmsListMetadata {
     public void addColumn(CmsListColumnDefinition listColumn, int position) {
 
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn, position);
-    }
-
-    /**
-     * Adds an action applicable to more than one list item at once.<p>
-     * 
-     * It will be executed iterating over the selected list items.<p>
-     * 
-     * @param directAction the action
-     */
-    public void addDirectMultiAction(I_CmsListDirectAction directAction) {
-
-        m_multiActions.add(directAction);
     }
 
     /**
@@ -378,7 +366,7 @@ public class CmsListMetadata {
                 html.append("<tr class='");
                 html.append(odd ? "oddrowbg" : "evenrowbg");
                 html.append("'>\n");
-                if (padCols>0) {
+                if (padCols > 0) {
                     html.append("<td colspan='");
                     html.append(padCols);
                     html.append("'>&nbsp;</td>\n");
@@ -409,10 +397,7 @@ public class CmsListMetadata {
         html.append("\t<div>\n");
         Iterator itActions = m_multiActions.iterator();
         while (itActions.hasNext()) {
-            I_CmsListAction multiAction = (I_CmsListAction)itActions.next();
-            if (multiAction instanceof CmsListDirectAction) {
-                ((CmsListDirectAction)multiAction).setItem(null);
-            }
+            CmsListMultiAction multiAction = (CmsListMultiAction)itActions.next();
             html.append(multiAction.buttonHtml(wp));
             html.append("\n");
         }

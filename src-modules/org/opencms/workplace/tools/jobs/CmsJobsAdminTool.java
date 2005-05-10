@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/04 16:08:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Main scheduler jobs management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends CmsListDialog {
@@ -74,7 +74,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * @since 5.7.3
      */
     private class ActivateJobAction extends CmsListDirectAction {
@@ -90,8 +90,8 @@ public class CmsJobsAdminTool extends CmsListDialog {
                 listId,
                 LIST_ACTION_ACTIVATE,
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0),
-                "buttons/user_sm.gif",
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0),
+                "buttons/user_sm.gif",
                 true,
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
         }
@@ -290,7 +290,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
             try {
                 // forward to the edit job screen
                 Map params = new HashMap();
-                params.put("jobId", jobId);          
+                params.put("jobId", jobId);
                 getToolManager().jspRedirectTool(this, "/jobs/edit", params);
             } catch (IOException e) {
                 // should never happen
@@ -341,8 +341,8 @@ public class CmsJobsAdminTool extends CmsListDialog {
                 LIST_ID,
                 LIST_ACTION_DELETE,
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
-                "list/delete.gif",
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0),
+                "list/delete.gif",
                 true, // enabled
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
 
@@ -350,8 +350,8 @@ public class CmsJobsAdminTool extends CmsListDialog {
                 LIST_ID,
                 LIST_ACTION_COPY,
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0),
-                "list/copy.gif",
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_HELP_0),
+                "list/copy.gif",
                 true, // enabled
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
 
@@ -365,8 +365,9 @@ public class CmsJobsAdminTool extends CmsListDialog {
                 Messages.GUI_JOBS_LIST_COLS_NAME_0), "", // no width
                 CmsListColumnAlignEnum.ALIGN_LEFT);
             nameCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
-                Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0), null, // no icon
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0), true, // enabled
+                Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0), Messages.get().container(
+                Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0), null, // no icon
+                true, // enabled
                 Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0)));
             metadata.addColumn(nameCol);
 
@@ -399,9 +400,9 @@ public class CmsJobsAdminTool extends CmsListDialog {
             metadata.addColumn(nextExeCol);
 
             // add multi actions
-            metadata.addDirectMultiAction(deleteAction);
+            // metadata.addDirectMultiAction(deleteAction);
             // reuse the activate job action as a multi action
-            metadata.addDirectMultiAction(activateJob);
+            // metadata.addDirectMultiAction(activateJob);
 
             // made the list searchable by name
             CmsSearchAction searchAction = new CmsSearchAction(LIST_ID, nameCol);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/05/04 16:08:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default implementation of a independent action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsListIndependentAction extends A_CmsListAction {
@@ -51,17 +51,18 @@ public class CmsListIndependentAction extends A_CmsListAction {
      * @param id unique id
      */
     public CmsListIndependentAction(String listId, String id) {
-        
+
         super(listId, id);
     }
+
     /**
      * Default Constructor.<p>
      * 
      * @param listId the id of the associated list
      * @param id unique id
      * @param name the name
-     * @param iconPath the link to the icon
      * @param helpText the help text
+     * @param iconPath the link to the icon
      * @param enabled if enabled
      * @param confirmationMessage the confirmation message
      */
@@ -69,15 +70,15 @@ public class CmsListIndependentAction extends A_CmsListAction {
         String listId,
         String id,
         CmsMessageContainer name,
-        String iconPath,
         CmsMessageContainer helpText,
+        String iconPath,
         boolean enabled,
         CmsMessageContainer confirmationMessage) {
 
         this(listId, id);
         setName(name);
-        setIconPath(iconPath);
         setHelpText(helpText);
+        setIconPath(iconPath);
         setEnabled(enabled);
         setConfirmationMessage(confirmationMessage);
     }
@@ -87,17 +88,14 @@ public class CmsListIndependentAction extends A_CmsListAction {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        if (isEnabled()) {
-            String onClic = getListId()
-                + "ListIndepAction('"
-                + getId()
-                + "', '"
-                + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-                + "');";
-            return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
-                wp.getLocale()), isEnabled(), getIconPath(), onClic);
-        }
-        return "";
+        String onClic = getListId()
+            + "ListIndepAction('"
+            + getId()
+            + "', '"
+            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + "');";
+        return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
+            wp.getLocale()), isEnabled(), getIconPath(), onClic);
     }
 
     /** list action id constant. */
@@ -115,9 +113,13 @@ public class CmsListIndependentAction extends A_CmsListAction {
      */
     public static final CmsListIndependentAction getDefaultRefreshListAction(String listId) {
 
-        return new CmsListIndependentAction(listId, LIST_ACTION_REFRESH, Messages.get().container(
-            Messages.GUI_LIST_ACTION_REFRESH_NAME_0), "list/reload.gif", Messages.get().container(
-            Messages.GUI_LIST_ACTION_REFRESH_HELP_0), true, // enabled
+        return new CmsListIndependentAction(
+            listId,
+            LIST_ACTION_REFRESH,
+            Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_NAME_0),
+            Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_HELP_0),
+            "list/reload.gif",
+            true, // enabled
             Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_CONF_0));
     }
 
@@ -130,9 +132,13 @@ public class CmsListIndependentAction extends A_CmsListAction {
      */
     public static final CmsListIndependentAction getDefaultPrintListAction(String listId) {
 
-        return new CmsListIndependentAction(listId, LIST_ACTION_PRINT, Messages.get().container(
-            Messages.GUI_LIST_ACTION_PRINT_NAME_0), "list/print.gif", Messages.get().container(
-            Messages.GUI_LIST_ACTION_PRINT_HELP_0), true, // enabled
+        return new CmsListIndependentAction(
+            listId,
+            LIST_ACTION_PRINT,
+            Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_NAME_0),
+            Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_HELP_0),
+            "list/print.gif",
+            true, // enabled
             Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_CONF_0));
     }
 }

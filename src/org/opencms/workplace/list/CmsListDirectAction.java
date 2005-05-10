@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/05/04 16:08:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 11:26:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default implementation of a direct action for a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {
@@ -64,8 +64,8 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
      * @param listId the id of the associated list
      * @param id unique id
      * @param name the name
-     * @param iconPath the link to the icon
      * @param helpText the help text
+     * @param iconPath the link to the icon
      * @param enabled if enabled
      * @param confirmationMessage the confirmation message
      */
@@ -73,15 +73,15 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         String listId,
         String id,
         CmsMessageContainer name,
-        String iconPath,
         CmsMessageContainer helpText,
+        String iconPath,
         boolean enabled,
         CmsMessageContainer confirmationMessage) {
 
         this(listId, id);
         setName(name);
-        setIconPath(iconPath);
         setHelpText(helpText);
+        setIconPath(iconPath);
         setEnabled(enabled);
         setConfirmationMessage(confirmationMessage);
     }
@@ -91,36 +91,23 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        if (getItem() != null) {
-            String id = getId() + getItem().getId();
-            String onClic = getListId()
-                + "ListAction('"
-                + getId()
-                + "', '"
-                + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-                + "', '"
-                + CmsStringUtil.escapeJavaScript(getItem().getId())
-                + "');";
+        String id = getId() + getItem().getId();
+        String onClic = getListId()
+            + "ListAction('"
+            + getId()
+            + "', '"
+            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + "', '"
+            + CmsStringUtil.escapeJavaScript(getItem().getId())
+            + "');";
 
-            return A_CmsHtmlIconButton.defaultButtonHtml(
-                id,
-                null,
-                getHelpText().key(wp.getLocale()),
-                isEnabled(),
-                getIconPath(),
-                onClic);
-        } else if (isEnabled()) {
-
-            String onClic = getListId()
-                + "ListMultiAction('"
-                + getId()
-                + "', '"
-                + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-                + "');";
-            return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
-                wp.getLocale()), isEnabled(), getIconPath(), onClic);
-        }
-        return "";
+        return A_CmsHtmlIconButton.defaultButtonHtml(
+            id,
+            null,
+            getHelpText().key(wp.getLocale()),
+            isEnabled(),
+            getIconPath(),
+            onClic);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToogleAction.java,v $
  * Date   : $Date: 2005/05/10 11:26:53 $
- * Version: $Revision: 1.4 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,16 +36,15 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
- * Implementation of a default action in a html list column.<p>
+ * Abstract implementation of a toogle action for a html list.<p>
+ * 
+ * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsListDefaultAction extends CmsListDirectAction {
-
-    /** Id of the column. */
-    private String m_column;
+public abstract class A_CmsListToogleAction extends CmsListDefaultAction {
 
     /**
      * Default Constructor.<p>
@@ -53,47 +52,18 @@ public class CmsListDefaultAction extends CmsListDirectAction {
      * @param listId the id of the associated list
      * @param id unique id
      */
-    public CmsListDefaultAction(String listId, String id) {
+    protected A_CmsListToogleAction(String listId, String id) {
 
         super(listId, id);
+
     }
 
     /**
-     * Full Constructor.<p>
-     * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param name the name
-     * @param helpText the help text
-     * @param iconPath the path to the icon
-     * @param enabled if enabled or not
-     * @param confirmationMessage the confirmation message
-     */
-    public CmsListDefaultAction(
-        String listId,
-        String id,
-        CmsMessageContainer name,
-        CmsMessageContainer helpText,
-        String iconPath,
-        boolean enabled,
-        CmsMessageContainer confirmationMessage) {
-
-        this(listId, id);
-        setName(name);
-        setHelpText(helpText);
-        setIconPath(iconPath);
-        setEnabled(enabled);
-        setConfirmationMessage(confirmationMessage);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
     public String buttonHtml(CmsWorkplace wp) {
 
         String id = getId() + getItem().getId();
-        String name = (getItem().get(m_column) != null) ? getItem().get(m_column).toString() : getName().key(
-            wp.getLocale());
         String onClic = getListId()
             + "ListAction('"
             + getId()
@@ -105,7 +75,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
 
         return A_CmsHtmlIconButton.defaultButtonHtml(
             id,
-            name,
+            null,
             getHelpText().key(wp.getLocale()),
             isEnabled(),
             getIconPath(),
@@ -113,13 +83,67 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     }
 
     /**
-     * The id of the column to use.<p>
-     * 
-     * @param column the column id
+     * @see org.opencms.workplace.list.A_CmsListAction#getConfirmationMessage()
      */
-    public void setColumn(String column) {
+    public CmsMessageContainer getConfirmationMessage() {
 
-        m_column = column;
+        return selectAction().getConfirmationMessage();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
+     */
+    public CmsMessageContainer getHelpText() {
+
+        return selectAction().getHelpText();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getIconPath()
+     */
+    public String getIconPath() {
+
+        return selectAction().getIconPath();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsHtmlIconButton#getId()
+     */
+    public String getId() {
+
+        return selectAction().getId();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getName()
+     */
+    public CmsMessageContainer getName() {
+
+        return selectAction().getName();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsHtmlIconButton#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        return selectAction().isEnabled();
+    }
+
+    /**
+     * Selects and sets the current action.<p>
+     *
+     * @return the selected action
+     */
+    public abstract I_CmsListDirectAction selectAction();
+
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
+     */
+    public void setItem(CmsListItem item) {
+
+        super.setItem(item);
+        selectAction().setItem(item);
     }
 
 }
