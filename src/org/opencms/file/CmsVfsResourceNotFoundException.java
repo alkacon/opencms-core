@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceNotFoundException.java,v $
- * Date   : $Date: 2005/04/25 14:07:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 15:46:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,14 @@
 package org.opencms.file;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to read a resource in the VFS denoted by a specified 
  * pathname has failed.<p> 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2005/04/25 14:07:15 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/10 15:46:21 $
  * @since 5.1.2
  */
 public class CmsVfsResourceNotFoundException extends CmsVfsException {
@@ -82,5 +83,14 @@ public class CmsVfsResourceNotFoundException extends CmsVfsException {
     public CmsVfsResourceNotFoundException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }    
+    }   
+    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsVfsResourceNotFoundException(container, cause);
+    }
 }

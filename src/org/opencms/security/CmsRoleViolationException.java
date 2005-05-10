@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleViolationException.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/10 15:46:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 /**
  * A role violation occurs if a user without permissions tries to access a protected OpenCms system feature that can only 
  * be accessed by users in certain roles.<p>
@@ -60,5 +61,13 @@ public class CmsRoleViolationException extends CmsSecurityException {
     public CmsRoleViolationException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
+    }
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsRoleViolationException(container, cause);
     }
 }
