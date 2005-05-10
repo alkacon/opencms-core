@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/05/04 10:58:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 13:57:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MODIFY_ONLINE_1 = "ERR_MODIFY_ONLINE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_PERMISSION_1 = "ERR_NO_PERMISSION_1";
+    public static final String ERR_NO_PERMISSION_OPERATION_2 = "ERR_NO_PERMISSION_OPERATION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PERMISSION_RESOURCE_1 = "ERR_NO_PERMISSION_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_IN_ROLE_2 = "ERR_NOT_IN_ROLE_2";
