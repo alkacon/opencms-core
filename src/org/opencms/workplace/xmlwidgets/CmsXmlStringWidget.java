@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/10 09:57:29 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.xml.CmsXmlException;
 
 /**
@@ -39,7 +40,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -67,7 +68,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\" value=\"");
-        result.append(param.getStringValue(cms));
+        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
         result.append("\">");
         result.append("</td>");
 
