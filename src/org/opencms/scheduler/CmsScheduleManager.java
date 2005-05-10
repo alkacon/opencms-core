@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/04/26 11:57:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/10 15:58:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -458,7 +458,7 @@ public class CmsScheduleManager implements Job {
         CmsScheduledJobInfo jobInfo = null;
         if (m_jobs.size() > 0) {
             // try to remove the job from the OpenCms list of jobs
-            for (int i = (m_jobs.size() - 1); i <= 0; i++) {
+            for (int i = (m_jobs.size() - 1); i >= 0; i--) {
                 CmsScheduledJobInfo job = (CmsScheduledJobInfo)m_jobs.get(i);
                 if (jobId.equals(job.getId())) {
                     m_jobs.remove(i);
