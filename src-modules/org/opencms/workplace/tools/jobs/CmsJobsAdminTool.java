@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/10 12:51:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/10 15:59:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,16 +36,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
-import org.opencms.workplace.list.CmsListColumnAlignEnum;
-import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDateMacroFormatter;
-import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.list.CmsListDirectAction;
-import org.opencms.workplace.list.CmsListIndependentAction;
-import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.I_CmsListDirectAction;
+import org.opencms.scheduler.CmsSchedulerException;
+import org.opencms.security.CmsRoleViolationException;
+import org.opencms.workplace.list.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,139 +52,74 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Main scheduler jobs management view.<p>
+ * Main scheduled jobs management list view.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Andreas Zahner (a.zahner@alkacon.com) 
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends A_CmsListDialog {
 
-    /**
-     * list action to activate a job, that can be used as direct action
-     * as also multi action.<p>
-     * 
-     * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.8 $
-     * @since 5.7.3
-     */
-    private class ActivateJobAction extends CmsListDirectAction {
-
-        /**
-         * Default Constructor.<p>
-         * 
-         * @param listId The id of the associated list
-         */
-        public ActivateJobAction(String listId) {
-
-            super(
-                listId,
-                LIST_ACTION_ACTIVATE,
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0),
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0),
-                "buttons/user_sm.gif",
-                true,
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
-        }
-
-        /**
-         * @see org.opencms.workplace.list.I_CmsListAction#getConfirmationMessage()
-         */
-        public CmsMessageContainer getConfirmationMessage() {
-
-            if (getItem() != null) {
-                String jobId = getItem().getId();
-                CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-
-                if (!job.isActive()) {
-                    return Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_ACTCONF_0);
-                }
-                return Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_DESCONF_0);
-            }
-            return super.getConfirmationMessage();
-        }
-
-        /**
-         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
-         */
-        public CmsMessageContainer getHelpText() {
-
-            if (getItem() != null) {
-                String jobId = getItem().getId();
-                CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-
-                if (!job.isActive()) {
-                    return Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_ACTHELP_0);
-                }
-                return Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_DESHELP_0);
-            }
-            return super.getHelpText();
-        }
-
-        /**
-         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getIconPath()
-         */
-        public String getIconPath() {
-
-            if (getItem() != null) {
-                String jobId = getItem().getId();
-                CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-
-                if (!job.isActive()) {
-                    return "buttons/apply_in.gif";
-                }
-                return "buttons/apply.gif";
-            }
-            return super.getIconPath();
-        }
-
-        /**
-         * @see org.opencms.workplace.list.I_CmsHtmlIconButton#isEnabled()
-         */
-        public boolean isEnabled() {
-
-            if (getItem() != null) {
-                try {
-                    String jobName = getItem().get(LIST_COLUMN_NAME).toString();
-                    CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobName);
-                    return job.getExecutionTimeNext() != null;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return super.isEnabled();
-        }
-    }
-
-    /** list action id constant. */
+    /** List action activate. */
     public static final String LIST_ACTION_ACTIVATE = "activate";
-
-    /** list action id constant. */
+    
+    /** List action copy. */
     public static final String LIST_ACTION_COPY = "copy";
-
-    /** list action id constant. */
+    
+    /** List action deactivate. */
+    public static final String LIST_ACTION_DEACTIVATE = "deactivate";
+    
+    /** List action delete. */
     public static final String LIST_ACTION_DELETE = "delete";
-
-    /** list action id constant. */
+    
+    /** List action edit. */
     public static final String LIST_ACTION_EDIT = "edit";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_ACTIONS = "actions";
-
-    /** list column id constant. */
+    
+    /** List action multi activate. */
+    public static final String LIST_ACTION_MACTIVATE = "mactivate";
+    
+    /** List action multi deactivate. */
+    public static final String LIST_ACTION_MDEACTIVATE = "mdeactivate";
+    
+    /** List action multi delete. */
+    public static final String LIST_ACTION_MDELETE = "mdelete";
+    
+    /** List column activate. */
+    public static final String LIST_COLUMN_ACTIVATE = "activate";
+    
+    /** List column class. */
+    public static final String LIST_COLUMN_CLASS = "class";
+    
+    /** List column copy. */
+    public static final String LIST_COLUMN_COPY = "copy";
+    
+    /** List column delete. */
+    public static final String LIST_COLUMN_DELETE = "delete";
+    
+    /** List column last execution. */
     public static final String LIST_COLUMN_LASTEXE = "lastexe";
-
-    /** list column id constant. */
+    
+    /** List column name. */
     public static final String LIST_COLUMN_NAME = "name";
-
-    /** list column id constant. */
+    
+    /** List column next execution. */
     public static final String LIST_COLUMN_NEXTEXE = "nextexe";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_TYPE = "type";
-
-    /** list id constant. */
+    
+    /** List detail context info. */
+    public static final String LIST_DETAIL_CONTEXTINFO = "contextinfo";
+    
+    /** List detail parameter. */
+    public static final String LIST_DETAIL_PARAMETER = "parameter";
+    
+    /** List ID. */
     public static final String LIST_ID = "jobs";
+    
+    /** Path to the list buttons. */
+    public static final String PATH_BUTTONS = "tools/jobs/buttons/";
+    
+    /** Path to the list icons. */
+    public static final String PATH_ICONS = "tools/jobs/icons/";
 
     /**
      * Public constructor.<p>
@@ -200,12 +128,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
      */
     public CmsJobsAdminTool(CmsJspActionElement jsp) {
 
-        super(
-            jsp,
-            LIST_ID,
-            new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0),
-            LIST_COLUMN_NAME,
-            LIST_COLUMN_NAME);
+        super(jsp, LIST_ID, new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0), LIST_COLUMN_NAME, LIST_COLUMN_NAME);
     }
 
     /**
@@ -227,7 +150,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
      */
     public void executeListMultiActions() {
 
-        if (getParamListAction().equals(LIST_ACTION_DELETE)) {
+        if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
             // execute the delete multiaction
             try {
                 Iterator itItems = getSelectedItems().iterator();
@@ -239,25 +162,22 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
             } catch (CmsException e) {
                 throw new RuntimeException(e);
             }
-        } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
-            // execute the activate multiaction
-            try {
-                Iterator itItems = getSelectedItems().iterator();
-                while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
-                    String jobId = listItem.getId();
-                    CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-                    if (job.isActive()) {
-                        job.setActive(false);
-                    } else {
-                        job.setActive(true);
+        } else if (getParamListAction().equals(LIST_ACTION_MACTIVATE) || getParamListAction().equals(LIST_ACTION_MDEACTIVATE)) {
+                // execute the activate or deactivate multiaction
+                try {
+                    Iterator itItems = getSelectedItems().iterator();
+                    boolean activate = getParamListAction().equals(LIST_ACTION_MACTIVATE);
+                    while (itItems.hasNext()) {
+                        CmsListItem listItem = (CmsListItem)itItems.next();
+                        
+                        CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
+                        job.setActive(activate);
+                        OpenCms.getScheduleManager().scheduleJob(getCms(), job);
                     }
-                    OpenCms.getScheduleManager().scheduleJob(getCms(), job);
+                    refreshList();
+                } catch (CmsException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (CmsException e) {
-                throw new RuntimeException(e);
-            }
-            // refreshing no needed becaus the activate action does not add/remove rows to the list
         } else {
             throwListUnsupportedActionException();
         }
@@ -272,30 +192,58 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
     public void executeListSingleActions() {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
+            // edit a job from the list
             String jobId = getSelectedItem().getId();
             try {
                 // forward to the edit job screen
                 Map params = new HashMap();
-                params.put("jobId", jobId);
+                params.put("jobId", jobId);          
                 getToolManager().jspRedirectTool(this, "/jobs/edit", params);
             } catch (IOException e) {
                 // should never happen
                 throw new RuntimeException(e);
             }
+        } else if (getParamListAction().equals(LIST_ACTION_COPY)) {
+            // copy a job from the list
+            String jobId = getSelectedItem().getId();
+            CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(jobId).clone();
+            job.setActive(true);
+            // copy action has to be implemented!!
+            int warn = 0;
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
-            // execute the activate action
-            CmsListItem listItem = getSelectedItem();
+            // activate a job from the list
+            String jobId = getSelectedItem().getId();
+            CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(jobId).clone();
+            job.setActive(true);
             try {
-                String jobId = listItem.getId();
-                CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-                if (job.isActive()) {
-                    job.setActive(false);
-                } else {
-                    job.setActive(true);
-                }
                 OpenCms.getScheduleManager().scheduleJob(getCms(), job);
-            } catch (CmsException e) {
-                throw new RuntimeException(e);
+                refreshList();
+            } catch (CmsSchedulerException e) {
+                // TODO: exception handling
+            } catch (CmsRoleViolationException e) {
+                // TODO: exception handling
+            }
+        } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
+            // deactivate a job from the list
+            String jobId = getSelectedItem().getId();
+            CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(jobId).clone();
+            job.setActive(false);
+            try {
+                OpenCms.getScheduleManager().scheduleJob(getCms(), job);
+                refreshList();
+            } catch (CmsSchedulerException e) {
+                // TODO: exception handling
+            } catch (CmsRoleViolationException e) {
+                // TODO: exception handling
+            }
+        } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
+            // delete a job from the list
+            String jobId = getSelectedItem().getId();        
+            try {
+                OpenCms.getScheduleManager().unscheduleJob(getCms(), jobId);
+                getList().removeItem(jobId);
+            } catch (CmsRoleViolationException e) {
+                // TODO: exception handling
             }
         } else {
             throwListUnsupportedActionException();
@@ -308,108 +256,258 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
      */
     protected List getListItems() {
 
-        List ret = new ArrayList();
-        // fill list
-        List jobs = OpenCms.getScheduleManager().getJobs();
-        Iterator itJobs = jobs.iterator();
-        while (itJobs.hasNext()) {
-            CmsScheduledJobInfo job = (CmsScheduledJobInfo)itJobs.next();
-            CmsListItem item = getList().newItem(job.getId());
+        List items = new ArrayList();
+        
+        Iterator i = OpenCms.getScheduleManager().getJobs().iterator();
+        while (i.hasNext()) {
+            CmsScheduledJobInfo job = (CmsScheduledJobInfo)i.next();
+            CmsListItem item = getList().newItem(job.getId().toString());
             item.set(LIST_COLUMN_NAME, job.getJobName());
-            item.set(LIST_COLUMN_TYPE, job.getClassName());
+            item.set(LIST_COLUMN_CLASS, job.getClassName());
             item.set(LIST_COLUMN_LASTEXE, job.getExecutionTimePrevious());
             item.set(LIST_COLUMN_NEXTEXE, job.getExecutionTimeNext());
-            ret.add(ret);
+            // details: context info
+            item.set(LIST_DETAIL_CONTEXTINFO, job.getContextInfo());
+            // details: parameter
+            StringBuffer params = new StringBuffer(32);
+            Iterator paramIt = job.getParameters().keySet().iterator();
+            while (paramIt.hasNext()) {
+                String param = (String)paramIt.next();
+                String value = (String)job.getParameters().get(param);
+                params.append(param).append(": ");
+                params.append(value).append("<br>");
+            }
+            item.set(LIST_DETAIL_PARAMETER, params);
+            
+            items.add(item);
         }
-
-        return ret;
+        
+        return items;
     }
 
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
 
-        // add column for direct actions
-        CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIONS, Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_ACTIONS_0), "", // no width
-            CmsListColumnAlignEnum.ALIGN_CENTER);
-        actionsCol.setSorteable(false);
-
-        I_CmsListDirectAction activateJob = new ActivateJobAction(LIST_ID);
-
-        CmsListDirectAction deleteAction = new CmsListDirectAction(
+        // add column for activate/deactivate action
+        CmsListColumnDefinition activateCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
+        activateCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_ACTIVE_0));
+        activateCol.setWidth(null);
+        activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        activateCol.setSorteable(false);
+        // create direct action to activate/deactivate job
+        CmsActionActivateJob activateJob = new CmsActionActivateJob(
             LIST_ID,
-            LIST_ACTION_DELETE,
-            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
-            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0),
-            "list/delete.gif",
-            true, // enabled
-            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
-
-        CmsListDirectAction copyAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_COPY, Messages.get().container(
-            Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0), Messages.get().container(
-            Messages.GUI_JOBS_LIST_ACTION_COPY_HELP_0), "list/copy.gif", true, // enabled
-            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
-
-        actionsCol.addDirectAction(activateJob);
-        actionsCol.addDirectAction(copyAction);
-        actionsCol.addDirectAction(deleteAction);
-        metadata.addColumn(actionsCol);
-
-        // add column for name and default action
-        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_NAME_0), "", // no width
-            CmsListColumnAlignEnum.ALIGN_LEFT);
-        nameCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
-            Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0), Messages.get().container(
-            Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0), null, // no icon
-            true, // enabled
-            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0)));
+            LIST_ACTION_ACTIVATE,
+            getCms());
+        CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ACTIVATE);
+        userActAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0));
+        userActAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
+        userActAction.setIconPath("buttons/apply_in.gif");
+        userActAction.setEnabled(true);
+        userActAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0));
+        activateJob.setFirstAction(userActAction);
+        CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
+        userDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
+        userDeactAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
+        userDeactAction.setIconPath("buttons/apply.gif");
+        userDeactAction.setEnabled(true);
+        userDeactAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0));
+        activateJob.setSecondAction(userDeactAction);
+        activateCol.addDirectAction(activateJob);
+        metadata.addColumn(activateCol);
+        
+        // add column for copy action
+        CmsListColumnDefinition copyCol = new CmsListColumnDefinition(LIST_COLUMN_COPY);
+        copyCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_COPY_0));
+        copyCol.setWidth(null);
+        copyCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        copyCol.setSorteable(false);
+        // create direct action
+        CmsListDirectAction copyJob = new CmsListDirectAction(LIST_ID, LIST_COLUMN_COPY);
+        copyJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0));
+        copyJob.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
+        copyJob.setIconPath("buttons/apply.gif");
+        copyJob.setEnabled(true);
+        copyJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_HELP_0));
+        copyCol.addDirectAction(copyJob);
+        metadata.addColumn(copyCol);
+        
+        // add column for delete action
+        CmsListColumnDefinition delCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
+        delCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_DELETE_0));
+        delCol.setWidth(null);
+        delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        delCol.setSorteable(false);
+        // create direct action
+        CmsListDirectAction delJob = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
+        delJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0));
+        delJob.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
+        delJob.setIconPath("buttons/apply.gif");
+        delJob.setEnabled(true);
+        delJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0));
+        delCol.addDirectAction(delJob);
+        metadata.addColumn(delCol);
+        
+        // add column for name
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
+        nameCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NAME_0));
+        nameCol.setWidth("20%");
+        nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        // create default edit action for name column
+        CmsListDefaultAction nameColAction = new CmsListDefaultAction (LIST_ID, LIST_ACTION_EDIT);
+        nameColAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
+        nameColAction.setIconPath(null);
+        nameColAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0));
+        nameColAction.setEnabled(true);
+        nameColAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0));
+        // set action for the name column
+        nameCol.setDefaultAction(nameColAction);
         metadata.addColumn(nameCol);
-
-        // add column for type
-        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE, Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_TYPE_0), "", // no width
-            CmsListColumnAlignEnum.ALIGN_LEFT);
-        metadata.addColumn(typeCol);
-
+        
+        // add column for class
+        CmsListColumnDefinition classCol = new CmsListColumnDefinition(LIST_COLUMN_CLASS);
+        classCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_CLASS_0));
+        classCol.setWidth("15%");
+        classCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        metadata.addColumn(classCol);
+        
         // add column for last execution time
-        CmsListColumnDefinition lastExeCol = new CmsListColumnDefinition(LIST_COLUMN_LASTEXE, Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_LASTEXE_0), "", // no width
-            CmsListColumnAlignEnum.ALIGN_LEFT);
-        lastExeCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_LASTEXE_FORMAT_0), Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_LASTEXE_NEVER_0)));
-        metadata.addColumn(lastExeCol);
-
+        CmsListColumnDefinition lastExecCol = new CmsListColumnDefinition(LIST_COLUMN_LASTEXE);
+        lastExecCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_LASTEXE_0));
+        lastExecCol.setWidth("22.5%");
+        lastExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        // create date formatter for last execution time
+        CmsListDateMacroFormatter listDateFormatter =  new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1), Messages.get().container(
+            Messages.GUI_JOBS_LIST_COL_LASTEXE_NEVER_0));
+        lastExecCol.setFormatter(listDateFormatter);
+        metadata.addColumn(lastExecCol);
+        
         // add column for next execution time
-        CmsListColumnDefinition nextExeCol = new CmsListColumnDefinition(LIST_COLUMN_NEXTEXE, Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_NEXTEXE_0), "", // no width
-            CmsListColumnAlignEnum.ALIGN_LEFT);
-        nextExeCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_NEXTEXE_FORMAT_0), Messages.get().container(
-            Messages.GUI_JOBS_LIST_COLS_NEXTEXE_NEVER_0)));
-        metadata.addColumn(nextExeCol);
-    }
+        CmsListColumnDefinition nextExecCol = new CmsListColumnDefinition(LIST_COLUMN_NEXTEXE);
+        nextExecCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NEXTEXE_0));
+        nextExecCol.setWidth("22.5%");
+        nextExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        // create date formatter for next execution time
+        listDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1), Messages.get().container(
+                Messages.GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0));
+        nextExecCol.setFormatter(listDateFormatter);
+        metadata.addColumn(nextExecCol);
 
+    }
+    
+    
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
+        // add default reload button
         metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
+        
+        // add independent job context info button
+        
+        // create show context info action
+        CmsListIndependentAction showContextInfoAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_CONTEXTINFO);
+        showContextInfoAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_NAME_0));
+        showContextInfoAction.setIconPath("buttons/properties.gif");
+        showContextInfoAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_HELP_0));
+        showContextInfoAction.setEnabled(true);
+        showContextInfoAction.setConfirmationMessage(null);
+        // create hide context info action
+        CmsListIndependentAction hideContextInfoAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_CONTEXTINFO);
+        hideContextInfoAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_NAME_0));
+        hideContextInfoAction.setIconPath("buttons/properties.gif");
+        hideContextInfoAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_HELP_0));
+        hideContextInfoAction.setEnabled(true);
+        hideContextInfoAction.setConfirmationMessage(null);
+        // create list item
+        CmsListItemDetails jobsContextInfoDetails = new CmsListItemDetails(LIST_DETAIL_CONTEXTINFO);
+        jobsContextInfoDetails.setAtColumn(LIST_COLUMN_NAME);
+        jobsContextInfoDetails.setVisible(false);
+        jobsContextInfoDetails.setShowAction(showContextInfoAction);
+        jobsContextInfoDetails.setHideAction(hideContextInfoAction);
+        CmsContextInfoDetailsFormatter contextFormatter = new CmsContextInfoDetailsFormatter();
+        contextFormatter.setUserMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_USER_0));
+        contextFormatter.setProjectMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_PROJECT_0));
+        contextFormatter.setLocaleMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_LOCALE_0));
+        contextFormatter.setRootSiteMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_ROOTSITE_0));
+        contextFormatter.setEncodingMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_ENCODING_0));
+        contextFormatter.setRemoteAddrMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REMADR_0));
+        contextFormatter.setRequestedURIMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0));
+        jobsContextInfoDetails.setFormatter(contextFormatter);
+        // add item to meta data
+        metadata.addItemDetails(jobsContextInfoDetails);
+        
+        // add independent job parameter button
+        
+        // create show parameter button
+        CmsListIndependentAction showParameterAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_PARAMETER);
+        showParameterAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0));
+        showParameterAction.setIconPath("buttons/details.gif");
+        showParameterAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_HELP_0));
+        showParameterAction.setEnabled(true);
+        showParameterAction.setConfirmationMessage(null);
+        // create hide parameter button
+        CmsListIndependentAction hideParameterAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_PARAMETER);
+        hideParameterAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_NAME_0));
+        hideParameterAction.setIconPath("buttons/details.gif");
+        hideParameterAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_HELP_0));
+        hideParameterAction.setEnabled(true);
+        hideParameterAction.setConfirmationMessage(null);
+        // create list item
+        CmsListItemDetails jobsParameterDetails = new CmsListItemDetails(LIST_DETAIL_PARAMETER);
+        jobsParameterDetails.setAtColumn(LIST_COLUMN_NAME);
+        jobsParameterDetails.setVisible(false);
+        jobsParameterDetails.setShowAction(showParameterAction);
+        jobsParameterDetails.setHideAction(hideParameterAction);         
+        jobsParameterDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_JOBS_DETAIL_PARAMETER_FORMAT_0)));
+        metadata.addItemDetails(jobsParameterDetails);
 
     }
-
+    
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setMultiActions(CmsListMetadata metadata) {
-
-        // add multi actions
-        // metadata.addDirectMultiAction(deleteAction);
-        // metadata.addDirectMultiAction(activateJob);
+        
+        // add the activate job multi action
+        CmsListMultiAction activateJob = new CmsListMultiAction(LIST_ID, LIST_ACTION_MACTIVATE);
+        activateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0));
+        activateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0));
+        activateJob.setIconPath("buttons/apply.gif");
+        activateJob.setEnabled(true);
+        activateJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_HELP_0));
+        metadata.addMultiAction(activateJob);
+        
+        // add the deactivate job multi action
+        CmsListMultiAction deactivateJob = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDEACTIVATE);
+        deactivateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0));
+        deactivateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0));
+        deactivateJob.setIconPath("buttons/apply_in.gif");
+        deactivateJob.setEnabled(true);
+        deactivateJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_HELP_0));
+        metadata.addMultiAction(deactivateJob);
+        
+        // add the delete job multi action
+        CmsListMultiAction deleteJobs = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDELETE);
+        deleteJobs.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDELETE_NAME_0));
+        deleteJobs.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDELETE_CONF_0));
+        deleteJobs.setIconPath("list/delete.gif");
+        deleteJobs.setEnabled(true);
+        deleteJobs.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDELETE_HELP_0));
+        metadata.addMultiAction(deleteJobs);
     }
 
 }
