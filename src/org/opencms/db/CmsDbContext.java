@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/05/09 15:12:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 15:47:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.flex.CmsFlexRequestContextInfo;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
@@ -47,7 +48,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.4
  */
 public class CmsDbContext {
@@ -224,16 +225,27 @@ public class CmsDbContext {
                 report.println(throwable);
             }
         }
-
-        if (throwable != null) {
-            if (throwable instanceof CmsException) {
-                throw (CmsException)throwable;
-            }
-            if (message == null) {
-                throw new CmsVfsException(Messages.get().container(Messages.ERR_DB_OPERATION_0), throwable);
-            } else {
-                throw new CmsVfsException(message, throwable);
-            }
+   
+        throwException(message, throwable);
+    }  
+    
+    /**
+     * Returns an Exception of the same type as throwable if throwable is an OpenCms Exception
+     * with the message as a MessageContainer and the throwable as a cause.<p>
+     * 
+     * @param message the MessageContainer for the Exception to create
+     * @param throwable the cause of the exception
+     * 
+     * @throws CmsVfsException if throwable is not an OpenCms Exception
+     * @throws CmsException of the same type as throwable if throwable is an OpenCms Exception
+     */
+    void throwException(CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
+        if (throwable instanceof CmsException) {
+            throw ((CmsException)throwable).createException(message, throwable);
+        } else if (throwable instanceof CmsRuntimeException) {
+            throw ((CmsRuntimeException)throwable).createException(message, throwable);
+        } else {
+            throw new CmsVfsException(message, throwable);
         }
     }    
 }
