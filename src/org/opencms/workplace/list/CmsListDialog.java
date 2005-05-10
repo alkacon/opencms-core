@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsListDialog.java,v $
- * Date   : $Date: 2005/04/26 14:59:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 12:14:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public abstract class CmsListDialog extends CmsDialog {
@@ -442,5 +442,32 @@ public abstract class CmsListDialog extends CmsDialog {
             Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
             getList().getName(),
             getParamListAction()));
+    }
+
+    /**
+     * This method should handle the default list independent actions,
+     * by comparing <code>{@link #getParamListAction()}</code> with the id 
+     * of the action to execute.<p> 
+     * 
+     * if you want to handle additional independent actions, override this method,
+     * handling your actions and FINALLY calling <code>super.executeListIndepActions();</code>.<p> 
+     */
+    public void executeListIndepActions() {
+    
+        Iterator itIndepActions = getList().getMetadata().getIndependentActions().iterator();
+        while (itIndepActions.hasNext()) {
+            I_CmsListAction action = (I_CmsListAction)itIndepActions.next();
+            if (action.getId().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
+                if (getParamListAction().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
+                    refreshList();
+                }
+                break;
+            } 
+        }
+        // toogle item details
+        if (getList().getMetadata().getItemDetailDefinition(getParamListAction())!=null) {
+            getList().getMetadata().toogleDetailState(getParamListAction());
+        }
+        listSave();
     }
 }

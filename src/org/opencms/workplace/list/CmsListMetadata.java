@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/10 11:26:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 12:14:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -146,6 +147,16 @@ public class CmsListMetadata {
     public CmsListColumnDefinition getColumnDefinition(String columnId) {
 
         return (CmsListColumnDefinition)m_columns.getObject(columnId);
+    }
+
+    /**
+     * Returns the list of independent actions.<p>
+     * 
+     * @return a list of <code>{@link I_CmsListAction}</code>s
+     */
+    public List getIndependentActions() {
+
+        return Collections.unmodifiableList(m_indepActions);
     }
 
     /**

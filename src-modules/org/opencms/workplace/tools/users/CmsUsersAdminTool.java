@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/10 11:26:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/10 12:14:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends CmsListDialog {
@@ -136,25 +136,6 @@ public class CmsUsersAdminTool extends CmsListDialog {
     public CmsUsersAdminTool(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * This method should handle every defined list independent action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     */
-    public void executeListIndepActions() {
-
-        if (getParamListAction().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
-            refreshList();
-        } else if (getParamListAction().equals(LIST_DETAIL_ADDRESS)) {
-            getList().getMetadata().toogleDetailState(LIST_DETAIL_ADDRESS);
-        } else if (getParamListAction().equals(LIST_DETAIL_GROUPS)) {
-            getList().getMetadata().toogleDetailState(LIST_DETAIL_GROUPS);
-        } else {
-            throwListUnsupportedActionException();
-        }
-        listSave();
     }
 
     /**
