@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/10 12:14:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/10 12:51:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,11 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.CmsListDialog;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
@@ -50,7 +49,6 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
-import org.opencms.workplace.list.CmsSearchAction;
 import org.opencms.workplace.list.I_CmsListAction;
 
 import java.io.IOException;
@@ -69,10 +67,10 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
-public class CmsUsersAdminTool extends CmsListDialog {
+public class CmsUsersAdminTool extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_ACTIVATE = "activate";
@@ -113,9 +111,6 @@ public class CmsUsersAdminTool extends CmsListDialog {
     /** list id constant. */
     public static final String LIST_ID = "users";
 
-    /** metadata for the list used in this dialog. */
-    private static CmsListMetadata metadata;
-
     /**
      * Public constructor.<p>
      * 
@@ -123,7 +118,7 @@ public class CmsUsersAdminTool extends CmsListDialog {
      */
     public CmsUsersAdminTool(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, LIST_COLUMN_LOGIN);
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0), LIST_COLUMN_LOGIN, LIST_COLUMN_LOGIN);
     }
 
     /**
@@ -230,162 +225,164 @@ public class CmsUsersAdminTool extends CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListDialog#createList()
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
-    protected CmsHtmlList createList() {
+    protected void setIndependentActions(CmsListMetadata metadata) {
 
-        if (metadata == null) {
-            metadata = new CmsListMetadata();
+        // add user address details
+        I_CmsListAction showAddressAction = new CmsListIndependentAction(
+            LIST_ID,
+            LIST_DETAIL_ADDRESS,
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0),
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0),
+            "buttons/properties.gif",
+            true,
+            null);
+        I_CmsListAction hideAddressAction = new CmsListIndependentAction(
+            LIST_ID,
+            LIST_DETAIL_ADDRESS,
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_NAME_0),
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0),
+            "buttons/properties.gif",
+            true,
+            null);
+        CmsListItemDetails userAddressDetails = new CmsListItemDetails(
+            LIST_DETAIL_ADDRESS,
+            LIST_COLUMN_LOGIN,
+            false,
+            showAddressAction,
+            hideAddressAction);
+        userAddressDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_ADDRESS_FORMAT_0)));
+        metadata.addItemDetails(userAddressDetails);
 
-            // add user address details
-            I_CmsListAction showAddressAction = new CmsListIndependentAction(
-                LIST_ID,
-                LIST_DETAIL_ADDRESS,
-                Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0),
-                Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0),
-                "buttons/properties.gif",
-                true,
-                null);
-            I_CmsListAction hideAddressAction = new CmsListIndependentAction(
-                LIST_ID,
-                LIST_DETAIL_ADDRESS,
-                Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_NAME_0),
-                Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0),
-                "buttons/properties.gif",
-                true,
-                null);
-            CmsListItemDetails userAddressDetails = new CmsListItemDetails(
-                LIST_DETAIL_ADDRESS,
-                LIST_COLUMN_LOGIN,
-                false,
-                showAddressAction,
-                hideAddressAction);
-            userAddressDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-                Messages.GUI_USERS_DETAIL_ADDRESS_FORMAT_0)));
-            metadata.addItemDetails(userAddressDetails);
+        // add user groups details
+        I_CmsListAction showGroupsAction = new CmsListIndependentAction(
+            LIST_ID,
+            LIST_DETAIL_GROUPS,
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0),
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_HELP_0),
+            "buttons/group_sm.gif",
+            true,
+            null);
+        I_CmsListAction hideGroupsAction = new CmsListIndependentAction(
+            LIST_ID,
+            LIST_DETAIL_GROUPS,
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0),
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_HELP_0),
+            "buttons/group_sm.gif",
+            true,
+            null);
 
-            // add user groups details
-            I_CmsListAction showGroupsAction = new CmsListIndependentAction(
-                LIST_ID,
-                LIST_DETAIL_GROUPS,
-                Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0),
-                Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_HELP_0),
-                "buttons/group_sm.gif",
-                true,
-                null);
-            I_CmsListAction hideGroupsAction = new CmsListIndependentAction(
-                LIST_ID,
-                LIST_DETAIL_GROUPS,
-                Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0),
-                Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_HELP_0),
-                "buttons/group_sm.gif",
-                true,
-                null);
+        CmsListItemDetails userGroupsDetails = new CmsListItemDetails(
+            LIST_DETAIL_GROUPS,
+            LIST_COLUMN_LOGIN,
+            true,
+            showGroupsAction,
+            hideGroupsAction);
+        userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_GROUPS_FORMAT_0)));
+        metadata.addItemDetails(userGroupsDetails);
 
-            CmsListItemDetails userGroupsDetails = new CmsListItemDetails(
-                LIST_DETAIL_GROUPS,
-                LIST_COLUMN_LOGIN,
-                true,
-                showGroupsAction,
-                hideGroupsAction);
-            userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-                Messages.GUI_USERS_DETAIL_GROUPS_FORMAT_0)));
-            metadata.addItemDetails(userGroupsDetails);
+        // adds a reload button
+        metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
+    }
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+    
+        // add column for direct actions
+        CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(
+            LIST_COLUMN_ACTIONS,
+            Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIONS_0),
+            "", // no width
+            CmsListColumnAlignEnum.ALIGN_CENTER);
+        actionsCol.setSorteable(false);
 
-            // adds a reload button
-            metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
+        // adds an activate/deactivate user action
+        CmsUserActivateDeactivateAction userAction = new CmsUserActivateDeactivateAction(
+            LIST_ID,
+            LIST_ACTION_ACTIVATE,
+            getCms());
+        CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ACTIVATE);
+        userActAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0));
+        userActAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
+        userActAction.setIconPath("buttons/apply_in.gif");
+        userActAction.setEnabled(true);
+        userActAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0));
+        userAction.setActivationAction(userActAction);
+        CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
+        userDeactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
+        userDeactAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0));
+        userDeactAction.setIconPath("buttons/apply.gif");
+        userDeactAction.setEnabled(true);
+        userDeactAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0));
+        userAction.setDeactivationAction(userDeactAction);
+        actionsCol.addDirectAction(userAction);
 
-            // add column for direct actions
-            CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(
-                LIST_COLUMN_ACTIONS,
-                Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIONS_0),
-                "", // no width
-                CmsListColumnAlignEnum.ALIGN_CENTER);
-            actionsCol.setSorteable(false);
+        metadata.addColumn(actionsCol);
 
-            // adds an activate/deactivate user action
-            CmsUserActivateDeactivateAction userAction = new CmsUserActivateDeactivateAction(
-                LIST_ID,
-                LIST_ACTION_ACTIVATE,
-                getCms());
-            CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ACTIVATE);
-            userActAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0));
-            userActAction.setConfirmationMessage(Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
-            userActAction.setIconPath("buttons/apply_in.gif");
-            userActAction.setEnabled(true);
-            userActAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0));
-            userAction.setActivationAction(userActAction);
-            CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
-            userDeactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
-            userDeactAction.setConfirmationMessage(Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0));
-            userDeactAction.setIconPath("buttons/apply.gif");
-            userDeactAction.setEnabled(true);
-            userDeactAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0));
-            userAction.setDeactivationAction(userDeactAction);
-            actionsCol.addDirectAction(userAction);
+        // add column for login and default action
+        CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN, Messages.get().container(
+            Messages.GUI_USERS_LIST_COLS_LOGIN_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        loginCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_EDITUSER_NAME_0), Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_EDITUSER_HELP_0), null, true, // enabled
+            Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDITUSER_CONF_0)));
+        metadata.addColumn(loginCol);
 
-            metadata.addColumn(actionsCol);
+        // add column for name
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
+            Messages.GUI_USERS_LIST_COLS_USERNAME_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        metadata.addColumn(nameCol);
 
-            // add column for login and default action
-            CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN, Messages.get().container(
-                Messages.GUI_USERS_LIST_COLS_LOGIN_0), "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            loginCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_EDITUSER_NAME_0), Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_EDITUSER_HELP_0), null, true, // enabled
-                Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDITUSER_CONF_0)));
-            metadata.addColumn(loginCol);
+        // add column for email
+        CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL, Messages.get().container(
+            Messages.GUI_USERS_LIST_COLS_EMAIL_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        metadata.addColumn(emailCol);
 
-            // add column for name
-            CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
-                Messages.GUI_USERS_LIST_COLS_USERNAME_0), "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            metadata.addColumn(nameCol);
+        // add column for last login date
+        CmsListColumnDefinition lastLoginCol = new CmsListColumnDefinition(
+            LIST_COLUMN_LASTLOGIN,
+            Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0),
+            "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        lastLoginCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0), Messages.get().container(
+            Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));
+        metadata.addColumn(lastLoginCol);
+    }
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
 
-            // add column for email
-            CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL, Messages.get().container(
-                Messages.GUI_USERS_LIST_COLS_EMAIL_0), "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            metadata.addColumn(emailCol);
+        // add multi actions
+        metadata.addMultiAction(new CmsListMultiAction(LIST_ID, LIST_ACTION_DELETE, Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0), "list/delete.gif", Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0), true, Messages.get().container(
+            Messages.GUI_USERS_LIST_ACTION_DELETE_CONF_0)));
 
-            // add column for last login date
-            CmsListColumnDefinition lastLoginCol = new CmsListColumnDefinition(
-                LIST_COLUMN_LASTLOGIN,
-                Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0),
-                "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            lastLoginCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-                Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0), Messages.get().container(
-                Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));
-            metadata.addColumn(lastLoginCol);
-
-            // add multi actions
-            metadata.addMultiAction(new CmsListMultiAction(LIST_ID, LIST_ACTION_DELETE, Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0), "list/delete.gif", Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0), true, Messages.get().container(
-                Messages.GUI_USERS_LIST_ACTION_DELETE_CONF_0)));
-
-            // add the activate user multi action
-            CmsListMultiAction activateUser = new CmsListMultiAction(LIST_ID, LIST_ACTION_MACTIVATE);
-            activateUser.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0));
-            activateUser.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0));
-            activateUser.setIconPath("buttons/user_sm.gif");
-            activateUser.setEnabled(true);
-            activateUser.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0));
-            metadata.addMultiAction(activateUser);
-
-            // makes the list searchable by login
-            CmsSearchAction searchAction = new CmsSearchAction(LIST_ID, loginCol);
-            searchAction.useDefaultShowAllAction();
-            metadata.setSearchAction(searchAction);
-        }
-        return new CmsHtmlList(LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0), metadata);
+        // add the activate user multi action
+        CmsListMultiAction activateUser = new CmsListMultiAction(LIST_ID, LIST_ACTION_MACTIVATE);
+        activateUser.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0));
+        activateUser.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0));
+        activateUser.setIconPath("buttons/user_sm.gif");
+        activateUser.setEnabled(true);
+        activateUser.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0));
+        metadata.addMultiAction(activateUser);
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListDialog#getListItems()
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     protected List getListItems() {
 

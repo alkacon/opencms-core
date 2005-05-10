@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/10 12:14:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/10 12:51:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,17 +36,15 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
-import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.CmsListDialog;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsSearchAction;
 import org.opencms.workplace.list.I_CmsListDirectAction;
 
 import java.io.IOException;
@@ -64,17 +62,17 @@ import javax.servlet.jsp.PageContext;
  * Main scheduler jobs management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
-public class CmsJobsAdminTool extends CmsListDialog {
+public class CmsJobsAdminTool extends A_CmsListDialog {
 
     /**
      * list action to activate a job, that can be used as direct action
      * as also multi action.<p>
      * 
      * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * @since 5.7.3
      */
     private class ActivateJobAction extends CmsListDirectAction {
@@ -195,9 +193,6 @@ public class CmsJobsAdminTool extends CmsListDialog {
     /** list id constant. */
     public static final String LIST_ID = "jobs";
 
-    /** metadata for the list used in this dialog. */
-    private static CmsListMetadata metadata;
-
     /**
      * Public constructor.<p>
      * 
@@ -205,7 +200,12 @@ public class CmsJobsAdminTool extends CmsListDialog {
      */
     public CmsJobsAdminTool(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, LIST_COLUMN_NAME);
+        super(
+            jsp,
+            LIST_ID,
+            new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0),
+            LIST_COLUMN_NAME,
+            LIST_COLUMN_NAME);
     }
 
     /**
@@ -304,106 +304,7 @@ public class CmsJobsAdminTool extends CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListDialog#createList()
-     */
-    protected CmsHtmlList createList() {
-
-        if (metadata == null) {
-            metadata = new CmsListMetadata();
-
-            metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
-
-            // add column for direct actions
-            CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(
-                LIST_COLUMN_ACTIONS,
-                Messages.get().container(Messages.GUI_JOBS_LIST_COLS_ACTIONS_0),
-                "", // no width
-                CmsListColumnAlignEnum.ALIGN_CENTER);
-            actionsCol.setSorteable(false);
-
-            I_CmsListDirectAction activateJob = new ActivateJobAction(LIST_ID);
-
-            CmsListDirectAction deleteAction = new CmsListDirectAction(
-                LIST_ID,
-                LIST_ACTION_DELETE,
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0),
-                "list/delete.gif",
-                true, // enabled
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
-
-            CmsListDirectAction copyAction = new CmsListDirectAction(
-                LIST_ID,
-                LIST_ACTION_COPY,
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0),
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_HELP_0),
-                "list/copy.gif",
-                true, // enabled
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
-
-            actionsCol.addDirectAction(activateJob);
-            actionsCol.addDirectAction(copyAction);
-            actionsCol.addDirectAction(deleteAction);
-            metadata.addColumn(actionsCol);
-
-            // add column for name and default action
-            CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
-                Messages.GUI_JOBS_LIST_COLS_NAME_0), "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            nameCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
-                Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0), Messages.get().container(
-                Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0), null, // no icon
-                true, // enabled
-                Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0)));
-            metadata.addColumn(nameCol);
-
-            // add column for type
-            CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE, Messages.get().container(
-                Messages.GUI_JOBS_LIST_COLS_TYPE_0), "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            metadata.addColumn(typeCol);
-
-            // add column for last execution time
-            CmsListColumnDefinition lastExeCol = new CmsListColumnDefinition(
-                LIST_COLUMN_LASTEXE,
-                Messages.get().container(Messages.GUI_JOBS_LIST_COLS_LASTEXE_0),
-                "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            lastExeCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-                Messages.GUI_JOBS_LIST_COLS_LASTEXE_FORMAT_0), Messages.get().container(
-                Messages.GUI_JOBS_LIST_COLS_LASTEXE_NEVER_0)));
-            metadata.addColumn(lastExeCol);
-
-            // add column for next execution time
-            CmsListColumnDefinition nextExeCol = new CmsListColumnDefinition(
-                LIST_COLUMN_NEXTEXE,
-                Messages.get().container(Messages.GUI_JOBS_LIST_COLS_NEXTEXE_0),
-                "", // no width
-                CmsListColumnAlignEnum.ALIGN_LEFT);
-            nextExeCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-                Messages.GUI_JOBS_LIST_COLS_NEXTEXE_FORMAT_0), Messages.get().container(
-                Messages.GUI_JOBS_LIST_COLS_NEXTEXE_NEVER_0)));
-            metadata.addColumn(nextExeCol);
-
-            // add multi actions
-            // metadata.addDirectMultiAction(deleteAction);
-            // reuse the activate job action as a multi action
-            // metadata.addDirectMultiAction(activateJob);
-
-            // made the list searchable by name
-            CmsSearchAction searchAction = new CmsSearchAction(LIST_ID, nameCol);
-            searchAction.useDefaultShowAllAction();
-            metadata.setSearchAction(searchAction);
-
-        }
-        return new CmsHtmlList(
-            LIST_ID,
-            new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0),
-            metadata);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.CmsListDialog#getListItems()
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     protected List getListItems() {
 
@@ -422,6 +323,93 @@ public class CmsJobsAdminTool extends CmsListDialog {
         }
 
         return ret;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        // add column for direct actions
+        CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIONS, Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_ACTIONS_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_CENTER);
+        actionsCol.setSorteable(false);
+
+        I_CmsListDirectAction activateJob = new ActivateJobAction(LIST_ID);
+
+        CmsListDirectAction deleteAction = new CmsListDirectAction(
+            LIST_ID,
+            LIST_ACTION_DELETE,
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0),
+            "list/delete.gif",
+            true, // enabled
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
+
+        CmsListDirectAction copyAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_COPY, Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0), Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_COPY_HELP_0), "list/copy.gif", true, // enabled
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
+
+        actionsCol.addDirectAction(activateJob);
+        actionsCol.addDirectAction(copyAction);
+        actionsCol.addDirectAction(deleteAction);
+        metadata.addColumn(actionsCol);
+
+        // add column for name and default action
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_NAME_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        nameCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0), Messages.get().container(
+            Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0), null, // no icon
+            true, // enabled
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0)));
+        metadata.addColumn(nameCol);
+
+        // add column for type
+        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE, Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_TYPE_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        metadata.addColumn(typeCol);
+
+        // add column for last execution time
+        CmsListColumnDefinition lastExeCol = new CmsListColumnDefinition(LIST_COLUMN_LASTEXE, Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_LASTEXE_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        lastExeCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_LASTEXE_FORMAT_0), Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_LASTEXE_NEVER_0)));
+        metadata.addColumn(lastExeCol);
+
+        // add column for next execution time
+        CmsListColumnDefinition nextExeCol = new CmsListColumnDefinition(LIST_COLUMN_NEXTEXE, Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_NEXTEXE_0), "", // no width
+            CmsListColumnAlignEnum.ALIGN_LEFT);
+        nextExeCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_NEXTEXE_FORMAT_0), Messages.get().container(
+            Messages.GUI_JOBS_LIST_COLS_NEXTEXE_NEVER_0)));
+        metadata.addColumn(nextExeCol);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
+
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // add multi actions
+        // metadata.addDirectMultiAction(deleteAction);
+        // metadata.addDirectMultiAction(activateJob);
     }
 
 }

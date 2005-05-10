@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsListDialog.java,v $
- * Date   : $Date: 2005/05/10 12:14:41 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
+ * Date   : $Date: 2005/05/10 12:51:45 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -46,10 +47,10 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public abstract class CmsListDialog extends CmsDialog {
+public abstract class A_CmsListDialog extends CmsDialog {
 
     /** Request parameter key for the column to sort the list. */
     public static final String PARAM_SORT_COL = "sortcol";
@@ -125,9 +126,11 @@ public abstract class CmsListDialog extends CmsDialog {
      * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
+     * @param listName the name of the list
      * @param sortedColId the a priory sorted column
+     * @param searchableColId the column to search into
      */
-    protected CmsListDialog(CmsJspActionElement jsp, String listId, String sortedColId) {
+    protected A_CmsListDialog(CmsJspActionElement jsp, String listId, CmsMessageContainer listName, String sortedColId, String searchableColId) {
 
         super(jsp);
         // try to read the list from the session
@@ -135,7 +138,10 @@ public abstract class CmsListDialog extends CmsDialog {
         // initialization 
         if (getList() == null) {
             // create the list
-            setList(createList());
+            setList(createList(listId, listName));
+            if (searchableColId!=null && getList().getMetadata().getColumnDefinition(searchableColId)!=null) {
+                setSearchAction(listId, getList().getMetadata().getColumnDefinition(searchableColId));
+            }
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // fill the content
@@ -148,13 +154,69 @@ public abstract class CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Creates the default search action.<p>
+     * 
+     * Can be overriden for more sofisticated search.<p>
+     * 
+     * @param listId the id of the list
+     * @param columnDefinition the column to search into
+     */
+    protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
+
+        // makes the list searchable by login
+        CmsSearchAction searchAction = new CmsSearchAction(listId, columnDefinition);
+        searchAction.useDefaultShowAllAction();
+        m_metadata.setSearchAction(searchAction);
+    }
+
+    /** metadata for the list used in this dialog. */
+    private static CmsListMetadata m_metadata;
+
+    /**
      * Should generate the metadata definition of the list, and return a 
      * new list object associated to it.<p>
      * 
      * @return The list to display in this dialog
      */
-    protected abstract CmsHtmlList createList();
+    private CmsHtmlList createList(String listId, CmsMessageContainer listName) {
+        if (m_metadata == null) {
+            m_metadata = new CmsListMetadata();
+            
+            setIndependentActions(m_metadata);
+            setColumns(m_metadata);
+            setMultiActions(m_metadata);            
+        }
+        return new CmsHtmlList(listId, listName, m_metadata);
+        
+    }
 
+    /**
+     * Should create the columns and add them to the given list metadata object.<p>
+     * 
+     * This method will be just executed once, the first time the constructor is called.<p> 
+     * 
+     * @param metadata the list metadata
+     */
+    protected abstract void setColumns(CmsListMetadata metadata);
+    
+    /**
+     * Should add the independent actions to the given list metadata object.<p>
+     * 
+     * This method will be just executed once, the first time the constructor is called.<p> 
+     * 
+     * @param metadata the list metadata
+     */
+    protected abstract void setIndependentActions(CmsListMetadata metadata);
+    
+    /**
+     * Should add the multi actions to the given list metadata object.<p>
+     * 
+     * This method will be just executed once, the first time the constructor is called.<p> 
+     * 
+     * @param metadata the list metadata
+     */
+    protected abstract void setMultiActions(CmsListMetadata metadata);
+    
     /**
      * Fill the list with data.<p>
      * 

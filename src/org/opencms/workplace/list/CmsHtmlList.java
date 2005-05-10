@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/10 12:51:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -396,13 +396,13 @@ public class CmsHtmlList {
         js.append("\t\t\t}\n");
         js.append("\t\t}\n");
         js.append("\t\tform.action.value='");
-        js.append(CmsListDialog.LIST_SINGLE_ACTION);
+        js.append(A_CmsListDialog.LIST_SINGLE_ACTION);
         js.append("';\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_LIST_ACTION);
+        js.append(A_CmsListDialog.PARAM_LIST_ACTION);
         js.append(".value=action;\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_SEL_ITEMS);
+        js.append(A_CmsListDialog.PARAM_SEL_ITEMS);
         js.append(".value=listItem;\n");
         js.append("\t\tsubmitForm(form);\n");
         js.append("\t}\n");
@@ -421,10 +421,10 @@ public class CmsHtmlList {
         js.append(CmsSearchAction.SEARCH_ACTION_ID);
         js.append("') {\n");
         js.append("\t\t\tform.action.value = '");
-        js.append(CmsListDialog.LIST_SEARCH);
+        js.append(A_CmsListDialog.LIST_SEARCH);
         js.append("';\n");
         js.append("\t\t\tform.");
-        js.append(CmsListDialog.PARAM_SEARCH_FILTER);
+        js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
         js.append(".value = form.");
         js.append(getId());
         js.append("Filter.value;\n");
@@ -435,19 +435,19 @@ public class CmsHtmlList {
         js.append(CmsSearchAction.SHOWALL_ACTION_ID);
         js.append("') {\n");
         js.append("\t\t\tform.action.value = '");
-        js.append(CmsListDialog.LIST_SEARCH);
+        js.append(A_CmsListDialog.LIST_SEARCH);
         js.append("';\n");
         js.append("\t\t\tform.");
-        js.append(CmsListDialog.PARAM_SEARCH_FILTER);
+        js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
         js.append(".value = '';\n");
         js.append("\t\t\tsubmitForm(form);\n");
         js.append("\t\t\treturn;\n");
         js.append("\t\t}\n");
         js.append("\t\tform.action.value='");
-        js.append(CmsListDialog.LIST_INDEPENDENT_ACTION);
+        js.append(A_CmsListDialog.LIST_INDEPENDENT_ACTION);
         js.append("';\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_LIST_ACTION);
+        js.append(A_CmsListDialog.PARAM_LIST_ACTION);
         js.append(".value=action;\n");
         js.append("\t\tsubmitForm(form);\n");
         js.append("\t}\n");
@@ -508,13 +508,13 @@ public class CmsHtmlList {
         js.append("\t\t\t}\n");
         js.append("\t\t}\n");
         js.append("\t\tform.action.value='");
-        js.append(CmsListDialog.LIST_MULTI_ACTION);
+        js.append(A_CmsListDialog.LIST_MULTI_ACTION);
         js.append("';\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_LIST_ACTION);
+        js.append(A_CmsListDialog.PARAM_LIST_ACTION);
         js.append(".value=action;\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_SEL_ITEMS);
+        js.append(A_CmsListDialog.PARAM_SEL_ITEMS);
         js.append(".value=listItems;\n");
         js.append("\t\tsubmitForm(form);\n");
         js.append("\t}\n");
@@ -525,10 +525,10 @@ public class CmsHtmlList {
         js.append(getId());
         js.append("-form'];\n");
         js.append("\t\tform.action.value = '");
-        js.append(CmsListDialog.LIST_SORT);
+        js.append(A_CmsListDialog.LIST_SORT);
         js.append("';\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_SORT_COL);
+        js.append(A_CmsListDialog.PARAM_SORT_COL);
         js.append(".value = column;\n");
         js.append("\t\tsubmitForm(form);\n");
         js.append("\t}\n");
@@ -539,10 +539,10 @@ public class CmsHtmlList {
         js.append(getId());
         js.append("-form'];\n");
         js.append("\t\tform.action.value = '");
-        js.append(CmsListDialog.LIST_SELECT_PAGE);
+        js.append(A_CmsListDialog.LIST_SELECT_PAGE);
         js.append("';\n");
         js.append("\t\tform.");
-        js.append(CmsListDialog.PARAM_PAGE);
+        js.append(A_CmsListDialog.PARAM_PAGE);
         js.append(".value = page;\n");
         js.append("\t\tsubmitForm(form);\n");
         js.append("\t}\n");
@@ -563,7 +563,7 @@ public class CmsHtmlList {
 
     /**
      * Removes an item from the list, try to use it
-     * instead of <code>{@link CmsListDialog#refreshList()}</code>.<p>
+     * instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
      * 
      * @param id the id of the item to remove
      * 
