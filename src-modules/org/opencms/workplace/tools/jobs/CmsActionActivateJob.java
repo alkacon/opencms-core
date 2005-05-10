@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsActionActivateJob.java,v $
- * Date   : $Date: 2005/05/10 15:58:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/10 16:01:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,12 @@ import org.opencms.workplace.list.A_CmsListTwoStatesAction;
 import org.opencms.workplace.list.I_CmsListDirectAction;
 
 /**
- * List action to activate a scheduled job, can be used as direct action for a single selected item and
- * as multi action for selected items.<p>
+ * List action to activate a scheduled job, can be used as direct action for a single selected item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
@@ -53,7 +52,7 @@ public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
      * Default Constructor.<p>
      * 
      * @param listId the id of the associated list
-     * @param id unique id
+     * @param id unique item id
      * @param cms the cms context
      */
     protected CmsActionActivateJob(String listId, String id, CmsObject cms) {
@@ -70,11 +69,11 @@ public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
             String jobId = getItem().getId();
             CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
             if (! job.isActive()) {
-                // activate job
+                // activate job action
                 return getFirstAction();
             }
         }
-        // deactivate job
+        // deactivate job action
         return getSecondAction();
     }
     
