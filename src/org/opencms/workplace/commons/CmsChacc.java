@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/05/09 12:39:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -56,6 +56,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for building the permission settings dialog.<p> 
  * 
@@ -65,12 +67,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
 public class CmsChacc extends CmsDialog {
     
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsChacc.class);  
     /** Value for the action: add an access control entry. */
     public static final int ACTION_ADDACE = 300;
     /** Value for the action: delete the permissions. */
@@ -170,8 +174,8 @@ public class CmsChacc extends CmsDialog {
             arrayPosition = Integer.parseInt(type);
         } catch (Exception e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
                
@@ -268,8 +272,8 @@ public class CmsChacc extends CmsDialog {
                 allowValue |= paramInt;
             } catch (Exception e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
             try {           
@@ -278,8 +282,8 @@ public class CmsChacc extends CmsDialog {
                 denyValue |= paramInt;
             } catch (Exception e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
             
@@ -479,8 +483,8 @@ public class CmsChacc extends CmsDialog {
             allEntries = getCms().getAccessControlEntries(getParamResource(), true);
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         
@@ -493,8 +497,8 @@ public class CmsChacc extends CmsDialog {
             parentResources = getCms().readPath(path, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         Iterator k = parentResources.iterator();
@@ -633,8 +637,8 @@ public class CmsChacc extends CmsDialog {
             }
         } catch (CmsException e) { 
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
 
@@ -1024,8 +1028,8 @@ public class CmsChacc extends CmsDialog {
                 }
             } catch (CmsException e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
         }
@@ -1049,12 +1053,10 @@ public class CmsChacc extends CmsDialog {
             resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             internal = ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0);
         } catch (CmsException e) {
-            // an error occured reading the resource
-            if (OpenCms.getLog(this).isErrorEnabled()) { 
-                OpenCms.getLog(this).error(". Accessing resource: " + getParamResource() + " : " + e);
-            }  
+            // an error occured reading the resource 
+            LOG.error(e.getLocalizedMessage());
         }
- 
+        
         if ((resource != null) && (resource.isFile())) {
             // only show internal checkbox on files
             result.append("<form action=\"").append(getDialogUri()).append("\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");        
@@ -1084,6 +1086,7 @@ public class CmsChacc extends CmsDialog {
             result.append("</form>\n");
         }
         return result.toString();
+        
         
     }
     
@@ -1290,8 +1293,8 @@ public class CmsChacc extends CmsDialog {
                     flags = I_CmsConstants.C_ACCESSFLAGS_USER;
                 } catch (CmsException exc) {
                     // can usually be ignored
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }
                 }
             }
@@ -1300,8 +1303,8 @@ public class CmsChacc extends CmsDialog {
             return buildPermissionEntryForm(entry, editable, extendedView, null);
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }         
             return new StringBuffer("");
         }

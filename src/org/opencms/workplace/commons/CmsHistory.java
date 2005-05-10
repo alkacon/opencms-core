@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/05/09 15:47:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -44,6 +45,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -55,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.1
  */
@@ -98,13 +100,24 @@ public class CmsHistory extends CmsDialog {
     /**
      * Performs the restore action, will be called by the JSP page.<p>
      * 
+     * @throws JspException if including a JSP subelement is not successful
      */
-    public void actionRestore() {
+    public void actionRestore() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         if (getParamVersionid() != null) {
-            performRestoreOperation();                
+            try {
+                performRestoreOperation();
+            } catch (CmsException e) {
+                // Cms error defining property, show error dialog
+                CmsLog.getLog(CmsHistory.class).error(e.getLocalizedMessage());
+                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);                
+            }    
         }              
+        
+        
+
     }  
     
     /**
@@ -131,7 +144,7 @@ public class CmsHistory extends CmsDialog {
             result.append(key("input.type"));
             result.append("</td>\n");   
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
-            // Published at
+            // Publised at
             result.append(key("label.publishedat"));
             result.append("</td>\n");  
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
@@ -157,7 +170,7 @@ public class CmsHistory extends CmsDialog {
             Iterator i = backupFileHeaders.iterator();
             while (i.hasNext()) {
                 CmsBackupResource file = (CmsBackupResource)i.next();                
-                // the tag ID for get the backup project 
+                // the tagId for get the Backup project 
                 int tagId = file.getTagId();
                 int version = file.getVersionId();
                 CmsBackupProject project = getCms().readBackupProject(tagId);
@@ -253,23 +266,15 @@ public class CmsHistory extends CmsDialog {
     
     /**
      * Restores a backed up resource version.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
-    protected void performRestoreOperation() {
-        
-        try {
-            CmsResource res = getCms().readResource(getParamResource());
-            String resourcename = getCms().getSitePath(res);
-            int tagId = Integer.parseInt(getParamVersionid());
-            checkLock(getParamResource());            
-            getCms().restoreResourceBackup(resourcename, tagId);
-        } catch (CmsException e) {
-            // Cms error defining property, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamReasonSuggestion(getErrorSuggestionDefault());            
-        } catch (Exception e) {
-            // other error defining property, show error dialog
-            setParamErrorstack(e.getStackTrace().toString());
-            setParamReasonSuggestion(getErrorSuggestionDefault());            
-        } 
+    protected void performRestoreOperation() throws CmsException {
+
+        CmsResource res = getCms().readResource(getParamResource());
+        String resourcename = getCms().getSitePath(res);
+        int tagId = Integer.parseInt(getParamVersionid());
+        checkLock(getParamResource());
+        getCms().restoreResourceBackup(resourcename, tagId);
     }
 }

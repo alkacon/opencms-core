@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
-import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
@@ -51,6 +51,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the delete resources dialog.<p> 
  * 
@@ -60,11 +62,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
 public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDelete.class);  
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
@@ -196,20 +201,9 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }    
         } catch (CmsException e) {
-            // prepare common message part
-
-            String message = "<p>\n" + key("title.delete") + ": " + getParamResource() + "\n</p>\n";                 
-            
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(message + key("error.message." + getParamDialogtype()));
-            
-            if (e instanceof CmsLockException) {
-                setParamReasonSuggestion(e.getMessage());
-            } else {
-                setParamReasonSuggestion(getErrorSuggestionDefault());
-            }
-
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR); 
+            // prepare common message part    
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
     }
     
@@ -251,9 +245,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         try {
             return getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1;
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error getting siblings of resource " + getParamResource(), e);
-            }
+            LOG.error(e.getLocalizedMessage(), e);
             return false;
         }
         
@@ -274,9 +266,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
             lock = getCms().getLock(getParamResource());
         } catch (CmsException e) {
             // error getting lock state, log the error and return false
-            if (OpenCms.getLog(this).isErrorEnabled()) { 
-                OpenCms.getLog(this).error("Error getting lock state for resource " + getParamResource(), e);
-            }  
+            LOG.error(e.getLocalizedMessage(), e);
             return false;           
         }
         int type = lock.getType();

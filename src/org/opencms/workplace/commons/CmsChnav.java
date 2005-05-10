@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -54,6 +55,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the change navigation dialog.<p> 
  * 
@@ -63,11 +66,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
 public class CmsChnav extends CmsDialog {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsChnav.class);  
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chnav";
@@ -184,8 +190,8 @@ public class CmsChnav extends CmsDialog {
             return CmsEncoder.escapeXml(navText);
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }         
             return "";
         }
@@ -261,8 +267,8 @@ public class CmsChnav extends CmsDialog {
                 selectedPos = Float.parseFloat(selectedPosString);
             } catch (Exception e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
             
@@ -290,11 +296,9 @@ public class CmsChnav extends CmsDialog {
             }
         } catch (CmsException e) {
             // error during chnav, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
         // chnav operation was successful, return to workplace
         actionCloseDialog();
@@ -307,6 +311,7 @@ public class CmsChnav extends CmsDialog {
      * @param filename the current file
      * @param attributes optional attributes for the &lt;select&gt; tag, do not add the "name" atribute!
      * @param messages the localized workplace messages
+     * 
      * @return the HTML for a navigation position select box
      */
     public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsWorkplaceMessages messages) {
@@ -332,9 +337,7 @@ public class CmsChnav extends CmsDialog {
             maxValue = ne.getNavPosition();
         } catch (Exception e) {
             // should usually never happen
-            if (OpenCms.getLog(CmsChnav.class).isInfoEnabled()) {
-                OpenCms.getLog(CmsChnav.class).info(e);
-            }
+            LOG.error(e.getLocalizedMessage());
         }
         
         if (maxValue != 0) {

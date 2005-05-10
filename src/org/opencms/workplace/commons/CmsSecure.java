@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
@@ -50,6 +51,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for building the security and export settings dialog.<p> 
  * 
@@ -59,12 +62,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0
  */
 public class CmsSecure extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSecure.class);  
+    
     /** The dialog type. */
     public static final String DIALOG_TYPE = "secure";
 
@@ -228,8 +234,8 @@ public class CmsSecure extends CmsDialog {
         try {
             propVal = getCms().readPropertyObject(getParamResource(), propertyName, false).getValue();
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         if (CmsStringUtil.isEmpty(propVal)) {
@@ -259,8 +265,8 @@ public class CmsSecure extends CmsDialog {
         try {
             internProp = getCms().readResource(getParamResource()).isInternal();
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         return String.valueOf(internProp);
@@ -288,8 +294,8 @@ public class CmsSecure extends CmsDialog {
             exportedResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_EXPORT, true)
                 .getValue();
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         if (Boolean.valueOf(exportedResource).booleanValue()) {
@@ -341,12 +347,10 @@ public class CmsSecure extends CmsDialog {
             }
 
             actionCloseDialog();
-        } catch (CmsException e) {
-            // error during change of settings, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        } catch (CmsException e1) {
+            // error during change of secure settings, show error dialog
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e1);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
 
         }
 
@@ -385,11 +389,10 @@ public class CmsSecure extends CmsDialog {
      * 
      * @param propertyName the name of the property
      * @param propertyValue the new value of the property
-     * @throws JspException  if including a JSP subelement is not successful
+     * @throws CmsException if something goes wrong
      */
-    protected void writeProperty(String propertyName, String propertyValue) throws JspException {
+    protected void writeProperty(String propertyName, String propertyValue) throws CmsException {
 
-        try {
             if (CmsStringUtil.isEmpty(propertyValue)) {
                 propertyValue = CmsProperty.C_DELETE_VALUE;
             }
@@ -438,14 +441,6 @@ public class CmsSecure extends CmsDialog {
                 getCms().writePropertyObject(getParamResource(), newProp);
             }
 
-        } catch (CmsException e) {
-            // error during chnav, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-
-        }
     }
 
     /**

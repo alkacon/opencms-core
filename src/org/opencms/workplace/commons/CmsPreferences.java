@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/04/26 11:57:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/10 07:50:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
@@ -66,6 +66,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the user preferences dialog.<p> 
  * 
@@ -75,11 +77,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
 public class CmsPreferences extends CmsTabDialog {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPreferences.class);  
     
     /** Value for the action: change the password. */
     public static final int ACTION_CHPWD = 202;
@@ -271,32 +276,21 @@ public class CmsPreferences extends CmsTabDialog {
         setAction(ACTION_DEFAULT);
         setParamOldPassword(null);
         setParamNewPassword(null);
-        if (oldPwd != null && !"".equals(oldPwd.trim()) && newPwd != null && !"".equals(newPwd.trim())) {
-            try {
-                getCms().setPassword(getSettings().getUser().getName(), oldPwd, newPwd);
-            } catch (CmsSecurityException e) {
-                // the specified username + old password do not match
-                setAction(ACTION_ERROR);
-                setParamErrorstack(CmsException.getStackTraceAsString(e));
-                setParamMessage(key("error.message.chpwd"));
-                setParamReasonSuggestion(key("error.reason.chpwd4") + "<br>\n" + key("error.suggestion.chpwd3") + "\n");
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);                
-            } catch (CmsException e) {
-                // failed setting the new password, show error dialog
-                setAction(ACTION_ERROR);
-                setParamErrorstack(CmsException.getStackTraceAsString(e));
-                setParamMessage(key("error.message.chpwd"));
-                setParamReasonSuggestion(key("error.reason.chpwd2") + "<br>\n" + key("error.suggestion.chpwd2") + "\n");
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+       
+        try {
+            if (newPwd != null && !"".equals(newPwd.trim())) {
+                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_NEW_PASS_0));
             }
-        } else {
-            // form wasn't filled out correctly, show error dialog
-            CmsException e = new CmsException("The password values you entered are not valid.");
+            if (oldPwd != null && !"".equals(oldPwd.trim())) {
+                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_OLD_PASS_0));
+            }             
+            getCms().setPassword(getSettings().getUser().getName(), oldPwd, newPwd);
+        } catch (CmsException e) {
+            // failed setting the new password, show error dialog
             setAction(ACTION_ERROR);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.chpwd"));
-            setParamReasonSuggestion(key("error.reason.chpwd2") + "<br>\n" + key("error.suggestion.chpwd2") + "\n");
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
     }
     
@@ -330,8 +324,8 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.save(getCms());
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         
@@ -345,9 +339,7 @@ public class CmsPreferences extends CmsTabDialog {
             getSettings().setProject(project.getId());            
         } catch (Exception e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
-            }            
+            LOG.error(e.getLocalizedMessage());
         }
         
         // now determine if the dialog has to be closed or not
@@ -361,8 +353,8 @@ public class CmsPreferences extends CmsTabDialog {
             }
         } catch (IOException e) {            
             // error during redirect, do nothing
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }            
         }
     }
@@ -635,9 +627,7 @@ public class CmsPreferences extends CmsTabDialog {
             return buildSelect(htmlAttributes, options, values, checkedIndex);
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
-            }            
+            LOG.error(e.getLocalizedMessage());
             return getSettings().getProject() + "";
         }
     }
@@ -737,8 +727,8 @@ public class CmsPreferences extends CmsTabDialog {
                 getCms().readResource(viewUri);
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }                
                 visible = false;
             }

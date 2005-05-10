@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -43,7 +43,10 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for building the groups and users popup window.<p> 
@@ -54,11 +57,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
 public class CmsChaccBrowser extends CmsDialog {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsChaccBrowser.class);  
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chaccbrowser";
@@ -161,17 +167,18 @@ public class CmsChaccBrowser extends CmsDialog {
      * Builds a list of all groups and returns an html string.<p>
      * 
      * @return html code for a group list
+     * @throws JspException if problems including sub-elements occur   
      */
-    public String buildGroupList() {
+    public String buildGroupList() throws JspException {
         List groups = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
             groups = getCms().getGroups();
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
-            }
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
         
         for (int i=0; i<groups.size(); i++) {
@@ -185,17 +192,18 @@ public class CmsChaccBrowser extends CmsDialog {
      * Builds a list of all users and returns an html string.<p>
      * 
      * @return html code for a user list
+     * @throws JspException if problems including sub-elements occur  
      */
-    public String buildUserList() {
+    public String buildUserList() throws JspException {
         List users = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
             users = getCms().getUsers();
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
-            }
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
 
         for (int i=0; i<users.size(); i++) {

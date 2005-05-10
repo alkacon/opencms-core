@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsRuntimeException.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,6 +69,19 @@ public class CmsRuntimeException extends RuntimeException implements I_CmsThrowa
         super(message.getKey(), cause);
         m_message = message;
     }
+    
+    /**
+     * Creates a copied instance of this localized exception.<p>
+     * 
+     * @param container the message container
+     * @param cause the root cause
+     * 
+     * @return a copied instance of this localized exception
+     */
+    public CmsRuntimeException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsRuntimeException(container, cause);
+    }      
 
     /**
      * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage()

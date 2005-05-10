@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsEditPointer.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.0
  */
@@ -107,10 +108,8 @@ public class CmsEditPointer extends CmsDialog {
         } catch (CmsException e) {
             // error changing link target, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.newlink"));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);  
         }
     }
     
@@ -118,28 +117,26 @@ public class CmsEditPointer extends CmsDialog {
      * Returns the old link target value of the pointer resource to edit.<p>
      * 
      * @return the old link target value
+     * @throws JspException if problems including sub-elements occur 
+     * 
      */
-    public String getOldTargetValue() {
+    public String getOldTargetValue() throws JspException {
         String linkTarget = "";
-        if (getParamLinkTarget() == null || "".equals(getParamLinkTarget())) {
+        if (CmsStringUtil.isEmpty(getParamLinkTarget())) {
             // this is the initial dialog call, get link target value
             try {
                 // get pointer contents
                 CmsFile file = getCms().readFile(getParamResource());
                 linkTarget = new String(file.getContents());
-            } catch (CmsException e) {
+            } catch (CmsException e1) {
                 // error reading file, show error dialog
+                CmsException e = new CmsException(Messages.get().container(Messages.ERR_GET_LINK_TARGET_1, getParamResource()), e1);
                 getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                setParamErrorstack(CmsException.getStackTraceAsString(e));
-                setParamMessage(key("error.message.newlink"));
-                setParamReasonSuggestion(getErrorSuggestionDefault());
-                try {
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-                } catch (JspException je) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error including error dialog JSP "+je);
-                    }    
-                }
+                CmsLog.getLog(CmsEditPointer.class).error(e.getLocalizedMessage());
+                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                
+
             }
         }
         return CmsEncoder.escapeXml(linkTarget);

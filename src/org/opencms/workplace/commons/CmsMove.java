@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/05/09 12:26:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsDialog;
@@ -51,6 +51,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the move resources dialog.<p> 
  * 
@@ -60,12 +62,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
 public class CmsMove extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMove.class);  
+    
     /** Value for the action: move resource. */
     public static final int ACTION_MOVE = 100;
     
@@ -82,6 +87,7 @@ public class CmsMove extends CmsDialog {
     public CmsMove(CmsJspActionElement jsp) {
         super(jsp);
     }
+    
     
     /**
      * Public constructor with JSP variables.<p>
@@ -197,10 +203,8 @@ public class CmsMove extends CmsDialog {
                 getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);        
             } else {                
                 // error during move operation, show error dialog
-                setParamErrorstack(CmsException.getStackTraceAsString(e));
-                setParamMessage(message + key("error.message." + getParamDialogtype()));
-                setParamReasonSuggestion(getErrorSuggestionDefault());
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
             }
         }
     }
@@ -245,10 +249,10 @@ public class CmsMove extends CmsDialog {
             String source = getParamResource();
             
             // calculate the target name
-            target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(source));
+            target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(getParamResource()));
     
             if (target.equalsIgnoreCase(source)) {
-                throw new CmsException("Can't move resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
+                throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_ONTO_ITSELF_1, target));
             }           
             
             try {
@@ -258,15 +262,15 @@ public class CmsMove extends CmsDialog {
                     if (! target.endsWith("/")) {
                         target += "/";
                     }
-                    target = target + CmsResource.getName(source);
+                    target = target + CmsResource.getName(getParamResource());
                     if (target.endsWith("/")) {
                         target = target.substring(0, target.length()-1);
                     }
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 // target folder does not already exist, so target name is o.k.
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }                
             }
             
@@ -279,8 +283,8 @@ public class CmsMove extends CmsDialog {
                 targetRes = getCms().readResource(target, CmsResourceFilter.ALL);
             } catch (CmsException e) { 
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
     
@@ -290,14 +294,15 @@ public class CmsMove extends CmsDialog {
                     getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                 } else {
                     // throw exception to indicate that the target exists
-                    throw new CmsException("The target already exists", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
+                    throw new CmsException(Messages.get().container(
+                        Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2, getParamResource(), getJsp().getRequestContext().removeSiteRoot(target)));
                 }
             } 
                     
             // lock resource if autolock is enabled
-            checkLock(sitePrefix + source);              
+            checkLock(sitePrefix + getParamResource());              
             // move the resource
-            getCms().moveResource(sitePrefix + source, target);
+            getCms().moveResource(sitePrefix + getParamResource(), target);
         } finally {
             if (restoreSiteRoot) {
                 getCms().getRequestContext().restoreSiteRoot();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,6 +114,14 @@ public class CmsConfigurationException extends CmsException {
 
         super(container, cause);
     }     
+       
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsConfigurationException(container, cause);
+    }
     
     /**
      * Returns the description String for the provided CmsException type.<p>
@@ -137,5 +145,6 @@ public class CmsConfigurationException extends CmsException {
                     return super.getErrorDescription(type);
             }
         }
-    }        
+    }         
+              
 }

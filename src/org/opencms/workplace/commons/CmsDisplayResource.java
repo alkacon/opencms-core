@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -47,6 +48,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Shows a preview of the selected resource in the Explorer view.<p>
@@ -60,10 +63,13 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsDisplayResource extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDisplayResource.class);  
+    
     /** Request parameter name for versionid. */
     public static final String PARAM_VERSIONID = "versionid";
     
@@ -115,8 +121,8 @@ public class CmsDisplayResource extends CmsDialog {
                     getJsp().getResponse().getOutputStream().flush();
                 } catch (IOException e) {
                     // can usually be ignored
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }                
                     return;
                 }
@@ -172,8 +178,8 @@ public class CmsDisplayResource extends CmsDialog {
                 res = cms.readBackupFile(resource, Integer.parseInt(versionId));
             } catch (CmsException e) { 
                 // can usually be ignored
-                if (OpenCms.getLog(CmsDisplayResource.class).isInfoEnabled()) {
-                    OpenCms.getLog(CmsDisplayResource.class).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }                
                 return "".getBytes();
             }            

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.111 $
+ * @version $Revision: 1.112 $
  * 
  * @since 5.1
  */
@@ -125,6 +125,9 @@ public abstract class CmsWorkplace {
     /** Constant for the JSP common error dialog. */
     protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_DIALOG_PATH_COMMON + "error.jsp";
 
+    /** Constant for the JSP common error dialog. */
+    protected static final String C_FILE_DIALOG_SCREEN_ERRORPAGE = C_DIALOG_PATH_COMMON + "errorpage.jsp";
+    
     /** Constant for the JSP common wait screen. */
     protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_DIALOG_PATH_COMMON + "wait.jsp";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -308,16 +308,8 @@ public class CmsTouch extends CmsDialog {
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }    
         } catch (CmsException e) {
-            // prepare common message part
-            String message = "<p>\n" 
-                + key("title.touch") + ": " + getParamResource() + "\n</p>\n"; 
-                
-            // error during touching, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(message + key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-      
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
     }
     
@@ -348,7 +340,7 @@ public class CmsTouch extends CmsDialog {
                 timeStamp = getCalendarDate(getParamNewtimestamp(), true);
             }
         } catch (ParseException e) {
-            throw new CmsException("Error in date/time String \"" + getParamNewtimestamp() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
+            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_TIMESTAMP_1, getParamNewtimestamp()), e);
         }
         
         // get the new releasedate for the resource(s) from request parameter
@@ -358,7 +350,7 @@ public class CmsTouch extends CmsDialog {
                 releasedate = getCalendarDate(getParamReleasedate(), true);
             }
         } catch (ParseException e) {
-            throw new CmsException("Error in date/time String \"" + getParamReleasedate() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
+            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_RELEASEDATE_1, getParamReleasedate()), e);
         }
         
         // get the new expire for the resource(s) from request parameter
@@ -368,7 +360,7 @@ public class CmsTouch extends CmsDialog {
                 expiredate = getCalendarDate(getParamExpiredate(), true);
             }
         } catch (ParseException e) {
-            throw new CmsException("Error in date/time String \"" + getParamExpiredate() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
+            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_EXPIREDATE_1, getParamExpiredate()), e);
         }
         
         // get the flag if the touch is recursive from request parameter

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -51,6 +52,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the customized property dialog.<p> 
  * 
@@ -63,11 +66,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
 public class CmsPropertyCustom extends CmsPropertyAdvanced {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyCustom.class);  
     
     /** Value for the action: edit the properties. */
     public static final int ACTION_EDIT = 500;
@@ -117,14 +123,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             }    
         } catch (CmsException e) {
             // Cms error defining property, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        } catch (Exception e) {
-            // other error defining property, show error dialog
-            setParamErrorstack(e.getStackTrace().toString());
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         } 
     }
     
@@ -201,8 +201,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             navPos = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_NAVPOS, false).getValue();
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         if (navPos == null) {
@@ -392,14 +392,11 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } catch (CmsException e) {
             // error reading file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             try {
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
             } catch (JspException exc) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error including common error dialog " + C_FILE_DIALOG_SCREEN_ERROR);
-                }      
+                LOG.error(Messages.get().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, C_FILE_DIALOG_SCREEN_ERRORPAGE));                      
             }
         }
     }
@@ -424,8 +421,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
             } catch (Exception e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }          
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
@@ -611,8 +608,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                     false));
             } catch (CmsException e) {
                 // create an empty list
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
                 m_activeProperties = new HashMap();
             }

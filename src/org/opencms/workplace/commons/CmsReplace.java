@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.0
  */
@@ -94,8 +94,6 @@ public class CmsReplace extends CmsDialog {
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionReplace() throws JspException {
-        // Suffix for error messages (e.g. when exceeding the maximum file upload size)
-        String errorMsgSuffix = "";
         
         try {
             // get the file item from the multipart request
@@ -116,8 +114,7 @@ public class CmsReplace extends CmsDialog {
                 // check file size
                 if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                     // file size is larger than maximum allowed file size, throw an error
-                    errorMsgSuffix = "size";
-                    throw new CmsException("File size larger than maximum allowed upload size, currently set to " + (maxFileSizeBytes / 1024) + " kb");
+                    throw new CmsException(Messages.get().container(Messages.ERR_FILE_SIZE_TOO_LARGE_1, new Long((maxFileSizeBytes / 1024))));
                 }
                 byte[] content = fi.get();
                 fi.delete();
@@ -131,15 +128,13 @@ public class CmsReplace extends CmsDialog {
                 // close dialog
                 actionCloseDialog();
             } else {
-                throw new CmsException("Upload file not found");
+                throw new CmsException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
             }
         } catch (CmsException e) {
             // error replacing file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.upload"));
-            setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix) + "<br>\n" + key("error.suggestion.upload" + errorMsgSuffix) + "\n");
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
     }
     

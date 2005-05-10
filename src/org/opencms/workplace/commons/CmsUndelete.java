@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for the undelete resources dialog.<p> 
@@ -52,12 +54,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
 public class CmsUndelete extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUndelete.class);  
+    
     /** Value for the action: undelete resource. */
     public static final int ACTION_UNDELETE = 100;
     
@@ -123,15 +128,11 @@ public class CmsUndelete extends CmsDialog {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }    
-        } catch (CmsException e) {
-            // prepare common message part
-            String message = "<p>\n" 
-                + key("title.undelete") + ": " + getParamResource() + "\n</p>\n";                 
+        } catch (CmsException e) {                 
             // error during deletion, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(message + key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            LOG.error(e.getLocalizedMessage(getLocale()));
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
     }
     
@@ -144,15 +145,11 @@ public class CmsUndelete extends CmsDialog {
     private boolean performUndeleteOperation() throws CmsException {     
         
         // on folder deletion display "please wait" screen, not for simple file touching
-        if (! DIALOG_WAIT.equals(getParamAction())) {
-            try {
-                CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                // return false, this will trigger the "please wait" screen
-                if (resource.isFolder()) {
-                    return false;
-                }                
-            } catch (CmsException e) {
-                OpenCms.getLog(this).error("Error performing undelete Operation", e);
+        if (!DIALOG_WAIT.equals(getParamAction())) {
+            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            // return false, this will trigger the "please wait" screen
+            if (resource.isFolder()) {
+                return false;
             }
         }
          

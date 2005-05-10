@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.threads.CmsHtmlLinkValidatorThread;
 import org.opencms.threads.CmsPublishThread;
 import org.opencms.util.CmsDateUtil;
@@ -53,6 +53,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Creates the dialogs for publishing a project or a resource.<p> 
  * 
@@ -63,11 +65,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
 public class CmsPublishProject extends CmsReport {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishProject.class);  
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "publishproject";
@@ -311,10 +316,8 @@ public class CmsPublishProject extends CmsReport {
                     
                 } catch (CmsException e) {
                     // error while unlocking resources, show error screen
-                    setParamErrorstack(CmsException.getStackTraceAsString(e));
-                    setParamMessage(key("error.message.projectlockchange"));
-                    setParamReasonSuggestion(key("error.reason.projectlockchange") + "<br>\n" + key("error.suggestion.projectlockchange"));
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                    getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+                    getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
                 }                         
         }
     }
@@ -393,7 +396,7 @@ public class CmsPublishProject extends CmsReport {
             try {
                 setParamProjectname(getCms().readProject(id).getName());
             } catch (CmsException e) {
-                OpenCms.getLog(this).error("Error setting project name parameter", e);
+                LOG.error(Messages.get().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
             }
         }
     }
@@ -408,7 +411,7 @@ public class CmsPublishProject extends CmsReport {
             setParamModifieddate(CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.SHORT, getLocale()));
             setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
         } catch (CmsException e) {
-            OpenCms.getLog(this).error("Error computing publish resources", e);
+            LOG.error(Messages.get().key(Messages.LOG_COMPUTING_PUBRES_FAILED_0), e);
         }
     }
     
@@ -431,7 +434,7 @@ public class CmsPublishProject extends CmsReport {
                 return (getCms().countLockedResources(id) > 0);
             }
         } catch (CmsException e) {
-            OpenCms.getLog(this).error("Error displaying unlock confirmation", e);
+            LOG.error(Messages.get().key(Messages.LOG_DISPLAY_UNLOCK_INF_FAILED_0), e);
         }
         return false;
     }
@@ -466,8 +469,8 @@ public class CmsPublishProject extends CmsReport {
             res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // res will be null
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }                   
         }
         if ((res != null && res.isFile() && res.getSiblingCount() > 1) || (res != null && res.isFolder())) {

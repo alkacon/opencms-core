@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsDialog;
@@ -51,6 +51,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the copy resources dialog.<p> 
  * 
@@ -60,11 +62,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
 public class CmsCopy extends CmsDialog {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCopy.class);  
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "copy";
@@ -198,8 +203,8 @@ public class CmsCopy extends CmsDialog {
             }
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         String checkedAttr = " checked=\"checked\"";
@@ -293,8 +298,8 @@ public class CmsCopy extends CmsDialog {
                     targetType = targetRes.getTypeId();
                 } catch (CmsException e2) { 
                     // can usually be ignored
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e2);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e2.getLocalizedMessage());
                     }
                 } finally {
                     if (restoreSiteRoot) {
@@ -307,17 +312,13 @@ public class CmsCopy extends CmsDialog {
                     getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM); 
                 } else {
                     // file type is different, create error message
-                    setParamErrorstack(CmsException.getStackTraceAsString(e));
-                    setParamMessage(message);
-                    setParamReasonSuggestion(key("error.reason.copyexists") + "<br>\n" + key("error.suggestion.copyexists") + "\n");
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);      
+                    getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+                    getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);   
                 }
             } else {                
                 // error during copy, show error dialog
-                setParamErrorstack(CmsException.getStackTraceAsString(e));
-                setParamMessage(message + key("error.message." + getParamDialogtype()));
-                setParamReasonSuggestion(getErrorSuggestionDefault());
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
             }
         }
     } 
@@ -343,8 +344,8 @@ public class CmsCopy extends CmsDialog {
             copyMode = Integer.parseInt(getParamCopymode());
         } catch (Exception e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
 
@@ -373,7 +374,7 @@ public class CmsCopy extends CmsDialog {
             target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(getParamResource()));
     
             if (target.equals(getParamResource())) {
-                throw new CmsException("Can't copy resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
+                throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_ONTO_ITSELF_1, target));
             }            
             
             try {
@@ -387,8 +388,8 @@ public class CmsCopy extends CmsDialog {
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 // target folder does not already exist, so target name is o.k.
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }                      
             }
             

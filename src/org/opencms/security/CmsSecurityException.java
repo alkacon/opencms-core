@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2005/04/21 16:31:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/10 07:50:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsException;
  * Used to signal security related issues, for example example during file access and login.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -63,6 +63,15 @@ public class CmsSecurityException extends CmsException {
 
         super(container, cause);
     }    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsSecurityException(container, cause);
+    }
+    
     
     // the allowed type range for this exception is >=300 and <400    
     

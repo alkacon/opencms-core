@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/10 07:50:57 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -62,6 +63,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the properties dialog.<p> 
  * 
@@ -71,11 +74,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
 public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHandler {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyAdvanced.class); 
     
     /** Value for the action: save defined property. */
     public static final int ACTION_SAVE_DEFINE = 400;
@@ -255,10 +261,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // redirect to new xmlpage dialog
                 sendCmsRedirect(C_PATH_DIALOGS + newUri);
                 return;
-            } catch (Exception e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error redirecting to new xmlpage dialog " + C_PATH_DIALOGS + newUri);
-                }      
+            } catch (IOException e) {
+                LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, C_PATH_DIALOGS + newUri));
             }
         } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
@@ -271,8 +275,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 }
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
         } else if (MODE_WIZARD_INDEXCREATED.equals(getParamDialogmode())) {
@@ -301,15 +305,13 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
         } catch (CmsException e) {
             // error defining property, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.newprop"));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
          
         } catch (IOException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
             getJsp().include(C_FILE_EXPLORER_FILELIST);
         }
@@ -330,8 +332,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             } catch (CmsException e) {
                 // error deleting the resource, show error dialog
                 getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                setParamErrorstack(CmsException.getStackTraceAsString(e));
-                setParamReasonSuggestion(getErrorSuggestionDefault());
+                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             }
         }
@@ -352,8 +353,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }         
         } catch (CmsException e) {
             // error editing property, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         } 
     }
@@ -371,8 +371,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             propertyDef = getCms().readAllPropertyDefinitions();
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         
@@ -522,8 +522,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         return URI_PROPERTY_DIALOG;
@@ -685,9 +685,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
         } catch (CmsException e) {
             // error reading resource, log the error
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading file " + getParamResource());
-            }
+            LOG.error(e.getLocalizedMessage());
         }
         
         // set the dialog type
@@ -754,8 +752,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     }
                 } catch (CmsException e) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }
                 }
 
@@ -765,8 +763,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 } catch (CmsException e) {
                     lock = CmsLock.getNullLock();
 
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error getting lock state for resource " + resourceName, e);
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
 
@@ -876,8 +874,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 propertyDef = getCms().readAllPropertyDefinitions();
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
             m_propertyValues = new ArrayList(propertyDef.size());
@@ -889,8 +887,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
                 } catch (CmsException e) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }                    
                     activeProperties = new HashMap();
                 }
@@ -989,7 +987,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 getCms().createPropertyDefinition(newProperty);
                 return true;
             } else {
-                throw new CmsException("You entered an invalid property name", CmsException.C_BAD_NAME); 
+                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_PROP_0)); 
             } 
         } finally {
             if (useTempfileProject) {
