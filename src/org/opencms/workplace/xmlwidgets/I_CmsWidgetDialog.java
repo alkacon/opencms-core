@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {
@@ -106,6 +106,16 @@ public interface I_CmsWidgetDialog {
         boolean mondayFirst,
         String dateStatusFunc,
         boolean showTime);
+    
+    /**
+     * Builds an invisible horiziontal spacer with the specified width.<p>
+     * 
+     * @param width the width of the spacer in pixels
+     * @return an invisible horiziontal spacer with the specified width
+     * 
+     * @see org.opencms.workplace.CmsDialog#dialogHorizontalSpacer(int)
+     */
+    String dialogHorizontalSpacer(int width);
 
     /**
      * Returns the style setting to use when generating buttons for this widget dialog.<p>

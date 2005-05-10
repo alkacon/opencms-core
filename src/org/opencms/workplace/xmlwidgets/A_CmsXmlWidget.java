@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -146,7 +146,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         String locValue = widgetDialog.key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
-            return widgetDialog.buttonBarSpacer(16);
+            return widgetDialog.dialogHorizontalSpacer(16);
         } else {
             String id = param.getId();
             result.append("<td>");

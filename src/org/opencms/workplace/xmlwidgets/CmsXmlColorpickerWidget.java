@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlColorpickerWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.2
  */
 public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
@@ -94,13 +94,12 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) throws CmsXmlException {
 
-        CmsXmlColorValue castValue = (CmsXmlColorValue)param;
 
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
-        String colorValue = castValue.getStringValue(cms);
+        String colorValue = param.getStringValue(cms);
         String id = param.getId();
 
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
@@ -118,7 +117,8 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
         result.append(getInputFontColor(colorValue));
         result.append(";\"></td>");
 
-        result.append(widgetDialog.buttonBarSpacer(1));
+        result.append(widgetDialog.dialogHorizontalSpacer(10));
+        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
             "javascript:showColorPicker('" + id + "');",
             null,
@@ -126,6 +126,8 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
             "button.color",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
+        
+        result.append("</td></tr></table>");
 
         result.append("</td>");
         return result.toString();

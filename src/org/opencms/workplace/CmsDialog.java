@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.1
  */
@@ -606,7 +606,18 @@ public class CmsDialog extends CmsToolDialog {
 
         return "<div class=\"dialoghead\" unselectable=\"on\">" + (title==null?"":title) + "</div>";
     }
+    
+    /**
+     * Builds an invisible horiziontal spacer with the specified width.<p>
+     * @param width the width of the spacer in pixels
+     * @return an invisible horiziontal spacer with the specified width
+     */
+    public String dialogHorizontalSpacer(int width) {
+        
+        return "<td><span style=\"display:block; height: 1px; width: " + width + "px;\"></span></td>";
+    }
 
+    
     /**
      * Builds a dialog line without break (display: block).<p>
      * 

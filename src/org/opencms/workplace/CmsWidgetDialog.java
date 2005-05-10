@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -171,7 +171,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             href.append(");");
             return button(href.toString(), null, "new", "button.addnew", 0);
         } else {
-            return "<td style=\"width: 22px;\">&nbsp;</td>";
+            return dialogHorizontalSpacer(22);
         }
     }
 
@@ -194,7 +194,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             href.append(");");
             return button(href.toString(), null, "deletecontent", "button.delete", 0);
         } else {
-            return "<td style=\"width: 22px;\">&nbsp;</td>";
+            return dialogHorizontalSpacer(22);
         }
     }
 

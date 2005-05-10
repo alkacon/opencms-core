@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlLinkGalleryWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.3
  */
 public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
@@ -109,7 +109,8 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
         result.append("\" onkeyup=\"checkPreview('");
         result.append(id);
         result.append("');\"></td>");
-        result.append(widgetDialog.buttonBarSpacer(1));
+        result.append(widgetDialog.dialogHorizontalSpacer(10));
+        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button("javascript:openLinkGallery('"
             + A_CmsGallery.MODE_WIDGET
             + "',  '"
@@ -126,7 +127,7 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
         result.append("\" id=\"preview");
         result.append(id);
         result.append("\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\0\"><tr>");
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
             "javascript:previewLink('" + id + "');",
             null,
@@ -134,7 +135,11 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
             "button.preview",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
-        result.append("</div></td>");
+        result.append("</div>");
+        
+        result.append("</td></tr></table>");
+        
+        result.append("</td>");
         result.append("</tr></table>");
 
         result.append("</td>");

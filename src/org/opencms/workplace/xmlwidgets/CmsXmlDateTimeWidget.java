@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -69,17 +69,21 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)param;
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) throws CmsXmlException {
 
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
         result.append("<input class=\"xmlInputSmall\" value=\"");
-        String dateTimeValue = "";
-        if (castValue.getDateTimeValue() > 0) {
-            dateTimeValue = widgetDialog.getCalendarLocalizedTime(castValue.getDateTimeValue());
+        String dateTimeValue = param.getStringValue(cms);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(dateTimeValue) && !"0".equals(dateTimeValue)) {
+            try {
+                dateTimeValue = widgetDialog.getCalendarLocalizedTime(Long.parseLong(dateTimeValue));
+            } catch (NumberFormatException e) {
+                dateTimeValue = "";    
+            }
+        } else {
+            dateTimeValue = "";    
         }
 
         String id = param.getId();
@@ -89,12 +93,12 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\"></td><td>");
-
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"");
+        result.append("\"></td>");
+        result.append(widgetDialog.dialogHorizontalSpacer(10));
+        result.append("<td>");
+        result.append("<table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"");
         result.append(id);
         result.append(".calendar\"><tr>");
-        result.append(widgetDialog.buttonBarSpacer(1));
         result.append(widgetDialog.button(
             "#",
             null,

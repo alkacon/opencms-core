@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -62,7 +62,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
 
         StringBuffer result = new StringBuffer(16);
 
-        result.append("<td class=\"xmlTd\"><input class=\"xmlInput maxwidth\" name=\"");
+        result.append("<td class=\"xmlTd\"><input class=\"xmlInput textInput\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);

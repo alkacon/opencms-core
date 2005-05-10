@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlTableGalleryWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
@@ -108,12 +108,13 @@ public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\">");
         result.append("<tr><td class=\"xmlTd\">");
-        result.append("<div class=\"xmlTableGallery\" unselectable=\"on\" id=\"");
+        result.append("<div class=\"xmlHtmlGallery\" unselectable=\"on\" id=\"");
         result.append("table.");
         result.append(id);
         result.append("\"><div>");
         result.append("</td>");
-        result.append(widgetDialog.buttonBarSpacer(1));
+        result.append(widgetDialog.dialogHorizontalSpacer(10));       
+        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button("javascript:openTableGallery('"
             + A_CmsGallery.MODE_WIDGET
             + "',  '"
@@ -125,7 +126,8 @@ public class CmsXmlTableGalleryWidget extends A_CmsXmlWidget {
             "erase",
             "button.erase",
             widgetDialog.getButtonStyle()));
-        result.append("</tr>");
+        result.append("</tr></table>");
+        result.append("</td></tr>");
         result.append("<script type=\"text/javascript\">checkTableContent('");
         result.append(id);
         result.append("');</script>");

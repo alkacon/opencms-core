@@ -949,6 +949,16 @@ body.dialogadmin {
 	background-color: ThreeDFace;	
 }
 
+.editorbuttonbackground {<%
+	if (style == NEW_ADMIN) { %>
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 1px;
+	background-color: ThreeDFace;<% } %>
+}
+
 /* definitions for xmlcontent editor form */
 .xmlTable { 
 	width:100%; 
@@ -1015,12 +1025,19 @@ body.dialogadmin {
 }
 
 .xmlHtmlGallery {
-	width: 100%;
 	overflow: auto;
-	background-color: ThreeDFace;
-	border: 1px solid WindowFrame;
+	border: 1px solid WindowFrame;<%
+	if (style == NEW_ADMIN) { %>
+	margin: 0;
+	padding: 0;<% } %>
 }
 
+.textInput {<%
+	if (style != NEW_ADMIN) { %>
+	width: 100%;
+	<% } else { %>
+	width: 99.9%;<% } %>
+}
   <% if (style != NEW_ADMIN) { %>
 
 /* special definition for IE bug displaying horizontal scroll bar in STRICT mode,

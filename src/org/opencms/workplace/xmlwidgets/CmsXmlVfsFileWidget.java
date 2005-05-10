@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsFileWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/10 09:24:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
@@ -114,7 +114,8 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\"></td>");
-        result.append(widgetDialog.buttonBarSpacer(1));
+        result.append(widgetDialog.dialogHorizontalSpacer(10));
+        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
             "javascript:openTreeWin('EDITOR',  '" + id + "', document);",
             null,
@@ -122,6 +123,7 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
             "button.search",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
+        result.append("</td></tr></table>");
 
         result.append("</td>");
 
