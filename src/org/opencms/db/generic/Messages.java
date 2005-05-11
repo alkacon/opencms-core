@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/11 11:00:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 15:32:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,12 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1 = "ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCENAME_TOO_LONG_2 = "ERR_RESOURCENAME_TOO_LONG_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RESOURCE_LENGTH_2 = "ERR_INVALID_RESOURCE_LENGTH_2";
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.generic";

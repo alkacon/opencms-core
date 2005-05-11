@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/11 11:00:52 $
- * Version: $Revision: 1.490 $
+ * Date   : $Date: 2005/05/11 15:32:46 $
+ * Version: $Revision: 1.491 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,26 +33,11 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.db.generic.Messages;
-import org.opencms.file.CmsBackupProject;
-import org.opencms.file.CmsBackupResource;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
-import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -79,22 +64,12 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workplace.CmsWorkplaceManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.dbcp.PoolingDriver;
+import org.apache.commons.logging.Log;
 
 /**
  * The OpenCms driver manager.<p>
@@ -103,10 +78,13 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.490 $ $Date: 2005/05/11 11:00:52 $
+ * @version $Revision: 1.491 $ $Date: 2005/05/11 15:32:46 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
 
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
@@ -4196,12 +4174,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param successiveDrivers the list of successive drivers
      * 
      * @return the driver object
-     * @throws CmsException if something goes wrong
+     * @throws CmsInstantiationException if something goes wrong
      */
     public Object newDriverInstance(
         CmsConfigurationManager configurationManager,
         String driverName,
-        List successiveDrivers) throws CmsException {
+        List successiveDrivers) throws CmsInstantiationException {
 
         Class driverClass = null;
         I_CmsDriver driver = null;
@@ -4226,14 +4204,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : ok, finished");
             }
 
-        } catch (Exception exc) {
-            String message = "Critical error while initializing " + driverName;
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("[CmsDriverManager] " + message);
+        } catch (Throwable t) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_ERROR_INITIALIZING_DRIVER_1, driverName);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message, t);
             }
-
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
+            t.printStackTrace(System.err);
+            throw new CmsInstantiationException(message, t);
         }
 
         return driver;
@@ -4853,9 +4830,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return the requested group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not succesful
      */
-    public CmsGroup readGroup(CmsDbContext dbc, String groupname) throws CmsException {
+    public CmsGroup readGroup(CmsDbContext dbc, String groupname) throws CmsDataAccessException {
 
         CmsGroup group = null;
         // try to read group form cache
@@ -5871,9 +5848,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return user read
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not succesful
      */
-    public CmsUser readUser(CmsDbContext dbc, String username) throws CmsException {
+    public CmsUser readUser(CmsDbContext dbc, String username) throws CmsDataAccessException {
 
         return readUser(dbc, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
     }
@@ -5887,9 +5864,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return user read
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not succesful
      */
-    public CmsUser readUser(CmsDbContext dbc, String username, int type) throws CmsException {
+    public CmsUser readUser(CmsDbContext dbc, String username, int type) throws CmsDataAccessException {
 
         CmsUser user = getUserFromCache(username, type);
         if (user == null) {

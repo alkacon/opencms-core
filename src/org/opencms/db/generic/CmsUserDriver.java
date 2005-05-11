@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 12:58:29 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2005/05/11 15:32:46 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.87 $ $Date: 2005/05/11 12:58:29 $
+ * @version $Revision: 1.88 $ $Date: 2005/05/11 15:32:46 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -1416,9 +1416,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @param dbc the current database context
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsPasswordEncryptionException if a password of a default user could not be encrypted
      */
-    private void fillDefaults(CmsDbContext dbc) throws CmsException {
+    private void fillDefaults(CmsDbContext dbc) throws CmsDataAccessException, CmsPasswordEncryptionException {
         
         String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
         String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();

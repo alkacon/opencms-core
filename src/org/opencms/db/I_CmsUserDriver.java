@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 12:58:29 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/05/11 15:32:46 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,12 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.main.CmsException;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsPasswordEncryptionException;
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPasswordEncryptionException;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +48,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.51 $ $Date: 2005/05/11 12:58:29 $
+ * @version $Revision: 1.52 $ $Date: 2005/05/11 15:32:46 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -197,9 +195,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Destroys this driver.<p>
      * 
      * @throws Throwable if something goes wrong
-     * @throws CmsException if something else goes wrong
      */
-    void destroy() throws Throwable, CmsException;
+    void destroy() throws Throwable;
 
     /**
      * Tests if a group with the specified name exists.<p>

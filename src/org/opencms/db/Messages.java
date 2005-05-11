@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/10 14:36:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/11 15:32:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -463,6 +463,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_PERMISSION_RESOURCE_USER_4 = "LOG_NO_PERMISSION_RESOURCE_USER_4";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ERROR_INITIALIZING_DRIVER_1 = "ERR_ERROR_INITIALIZING_DRIVER_1";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.messages";
 
