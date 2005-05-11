@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,18 @@ package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsObjectAlreadyExistsException;
 import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSerializationException;
 import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -52,28 +57,37 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
+import org.apache.commons.logging.Log;
 
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.42 $ $Date: 2005/04/24 11:20:31 $
+ * @version $Revision: 1.43 $ $Date: 2005/05/11 07:59:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
+    
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) throws CmsException {
+    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) 
+    throws CmsDataAccessException, CmsPasswordEncryptionException {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
         Connection conn = null;
     
         if (existsUser(dbc, name, type, null)) {
-            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
         
         try {

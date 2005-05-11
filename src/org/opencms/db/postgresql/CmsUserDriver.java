@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,18 @@ package org.opencms.db.postgresql;
 
 import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsObjectAlreadyExistsException;
 import org.opencms.db.CmsSerializationException;
 import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -48,15 +53,20 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * PostgreSql implementation of the user driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String, java.lang.Object)
@@ -68,7 +78,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         String description,
         int flags,
         String parentGroupName,
-        Object reservedParam) throws CmsException {
+        Object reservedParam) throws CmsDataAccessException {
 
         CmsUUID parentId = CmsUUID.getNullUUID();
         CmsGroup group = null;
@@ -76,7 +86,11 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         PreparedStatement stmt = null;
 
         if (existsGroup(dbc, groupName, reservedParam)) {
-            throw new CmsException("Group " + groupName + " already exists", CmsException.C_GROUP_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1, groupName);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
 
         try {
@@ -128,14 +142,18 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         int flags,
         Map additionalInfos,
         String address,
-        int type) throws CmsException {
+        int type) throws CmsDataAccessException, CmsPasswordEncryptionException {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
         Connection conn = null;
 
         if (existsUser(dbc, name, type, null)) {
-            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
 
         try {

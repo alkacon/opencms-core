@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/05/10 13:57:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,6 +114,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUPPORTED_ALGORITHM_1 = "ERR_UNSUPPORTED_ALGORITHM_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUPPORTED_PASSWORD_ENCODING_1 = "ERR_UNSUPPORTED_PASSWORD_ENCODING_1";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.security.messages";
 

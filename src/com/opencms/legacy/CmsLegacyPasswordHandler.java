@@ -1,8 +1,10 @@
 package com.opencms.legacy;
 
-import org.opencms.main.CmsException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.security.CmsDefaultPasswordHandler;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.Messages;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -17,7 +19,7 @@ public class CmsLegacyPasswordHandler extends CmsDefaultPasswordHandler {
     /**
      * @see org.opencms.security.I_CmsPasswordHandler#digest(java.lang.String, java.lang.String, java.lang.String)
      */
-    public String digest (String password, String digestType, String inputEncoding) throws CmsException {
+    public String digest (String password, String digestType, String inputEncoding) throws CmsPasswordEncryptionException {
                
         MessageDigest md;
         byte[] result;
@@ -32,10 +34,12 @@ public class CmsLegacyPasswordHandler extends CmsDefaultPasswordHandler {
                 md.update(password.getBytes(inputEncoding));
                 result = md.digest();
             } 
-        } catch (NoSuchAlgorithmException exc) {
-            throw new CmsException("Digest algorithm " + digestType + " not supported.");
-        } catch (UnsupportedEncodingException exc) {
-            throw new CmsException("Password encoding " + inputEncoding + " not supported.");
+        } catch (NoSuchAlgorithmException e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNSUPPORTED_ALGORITHM_1, digestType);
+            throw new CmsPasswordEncryptionException(message, e);
+        } catch (UnsupportedEncodingException e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNSUPPORTED_PASSWORD_ENCODING_1, inputEncoding);
+            throw new CmsPasswordEncryptionException(message, e);
         }
         
         StringBuffer buf = new StringBuffer();

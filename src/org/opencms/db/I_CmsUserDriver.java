@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/10 09:14:52 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.db;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.util.CmsUUID;
 
 import org.opencms.file.CmsGroup;
@@ -49,7 +50,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.49 $ $Date: 2005/05/10 09:14:52 $
+ * @version $Revision: 1.50 $ $Date: 2005/05/11 07:59:51 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -91,7 +92,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      *
      * @return the created group
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     CmsGroup createGroup(
         CmsDbContext dbc,
@@ -100,7 +101,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         String description,
         int flags,
         String parentGroupName,
-        Object reservedParam) throws CmsException;
+        Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Creates a new user.<p>
@@ -119,7 +120,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param type the user type
      * 
      * @return the created user
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsPasswordEncryptionException if the user password could not be encrypted
      */
     CmsUser createUser(
         CmsDbContext dbc,
@@ -133,7 +135,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         int flags,
         Map additionalInfos,
         String address,
-        int type) throws CmsException;
+        int type) throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Adds a user to a group.<p>

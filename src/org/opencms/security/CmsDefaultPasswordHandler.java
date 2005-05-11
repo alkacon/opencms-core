@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/04/28 08:30:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.main.CmsException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 
 import java.io.UnsupportedEncodingException;
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -168,7 +168,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**
      * @see org.opencms.security.I_CmsPasswordHandler#digest(java.lang.String)
      */
-    public String digest(String password) throws CmsException {
+    public String digest(String password) throws CmsPasswordEncryptionException {
         
         return digest(password, m_digestType, m_inputEncoding);
     }
@@ -176,7 +176,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**
      * @see org.opencms.security.I_CmsPasswordHandler#digest(java.lang.String, java.lang.String, java.lang.String)
      */
-    public String digest(String password, String digestType, String inputEncoding) throws CmsException {
+    public String digest(String password, String digestType, String inputEncoding) throws CmsPasswordEncryptionException {
         
         MessageDigest md;
         String result;
@@ -217,10 +217,18 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
                 result = new String(Base64.encodeBase64(md.digest()));
                 
             }
-        } catch (NoSuchAlgorithmException exc) {
-            throw new CmsException("Digest algorithm " + digestType + " not supported.");
-        } catch (UnsupportedEncodingException exc) {
-            throw new CmsException("Password encoding " + inputEncoding + " not supported.");
+        } catch (NoSuchAlgorithmException e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNSUPPORTED_ALGORITHM_1, digestType);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message, e);
+            }
+            throw new CmsPasswordEncryptionException(message, e);
+        } catch (UnsupportedEncodingException e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNSUPPORTED_PASSWORD_ENCODING_1, inputEncoding);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message, e);
+            }
+            throw new CmsPasswordEncryptionException(message, e);
         }
         
         return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/10 09:14:52 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsObjectAlreadyExistsException;
 import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSerializationException;
 import org.opencms.db.CmsSqlException;
@@ -50,6 +51,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -76,7 +78,7 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.85 $ $Date: 2005/05/10 09:14:52 $
+ * @version $Revision: 1.86 $ $Date: 2005/05/11 07:59:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -87,29 +89,19 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
 
-    /**
-     * A digest to encrypt the passwords.
-     */
+    /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;
 
-    /**
-     * The algorithm used to encode passwords.<p>
-     */
+    /** The algorithm used to encode passwords. */
     protected String m_digestAlgorithm;
     
-    /**
-     * The file.encoding to code passwords after encryption with digest.
-     */
+    /** The file.encoding to code passwords after encryption with digest. */
     protected String m_digestFileEncoding;
     
-    /**
-     * The driver manager.
-     */
+    /** The driver manager. */
     protected CmsDriverManager m_driverManager;
 
-    /**
-     * The SQL manager.
-     */ 
+    /** The SQL manager. */ 
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
@@ -142,7 +134,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String, java.lang.Object)
      */
-    public CmsGroup createGroup(CmsDbContext dbc, CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException {
+    public CmsGroup createGroup(CmsDbContext dbc, CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsDataAccessException {
         
         CmsUUID parentId = CmsUUID.getNullUUID();
         CmsGroup group = null;
@@ -150,7 +142,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
 
         if (existsGroup(dbc, groupName, reservedParam)) {
-            throw new CmsException("Group " + groupName + " already exists", CmsException.C_GROUP_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1, groupName);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
         
         try {
@@ -190,14 +186,19 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) throws CmsException {
+    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) 
+    throws CmsDataAccessException, CmsPasswordEncryptionException {
         
         CmsUUID id = new CmsUUID();
         Connection conn = null;
         PreparedStatement stmt = null;
         
         if (existsUser(dbc, name, type, null)) {
-            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
 
         try {

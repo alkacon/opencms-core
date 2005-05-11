@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPasswordHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 07:59:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.security;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.main.CmsException;
 
 /**
  * Defines methods for OpenCms password validation.<p>
@@ -40,7 +39,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.11 
  */
 public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
@@ -75,9 +74,9 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
      * 
      * @param password the password to encrypt
      * @return the password digest
-     * @throws CmsException if something goes wrong
+     * @throws CmsPasswordEncryptionException if something goes wrong
      */
-    String digest(String password) throws CmsException;
+    String digest(String password) throws CmsPasswordEncryptionException;
     
     /**
      * Creates an OpenCms password digest.<p>
@@ -86,9 +85,9 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
      * @param digestType the algorithm used for encryption (i.e. MD5, SHA ...)
      * @param inputEncoding the encoding used when converting the password to bytes (i.e. UTF-8)
      * @return the password digest
-     * @throws CmsException if something goes wrong
+     * @throws CmsPasswordEncryptionException if something goes wrong
      */
-    String digest(String password, String digestType, String inputEncoding) throws CmsException;
+    String digest(String password, String digestType, String inputEncoding) throws CmsPasswordEncryptionException;
 
     /**
      * This method checks if a new password follows the rules for
