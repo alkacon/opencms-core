@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSqlException.java,v $
- * Date   : $Date: 2005/04/14 10:31:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.db;
 
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import java.sql.Statement;
@@ -41,7 +43,7 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsSqlException extends CmsDataAccessException {
@@ -68,6 +70,36 @@ public class CmsSqlException extends CmsDataAccessException {
         }
     }
 
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsSqlException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsSqlException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }   
+    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsSqlException(container, cause);
+    }   
+    
     /**
      * Creates a message given an originating statement and exception.<p> 
      * 
@@ -137,4 +169,7 @@ public class CmsSqlException extends CmsDataAccessException {
 
         return message;
     }
+    
+    
+ 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsNotImplementedException.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.db;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
@@ -38,7 +39,7 @@ import org.opencms.main.CmsException;
  * This exception may be thrown by various driver implementation classes. 
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.5 $ $Date: 2005/05/11 08:32:42 $
  * @since 5.1.2
  */
 public class CmsNotImplementedException extends CmsException {
@@ -81,6 +82,30 @@ public class CmsNotImplementedException extends CmsException {
      */
     public CmsNotImplementedException(String message, int type) {
         super(message, type);
+    }
+    
+    /**
+     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
+     */
+    public CmsNotImplementedException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
+     */
+    public CmsNotImplementedException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsNotImplementedException(container, cause);
     }
     
     /**

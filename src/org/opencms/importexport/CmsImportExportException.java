@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportException.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.I_CmsThrowable;
  * Signals an error during import or export of OpenCms data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsImportExportException extends CmsException implements I_CmsThrowable {
 
@@ -57,6 +57,15 @@ public class CmsImportExportException extends CmsException implements I_CmsThrow
     public CmsImportExportException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
+    }
+    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsImportExportException(container, cause);
     }
     
 }

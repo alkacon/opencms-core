@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/04/25 14:07:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsException;
  * Used to signal data access related issues, i.e. db or ldap access.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsDataAccessException extends CmsException {
@@ -154,8 +154,7 @@ public class CmsDataAccessException extends CmsException {
     public CmsDataAccessException(Throwable rootCause) {
 
         super(C_DA_EXCEPTION, rootCause);
-    }
-    
+    }   
     
     /**
      * Creates a new localized Exception.<p>
@@ -177,7 +176,16 @@ public class CmsDataAccessException extends CmsException {
 
         super(container, cause);
     }      
-
+    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsDataAccessException(container, cause);
+    }
+    
     /**
      * Returns the description String for the provided CmsException type.<p>
      * 

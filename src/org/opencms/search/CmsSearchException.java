@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchException.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2005/04/29 15:00:35 $
+ * @version $Revision: 1.9 $ $Date: 2005/05/11 08:32:42 $
  * @since 5.3.1
  */
 public class CmsSearchException extends CmsException {
@@ -66,5 +66,13 @@ public class CmsSearchException extends CmsException {
     public CmsSearchException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }      
+    }    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsSearchException(container, cause);
+    } 
 }

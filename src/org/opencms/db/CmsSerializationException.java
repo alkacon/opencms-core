@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSerializationException.java,v $
- * Date   : $Date: 2005/04/14 10:31:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,14 @@
 
 package org.opencms.db;
 
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
+
 /**
  * Signals that an attempt to (un)marshall an object was not successfull.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2005/04/14 10:31:52 $
+ * @version $Revision: 1.5 $ $Date: 2005/05/11 08:32:42 $
  * @since 5.7.3
  */
 public class CmsSerializationException extends CmsDataAccessException {
@@ -60,5 +63,36 @@ public class CmsSerializationException extends CmsDataAccessException {
     public CmsSerializationException(String message, Throwable rootCause) {
 
         super(message, C_DA_SERIALIZATION_EXCEPTION, rootCause);
+    }
+    
+    
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsSerializationException(CmsMessageContainer container) {
+
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsSerializationException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }   
+    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsSerializationException(container, cause);
     }
 }

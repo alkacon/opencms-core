@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerException.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,5 +62,13 @@ public class CmsSchedulerException extends CmsException implements I_CmsThrowabl
     public CmsSchedulerException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
+    }
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsSchedulerException(container, cause);
     }
 }

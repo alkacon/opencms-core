@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheException.java,v $
- * Date   : $Date: 2005/04/25 09:09:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.I_CmsThrowable;
  * Signals an error of the Flex cache.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexCacheException extends CmsException implements I_CmsThrowable {
 
@@ -59,4 +59,11 @@ public class CmsFlexCacheException extends CmsException implements I_CmsThrowabl
         super(container, cause);
     }
     
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsFlexCacheException(container, cause);
+    } 
 }

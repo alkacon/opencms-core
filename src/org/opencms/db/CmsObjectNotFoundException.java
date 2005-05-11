@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsObjectNotFoundException.java,v $
- * Date   : $Date: 2005/05/09 15:47:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to read an object from a data source, that
@@ -39,7 +40,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2005/05/09 15:47:06 $
+ * @version $Revision: 1.5 $ $Date: 2005/05/11 08:32:42 $
  * @since 5.7.3
  */
 public class CmsObjectNotFoundException extends CmsDataAccessException {
@@ -78,6 +79,13 @@ public class CmsObjectNotFoundException extends CmsDataAccessException {
     public CmsObjectNotFoundException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }
+    }    
     
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsObjectNotFoundException(container, cause);
+    }
 }

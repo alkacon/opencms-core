@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsPrimaryKeyException.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 08:32:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.db;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
@@ -38,7 +39,7 @@ import org.opencms.main.CmsException;
  * invalid or empty.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.8 $ $Date: 2005/05/11 08:32:42 $
  * @since 5.1.4
  */
 public class CmsPrimaryKeyException extends CmsException {
@@ -66,5 +67,34 @@ public class CmsPrimaryKeyException extends CmsException {
     public CmsPrimaryKeyException(String message, int type) {
         super(message, type, null);
     }    
+    
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsPrimaryKeyException(CmsMessageContainer container) {
 
+        super(container);
+    }
+
+    /**
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
+     */
+    public CmsPrimaryKeyException(CmsMessageContainer container, Throwable cause) {
+
+        super(container, cause);
+    }   
+    
+    
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsPrimaryKeyException(container, cause);
+    }
 }
