@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,10 @@ import java.util.Locale;
 /**
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public class CmsContextInfo {
-
-    /** Error message when changing a frozen configuration. */
-    private static final String C_MESSAGE_FROZEN = "Context configuration has been frozen and can not longer be changed!";
 
     /** The encoding to create the context with. */
     private String m_encoding;
@@ -316,10 +315,7 @@ public class CmsContextInfo {
      */
     public void setEncoding(String encoding) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_encoding = CmsEncoder.lookupEncoding(encoding, OpenCms.getSystemInfo().getDefaultEncoding());
     }
 
@@ -335,10 +331,7 @@ public class CmsContextInfo {
      */
     public void setLocale(Locale locale) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_locale = locale;
         m_localeName = m_locale.toString();
     }
@@ -355,10 +348,7 @@ public class CmsContextInfo {
      */
     public void setLocaleName(String localeName) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_localeName = localeName;
         m_locale = CmsLocaleManager.getLocale(localeName);
     }
@@ -370,10 +360,7 @@ public class CmsContextInfo {
      */
     public void setProjectName(String projectName) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_projectName = projectName;
     }
 
@@ -384,10 +371,7 @@ public class CmsContextInfo {
      */
     public void setRemoteAddr(String remoteAddr) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_remoteAddr = remoteAddr;
     }
 
@@ -398,10 +382,7 @@ public class CmsContextInfo {
      */
     public void setRequestedUri(String requestedUri) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_requestedUri = requestedUri;
     }
 
@@ -412,10 +393,7 @@ public class CmsContextInfo {
      */
     public void setSiteRoot(String siteRoot) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_siteRoot = siteRoot;
     }
 
@@ -426,11 +404,19 @@ public class CmsContextInfo {
      */
     public void setUserName(String userName) {
 
-        if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
-        }
-
+        checkFrozen();
         m_userName = userName;
     }
 
+    /**
+     * Checks if this context info configuration is frozen.<p>
+     * 
+     * @throws CmsRuntimeException in case the configuration is already frozen
+     */
+    protected void checkFrozen() throws CmsRuntimeException {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONTEXT_INFO_FROZEN_0));
+        }
+    }
 }

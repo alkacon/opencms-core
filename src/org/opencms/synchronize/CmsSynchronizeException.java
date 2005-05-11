@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.synchronize;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsThrowable;
 
 /**
  * Thrown by a class which implements org.opencms.file.I_CmsSyncModifications.<p>
@@ -43,9 +42,9 @@ import org.opencms.main.I_CmsThrowable;
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
-public class CmsSynchronizeException extends CmsException implements I_CmsThrowable {
+public class CmsSynchronizeException extends CmsException {
     
     /**
      * Creates a new localized Exception.<p>

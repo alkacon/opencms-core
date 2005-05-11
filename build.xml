@@ -41,9 +41,9 @@
     <property name="opencms.inputlib.pool"        		location="${opencms.input.libs}/commons-pool-1.2.jar" />    
     <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging-1.0.4.jar" /> 
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections-3.1.jar" />
+    <property name="opencms.inputlib.beanutils"   		location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
     <property name="opencms.inputlib.fileupload"   		location="${opencms.input.libs}/commons-fileupload-1.0.jar" />
     <property name="opencms.inputlib.httpclient"   		location="${opencms.input.libs}/commons-httpclient-2.0.2.jar" />
-    <property name="opencms.inputlib.beanutils"   		location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.9.jar" /> 
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.5.2.jar" />
     <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.5.jar" />
@@ -99,6 +99,7 @@
                 <available file="${opencms.inputlib.digester}"/>
                 <available file="${opencms.inputlib.logging}"/>
                 <available file="${opencms.inputlib.collections}"/> 
+                <available file="${opencms.inputlib.beanutils}"/> 
                 <available file="${opencms.inputlib.fileupload}"/>
                 <available file="${opencms.inputlib.httpclient}"/>
                 <available file="${opencms.inputlib.dom4j}"/> 
@@ -174,6 +175,7 @@ ${opencms.inputlib.dbcp}
 ${opencms.inputlib.digester}
 ${opencms.inputlib.logging}
 ${opencms.inputlib.collections}
+${opencms.inputlib.beanutils}
 ${opencms.inputlib.fileupload}
 ${opencms.inputlib.httpclient}
 ${opencms.inputlib.dom4j}
@@ -233,6 +235,7 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.digester}:
                        ${opencms.inputlib.logging}:
                        ${opencms.inputlib.collections}:
+                       ${opencms.inputlib.beanutils}:
                        ${opencms.inputlib.fileupload}:
                        ${opencms.inputlib.httpclient}:
                        ${opencms.inputlib.dom4j}:
@@ -514,6 +517,7 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.digester}:
                        ${opencms.inputlib.logging}:
                        ${opencms.inputlib.collections}:
+                       ${opencms.inputlib.beanutils}:
                        ${opencms.inputlib.fileupload}:
                        ${opencms.inputlib.httpclient}:
                        ${opencms.inputlib.dom4j}:
@@ -554,7 +558,6 @@ ${opencms.inputlib.textextraction}
 				<pathelement path="${opencms.output.tests}"/>
 				<pathelement location="${opencms.output.jars}/opencms.jar"/>
 				<pathelement location="${opencms.output.jars}/opencms-legacy.jar"/>
-				<pathelement location="${opencms.inputlib.beanutils}"/>
 				<pathelement location="${opencms.inputlib.fileupload}"/>
 				<pathelement location="${opencms.inputlib.servlet}"/>				
 				<pathelement location="${opencms.inputlib.mail}"/>
@@ -573,6 +576,7 @@ ${opencms.inputlib.textextraction}
 				<pathelement location="${opencms.inputlib.digester}"/>
 				<pathelement location="${opencms.inputlib.logging}"/>
 				<pathelement location="${opencms.inputlib.collections}"/>
+				<pathelement location="${opencms.inputlib.beanutils}"/>
 				<pathelement location="${opencms.inputlib.httpclient}"/>
 				<pathelement location="${opencms.inputlib.dom4j}"/>
 				<pathelement location="${opencms.inputlib.quartz}"/>

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo1.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo5.java,v $
  * Date   : $Date: 2005/05/11 10:22:40 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,20 @@
 package org.opencms.workplace.tools.widgetdemo;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsContextInfo;
+import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget;
-
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,10 +57,10 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.9.1
  */
-public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
+public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
 
     /** Value for the action: save the settings. */
     public static final int ACTION_SAVE = 300;
@@ -68,14 +69,20 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
     public static final String DIALOG_SAVE = "save";
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "widgetdemo1";
+    public static final String DIALOG_TYPE = "widgetdemo4";
+
+    /** The OpenCms context info object used for the job info. */
+    CmsContextInfo m_contextInfo;
+
+    /** The job info object that is edited on this dialog. */
+    CmsScheduledJobInfo m_jobInfo;
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsAdminWidgetDemo1(CmsJspActionElement jsp) {
+    public CmsAdminWidgetDemo5(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -87,66 +94,66 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsAdminWidgetDemo1(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsAdminWidgetDemo5(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
 
     /**
-     * Builds the HTML for the demo1 form.<p>
+     * Builds the HTML for the demo5 form.<p>
      * 
-     * @return the HTML for the demo1 form
+     * @return the HTML for the demo5 form
      */
-    public String buildDemo1Form() {
+    public String buildDemo5Form() {
 
-        StringBuffer retValue = new StringBuffer(512);
+        StringBuffer result = new StringBuffer(1024);
 
         try {
 
-            retValue.append("<table class=\"xmlTable\">");
+            // create the dialog HTML
+            result.append(createDialogHtml());
 
-            Iterator i = getWidgets().iterator();
-            while (i.hasNext()) {
+        } catch (Throwable t) {
 
-                // get the current widget base definition
-                CmsWidgetParameter base = (CmsWidgetParameter)i.next();
-                List sequence = (List)getParameters().get(base.getName());
-                int count = sequence.size();
-
-                if ((count < 1) && (base.getMinOccurs() > 0)) {
-                    // no parameter with the value present, but also not optional: use base as parameter
-                    sequence = new ArrayList();
-                    sequence.add(base);
-                }
-
-                Iterator j = sequence.iterator();
-                while (j.hasNext()) {
-                    CmsWidgetParameter param = (CmsWidgetParameter)j.next();
-                    retValue.append("<tr>\n");
-                    retValue.append(getWidget(param));
-                    retValue.append("</tr>\n");
-                }
-            }
-
-            retValue.append("</table>\n");
-
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
+            int todo = 0;
+            // TODO: Error handling
         }
-
-        return retValue.toString();
+        return result.toString();
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
+     * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
 
-        addWidget(new CmsWidgetParameter("stringwidget", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter("textwidget", new CmsXmlTextareaWidget()));
-        addWidget(new CmsWidgetParameter("boolwidget", new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter("vfsfilewidget", new CmsXmlVfsFileWidget()));
-        addWidget(new CmsWidgetParameter("imagegalwidget", new CmsXmlImageGalleryWidget()));
+        m_jobInfo = new CmsScheduledJobInfo();
+        m_contextInfo = new CmsContextInfo();        
+
+        addWidget(new CmsWidgetParameter(m_jobInfo, "jobName", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "className", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "cronExpression", new CmsXmlStringWidget()));
+
+        addWidget(new CmsWidgetParameter(m_contextInfo, "userName", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_contextInfo, "projectName", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_contextInfo, "siteRoot", new CmsXmlVfsFileWidget()));
+        addWidget(new CmsWidgetParameter(m_contextInfo, "requestedUri", new CmsXmlVfsFileWidget()));
+        addWidget(new CmsWidgetParameter(m_contextInfo, "localeName", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_contextInfo, "encoding", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_contextInfo, "remoteAddr", new CmsXmlStringWidget()));
+
+        addWidget(new CmsWidgetParameter(m_jobInfo, "reuseInstance", new CmsXmlBooleanWidget()));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "active", new CmsXmlBooleanWidget()));
+        
+
+        List testList = new ArrayList();
+        testList.add("value1");
+        testList.add("another value");
+        addWidget(new CmsWidgetParameter(testList, "theList", new CmsXmlStringWidget()));        
+        
+        Map testMap = new TreeMap();
+        testMap.put("key1", "value1");
+        testMap.put("key2", "another value");
+        addWidget(new CmsWidgetParameter(testMap, "theMap", new CmsXmlStringWidget()));        
     }
 
     /**
@@ -168,12 +175,32 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
         if (DIALOG_SAVE.equals(getParamAction())) {
             // ok button pressed
             setAction(ACTION_SAVE);
+            List errors = commitWidgetValues();
+            if (errors.size() > 0) {
+                Iterator i = errors.iterator();
+                while (i.hasNext()) {
+                    Exception e = (Exception)i.next();
+                    System.err.println(e.getMessage());
+                    if (e.getCause() != null) {
+                        System.err.println("Cause: " + e.getCause().getMessage());
+                    }
+                }
+                setAction(ACTION_DEFAULT);
+            }
         } else if (DIALOG_OK.equals(getParamAction())) {
             // ok button pressed
             setAction(ACTION_CANCEL);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             // cancel button pressed
             setAction(ACTION_CANCEL);
+        } else if (EDITOR_ACTION_ELEMENT_ADD.equals(getParamAction())) {
+            setAction(ACTION_ELEMENT_ADD);
+            actionToggleElement();
+            setAction(ACTION_DEFAULT);
+        } else if (EDITOR_ACTION_ELEMENT_REMOVE.equals(getParamAction())) {
+            setAction(ACTION_ELEMENT_REMOVE);
+            actionToggleElement();
+            setAction(ACTION_DEFAULT);
         } else {
             // set the default action               
             setAction(ACTION_DEFAULT);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,14 @@ package org.opencms.importexport;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsThrowable;
 
 /**
  * Signals an error during import or export of OpenCms data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class CmsImportExportException extends CmsException implements I_CmsThrowable {
+public class CmsImportExportException extends CmsException {
 
     /**
      * @see CmsException#CmsException(CmsMessageContainer)

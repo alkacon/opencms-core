@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -427,6 +427,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
+        checkFrozen();
         // add the configured parameter
         m_parameters.put(paramName, paramValue);
         if (LOG.isDebugEnabled()) {
@@ -641,7 +642,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @return the parameters
      */
-    public Map getParameters() {
+    public SortedMap getParameters() {
 
         return m_parameters;
     }
@@ -693,10 +694,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void setActive(boolean active) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         m_active = active;
     }
 
@@ -707,10 +705,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void setClassName(String className) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         m_className = className;
 
         if (m_jobName == null) {
@@ -730,10 +725,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void setContextInfo(CmsContextInfo contextInfo) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         contextInfo.freeze();
         m_context = contextInfo;
     }
@@ -745,10 +737,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void setCronExpression(String cronExpression) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         m_cronExpression = cronExpression;
     }
 
@@ -759,11 +748,19 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void setJobName(String jobName) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         m_jobName = jobName;
+    }
+
+    /**
+     * Sets the job parameters.<p>
+     *
+     * @param parameters the parameters to set
+     */
+    public void setParameters(SortedMap parameters) {
+
+        checkFrozen();
+        m_parameters = parameters;
     }
 
     /**
@@ -774,11 +771,20 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     public void setReuseInstance(boolean reuseInstance) {
 
+        checkFrozen();
+        m_reuseInstance = reuseInstance;
+    }
+
+    /**
+     * Checks if this job info configuration is frozen.<p>
+     * 
+     * @throws CmsRuntimeException in case the configuration is already frozen
+     */
+    protected void checkFrozen() throws CmsRuntimeException {
+
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
         }
-
-        m_reuseInstance = reuseInstance;
     }
 
     /**
@@ -811,10 +817,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     protected void setId(String id) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         m_id = id;
     }
 
@@ -828,10 +831,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      */
     protected void setTrigger(Trigger trigger) {
 
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_JOB_INFO_FROZEN_1, getJobName()));
-        }
-
+        checkFrozen();
         m_trigger = trigger;
     }
 }

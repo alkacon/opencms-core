@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.module;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
@@ -148,23 +151,10 @@ public class CmsModule implements Comparable {
         Map parameters) {
 
         super();
-        if (!CmsStringUtil.isValidJavaClassName(name)) {
-            throw new IllegalArgumentException("Module name must be a valid Java class name");
-        }
-        m_name = name;
-        if (CmsStringUtil.isEmpty(niceName)) {
-            m_niceName = m_name;
-        } else {
-            m_niceName = niceName;
-        }
-        if (CmsStringUtil.isEmpty(actionClass)) {
-            m_actionClass = null;
-        } else {
-            if (!CmsStringUtil.isValidJavaClassName(actionClass)) {
-                throw new IllegalArgumentException("Module action class name must be a valid Java class name");
-            }
-            m_actionClass = actionClass;
-        }
+        setName(name);
+        setNiceName(niceName);
+        setActionClass(actionClass);
+
         if (CmsStringUtil.isEmpty(description)) {
             m_description = "";
         } else {
@@ -216,6 +206,7 @@ public class CmsModule implements Comparable {
         }  
         m_resourceTypes = Collections.EMPTY_LIST;
         m_explorerTypeSettings = Collections.EMPTY_LIST;
+        m_frozen = true;
     }
 
     /**
@@ -279,9 +270,12 @@ public class CmsModule implements Comparable {
     }
 
     /**
-     * Returns the (optional) class name of the modules action class.<p>
+     * Returns the class name of this modules (optional) action class.<p>
      *
-     * @return the (optional) class name of the modules action class
+     * If this module does not use an action class,
+     * <code>null</code> is returned.<p>
+     *
+     * @return the class name of this modules (optional) action class
      */
     public String getActionClass() {
 
@@ -372,7 +366,7 @@ public class CmsModule implements Comparable {
     /**
      * Returns the name of this module.<p>
      * 
-     * The module name usually looks like a java package name.<p>
+     * The module name must be a valid java package name.<p>
      *
      * @return the name of this module
      */
@@ -381,6 +375,92 @@ public class CmsModule implements Comparable {
         return m_name;
     }
 
+    /**
+     * Sets the name of this module.<p>
+     * 
+     * The module name must be a valid java package name.<p>
+     * 
+     * <i>Please note:</i>It's not possible to set the modules name once the module
+     * configuration has been frozen.<p>
+     * 
+     * @param value the module name to set
+     */
+    public void setName(String value) {
+        
+        checkFrozen();        
+        if (!CmsStringUtil.isValidJavaClassName(value)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MODULE_NAME_1, value));
+        }
+        m_name = value;
+    }
+    
+    /**
+     * Sets the "nice" display name of this module.<p>
+     * 
+     * <i>Please note:</i>It's not possible to set the modules "nice" name once the module
+     * configuration has been frozen.<p> 
+     * 
+     * @param value the "nice" display name of this module to set
+     */
+    public void setNiceName(String value) {
+        
+        checkFrozen();               
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            m_niceName = getName();
+        } else {
+            m_niceName = value.trim();
+        }
+    }
+    
+    /**
+     * Sets the class name of this modules (optional) action class.<p>
+     * 
+     * Providing <code>null</code> as a value indicates that this module does not use an action class.<p>
+     * 
+     * <i>Please note:</i>It's not possible to set the action class name once the module
+     * configuration has been frozen.<p> 
+     * 
+     * @param value the class name of this modules (optional) action class to set
+     */
+    public void setActionClass(String value) {
+        
+        checkFrozen();               
+        if (CmsStringUtil.isEmpty(value)) {
+            m_actionClass = null;
+        } else {
+            if (!CmsStringUtil.isValidJavaClassName(value)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MODULE_ACTION_CLASS_2, value, getName()));
+            }
+            m_actionClass = value;
+        }
+    }
+        
+    /**
+     * Checks if this modules configuration is frozen.<p>
+     * 
+     * @throws CmsRuntimeException in case the configuration is already frozen
+     */
+    protected void checkFrozen() throws CmsRuntimeException {
+        
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MODULE_FROZEN_1, getName()));
+        }
+    }
+    
+    /** Indicates if this modules configuration has already been frozen. */
+    private boolean m_frozen;
+    
+    /**
+     * Initializes this module, also freezing the module configuration.<p>
+     * 
+     * @param cms an initialized OpenCms user context
+     */
+    public void initialize(CmsObject cms) {
+       
+        // noop
+        m_frozen = true;
+    }
+    
     /**
      * Returns the "nice" display name of this module.<p>
      *

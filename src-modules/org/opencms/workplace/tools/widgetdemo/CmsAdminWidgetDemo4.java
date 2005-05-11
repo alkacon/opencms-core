@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/05/10 09:24:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/11 10:22:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.workplace.tools.widgetdemo;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWidgetDialog;
-import org.opencms.workplace.CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
+import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {

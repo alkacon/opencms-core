@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/11 10:22:40 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/Messages.java,v $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.widgetdemo;
+package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -42,8 +42,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PROPERTY_2 = "ERR_NO_PROPERTY_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROPERTY_READ_2 = "ERR_PROPERTY_READ_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROPERTY_WRITE_3 = "ERR_PROPERTY_WRITE_3";
+    
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.widgetdemo.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workplace.xmlwidgets.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerException.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsIllegalArgumentException.java,v $
  * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,25 +29,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.scheduler;
+package org.opencms.main;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsException;
 
 /**
- * Describes errors that occur in the context of OpenCms scheduler.<p>
+ * A replacement for <code>{@link java.lang.IllegalArgumentException}</code> to obtain fully
+ * localized exception messages for OpenCms.<p>
+ * 
+ * Please note that this class does not extend <code>{@link java.lang.IllegalArgumentException}</code> due to 
+ * the lack of multiple inheritance for Java.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.7.3
+ * @since 5.9.1
  */
-public class CmsSchedulerException extends CmsException {
+public class CmsIllegalArgumentException extends CmsRuntimeException {
 
     /**
      * Creates a new localized Exception.<p>
      * 
      * @param container the localized message container to use
      */
-    public CmsSchedulerException(CmsMessageContainer container) {
+    public CmsIllegalArgumentException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -58,16 +61,8 @@ public class CmsSchedulerException extends CmsException {
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
-    public CmsSchedulerException(CmsMessageContainer container, Throwable cause) {
+    public CmsIllegalArgumentException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }
-    
-    /**
-     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
-     */
-    public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsSchedulerException(container, cause);
     }
 }

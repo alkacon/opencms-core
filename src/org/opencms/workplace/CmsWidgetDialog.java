@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 10:22:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
+import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlException;
@@ -59,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -78,6 +80,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Indicates an optional element should be removed. */
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
+
+    /** Prefix for "hidden" parameters, required since these must be unescaped later. */
+    public static final String HIDDEN_PARAM_PREFIX = "hidden.";
 
     /** Contains all parameter value of this dialog. */
     protected Map m_paramValues;
@@ -99,6 +104,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * when calling <code>{@link org.opencms.workplace.CmsWorkplace#paramsAsHidden()}</code>.<p>
      */
     private String m_paramElementName = "undefined";
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -147,7 +153,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             } else {
                 // add the new value after the clicked element
                 index = index + 1;
-                CmsWidgetParameter newParam = new CmsWidgetParameter(base, base.getDefault(getCms()), index);
+                CmsWidgetParameter newParam = new CmsWidgetParameter(base, index);
                 params.add(index, newParam);
             }
             // reset all index value in the parameter list
@@ -329,6 +335,136 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         return result.toString();
     }
+    
+    /**
+     * Creates the dialog HTML for all occurences of one widget parameter.<p>  
+     * 
+     * @param base the widget parameter base
+     * @return the dialog HTML for one widget parameter
+     * 
+     * @throws CmsXmlException in case the HTML for the dialog widget can't be generated
+     */
+    protected String createDialogRowHtml(CmsWidgetParameter base) throws CmsXmlException {
+
+        StringBuffer result = new StringBuffer(256);
+
+        List sequence = (List)getParameters().get(base.getName());
+        int count = sequence.size();
+
+        if ((count < 1) && (base.getMinOccurs() > 0)) {
+            // no parameter with the value present, but also not optional: use base as parameter
+            sequence = new ArrayList();
+            sequence.add(base);
+            count = 1;
+        }
+
+        // check if value is optional or multiple
+        boolean addValue = false;
+        if (count < base.getMaxOccurs()) {
+            addValue = true;
+        }
+        boolean removeValue = false;
+        if (count > base.getMinOccurs()) {
+            removeValue = true;
+        }
+
+        boolean disabledElement = false;
+
+        // loop through multiple elements
+        for (int j = 0; j < count; j++) {
+
+            // get the parameter and the widget
+            CmsWidgetParameter p = (CmsWidgetParameter)sequence.get(j);
+            I_CmsXmlWidget widget = p.getWidget();
+
+            // create label and help bubble cells
+            result.append("<tr>");
+            result.append("<td class=\"xmlLabel");
+            if (disabledElement) {
+                // element is disabled, mark it with css
+                result.append("Disabled");
+            }
+            result.append("\">");
+            result.append(key(A_CmsXmlWidget.getLabelKey(p), p.getName()));
+            if (count > 1) {
+                result.append(" [").append(p.getIndex() + 1).append("]");
+            }
+            result.append(": </td>");
+            if (p.getIndex() == 0) {
+                // show help bubble only on first element of each content definition 
+                result.append(widget.getHelpBubble(getCms(), this, p));
+            } else {
+                // create empty cell for all following elements 
+                result.append(buttonBarSpacer(16));
+            }
+
+            // append individual widget html cell if element is enabled
+            if (!disabledElement) {
+                // this is a simple type, display widget
+                result.append(widget.getDialogWidget(getCms(), this, p));
+            } else {
+                // disabled element, show message for optional element
+                result.append("<td class=\"xmlTdDisabled maxwidth\">");
+                result.append(key("editor.xmlcontent.optionalelement"));
+                result.append("</td>");
+            }
+
+            // append add and remove element buttons if required
+            result.append("<td style=\"vertical-align: top;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+            result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
+            result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
+            result.append("</tr></table></td>");
+            // close row
+            result.append("</tr>\n");
+        }
+
+        return result.toString();
+    }
+    
+    /**
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
+     * 
+     * @param dialog the dialog (page) to get the HTML for
+     * @return the dialog HTML for all defined widgets of the named dialog (page)
+     * 
+     * @throws CmsXmlException in case the HTML for the dialog can't be generated
+     */
+    protected String createDialogHtml(String dialog) throws CmsXmlException {
+        
+        StringBuffer result = new StringBuffer(1024);
+
+        // create table
+        result.append("<table class=\"xmlTable\">\n");
+
+        Iterator i = getWidgets().iterator();
+        // iterate the type sequence                    
+        while (i.hasNext()) {
+            // get the current widget base definition
+            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            // check if the element is on the requested dialog page
+            if ((dialog == null) || dialog.equals(base.getDialog())) {             
+                // add the HTML for the dialog element
+                result.append(createDialogRowHtml(base));
+            }
+        }
+        // close table
+        result.append("</table>\n");
+
+        return result.toString();
+    }
+    
+    /**
+     * Creates the dialog HTML for all defined widgets of this dialog.<p>  
+     * 
+     * @return the dialog HTML for all defined widgets of this dialog
+     * 
+     * @throws CmsXmlException in case the HTML for the dialog can't be generated
+     */
+    protected String createDialogHtml() throws CmsXmlException {
+
+        return createDialogHtml(null);
+    }
+    
 
     /**
      * Generates the JavaScript init calls for the used widgets.<p>
@@ -452,6 +588,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 if (CmsStringUtil.isNotEmpty(value)
                     && ((excludeDialogPage == null) || (!param.getDialog().equals(excludeDialogPage)))) {
                     result.append("<input type=\"hidden\" name=\"");
+                    result.append(HIDDEN_PARAM_PREFIX);
                     result.append(param.getId());
                     result.append("\" value=\"");
                     String encoded = CmsEncoder.encode(value, getCms().getRequestContext().getEncoding());
@@ -478,6 +615,47 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
+     * Commits all values on the dialog.<p> 
+     * 
+     * @return a List of all Exceptions that occured when comitting the dialog.<p>
+     */
+    protected List commitWidgetValues() {
+
+        return commitWidgetValues(null);
+    }
+
+    /**
+     * Commits all values on the given dialog page.<p> 
+     * 
+     * @param dialog the dialog page to commit
+     * 
+     * @return a List of all Exceptions that occured when comitting the dialog page.<p>
+     */
+    protected List commitWidgetValues(String dialog) {
+
+        List result = new ArrayList();
+        Iterator i = getWidgets().iterator();
+        while (i.hasNext()) {
+            // check for all widget parameters            
+            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            if ((dialog == null) || (base.getDialog() == null) || dialog.equals(base.getDialog())) {
+                // the parameter is located on the requested dialog
+                List params = (List)m_paramValues.get(base.getName());
+                Iterator j = params.iterator();
+                while (j.hasNext()) {
+                    CmsWidgetParameter param = (CmsWidgetParameter)j.next();
+                    try {
+                        param.commitValue();
+                    } catch (Exception e) {
+                        result.add(e);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Defines the list of parameters for this dialog.<p>
      */
     protected abstract void defineWidgets();
@@ -489,32 +667,50 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     protected void fillWidgetValues(HttpServletRequest request) {
 
-        Iterator i = getWidgets().iterator();
         Map parameters = request.getParameterMap();
-        m_paramValues = new HashMap();
+        Map processedParamters = new HashMap();
+        Iterator p = parameters.keySet().iterator();
+        // make sure all "hidden" widget parameters are decoded
+        while (p.hasNext()) {
+            String key = (String)p.next();
+            String[] values = (String[])parameters.get(key);
+            if (key.startsWith(HIDDEN_PARAM_PREFIX)) {
+                // this is an encoded hidden parameter
+                key = key.substring(HIDDEN_PARAM_PREFIX.length());
+                String[] newValues = new String[values.length];
+                for (int l = 0; l < values.length; l++) {
+                    newValues[l] = CmsEncoder.decode(values[l], getCms().getRequestContext().getEncoding());
+                }
+                values = newValues;
+            }
+            processedParamters.put(key, values);
+        }
 
+        // now process the parameters
+        m_paramValues = new HashMap();
+        Iterator i = getWidgets().iterator();
         while (i.hasNext()) {
             // check for all widget parameters            
             CmsWidgetParameter base = (CmsWidgetParameter)i.next();
             List params = new ArrayList();
-            int count = 0;
-            for (int j = 0; j < base.getMaxOccurs(); j++) {
+            // "unbounded" dialog lists are not required
+            int maxOccurs = base.getMaxOccurs() < CmsWidgetParameter.MAX_OCCURENCES ? base.getMaxOccurs()
+            : CmsWidgetParameter.MAX_OCCURENCES;
+            for (int j = 0; j < maxOccurs; j++) {
+                // check for all possible values in the request parameters
                 String id = CmsWidgetParameter.createId(base.getName(), j);
-                String[] values = (String[])parameters.get(id);
-                String value = null;
-                if ((values != null) && (values.length > 0)) {
-                    // found a value for this parameter
-                    value = decodeParamValue(base.getName(), values[0]);
-                } else {
-                    if (count < base.getMinOccurs()) {
-                        // no value found but still required - use default
-                        value = base.getDefault(getCms());
+                boolean required = (params.size() < base.getMinOccurs())
+                    || (processedParamters.get(id) != null)
+                    || base.hasValue(j);
+                if (required) {
+                    CmsWidgetParameter param = new CmsWidgetParameter(base, params.size(), j);
+                    try {
+                        base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
+                    } catch (CmsXmlException e) {
+                        int todo = 0;
+                        // TODO: error handling
                     }
-                }
-                if (value != null) {
-                    CmsWidgetParameter param = new CmsWidgetParameter(base, value, count);
                     params.add(param);
-                    count++;
                 }
             }
             m_paramValues.put(base.getName(), params);
