@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 13:21:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -395,7 +395,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 result.append(widget.getHelpBubble(getCms(), this, p));
             } else {
                 // create empty cell for all following elements 
-                result.append(buttonBarSpacer(16));
+                result.append(dialogHorizontalSpacer(16));
             }
 
             // append individual widget html cell if element is enabled
@@ -410,10 +410,15 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
 
             // append add and remove element buttons if required
-            result.append("<td style=\"vertical-align: top;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-            result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
-            result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
-            result.append("</tr></table></td>");
+            result.append(dialogHorizontalSpacer(5));
+            result.append("<td>");
+            if (addValue || removeValue) {
+                result.append("<table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+                result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
+                result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
+                result.append("</tr></table>");
+            }
+            result.append("</td>");
             // close row
             result.append("</tr>\n");
         }
