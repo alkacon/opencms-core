@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/04/26 14:06:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,12 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsChtype;
 
@@ -55,6 +57,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.logging.Log;
 
 /**
  * The new resource upload dialog handles the upload of single files or zipped files.<p>
@@ -65,12 +68,15 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceUpload extends CmsNewResource {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);  
+    
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
 
@@ -189,9 +195,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
         } catch (CmsException e) {
             // error updating file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.upload"));
-            setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
+            LOG.error(e.getLocalizedMessage());
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
@@ -206,7 +211,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // determine the type of upload
         boolean unzipFile = Boolean.valueOf(getParamUnzipFile()).booleanValue();
         // Suffix for error messages (e.g. when exceeding the maximum file upload size)
-        String errorMsgSuffix = "";
 
         try {
             // get the file item from the multipart request
@@ -230,10 +234,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 // check file size
                 if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                     // file size is larger than maximum allowed file size, throw an error
-                    errorMsgSuffix = "size";
-                    throw new CmsException("File size larger than maximum allowed upload size, currently set to "
-                        + (maxFileSizeBytes / 1024)
-                        + " kb");
+                    throw new CmsWorkplaceException(Messages.get().container(
+                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, String.valueOf(maxFileSizeBytes / 1024)));
                 }
                 byte[] content = fi.get();
                 fi.delete();
@@ -271,18 +273,14 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     }
                 }
             } else {
-                throw new CmsException("Upload file not found");
+                throw new CmsWorkplaceException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
             }
         } catch (CmsException e) {
             // error uploading file, show error dialog
             setAction(ACTION_SHOWERROR);
+            LOG.error(e.getLocalizedMessage());
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.upload"));
-            setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix)
-                + "<br>\n"
-                + key("error.suggestion.upload" + errorMsgSuffix)
-                + "\n");
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
@@ -639,11 +637,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         setParamMessage(key("error.message.upload"));
         setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
         try {
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         } catch (JspException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error including error dialog " + C_FILE_DIALOG_SCREEN_ERROR);
-            }
+            LOG.error(e);
         }
     }
 

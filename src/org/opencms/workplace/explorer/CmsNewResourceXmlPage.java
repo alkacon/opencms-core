@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/05/02 13:47:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -59,6 +60,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * The new resource page dialog handles the creation of an xml page.<p>
  * 
@@ -68,11 +71,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceXmlPage extends CmsNewResource {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlPage.class);  
     
     /** Request parameter name for the selected template. */
     public static final String PARAM_TEMPLATE = "template";
@@ -190,10 +196,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             setResourceCreated(true);
         } catch (CmsException e) {
             // error creating folder, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
             setParamMessage(key("error.message.newresource"));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
@@ -239,8 +244,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             bodies = getBodies(getCms());
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
         }
         if (bodies == null) {
@@ -277,8 +282,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             templates = getTemplates(getCms());
         } catch (CmsException e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
         }
         if (templates == null) {
@@ -351,8 +356,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder);
             } catch (CmsException e) {
                 // folder not available, list will be empty
-                if (OpenCms.getLog(CmsNewResourceXmlPage.class).isDebugEnabled()) {
-                    OpenCms.getLog(CmsNewResourceXmlPage.class).debug(e);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e);
                 }
             }
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {
@@ -363,8 +368,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                     title = cms.readPropertyObject(cms.getSitePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 } catch (CmsException e) {
                     // property not available, will be null
-                    if (OpenCms.getLog(CmsNewResourceXmlPage.class).isInfoEnabled()) {
-                        OpenCms.getLog(CmsNewResourceXmlPage.class).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
                     }
                 }                
                 if (title == null) {

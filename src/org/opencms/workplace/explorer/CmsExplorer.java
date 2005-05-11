@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/04/28 09:39:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -57,6 +59,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
  * 
@@ -68,12 +72,15 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
 public class CmsExplorer extends CmsWorkplace {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExplorer.class);  
+    
     /** The "vfslink:" location prefix for VFS link display. */
     private static final String C_LOCATION_VFSLINK = "vfslink:";
 
@@ -139,8 +146,8 @@ public class CmsExplorer extends CmsWorkplace {
             currentResource = getCms().readResource(currentFolder, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // file was not readable
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
             found = false;
         }
@@ -157,10 +164,9 @@ public class CmsExplorer extends CmsWorkplace {
                 currentResource = getCms().readResource(currentFolder, CmsResourceFilter.ALL);
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);
-                }
-                throw new RuntimeException(e);
+                LOG.error(e);
+                //throw new RuntimeException(e);
+                throw new CmsRuntimeException(e.getMessageContainer(), e);
             }
         }
 
@@ -286,8 +292,8 @@ public class CmsExplorer extends CmsWorkplace {
             projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
         } catch (CmsException e) {
             // use an empty list (all resources are "outside")
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
             projectResources = new ArrayList();
         }
@@ -302,9 +308,7 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (CmsException e) {
                 lock = CmsLock.getNullLock();
 
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error getting lock state for resource " + res, e);
-                }
+                LOG.error(e);
             }
 
             content.append("top.aF(");
@@ -334,8 +338,8 @@ public class CmsExplorer extends CmsWorkplace {
                         false).getValue();
                 } catch (CmsException e) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
                     }
                 }
                 if (title == null) {
@@ -528,8 +532,8 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             } catch (CmsException exc) {
                 // where did my project go?
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(exc);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
                 }
                 lockedInProjectName = "";
             }
@@ -577,8 +581,8 @@ public class CmsExplorer extends CmsWorkplace {
             return folder;
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
             return "/";
         }
@@ -653,8 +657,8 @@ public class CmsExplorer extends CmsWorkplace {
                 page = Integer.parseInt(selectedPage);
             } catch (NumberFormatException e) {
                 // default is 1
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }
             }
             settings.setExplorerPage(page);
@@ -703,8 +707,8 @@ public class CmsExplorer extends CmsWorkplace {
                 return getCms().readSiblings(resource, CmsResourceFilter.ALL);
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }
                 return Collections.EMPTY_LIST;
             }
@@ -728,8 +732,8 @@ public class CmsExplorer extends CmsWorkplace {
                 return getCms().readProjectView(getSettings().getExplorerProjectId(), state);
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }
                 return Collections.EMPTY_LIST;
             }
@@ -744,8 +748,8 @@ public class CmsExplorer extends CmsWorkplace {
                 return getCms().getResourcesInFolder(resource, CmsResourceFilter.ONLY_VISIBLE);
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }
                 return Collections.EMPTY_LIST;
             }

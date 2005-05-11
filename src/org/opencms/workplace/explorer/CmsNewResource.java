@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/05/03 09:46:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -59,6 +60,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * The new resource entry dialog which displays the possible "new actions" for the current user.<p>
  * 
@@ -71,11 +74,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResource extends CmsDialog {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResource.class);  
     
     /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM = 100;
@@ -208,8 +214,8 @@ public class CmsNewResource extends CmsDialog {
                 getJsp().include(nextUri);
             } catch (JspException e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }                
                 // JSP dialog not present, display legacy XMLTemplate dialog
                 nextUri = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
@@ -258,9 +264,7 @@ public class CmsNewResource extends CmsDialog {
                 // error reading the groups of the current user
                 permissions = currSettings.getAccess().getAccessControlList().getPermissions(
                     getSettings().getUser());
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error reading groups of user " + getSettings().getUser().getName());
-                }
+                LOG.error(Messages.get().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, getSettings().getUser().getName()));
             }
             if (permissions.getPermissionString().indexOf("+c") == -1) {
                 // the type has no permission for the current user to be created, don't show the type
@@ -436,8 +440,8 @@ public class CmsNewResource extends CmsDialog {
                     getCms().readFolder(I_CmsConstants.C_ROOT, CmsResourceFilter.IGNORE_EXPIRATION));
             } catch (CmsException e) {
                 // can usually be ignored
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }                
                 currentFolder = I_CmsConstants.C_ROOT;
             }

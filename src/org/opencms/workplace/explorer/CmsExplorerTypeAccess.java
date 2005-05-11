@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -43,14 +44,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Explorer type access object, encapsulates access control entires and lists of a explorer type.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsExplorerTypeAccess {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);  
+    
     private Map m_accessControl;  
     private CmsAccessControlList m_accessControlList;
     
@@ -73,8 +79,8 @@ public class CmsExplorerTypeAccess {
      */
     public void addAccessEntry(String key, String value) {
         m_accessControl.put(key, value);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Adding entry: " + key + ", " + value);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_ACCESS_ENTRY_2, key, value));
         }      
     }
     

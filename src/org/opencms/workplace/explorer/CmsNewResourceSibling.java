@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2005/04/17 18:07:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,13 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -50,6 +51,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * The new resource sibling dialog handles the creation of a new sibling in the VFS.<p>
  * 
@@ -59,11 +62,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceSibling extends CmsNewResourcePointer {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceSibling.class);  
     
     /** Request parameter name for the keep properties flag. */
     public static final String PARAM_KEEPPROPERTIES = "keepproperties";
@@ -142,7 +148,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         try {
                             targetProperties = getCms().readPropertyObjects(targetName, false);
                         } catch (Exception e) {
-                            OpenCms.getLog(this).error("Error reading properties of " + targetName, e);
+                            LOG.error(e);
                         }                
                     }
                     getCms().createSibling(targetName, fullResourceName, targetProperties);                   
@@ -160,10 +166,10 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             setResourceCreated(true);
         } catch (CmsException e) {
             // error creating pointer, show error dialog
+            CmsVfsException exc = new CmsVfsException(Messages.get().container(Messages.ERR_CREATE_LINK_0), e);
+            LOG.error(exc);
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.newlink"));
-            setParamReasonSuggestion(key("error.reason.newlink") + "<br>\n" + key("error.suggestion.newlink") + "\n");
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -56,6 +57,8 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Generates the tree view for the OpenCms Workplace.<p> 
  * 
@@ -66,11 +69,14 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
 public class CmsTree extends CmsWorkplace {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTree.class);  
     
     /** Indicates if only folders or files and folders should be included in the tree. */
     private boolean m_includeFiles;
@@ -156,9 +162,7 @@ public class CmsTree extends CmsWorkplace {
             } catch (CmsException e) {
                 // error reading the groups of the current user
                 permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
-                if (OpenCms.getLog(CmsTree.class).isErrorEnabled()) {
-                    OpenCms.getLog(CmsTree.class).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
-                }      
+                LOG.error(Messages.get().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, cms.getRequestContext().currentUser().getName()));
             }
             if (permissions.getPermissionString().indexOf("+w") != -1) {
                 // user is allowed to write this resource type
@@ -245,8 +249,8 @@ public class CmsTree extends CmsWorkplace {
             }
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
         }
         return getNode(resource.getRootPath(), title, resource.getTypeId(), true, false);
@@ -266,8 +270,8 @@ public class CmsTree extends CmsWorkplace {
             try {
                 getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }                
                 folder = "/";    
             }
@@ -404,8 +408,8 @@ public class CmsTree extends CmsWorkplace {
                         getCms().readFolder(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                     } catch (CmsException e) {
                         // target folder not found, set it to "/"
-                        if (OpenCms.getLog(this).isInfoEnabled()) {
-                            OpenCms.getLog(this).info(e);
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(e);
                         }                        
                         currentTargetFolder = "/";
                     }
@@ -474,8 +478,8 @@ public class CmsTree extends CmsWorkplace {
                 projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
             } catch (CmsException e) {
                 // use an empty list (all resources are "outside")
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }                
                 projectResources = new ArrayList();
             }

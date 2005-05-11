@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
@@ -47,6 +48,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods to build a context menu for an explorer resource type.<p>
  * 
@@ -55,12 +58,15 @@ import java.util.Locale;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerContextMenu {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExplorerContextMenu.class);  
+    
     /** All context menu entries. */
     private List m_allEntries;
     /** Stores already generated javascript menu outputs with a Locale object as key. */
@@ -179,9 +185,7 @@ public class CmsExplorerContextMenu {
         } catch (CmsException e) {
             // error reading the groups of the current user
             permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
-            }      
+            LOG.error(e);
         }
         if (permissions.getPermissionString().indexOf("+w") == -1) {
             // the type is not editable, set editable to false

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/05/04 12:52:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,18 +36,19 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,6 +64,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -79,12 +81,15 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.7.3
  */
 public class CmsNewCsvFile extends CmsNewResourceUpload {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewCsvFile.class);  
+    
     /** Constant for automatically selecting the best fitting delimiter. */
     public static final String BEST_DELIMITER = "best";
 
@@ -202,7 +207,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      */
     public void actionUpload() throws JspException {
 
-        String errorMsgSuffix = "";
         String newResname = "";
 
         try {
@@ -211,21 +215,11 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 newResname = "csvcontent.html";
                 setParamNewResourceName("");
             } else {
-                try {
-                    setParamCsvContent(new String(getFileContentFromUpload(), CHARSET));
-                    newResname = getCms().getRequestContext().getFileTranslator().translateResource(
-                        CmsResource.getName(getParamResource().replace('\\', '/')));
-                    newResname = CmsStringUtil.changeFileNameSuffixTo(newResname, "html");
-                    setParamNewResourceName(newResname);
-                } catch (UnsupportedEncodingException e) {
-                    // should not happen
-                } catch (CmsException e) {
-                    // file size is larger than maximum allowed file size, throw an error
-                    errorMsgSuffix = "size";
-                    throw e;
-                } catch (FileNotFoundException e) {
-                    throw new CmsException(e.getMessage());
-                }
+                setParamCsvContent(new String(getFileContentFromUpload(), CHARSET));
+                newResname = getCms().getRequestContext().getFileTranslator().translateResource(
+                    CmsResource.getName(getParamResource().replace('\\', '/')));
+                newResname = CmsStringUtil.changeFileNameSuffixTo(newResname, "html");
+                setParamNewResourceName(newResname);
             }
 
             setParamResource(newResname);
@@ -240,7 +234,11 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 setParamDelimiter(getPreferredDelimiter(getParamCsvContent()));
             }
 
-            xmlContent = convertCsvToXml(getParamCsvContent(), getParamDelimiter());
+            try {
+                xmlContent = convertCsvToXml(getParamCsvContent(), getParamDelimiter());
+            } catch (IOException e) {
+                throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));    
+            }    
 
             if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
 
@@ -265,16 +263,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             // error uploading file, show error dialog
             setAction(ACTION_SHOWERROR);
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.upload"));
-            setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix)
-                + "<br>\n"
-                + key("error.suggestion.upload" + errorMsgSuffix)
-                + "\n");
+            CmsWorkplaceException we = new CmsWorkplaceException(Messages.get().container(Messages.ERR_TABLE_IMPORT_FAILED_0), e);
+            LOG.error(we);
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, we);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
-            }
         }
     }
 
@@ -282,10 +274,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * Returns the content of the file upload and sets the resource name.<p>
      * 
      * @return the byte content of the uploaded file
-     * @throws CmsException if the filesize if greater that maxFileSizeBytes
-     * @throws FileNotFoundException if the file cannot be found
+     * @throws CmsWorkplaceException if the filesize if greater that maxFileSizeBytes or if the upload file cannot be found
      */
-    public byte[] getFileContentFromUpload() throws CmsException, FileNotFoundException {
+    public byte[] getFileContentFromUpload() throws CmsWorkplaceException {
 
         byte[] content;
         // get the file item from the multipart request
@@ -305,21 +296,20 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         if (fi != null) {
             long size = fi.getSize();
             if (size == 0) {
-                throw new CmsException("Upload file not found");
+                throw new CmsWorkplaceException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
             }
             long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
             // check file size
             if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
-                throw new CmsException("File size larger than maximum allowed upload size, currently set to "
-                    + (maxFileSizeBytes / 1024)
-                    + " kb");
+                throw new CmsWorkplaceException(Messages.get().container(
+                    Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, String.valueOf(maxFileSizeBytes / 1024)));
             }
             content = fi.get();
             fi.delete();
             setParamResource(fi.getName());
 
         } else {
-            throw new FileNotFoundException("Upload file not found");
+            throw new CmsWorkplaceException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
         }
         return content;
     }
@@ -346,8 +336,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             return streamResult.getDocument().asXML();
 
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e);
             }
             return "";
         }
@@ -382,9 +372,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                         I_CmsConstants.C_PROPERTY_TITLE,
                         false);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);
-                    }
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e);
+                    }    
                 }
                 values.add(resource.getRootPath());
                 // display the title if set or otherwise the filename
@@ -512,9 +502,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 }
             }
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
-            }
+            LOG.error(e);
         }
         return result;
 

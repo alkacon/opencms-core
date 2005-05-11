@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/05/02 13:47:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 15:24:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,14 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Holds all information to build the explorer context menu of a resource type 
@@ -45,11 +48,14 @@ import java.util.List;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerTypeSettings implements Comparable {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExplorerTypeSettings.class); 
     
     private CmsExplorerTypeAccess m_access;
     
@@ -109,14 +115,14 @@ public class CmsExplorerTypeSettings implements Comparable {
         try {
             orderValue = Integer.valueOf(order);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Wrong order for context menu entry: " + key);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
             }      
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(CmsExplorerContextMenuItem.C_TYPE_ENTRY, key, uri, rules, target, orderValue, isXmlValue);
         m_contextMenuEntries.add(item);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Adding menu entry: " + key + ", " + order);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
         }      
     }
    
@@ -130,14 +136,12 @@ public class CmsExplorerTypeSettings implements Comparable {
         try {
             orderValue = Integer.valueOf(order);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Wrong order for context menu separator.");
-            }      
+            LOG.error(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));     
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(CmsExplorerContextMenuItem.C_TYPE_SEPARATOR, null, null, null, null, orderValue, false);
         m_contextMenuEntries.add(item);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Adding menu separator: " + order);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
         }     
     }
     
@@ -149,8 +153,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public boolean addProperty(String propertyName) {
         if (propertyName != null && !"".equals(propertyName.trim())) {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Adding property: " + propertyName);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_ADD_PROP_1, propertyName));
             }     
             return m_properties.add(propertyName);
         } else {
@@ -177,8 +181,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void createContextMenu() {
         m_contextMenu.addEntries(getContextMenuEntries());        
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Creating context menu for " + getName() + '.');
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_CREATE_CONTEXT_MENU_1, getName()));
         }     
     }
     
@@ -391,9 +395,8 @@ public class CmsExplorerTypeSettings implements Comparable {
     public void setAutoSetNavigation(String autoSetNavigation) {
 
         m_autoSetNavigation = Boolean.valueOf(autoSetNavigation).booleanValue();
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                ". Auto set navigation  : " + (m_autoSetNavigation ? "true" : "false"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_AUTO_NAV_1, autoSetNavigation));
         }          
     }
     
@@ -405,9 +408,8 @@ public class CmsExplorerTypeSettings implements Comparable {
     public void setAutoSetTitle(String autoSetTitle) {
 
         m_autoSetTitle = Boolean.valueOf(autoSetTitle).booleanValue();
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                ". Auto set title       : " + (m_autoSetTitle ? "true" : "false"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_AUTO_TITLE_1, autoSetTitle));
         }          
     }
 
@@ -436,8 +438,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void setIcon(String icon) {
         m_icon = icon;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Setting icon: " + m_icon);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_ICON_1, icon));
         }      
     }
     
@@ -448,8 +450,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void setKey(String key) {
         m_key = key;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Setting key: " + m_key);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_KEY_1, key));
         }      
     }
     
@@ -460,8 +462,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void setName(String name) {
         m_name = name;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Setting name: " + m_name);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_NAME_1, name));
         }      
     }
     
@@ -473,13 +475,13 @@ public class CmsExplorerTypeSettings implements Comparable {
     public void setNewResourceOrder(String newResourceOrder) {
         try {
             m_newResourceOrder = Integer.valueOf(newResourceOrder);
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Setting new resource order: " + newResourceOrder);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_SET_NEW_RESOURCE_ORDER_1, newResourceOrder));
             }     
         } catch (Exception e) {
             // can usually be ignored
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }            
             m_newResourceOrder = new Integer(0);
         }
@@ -502,8 +504,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void setNewResourceUri(String newResourceUri) {
         m_newResourceUri = newResourceUri;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Setting new resource uri: " + newResourceUri);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_NEW_RESOURCE_URI_1, newResourceUri));
         }     
     }
 
@@ -534,8 +536,8 @@ public class CmsExplorerTypeSettings implements Comparable {
     public void setPropertyDefaults(String enabled, String showNavigation) {
         setPropertiesEnabled(Boolean.valueOf(enabled).booleanValue());
         setShowNavigation(Boolean.valueOf(showNavigation).booleanValue());
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Setting property defaults: " + enabled + ", " + showNavigation);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_PROP_DEFAULTS_2, enabled, showNavigation));
         }     
     }
 
@@ -546,8 +548,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public void setReference(String reference) {
         m_reference = reference;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Setting reference: " + m_reference);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SET_REFERENCE_1, m_reference));
         }      
     }
 
