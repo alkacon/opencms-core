@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 07:59:51 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/05/11 12:58:29 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPasswordEncryptionException;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.43 $ $Date: 2005/05/11 07:59:51 $
+ * @version $Revision: 1.44 $ $Date: 2005/05/11 12:58:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -124,13 +123,17 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type, Object reservedParam) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
      
         if (existsUser(dbc, name, type, reservedParam)) {
-            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
         
         try {

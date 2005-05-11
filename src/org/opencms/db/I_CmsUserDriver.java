@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 07:59:51 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/05/11 12:58:29 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.50 $ $Date: 2005/05/11 07:59:51 $
+ * @version $Revision: 1.51 $ $Date: 2005/05/11 12:58:29 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -69,7 +69,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param denied the bitset of denied permissions
      * @param flags flags
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void createAccessControlEntry(
         CmsDbContext dbc,
@@ -78,7 +78,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsUUID principal,
         int allowed,
         int denied,
-        int flags) throws CmsException;
+        int flags) throws CmsDataAccessException;
 
     /**
      * Creates a new group.<p>
@@ -145,9 +145,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param groupid the id of the group
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsDataAccessException if operation was not succesfull
      */
-    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException;
+    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Deletes all access control entries (ACEs) belonging to a resource.<p>
@@ -156,9 +156,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param project the project to delete the ACEs in
      * @param resource the id of the resource to delete the ACEs from
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsException;
+    void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsDataAccessException;
 
     /**
      * Deletes a group.<p>
@@ -168,9 +168,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbc the current database context
      * @param name the name of the group that is to be deleted
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteGroup(CmsDbContext dbc, String name) throws CmsException;
+    void deleteGroup(CmsDbContext dbc, String name) throws CmsDataAccessException;
 
     /**
      * Deletes a user.<p>
@@ -178,9 +178,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbc the current database context
      * @param userName the name of the user to delete
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteUser(CmsDbContext dbc, String userName) throws CmsException;
+    void deleteUser(CmsDbContext dbc, String userName) throws CmsDataAccessException;
 
     /**
      * Removes a user from a group.<p>
@@ -189,9 +189,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param userId the id of the user that is to be removed from the group
      * @param groupId the id of the group
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsException;
+    void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -209,9 +209,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return true, if a group with the specified name exists, false otherwise
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    boolean existsGroup(CmsDbContext dbc, String groupname, Object reservedParam) throws CmsException;
+    boolean existsGroup(CmsDbContext dbc, String groupname, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Tests if a user with the specified name exists.<p>
@@ -222,9 +222,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return true, if a user with the specified name exists, false otherwise
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    boolean existsUser(CmsDbContext dbc, String username, int usertype, Object reservedParam) throws CmsException;
+    boolean existsUser(CmsDbContext dbc, String username, int usertype, Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Returns the SqlManager of this driver.<p>
@@ -254,7 +254,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @return a new <code>{@link CmsUser}</code> object representing the added user
      *
-     * @throws CmsException if operation was not successful
+     * @throws CmsDataAccessException if operation was not successful
      */
     CmsUser importUser(
         CmsDbContext dbc,
@@ -270,7 +270,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         Map additionalInfos,
         String address,
         int type,
-        Object reservedParam) throws CmsException;
+        Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -296,14 +296,14 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param offlineId the offline resource id
      * @param onlineId the online resource id
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void publishAccessControlEntries(
         CmsDbContext dbc,
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsUUID offlineId,
-        CmsUUID onlineId) throws CmsException;
+        CmsUUID onlineId) throws CmsDataAccessException;
 
     /**
      * Reads all relevant access control entries for a given resource.<p>
@@ -315,10 +315,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     List readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Reads an access control entry for a given principal that is attached to a resource.<p>
@@ -329,13 +329,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param principal the id of the principal
      * 
      * @return an access control entry that defines the permissions of the principal for the given resource
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     CmsAccessControlEntry readAccessControlEntry(
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID resource,
-        CmsUUID principal) throws CmsException;
+        CmsUUID principal) throws CmsDataAccessException;
 
     /**
      * Reads all child groups of a group.<p>
@@ -345,9 +345,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not succesful
      */
-    List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException;
+    List readChildGroups(CmsDbContext dbc, String groupname) throws CmsDataAccessException;
 
     /**
      * Reads a group based on the group id.<p>
@@ -380,9 +380,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return a list of all <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readGroups(CmsDbContext dbc) throws CmsException;
+    List readGroups(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Reads all groups the given user is a member in.<p>
@@ -393,9 +393,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException;
+    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsDataAccessException;
 
     /**
      * Reads a user based on the user id.<p>
@@ -418,14 +418,14 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @return the user that was read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsException;
+    CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsDataAccessException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
      *
-     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
+     * If the user/pwd pair is not valid a <code>{@link CmsDataAccessException}</code> is thrown.<p>
      * 
      * @param dbc the current database context
      * @param name the name of the user
@@ -434,9 +434,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return the user that was read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
      */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsException;
+    CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
@@ -448,10 +449,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param type the type of the user
      * 
      * @return the user that was read
-     * @throws CmsException if something goes wrong
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
      */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type)
-    throws CmsException;
+    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type) throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Reads all existing users of the given type.<p>
@@ -461,9 +463,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return a list of all <code>{@link CmsUser}</code> objects of the given type
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readUsers(CmsDbContext dbc, int type) throws CmsException;
+    List readUsers(CmsDbContext dbc, int type) throws CmsDataAccessException;
 
     /**
      * Reads all users that are members of the given group.<p>
@@ -474,9 +476,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException;
+    List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsDataAccessException;
 
     /**
      * Removes all access control entries belonging to a resource.<p>
@@ -485,9 +487,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param project the project to write the entry
      * @param resource the id of the resource
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void removeAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsException;
+    void removeAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsDataAccessException;
 
     /**
      * Removes all access control entries belonging to a principal.<p>
@@ -497,13 +499,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param onlineProject the online project 
      * @param principal the id of the principal
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void removeAccessControlEntriesForPrincipal(
         CmsDbContext dbc,
         CmsProject project,
         CmsProject onlineProject,
-        CmsUUID principal) throws CmsException;
+        CmsUUID principal) throws CmsDataAccessException;
 
     /**
      * Removes an access control entry.<p>
@@ -513,10 +515,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param resource the id of the resource
      * @param principal the id of the principal
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void removeAccessControlEntry(CmsDbContext dbc, CmsProject project, CmsUUID resource, CmsUUID principal)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Undeletes all access control entries belonging to a resource.<p>
@@ -524,9 +526,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbc the current database context
      * @param project the project to write the entry
      * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsException;
+    void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsDataAccessException;
 
     /**
      * Writes an access control entry.<p>
@@ -535,10 +537,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param project the project to write the entry
      * @param acEntry the entry to write
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeAccessControlEntry(CmsDbContext dbc, CmsProject project, CmsAccessControlEntry acEntry)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Writes an already existing group.<p>
@@ -551,9 +553,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbc the current database context
      * @param group the group to update
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
+    void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
 
     /**
      * Sets a new password for a user.<p>
@@ -564,10 +566,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param oldPassword the current password
      * @param newPassword the password to set
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsPasswordEncryptionException if the (new) password could not be encrypted
      */
     void writePassword(CmsDbContext dbc, String userName, int type, String oldPassword, String newPassword)
-    throws CmsException;
+    throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Updates the user information. <p>
@@ -580,9 +583,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbc the current database context
      * @param user the user to update
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException;
+    void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
 
     /**
      * Changes the user type of the given user.<p>
@@ -591,8 +594,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param userId the id of the user to change
      * @param userType the new type of the user
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType) throws CmsException;
+    void writeUserType(CmsDbContext dbc, CmsUUID userId, int userType) throws CmsDataAccessException;
 
 }

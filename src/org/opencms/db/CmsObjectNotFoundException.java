@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsObjectNotFoundException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 12:58:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to read an object from a data source, that
- * is supposed to be there, was not successfull.<p> 
+ * is supposed to exist, was not successfull.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2005/05/11 08:32:42 $
+ * @version $Revision: 1.6 $ $Date: 2005/05/11 12:58:29 $
  * @since 5.7.3
  */
 public class CmsObjectNotFoundException extends CmsDataAccessException {

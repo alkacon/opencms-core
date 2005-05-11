@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 07:59:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 12:58:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.db.postgresql;
 import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsObjectAlreadyExistsException;
+import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSerializationException;
 import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
@@ -204,13 +205,17 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         Map additionalInfos,
         String address,
         int type,
-        Object reservedParam) throws CmsException {
+        Object reservedParam) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         if (existsUser(dbc, name, type, reservedParam)) {
-            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
 
         try {
@@ -259,7 +264,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
+    public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -282,7 +287,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_GROUP);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_NAME_1, group.getName());
+            throw new CmsObjectNotFoundException(message);
         }
     }
 

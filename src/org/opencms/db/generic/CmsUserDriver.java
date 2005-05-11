@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 07:59:51 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2005/05/11 12:58:29 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.86 $ $Date: 2005/05/11 07:59:51 $
+ * @version $Revision: 1.87 $ $Date: 2005/05/11 12:58:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -449,13 +449,17 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type, Object reservedParam) throws CmsDataAccessException {
         
         Connection conn = null;
         PreparedStatement stmt = null;
         
         if (existsUser(dbc, name, type, reservedParam)) {
-            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(message);
+            }
+            throw new CmsObjectAlreadyExistsException(message);
         }
 
         try {
@@ -687,7 +691,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#readChildGroups(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException {
+    public List readChildGroups(CmsDbContext dbc, String groupname) throws CmsDataAccessException {
 
         List childs = new ArrayList();
         CmsGroup group;
@@ -900,7 +904,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, java.lang.String, int)
      */
-    public CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsException {
+    public CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
@@ -917,7 +921,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (res.next()) {
                 user = internalCreateUser(res);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] '" + name + "'", CmsException.C_NO_USER);
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_NAME_1, name);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(message);
+                }
+                throw new CmsObjectNotFoundException(message);
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
@@ -935,7 +943,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, int)
      */
-    public CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsException {
+    public CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsDataAccessException, CmsPasswordEncryptionException {
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
@@ -954,7 +962,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             } else {
                 res.close();
                 res = null;
-                throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_NAME_1, name);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(message);
+                }
+                throw new CmsObjectNotFoundException(message);
             }
 
             return user;
@@ -972,7 +984,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, int)
      */
-    public CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type) throws CmsException {
+    public CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type) throws CmsDataAccessException, CmsPasswordEncryptionException {
         CmsUser user = readUser(dbc, name, password, type);
         return user;
     }
@@ -1067,19 +1079,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntriesForPrincipal(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
-    public void removeAccessControlEntriesForPrincipal(CmsDbContext dbc, CmsProject project, CmsProject onlineProject, CmsUUID principal) throws CmsException {
+    public void removeAccessControlEntriesForPrincipal(CmsDbContext dbc, CmsProject project, CmsProject onlineProject, CmsUUID principal) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
+            
             conn = m_sqlManager.getConnection(dbc, project.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL");
 
             stmt.setString(1, principal.toString());
-
             stmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
@@ -1192,7 +1203,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
+    public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         Connection conn = null;
         if (group != null) {
@@ -1214,14 +1225,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_GROUP);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_NAME_1, group.getName());
+            throw new CmsObjectNotFoundException(message);
         }
     }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#writePassword(org.opencms.db.CmsDbContext, java.lang.String, int, java.lang.String, java.lang.String)
      */
-    public void writePassword(CmsDbContext dbc, String userName, int type, String oldPassword, String newPassword) throws CmsException {
+    public void writePassword(CmsDbContext dbc, String userName, int type, String oldPassword, String newPassword) throws CmsDataAccessException, CmsPasswordEncryptionException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
