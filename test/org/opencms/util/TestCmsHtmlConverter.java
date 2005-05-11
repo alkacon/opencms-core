@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/11 17:54:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ import java.io.File;
 
 /** 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
    // some test Strings    
-    private static final String C_STRING_1 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
-    private static final String C_STRING_2 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df&#8364;";
-    private static final String C_STRING_1_UTF8_RESULT = "Test: ‰ˆ¸ƒ÷‹ﬂ";     
-    private static final String C_STRING_2_UTF8_RESULT = "Test: ‰ˆ¸ƒ÷‹ﬂÄ";
+    private static final String C_STRING_1 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;";     
+    private static final String C_STRING_2 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
+    private static final String C_STRING_1_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
+    private static final String C_STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
   
     
     private static final String C_CR_FF = "\r\n"; 
@@ -63,14 +63,14 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
      * Tests converstion of ISO-encoded entities.<p>     *
      */
     public void testISO() {
-        System.out.println("Testing ISO-8859-1 conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("ISO-8859-1", CmsHtmlConverter.C_PARAM_WORD);        
+        System.out.println("Testing US-ASCII conversion");
+        CmsHtmlConverter converter = new CmsHtmlConverter("US-ASCII", CmsHtmlConverter.C_PARAM_WORD);        
         String convertedHtml1 = converter.convertToStringSilent(C_STRING_1);
         String convertedHtml2 = converter.convertToStringSilent(C_STRING_2);
         
         // the converted code will end with a cr ff (\r\n)         
-        assertEquals(convertedHtml1, C_STRING_1 + C_CR_FF);
-        assertEquals(convertedHtml2, C_STRING_2 + C_CR_FF);  
+        assertEquals(C_STRING_1 + C_CR_FF, convertedHtml1);
+        assertEquals(C_STRING_2 + C_CR_FF, convertedHtml2);  
     }
 
     /** 
@@ -83,8 +83,8 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
         String convertedHtml2 = converter.convertToStringSilent(C_STRING_2);
         
         // the converted code will end with a cr ff (\r\n)         
-        assertEquals(convertedHtml1, C_STRING_1_UTF8_RESULT + C_CR_FF);
-        assertEquals(convertedHtml2, C_STRING_2_UTF8_RESULT + C_CR_FF);  
+        assertEquals(C_STRING_1_UTF8_RESULT + C_CR_FF, convertedHtml1);
+        assertEquals(C_STRING_2_UTF8_RESULT + C_CR_FF, convertedHtml2);  
     }
     
     /**
