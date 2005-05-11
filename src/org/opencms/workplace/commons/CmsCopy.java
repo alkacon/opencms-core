@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 11:00:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -278,12 +279,8 @@ public class CmsCopy extends CmsDialog {
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }    
         } catch (CmsException e) {
-            // prepare common message part
-            String message = "<p>\n" 
-                + key("source") + ": " + getParamResource() + "<br>\n" 
-                + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
-            if ((e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) 
+            if ((e instanceof CmsVfsResourceAlreadyExistsException)
             && !(resource.isFolder())) {
                 // file copy but file already exists, now check target file type
                 int targetType = -1;
@@ -306,7 +303,11 @@ public class CmsCopy extends CmsDialog {
                         getCms().getRequestContext().restoreSiteRoot();
                     }
                 }
-                if (resource.getTypeId() == targetType) {               
+                if (resource.getTypeId() == targetType) {  
+                    // prepare common message part
+                    String message = "<p>\n" 
+                        + key("source") + ": " + getParamResource() + "<br>\n" 
+                        + key("target") + ": " + getParamTarget() + "\n</p>\n";                    
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(message + key("confirm.message." + getParamDialogtype()));
                     getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM); 

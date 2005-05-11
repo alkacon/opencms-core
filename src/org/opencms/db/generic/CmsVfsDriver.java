@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/10 09:14:52 $
- * Version: $Revision: 1.234 $
+ * Date   : $Date: 2005/05/11 11:00:52 $
+ * Version: $Revision: 1.235 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -74,7 +75,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.234 $ $Date: 2005/05/10 09:14:52 $
+ * @version $Revision: 1.235 $ $Date: 2005/05/11 11:00:52 $
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -380,10 +381,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
                     Collections.singletonMap("resource", res)));
             } else {
-                throw new CmsVfsException("[" + this.getClass().getName() + "] ", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
+                throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1, dbc.removeSiteRoot(resource.getRootPath())));
             }
         } catch (CmsDataAccessException e) {
-            if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+            if (e instanceof CmsVfsResourceAlreadyExistsException) {
                 // we have a collision which has to be handled in the app.
                 throw e;
             }
@@ -574,10 +575,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
             } else {
-                throw new CmsVfsException("[" + this.getClass().getName() + "] ", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
+                throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(Messages.ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1, dbc.removeSiteRoot(resource.getRootPath())));
             }
         } catch (CmsDataAccessException e) {
-            if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+            if (e instanceof CmsVfsResourceAlreadyExistsException) {
                 // we have a collision which has to be handled in the app.
                 throw e;
             }

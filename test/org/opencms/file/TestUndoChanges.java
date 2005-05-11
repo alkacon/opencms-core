@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/11 11:00:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -115,7 +115,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         try {
             cms.undoChanges(source, false);
         } catch (CmsVfsException e) {
-            if (e.getType() == CmsVfsException.C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE) {
+            if (e.getMessageContainer().getKey().equals(org.opencms.db.Messages.ERR_UNDO_CHANGES_FOR_RESOURCE_1)) {
                 // this is the expected result, so the test is successful
                 return;
             }

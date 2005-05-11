@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/11 11:00:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -309,7 +309,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         } catch (CmsException e) {
             exc = e;
         }        
-        assertEquals(exc, new CmsException());
+        assertTrue(exc instanceof CmsVfsResourceAlreadyExistsException);
     }
 
     /**

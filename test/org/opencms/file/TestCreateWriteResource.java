@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/11 11:00:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -164,7 +164,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
            // resource exists and is not deleted, creation must thrw exception
            cms.createResource(resourcename, CmsResourceTypeFolder.getStaticTypeId(), null, null);
        } catch (CmsVfsException e) {
-           if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+           if (!(e instanceof CmsVfsResourceAlreadyExistsException)) {
                fail("Existing resource '" + resourcename + "' was not detected!");
            }
        }
@@ -265,13 +265,13 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        cms.lockResource(resourcename);
        
        try {
-           // resource exists and is not deleted, creation must thrw exception
+           // resource exists and is not deleted, creation must throw exception
            cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
-       } catch (CmsVfsException e) {
-           if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+       } catch (Throwable e) {
+           if (!(e instanceof CmsVfsResourceAlreadyExistsException)) {
                fail("Existing resource '" + resourcename + "' was not detected!");
            }
-       }
+       }    
 
        // read resource for comparing id's later
        CmsResource original = cms.readResource(resourcename);

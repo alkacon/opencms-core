@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/10 09:14:51 $
- * Version: $Revision: 1.209 $
+ * Date   : $Date: 2005/05/11 11:00:52 $
+ * Version: $Revision: 1.210 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Set;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.209 $ $Date: 2005/05/10 09:14:51 $
+ * @version $Revision: 1.210 $ $Date: 2005/05/11 11:00:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -156,12 +156,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             readProjectResource(dbc, projectId, resourcePath, reservedParam);
-            throw new CmsVfsException("[" + this.getClass().getName() + "] ", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
-        } catch (CmsDataAccessException e) {
-            if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
-                throw e;
-            }
-        }
+            throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1, dbc.removeSiteRoot(resourcePath)));
+        } catch (CmsVfsResourceAlreadyExistsException e) {
+            throw e;
+        } catch (CmsVfsException e) {
+            // resource does not exist yet, everything is okay    
+        }   
 
         try {
             if (reservedParam == null) {
@@ -912,7 +912,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Caught error "+e.getType(), e);
                     }
-                    if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+                    if (e instanceof CmsVfsResourceAlreadyExistsException) {
                         try {
                             // remove the existing file and ensure that it's content is written 
                             // in any case by removing it's content ID from the set of published content IDs
@@ -1089,26 +1089,21 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                     onlineFolder = m_driverManager.getVfsDriver().createResource(dbc, onlineProject, newFolder, null);
 
-                } catch (CmsException e) {
-                    if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
-                        try {
-                            onlineFolder = m_driverManager.getVfsDriver().readFolder(dbc, onlineProject.getId(), newFolder.getStructureId());
-                            m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, onlineFolder, offlineFolder, false);
-                        } catch (CmsException e1) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e1);
-                            }
-
-                            throw e1;
-                        }
-                    } else {
+                } catch (CmsVfsResourceAlreadyExistsException e) {
+                    try {
+                        onlineFolder = m_driverManager.getVfsDriver().readFolder(dbc, onlineProject.getId(), newFolder.getStructureId());
+                        m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, onlineFolder, offlineFolder, false);
+                    } catch (CmsException e1) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e);
+                            OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e1);
                         }
 
-                        throw e;
-                    }
-                }
+                        throw e1; 
+                    }    
+                } catch (CmsException e) {
+                    OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e);
+                    throw e;
+                } 
             } else if (offlineFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                 try {
                     // read the folder online
