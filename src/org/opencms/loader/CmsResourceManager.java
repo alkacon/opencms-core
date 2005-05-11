@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/11 10:24:12 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -514,7 +514,7 @@ public class CmsResourceManager {
         int lastDot = filename.lastIndexOf('.');
         // check the mime type for the file extension 
         if ((lastDot > 0) && (lastDot < (filename.length() - 1))) {
-            mimetype = (String)m_mimeTypes.get(filename.substring(lastDot + 1));
+            mimetype = (String)m_mimeTypes.get(filename.substring(lastDot + 1).toLowerCase());
         }
         if (mimetype == null) {
             mimetype = C_DEFAULT_MIMETYPE;
