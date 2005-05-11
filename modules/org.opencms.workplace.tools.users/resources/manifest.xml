@@ -142,7 +142,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -167,10 +167,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Edit User]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[visible:false]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

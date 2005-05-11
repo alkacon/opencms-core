@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsInvisibleDefaultToolHandler.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsOnlyAdminToolHandler.java,v $
+ * Date   : $Date: 2005/05/11 08:09:23 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,28 +28,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 
 /**
- * This tool handler just hides the tool for the user, but the tool can still
- * be invoked explicitly, usefull for tool that requires an argument, like
- * edit tools.<p>
+ * This tool handler hides the tool to non admin users.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsInvisibleDefaultToolHandler extends CmsDefaultToolHandler {
+public class CmsOnlyAdminToolHandler extends A_CmsToolHandler {
 
-    
     /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
+     */
+    public boolean isEnabled(CmsObject cms) {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     public boolean isVisible(CmsObject cms) {
 
-        return false;
+        return cms.hasRole(CmsRole.ADMINISTRATOR);
     }
 }

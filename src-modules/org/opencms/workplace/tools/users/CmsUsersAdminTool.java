@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/10 13:13:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/11 08:09:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -355,7 +355,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             "", // no width
             CmsListColumnAlignEnum.ALIGN_LEFT);
         lastLoginCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_0), Messages.get().container(
+            Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1), Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));
         metadata.addColumn(lastLoginCol);
     }

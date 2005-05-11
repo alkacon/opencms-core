@@ -15805,16 +15805,8 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsGenericToolHandler]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[name:${key.GUI_ADMIN_VIEW_ROOT_NAME_0}|iconpath:admin/images/deficon.png|helptext:${key.GUI_ADMIN_VIEW_ROOT_NAME_0}|path:/|group:|position:1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -13,14 +13,14 @@
 switch (wp.getAction()) {
 
     //////////////////// ACTION: default actions
-    case CmsListDialog.ACTION_LIST_SEARCH:
-    case CmsListDialog.ACTION_LIST_SORT:
-    case CmsListDialog.ACTION_LIST_SELECT_PAGE:
+    case A_CmsListDialog.ACTION_LIST_SEARCH:
+    case A_CmsListDialog.ACTION_LIST_SORT:
+    case A_CmsListDialog.ACTION_LIST_SELECT_PAGE:
          wp.executeDefaultActions();
          break;
 
     //////////////////// ACTION: execute single list action
-    case CmsListDialog.ACTION_LIST_SINGLE_ACTION:
+    case A_CmsListDialog.ACTION_LIST_SINGLE_ACTION:
          wp.executeListSingleActions();
          if (wp.getParamListAction().equals(CmsJobsAdminTool.LIST_ACTION_EDIT)) {
              // due to a redirect
@@ -29,12 +29,12 @@ switch (wp.getAction()) {
          break;
 
     //////////////////// ACTION: execute multiple list actions
-    case CmsListDialog.ACTION_LIST_MULTI_ACTION:
+    case A_CmsListDialog.ACTION_LIST_MULTI_ACTION:
          wp.executeListMultiActions();
          break;
 
     //////////////////// ACTION: execute independent list actions
-    case CmsListDialog.ACTION_LIST_INDEPENDENT_ACTION:
+    case A_CmsListDialog.ACTION_LIST_INDEPENDENT_ACTION:
          wp.executeListIndepActions();
          break;
 

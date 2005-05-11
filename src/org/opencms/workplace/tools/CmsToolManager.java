@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/11 08:09:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -58,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -103,14 +102,13 @@ public class CmsToolManager {
         try {
             List handlers = new ArrayList();
 
-            I_CmsToolHandler rootHandler = new CmsGenericToolHandler();
+            I_CmsToolHandler rootHandler = new CmsRootToolHandler();
             rootHandler.setup(cms, C_VIEW_JSPPAGE_LOCATION);
             handlers.add(rootHandler);
 
             // look in every file under C_ADMINTOOLS_ROOT_LOCATION for valid
             // admin tools and register them
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
-            List resources = cms.readResources(C_ADMINTOOLS_ROOT_LOCATION, filter, true);
+            List resources = cms.readResourcesWithProperty(C_ADMINTOOLS_ROOT_LOCATION, C_HANDLERCLASS_PROPERTY);
             Iterator itRes = resources.iterator();
             while (itRes.hasNext()) {
                 CmsResource res = (CmsResource)itRes.next();
@@ -126,9 +124,15 @@ public class CmsToolManager {
                         handlers.add(handler);
                         // log success
                         if (CmsLog.LOG.isDebugEnabled()) {
-                            CmsLog.LOG.debug(Messages.get().key(
-                                Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
-                                handler.getLink()));
+                            if (!handler.getLink().equals(C_VIEW_JSPPAGE_LOCATION)) {
+                                CmsLog.LOG.debug(Messages.get().key(
+                                    Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
+                                    handler.getLink()));
+                            } else {
+                                CmsLog.LOG.debug(Messages.get().key(
+                                    Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
+                                    res.getRootPath()));
+                            }
                         }
                     } catch (Exception e) {
                         // log failure
@@ -414,7 +418,7 @@ public class CmsToolManager {
             link.append("&");
             link.append(key);
             link.append("=");
-            // TODO: encode? jsp-action!
+            // TODO: encode?
             link.append(value);
         }
 

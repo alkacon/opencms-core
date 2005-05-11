@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersToolHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsRootToolHandler.java,v $
  * Date   : $Date: 2005/05/11 08:09:23 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,34 +29,51 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.users;
+package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
-import org.opencms.security.CmsRole;
-import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
- * Users management tool handler that hides the tool if the current user
- * has not the needed privileges.<p>
+ * Default admin tool handler.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * Always enabled and visible.<p>
+ * 
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsUsersToolHandler extends A_CmsToolHandler {
+public class CmsRootToolHandler extends A_CmsToolHandler {
+    
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public boolean setup(CmsObject cms, String resourcePath) {
 
+        setName("${key." + Messages.GUI_ADMIN_VIEW_ROOT_NAME_0+ "}");
+        setHelpText("${key." + Messages.GUI_ADMIN_VIEW_ROOT_HELP_0+ "}");
+        setDisabledHelpText(getHelpText());
+        setIconPath("admin/images/deficon.png");
+        setSmallIconPath(getIconPath());
+        setPath("/");
+        setGroup("");
+        setPosition(1);   
+        setLink(resourcePath);
+        return true;
+    }
+    
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
+     */
+    public boolean isEnabled(CmsObject cms) {
+
+        return true;
+    }
+    
+    
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     public boolean isVisible(CmsObject cms) {
-
-        return cms.hasRole(CmsRole.USER_MANAGER);
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
-     */
-    public boolean isEnabled(CmsObject cms) {
 
         return true;
     }

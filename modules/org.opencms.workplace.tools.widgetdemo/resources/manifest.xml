@@ -103,7 +103,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -129,10 +129,6 @@
 					<name>Title</name>
 					<value><![CDATA[Widget demo]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[onlyadmin:true]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -157,7 +153,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -179,10 +175,6 @@
 					<name>Title</name>
 					<value><![CDATA[Widget demo 1]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[visible:false]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -203,7 +195,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -229,10 +221,6 @@
 					<name>Title</name>
 					<value><![CDATA[Widget demo 2]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[visible:false]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -253,7 +241,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>content-encoding</name>
@@ -279,10 +267,6 @@
 					<name>Title</name>
 					<value><![CDATA[Widget demo 3]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[visible:false]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -303,7 +287,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -328,10 +312,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Widget demo 4]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[visible:false]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

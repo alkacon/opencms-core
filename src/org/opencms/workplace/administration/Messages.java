@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 08:09:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,6 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Static instance member. */
     public static final String GUI_ADMIN_MENU_HELP_GROUP_0 = "GUI_ADMIN_MENU_HELP_GROUP_0";
-
-    /** Static instance member. */
-    public static final String GUI_ADMIN_VIEW_ROOT_NAME_0 = "GUI_ADMIN_VIEW_ROOT_NAME_0";
-
-    /** Static instance member. */
-    public static final String GUI_ADMIN_VIEW_ROOT_HELP_0 = "GUI_ADMIN_VIEW_ROOT_HELP_0";    
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.administration.messages";

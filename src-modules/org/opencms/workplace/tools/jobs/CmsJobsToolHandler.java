@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsToolHandler.java,v $
- * Date   : $Date: 2005/05/02 07:25:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 08:09:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,19 +33,18 @@ package org.opencms.workplace.tools.jobs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsRole;
-import org.opencms.workplace.tools.CmsDefaultToolHandler;
+import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
  * Scheduled Jobs management tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
-public class CmsJobsToolHandler extends CmsDefaultToolHandler {
+public class CmsJobsToolHandler extends A_CmsToolHandler {
 
-    
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
@@ -53,5 +52,13 @@ public class CmsJobsToolHandler extends CmsDefaultToolHandler {
 
         return cms.hasRole(CmsRole.SCHEDULER_MANAGER);
     }
+
     
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
+     */
+    public boolean isEnabled(CmsObject cms) {
+
+        return true;
+    }
 }

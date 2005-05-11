@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersToolHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsInvisibleToolHandler.java,v $
  * Date   : $Date: 2005/05/11 08:09:23 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,31 +28,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-package org.opencms.workplace.tools.users;
+ 
+package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
-import org.opencms.security.CmsRole;
-import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
- * Users management tool handler that hides the tool if the current user
- * has not the needed privileges.<p>
+ * This tool handler just hides the tool for the user, but the tool can still
+ * be invoked explicitly, usefull for tool that requires an argument, like
+ * edit tools.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsUsersToolHandler extends A_CmsToolHandler {
+public class CmsInvisibleToolHandler extends A_CmsToolHandler {
 
+    
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.USER_MANAGER);
+        return false;
     }
-
+    
+    
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
