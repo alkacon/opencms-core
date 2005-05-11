@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/10 15:59:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/11 16:06:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.jobs;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsJobsAdminTool extends A_CmsListDialog {
@@ -159,6 +160,8 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
                     OpenCms.getScheduleManager().unscheduleJob(getCms(), listItem.getId());
                     getList().removeItem(listItem.getId());
                 }
+                // update the XML configuration
+                writeConfiguration(false);
             } catch (CmsException e) {
                 throw new RuntimeException(e);
             }
@@ -174,7 +177,8 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
                         job.setActive(activate);
                         OpenCms.getScheduleManager().scheduleJob(getCms(), job);
                     }
-                    refreshList();
+                    // update the XML configuration
+                    writeConfiguration(true);
                 } catch (CmsException e) {
                     throw new RuntimeException(e);
                 }
@@ -217,7 +221,8 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
             job.setActive(true);
             try {
                 OpenCms.getScheduleManager().scheduleJob(getCms(), job);
-                refreshList();
+                // update the XML configuration
+                writeConfiguration(true);
             } catch (CmsSchedulerException e) {
                 // TODO: exception handling
             } catch (CmsRoleViolationException e) {
@@ -230,7 +235,8 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
             job.setActive(false);
             try {
                 OpenCms.getScheduleManager().scheduleJob(getCms(), job);
-                refreshList();
+                // update the XML configuration
+                writeConfiguration(true);
             } catch (CmsSchedulerException e) {
                 // TODO: exception handling
             } catch (CmsRoleViolationException e) {
@@ -241,6 +247,8 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
             String jobId = getSelectedItem().getId();        
             try {
                 OpenCms.getScheduleManager().unscheduleJob(getCms(), jobId);
+                // update the XML configuration
+                writeConfiguration(false);
                 getList().removeItem(jobId);
             } catch (CmsRoleViolationException e) {
                 // TODO: exception handling
@@ -508,6 +516,20 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         deleteJobs.setEnabled(true);
         deleteJobs.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDELETE_HELP_0));
         metadata.addMultiAction(deleteJobs);
+    }
+    
+    /**
+     * Writes the updated scheduled job info back to the XML configuration file and refreshes the complete list.<p>
+     * 
+     * @param refresh if true, the list items are refreshed
+     */
+    protected void writeConfiguration(boolean refresh) {
+
+        // update the XML configuration
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        if (refresh) {
+            refreshList();
+        }
     }
 
 }
