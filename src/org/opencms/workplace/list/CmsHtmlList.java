@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/11 15:10:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -81,6 +81,9 @@ public class CmsHtmlList {
     /** Really content of the list. */
     private final List m_originalItems = new ArrayList();
 
+    /** printable flag. */
+    private boolean m_printable;
+
     /** Search filter text. */
     private String m_searchFilter;
 
@@ -89,9 +92,6 @@ public class CmsHtmlList {
 
     /** Items currently displayed. */
     private List m_visibleItems;
-
-    /** printable flag. */
-    private boolean m_printable;
 
     /**
      * Default Constructor.<p>
@@ -334,6 +334,16 @@ public class CmsHtmlList {
     }
 
     /**
+     * Returns the printable flag.<p>
+     *
+     * @return the printable flag
+     */
+    public boolean isPrintable() {
+
+        return m_printable;
+    }
+
+    /**
      * Generates the html code for the list.<p>
      * 
      * Synchronized to not collide with <code>{@link #printableHtml(CmsWorkplace)}</code>.<p> 
@@ -418,32 +428,6 @@ public class CmsHtmlList {
         js.append("\t\t\t\treturn false;\n");
         js.append("\t\t\t}\n");
         js.append("\t\t}\n");
-        js.append("\t\tif (action=='");
-        js.append(CmsListSearchAction.SEARCH_ACTION_ID);
-        js.append("') {\n");
-        js.append("\t\t\tform.action.value = '");
-        js.append(A_CmsListDialog.LIST_SEARCH);
-        js.append("';\n");
-        js.append("\t\t\tform.");
-        js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
-        js.append(".value = form.");
-        js.append(getId());
-        js.append("Filter.value;\n");
-        js.append("\t\t\tsubmitForm(form);\n");
-        js.append("\t\t\treturn;\n");
-        js.append("\t\t}\n");
-        js.append("\t\tif (action=='");
-        js.append(CmsListSearchAction.SHOWALL_ACTION_ID);
-        js.append("') {\n");
-        js.append("\t\t\tform.action.value = '");
-        js.append(A_CmsListDialog.LIST_SEARCH);
-        js.append("';\n");
-        js.append("\t\t\tform.");
-        js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
-        js.append(".value = '';\n");
-        js.append("\t\t\tsubmitForm(form);\n");
-        js.append("\t\t\treturn;\n");
-        js.append("\t\t}\n");
         js.append("\t\tform.action.value='");
         js.append(A_CmsListDialog.LIST_INDEPENDENT_ACTION);
         js.append("';\n");
@@ -471,82 +455,122 @@ public class CmsHtmlList {
         js.append("\t\t}\n");
         js.append("\t\treturn true;\n");
         js.append("\t}\n");
-        js.append("\tfunction ");
-        js.append(m_id);
-        js.append("ListMultiAction(action, confirmation) {\n");
-        js.append("\t\tvar form = document.forms['");
-        js.append(getId());
-        js.append("-form'];\n");
-        js.append("\t\tvar count = 0;\n");
-        js.append("\t\tvar listItems = '';\n");
-        js.append("\t\tfor (i = 0 ; i < form.elements.length; i++) {\n");
-        js.append("\t\t\tif ((form.elements[i].type == 'checkbox') && (form.elements[i].name == '");
-        js.append(m_id);
-        js.append("MultiAction')) {\n");
-        js.append("\t\t\t\tif (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {\n");
-        js.append("\t\t\t\t\tcount++;\n");
-        js.append("\t\t\t\t\tif (listItems!='') {\n");
-        js.append("\t\t\t\t\t\tlistItems = listItems + '");
-        js.append(C_ITEM_SEPARATOR);
-        js.append("';\n");
-        js.append("\t\t\t\t\t}\n");
-        js.append("\t\t\t\t\tlistItems = listItems + form.elements[i].value;\n");
-        js.append("\t\t\t\t}\n");
-        js.append("\t\t\t}\n");
-        js.append("\t\t}\n");
-        js.append("\t\tif (count==0) {\n");
-        js.append("\t\t\talert('");
-        js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
-            wp.getLocale(),
-            Messages.GUI_LIST_ACTION_NO_SELECTION_0,
-            null)));
-        js.append("');\n");
-        js.append("\t\t\treturn false;\n");
-        js.append("\t\t}\n");
-        js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
-        js.append("\t\t\tif (!confirm(confirmation)) {\n");
-        js.append("\t\t\t\treturn false;\n");
-        js.append("\t\t\t}\n");
-        js.append("\t\t}\n");
-        js.append("\t\tform.action.value='");
-        js.append(A_CmsListDialog.LIST_MULTI_ACTION);
-        js.append("';\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_LIST_ACTION);
-        js.append(".value=action;\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_SEL_ITEMS);
-        js.append(".value=listItems;\n");
-        js.append("\t\tsubmitForm(form);\n");
-        js.append("\t}\n");
-        js.append("\tfunction ");
-        js.append(m_id);
-        js.append("ListSort(column) {\n");
-        js.append("\t\tvar form = document.forms['");
-        js.append(getId());
-        js.append("-form'];\n");
-        js.append("\t\tform.action.value = '");
-        js.append(A_CmsListDialog.LIST_SORT);
-        js.append("';\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_SORT_COL);
-        js.append(".value = column;\n");
-        js.append("\t\tsubmitForm(form);\n");
-        js.append("\t}\n");
-        js.append("\tfunction ");
-        js.append(m_id);
-        js.append("ListSetPage(page) {\n");
-        js.append("\t\tvar form = document.forms['");
-        js.append(getId());
-        js.append("-form'];\n");
-        js.append("\t\tform.action.value = '");
-        js.append(A_CmsListDialog.LIST_SELECT_PAGE);
-        js.append("';\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_PAGE);
-        js.append(".value = page;\n");
-        js.append("\t\tsubmitForm(form);\n");
-        js.append("\t}\n");
+        if (!getMetadata().getMultiActions().isEmpty()) {
+            js.append("\tfunction ");
+            js.append(m_id);
+            js.append("ListMultiAction(action, confirmation) {\n");
+            js.append("\t\tvar form = document.forms['");
+            js.append(getId());
+            js.append("-form'];\n");
+            js.append("\t\tvar count = 0;\n");
+            js.append("\t\tvar listItems = '';\n");
+            js.append("\t\tfor (i = 0 ; i < form.elements.length; i++) {\n");
+            js.append("\t\t\tif ((form.elements[i].type == 'checkbox') && (form.elements[i].name == '");
+            js.append(m_id);
+            js.append("MultiAction')) {\n");
+            js.append("\t\t\t\tif (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {\n");
+            js.append("\t\t\t\t\tcount++;\n");
+            js.append("\t\t\t\t\tif (listItems!='') {\n");
+            js.append("\t\t\t\t\t\tlistItems = listItems + '");
+            js.append(C_ITEM_SEPARATOR);
+            js.append("';\n");
+            js.append("\t\t\t\t\t}\n");
+            js.append("\t\t\t\t\tlistItems = listItems + form.elements[i].value;\n");
+            js.append("\t\t\t\t}\n");
+            js.append("\t\t\t}\n");
+            js.append("\t\t}\n");
+            js.append("\t\tif (count==0) {\n");
+            js.append("\t\t\talert('");
+            js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
+                wp.getLocale(),
+                Messages.GUI_LIST_ACTION_NO_SELECTION_0,
+                null)));
+            js.append("');\n");
+            js.append("\t\t\treturn false;\n");
+            js.append("\t\t}\n");
+            js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
+            js.append("\t\t\tif (!confirm(confirmation)) {\n");
+            js.append("\t\t\t\treturn false;\n");
+            js.append("\t\t\t}\n");
+            js.append("\t\t}\n");
+            js.append("\t\tform.action.value='");
+            js.append(A_CmsListDialog.LIST_MULTI_ACTION);
+            js.append("';\n");
+            js.append("\t\tform.");
+            js.append(A_CmsListDialog.PARAM_LIST_ACTION);
+            js.append(".value=action;\n");
+            js.append("\t\tform.");
+            js.append(A_CmsListDialog.PARAM_SEL_ITEMS);
+            js.append(".value=listItems;\n");
+            js.append("\t\tsubmitForm(form);\n");
+            js.append("\t}\n");
+        }
+        if (getMetadata().isSearchable()) {
+            js.append("\tfunction ");
+            js.append(m_id);
+            js.append("ListSearchAction(action, confirmation) {\n");
+            js.append("\t\tvar form = document.forms['");
+            js.append(getId());
+            js.append("-form'];\n");
+            js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
+            js.append("\t\t\tif (!confirm(confirmation)) {\n");
+            js.append("\t\t\t\treturn false;\n");
+            js.append("\t\t\t}\n");
+            js.append("\t\t}\n");
+            js.append("\t\tform.action.value = '");
+            js.append(A_CmsListDialog.LIST_SEARCH);
+            js.append("';\n");
+            js.append("\t\tif (action=='");
+            js.append(CmsListSearchAction.SHOWALL_ACTION_ID);
+            js.append("') {\n");
+            js.append("\t\t\tform.");
+            js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
+            js.append(".value = '';\n");
+            js.append("\t\t} else if (action=='");
+            js.append(CmsListSearchAction.SEARCH_ACTION_ID);
+            js.append("') {\n");
+            js.append("\t\t\tform.");
+            js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
+            js.append(".value = form.");
+            js.append(getId());
+            js.append("Filter.value;\n");
+            js.append("\t\t}\n");
+            js.append("\t\tsubmitForm(form);\n");
+            js.append("\t\treturn;\n");
+            js.append("\t}\n");
+        }
+        if (getMetadata().isSorteable()) {
+            js.append("\tfunction ");
+            js.append(m_id);
+            js.append("ListSort(column) {\n");
+            js.append("\t\tvar form = document.forms['");
+            js.append(getId());
+            js.append("-form'];\n");
+            js.append("\t\tform.action.value = '");
+            js.append(A_CmsListDialog.LIST_SORT);
+            js.append("';\n");
+            js.append("\t\tform.");
+            js.append(A_CmsListDialog.PARAM_SORT_COL);
+            js.append(".value = column;\n");
+            js.append("\t\tsubmitForm(form);\n");
+            js.append("\t}\n");
+        }
+        if (getTotalNumberOfPages() > 1) {
+            js.append("\tfunction ");
+            js.append(m_id);
+            js.append("ListSetPage(page) {\n");
+            js.append("\t\tvar form = document.forms['");
+            js.append(getId());
+            js.append("-form'];\n");
+            js.append("\t\tform.action.value = '");
+            js.append(A_CmsListDialog.LIST_SELECT_PAGE);
+            js.append("';\n");
+            js.append("\t\tform.");
+            js.append(A_CmsListDialog.PARAM_PAGE);
+            js.append(".value = page;\n");
+            js.append("\t\tsubmitForm(form);\n");
+            js.append("\t}\n");
+        }
         js.append("</script>\n");
         return wp.resolveMacros(js.toString());
     }
@@ -560,6 +584,46 @@ public class CmsHtmlList {
     public CmsListItem newItem(String id) {
 
         return new CmsListItem(this.getMetadata(), id);
+    }
+
+    /**
+     * Returns a call to the search method for the onSubmit form event.<p>
+     * 
+     * Has to be set if you want to search by pressing <code>RETURN</code> in the search pattern input box.<p>
+     * 
+     * @param wp the workplace object
+     * 
+     * @return js onSubmit call
+     */
+    public String onSubmitSearch(CmsWorkplace wp) {
+
+        StringBuffer js = new StringBuffer(512);
+        if (getMetadata().isSearchable()) {
+            js.append(m_id);
+            js.append("ListSearchAction('");
+            js.append(CmsListSearchAction.SEARCH_ACTION_ID);
+            js.append("', '");
+            js.append(getMetadata().getSearchAction().getConfirmationMessage().key(wp.getLocale()));
+            js.append("');");
+        }
+        return js.toString();
+    }
+
+    /**
+     * Returns html code for printing the list.<p>
+     * 
+     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p>
+     *  
+     * @param wp the workplace object
+     * 
+     * @return html code
+     */
+    public synchronized String printableHtml(CmsWorkplace wp) {
+
+        m_printable = true;
+        String html = listHtml(wp);
+        m_printable = false;
+        return html;
     }
 
     /**
@@ -756,16 +820,18 @@ public class CmsHtmlList {
         html.append("\t\t</table>\n");
         html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name.key(wp.getLocale()), false));
         html.append("</div>\n");
-        html.append("<script language='javascript'>\n");
-        html.append("\tvar form = document.forms['");
-        html.append(getId());
-        html.append("-form'];\n");
-        html.append("\tform.");
-        html.append(getId());
-        html.append("Filter.value='");
-        html.append(getSearchFilter() == null ? "" : CmsStringUtil.escapeJavaScript(getSearchFilter()));
-        html.append("';\n");
-        html.append("</script>\n");
+        if (getMetadata().isSearchable()) {
+            html.append("<script language='javascript'>\n");
+            html.append("\tvar form = document.forms['");
+            html.append(getId());
+            html.append("-form'];\n");
+            html.append("\tform.");
+            html.append(getId());
+            html.append("Filter.value='");
+            html.append(getSearchFilter() != null ? CmsStringUtil.escapeJavaScript(getSearchFilter()) : "");
+            html.append("';\n");
+            html.append("</script>\n");
+        }
         return html.toString();
     }
 
@@ -908,32 +974,5 @@ public class CmsHtmlList {
         html.append("\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
-    }
-
-    /**
-     * Returns the printable flag.<p>
-     *
-     * @return the printable flag
-     */
-    public boolean isPrintable() {
-
-        return m_printable;
-    }
-
-    /**
-     * Returns html code for printing the list.<p>
-     * 
-     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p>
-     *  
-     * @param wp the workplace object
-     * 
-     * @return html code
-     */
-    public synchronized String printableHtml(CmsWorkplace wp) {
-
-        m_printable = true;
-        String html = listHtml(wp);
-        m_printable = false;
-        return html;
     }
 }

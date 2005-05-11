@@ -52,7 +52,7 @@ switch (wp.getAction()) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="<%=wp.getList().getId()%>-form" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="">
+<form name="<%=wp.getList().getId()%>-form" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="<%=wp.getList().onSubmitSearch(wp) %>">
 <%= wp.allParamsAsHidden() %>
 
 <%= wp.getList().listHtml(wp) %>

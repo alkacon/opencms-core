@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 15:10:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,15 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 /**
  * Default implementation for a seach action in an html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListSearchAction extends CmsListIndependentAction {
@@ -99,13 +102,47 @@ public class CmsListSearchAction extends CmsListIndependentAction {
 
         super(listId, id, name, helpText, icon, true, confirmationMessage);
         m_columnId = columnId;
-        m_defaultShowAllAction = new CmsListIndependentAction(listId, SHOWALL_ACTION_ID, new CmsMessageContainer(
+        m_defaultShowAllAction = new CmsListIndependentAction(listId, SHOWALL_ACTION_ID) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
+             */
+            public String buttonHtml(CmsWorkplace wp) {
+
+                String onClic = getListId()
+                    + "ListSearchAction('"
+                    + getId()
+                    + "', '"
+                    + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+                    + "');";
+                return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
+                    wp.getLocale()), isEnabled(), getIconPath(), onClic);
+            }
+        };
+        m_defaultShowAllAction.setName(new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_NAME_0));
+        m_defaultShowAllAction.setHelpText(new CmsMessageContainer(
             Messages.get(),
-            Messages.GUI_LIST_ACTION_SHOWALL_NAME_0), new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_LIST_ACTION_SHOWALL_HELP_0), "list/showall.gif", true, new CmsMessageContainer(
+            Messages.GUI_LIST_ACTION_SHOWALL_HELP_0));
+        m_defaultShowAllAction.setIconPath("list/showall.gif");
+        m_defaultShowAllAction.setEnabled(true);
+        m_defaultShowAllAction.setConfirmationMessage(new CmsMessageContainer(
             Messages.get(),
             Messages.GUI_LIST_ACTION_SHOWALL_CONF_0));
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
+     */
+    public String buttonHtml(CmsWorkplace wp) {
+
+        String onClic = getListId()
+            + "ListSearchAction('"
+            + getId()
+            + "', '"
+            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + "');";
+        return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
+            wp.getLocale()), isEnabled(), getIconPath(), onClic);
     }
 
     /**

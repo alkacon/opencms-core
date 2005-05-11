@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/11 15:10:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -62,9 +62,17 @@ public class CmsListMetadata {
     /** List of multi actions. */
     private List m_multiActions = new ArrayList();
 
-    /** Comment for <code>m_searchAction</code>. */
+    /** Search action. */
     private CmsListSearchAction m_searchAction;
 
+    
+    /**
+     * Default Constructor.<p> 
+     */
+    public CmsListMetadata() {
+        // noop
+    }
+    
     /**
      * Adds a new column definition at the end.<p>
      * 
@@ -157,6 +165,16 @@ public class CmsListMetadata {
     public List getIndependentActions() {
 
         return Collections.unmodifiableList(m_indepActions);
+    }
+
+    /**
+     * Returns the list of multi actions.<p>
+     * 
+     * @return a list of <code>{@link CmsListMultiAction}</code>s
+     */
+    public List getMultiActions() {
+
+        return Collections.unmodifiableList(m_multiActions);
     }
 
     /**
@@ -435,7 +453,7 @@ public class CmsListMetadata {
         html.append("\t<div>\n");
         html.append("\t\t<input type='text' name='");
         html.append(listId);
-        html.append("Filter' id='searchInput' value='' size='20' maxlength='245'>\n");
+        html.append("Filter' value='' size='20' maxlength='245'>\n");
         html.append(m_searchAction.buttonHtml(wp));
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
