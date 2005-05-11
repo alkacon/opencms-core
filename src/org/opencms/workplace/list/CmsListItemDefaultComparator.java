@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsDefaultListItemComparator.java,v $
- * Date   : $Date: 2005/04/22 08:38:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDefaultComparator.java,v $
+ * Date   : $Date: 2005/05/11 10:51:42 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */
-public class CmsDefaultListItemComparator implements Comparator {
+public class CmsListItemDefaultComparator implements Comparator {
     
     /** collator for comparison. */
     private final Collator m_collator;
@@ -61,7 +61,7 @@ public class CmsDefaultListItemComparator implements Comparator {
      * @param columnName the column name
      * @param locale the collator locale
      */
-    public CmsDefaultListItemComparator(String columnName, Locale locale) {
+    public CmsListItemDefaultComparator(String columnName, Locale locale) {
         
         m_columnName = columnName;
         m_collator = Collator.getInstance(locale);

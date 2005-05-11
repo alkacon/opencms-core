@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsSearchAction.java,v $
- * Date   : $Date: 2005/05/10 11:26:53 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import org.opencms.i18n.CmsMessageContainer;
  * Default implementation for a seach action in an html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsSearchAction extends CmsListIndependentAction {
+public class CmsListSearchAction extends CmsListIndependentAction {
 
     /** The action id for the search action. */
     public static final String SEARCH_ACTION_ID = "search";
@@ -63,7 +63,7 @@ public class CmsSearchAction extends CmsListIndependentAction {
      * @param listId the id of the associated list
      * @param column the column to search in
      */
-    public CmsSearchAction(String listId, CmsListColumnDefinition column) {
+    public CmsListSearchAction(String listId, CmsListColumnDefinition column) {
 
         this(
             listId,
@@ -88,7 +88,7 @@ public class CmsSearchAction extends CmsListIndependentAction {
      * @param confirmationMessage the confirmation message
      * @param columnId the column to sort
      */
-    public CmsSearchAction(
+    public CmsListSearchAction(
         String listId,
         String id,
         CmsMessageContainer name,

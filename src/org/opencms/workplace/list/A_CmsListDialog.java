@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/10 12:51:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -164,7 +164,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
 
         // makes the list searchable by login
-        CmsSearchAction searchAction = new CmsSearchAction(listId, columnDefinition);
+        CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
         searchAction.useDefaultShowAllAction();
         m_metadata.setSearchAction(searchAction);
     }
@@ -234,7 +234,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void listRecovery(String listId) {
 
         CmsHtmlList list = null;
-        list = getSettings().getList();
+        list = (CmsHtmlList)getSettings().getList();
         if (list!=null && !list.getId().equals(listId)) {
             list=null;
         }

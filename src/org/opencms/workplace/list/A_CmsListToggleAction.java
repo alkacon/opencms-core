@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToggleAction.java,v $
- * Date   : $Date: 2005/05/10 12:04:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 /**
  * Abstract implementation of a toggle action for a html list.<p>
@@ -41,7 +42,7 @@ import org.opencms.workplace.CmsWorkplace;
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
@@ -59,7 +60,7 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
     public String buttonHtml(CmsWorkplace wp) {
 
@@ -91,7 +92,7 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
     public CmsMessageContainer getHelpText() {
 
@@ -99,7 +100,7 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getIconPath()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
      */
     public String getIconPath() {
 
@@ -107,7 +108,7 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsHtmlIconButton#getId()
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getId()
      */
     public String getId() {
 
@@ -115,7 +116,7 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getName()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
     public CmsMessageContainer getName() {
 
@@ -123,7 +124,7 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsHtmlIconButton#isEnabled()
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
      */
     public boolean isEnabled() {
 

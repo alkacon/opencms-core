@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/10 12:51:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +49,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -418,7 +419,7 @@ public class CmsHtmlList {
         js.append("\t\t\t}\n");
         js.append("\t\t}\n");
         js.append("\t\tif (action=='");
-        js.append(CmsSearchAction.SEARCH_ACTION_ID);
+        js.append(CmsListSearchAction.SEARCH_ACTION_ID);
         js.append("') {\n");
         js.append("\t\t\tform.action.value = '");
         js.append(A_CmsListDialog.LIST_SEARCH);
@@ -432,7 +433,7 @@ public class CmsHtmlList {
         js.append("\t\t\treturn;\n");
         js.append("\t\t}\n");
         js.append("\t\tif (action=='");
-        js.append(CmsSearchAction.SHOWALL_ACTION_ID);
+        js.append(CmsListSearchAction.SHOWALL_ACTION_ID);
         js.append("') {\n");
         js.append("\t\t\tform.action.value = '");
         js.append(A_CmsListDialog.LIST_SEARCH);
@@ -684,7 +685,7 @@ public class CmsHtmlList {
             m_filteredItems = new ArrayList(m_originalItems);
         }
         if (c == null) {
-            Collections.sort(m_filteredItems, new CmsDefaultListItemComparator(m_sortedColumn, locale));
+            Collections.sort(m_filteredItems, new CmsListItemDefaultComparator(m_sortedColumn, locale));
         } else {
             Collections.sort(m_filteredItems, c);
         }

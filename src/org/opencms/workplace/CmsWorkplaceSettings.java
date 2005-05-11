@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import org.opencms.file.CmsUser;
@@ -48,7 +47,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -64,7 +63,7 @@ public class CmsWorkplaceSettings {
     private Map m_frameUris;
     private String m_galleryType;
     private Map m_lastUsedGalleries;
-    private CmsHtmlList m_list;
+    private Object m_list; // CmsHtmlList
     private CmsWorkplaceMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
@@ -218,7 +217,7 @@ public class CmsWorkplaceSettings {
      *
      * @return the list
      */
-    public CmsHtmlList getList() {
+    public Object getList() { //CmsHtmlList
 
         return m_list;
     }
@@ -498,7 +497,7 @@ public class CmsWorkplaceSettings {
      *
      * @param list the list to set
      */
-    public synchronized void setList(CmsHtmlList list) {
+    public synchronized void setList(Object list) { //CmsHtmlList
 
         m_list = list;
     }

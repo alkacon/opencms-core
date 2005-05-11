@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.tools;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.list.A_CmsHtmlIconButton;
 
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +47,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsTool {

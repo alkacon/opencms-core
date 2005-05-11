@@ -20,13 +20,13 @@
 		<datecreated>Mon, 14 Feb 2005 23:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.workplace.administration" version="0.9.0"/>
+		</dependencies>
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/admin/users/"/>
-			<resource uri="/system/workplace/resources/admin/ic_usermanagement.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_usermanagement_sm.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_newuser.gif"/>
+			<resource uri="/system/workplace/resources/tools/users/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -100,7 +100,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_usermanagement.gif:admin/ic_usermanagement_sm.gif]]></value>
+					<value><![CDATA[tools/users/icons/big/usermanagement.gif:tools/users/icons/small/usermanagement.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -220,7 +220,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_newuser.gif]]></value>
+					<value><![CDATA[tools/users/icons/big/newuser.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -268,7 +268,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/admin</destination>
+			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -279,8 +279,41 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_usermanagement.gif</source>
-			<destination>system/workplace/resources/admin/ic_usermanagement.gif</destination>
+			<destination>system/workplace/resources/tools/users</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/users/icons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/users/icons/big</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/icons/big/usermanagement.gif</source>
+			<destination>system/workplace/resources/tools/users/icons/big/usermanagement.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -291,8 +324,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_usermanagement_sm.gif</source>
-			<destination>system/workplace/resources/admin/ic_usermanagement_sm.gif</destination>
+			<source>system/workplace/resources/tools/users/icons/big/newuser.gif</source>
+			<destination>system/workplace/resources/tools/users/icons/big/newuser.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -303,13 +336,106 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_newuser.gif</source>
-			<destination>system/workplace/resources/admin/ic_newuser.gif</destination>
-			<type>image</type>
-			<uuidresource>8f197d34-6afe-11d9-95c8-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 16:15:53 GMT</datelastmodified>
+			<destination>system/workplace/resources/tools/users/icons/small</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 16:15:53 GMT</datecreated>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/icons/small/usermanagement.gif</source>
+			<destination>system/workplace/resources/tools/users/icons/small/usermanagement.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/users/buttons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/buttons/activate.gif</source>
+			<destination>system/workplace/resources/tools/users/buttons/activate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/buttons/deactivate.gif</source>
+			<destination>system/workplace/resources/tools/users/buttons/deactivate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/buttons/deactivate_disabled.gif</source>
+			<destination>system/workplace/resources/tools/users/buttons/deactivate_disabled.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/buttons/address.gif</source>
+			<destination>system/workplace/resources/tools/users/buttons/address.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/buttons/groups.gif</source>
+			<destination>system/workplace/resources/tools/users/buttons/groups.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/users/buttons/multi_activate.gif</source>
+			<destination>system/workplace/resources/tools/users/buttons/multi_activate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

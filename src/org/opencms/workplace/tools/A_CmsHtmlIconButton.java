@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/05/10 11:26:53 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.list;
+package org.opencms.workplace.tools;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
@@ -259,18 +259,18 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getHelpText()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
     public CmsMessageContainer getHelpText() {
 
         if (m_helpText == null) {
-            m_helpText = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+            m_helpText = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
         }
         return m_helpText;
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getIconPath()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
      */
     public String getIconPath() {
 
@@ -278,7 +278,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getId()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getId()
      */
     public String getId() {
 
@@ -286,7 +286,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#getName()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
     public CmsMessageContainer getName() {
 
@@ -294,7 +294,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#isEnabled()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
      */
     public boolean isEnabled() {
 
@@ -302,7 +302,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setEnabled(boolean)
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
 
@@ -310,18 +310,18 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setHelpText(org.opencms.i18n.CmsMessageContainer)
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#setHelpText(org.opencms.i18n.CmsMessageContainer)
      */
     public void setHelpText(CmsMessageContainer helpText) {
 
         if (helpText == null) {
-            helpText = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+            helpText = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
         }
         m_helpText = helpText;
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setIconPath(java.lang.String)
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#setIconPath(java.lang.String)
      */
     public void setIconPath(String iconPath) {
 
@@ -329,12 +329,12 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#setName(org.opencms.i18n.CmsMessageContainer)
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#setName(org.opencms.i18n.CmsMessageContainer)
      */
     public void setName(CmsMessageContainer name) {
 
         if (name == null) {
-            name = Messages.get().container(Messages.GUI_LIST_EMPTY_MESSAGE_0);
+            name = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
         }
         m_name = name;
     }

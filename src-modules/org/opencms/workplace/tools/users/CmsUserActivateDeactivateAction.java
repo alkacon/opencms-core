@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateDeactivateAction.java,v $
- * Date   : $Date: 2005/05/10 13:13:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/11 10:51:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * Activate/deactivate action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
@@ -101,7 +101,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsHtmlIconButton#isEnabled()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
      */
     public boolean isEnabled() {
 
@@ -137,7 +137,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
         if (isEnabled()) {
             return super.getIconPath();
         }
-        return "buttons/anchor.gif";
+        return "tools/users/buttons/deactivate_disabled.gif";
     }
     
 }

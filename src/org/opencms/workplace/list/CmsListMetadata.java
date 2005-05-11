@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/10 12:14:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -63,7 +63,7 @@ public class CmsListMetadata {
     private List m_multiActions = new ArrayList();
 
     /** Comment for <code>m_searchAction</code>. */
-    private CmsSearchAction m_searchAction;
+    private CmsListSearchAction m_searchAction;
 
     /**
      * Adds a new column definition at the end.<p>
@@ -186,7 +186,7 @@ public class CmsListMetadata {
      *
      * @return the search action
      */
-    public CmsSearchAction getSearchAction() {
+    public CmsListSearchAction getSearchAction() {
 
         return m_searchAction;
     }
@@ -478,7 +478,7 @@ public class CmsListMetadata {
      *
      * @param searchAction the search action to set
      */
-    public void setSearchAction(CmsSearchAction searchAction) {
+    public void setSearchAction(CmsListSearchAction searchAction) {
 
         m_searchAction = searchAction;
     }

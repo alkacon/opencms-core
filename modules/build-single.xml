@@ -84,6 +84,17 @@
                 <var name="module.package" value="${module.package}@{package}/" />
       	    </sequential>
         </for>
+        <var name="module.package.includes" value="${module.package}*.java" />
+        <if>
+            <isset property="module.includes" />
+            <then>
+                <for list="${module.includes}" param="package" >
+                    <sequential>
+                        <var name="module.package.includes" value="${module.package.includes},@{package}/*.java" />
+                    </sequential>
+                </for>
+            </then>
+        </if>
         
         <condition property="opencms.available">
         	<and>
@@ -216,8 +227,8 @@
                     destdir="${module.output.classes}"
                     debug="on" 
                     optimize="on" 
-                    deprecation="on" >                       
-                    <include name="${module.package}*" />
+                    deprecation="on"                        
+                    includes="${module.package.includes}" >
                     <exclude name="**/test/**/*.java" />
                     <classpath>
                         <fileset dir="${opencms.input.libs}">
@@ -236,6 +247,22 @@
                         <exclude name="**/test/**" />
                     </fileset>
                 </copy>       
+
+                <if>
+                    <isset property="module.includes" />
+                    <then>
+                        <for list="${module.includes}" param="package" >
+                            <sequential>
+                                <copy todir="${module.output.classes}/@{package}">
+                                    <fileset dir="${module.input.src}" includes="${jar.includes}" excludes="${jar.excludes}" >
+                                        <exclude name="**/test/**" />
+                                    </fileset>
+                                </copy>       
+                            </sequential>
+                        </for>
+                    </then>
+                </if>
+                
 			</then>		
 		</if>
     </target>

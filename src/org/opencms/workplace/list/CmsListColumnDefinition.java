@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/09 10:18:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/11 10:51:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +47,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -154,7 +155,7 @@ public class CmsListColumnDefinition {
      * 
      * @return the comparator
      * 
-     * @see CmsDefaultListItemComparator
+     * @see CmsListItemDefaultComparator
      */
     public Comparator getComparator() {
 
