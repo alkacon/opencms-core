@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsWordExtraction.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/11 17:28:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ public class TestMsWordExtraction extends TestCase {
         assertTrue(result.indexOf("Some content there.") > -1);
         assertTrue(result.indexOf("Some content on a second sheet.") > -1);
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
-        assertTrue(result.indexOf("äöüÄÖÜß€") > -1);
+        assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac") > -1);
         
         Map meta = extractionResult.getMetaInfo();
         assertEquals("Alkacon Software - The OpenCms experts", meta.get(I_CmsExtractionResult.META_TITLE));
