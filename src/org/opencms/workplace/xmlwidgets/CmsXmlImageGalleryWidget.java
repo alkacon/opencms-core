@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlImageGalleryWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/11 14:01:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.3
  */
 public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
@@ -123,7 +123,7 @@ public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
             // show button if field value is not empty and starts with a "/"
             previewClass = "show";
         }
-        result.append("<td><div class=\"");
+        result.append("<td class=\"");
         result.append(previewClass);
         result.append("\" id=\"preview");
         result.append(id);
@@ -136,7 +136,6 @@ public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
             "button.preview",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
-        result.append("</div>");
         
         result.append("</td></tr></table>");
         

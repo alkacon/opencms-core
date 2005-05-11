@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlLinkGalleryWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/11 14:01:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.3
  */
 public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
@@ -122,7 +122,7 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
             // show button if field value is not empty and starts with a "http://"
             previewClass = "show";
         }
-        result.append("<td><div class=\"");
+        result.append("<td class=\"");
         result.append(previewClass);
         result.append("\" id=\"preview");
         result.append(id);
@@ -135,7 +135,6 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
             "button.preview",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
-        result.append("</div>");
         
         result.append("</td></tr></table>");
         
