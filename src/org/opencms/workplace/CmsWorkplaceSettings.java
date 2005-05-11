@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/05/11 13:12:18 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import org.opencms.file.CmsUser;
@@ -47,12 +48,13 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
 
     private String m_currentSite;
+    private Object m_dialogObject;
     private String m_explorerFlaturl;
     private String m_explorerMode;
     private int m_explorerPage;
@@ -62,8 +64,8 @@ public class CmsWorkplaceSettings {
     private boolean m_explorerShowLinks;
     private Map m_frameUris;
     private String m_galleryType;
+    private CmsHtmlList m_htmlList;
     private Map m_lastUsedGalleries;
-    private Object m_list; // CmsHtmlList
     private CmsWorkplaceMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
@@ -89,6 +91,20 @@ public class CmsWorkplaceSettings {
         m_frameUris = new HashMap();
         m_lastUsedGalleries = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
+    }
+
+    /**
+     * Returns the dialog object.<p>
+     *
+     * Use this mechanism for transferring a complex object between
+     * several page instances of an interactive dialog. This in usually 
+     * required when editing a complex object in a dialog of the "Administration" view.<p> 
+     *
+     * @return the dialog object
+     */
+    public Object getDialogObject() {
+
+        return m_dialogObject;
     }
 
     /**
@@ -202,6 +218,16 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Returns the last user used list state.<p>
+     *
+     * @return the list
+     */
+    public CmsHtmlList getHtmlList() {
+
+        return m_htmlList;
+    }
+
+    /**
      * Returns the last saved gallery for the given gallery type id.<p>
      * 
      * @param galleryTypeId the type id of the gallery
@@ -210,16 +236,6 @@ public class CmsWorkplaceSettings {
     public String getLastUsedGallery(int galleryTypeId) {
 
         return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
-    }
-
-    /**
-     * Returns the last user used list state.<p>
-     *
-     * @return the list
-     */
-    public Object getList() { //CmsHtmlList
-
-        return m_list;
     }
 
     /**
@@ -371,6 +387,20 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Sets the dialog object.<p>
+     * 
+     * Use this mechanism for transferring a complex object between
+     * several page instances of an interactive dialog. This in usually 
+     * required when editing a complex object in a dialog of the "Administration" view.<p>
+     *  
+     * @param dialogObject the dialog object to set
+     */
+    public void setDialogObject(Object dialogObject) {
+
+        m_dialogObject = dialogObject;
+    }
+
+    /**
      * Sets the explorer flat url.<p>
      * 
      * @param value the explorer flat url
@@ -482,6 +512,16 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Sets the list state.<p>
+     *
+     * @param list the list to set
+     */
+    public synchronized void setHtmlList(CmsHtmlList list) {
+
+        m_htmlList = list;
+    }
+
+    /**
      * Saves the last gallery.<p>
      * 
      * @param galleryTypeId the type id of the gallery as key
@@ -490,16 +530,6 @@ public class CmsWorkplaceSettings {
     public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
 
         m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
-    }
-
-    /**
-     * Sets the list state.<p>
-     *
-     * @param list the list to set
-     */
-    public synchronized void setList(Object list) { //CmsHtmlList
-
-        m_list = list;
     }
 
     /**

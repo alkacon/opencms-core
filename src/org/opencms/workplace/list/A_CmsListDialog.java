@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/11 13:12:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,46 +47,16 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
 
-    /** Request parameter key for the column to sort the list. */
-    public static final String PARAM_SORT_COL = "sortcol";
+    /** Value for the action: execute a list item independent action of the list. */
+    public static final int ACTION_LIST_INDEPENDENT_ACTION = 83;
 
-    /** Request parameter key for search the filter. */
-    public static final String PARAM_SEARCH_FILTER = "searchfilter";
-
-    /** Request parameter key for the selected item(s). */
-    public static final String PARAM_SEL_ITEMS = "selitems";
-
-    /** Request parameter key for the requested page. */
-    public static final String PARAM_PAGE = "page";
-
-    /** Request parameter value for the list action: select a page. */
-    public static final String LIST_SELECT_PAGE = "listselectpage";
-
-    /** Request parameter value for the list action: search/filter. */
-    public static final String LIST_SEARCH = "listsearch";
-
-    /** Request parameter value for the list action: sort. */
-    public static final String LIST_SORT = "listsort";
-
-    /** Request parameter value for the list action: a single action has been triggered. */
-    public static final String LIST_SINGLE_ACTION = "listsingleaction";
-
-    /** Request parameter value for the list action: a list item independent action has been triggered. */
-    public static final String LIST_INDEPENDENT_ACTION = "listindependentaction";
-
-    /** Request parameter value for the list action: a multi action has been triggered. */
-    public static final String LIST_MULTI_ACTION = "listmultiaction";
-
-    /** Request parameter key for the list action. */
-    public static final String PARAM_LIST_ACTION = "listaction";
-
-    /** Value for the action: sort the list. */
-    public static final int ACTION_LIST_SORT = 80;
+    /** Value for the action: execute an multi action of the list. */
+    public static final int ACTION_LIST_MULTI_ACTION = 85;
 
     /** Value for the action: search the list. */
     public static final int ACTION_LIST_SEARCH = 81;
@@ -94,17 +64,56 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Value for the action: go to a page. */
     public static final int ACTION_LIST_SELECT_PAGE = 82;
 
-    /** Value for the action: execute a list item independent action of the list. */
-    public static final int ACTION_LIST_INDEPENDENT_ACTION = 83;
-
     /** Value for the action: execute a single action of the list. */
     public static final int ACTION_LIST_SINGLE_ACTION = 84;
 
-    /** Value for the action: execute an multi action of the list. */
-    public static final int ACTION_LIST_MULTI_ACTION = 85;
+    /** Value for the action: sort the list. */
+    public static final int ACTION_LIST_SORT = 80;
 
-    /** The column to sort the list. */
-    private String m_paramSortCol;
+    /** Request parameter value for the list action: a list item independent action has been triggered. */
+    public static final String LIST_INDEPENDENT_ACTION = "listindependentaction";
+
+    /** Request parameter value for the list action: a multi action has been triggered. */
+    public static final String LIST_MULTI_ACTION = "listmultiaction";
+
+    /** Request parameter value for the list action: search/filter. */
+    public static final String LIST_SEARCH = "listsearch";
+
+    /** Request parameter value for the list action: select a page. */
+    public static final String LIST_SELECT_PAGE = "listselectpage";
+
+    /** Request parameter value for the list action: a single action has been triggered. */
+    public static final String LIST_SINGLE_ACTION = "listsingleaction";
+
+    /** Request parameter value for the list action: sort. */
+    public static final String LIST_SORT = "listsort";
+
+    /** Request parameter key for the list action. */
+    public static final String PARAM_LIST_ACTION = "listaction";
+
+    /** Request parameter key for the requested page. */
+    public static final String PARAM_PAGE = "page";
+
+    /** Request parameter key for search the filter. */
+    public static final String PARAM_SEARCH_FILTER = "searchfilter";
+
+    /** Request parameter key for the selected item(s). */
+    public static final String PARAM_SEL_ITEMS = "selitems";
+
+    /** Request parameter key for the column to sort the list. */
+    public static final String PARAM_SORT_COL = "sortcol";
+
+    /** metadata for the list used in this dialog. */
+    private static CmsListMetadata m_metadata;
+
+    /** the internal list. */
+    private CmsHtmlList m_list;
+
+    /** The list action. */
+    private String m_paramListAction;
+
+    /** The displayed page. */
+    private String m_paramPage;
 
     /** The search filter text. */
     private String m_paramSearchFilter;
@@ -112,14 +121,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** The selected items, comma separated list. */
     private String m_paramSelItems;
 
-    /** The displayed page. */
-    private String m_paramPage;
-
-    /** The list action. */
-    private String m_paramListAction;
-
-    /** the internal list. */
-    private CmsHtmlList m_list;
+    /** The column to sort the list. */
+    private String m_paramSortCol;
 
     /**
      * Public constructor.<p>
@@ -130,7 +133,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * @param sortedColId the a priory sorted column
      * @param searchableColId the column to search into
      */
-    protected A_CmsListDialog(CmsJspActionElement jsp, String listId, CmsMessageContainer listName, String sortedColId, String searchableColId) {
+    protected A_CmsListDialog(
+        CmsJspActionElement jsp,
+        String listId,
+        CmsMessageContainer listName,
+        String sortedColId,
+        String searchableColId) {
 
         super(jsp);
         // try to read the list from the session
@@ -139,7 +147,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (getList() == null) {
             // create the list
             setList(createList(listId, listName));
-            if (searchableColId!=null && getList().getMetadata().getColumnDefinition(searchableColId)!=null) {
+            if (searchableColId != null && getList().getMetadata().getColumnDefinition(searchableColId) != null) {
                 setSearchAction(listId, getList().getMetadata().getColumnDefinition(searchableColId));
             }
             // set the number of items per page from the user settings
@@ -150,148 +158,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
             getList().setSortedColumn(sortedColId, getLocale());
             // save the current state of the list
             listSave();
-        }
-    }
-
-    /**
-     * Creates the default search action.<p>
-     * 
-     * Can be overriden for more sofisticated search.<p>
-     * 
-     * @param listId the id of the list
-     * @param columnDefinition the column to search into
-     */
-    protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
-
-        // makes the list searchable by login
-        CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
-        searchAction.useDefaultShowAllAction();
-        m_metadata.setSearchAction(searchAction);
-    }
-
-    /** metadata for the list used in this dialog. */
-    private static CmsListMetadata m_metadata;
-
-    /**
-     * Should generate the metadata definition of the list, and return a 
-     * new list object associated to it.<p>
-     * 
-     * @return The list to display in this dialog
-     */
-    private CmsHtmlList createList(String listId, CmsMessageContainer listName) {
-        if (m_metadata == null) {
-            m_metadata = new CmsListMetadata();
-            
-            setIndependentActions(m_metadata);
-            setColumns(m_metadata);
-            setMultiActions(m_metadata);            
-        }
-        return new CmsHtmlList(listId, listName, m_metadata);
-        
-    }
-
-    /**
-     * Should create the columns and add them to the given list metadata object.<p>
-     * 
-     * This method will be just executed once, the first time the constructor is called.<p> 
-     * 
-     * @param metadata the list metadata
-     */
-    protected abstract void setColumns(CmsListMetadata metadata);
-    
-    /**
-     * Should add the independent actions to the given list metadata object.<p>
-     * 
-     * This method will be just executed once, the first time the constructor is called.<p> 
-     * 
-     * @param metadata the list metadata
-     */
-    protected abstract void setIndependentActions(CmsListMetadata metadata);
-    
-    /**
-     * Should add the multi actions to the given list metadata object.<p>
-     * 
-     * This method will be just executed once, the first time the constructor is called.<p> 
-     * 
-     * @param metadata the list metadata
-     */
-    protected abstract void setMultiActions(CmsListMetadata metadata);
-    
-    /**
-     * Fill the list with data.<p>
-     * 
-     * @return a list of <code>{@link CmsListItem}</code>s.
-     */
-    protected abstract List getListItems();
-
-    /**
-     * Recover the last list instance that is read from the request attributes.<p>
-     * 
-     * This is required for keep the whole list in memory while you browse a page.<p>
-     * 
-     * @param listId the id of the expected list
-     */
-    protected void listRecovery(String listId) {
-
-        CmsHtmlList list = null;
-        list = (CmsHtmlList)getSettings().getList();
-        if (list!=null && !list.getId().equals(listId)) {
-            list=null;
-        }
-        setList(list);
-    }
-
-    /**
-     * Save the state of the list in the session.<p>
-     */
-    protected void listSave() {
-
-        getSettings().setList(getList());
-    }
-
-    /**
-     * This method re-read the rows of the list, the user should call this method after executing an action
-     * that added or removed rows to the list. 
-     */
-    public void refreshList() {
-
-        String sCol = getList().getSortedColumn();
-        String sFilter = getList().getSearchFilter();
-        int cPage = getList().getCurrentPage();
-        CmsListOrderEnum order = getList().getCurrentSortOrder();
-        getList().clear(getLocale());
-        getList().addAllItems(getListItems());
-        getList().setSearchFilter(sFilter, getLocale());
-        getList().setSortedColumn(sCol, getLocale());
-        if (order == CmsListOrderEnum.ORDER_DESCENDING) {
-            getList().setSortedColumn(sCol, getLocale());
-        }
-        if (cPage>0 && cPage<=getList().getNumberOfPages()) {
-            getList().setCurrentPage(cPage);
-        }
-        listSave();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the action for the JSP switch 
-        if (LIST_SEARCH.equals(getParamAction())) {
-            setAction(ACTION_LIST_SEARCH);
-        } else if (LIST_SORT.equals(getParamAction())) {
-            setAction(ACTION_LIST_SORT);
-        } else if (LIST_SELECT_PAGE.equals(getParamAction())) {
-            setAction(ACTION_LIST_SELECT_PAGE);
-        } else if (LIST_INDEPENDENT_ACTION.equals(getParamAction())) {
-            setAction(ACTION_LIST_INDEPENDENT_ACTION);
-        } else if (LIST_SINGLE_ACTION.equals(getParamAction())) {
-            setAction(ACTION_LIST_SINGLE_ACTION);
-        } else if (LIST_MULTI_ACTION.equals(getParamAction())) {
-            setAction(ACTION_LIST_MULTI_ACTION);
         }
     }
 
@@ -318,31 +184,90 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Select a page, given the action is set to <code>LIST_SELECT_PAGE</code> and 
-     * the page to go to is set in the <code>PARAM_PAGE</code> parameter.<p>
+     * This method should handle the default list independent actions,
+     * by comparing <code>{@link #getParamListAction()}</code> with the id 
+     * of the action to execute.<p> 
+     * 
+     * if you want to handle additional independent actions, override this method,
+     * handling your actions and FINALLY calling <code>super.executeListIndepActions();</code>.<p> 
      */
-    protected void executeSelectPage() {
+    public void executeListIndepActions() {
 
-        int page = Integer.valueOf(getParamPage()).intValue();
-        m_list.setCurrentPage(page);
+        Iterator itIndepActions = getList().getMetadata().getIndependentActions().iterator();
+        while (itIndepActions.hasNext()) {
+            I_CmsListAction action = (I_CmsListAction)itIndepActions.next();
+            if (action.getId().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
+                if (getParamListAction().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
+                    refreshList();
+                }
+                break;
+            }
+        }
+        // toogle item details
+        if (getList().getMetadata().getItemDetailDefinition(getParamListAction()) != null) {
+            getList().getMetadata().toogleDetailState(getParamListAction());
+        }
+        listSave();
     }
 
     /**
-     * Filter a list, given the action is set to <code>LIST_SEARCH</code> and
-     * the filter text is set in the <code>PARAM_SEARCH_FILTER</code> parameter.<p>
+     * Returns the list.<p>
+     *
+     * @return the list
      */
-    protected void executeSearch() {
+    public CmsHtmlList getList() {
 
-        m_list.setSearchFilter(getParamSearchFilter(), getLocale());
+        return m_list;
     }
 
     /**
-     * Sort the list, given the action is set to <code>LIST_SORT</code> and
-     * the sort column is set in the <code>PARAM_SORT_COL</code> parameter.<p>
+     * Returns the List Action.<p>
+     *
+     * @return the List Action
      */
-    protected void executeSort() {
+    public String getParamListAction() {
 
-        m_list.setSortedColumn(getParamSortCol(), getLocale());
+        return m_paramListAction;
+    }
+
+    /**
+     * Returns the current Page.<p>
+     *
+     * @return the current Page
+     */
+    public String getParamPage() {
+
+        return m_paramPage;
+    }
+
+    /**
+     * Returns the Search Filter.<p>
+     *
+     * @return the Search Filter
+     */
+    public String getParamSearchFilter() {
+
+        return m_paramSearchFilter;
+    }
+
+    /**
+     * Returns the Selected Items.<p>
+     *
+     * @return the Selelected Items
+     */
+    public String getParamSelItems() {
+
+        return m_paramSelItems;
+    }
+
+    /**
+     * Returns the sorted Column.<p>
+     *
+     * @return the sorted Column
+     */
+    public String getParamSortCol() {
+
+        return m_paramSortCol;
     }
 
     /**
@@ -372,13 +297,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the list.<p>
-     *
-     * @return the list
+     * This method re-read the rows of the list, the user should call this method after executing an action
+     * that added or removed rows to the list. 
      */
-    public CmsHtmlList getList() {
+    public void refreshList() {
 
-        return m_list;
+        String sCol = getList().getSortedColumn();
+        String sFilter = getList().getSearchFilter();
+        int cPage = getList().getCurrentPage();
+        CmsListOrderEnum order = getList().getCurrentSortOrder();
+        getList().clear(getLocale());
+        getList().addAllItems(getListItems());
+        getList().setSearchFilter(sFilter, getLocale());
+        getList().setSortedColumn(sCol, getLocale());
+        if (order == CmsListOrderEnum.ORDER_DESCENDING) {
+            getList().setSortedColumn(sCol, getLocale());
+        }
+        if (cPage > 0 && cPage <= getList().getNumberOfPages()) {
+            getList().setCurrentPage(cPage);
+        }
+        listSave();
     }
 
     /**
@@ -392,16 +330,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the List Action.<p>
-     *
-     * @return the List Action
-     */
-    public String getParamListAction() {
-
-        return m_paramListAction;
-    }
-
-    /**
      * Sets the List Action.<p>
      *
      * @param listAction the list Action to set
@@ -409,16 +337,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setParamListAction(String listAction) {
 
         m_paramListAction = listAction;
-    }
-
-    /**
-     * Returns the current Page.<p>
-     *
-     * @return the current Page
-     */
-    public String getParamPage() {
-
-        return m_paramPage;
     }
 
     /**
@@ -432,16 +350,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the Search Filter.<p>
-     *
-     * @return the Search Filter
-     */
-    public String getParamSearchFilter() {
-
-        return m_paramSearchFilter;
-    }
-
-    /**
      * Sets the Search Filter.<p>
      *
      * @param searchFilter the Search Filter to set
@@ -449,16 +357,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setParamSearchFilter(String searchFilter) {
 
         m_paramSearchFilter = searchFilter;
-    }
-
-    /**
-     * Returns the Selected Items.<p>
-     *
-     * @return the Selelected Items
-     */
-    public String getParamSelItems() {
-
-        return m_paramSelItems;
     }
 
     /**
@@ -472,16 +370,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the sorted Column.<p>
-     *
-     * @return the sorted Column
-     */
-    public String getParamSortCol() {
-
-        return m_paramSortCol;
-    }
-
-    /**
      * Sets the sorted Column.<p>
      *
      * @param sortCol the sorted Column to set
@@ -490,7 +378,133 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         m_paramSortCol = sortCol;
     }
-    
+
+    /**
+     * Filter a list, given the action is set to <code>LIST_SEARCH</code> and
+     * the filter text is set in the <code>PARAM_SEARCH_FILTER</code> parameter.<p>
+     */
+    protected void executeSearch() {
+
+        m_list.setSearchFilter(getParamSearchFilter(), getLocale());
+    }
+
+    /**
+     * Select a page, given the action is set to <code>LIST_SELECT_PAGE</code> and 
+     * the page to go to is set in the <code>PARAM_PAGE</code> parameter.<p>
+     */
+    protected void executeSelectPage() {
+
+        int page = Integer.valueOf(getParamPage()).intValue();
+        m_list.setCurrentPage(page);
+    }
+
+    /**
+     * Sort the list, given the action is set to <code>LIST_SORT</code> and
+     * the sort column is set in the <code>PARAM_SORT_COL</code> parameter.<p>
+     */
+    protected void executeSort() {
+
+        m_list.setSortedColumn(getParamSortCol(), getLocale());
+    }
+
+    /**
+     * Fill the list with data.<p>
+     * 
+     * @return a list of <code>{@link CmsListItem}</code>s.
+     */
+    protected abstract List getListItems();
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the action for the JSP switch 
+        if (LIST_SEARCH.equals(getParamAction())) {
+            setAction(ACTION_LIST_SEARCH);
+        } else if (LIST_SORT.equals(getParamAction())) {
+            setAction(ACTION_LIST_SORT);
+        } else if (LIST_SELECT_PAGE.equals(getParamAction())) {
+            setAction(ACTION_LIST_SELECT_PAGE);
+        } else if (LIST_INDEPENDENT_ACTION.equals(getParamAction())) {
+            setAction(ACTION_LIST_INDEPENDENT_ACTION);
+        } else if (LIST_SINGLE_ACTION.equals(getParamAction())) {
+            setAction(ACTION_LIST_SINGLE_ACTION);
+        } else if (LIST_MULTI_ACTION.equals(getParamAction())) {
+            setAction(ACTION_LIST_MULTI_ACTION);
+        }
+    }
+
+    /**
+     * Recover the last list instance that is read from the request attributes.<p>
+     * 
+     * This is required for keep the whole list in memory while you browse a page.<p>
+     * 
+     * @param listId the id of the expected list
+     */
+    protected void listRecovery(String listId) {
+
+        CmsHtmlList list = null;
+        list = getSettings().getHtmlList();
+        if (list != null && !list.getId().equals(listId)) {
+            list = null;
+        }
+        setList(list);
+    }
+
+    /**
+     * Save the state of the list in the session.<p>
+     */
+    protected void listSave() {
+
+        getSettings().setHtmlList(getList());
+    }
+
+    /**
+     * Should create the columns and add them to the given list metadata object.<p>
+     * 
+     * This method will be just executed once, the first time the constructor is called.<p> 
+     * 
+     * @param metadata the list metadata
+     */
+    protected abstract void setColumns(CmsListMetadata metadata);
+
+    /**
+     * Should add the independent actions to the given list metadata object.<p>
+     * 
+     * This method will be just executed once, the first time the constructor is called.<p> 
+     * 
+     * @param metadata the list metadata
+     */
+    protected abstract void setIndependentActions(CmsListMetadata metadata);
+
+    /**
+     * Should add the multi actions to the given list metadata object.<p>
+     * 
+     * This method will be just executed once, the first time the constructor is called.<p> 
+     * 
+     * @param metadata the list metadata
+     */
+    protected abstract void setMultiActions(CmsListMetadata metadata);
+
+    /**
+     * Creates the default search action.<p>
+     * 
+     * Can be overriden for more sofisticated search.<p>
+     * 
+     * @param listId the id of the list
+     * @param columnDefinition the column to search into
+     */
+    protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
+
+        // makes the list searchable by login
+        CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
+        searchAction.useDefaultShowAllAction();
+        m_metadata.setSearchAction(searchAction);
+    }
+
     /**
      * A convenient method to throw a list unsupported
      * action runtime exception.<p>
@@ -500,6 +514,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * action.<p>
      */
     protected void throwListUnsupportedActionException() {
+
         throw new RuntimeException(Messages.get().key(
             Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
             getList().getName(),
@@ -507,29 +522,21 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * This method should handle the default list independent actions,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
+     * Should generate the metadata definition of the list, and return a 
+     * new list object associated to it.<p>
      * 
-     * if you want to handle additional independent actions, override this method,
-     * handling your actions and FINALLY calling <code>super.executeListIndepActions();</code>.<p> 
+     * @return The list to display in this dialog
      */
-    public void executeListIndepActions() {
-    
-        Iterator itIndepActions = getList().getMetadata().getIndependentActions().iterator();
-        while (itIndepActions.hasNext()) {
-            I_CmsListAction action = (I_CmsListAction)itIndepActions.next();
-            if (action.getId().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
-                if (getParamListAction().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
-                    refreshList();
-                }
-                break;
-            } 
+    private CmsHtmlList createList(String listId, CmsMessageContainer listName) {
+
+        if (m_metadata == null) {
+            m_metadata = new CmsListMetadata();
+
+            setIndependentActions(m_metadata);
+            setColumns(m_metadata);
+            setMultiActions(m_metadata);
         }
-        // toogle item details
-        if (getList().getMetadata().getItemDetailDefinition(getParamListAction())!=null) {
-            getList().getMetadata().toogleDetailState(getParamListAction());
-        }
-        listSave();
+        return new CmsHtmlList(listId, listName, m_metadata);
+
     }
 }
