@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 10:58:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,17 +44,17 @@ import java.util.List;
  * A collector to fetch sorted XML contents in a folder or subtree based on their priority
  * and date or title values.<p>
  * 
- * The date or title information has to be stored as property of each resource.<p>
+ * The date or title information has to be stored as property for each resource.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.7.2
  */
 public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
-    /** The standard priority value if no value was set. */
+    /** The standard priority value if no value was set on resource. */
     public static final int C_PRIORITY_STANDARD = 3;
 
     /** The name of the priority property to read. */
@@ -62,6 +62,8 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
     /** Static array of the collectors implemented by this class. */
     private static final String[] COLLECTORS = {
+        "allInFolderPriorityDateAsc",
+        "allInSubTreePriorityDateAsc",
         "allInFolderPriorityDateDesc",
         "allInSubTreePriorityDateDesc",
         "allInFolderPriorityTitleDesc",
@@ -91,11 +93,13 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
             case 2:
-                // "allInFolderPriorityDateDesc" or "allInFolderPriorityTitleDesc"
+            case 4:
+                // "allInFolderPriorityDateAsc", "allInFolderPriorityDateDesc" or "allInFolderPriorityTitleDesc"
                 return getCreateInFolder(cms, param);
             case 1:
             case 3:
-                // "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
+            case 5:
+                // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
                 return null;
             default:
                 throw new CmsException("Invalid resource collector selected: " + collectorName);
@@ -115,11 +119,13 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
             case 2:
-                // "allInFolderPriorityDateDesc" or "allInFolderPriorityTitleDesc"
+            case 4:
+                // "allInFolderPriorityDateAsc", "allInFolderPriorityDateDesc" or "allInFolderPriorityTitleDesc"
                 return param;
             case 1:
             case 3:
-                // "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
+            case 5:
+                // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
                 return null;
             default:
                 throw new CmsException("Invalid resource collector selected: " + collectorName);
@@ -139,15 +145,21 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
 
             case 0:
-                // "allInFolderPriorityDateDesc"
-                return allInFolderPriorityDate(cms, param, false);
+                // "allInFolderPriorityDateAsc"
+                return allInFolderPriorityDate(cms, param, false, true);
             case 1:
-                // "allInSubTreePriorityDateDesc"
-                return allInFolderPriorityDate(cms, param, true);
+                // "allInSubTreePriorityDateAsc"
+                return allInFolderPriorityDate(cms, param, true, true);
             case 2:
+                // "allInFolderPriorityDateDesc"
+                return allInFolderPriorityDate(cms, param, false, false);
+            case 3:
+                // "allInSubTreePriorityDateDesc"
+                return allInFolderPriorityDate(cms, param, true, false);
+            case 4:
                 // "allInFolderPriorityTitleDesc"
                 return allInFolderPriorityTitle(cms, param, false);
-            case 3:
+            case 5:
                 // "allInSubTreePriorityTitleDesc"
                 return allInFolderPriorityTitle(cms, param, true);
             default:
@@ -157,17 +169,18 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * Returns a list of all resource in a specified folder sorted by priority, then date descending.<p>
+     * Returns a list of all resource in a specified folder sorted by priority, then date ascending or descending.<p>
      * 
      * @param cms the current OpenCms user context
      * @param param the folder name to use
      * @param tree if true, look in folder and all child folders, if false, look only in given folder
+     * @param asc if true, the date sort order is ascending, otherwise descending
      * 
      * @return all resources in the folder matching the given criteria
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List allInFolderPriorityDate(CmsObject cms, String param, boolean tree) throws CmsException {
+    protected List allInFolderPriorityDate(CmsObject cms, String param, boolean tree, boolean asc) throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
@@ -176,7 +189,7 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         List result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
-        CmsPriorityDateResourceComparator comparator = new CmsPriorityDateResourceComparator(cms);
+        CmsPriorityDateResourceComparator comparator = new CmsPriorityDateResourceComparator(cms, asc);
         Collections.sort(result, comparator);
 
         return shrinkToFit(result, data.getCount());

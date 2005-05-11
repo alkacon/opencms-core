@@ -50,7 +50,20 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%
 	cms.setDate("dateString");
 %>
-<tr><td class="nowrap"><fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="both" /></td></tr>
+<tr>
+	<td class="nowrap">
+		<fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" />
+		<cms:contentcheck ifexists="EventDates/EventEndDate">
+		<c:set var="dateString">
+		<cms:contentshow element="EventDates/EventEndDate" />
+		</c:set>
+		<%
+			cms.setDate("dateString");
+		%>
+		<fmt:message key="eventarticle.eventend" /> <fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" />
+		</cms:contentcheck>
+	</td>
+</tr>
 </cms:contentcheck>
 <%-- end date --%>
 
@@ -61,14 +74,14 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 	--%><cms:contentshow  /><%--
 --%></c:set><%
 	cms.setDate("dateString");
-%><c:if test="${next == 'true'}">, </c:if><fmt:formatDate value="${date}" dateStyle="long" type="both" /><c:set var="next" value="true" /><%--
+%><c:if test="${next == 'true'}">, </c:if><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><c:set var="next" value="true" /><%--
 --%></cms:contentloop></td></tr>
 </cms:contentcheck>
 <%-- end additional dates --%>
 
 <%-- begin date remark --%>
 <cms:contentcheck ifexists="EventDates/DateRemark">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventDate.DateRemark" />:&nbsp;</td><td><cms:contentshow element="EventDates/DateRemark" /></td></tr>
+<tr><td class="nowrap">&nbsp;</td><td><cms:contentshow element="EventDates/DateRemark" /></td></tr>
 </cms:contentcheck>
 <%-- end date remark --%>
 

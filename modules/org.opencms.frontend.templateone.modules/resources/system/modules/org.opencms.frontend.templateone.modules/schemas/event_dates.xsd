@@ -13,6 +13,7 @@
 	<xsd:complexType name="OpenCmsEventDate">
 		<xsd:sequence>
 			<xsd:element name="EventDate" type="OpenCmsDateTime" />
+			<xsd:element name="EventEndDate" type="OpenCmsDateTime" minOccurs="0" />
 			<xsd:element name="AdditionalDate" type="OpenCmsDateTime" minOccurs="0" maxOccurs="20" />	
 			<xsd:element name="DateRemark" type="OpenCmsString" minOccurs="0" />		
 			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" minOccurs="0" />

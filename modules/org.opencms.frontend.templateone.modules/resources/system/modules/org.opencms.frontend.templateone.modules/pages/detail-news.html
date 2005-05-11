@@ -52,7 +52,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </cms:contentloop>
 </cms:contentcheck>
 
-<h1><c:out value="${firstimage}" escapeXml="false" /><cms:contentshow element="Title" /></h1>
+<h1><cms:contentshow element="Title" /></h1>
 
 <%-- create a date object from date value --%>
 <c:set var="dateString">
@@ -72,7 +72,7 @@ try {
 <small><fmt:formatDate value="${date}" dateStyle="long" />; <cms:contentshow element="Author" /> <cms:contentcheck ifexists="AuthorMail">(<a href="mailto:<cms:contentshow element="AuthorMail" />"><cms:contentshow element="AuthorMail" /></a>)</cms:contentcheck></small></p>
 
 <%-- show news text --%>
-<p>
+<p><c:out value="${firstimage}" escapeXml="false" />
 <cms:contentshow element="Text" />
 </p>
 
@@ -96,9 +96,11 @@ try {
 </tr>
 </cms:contentcheck>
 
+<c:if test="${nextimages != ''}">
 <tr><td colspan="2">
 <c:out value="${nextimages}" escapeXml="false" />
 </td></tr>
+</c:if>
 
 <%-- show links --%>
 <cms:contentcheck ifexistsone="ExternalLink,InternalLink">
@@ -113,14 +115,15 @@ try {
 </tr>
 </cms:contentcheck>
 
-</cms:contentload>
-
 <% if (uriPresent) { %>
 <tr>
 	<td colspan="2">&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
 </tr>
 <% } %>
 </table>
+
+</cms:contentload>
+
 </div>
 
 <cms:include property="template" element="foot" /><%--

@@ -43,7 +43,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <c:if test="${shownumber == 'true'}"></p></c:if>
 </c:if>
 <p>
-<b><cms:contentshow element="Title" /></b><br>
+<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
 <cms:contentcheck ifexists="Date">
 <c:set var="dateString">
 	<cms:contentshow element="Date" />
@@ -51,7 +51,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <%
 	cms.setDate("dateString");
 %>
-<small><fmt:formatDate value="${date}" type="date" dateStyle="long"  /> - <cms:contentshow element="Teaser" /></small><br>
+<small><fmt:formatDate value="${date}" type="date" dateStyle="long"  /> - <cms:contentshow element="Teaser" /></small>
 </cms:contentcheck>
 <small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>

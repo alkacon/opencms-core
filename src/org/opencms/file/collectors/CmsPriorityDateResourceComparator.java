@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityDateResourceComparator.java,v $
- * Date   : $Date: 2005/04/06 16:00:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/11 10:58:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.7.2 
  * 
@@ -58,6 +58,9 @@ public class CmsPriorityDateResourceComparator implements Comparator {
     
     /** The name of the date property to read. */
     public static final String C_PROPERTY_DATE = "collector.date";
+    
+    /** The date sort order. */
+    private boolean m_asc;
 
     /** The current OpenCms user context. */
     private CmsObject m_cms;
@@ -75,15 +78,17 @@ public class CmsPriorityDateResourceComparator implements Comparator {
      * Creates a new instance of this comparator key.<p>
      * 
      * @param cms the current OpenCms user context
+     * @param asc if true, the date sort order is ascending, otherwise descending
      */
-    public CmsPriorityDateResourceComparator(CmsObject cms) {
+    public CmsPriorityDateResourceComparator(CmsObject cms, boolean asc) {
 
         m_cms = cms;
+        m_asc = asc;
         m_keys = new HashMap();
     }
 
     /**
-     * Creates a new instance of this comparatoy key.<p>
+     * Creates a new instance of this comparator key.<p>
      * 
      * @param resource the resource to create the key for
      * @param cms the current OpenCms user context
@@ -92,7 +97,7 @@ public class CmsPriorityDateResourceComparator implements Comparator {
      */
     private static CmsPriorityDateResourceComparator create(CmsResource resource, CmsObject cms) {
 
-        CmsPriorityDateResourceComparator result = new CmsPriorityDateResourceComparator(null);
+        CmsPriorityDateResourceComparator result = new CmsPriorityDateResourceComparator(null, false);
         result.init(resource, cms);
         return result;
     }
@@ -122,7 +127,8 @@ public class CmsPriorityDateResourceComparator implements Comparator {
             key1 = CmsPriorityDateResourceComparator.create(res1, m_cms);
             m_keys.put(res1.getStructureId(), key1);
         }
-
+        
+        // check priority
         if (key0.getPriority() > key1.getPriority()) {
             return -1;
         }
@@ -130,13 +136,23 @@ public class CmsPriorityDateResourceComparator implements Comparator {
         if (key0.getPriority() < key1.getPriority()) {
             return 1;
         }
-
-        if (key0.getDate() > key1.getDate()) {
-            return -1;
-        }
         
-        if (key0.getDate() < key1.getDate()) {
-            return 1;
+        if (m_asc) {
+            // sort in ascending order
+            if (key0.getDate() > key1.getDate()) {
+                return 1;
+            }           
+            if (key0.getDate() < key1.getDate()) {
+                return -1;
+            }
+        } else {
+            // sort in descending order
+            if (key0.getDate() > key1.getDate()) {
+                return -1;
+            }           
+            if (key0.getDate() < key1.getDate()) {
+                return 1;
+            }
         }
 
         return 0;
