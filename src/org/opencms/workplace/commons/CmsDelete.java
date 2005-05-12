@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/12 09:03:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -201,7 +201,8 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }    
         } catch (CmsException e) {
-            // prepare common message part    
+            // prepare common message part
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
         }
