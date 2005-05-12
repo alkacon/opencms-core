@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Messages.java,v $
- * Date   : $Date: 2005/05/02 13:33:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 09:06:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESOURCE_LOCKED_0 = "ERR_RESOURCE_LOCKED_0";
+    public static final String ERR_RESOURCE_LOCKED_1 = "ERR_RESOURCE_LOCKED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_UNLOCK_1 = "ERR_RESOURCE_UNLOCK_1";
@@ -51,7 +51,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_LOCK_INHERITED_1 = "ERR_UNLOCK_LOCK_INHERITED_1";
 
-    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.lock.messages";
 
