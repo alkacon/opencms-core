@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/12 13:31:16 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/12 15:22:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
 import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
-import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlException;
 
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -431,6 +430,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     protected String widgetHelpBubble(CmsWidgetParameter param) {
 
+        if (!useNewStyle()) {
+            return param.getWidget().getHelpBubble(getCms(), this, param);
+        }
         String locKey = A_CmsXmlWidget.getHelpKey(param);
         String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
         if (locValue == null) {
@@ -468,6 +470,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     protected String widgetHelpText(CmsWidgetParameter param) {
 
+        if (!useNewStyle()) {
+            return param.getWidget().getHelpText(this, param);
+        }
         StringBuffer result = new StringBuffer(128);
         // calculate the key
         String locKey = A_CmsXmlWidget.getHelpKey(param);
