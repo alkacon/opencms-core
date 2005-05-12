@@ -1056,9 +1056,9 @@ th a:link, th a:visited, th a:active {
 
   <% } %>
 
-<% } %>
-
-  <% if ((style == NEW_ADMIN) || (style == MENU)) { %>
+<% } 
+  // for all styles!!
+%>
 
 .help { 
 	color: InfoText; 
@@ -1072,7 +1072,6 @@ th a:link, th a:visited, th a:active {
     visibility: hidden; 
     font-size: 8pt; 
 } 
-<% } %>
 
 /* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
    this must ALWAYS stay at the end of the css! */
