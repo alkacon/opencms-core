@@ -2,12 +2,12 @@
                  org.opencms.main.*,
                  org.opencms.file.*,
                  org.opencms.workplace.list.*,
-                 org.opencms.workplace.tools.jobs.CmsJobsAdminTool,
+                 org.opencms.workplace.tools.jobs.CmsJobsList,
                  java.util.*" 
          buffer="none" %>
 <% 
 
-    CmsJobsAdminTool wp = new CmsJobsAdminTool(pageContext, request, response);
+    CmsJobsList wp = new CmsJobsList(pageContext, request, response);
 
 //////////////////// start of switch statement 
 switch (wp.getAction()) {
@@ -22,7 +22,7 @@ switch (wp.getAction()) {
     //////////////////// ACTION: execute single list action
     case A_CmsListDialog.ACTION_LIST_SINGLE_ACTION:
          wp.executeListSingleActions();
-         if (wp.getParamListAction().equals(CmsJobsAdminTool.LIST_ACTION_EDIT)) {
+         if (wp.getParamListAction().equals(CmsJobsList.LIST_ACTION_EDIT)) {
              // due to a redirect
              return;
          }

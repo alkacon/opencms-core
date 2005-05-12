@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsAdminTool.java,v $
- * Date   : $Date: 2005/05/11 16:06:15 $
- * Version: $Revision: 1.10 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsList.java,v $
+ * Date   : $Date: 2005/05/12 08:12:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,10 +57,10 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsJobsAdminTool extends A_CmsListDialog {
+public class CmsJobsList extends A_CmsListDialog {
 
     /** List action activate. */
     public static final String LIST_ACTION_ACTIVATE = "activate";
@@ -127,7 +127,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsJobsAdminTool(CmsJspActionElement jsp) {
+    public CmsJobsList(CmsJspActionElement jsp) {
 
         super(jsp, LIST_ID, new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0), LIST_COLUMN_NAME, LIST_COLUMN_NAME);
     }
@@ -139,7 +139,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsJobsAdminTool(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsJobsList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -310,6 +310,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
             LIST_ID,
             LIST_ACTION_ACTIVATE,
             getCms());
+        // direct action: activate job
         CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ACTIVATE);
         userActAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0));
         userActAction.setConfirmationMessage(Messages.get().container(
@@ -318,6 +319,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         userActAction.setEnabled(true);
         userActAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0));
         activateJob.setFirstAction(userActAction);
+        // direct action: deactivate job
         CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
         userDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
         userDeactAction.setConfirmationMessage(Messages.get().container(
@@ -335,7 +337,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         copyCol.setWidth(null);
         copyCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         copyCol.setSorteable(false);
-        // create direct action
+        // direct action: copy job
         CmsListDirectAction copyJob = new CmsListDirectAction(LIST_ID, LIST_COLUMN_COPY);
         copyJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0));
         copyJob.setConfirmationMessage(Messages.get().container(
@@ -352,7 +354,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         delCol.setWidth(null);
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         delCol.setSorteable(false);
-        // create direct action
+        // direct action: delete job
         CmsListDirectAction delJob = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
         delJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0));
         delJob.setConfirmationMessage(Messages.get().container(
@@ -368,7 +370,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         nameCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NAME_0));
         nameCol.setWidth("20%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
-        // create default edit action for name column
+        // create default edit action for name column: edit job
         CmsListDefaultAction nameColAction = new CmsListDefaultAction (LIST_ID, LIST_ACTION_EDIT);
         nameColAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
         nameColAction.setIconPath(null);
@@ -409,7 +411,6 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
                 Messages.GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0));
         nextExecCol.setFormatter(listDateFormatter);
         metadata.addColumn(nextExecCol);
-
     }
     
     
@@ -444,6 +445,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         jobsContextInfoDetails.setVisible(false);
         jobsContextInfoDetails.setShowAction(showContextInfoAction);
         jobsContextInfoDetails.setHideAction(hideContextInfoAction);
+        // create formatter to display context info
         CmsContextInfoDetailsFormatter contextFormatter = new CmsContextInfoDetailsFormatter();
         contextFormatter.setUserMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_USER_0));
         contextFormatter.setProjectMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_PROJECT_0));
@@ -453,7 +455,7 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         contextFormatter.setRemoteAddrMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REMADR_0));
         contextFormatter.setRequestedURIMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0));
         jobsContextInfoDetails.setFormatter(contextFormatter);
-        // add item to meta data
+        // add context info item to meta data
         metadata.addItemDetails(jobsContextInfoDetails);
         
         // add independent job parameter button
@@ -477,11 +479,12 @@ public class CmsJobsAdminTool extends A_CmsListDialog {
         jobsParameterDetails.setAtColumn(LIST_COLUMN_NAME);
         jobsParameterDetails.setVisible(false);
         jobsParameterDetails.setShowAction(showParameterAction);
-        jobsParameterDetails.setHideAction(hideParameterAction);         
+        jobsParameterDetails.setHideAction(hideParameterAction); 
+        // create formatter to display parameters
         jobsParameterDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_JOBS_DETAIL_PARAMETER_FORMAT_0)));
+        // add parameter item to metadata
         metadata.addItemDetails(jobsParameterDetails);
-
     }
     
     
