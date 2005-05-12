@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/05/12 09:02:52 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 5.1
  */
@@ -790,6 +790,15 @@ public class CmsDialog extends CmsToolDialog {
         return m_action;
     }
 
+    /**
+     * Returns the action to be carried out after a click on the cancel button..<p>
+     * 
+     * @return the action to be carried out after a click on the cancel button.
+     */
+    public String getCancelAction() {
+        return DIALOG_CANCEL;
+    }   
+    
     /**
      * Returns the http URI of the current dialog, to be used
      * as value for the "action" attribute of a html form.<p>
